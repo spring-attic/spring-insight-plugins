@@ -80,6 +80,6 @@ public class SocketExternalResourceAnalyzer implements ExternalResourceAnalyzer 
                                               null,
                                               addr,
                                               port,
-                                              color);
+                                              color, false);
     }
 }

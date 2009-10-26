@@ -89,6 +89,7 @@ public class EhcacheResourceAnalyzerTest {
         assertEquals(testName + ": Mismatched vendor", "ehcache", descriptor.getVendor());
         assertEquals(testName + ": Mismatched host", null, descriptor.getHost());
         assertEquals(testName + ": Mismatched port", -1, descriptor.getPort());
+        assertEquals(testName + ": Mismatched direction", false, descriptor.getIsIncoming());
 
         String expectedHash = MD5NameGenerator.getName(name);
         assertEquals(testName + ": Mismatched name", "ehcache:" + expectedHash, descriptor.getName());

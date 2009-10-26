@@ -63,7 +63,7 @@ public class RedisDBAnalyzer implements ExternalResourceAnalyzer {
 					"Redis",
 					host,
 					port,
-                    color) );			
+                    color, false) );			
 		}
 		
 		return dbDescriptors;

@@ -56,7 +56,7 @@ public class EhcacheResourceAnalyzer implements ExternalResourceAnalyzer {
                        			                   EhcacheDefinitions.VENDOR_NAME + ":" + hashString,
                        			                   label,
                        			                   ExternalResourceType.CACHE.name(),
-                       			                   EhcacheDefinitions.VENDOR_NAME, color);
+                       			                   EhcacheDefinitions.VENDOR_NAME, color, false);
 			queueDescriptors.add(descriptor);            
 		}
 

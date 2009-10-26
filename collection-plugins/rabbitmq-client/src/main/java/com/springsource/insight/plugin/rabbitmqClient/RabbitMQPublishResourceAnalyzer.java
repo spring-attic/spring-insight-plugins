@@ -21,7 +21,7 @@ import com.springsource.insight.intercept.operation.Operation;
 public class RabbitMQPublishResourceAnalyzer extends AbstractRabbitMQResourceAnalyzer {
     
 	public RabbitMQPublishResourceAnalyzer() {
-		super(RabbitPluginOperationType.PUBLISH);
+		super(RabbitPluginOperationType.PUBLISH, false);
 	}
 
 	@Override

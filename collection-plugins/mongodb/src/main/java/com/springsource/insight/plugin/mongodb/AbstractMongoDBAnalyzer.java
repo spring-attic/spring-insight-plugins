@@ -66,7 +66,7 @@ public abstract class AbstractMongoDBAnalyzer implements ExternalResourceAnalyze
 					"MongoDB",
 					host,
 					port,
-                    color) );			
+                    color, false) );			
 		}
 		
 		return dbDescriptors;

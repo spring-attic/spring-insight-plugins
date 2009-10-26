@@ -22,7 +22,7 @@ import com.springsource.insight.intercept.operation.OperationMap;
 public class RabbitMQConsumerResourceAnalyzer extends AbstractRabbitMQResourceAnalyzer {
 	
 	RabbitMQConsumerResourceAnalyzer() {
-        super(RabbitPluginOperationType.CONSUME);
+        super(RabbitPluginOperationType.CONSUME, true);
     }
     
     @Override

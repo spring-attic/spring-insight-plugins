@@ -49,7 +49,7 @@ public class MailResourceAnalyzer implements ExternalResourceAnalyzer {
             String color = ColorManager.getInstance().getColor(op);
 
 			ExternalResourceDescriptor descriptor = new ExternalResourceDescriptor(
-					mailFrame, protocol + ":" + hashString, label, RESOURCE_TYPE, protocol, host, port, color);
+					mailFrame, protocol + ":" + hashString, label, RESOURCE_TYPE, protocol, host, port, color, false);
 			mailDescriptors.add(descriptor);            
 		}
 

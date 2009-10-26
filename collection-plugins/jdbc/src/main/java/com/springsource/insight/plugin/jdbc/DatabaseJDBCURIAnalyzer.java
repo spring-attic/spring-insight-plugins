@@ -113,7 +113,7 @@ public abstract class DatabaseJDBCURIAnalyzer implements ExternalResourceAnalyze
         String color = ColorManager.getInstance().getColor(frame.getOperation());
         
 		// for  Non-URI based and special cases the host and port remain default
-		ExternalResourceDescriptor hashed = new ExternalResourceDescriptor(frame, jdbcScheme + ":1:" + jdbcHash, "", ExternalResourceType.DATABASE.name(), jdbcScheme, host, port, color);
+		ExternalResourceDescriptor hashed = new ExternalResourceDescriptor(frame, jdbcScheme + ":1:" + jdbcHash, "", ExternalResourceType.DATABASE.name(), jdbcScheme, host, port, color, false);
 		return Arrays.asList(hashed);
 	}
 
@@ -141,7 +141,7 @@ public abstract class DatabaseJDBCURIAnalyzer implements ExternalResourceAnalyze
 																				 vendor,
 																				 host,
 																				 port,
-																				 color);
+																				 color, false);
 			externalResourceDescriptors.add(descriptor);
 			//using the same instance index as we're assuming no more than one parser will ever succeed in parsing the same url
 			instance++;

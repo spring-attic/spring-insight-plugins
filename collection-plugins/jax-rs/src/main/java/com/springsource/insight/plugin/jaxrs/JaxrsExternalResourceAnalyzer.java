@@ -50,7 +50,7 @@ public class JaxrsExternalResourceAnalyzer implements ExternalResourceAnalyzer {
 			String hashString = MD5NameGenerator.getName(path);
 			String color = ColorManager.getInstance().getColor(op);
 			ExternalResourceDescriptor desc = new ExternalResourceDescriptor(frame, JaxrsDefinitions.TYPE.getName() + ":" + hashString, path,
-																			ExternalResourceType.WEB_SERVICE.name(), JaxrsDefinitions.TYPE.getName(), color);
+																			ExternalResourceType.WEB_SERVICE.name(), JaxrsDefinitions.TYPE.getName(), color, false);
 			descriptors.add(desc);			
 		}
 		

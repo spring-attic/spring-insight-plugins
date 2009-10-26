@@ -76,6 +76,7 @@ public class DatabaseJDBCURIAnalyzerTest {
 		assertEquals(frame, externalResourceDescriptor.getFrame());
 		assertEquals(ExternalResourceType.DATABASE.name(), externalResourceDescriptor.getType());
 		assertEquals("foobar:1:" + MD5NameGenerator.getName(jdbcUri), externalResourceDescriptor.getName());
+		assertEquals(false, externalResourceDescriptor.getIsIncoming());
 	}
 
 	@Test
@@ -93,6 +94,7 @@ public class DatabaseJDBCURIAnalyzerTest {
 		assertEquals("chef.metadyne.com", res.getHost());
 		assertEquals(3000, res.getPort());
 		assertEquals("mysql:1:" + MD5NameGenerator.getName(testUri), res.getName());
+		assertEquals(false, res.getIsIncoming());
 	}
 	
 	@Test
@@ -112,6 +114,7 @@ public class DatabaseJDBCURIAnalyzerTest {
 		assertEquals("10.17.184.138", res.getHost());
 		assertEquals(-1, res.getPort());
 		assertEquals("oracle:1:" + MD5NameGenerator.getName(testUri), res.getName());
+		assertEquals(false, res.getIsIncoming());
 		
 		res = result.get(1);
 		
@@ -120,6 +123,7 @@ public class DatabaseJDBCURIAnalyzerTest {
 		assertEquals("10.17.184.139", res.getHost());
 		assertEquals(1521, res.getPort());
 		assertEquals("oracle:2:" + MD5NameGenerator.getName(testUri), res.getName());
+		assertEquals(false, res.getIsIncoming());
 	}
 	
 	@Test
@@ -137,6 +141,7 @@ public class DatabaseJDBCURIAnalyzerTest {
 		assertEquals("server-address", res.getHost());
 		assertEquals(8080, res.getPort());
 		assertEquals("mydb:1:" + MD5NameGenerator.getName(testUri), res.getName());
+		assertEquals(false, res.getIsIncoming());
 	}
 	
 	static class TestJDBCURIAnalyzer extends DatabaseJDBCURIAnalyzer {

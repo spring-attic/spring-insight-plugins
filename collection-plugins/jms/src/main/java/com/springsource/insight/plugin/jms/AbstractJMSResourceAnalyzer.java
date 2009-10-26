@@ -38,9 +38,11 @@ abstract class AbstractJMSResourceAnalyzer implements EndPointAnalyzer,ExternalR
     
 	static final String JMS = "JMS";
     protected final JMSPluginOperationType operationType;
+    protected final Boolean isIncoming;
     
-    AbstractJMSResourceAnalyzer(JMSPluginOperationType type) {
+    AbstractJMSResourceAnalyzer(JMSPluginOperationType type, Boolean isIncoming) {
         this.operationType = type;
+        this.isIncoming = isIncoming;
     }
 
     public EndPointAnalysis locateEndPoint(Trace trace) {
@@ -92,7 +94,7 @@ abstract class AbstractJMSResourceAnalyzer implements EndPointAnalyzer,ExternalR
 			                                        JMS,
 			                                        host,
 			                                        port,
-                                                    color);
+                                                    color, isIncoming);
 			queueDescriptors.add(descriptor);            
 		}
 

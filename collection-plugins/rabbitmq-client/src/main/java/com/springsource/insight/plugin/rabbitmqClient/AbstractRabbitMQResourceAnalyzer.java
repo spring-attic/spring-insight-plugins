@@ -37,12 +37,14 @@ import com.springsource.insight.intercept.trace.Trace;
 
 public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyzer, ExternalResourceAnalyzer {
 
-	static final String RABBIT = "RabbitMQ";
+	static final String RABBIT = "RabbitMQ";	
 
 	final RabbitPluginOperationType operationType;
+	final Boolean isIncoming;
 
-	AbstractRabbitMQResourceAnalyzer(RabbitPluginOperationType type) {
+	AbstractRabbitMQResourceAnalyzer(RabbitPluginOperationType type, Boolean isIncoming) {
 		this.operationType = type;
+		this.isIncoming = isIncoming;
 	}
 
 	protected abstract String getExchange(Operation op);
@@ -98,7 +100,7 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 			                                        RABBIT,
 			                                        host,
 			                                        port,
-                                                    color);
+                                                    color, isIncoming);
 			queueDescriptors.add(descriptor);            
 		}
 

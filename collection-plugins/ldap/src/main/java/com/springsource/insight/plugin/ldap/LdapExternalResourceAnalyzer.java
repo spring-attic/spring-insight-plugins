@@ -84,7 +84,7 @@ public class LdapExternalResourceAnalyzer implements ExternalResourceAnalyzer {
                             uriValue,     // vendor
                             uri.getHost(),
                             resolvePort(uri),
-                            color);    
+                            color, false);    
         }
         catch(URISyntaxException e)
         {

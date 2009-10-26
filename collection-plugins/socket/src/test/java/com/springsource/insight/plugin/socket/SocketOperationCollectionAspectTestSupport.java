@@ -87,6 +87,7 @@ public abstract class SocketOperationCollectionAspectTestSupport
         Assert.assertNull("Unexpected vendor", desc.getVendor());
         Assert.assertEquals("Mismatched host", expAddress, desc.getHost());
         Assert.assertEquals("Mismatched port", TEST_PORT, desc.getPort());
+        Assert.assertEquals("Mismatched direction", false, desc.getIsIncoming());
         
         return op;
     }

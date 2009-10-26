@@ -38,9 +38,11 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest {
 
 	protected abstract AbstractRabbitMQResourceAnalyzer getAnalyzer();
 	private final RabbitPluginOperationType operationType;
+	private final Boolean isIncoming;
 
-	public AbstractRabbitMQResourceAnalyzerTest(RabbitPluginOperationType type) {
+	public AbstractRabbitMQResourceAnalyzerTest(RabbitPluginOperationType type, Boolean isIncoming) {
 		this.operationType = type;
+		this.isIncoming = isIncoming;
 	}
 
 	protected void addOperationProps(Operation operation, boolean addRouting, boolean addExchange){
@@ -201,7 +203,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest {
 		return Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
 	}
 
-	static void assertExternalResourceDescriptors(List<ExternalResourceDescriptor> externalResourceDescriptors, String label, Trace trace, String stringTohash){
+	void assertExternalResourceDescriptors(List<ExternalResourceDescriptor> externalResourceDescriptors, String label, Trace trace, String stringTohash){
 		assertEquals(1, externalResourceDescriptors.size());        
 		ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);
 
@@ -213,6 +215,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest {
 		assertEquals(5672, descriptor.getPort());
 		String expectedHash = MD5NameGenerator.getName(stringTohash);
 		assertEquals("RabbitMQ:" + expectedHash, descriptor.getName());
+		assertEquals(isIncoming, descriptor.getIsIncoming());
 	}
 
 	Operation createOperation() {

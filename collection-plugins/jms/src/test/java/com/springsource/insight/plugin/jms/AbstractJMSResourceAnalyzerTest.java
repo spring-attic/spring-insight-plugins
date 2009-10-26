@@ -40,9 +40,11 @@ public abstract class AbstractJMSResourceAnalyzerTest {
 
 	protected abstract AbstractJMSResourceAnalyzer getAnalyzer();
 	private final JMSPluginOperationType operationType;
+	private final Boolean isIncoming;
 
-	protected AbstractJMSResourceAnalyzerTest(JMSPluginOperationType type) {
+	protected AbstractJMSResourceAnalyzerTest(JMSPluginOperationType type, Boolean isIncoming) {
 		this.operationType = type;
+		this.isIncoming = isIncoming;
 	}
 	
     @Test
@@ -75,6 +77,7 @@ public abstract class AbstractJMSResourceAnalyzerTest {
 		assertEquals(-1, descriptor.getPort());
 		String expectedHash = MD5NameGenerator.getName("Queue#test.queuenull-1");
 		assertEquals("JMS:" + expectedHash, descriptor.getName());
+		assertEquals(isIncoming, descriptor.getIsIncoming());
 	}
     
     @Test
@@ -110,6 +113,7 @@ public abstract class AbstractJMSResourceAnalyzerTest {
 		assertEquals(1111, descriptor.getPort());
 		String expectedHash = MD5NameGenerator.getName("Queue#test.queue127.0.0.21111");
 		assertEquals("JMS:" + expectedHash, descriptor.getName());
+		assertEquals(isIncoming, descriptor.getIsIncoming());
 
 		descriptor = externalResourceDescriptors.get(1);        
 		assertEquals(op1, descriptor.getFrame().getOperation());
@@ -120,6 +124,7 @@ public abstract class AbstractJMSResourceAnalyzerTest {
 		assertEquals(-1, descriptor.getPort());
 		expectedHash = MD5NameGenerator.getName("Queue#test.queuenull-1");
 		assertEquals("JMS:" + expectedHash, descriptor.getName());
+		assertEquals(isIncoming, descriptor.getIsIncoming());
 	}
 
     

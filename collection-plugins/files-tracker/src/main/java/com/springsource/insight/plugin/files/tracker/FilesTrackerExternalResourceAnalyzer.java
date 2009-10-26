@@ -60,7 +60,7 @@ public class FilesTrackerExternalResourceAnalyzer implements ExternalResourceAna
 			                                       path,
 			                                       ExternalResourceType.FILESTORE.name(),
 			                                       FilesTrackerDefinitions.TYPE.getName(),
-			                                       color);
+			                                       color, false);
 			descriptors.add(desc);			
 		}
 		

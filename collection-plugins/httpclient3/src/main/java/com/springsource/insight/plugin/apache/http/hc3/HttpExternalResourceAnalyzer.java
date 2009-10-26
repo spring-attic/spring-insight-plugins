@@ -90,7 +90,7 @@ public class HttpExternalResourceAnalyzer implements ExternalResourceAnalyzer {
                     server,     // vendor
                     host,
                     resolvePort(uri),
-                    color);    
+                    color, false);    
         }
         catch(URISyntaxException e)
         {

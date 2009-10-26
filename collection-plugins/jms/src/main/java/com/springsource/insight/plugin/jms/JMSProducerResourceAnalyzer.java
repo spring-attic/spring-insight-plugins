@@ -18,7 +18,7 @@ package com.springsource.insight.plugin.jms;
 public class JMSProducerResourceAnalyzer extends AbstractJMSResourceAnalyzer {
 
     JMSProducerResourceAnalyzer() {
-        super(JMSPluginOperationType.SEND);
+        super(JMSPluginOperationType.SEND, false);
     }
 
 }

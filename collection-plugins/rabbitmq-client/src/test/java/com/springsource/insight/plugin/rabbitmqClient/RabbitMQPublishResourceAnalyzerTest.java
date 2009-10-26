@@ -22,7 +22,7 @@ import com.springsource.insight.intercept.operation.Operation;
 public class RabbitMQPublishResourceAnalyzerTest extends AbstractRabbitMQResourceAnalyzerTest {
 
 	public RabbitMQPublishResourceAnalyzerTest() {
-		super(RabbitPluginOperationType.PUBLISH);
+		super(RabbitPluginOperationType.PUBLISH, false);
 	}
 
 	@Override
