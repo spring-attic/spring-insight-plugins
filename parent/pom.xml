@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.springsource.insight</groupId>
+	<artifactId>parent</artifactId>
+	<version>1.7.3.CI-SNAPSHOT</version>
+	<name>com.springsource.insight:parent</name>
+	<description>Spring Insight parent project.  Defines dependencies and common configuration for the build process.</description>
+	<packaging>pom</packaging>
+	
+	<properties>
+		<insight.root.basedir>${project.parent.basedir}/..</insight.root.basedir>
+		<spring.framework.version>3.0.5.RELEASE</spring.framework.version>
+		<spring.security.version>3.0.5.RELEASE</spring.security.version>
+		<aspectj.version>1.6.12.M2</aspectj.version>
+		<junit.version>4.5</junit.version>
+		<mockito.version>1.8.0</mockito.version>
+		<commons.logging.version>1.1.1</commons.logging.version>
+		<log4j.version>1.2.16</log4j.version>
+		<commons.math.version>2.1</commons.math.version>
+		<clover2.version>2.6.3</clover2.version>
+		<slf4j.version>1.6.1</slf4j.version>
+		<servlet-api.version>2.5</servlet-api.version>
+		<freemarker.version>2.3.15</freemarker.version>
+		<jstl.version>1.2</jstl.version>
+		<cglib.version>2.2</cglib.version>
+		<spring.integration.version>2.0.3.RELEASE</spring.integration.version>
+		<activemq.version>5.4.2</activemq.version>
+		<xbean.version>3.5</xbean.version>
+        <catalina.version>6.0.18</catalina.version>
+        <h2.version>1.2.147</h2.version>
+        <hibernate.version>3.6.0.Final</hibernate.version>
+        <commons.dbcp.version>1.2.2</commons.dbcp.version>
+        <liquibase.version>2.0.1</liquibase.version>
+        <gemfire.version>6.5.1</gemfire.version>
+        <spring.gemfire.version>1.0.0.RELEASE</spring.gemfire.version>
+        <ehcache.version>2.3.0</ehcache.version>
+        <groovy.version>1.7.0</groovy.version>
+        <gmaven.plugin.version>1.0</gmaven.plugin.version>
+        <injection.plugin.version>1.0.2</injection.plugin.version>
+        <vfabric.license.client.version>1.0.0.M8</vfabric.license.client.version>
+        <aspectj.maven.version>1.2</aspectj.maven.version>
+        <rabbitmq.version>2.5.1</rabbitmq.version>
+		<shade.plugin.version>1.3.3</shade.plugin.version>
+        <jackson.version>1.8.2</jackson.version>
+		<org.springframework.amqp.version>1.0.0.RELEASE</org.springframework.amqp.version>
+  	<commons.codec.version>1.5</commons.codec.version>
+
+
+        <!-- maven-rpm-plugin .. while not the newest, does not have bugs the newer versions have -->
+        <rpm.version>2.0-beta-4</rpm.version>
+
+        <cloudfoundry.version>0.7.0</cloudfoundry.version>
+        <httpclinet.version>4.1.1</httpclinet.version>
+	    <javax.jms.version>1.1</javax.jms.version>
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+        <build.timestamp>${maven.build.timestamp}</build.timestamp>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+
+		<!-- Properties replaced in the dashboard's insight.properties -->
+		<dashboard.properties.metric.max.granularity.sec>31536000</dashboard.properties.metric.max.granularity.sec>
+		<dashboard.properties.trace.purge.expiry.min>10800</dashboard.properties.trace.purge.expiry.min>
+		<dashboard.properties.insight.purge.interval.min>30</dashboard.properties.insight.purge.interval.min>
+
+		<!-- Properties replaced in the agent's insight.properties -->
+		<agent.properties.agent.trace.buffer>2000</agent.properties.agent.trace.buffer>
+		<agent.properties.trace.filter.similar.per.hour>12</agent.properties.trace.filter.similar.per.hour>
+		<agent.properties.insight.collection.only-endpoints.enabled>true</agent.properties.insight.collection.only-endpoints.enabled>
+
+	</properties>
+	
+	<profiles>
+		<profile>
+			<id>fast</id>
+			<properties>
+				<skipTests>true</skipTests>
+				<maven.javadoc.skip>true</maven.javadoc.skip>
+			</properties>
+		</profile>
+
+       <profile>
+			<id>apm</id>
+			<properties>
+				<dashboard.properties.metric.max.granularity.sec>15</dashboard.properties.metric.max.granularity.sec>
+				<dashboard.properties.trace.purge.expiry.min>10</dashboard.properties.trace.purge.expiry.min>
+
+				<agent.properties.agent.trace.buffer>500</agent.properties.agent.trace.buffer>
+				<agent.properties.trace.filter.similar.per.hour>4</agent.properties.trace.filter.similar.per.hour>
+			</properties>     
+		</profile>
+
+	</profiles>
+
+    <organization>
+      <name>VMware, Inc.</name>
+      <url>http://springsource.org/insight</url>
+    </organization>
+
+	<repositories>
+        <repository>
+            <id>spring-private-snapshot</id>
+            <name>Spring Release Repository</name>
+            <url>http://private.maven.springsource.com/snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+        </repository>
+
+		<repository>
+			<id>spring-release</id>
+			<name>Spring Release Repository</name>
+			<url>http://maven.springframework.org/release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+		</repository>
+		<repository>
+			<id>spring-milestone</id>
+			<url>http://maven.springframework.org/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+		</repository>
+        <repository>
+            <id>gemfire-release-repo</id>
+            <name>Gemfire Release Repository</name>
+            <url>http://dist.gemstone.com/maven/release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+        </repository>
+        <repository>
+            <id>hyperic-external-repo</id>
+            <name>Hyperic External Repository</name>
+            <url>http://maven.hyperic.org/external</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+        </repository>
+        <repository>
+            <id>vfabric-release-private</id>
+            <name>vfabric Release Repository</name>
+            <url>http://private.maven.vmware.com/release</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+        </repository>
+        <repository>
+            <id>vfabric-milestone-private</id>
+            <name>vfabric Release Repository</name>
+            <url>http://private.maven.vmware.com/milestone</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+        </repository>
+        <repository>
+            <id>vfabric-snapshot-private</id>
+            <name>vfabric Snapshot Repository</name>
+            <url>http://private.maven.vmware.com/snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+        </repository>
+        <repository>
+            <id>org.jboss.maven.release.nexus</id>
+            <name>JBoss Maven Central-compatible Repository</name>
+            <url>http://repository.jboss.org/nexus/content/groups/public</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+        </repository>
+		<repository>
+			<id>org.jboss.maven.release</id>
+			<name>JBoss Maven Central-compatible Repository</name>
+			<url>http://repository.jboss.com/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+		</repository>
+		<repository>
+			<id>jboss-deprecated</id>
+			<name>JBoss Deprecated - Used to get some JBoss depends (jpl-pattern)</name>
+			<url>https://repository.jboss.org/nexus/content/repositories/deprecated/ </url>
+			<layout>default</layout>
+			<releases>
+					<enabled>true</enabled>
+					<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+    	</repository>
+	</repositories>
+
+    <pluginRepositories>
+        <!-- Milestone repository for the aspectj milestone release -->
+        <pluginRepository>
+			<id>spring-milestone</id>
+			<url>http://maven.springframework.org/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+            </releases>
+        </pluginRepository>
+        <pluginRepository>
+            <id>org.jboss.maven.release.nexus</id>
+            <name>JBoss Maven Central-compatible Repository</name>
+            <url>http://repository.jboss.org/nexus/content/groups/public</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+        </pluginRepository>
+        <pluginRepository>
+            <id>codehaus central</id>
+            <name>Codehaus Central Repository</name>
+            <url>http://repository.codehaus.org</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+        </pluginRepository>
+
+    </pluginRepositories>
+	
+	<build>
+		<extensions>
+			<extension>
+				<groupId>org.springframework.build.aws</groupId>
+				<artifactId>org.springframework.build.aws.maven</artifactId>
+				<version>3.0.0.RELEASE</version>
+			</extension>
+		</extensions>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+                  <version>2.2.1</version>
+					<configuration>
+						<appendAssemblyId>false</appendAssemblyId>
+						<descriptors>
+							<descriptor>src/main/assembly/assembly.xml</descriptor>
+						</descriptors>
+					</configuration>
+					<executions>
+						<execution>
+                        <id>package</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+						</execution>
+					</executions>
+              </plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-clean-plugin</artifactId>
+                  <version>2.4.1</version>
+              </plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-install-plugin</artifactId>
+                  <version>2.3.1</version>
+              </plugin>
+              <plugin>
+					<!-- NOTE: there is a bug with 1.3+ (the inherited parent
+					 version) that does not compile test aspects - we therefore
+					 use a special override in the insight-collection artifact.
+					 Any changes in this configuration must also be propagated
+					 to the insight-collection artifact -->
+					<groupId>org.codehaus.mojo</groupId>
+                  <artifactId>aspectj-maven-plugin</artifactId>
+                  <version>1.3.1</version>
+					<configuration>
+						<source>1.5</source>
+						<target>1.5</target>
+					</configuration>
+              </plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>2.1.1</version>
+              </plugin>
+				<plugin>
+					<groupId>com.atlassian.maven.plugins</groupId>
+					<artifactId>maven-clover2-plugin</artifactId>
+					<version>${clover2.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.jboss.maven.plugins</groupId>
+					<artifactId>maven-injection-plugin</artifactId>
+					<version>${injection.plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>2.1.2</version>
+					<executions>
+						<execution>
+							<id>attach-sources</id>
+							<phase>verify</phase>
+							<goals>
+								<goal>jar-no-fork</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>com.keyboardsamurais.maven</groupId>
+					<artifactId>maven-timestamp-plugin</artifactId>
+					<version>1.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<version>1.6</version>
+				</plugin>
+              <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>rpm-maven-plugin</artifactId>
+                  <version>${rpm.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>2.4</version>
+					<configuration>
+						<skip>false</skip>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>com.mycila.maven-license-plugin</groupId>
+					<artifactId>maven-license-plugin</artifactId>
+					<version>1.9.0</version>
+					<configuration>
+						<header>${insight.root.basedir}/etc/aslHeader.txt</header>
+						<includes>
+							<include>**/*.java</include>
+							<include>**/*.aj</include>
+						</includes>
+						<properties>
+							<year>2009-2010</year>
+						</properties>
+					</configuration>
+					<executions>
+						<execution>
+							<goals>
+								<goal>check</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+            <plugin>
+                <groupId>org.codehaus.groovy.maven</groupId>
+                <artifactId>gmaven-plugin</artifactId>
+                <version>${gmaven.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>protect-against-publishing-sensitive-sources</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <source>
+                                if (!session.settings.activeProfiles.contains("publish-sensitive-sources"))
+                                    return
+
+                                [ "snapshotRepository", "repository" ].collect {
+                                    session.currentProject.distributionManagement."$it"?.url
+                                }.findAll { it?.contains("springframework") }.each {
+                                    throw new RuntimeException("You are attempting to publish sensitive sources " +
+                                                               "to a known public repo ($it).  " +
+                                                               "Don't use -Ppublish-sensitive-sources")
+                                }
+                            </source>
+                        </configuration>
+                    </execution>
+					  <execution>
+						  <id>generate-timestamp-property</id>
+						  <phase>validate</phase>
+						  <goals>
+							  <goal>execute</goal>
+						  </goals>
+						  <configuration>
+							  <source>
+								  project.properties['buildtimestamp'] = java.text.MessageFormat.format("{0,date,yyyyMMddHHmmss}", new Date())
+							  </source>
+						  </configuration>
+					  </execution>
+                </executions>
+            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.3</version>
+				<executions>
+					<execution>
+						<id>install</id>
+						<phase>install</phase>
+						<goals>
+							<goal>sources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.1</version>
+				<configuration>
+					<archive>
+						<addMavenDescriptor>false</addMavenDescriptor>
+					</archive>
+					<excludes>
+						<exclude>**/.gitignore</exclude>
+						<exclude>**/builddef.*</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+           <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+				<version>2.9</version>
+              <configuration>
+                  <forkMode>once</forkMode><!-- at least once -->
+                  <systemProperties>
+                     <property>
+                        <name>java.awt.headless</name>
+                        <value>true</value>
+                    </property>
+                  </systemProperties>
+              </configuration>
+           </plugin>
+		</plugins>
+	</build>
+	
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.4</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
+	
+	<distributionManagement>
+        <repository>
+            <id>spring-milestone</id>
+            <name>Spring Milestone Repository</name>
+            <url>s3://private.maven.springsource.com/milestone</url>
+        </repository>
+        <snapshotRepository>
+            <id>spring-snapshot</id>
+            <name>Spring Snapshot Repository</name>
+            <url>s3://private.maven.springsource.com/snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
+	
+</project>

@@ -1,0 +1,58 @@
+h1. This is a MongoDB plugin for Spring Insight
+
+Spring Insight runs in the SpringSource tc Server. See http://www.springsource.org/insight for details. This plugin adds instrumentation to for web applications that use MongoDB (http://www.mongodb.org) through the MongoDB Java driver, which typically works outside the normal ORM flow. 
+
+h2. What does it do?
+
+It instruments calls to MongoDB from the Java driver. Typical calls on the DBCollection class are traced, as are the DB.command() calls that are not covered by these. 
+
+The DBCursor.next() call is traced but the information for each call is limited. For example, it does not provide the corresponding DBCollection (yet).
+
+Some attempt is made to decode parameters and return values for common and MongoDB types we know about.
+
+h2. Installing the plugin
+
+Get the code: <code>git clone git://github.com/NogbadTheBad/insight-plugin-mongodb.git</code>
+
+Now build it:
+
+<pre>
+<code>
+cd insight-plugin-mongodb
+mvn clean package
+</code>
+</pre>
+
+You'll need to have tc Server Developer Edition installed. Let's call the location of that <code>tcServer</code>.
+
+Now copy the plugin jar to the right place under <code>tcServer</code>.
+
+<pre>
+<code>
+cp target/insight-plugin-mongodb-x.x.jar tcServer/spring-insight-instance/insight/collection-plugins
+</code>
+</pre>
+
+h2. Running the plugin
+
+# Start up Spring Insight Server as usual (see the Spring tc Server Developer Edition documentation) and make sure your WAR file is loaded. Start your application and make sure it's running.
+# Browse to http://localhost:8080/insight to see the Spring Insight dashboard. Click on the Administration button and then _Collection Plug-ins_ under _Reports and Statistics_.
+# If you can see the mongodb plugin it's installed and running.
+# Run through your application in a way you're sure exercises MongoDB. Then go back to the Spring Insight dashboard to see the traces.
+
+Have fun! And let me know what doesn't work well.
+
+h2. Known issues
+
+# The collection name is not available from DBCursor, so we can't see which collection we're calling next() on. This is going to be simply a matter of coercing DBCursor to give up a private instance field for which there is not accessor. (I'm sure I read somewhere how to do that.)
+
+h2. Rejected enhancements
+
+# I thought that Morpia support belonged here at some point. But that's less interesting now that GORM support for MongoDB is provided by a Grails Datastore and not by a contributed plugin (gorm-mongodb) that uses Morphia. YMMV, in which case feel free to add it.
+
+h2. Contact
+
+Stephen Harrison (stephen [at] harrison [dot] org)
+Merged and Updated to Insight 1.7.0 by the Insight Team
+
+
