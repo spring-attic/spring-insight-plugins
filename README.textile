@@ -21,9 +21,14 @@ h2. Contributing a Plugin
 
 h2. Requirements for a Plugin
 
+* Must be licensed under ASL 2.0
+* Contributor Agreement must be signed at: https://support.springsource.com/spring_committer_signup
+** Email us the verification number and (Ideally) sign and scan the pdf
+* Must have unit tests for aspects ( we have helper classes for this )
 * Must include a README.textfile
 * Must include a screenshot of the plugin in action
-* Ideally you should provide a sample webapp so we can easily start testing the plugin
+* Nice to Have: some tests for the FreeMarker template
+* Nice to Have: should provide a sample webapp so we can easily start testing the plugin
 
 h2. Contact
 
