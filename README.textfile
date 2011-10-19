@@ -1,0 +1,17 @@
+h1. Plugin Dev Repo for Spring Insight
+h2. What is Spring Insight Developer Edition?
+It is a VMware® Web application that gives you real-time visibility into application behavior and performance at the code-level. Released as part of vFabric and AppInsight.
+- Insight DevEdition answers the question: "What just happened?"
+- Insight Operations answers the question: "What is happening?"
+h2. Installing and Using Plugins
+Plugins must be copied into the "insight/collection-plugins" directory of an Insight Developer Edition and Insight Dashboard/Agent.
+ 
+h2. Contributing a Plugin
+- Pull this code
+- Develop your plugin
+- Make pull request
+
+h2. Requirements for a Plugin
+- Must include a README.textfile
+- Must include a screenshot of the plugin in action
+- Ideally you should provide a sample webapp so we can easily start testing the plugin
