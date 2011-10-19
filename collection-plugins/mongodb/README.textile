@@ -51,7 +51,7 @@ h2. Rejected enhancements
 # I thought that Morpia support belonged here at some point. But that's less interesting now that GORM support for MongoDB is provided by a Grails Datastore and not by a contributed plugin (gorm-mongodb) that uses Morphia. YMMV, in which case feel free to add it.
 
 h2. Contact
-Maintained by the Insight Team insight@vmware.com
+Maintained by the Insight Team insight [at] vmware [dot] com
 Contributed by Stephen Harrison (stephen [at] harrison [dot] org)
 Merged and Updated to Insight 1.7.0 by the Insight Team
 
