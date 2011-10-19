@@ -1,4 +1,4 @@
-h1. Plugin Dev Repo for Spring Insight
+h1. Community Plugin Repository for Spring Insight
 
 h2. What is Spring Insight Developer Edition?
 
