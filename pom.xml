@@ -15,7 +15,7 @@
 	</parent>
 
 	<modules>
-		<module>plugins</module>
+		<module>collection-plugins</module>
 	</modules>
 
 	<build>
