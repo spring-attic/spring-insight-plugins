@@ -13,16 +13,16 @@ h2. Installing and Using Plugins
 
 Plugins must be copied into the "insight/collection-plugins" directory of an Insight Developer Edition and Insight Dashboard/Agent.
 
-h2. Contributing a Plugin
+h2. Creating a Plugin
 
-* Clone this code
-* Develop your plugin
-* Make pull request
+* Clone this code  <code>git clone https://github.com/SpringSource/spring-insight-plugins</code>
+* Develop your plugin, using the other plugins as examples, or insight [at] vmware [dot] org for advice
+* Make pull request!
 
 h2. Requirements for a Plugin
 
 * Must be licensed under ASL 2.0
-* Contributor Agreement must be signed at: https://support.springsource.com/spring_committer_signup
+* Contributor Agreement must be signed at: "https://support.springsource.com/spring_committer_signup":https://support.springsource.com/spring_committer_signup
 ** Email us the verification number and (Ideally) sign and scan the pdf
 * Must have unit tests for aspects ( we have helper classes for this )
 * Must include a README.textfile
