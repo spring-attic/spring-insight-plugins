@@ -1,0 +1,62 @@
+/**
+ * Copyright 2009-2010 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.springsource.insight.plugin.redis;
+
+import com.springsource.insight.collection.OperationCollectionAspectSupport;
+import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.OperationList;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+/**
+ * Test cases for {@link RedisClientAspect}
+ */
+public class RedisClientAspectTest extends OperationCollectionAspectTestSupport {
+
+
+    @Test
+    public void testSet() {
+        DummyJedisCommands client = new DummyJedisCommands(null);
+        client.set("mykey", "myvalue");
+        Operation op = getLastEntered(Operation.class);
+        assertNotNull(op);
+        op.finalizeConstruction();
+        assertEquals("set", op.get("methodName"));
+        assertEquals("Redis: mykey.set", op.getLabel());
+        assertEquals("mykey", op.get("arguments", OperationList.class).get(0));
+        assertEquals("myvalue", op.get("arguments", OperationList.class).get(1));
+    }
+
+    @Test
+    public void testPing() {
+        DummyJedisCommands client = new DummyJedisCommands(null);
+        client.ping();
+        Operation op = getLastEntered(Operation.class);
+        assertNotNull(op);
+        op.finalizeConstruction();
+        assertEquals("ping", op.get("methodName"));
+        assertEquals("Redis: ping", op.getLabel());
+    }
+
+    @Override
+    public OperationCollectionAspectSupport getAspect() {
+        return RedisClientAspect.aspectOf();
+    }
+}

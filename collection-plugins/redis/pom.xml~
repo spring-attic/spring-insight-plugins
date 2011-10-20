@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.springsource.insight.plugins</groupId>
+	<artifactId>insight-plugin-redis</artifactId>
+	<name>com.springsource.insight.plugins:redis</name>
+	<version>1.7.3.CI-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	
+	<parent>
+		<groupId>com.springsource.insight</groupId>
+		<artifactId>parent</artifactId>
+		<version>1.7.3.CI-SNAPSHOT</version>
+		<relativePath>../../parent</relativePath>
+	</parent>
+	
+	<dependencies>
+		<!-- Provided dependencies (part of Insight) -->
+		<dependency>
+			<groupId>com.springsource.insight</groupId>
+			<artifactId>insight-idk</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.framework.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<!-- Provided dependencies (part of the user application) -->
+		<dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+            <version>1.0.0.M4</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <!--
+            Not readily available in a public maven repository. Everyone uses
+            builds manually injected into their local maven repo. The developer
+            will apparently release something when the version hits 1.2
+        <dependency>
+            <groupId>org.jredis</groupId>
+            <artifactId>jredis-core-all</artifactId>
+            <version>1.0-rc2</version>
+
+            <scope>provided</scope>
+        </dependency>
+        -->
+
+		<!-- Test dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.framework.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>aspectj-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>test-compile</goal>
+						</goals>
+						<configuration>
+							<outxml>true</outxml>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<argLine>
+                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+					</argLine>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+			</plugin>
+           <plugin>
+              <groupId>com.mycila.maven-license-plugin</groupId>
+              <artifactId>maven-license-plugin</artifactId>
+              <configuration>
+                    <header>../../etc/aslHeader.txt</header>
+              </configuration>
+           </plugin>
+		</plugins>
+	</build>
+	
+</project>

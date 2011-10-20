@@ -16,6 +16,9 @@
 
 	<modules>
 		<module>mongodb</module>
+		<module>redis</module>
+		<module>rabbitmq-client</module>
+		<module>spring-integration</module>
 	</modules>
 
 	<build>
