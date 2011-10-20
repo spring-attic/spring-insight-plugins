@@ -2,17 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.springsource.insight</groupId>
-	<artifactId>community</artifactId>
+	<artifactId>community-build</artifactId>
 	<version>1.7.3.CI-SNAPSHOT</version>
 	<name>com.springsource.insight:community</name>
 	<packaging>pom</packaging>
-
-	<parent>
-		<groupId>com.springsource.insight</groupId>
-		<artifactId>parent</artifactId>
-		<version>1.7.3.CI-SNAPSHOT</version>
-		<relativePath>parent</relativePath>
-	</parent>
 
 	<modules>
 		<module>collection-plugins</module>
