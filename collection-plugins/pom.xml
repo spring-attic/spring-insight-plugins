@@ -14,9 +14,19 @@
 		<relativePath>../parent</relativePath>
 	</parent>
 
+       <profiles>
+         <profile>
+           <activation>
+             <jdk>1.6</jdk>
+           </activation>
+           <modules>
+             <module>redis</module>
+           </modules>
+         </profile>
+       </profiles>
+
 	<modules>
 		<module>mongodb</module>
-		<module>redis</module>
 		<module>rabbitmq-client</module>
 		<module>spring-integration</module>
 	</modules>
