@@ -1,0 +1,19 @@
+h3. RabbitMQ Plugin for Spring Insight
+
+This plugin supports the java client library provided by the RabbitMQ team. 
+This plugin provides an endpoint for consuming messages from RabbitMQ.
+
+h2. Compatibility
+
+This plugin is compatible with the 1.7+ versions of insight. 
+
+h2. Installation
+
+This is a core plugin of Insight 1.7+ but earlier users may
+install this plugin by copying the plugin jar to
+<code>
+  insight/collection-plugins
+</code>
+
+For both the Dashboard and Insight Agent. You should see the
+plugin listed under the administration panel.
