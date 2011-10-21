@@ -312,7 +312,7 @@
                     <artifactId>maven-license-plugin</artifactId>
                     <version>1.9.0</version>
                     <configuration>
-                        <header>${insight.root.basedir}/etc/aslHeader.txt</header>
+                        <header>${project.parent.basedir}/aslHeader.txt</header>
                         <includes>
                             <include>**/*.java</include>
                             <include>**/*.aj</include>
