@@ -425,12 +425,12 @@
 
     <distributionManagement>
         <repository>
-            <id>spring-milestone-public</id>
+            <id>spring-milestone</id>
             <name>Spring Milestone Repository</name>
             <url>s3://maven.springframework.org/milestone</url>
         </repository>
         <snapshotRepository>
-            <id>spring-snapshot-public</id>
+            <id>spring-snapshot</id>
             <name>Spring Snapshot Repository</name>
             <url>s3://maven.springframework.org/snapshot</url>
         </snapshotRepository>
