@@ -1,0 +1,9 @@
+.DS_Store
+target
+.metadata
+.settings
+.project
+.classpath
+.svn
+
+dist/cloudfoundry/installer/src/main/ruby/installer/public/insight.war
