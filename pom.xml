@@ -7,6 +7,13 @@
 	<name>com.springsource.insight:community</name>
 	<packaging>pom</packaging>
 
+	<parent>
+		<groupId>com.springsource.insight</groupId>
+		<artifactId>community</artifactId>
+		<version>1.7.3.CI-SNAPSHOT</version>
+		<relativePath>parent</relativePath>
+	</parent>
+
 	<modules>
 		<module>collection-plugins</module>
 		<module>samples</module>
