@@ -4,14 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.springsource.insight.plugins</groupId>
     <artifactId>insight-plugin-mongodb</artifactId>
-    <version>1.7.3.CI-SNAPSHOT</version>
+    <version>1.7.3.JVK</version>
     <name>com.springsource.insight.plugins:mongodb</name>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>com.springsource.insight</groupId>
         <artifactId>community</artifactId>
-        <version>1.7.3.CI-SNAPSHOT</version>
+        <version>1.7.3.JVK</version>
         <relativePath>../../parent</relativePath>
     </parent>
 
