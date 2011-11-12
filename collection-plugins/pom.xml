@@ -3,14 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.springsource.insight</groupId>
 	<artifactId>community-plugins</artifactId>
-	<version>1.7.3.CI-SNAPSHOT</version>
+	<version>1.8.0-CI-SNAPSHOT</version>
 	<name>com.springsource.insight:community-plugins</name>
 	<packaging>pom</packaging>
 
 	<parent>
 		<groupId>com.springsource.insight</groupId>
 		<artifactId>community</artifactId>
-		<version>1.7.3.CI-SNAPSHOT</version>
+		<version>1.8.0-CI-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 
