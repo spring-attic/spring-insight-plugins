@@ -18,11 +18,12 @@ package com.springsource.insight.plugin.rabbitmqClient;
 
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
-import com.springsource.insight.intercept.operation.OperationType;
 
-public class RabbitMQConsumEndPointerAnalyzer extends AbstractRabbitMQEndPointAnalyzer {
-    private static final String PREFIX = "RabbitMQ Consume from: ";
-    private static final OperationType TYPE = OperationType.valueOf("rabbitmq-client-consumer");
+public class RabbitMQConsumerResourceAnalyzer extends AbstractRabbitMQResourceAnalyzer {
+	
+	RabbitMQConsumerResourceAnalyzer() {
+        super(RabbitPluginOperationType.CONSUME);
+    }
     
     @Override
     protected String getRoutingKey(Operation op) {
@@ -34,16 +35,6 @@ public class RabbitMQConsumEndPointerAnalyzer extends AbstractRabbitMQEndPointAn
     protected String getExchange(Operation op) {
         OperationMap envelopeMap = op.get("envelope", OperationMap.class);
         return envelopeMap.get("exchange", String.class);
-    }
-    
-    @Override
-    protected String getExamplePrefix() {
-        return PREFIX;
-    }
-
-    @Override
-    protected OperationType getOperationType() {
-        return TYPE;
     }
 
 }

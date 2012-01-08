@@ -16,23 +16,20 @@
 
 package com.springsource.insight.plugin.rabbitmqClient;
 
-import com.rabbitmq.client.AMQP.BasicProperties;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.Envelope;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Consumer;
-import com.rabbitmq.client.DefaultConsumer;
-import com.rabbitmq.client.GetResponse;
-import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.operation.OperationFields;
-import com.springsource.insight.intercept.operation.OperationMap;
-import com.springsource.insight.intercept.operation.OperationType;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.rabbitmq.client.AMQP.BasicProperties;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.Consumer;
+import com.rabbitmq.client.DefaultConsumer;
+import com.rabbitmq.client.Envelope;
+import com.rabbitmq.client.GetResponse;
+import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.OperationMap;
+
 public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectionAspect {
-    static final OperationType TYPE = OperationType.valueOf("rabbitmq-client-consumer");
 
     // Holds Operations in progress for a given Channel
     // According to the API, the Channel should only be
@@ -119,7 +116,7 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
     }
 
     private Operation createOperation() {
-        return new Operation().type(TYPE).label("Consume");
+        return new Operation().type(RabbitPluginOperationType.CONSUME.getOperationType()).label(RabbitPluginOperationType.CONSUME.getLabel());
     }
 
     private Operation applyMessageData(Operation op, Envelope envelope, byte[] body) {

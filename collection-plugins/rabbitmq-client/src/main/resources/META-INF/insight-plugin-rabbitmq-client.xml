@@ -12,7 +12,11 @@
 	<insight:operation-group group="AMQP" operation="rabbitmq-client-consumer" />
 	<insight:operation-group group="AMQP" operation="rabbitmq-client-publish" />
 	
-	<bean class="com.springsource.insight.plugin.rabbitmqClient.RabbitMQConsumEndPointerAnalyzer"/>
-	<bean class="com.springsource.insight.plugin.rabbitmqClient.RabbitMQPublishEndPointerAnalyzer"/>
+	<bean class="com.springsource.insight.plugin.rabbitmqClient.RabbitMQConsumerResourceAnalyzer"/>
+	<bean class="com.springsource.insight.plugin.rabbitmqClient.RabbitMQPublishResourceAnalyzer"/>
+	
+	<bean class="com.springsource.insight.plugin.rabbitmqClient.RabbitMQPublishMetricsGenerator" />
+	<bean class="com.springsource.insight.plugin.rabbitmqClient.RabbitMQConsumerMetricsGenerator" />
+     
 </beans>
 

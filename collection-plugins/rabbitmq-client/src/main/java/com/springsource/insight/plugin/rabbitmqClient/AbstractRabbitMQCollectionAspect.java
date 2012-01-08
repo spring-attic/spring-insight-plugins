@@ -81,6 +81,8 @@ public abstract class AbstractRabbitMQCollectionAspect extends OperationCollecti
             connectionUrl = sb.toString();
         }
         
+        op.put("host", conn.getAddress().getHostAddress());
+        op.put("port", conn.getPort());
         op.put("connectionUrl", connectionUrl);
         
         //try to extract server version

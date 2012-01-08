@@ -20,12 +20,9 @@ import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.operation.OperationMap;
-import com.springsource.insight.intercept.operation.OperationType;
 
 
 public aspect RabbitMQPublishCollectionAspect extends AbstractRabbitMQCollectionAspect {
-    private static final OperationType TYPE = OperationType.valueOf("rabbitmq-client-publish");
 
     public pointcut publish(String exchange, String routingKey, boolean mandatory, 
                                         boolean immediate, BasicProperties props, byte[] body)
@@ -37,8 +34,8 @@ public aspect RabbitMQPublishCollectionAspect extends AbstractRabbitMQCollection
                  publish(exchange,routingKey,mandatory,immediate,props,body) {
         
         Operation op = new Operation()
-                            .type(TYPE)
-                            .label("Publish");
+                            .type(RabbitPluginOperationType.PUBLISH.getOperationType())
+                            .label(RabbitPluginOperationType.PUBLISH.getLabel());
         
         op.put("exchange", exchange);
         op.put("routingKey", routingKey);

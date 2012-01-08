@@ -17,13 +17,14 @@
 package com.springsource.insight.plugin.rabbitmqClient;
 
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.operation.OperationType;
 
-public class RabbitMQPublishEndPointerAnalyzer extends AbstractRabbitMQEndPointAnalyzer {
-    private static final String PREFIX = "RabbitMQ Publish to: ";
-    private static final OperationType TYPE = OperationType.valueOf("rabbitmq-client-publish");
+public class RabbitMQPublishResourceAnalyzer extends AbstractRabbitMQResourceAnalyzer {
     
-    @Override
+	public RabbitMQPublishResourceAnalyzer() {
+		super(RabbitPluginOperationType.PUBLISH);
+	}
+
+	@Override
     protected String getRoutingKey(Operation op) {
         return op.get("routingKey", String.class);
     }
@@ -31,15 +32,5 @@ public class RabbitMQPublishEndPointerAnalyzer extends AbstractRabbitMQEndPointA
     @Override
     protected String getExchange(Operation op) {
         return op.get("exchange", String.class);
-    }
-    
-    @Override
-    protected String getExamplePrefix() {
-        return PREFIX;
-    }
-
-    @Override
-    protected OperationType getOperationType() {
-        return TYPE;
     }
 }
