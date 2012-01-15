@@ -41,7 +41,24 @@ public class RedisClientAspectTest extends OperationCollectionAspectTestSupport 
         assertEquals("set", op.get("methodName"));
         assertEquals("Redis: mykey.set", op.getLabel());
         assertEquals("mykey", op.get("arguments", OperationList.class).get(0));
-        assertEquals("myvalue", op.get("arguments", OperationList.class).get(1));
+        assertEquals(null, op.get("host"));
+        assertEquals("6379", op.get("port", Integer.class).toString());
+        assertEquals("0", op.get("dbName"));
+    }
+    
+    @Test
+    public void testSetWithDbName() {
+        DummyJedisCommands client = new DummyJedisCommands("localhost");
+        client.set("mykey", "myvalue");
+        Operation op = getLastEntered(Operation.class);
+        assertNotNull(op);
+        op.finalizeConstruction();
+        assertEquals("set", op.get("methodName"));
+        assertEquals("Redis: mykey.set", op.getLabel());
+        assertEquals("mykey", op.get("arguments", OperationList.class).get(0));
+        assertEquals("localhost", op.get("host"));
+        assertEquals("6379", op.get("port", Integer.class).toString());
+        assertEquals("0", op.get("dbName"));
     }
 
     @Test

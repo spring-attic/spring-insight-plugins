@@ -16,29 +16,18 @@
 
 package com.springsource.insight.plugin.redis;
 
-import com.springsource.insight.collection.AbstractOperationCollectionAspect;
-import com.springsource.insight.collection.method.JoinPointFinalizer;
-import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
-
-import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.operation.OperationType;
-import com.springsource.insight.util.StringUtil;
 import org.aspectj.lang.JoinPoint;
-import org.springframework.data.redis.support.collections.AbstractRedisCollection;
+
 import redis.clients.jedis.Jedis;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
-
-import static com.springsource.insight.util.ListUtil.asSet;
-import static java.util.Collections.unmodifiableSet;
+import com.springsource.insight.collection.AbstractOperationCollectionAspect;
+import com.springsource.insight.collection.method.JoinPointFinalizer;
+import com.springsource.insight.intercept.operation.Operation;
 
 /**
  * Driver-level support for redis clients
  */
 public aspect RedisClientAspect extends AbstractOperationCollectionAspect {
-    public static final OperationType TYPE = OperationType.valueOf("redis-client-method");
 
     /*
     No JRedis support yet...
@@ -62,7 +51,7 @@ public aspect RedisClientAspect extends AbstractOperationCollectionAspect {
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Operation op = new Operation().type(TYPE);
+        Operation op = new Operation().type(RedisDBAnalyzer.TYPE);
         JoinPointFinalizer.register(op, jp);
 
         String methodName = jp.getSignature().getName();
@@ -72,6 +61,14 @@ public aspect RedisClientAspect extends AbstractOperationCollectionAspect {
         } else {
             op.label("Redis: " + methodName);
         }
+        
+        Jedis jedis = (Jedis) jp.getTarget();
+        try {
+			op.put("dbName", jedis.getClient().getDB().toString());
+			op.put("host", jedis.getClient().getHost());
+			op.put("port", jedis.getClient().getPort());
+		} catch (Exception e) {}
+        
         return op;
     }
 }

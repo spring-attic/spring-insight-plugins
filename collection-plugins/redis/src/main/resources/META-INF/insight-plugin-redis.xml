@@ -14,5 +14,8 @@
 	<insight:operation-group group="Redis" operation="default-redis-collection" />
     <insight:operation-group group="Redis" operation="redis-map" />
 	<insight:operation-group group="Redis" operation="redis-client-method" />
+	
+	<bean class="com.springsource.insight.plugin.redis.RedisDBAnalyzer"/>
+	<bean class="com.springsource.insight.plugin.redis.RedisMetricsGenerator"/>
 
 </beans>
