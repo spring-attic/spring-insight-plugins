@@ -28,9 +28,8 @@ import com.springsource.insight.intercept.operation.Operation;
 
 public aspect MongoCollectionOperationCollectionAspect extends
         AbstractOperationCollectionAspect {
-    public static final OperationType TYPE = OperationType.valueOf("mongo_collection_operation");
 
-    public pointcut insertExecute(): 
+	public pointcut insertExecute(): 
 	execution(WriteResult DBCollection.insert(DBObject[], WriteConcern));
 
     public pointcut updateExecute(): 
@@ -82,13 +81,20 @@ public aspect MongoCollectionOperationCollectionAspect extends
         final DBCollection collection = (DBCollection) joinPoint.getThis();
         Operation op = new Operation()
                 .label("MongoDB: " + collection + "." + signature.getName())
-                .type(TYPE)
+                .type(MongoDBCollectionOperationAnalyzer.TYPE)
                 .put("collection", collection.getFullName());
         OperationList opList = op.createList("args");
         List<String> args = MongoArgumentUtils.toString(joinPoint.getArgs());
         for (String arg : args) {
             opList.add(arg);
         }
+        
+        DB db = collection.getDB();
+        try {
+        	op.put("dbName", db.getName());
+			op.put("host", db.getMongo().getAddress().getHost());
+			op.put("port", db.getMongo().getAddress().getPort());
+		} catch (Exception e) {}
 
         return op;
     }
