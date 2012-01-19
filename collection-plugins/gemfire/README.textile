@@ -1,6 +1,6 @@
 h1. GemFire plugin for Spring Insight
 
-Spring Insight runs in the SpringSource tc Server. See http://www.springsource.org/insight for details. This plugin adds instrumentation to for web applications that use MongoDB (http://www.mongodb.org) through the MongoDB Java driver, which typically works outside the normal ORM flow. 
+Spring Insight runs in the SpringSource tc Server. See http://www.springsource.org/insight for details. This plugin adds instrumentation to for web applications that use GemFire (http://www.vmware.com/products/application-platform/vfabric-gemfire/overview.html) through the GemFire Java driver, which typically works outside the normal ORM flow. 
 
 h2. What does it do?
 
@@ -39,6 +39,6 @@ Have fun! And let me know what doesn't work well.
 h2. Contact
 
 Maintained by the Insight Team insight [at] vmware [dot] com
-Merged and Updated to Insight 1.7.0 by the Insight Team
+
 
 

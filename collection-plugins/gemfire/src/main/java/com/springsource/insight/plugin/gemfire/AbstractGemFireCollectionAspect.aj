@@ -34,7 +34,7 @@ public abstract aspect AbstractGemFireCollectionAspect extends AbstractOperation
 
 	public AbstractGemFireCollectionAspect(GemFireType gemFireType) {
 		this.type = gemFireType.getType();
-		labelPrefix = new StringBuilder(GemFireDefenitions.GEMFIRE).append(": ").append(gemFireType.getLabel()).toString();
+		labelPrefix = new StringBuilder(GemFireDefenitions.GEMFIRE).append(": ").append(gemFireType.getLabel()).append('.').toString();
 	}
 	
     protected Operation createBasicOperation(final JoinPoint jp) {
