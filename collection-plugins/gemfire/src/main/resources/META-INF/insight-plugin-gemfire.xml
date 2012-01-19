@@ -18,7 +18,7 @@
 	<insight:operation-view operation="gemfire_execution_operation" template="com/springsource/insight/plugin/gemfire/gemfire_execution_operation.ftl" />
 	<insight:operation-group operation="gemfire_execution_operation" group="GemFire" />
 	
-	<bean class="com.springsource.insight.plugin.gemfire.GemFireExternalResourceAnalyzer" />
+	<bean class="com.springsource.insight.plugin.gemfire.GemFireRegionExternalResourceAnalyzer" />
 	<bean class="com.springsource.insight.plugin.gemfire.GemFireRegionMetricsGenerator" />
 
 </beans>
