@@ -5,7 +5,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
-	<insight:plugin name="integration" version="${project.version}" publisher="SpringSource" />
+	<insight:plugin name="spring-integration" version="${project.version}" publisher="SpringSource" />
 
 	<insight:operation-view operation="integration_operation" 
 				template="com/springsource/insight/plugin/integration/integration_operation.ftl"/>

@@ -26,9 +26,10 @@
        </profiles>
 
 	<modules>
+		<module>gemfire</module>	
 		<module>mongodb</module>
 		<module>rabbitmq-client</module>
-		<module>spring-integration</module>
+		<module>spring-integration</module>		
 	</modules>
 	
 </project>
