@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.springsource.insight.samples</groupId>
 	<artifactId>sample-modules</artifactId>
-	<version>1.8.0-CI-SNAPSHOT</version>
+	<version>1.9.0-CI-SNAPSHOT</version>
 	<name>com.springsource.insight.samples:sample-modules</name>
 	<packaging>pom</packaging>
 	
