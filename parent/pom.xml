@@ -431,11 +431,6 @@
             <name>Spring Release Repository</name>
             <url>s3://private.maven.springsource.com/release</url>
         </repository>	    
-        <repository>
-            <id>spring-milestone</id>
-            <name>Spring Milestone Repository</name>
-            <url>s3://maven.springframework.org/milestone</url>
-        </repository>
         <snapshotRepository>
             <id>spring-snapshot</id>
             <name>Spring Snapshot Repository</name>
