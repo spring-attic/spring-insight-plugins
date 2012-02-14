@@ -66,7 +66,7 @@ public class IntegrationOperationCollectionAspectTest
         Message<String> message = new GenericMessage<String>("Test");
         channel.send(message);
         
-        Operation op = getLastEntered(Operation.class);
+        Operation op = getLastEntered();
         
         assertEquals("Channel", op.get("siComponentType"));
         assertEquals("testChannel", op.get("beanName"));
@@ -81,7 +81,7 @@ public class IntegrationOperationCollectionAspectTest
         Message<String> message = new GenericMessage<String>("Test");
         handler.handleMessage(message);
         
-        Operation op = getLastEntered(Operation.class);
+        Operation op = getLastEntered();
         
         assertEquals("MessageHandler", op.get("siComponentType"));        
         assertEquals("testHandler", op.get("beanName"));
@@ -97,7 +97,7 @@ public class IntegrationOperationCollectionAspectTest
         this.transformedMessage = new GenericMessage<String>("Transformed");
         transformer.transform(message);
         
-        Operation op = getLastEntered(Operation.class);
+        Operation op = getLastEntered();
         
         assertEquals("Transformer", op.get("siComponentType"));        
         assertEquals("testTransform", op.get("beanName"));

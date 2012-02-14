@@ -16,16 +16,18 @@
 
 package com.springsource.insight.plugin.mongodb;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+
+import org.junit.Test;
+
 import com.mongodb.DB;
 import com.mongodb.Mongo;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
-import org.junit.Test;
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
  */
@@ -38,8 +40,7 @@ public class MongoDbOperationCollectionAspectTest
         Mongo mongo = mock(Mongo.class);
         DB db = new DBDummy(mongo, "my thing");
         db.command("Hello there");
-        Operation op = (Operation) getLastEntered(Operation.class);
-        op.finalizeConstruction();
+        Operation op = getLastEntered();
         assertNotNull(op);
         assertEquals("MongoDB: DB.command()", op.getLabel());
         assertEquals(MongoDbOperationCollectionAspect.TYPE, op.getType());

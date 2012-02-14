@@ -48,7 +48,7 @@ public class MongoCollectionOperationCollectionAspectTest
     @Test
     public void testInsert() {
         getMeACollection().insert(new DBObject[0], null);
-        Operation op = getLastEntered(Operation.class);
+        Operation op = getLastEntered();
         standardAsserts(op);
     }
 
@@ -56,7 +56,7 @@ public class MongoCollectionOperationCollectionAspectTest
     @Test
     public void testUpdate() {
         getMeACollection().update(null, null, true, true);
-        Operation op = getLastEntered(Operation.class);
+        Operation op = getLastEntered();
         standardAsserts(op);
     }
 
@@ -64,7 +64,7 @@ public class MongoCollectionOperationCollectionAspectTest
     @Test
     public void testRemove() {
         getMeACollection().remove(null, null);
-        Operation op = getLastEntered(Operation.class);
+        Operation op = getLastEntered();
         standardAsserts(op);
     }
 
@@ -73,7 +73,7 @@ public class MongoCollectionOperationCollectionAspectTest
     @Ignore("This particular method is very difficult to test due to final and various other interactions in the DBCollection class")
     public void testSave() {
         ((DBCollectionDummy)getMeACollection()).save(new BasicDBObject("whoa", "there"), new WriteConcern(), "blah");
-        Operation op = getLastEntered(Operation.class);
+        Operation op = getLastEntered();
         standardAsserts(op);
     }
 
@@ -81,14 +81,14 @@ public class MongoCollectionOperationCollectionAspectTest
     @Test
     public void testFind() {
         getMeACollection().find(new BasicDBObject("whoa", "there"), new BasicDBObject("whoa", "there"));
-        Operation op = getLastEntered(Operation.class);
+        Operation op = getLastEntered();
         standardAsserts(op);
     }
 //	execution(void DBCollection.createIndex(DBObject, DBObject));
     @Test
     public void testCreateIndex() {
         getMeACollection().createIndex(new BasicDBObject("hi", "there"));
-        Operation op = getLastEntered(Operation.class);
+        Operation op = getLastEntered();
         standardAsserts(op);
     }
 
@@ -96,35 +96,35 @@ public class MongoCollectionOperationCollectionAspectTest
     @Test
     public void testGetCount() {
         getMeACollection().getCount(new BasicDBObject("hi", "there"), new BasicDBObject("blah", "blah"), 1L, 2L);
-        Operation op = getLastEntered(Operation.class);
+        Operation op = getLastEntered();
         standardAsserts(op);
     }
 //	execution(DBObject DBCollection.group(GroupCommand));
     @Test
     public void testGroup() {
         getMeACollection().group(new BasicDBObject("hi", "there"), new BasicDBObject("blah", "blah"), new BasicDBObject("blah", "blah"), "what do you know");
-        Operation op = getLastEntered(Operation.class);
+        Operation op = getLastEntered();
         standardAsserts(op);
     }
 //	execution(List DBCollection.distinct(String,DBObject));
     @Test
     public void testDistinct() {
         getMeACollection().distinct("what do you know");
-        Operation op = getLastEntered(Operation.class);
+        Operation op = getLastEntered();
         standardAsserts(op);
     }
 //	execution(MapReduceOutput DBCollection.mapReduce(..));
     @Test
     public void testMapReduce() {
         getMeACollection().mapReduce(new BasicDBObject("map-reduce", "smoosh"));
-        Operation op = getLastEntered(Operation.class);
+        Operation op = getLastEntered();
         standardAsserts(op);
     }
 //	execution(void DBCollection.dropIndexes(..));
     @Test
     public void testDropIndexes() {
         getMeACollection().dropIndexes("smoosh");
-        Operation op = getLastEntered(Operation.class);
+        Operation op = getLastEntered();
         standardAsserts(op);
     }
 

@@ -123,7 +123,7 @@ public class RedisMapOperationCollectionAspectTest extends OperationCollectionAs
     }
 
     private Operation standardAsserts(String method) {
-        Operation op = getLastEntered(Operation.class);
+        Operation op = getLastEntered();
         assertEquals("RedisMap: ?." + method + "()", op.getLabel());
         assertEquals(OperationType.valueOf("redis-map"), op.getType());
         return op;

@@ -99,7 +99,7 @@ public class RedisCollectionOperationAspectTest extends OperationCollectionAspec
     }
 
     private Operation standardAsserts(String method) {
-        Operation op = getLastEntered(Operation.class);
+        Operation op = getLastEntered();
         assertEquals("RedisCollection: ?." + method + "()", op.getLabel());
         assertEquals(OperationType.valueOf("default-redis-collection"), op.getType());
         return op;

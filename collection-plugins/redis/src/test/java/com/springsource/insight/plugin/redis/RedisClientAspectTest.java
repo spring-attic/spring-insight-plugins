@@ -35,9 +35,8 @@ public class RedisClientAspectTest extends OperationCollectionAspectTestSupport 
     public void testSet() {
         DummyJedisCommands client = new DummyJedisCommands(null);
         client.set("mykey", "myvalue");
-        Operation op = getLastEntered(Operation.class);
+        Operation op = getLastEntered();
         assertNotNull(op);
-        op.finalizeConstruction();
         assertEquals("set", op.get("methodName"));
         assertEquals("Redis: mykey.set", op.getLabel());
         assertEquals("mykey", op.get("arguments", OperationList.class).get(0));
@@ -50,9 +49,8 @@ public class RedisClientAspectTest extends OperationCollectionAspectTestSupport 
     public void testSetWithDbName() {
         DummyJedisCommands client = new DummyJedisCommands("localhost");
         client.set("mykey", "myvalue");
-        Operation op = getLastEntered(Operation.class);
+        Operation op = getLastEntered();
         assertNotNull(op);
-        op.finalizeConstruction();
         assertEquals("set", op.get("methodName"));
         assertEquals("Redis: mykey.set", op.getLabel());
         assertEquals("mykey", op.get("arguments", OperationList.class).get(0));
@@ -65,9 +63,8 @@ public class RedisClientAspectTest extends OperationCollectionAspectTestSupport 
     public void testPing() {
         DummyJedisCommands client = new DummyJedisCommands(null);
         client.ping();
-        Operation op = getLastEntered(Operation.class);
+        Operation op = getLastEntered();
         assertNotNull(op);
-        op.finalizeConstruction();
         assertEquals("ping", op.get("methodName"));
         assertEquals("Redis: ping", op.getLabel());
     }
