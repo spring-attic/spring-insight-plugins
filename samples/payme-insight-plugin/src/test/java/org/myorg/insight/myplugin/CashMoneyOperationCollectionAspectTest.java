@@ -46,7 +46,7 @@ public class CashMoneyOperationCollectionAspectTest
         /**
          * Second step:  Snatch the operation that was just created   
          */
-        Operation op = getLastEntered(Operation.class);
+        Operation op = getLastEntered();
         
         /**
          * Third step:  Validate that our operation has been created as we expect
