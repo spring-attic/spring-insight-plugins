@@ -32,7 +32,7 @@ public class MongoCollectionOperationCollectionAspectTest
         extends OperationCollectionAspectTestSupport {
 
     public void standardAsserts(Operation op) {
-        assertEquals(MongoCollectionOperationCollectionAspect.TYPE, op.getType());
+        assertEquals(MongoDBCollectionOperationAnalyzer.TYPE, op.getType());
         assertEquals("my_super_collection.hello", op.get("collection"));
     }
 
