@@ -24,7 +24,7 @@ import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
 
 abstract class AbstractRabbitMetricsGenerator extends AbstractMetricsGenerator {
-	public static final String RABBIT_COUNT_SUFFIX = "rabbitMQ:type=counter";
+	public static final String RABBIT_COUNT_SUFFIX = ":type=counter";
 
 	private RabbitPluginOperationType rabbitOpType;
 
@@ -34,15 +34,15 @@ abstract class AbstractRabbitMetricsGenerator extends AbstractMetricsGenerator {
 	}
 
 	@Override
-	protected void addExtraEndPointMetrics(Trace trace, MetricsBag mb, Boolean atLeastOneExternal) {
-		if (atLeastOneExternal){
-			addCounterMetricToBag(trace, mb, createMetricKey(), 1);
+	protected void addExtraEndPointMetrics(Trace trace, MetricsBag mb, List<Frame> externalFrames) {
+		if (externalFrames != null && externalFrames.size() > 0){		
+			addCounterMetricToBag(trace, mb, createMetricKey(), externalFrames.size());
 		}
 	}
 
 	@Override
 	protected void addExtraExternalResourceMetrics(Trace trace, MetricsBag mb) {
-		addCounterMetricToBag(trace, mb, createMetricKey(), 1);
+		addCounterMetricToBag(trace, mb, "external-" + createMetricKey(), 1);
 	}
 
 	@Override
@@ -51,6 +51,6 @@ abstract class AbstractRabbitMetricsGenerator extends AbstractMetricsGenerator {
 	}
 
 	String createMetricKey() {
-		return rabbitOpType.name() + RABBIT_COUNT_SUFFIX;
+		return rabbitOpType.getOperationType().getName() + RABBIT_COUNT_SUFFIX;
 	}
 }

@@ -17,8 +17,6 @@
 package com.springsource.insight.plugin.rabbitmqClient;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -60,13 +58,27 @@ public abstract class AbstractRabbitMQMetricsGeneratorTest {
         
         AbstractRabbitMetricsGenerator gen = createRabbitMetricsGenerator();
         List<MetricsBag> mbs = gen.generateMetrics(trace, ResourceKey.valueOf("EndPoint", "epName"));
-        assertNotNull(mbs);
-        assertFalse(mbs.isEmpty());
         assertEquals(3, mbs.size());
         
-        MetricsBag mb = mbs.get(0);        
+        assertExternalResourceMetricBag(gen, mbs.get(0));
+        assertExternalResourceMetricBag(gen, mbs.get(1));
         
-        assertEquals("opExtKey", mb.getResourceKey().getName());
+		List<String> keys;
+		List<IDataPoint> points;
+        MetricsBag mb = mbs.get(2);
+        assertEquals("epName", mb.getResourceKey().getName());
+        keys = mb.getMetricKeys();
+        assertEquals(1, keys.size());
+        
+        assertTrue(keys.get(0).equals(gen.createMetricKey()));        
+        points = mb.getPoints(gen.createMetricKey());
+        assertEquals(1, points.size());
+        assertEquals(2d , points.get(0).getValue(), 0);
+    }
+
+	private void assertExternalResourceMetricBag(
+			AbstractRabbitMetricsGenerator gen, MetricsBag mb) {
+		assertEquals("opExtKey", mb.getResourceKey().getName());
         List<String> keys = mb.getMetricKeys();
         assertEquals(3, keys.size());
         
@@ -80,21 +92,11 @@ public abstract class AbstractRabbitMQMetricsGeneratorTest {
         assertEquals(1, points.size());
         assertEquals(1.0 , points.get(0).getValue(), 0.01);
         
-        assertTrue(keys.get(2).equals(gen.createMetricKey()));        
-        points = mb.getPoints(gen.createMetricKey());
+        assertTrue(keys.get(2).equals(AbstractRabbitMetricsGenerator.EXTERNAL_METRIC_PREFIX + gen.createMetricKey()));        
+        points = mb.getPoints(AbstractRabbitMetricsGenerator.EXTERNAL_METRIC_PREFIX + gen.createMetricKey());
         assertEquals(1, points.size());
         assertEquals(1d, points.get(0).getValue(), 0);
-        
-        mb = mbs.get(2);
-        assertEquals("epName", mb.getResourceKey().getName());
-        keys = mb.getMetricKeys();
-        assertEquals(1, keys.size());
-        
-        assertTrue(keys.get(0).equals(gen.createMetricKey()));        
-        points = mb.getPoints(gen.createMetricKey());
-        assertEquals(1, points.size());
-        assertEquals(1d , points.get(0).getValue(), 0);
-    }
+	}
 
     @Test
     public final void noRabbitFrame() {
@@ -116,12 +118,5 @@ public abstract class AbstractRabbitMQMetricsGeneratorTest {
 		
         return res;
     }
-    
-    Operation createOperation() {
-		Operation op = new Operation()
-		.type(operationType.getOperationType())
-		.label(operationType.getLabel());
-		return op;
-	}
 
 }

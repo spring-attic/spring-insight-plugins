@@ -47,24 +47,24 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 	protected abstract String getRoutingKey(Operation op);
 
 	public EndPointAnalysis locateEndPoint(Trace trace) {
-		EndPointAnalysis analysis = null;
 		Frame frame = trace.getFirstFrameOfType(operationType.getOperationType());
-
-		if (frame != null) {
-			Operation op = frame.getOperation();
-			if (op != null) {
-				String label = buildLabel(op);
-				String endPointLabel = RABBIT + "-" + label;
-
-				String example = getExample(label);
-				EndPointName endPointName = getName(label);
-
-				TimeRange responseTime = frame.getRange();
-				return new EndPointAnalysis(responseTime, endPointName, endPointLabel, example, 0);
-			}
+		if (frame == null) {
+			return null;
 		}
 
-		return analysis;
+		Operation op = frame.getOperation();
+		if (op != null) {
+			String label = buildLabel(op);
+			String endPointLabel = RABBIT + "-" + label;
+
+			String example = getExample(label);
+			EndPointName endPointName = getName(label);
+
+			TimeRange responseTime = frame.getRange();
+			return new EndPointAnalysis(responseTime, endPointName, endPointLabel, example, 0);
+		}
+
+		return null;
 	}
 
 	public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
@@ -96,7 +96,7 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 	}
 
 	private String getExample(String label) {
-		return operationType.getEndPointPrefix()+label;
+		return operationType.getEndPointPrefix() + label;
 	}
 
 	private String buildLabel(Operation op) {
@@ -120,9 +120,9 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 
 		return sb.toString();
 	}
-	
+
 	private static boolean isTrimEmpty(String str){
-    	return (str == null) || (str.trim().length() == 0);
-    }
+		return (str == null) || (str.trim().length() == 0);
+	}
 
 }
