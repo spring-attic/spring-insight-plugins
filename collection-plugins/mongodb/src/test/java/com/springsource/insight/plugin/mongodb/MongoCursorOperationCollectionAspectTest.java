@@ -58,8 +58,7 @@ public class MongoCursorOperationCollectionAspectTest
     @Test
     public void next() throws Exception {
         testCursor().next();
-        Operation op = getLastEntered(Operation.class);
-        op.finalizeConstruction();
+        Operation op = getLastEntered();
         assertNotNull(op);
         assertEquals("MongoDB: DBCursor.next()", op.getLabel());
         standardAsserts(op);
@@ -69,8 +68,7 @@ public class MongoCursorOperationCollectionAspectTest
     @Test
     public void skip() throws Exception {
         testCursor().skip(34);
-        Operation op = getLastEntered(Operation.class);
-        op.finalizeConstruction();
+        Operation op = getLastEntered();
         assertNotNull(op);
         assertEquals("MongoDB: DBCursor.skip()", op.getLabel());
         assertEquals("34", ((OperationList)op.get("args")).get(0));
@@ -81,8 +79,7 @@ public class MongoCursorOperationCollectionAspectTest
     @Test
     public void limit() throws Exception {
         testCursor().limit(35);
-        Operation op = getLastEntered(Operation.class);
-        op.finalizeConstruction();
+        Operation op = getLastEntered();
         assertNotNull(op);
         assertEquals("MongoDB: DBCursor.limit()", op.getLabel());
         assertEquals("35", ((OperationList)op.get("args")).get(0));
@@ -93,8 +90,7 @@ public class MongoCursorOperationCollectionAspectTest
     @Test
     public void toArray() throws Exception {
         testCursor().toArray();
-        Operation op = getLastEntered(Operation.class);
-        op.finalizeConstruction();
+        Operation op = getLastEntered();
         assertNotNull(op);
         assertEquals("MongoDB: DBCursor.toArray()", op.getLabel());
         standardAsserts(op);
@@ -103,8 +99,7 @@ public class MongoCursorOperationCollectionAspectTest
     @Test
     public void toArrayInt() throws Exception {
         testCursor().toArray(43);
-        Operation op = getLastEntered(Operation.class);
-        op.finalizeConstruction();
+        Operation op = getLastEntered();
         assertNotNull(op);
         assertEquals("MongoDB: DBCursor.toArray()", op.getLabel());
         assertEquals("43", ((OperationList)op.get("args")).get(0));
@@ -115,8 +110,7 @@ public class MongoCursorOperationCollectionAspectTest
     @Test
     public void sort() throws Exception {
         testCursor().sort(new BasicDBObject("sort", "this"));
-        Operation op = getLastEntered(Operation.class);
-        op.finalizeConstruction();
+        Operation op = getLastEntered();
         assertNotNull(op);
         assertEquals("MongoDB: DBCursor.sort()", op.getLabel());
         assertEquals("{ \"sort\" : \"this\"}", ((OperationList)op.get("args")).get(0));
@@ -127,8 +121,7 @@ public class MongoCursorOperationCollectionAspectTest
     @Test
     public void batchSize() throws Exception {
         testCursor().batchSize(14);
-        Operation op = getLastEntered(Operation.class);
-        op.finalizeConstruction();
+        Operation op = getLastEntered();
         assertNotNull(op);
         assertEquals("MongoDB: DBCursor.batchSize()", op.getLabel());
         assertEquals("14", ((OperationList)op.get("args")).get(0));
