@@ -28,6 +28,13 @@ import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
+<<<<<<< HEAD
+=======
+import org.junit.Test;
+import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+>>>>>>> parent of c2b88cf... Mongo plugin now creates external resources with default metrics
 
 /**
  */
@@ -40,7 +47,12 @@ public class MongoDbOperationCollectionAspectTest
         Mongo mongo = mock(Mongo.class);
         DB db = new DBDummy(mongo, "my thing");
         db.command("Hello there");
+<<<<<<< HEAD
         Operation op = getLastEntered();
+=======
+        Operation op = (Operation) getLastEntered(Operation.class);
+        op.finalizeConstruction();
+>>>>>>> parent of c2b88cf... Mongo plugin now creates external resources with default metrics
         assertNotNull(op);
         assertEquals("MongoDB: DB.command()", op.getLabel());
         assertEquals(MongoDbOperationCollectionAspect.TYPE, op.getType());
