@@ -42,7 +42,7 @@ abstract class AbstractRabbitMetricsGenerator extends AbstractMetricsGenerator {
 
 	@Override
 	protected void addExtraExternalResourceMetrics(Trace trace, MetricsBag mb) {
-		addCounterMetricToBag(trace, mb, "external-" + createMetricKey(), 1);
+		addCounterMetricToBag(trace, mb, createMetricKey(), 1);
 	}
 
 	@Override

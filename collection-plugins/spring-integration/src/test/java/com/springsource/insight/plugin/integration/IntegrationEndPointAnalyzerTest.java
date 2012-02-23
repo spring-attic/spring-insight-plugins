@@ -69,7 +69,7 @@ public class IntegrationEndPointAnalyzerTest {
         Trace trace = Trace.newInstance(app, TraceId.valueOf("0"), integrationFrame);
         EndPointAnalysis endPoint = endPointAnalyzer.locateEndPoint(trace); 
         assertEquals(EndPointName.valueOf("MessageChannel#test"), endPoint.getEndPointName());
-        assertEquals(integrationFrame.getRange(), endPoint.getResponseTime());
+        assertEquals(integrationFrame.getRange(), trace.getRange());
     }
     
     @Test
@@ -93,7 +93,7 @@ public class IntegrationEndPointAnalyzerTest {
         Trace trace = Trace.newInstance(app, TraceId.valueOf("0"), integrationFrame);
         EndPointAnalysis endPoint = endPointAnalyzer.locateEndPoint(trace); 
         assertEquals(EndPointName.valueOf("MessageHandler#test"), endPoint.getEndPointName());
-        assertEquals(integrationFrame.getRange(), endPoint.getResponseTime());
+        assertEquals(integrationFrame.getRange(), trace.getRange());
     }
     
 }

@@ -92,8 +92,8 @@ public abstract class AbstractRabbitMQMetricsGeneratorTest {
         assertEquals(1, points.size());
         assertEquals(1.0 , points.get(0).getValue(), 0.01);
         
-        assertTrue(keys.get(2).equals(AbstractRabbitMetricsGenerator.EXTERNAL_METRIC_PREFIX + gen.createMetricKey()));        
-        points = mb.getPoints(AbstractRabbitMetricsGenerator.EXTERNAL_METRIC_PREFIX + gen.createMetricKey());
+        assertTrue(keys.get(2).equals(gen.createMetricKey()));        
+        points = mb.getPoints(gen.createMetricKey());
         assertEquals(1, points.size());
         assertEquals(1d, points.get(0).getValue(), 0);
 	}
