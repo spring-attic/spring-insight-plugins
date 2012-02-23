@@ -19,6 +19,7 @@ package com.springsource.insight.plugin.redis;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationList;
 import org.junit.Test;
 
@@ -39,7 +40,7 @@ public class RedisClientAspectTest extends OperationCollectionAspectTestSupport 
         assertNotNull(op);
         assertEquals("set", op.get("methodName"));
         assertEquals("Redis: mykey.set", op.getLabel());
-        assertEquals("mykey", op.get("arguments", OperationList.class).get(0));
+        assertEquals("mykey", op.get(OperationFields.ARGUMENTS, OperationList.class).get(0));
         assertEquals(null, op.get("host"));
         assertEquals("6379", op.get("port", Integer.class).toString());
         assertEquals("0", op.get("dbName"));
