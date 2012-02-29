@@ -13,16 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.springsource.insight.plugin.rabbitmqClient;
 
-public class RabbitMQPublishMetricsGeneratorTest extends AbstractRabbitMQMetricsGeneratorTest {
-    
-	public RabbitMQPublishMetricsGeneratorTest() {
-		super(RabbitPluginOperationType.PUBLISH);
+package com.springsource.insight.plugin.mongodb;
+
+import com.springsource.insight.intercept.metrics.MetricsGenerator;
+import com.springsource.insight.intercept.metrics.AbstractMetricsGeneratorTest;
+import com.springsource.insight.intercept.operation.OperationType;
+
+
+public class MongoDBCollectionOperationMetricsGeneratorTest extends AbstractMetricsGeneratorTest {
+
+	@Override
+	protected MetricsGenerator getMetricsGenerator() {
+		return new MongoDBCollectionOperationMetricsGenerator();
 	}
 
-	protected AbstractRabbitMetricsGenerator getMetricsGenerator() {
-        return new RabbitMQPublishMetricsGenerator();
-    }
+	@Override
+	protected OperationType getOperationType() {
+		return MongoDBCollectionOperationAnalyzer.TYPE;
+	}
 
 }

@@ -26,7 +26,7 @@ public class RabbitMQPublishResourceAnalyzerTest extends AbstractRabbitMQResourc
 	}
 
 	@Override
-	protected AbstractRabbitMQResourceAnalyzer getEPAnalayzer() {
+	protected AbstractRabbitMQResourceAnalyzer getAnalyzer() {
 		return new RabbitMQPublishResourceAnalyzer();
 	}
 	

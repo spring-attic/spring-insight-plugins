@@ -43,7 +43,7 @@ public class GemFireRegionExternalResourceAnalyzer implements ExternalResourceAn
 			
 			for (int i = 0; i < servers.size(); i++) {
 				String server = servers.get(i).toString();
-				String name = MD5NameGenerator.getName(server);
+				String name = MD5NameGenerator.getName(server+regionFullPath);
 				ExternalResourceDescriptor desc = new ExternalResourceDescriptor(frame, GemFireDefenitions.GEMFIRE + ":" + name, regionFullPath, ExternalResourceType.KVSTORE.name(), GemFireDefenitions.GEMFIRE, server, -1);
 				descriptors.add(desc);
 			}			

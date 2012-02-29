@@ -36,6 +36,7 @@ import com.springsource.insight.intercept.trace.TraceId;
 
 public abstract class AbstractRabbitMQResourceAnalyzerTest {
 
+	protected abstract AbstractRabbitMQResourceAnalyzer getAnalyzer();
 	private RabbitPluginOperationType operationType;
 
 	public AbstractRabbitMQResourceAnalyzerTest(RabbitPluginOperationType operationType) {
@@ -48,8 +49,6 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest {
 		operation.putAnyNonEmpty("port", 5672);
 	}
 
-	protected abstract AbstractRabbitMQResourceAnalyzer getEPAnalayzer();
-
 
 	@Test
 	public void testExchangeLocateEndPoint() {
@@ -57,7 +56,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest {
 		addOperationProps(op, false, true);
 		Trace trace = createValidTrace(op);
 
-		AbstractRabbitMQResourceAnalyzer analyzer = getEPAnalayzer();
+		AbstractRabbitMQResourceAnalyzer analyzer = getAnalyzer();
 		EndPointAnalysis analysis = analyzer.locateEndPoint(trace);
 
 		String name = analysis.getEndPointName().getName();
@@ -68,7 +67,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest {
 		assertEquals("Exchange#e", name);
 		assertEquals(analyzer.operationType.getEndPointPrefix()+"Exchange#e", example);
 		assertEquals("RabbitMQ-Exchange#e", lbl);
-		assertEquals(0, score);
+		assertEquals(1, score);
 	}
 
 	@Test
@@ -77,7 +76,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest {
 		addOperationProps(op, false, true);
 		Trace trace = createValidTrace(op);
 
-		AbstractRabbitMQResourceAnalyzer analyzer = getEPAnalayzer();
+		AbstractRabbitMQResourceAnalyzer analyzer = getAnalyzer();
 		List<ExternalResourceDescriptor> externalResourceDescriptors = analyzer.locateExternalResourceName(trace);
 
 		assertExternalResourceDescriptors(externalResourceDescriptors, "Exchange#e", trace, "Exchange#e127.0.0.15672");
@@ -89,7 +88,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest {
 		addOperationProps(op, true, false);
 		Trace trace = createValidTrace(op);
 
-		AbstractRabbitMQResourceAnalyzer analyzer = getEPAnalayzer();
+		AbstractRabbitMQResourceAnalyzer analyzer = getAnalyzer();
 		EndPointAnalysis analysis = analyzer.locateEndPoint(trace);
 
 		String name = analysis.getEndPointName().getName();
@@ -100,7 +99,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest {
 		assertEquals("RoutingKey#rk", name);
 		assertEquals(analyzer.operationType.getEndPointPrefix()+"RoutingKey#rk", example);
 		assertEquals("RabbitMQ-RoutingKey#rk", lbl);
-		assertEquals(0, score);
+		assertEquals(1, score);
 	}
 
 	@Test
@@ -109,7 +108,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest {
 		addOperationProps(op, true, false);
 		Trace trace = createValidTrace(op);
 
-		AbstractRabbitMQResourceAnalyzer analyzer = getEPAnalayzer();
+		AbstractRabbitMQResourceAnalyzer analyzer = getAnalyzer();
 		List<ExternalResourceDescriptor> externalResourceDescriptors = analyzer.locateExternalResourceName(trace);
 
 		assertExternalResourceDescriptors(externalResourceDescriptors, "RoutingKey#rk", trace, "RoutingKey#rk127.0.0.15672");
@@ -121,7 +120,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest {
 		addOperationProps(op, true, true);
 		Trace trace = createValidTrace(op);
 
-		AbstractRabbitMQResourceAnalyzer analyzer = getEPAnalayzer();
+		AbstractRabbitMQResourceAnalyzer analyzer = getAnalyzer();
 		EndPointAnalysis analysis = analyzer.locateEndPoint(trace);
 
 		String name = analysis.getEndPointName().getName();
@@ -132,7 +131,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest {
 		assertEquals("Exchange#e RoutingKey#rk", name);
 		assertEquals(analyzer.operationType.getEndPointPrefix()+"Exchange#e RoutingKey#rk", example);
 		assertEquals("RabbitMQ-Exchange#e RoutingKey#rk", lbl);
-		assertEquals(0, score);
+		assertEquals(1, score);
 	}
 
 	@Test
@@ -141,7 +140,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest {
 		addOperationProps(op, true, true);
 		Trace trace = createValidTrace(op);
 
-		AbstractRabbitMQResourceAnalyzer analyzer = getEPAnalayzer();
+		AbstractRabbitMQResourceAnalyzer analyzer = getAnalyzer();
 		List<ExternalResourceDescriptor> externalResourceDescriptors = analyzer.locateExternalResourceName(trace);
 
 		assertExternalResourceDescriptors(externalResourceDescriptors, "Exchange#e RoutingKey#rk", trace, "Exchange#e RoutingKey#rk127.0.0.15672");
@@ -168,7 +167,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest {
 		Frame frame = builder.exit();
 		Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
 
-		AbstractRabbitMQResourceAnalyzer analyzer = getEPAnalayzer();
+		AbstractRabbitMQResourceAnalyzer analyzer = getAnalyzer();
 		List<ExternalResourceDescriptor> externalResourceDescriptors = analyzer.locateExternalResourceName(trace);
 
 		assertEquals(2, externalResourceDescriptors.size());        

@@ -17,10 +17,10 @@
 package com.springsource.insight.plugin.gemfire;
 
 import com.springsource.insight.intercept.metrics.MetricsGenerator;
-import com.springsource.insight.intercept.metrics.MetricsGeneratorTestSupport;
+import com.springsource.insight.intercept.metrics.AbstractMetricsGeneratorTest;
 import com.springsource.insight.intercept.operation.OperationType;
 
-public class GemFireRegionMetricsGeneratorTest extends MetricsGeneratorTestSupport {
+public class GemFireRegionMetricsGeneratorTest extends AbstractMetricsGeneratorTest {
 
 	@Override
 	protected MetricsGenerator getMetricsGenerator() {

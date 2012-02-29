@@ -53,7 +53,8 @@ public class GemFireRegionExternalResourceAnalyzerTest {
 		Operation op = new Operation();		
 		op.type(GemFireDefenitions.TYPE_REGION.getType());
 		
-		op.put(GemFireDefenitions.FIELD_PATH, "/kuku");
+		String fieldPath = "/kuku";
+		op.put(GemFireDefenitions.FIELD_PATH, fieldPath);
 		
 		OperationList opList = op.createList(GemFireDefenitions.FIELD_SERVERS);		
 		String uri = "huh:8080";
@@ -74,9 +75,9 @@ public class GemFireRegionExternalResourceAnalyzerTest {
 
 		assertEquals(frame, externalResourceDescriptor.getFrame());
 		assertEquals(ExternalResourceType.KVSTORE.name(), externalResourceDescriptor.getType());
-		assertEquals(GemFireDefenitions.GEMFIRE + ":" + MD5NameGenerator.getName(uri), externalResourceDescriptor.getName());
+		assertEquals(GemFireDefenitions.GEMFIRE + ":" + MD5NameGenerator.getName(uri+fieldPath), externalResourceDescriptor.getName());
 		assertEquals(GemFireDefenitions.GEMFIRE, externalResourceDescriptor.getVendor());
-		assertEquals("/kuku", externalResourceDescriptor.getLabel());
+		assertEquals(fieldPath, externalResourceDescriptor.getLabel());
 		
 	}
 
@@ -104,7 +105,7 @@ public class GemFireRegionExternalResourceAnalyzerTest {
 
 		assertEquals(frame, externalResourceDescriptor.getFrame());
 		assertEquals(ExternalResourceType.KVSTORE.name(), externalResourceDescriptor.getType());
-		assertEquals(GemFireDefenitions.GEMFIRE + ":" + MD5NameGenerator.getName(uri), externalResourceDescriptor.getName());
+		assertEquals(GemFireDefenitions.GEMFIRE + ":" + MD5NameGenerator.getName(uri+null), externalResourceDescriptor.getName());
 		assertEquals(GemFireDefenitions.GEMFIRE, externalResourceDescriptor.getVendor());
 		assertEquals(null, externalResourceDescriptor.getLabel());		
 	}

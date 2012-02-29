@@ -21,7 +21,7 @@ public class RabbitMQConsumerMetricsGeneratorTest extends AbstractRabbitMQMetric
 		super(RabbitPluginOperationType.CONSUME);
 	}
 
-	protected AbstractRabbitMetricsGenerator createRabbitMetricsGenerator() {
+	protected AbstractRabbitMetricsGenerator getMetricsGenerator() {
         return new RabbitMQConsumerMetricsGenerator();
     }
 
