@@ -17,6 +17,7 @@
 package com.springsource.insight.plugin.rabbitmqClient;
 
 import java.util.List;
+import java.util.Collection;
 
 import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
 import com.springsource.insight.intercept.metrics.MetricsBag;
@@ -34,7 +35,7 @@ abstract class AbstractRabbitMetricsGenerator extends AbstractMetricsGenerator {
 	}
 
 	@Override
-	protected void addExtraEndPointMetrics(Trace trace, MetricsBag mb, List<Frame> externalFrames) {
+	protected void addExtraEndPointMetrics(Trace trace, MetricsBag mb, Collection<Frame> externalFrames) {
 		if (externalFrames != null && externalFrames.size() > 0){		
 			addCounterMetricToBag(trace, mb, createMetricKey(), externalFrames.size());
 		}
