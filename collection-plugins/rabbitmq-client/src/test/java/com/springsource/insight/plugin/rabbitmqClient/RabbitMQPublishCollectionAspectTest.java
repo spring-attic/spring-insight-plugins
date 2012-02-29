@@ -18,14 +18,12 @@ package com.springsource.insight.plugin.rabbitmqClient;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 
 import com.rabbitmq.client.AMQP.Basic.RecoverOk;
 import com.rabbitmq.client.AMQP.BasicProperties;
@@ -100,10 +98,7 @@ public class RabbitMQPublishCollectionAspectTest extends OperationCollectionAspe
     }
 
     private Operation getOperation() {
-        ArgumentCaptor<Operation> operationCaptor = ArgumentCaptor.forClass(Operation.class);
-        verify(spiedOperationCollector).enter(operationCaptor.capture());
-        Operation operation = operationCaptor.getValue();
-        operation.finalizeConstruction();
+        Operation   operation=getLastEntered();
         getAspect().setCollector(originalOperationCollector);
         return operation;
     }

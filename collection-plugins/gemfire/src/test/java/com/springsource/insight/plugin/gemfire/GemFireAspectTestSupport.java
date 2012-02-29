@@ -16,10 +16,7 @@
 
 package com.springsource.insight.plugin.gemfire;
 
-import static org.mockito.Mockito.verify;
-
 import org.junit.Before;
-import org.mockito.ArgumentCaptor;
 
 import com.gemstone.gemfire.cache.Cache;
 import com.gemstone.gemfire.cache.CacheFactory;
@@ -43,13 +40,7 @@ public abstract class GemFireAspectTestSupport extends OperationCollectionAspect
     protected void testInGemfire(GemFireCallback callback, TestCallback test) {
     	Region r = cache.getRegion("test");
     	callback.doInGemfire(r);
-    	
-        ArgumentCaptor<Operation> operationCaptor = ArgumentCaptor.forClass(Operation.class);
-        verify(spiedOperationCollector).enter(operationCaptor.capture());
-        Operation operation = operationCaptor.getValue();
-        operation.finalizeConstruction();
-        
-        test.doTest(operation);    	
+        test.doTest(getLastEntered());    	
     }
     
     protected interface GemFireCallback {
