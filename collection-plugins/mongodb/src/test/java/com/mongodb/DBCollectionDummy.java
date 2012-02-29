@@ -16,8 +16,6 @@
 
 package com.mongodb;
 
-import com.mongodb.*;
-
 import java.util.Iterator;
 import java.util.List;
 

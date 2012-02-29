@@ -18,13 +18,18 @@ package com.springsource.insight.plugin.mongodb;
 
 import java.util.List;
 
-import com.springsource.insight.intercept.operation.OperationList;
-import com.springsource.insight.intercept.operation.OperationType;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
-import com.mongodb.*;
+
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
+import com.mongodb.MapReduceOutput;
+import com.mongodb.WriteConcern;
+import com.mongodb.WriteResult;
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.OperationList;
 
 public aspect MongoCollectionOperationCollectionAspect extends
         AbstractOperationCollectionAspect {

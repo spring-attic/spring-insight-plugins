@@ -25,7 +25,6 @@ import com.mongodb.DB;
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
-import com.springsource.insight.intercept.operation.OperationType;
 
 public aspect MongoDbOperationCollectionAspect extends AbstractOperationCollectionAspect {
 

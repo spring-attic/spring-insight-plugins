@@ -17,8 +17,8 @@
 package com.springsource.insight.plugin.integration;
 
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,8 +32,6 @@ import com.springsource.insight.idk.WebApplicationContextLoader;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.operation.SourceCodeLocation;
-
-import static org.junit.Assert.*;
 
 /**
  * This tests the view-rendering portion of the Spring Integration plugin. 

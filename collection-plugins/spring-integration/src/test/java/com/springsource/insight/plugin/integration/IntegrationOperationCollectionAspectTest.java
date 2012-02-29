@@ -17,12 +17,7 @@
 package com.springsource.insight.plugin.integration;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import static org.mockito.MockitoAnnotations.initMocks;
-
-import javax.jms.JMSException;
-import javax.jms.Session;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +33,6 @@ import org.springframework.integration.transformer.Transformer;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.plugin.integration.IntegrationOperationCollectionAspect;
 
 /**
  * This test verifies that Integration operations correctly captured by
