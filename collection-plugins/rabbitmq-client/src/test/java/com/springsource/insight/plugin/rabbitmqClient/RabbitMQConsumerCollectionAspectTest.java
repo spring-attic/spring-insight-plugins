@@ -88,7 +88,7 @@ public class RabbitMQConsumerCollectionAspectTest extends OperationCollectionAsp
     }
 
     void assertOperation(Envelope envelope, BasicProperties props, byte[] body) {
-        Operation op = getOperation();
+        Operation op = getLastEntered();
         
         assertEquals(OperationType.valueOf("rabbitmq-client-consumer"), op.getType());
         assertEquals("Consume", op.getLabel());
@@ -112,12 +112,6 @@ public class RabbitMQConsumerCollectionAspectTest extends OperationCollectionAsp
         assertEquals(props.getContentType(), propsMap.get("Content Type"));
         assertEquals(props.getDeliveryMode(), propsMap.get("Delivery Mode"));
         assertEquals(props.getExpiration(), propsMap.get("Expiration"));
-    }
-
-    private Operation getOperation() {
-        Operation   operation=getLastEntered();
-        getAspect().setCollector(originalOperationCollector);
-        return operation;
     }
     
     private BasicProperties create() {

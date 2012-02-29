@@ -68,7 +68,7 @@ public class RabbitMQPublishCollectionAspectTest extends OperationCollectionAspe
         
         channel.basicPublish(exchange, routingKey, mandatory, immediate, props, body);
         
-        Operation op = getOperation();
+        Operation op = getLastEntered();
         
         assertEquals(exchange, op.get("exchange"));
         assertEquals(routingKey, op.get("routingKey"));
@@ -95,12 +95,6 @@ public class RabbitMQPublishCollectionAspectTest extends OperationCollectionAspe
         assertEquals(props.getContentType(), propsMap.get("Content Type"));
         assertEquals(props.getDeliveryMode(), propsMap.get("Delivery Mode"));
         assertEquals(props.getExpiration(), propsMap.get("Expiration"));
-    }
-
-    private Operation getOperation() {
-        Operation   operation=getLastEntered();
-        getAspect().setCollector(originalOperationCollector);
-        return operation;
     }
     
     private BasicProperties create() {
