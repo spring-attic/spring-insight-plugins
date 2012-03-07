@@ -30,6 +30,7 @@
         <xbean.version>3.5</xbean.version>
         <catalina.version>6.0.18</catalina.version>
         <h2.version>1.2.147</h2.version>
+        <hsqldb.version>1.8.0.10</hsqldb.version>
         <hibernate.version>3.6.0.Final</hibernate.version>
         <commons.dbcp.version>1.2.2</commons.dbcp.version>
         <liquibase.version>2.0.1</liquibase.version>
