@@ -430,12 +430,12 @@
                     </includes>
                     <forkMode>once</forkMode>
                     <!-- at least once -->
-                    <systemProperties>
+                    <systemPropertyVariables>
                         <property>
                             <name>java.awt.headless</name>
                             <value>true</value>
                         </property>
-                    </systemProperties>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
 			<plugin>
