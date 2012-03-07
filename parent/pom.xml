@@ -423,6 +423,10 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.9</version>
                 <configuration>
+                    <runOrder>alphabetical</runOrder>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
                     <forkMode>once</forkMode>
                     <!-- at least once -->
                     <systemProperties>
