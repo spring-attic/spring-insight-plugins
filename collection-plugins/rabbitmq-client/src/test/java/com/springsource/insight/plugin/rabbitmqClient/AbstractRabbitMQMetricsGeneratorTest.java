@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
 import com.springsource.insight.intercept.metrics.AbstractMetricsGeneratorTest;
 import com.springsource.insight.intercept.metrics.MetricsBag;
 import com.springsource.insight.intercept.metrics.MetricsGenerator;
@@ -31,9 +32,8 @@ public abstract class AbstractRabbitMQMetricsGeneratorTest extends AbstractMetri
 
 	private RabbitPluginOperationType operationType;
 
-	public AbstractRabbitMQMetricsGeneratorTest(RabbitPluginOperationType operationType) {
-		super();
-		this.operationType = operationType;
+	public AbstractRabbitMQMetricsGeneratorTest(RabbitPluginOperationType type) {
+		this.operationType = type;
 	}    
 
 	@Override
@@ -67,13 +67,13 @@ public abstract class AbstractRabbitMQMetricsGeneratorTest extends AbstractMetri
 		List<String> keys = mb.getMetricKeys();
 		assertEquals(3, keys.size());
 
-		assertTrue(keys.get(0).equals(AbstractRabbitMetricsGenerator.EXECUTION_TIME));
-		List<IDataPoint> points = mb.getPoints(AbstractRabbitMetricsGenerator.EXECUTION_TIME);
+		assertTrue(keys.get(0).equals(AbstractMetricsGenerator.EXECUTION_TIME));
+		List<IDataPoint> points = mb.getPoints(AbstractMetricsGenerator.EXECUTION_TIME);
 		assertEquals(1, points.size());
 		assertEquals(160.0 , points.get(0).getValue(), 0.01);
 
-		assertTrue(keys.get(1).equals(AbstractRabbitMetricsGenerator.INVOCATION_COUNT));
-		points = mb.getPoints(AbstractRabbitMetricsGenerator.INVOCATION_COUNT);
+		assertTrue(keys.get(1).equals(AbstractMetricsGenerator.INVOCATION_COUNT));
+		points = mb.getPoints(AbstractMetricsGenerator.INVOCATION_COUNT);
 		assertEquals(1, points.size());
 		assertEquals(1.0 , points.get(0).getValue(), 0.01);
 
