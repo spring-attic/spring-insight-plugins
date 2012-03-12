@@ -16,29 +16,35 @@
 
 package com.springsource.insight.plugin.rabbitmqClient;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Collection;
 
 import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
 import com.springsource.insight.intercept.metrics.MetricsBag;
+import com.springsource.insight.intercept.resource.ResourceKey;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
 
 abstract class AbstractRabbitMetricsGenerator extends AbstractMetricsGenerator {
 	public static final String RABBIT_COUNT_SUFFIX = ":type=counter";
 
-	private final RabbitPluginOperationType rabbitOpType;
+	private final String   rabbitMetricKey;
 
 	AbstractRabbitMetricsGenerator(RabbitPluginOperationType rabbitOpType) {
 		super(rabbitOpType.getOperationType());
-		this.rabbitOpType = rabbitOpType;
+		rabbitMetricKey = rabbitOpType.getOperationType().getName() + RABBIT_COUNT_SUFFIX;
 	}
 
 	@Override
-	protected void addExtraEndPointMetrics(Trace trace, MetricsBag mb, Collection<Frame> externalFrames) {
-		if (externalFrames != null && externalFrames.size() > 0){		
-			addCounterMetricToBag(trace, mb, createMetricKey(), externalFrames.size());
-		}
+    protected Collection<MetricsBag> addExtraEndPointMetrics(Trace trace, ResourceKey resourceKey, Collection<Frame> externalFrames) {
+        if ((externalFrames == null) || externalFrames.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        MetricsBag    mb=MetricsBag.create(resourceKey, trace.getRange());
+        addCounterMetricToBag(trace, mb, createMetricKey(), externalFrames.size());
+        return Collections.singletonList(mb);
 	}
 
 	@Override
@@ -51,7 +57,7 @@ abstract class AbstractRabbitMetricsGenerator extends AbstractMetricsGenerator {
 		return trace.getLastFramesOfType(opType);
 	}
 
-	String createMetricKey() {
-		return rabbitOpType.getOperationType().getName() + RABBIT_COUNT_SUFFIX;
+	final String createMetricKey() {
+		return rabbitMetricKey;
 	}
 }
