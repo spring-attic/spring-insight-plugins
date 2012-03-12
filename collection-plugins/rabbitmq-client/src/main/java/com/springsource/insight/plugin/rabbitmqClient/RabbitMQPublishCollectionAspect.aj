@@ -16,6 +16,8 @@
 
 package com.springsource.insight.plugin.rabbitmqClient;
 
+import org.aspectj.lang.annotation.SuppressAjWarnings;
+
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -29,6 +31,7 @@ public aspect RabbitMQPublishCollectionAspect extends AbstractRabbitMQCollection
         : execution(void Channel+.basicPublish(String, String, boolean, boolean, BasicProperties,byte[])) 
                                                    && args(exchange,routingKey,mandatory,immediate,props,body);
     
+    @SuppressAjWarnings({"adviceDidNotMatch"})
     before(String exchange, String routingKey, boolean mandatory,
              boolean immediate, BasicProperties props,byte[] body) :
                  publish(exchange,routingKey,mandatory,immediate,props,body) {
@@ -60,6 +63,7 @@ public aspect RabbitMQPublishCollectionAspect extends AbstractRabbitMQCollection
         getCollector().enter(op);
     }
     
+    @SuppressAjWarnings({"adviceDidNotMatch"})
     after(String exchange, String routingKey, boolean mandatory,
             boolean immediate, BasicProperties props,byte[] body) returning() :
                 publish(exchange,routingKey,mandatory,immediate,props,body) {
@@ -67,6 +71,7 @@ public aspect RabbitMQPublishCollectionAspect extends AbstractRabbitMQCollection
         getCollector().exitNormal();
     }
             
+    @SuppressAjWarnings({"adviceDidNotMatch"})
     after(String exchange, String routingKey, boolean mandatory,
             boolean immediate, BasicProperties props,byte[] body) throwing(Throwable t) :
                 publish(exchange,routingKey,mandatory,immediate,props,body) {

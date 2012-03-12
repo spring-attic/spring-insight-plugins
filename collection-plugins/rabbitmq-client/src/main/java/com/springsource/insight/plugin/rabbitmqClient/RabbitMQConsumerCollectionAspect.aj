@@ -19,6 +19,8 @@ package com.springsource.insight.plugin.rabbitmqClient;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.aspectj.lang.annotation.SuppressAjWarnings;
+
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -44,6 +46,7 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
         : execution(GetResponse Channel+.basicGet(String, boolean)) 
                         && args(queue, ack);
 
+    @SuppressAjWarnings({"adviceDidNotMatch"})
     before(String queue, boolean ack)
             : basicGet(queue, ack) {
         Channel channel = ((Channel) thisJoinPoint.getThis());
@@ -52,6 +55,7 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
         getCollector().enter(op);
     }
 
+    @SuppressAjWarnings({"adviceDidNotMatch"})
     after(String queue, boolean ack) returning(GetResponse resp)
             : basicGet(queue, ack) {
         // get the originating operation
@@ -71,6 +75,7 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
         getCollector().exitNormal(resp);
     }
 
+    @SuppressAjWarnings({"adviceDidNotMatch"})
     after(String queue, boolean ack) throwing(Throwable t)
             : basicGet(queue, ack) {
         Channel channel = ((Channel) thisJoinPoint.getThis());
@@ -79,6 +84,7 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
         getCollector().exitAbnormal(t);
     }
 
+    @SuppressAjWarnings({"adviceDidNotMatch"})
     before(String consumerTag, Envelope envelope, BasicProperties props, byte[] body)
             : handleDelivery(consumerTag, envelope, props, body) {
 
@@ -103,12 +109,14 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
         getCollector().enter(op);
     }
 
+    @SuppressAjWarnings({"adviceDidNotMatch"})
     after(String consumerTag, Envelope envelope, BasicProperties props, byte[] body) returning()
             : handleDelivery(consumerTag, envelope, props, body) {
 
          getCollector().exitNormal();
     }
     
+    @SuppressAjWarnings({"adviceDidNotMatch"})
     after(String consumerTag, Envelope envelope, BasicProperties props, byte[] body) throwing(Throwable t) 
             : handleDelivery(consumerTag, envelope, props, body) {
 
