@@ -92,12 +92,12 @@ public class RabbitMQConsumerCollectionAspectTest extends OperationCollectionAsp
         
         assertEquals(OperationType.valueOf("rabbitmq-client-consumer"), op.getType());
         assertEquals("Consume", op.getLabel());
-        assertEquals(body.length, (int)op.get("bytes", Integer.class));
+        assertEquals(Integer.valueOf(body.length), op.get("bytes", Integer.class));
         
         OperationMap envMap = op.get("envelope", OperationMap.class);
         
         assertNotNull(envMap);
-        assertEquals(envelope.getDeliveryTag() , (long)envMap.get("deliveryTag", Long.class));
+        assertEquals(Long.valueOf(envelope.getDeliveryTag()), envMap.get("deliveryTag", Long.class));
         assertEquals(envelope.getExchange() , envMap.get("exchange", String.class));
         assertEquals(envelope.getRoutingKey() , envMap.get("routingKey", String.class));
         
@@ -121,10 +121,10 @@ public class RabbitMQConsumerCollectionAspectTest extends OperationCollectionAsp
                .contentEncoding("UTF-8")
                .contentType("TEXT")
                .correlationId("None")
-               .deliveryMode(3)
+               .deliveryMode(Integer.valueOf(3))
                .expiration("Never")
                .messageId("Message-1")
-               .priority(4)
+               .priority(Integer.valueOf(4))
                .timestamp(new Date());
         
         return builder.build();
@@ -134,25 +134,31 @@ public class RabbitMQConsumerCollectionAspectTest extends OperationCollectionAsp
     public OperationCollectionAspectSupport getAspect() {
         return RabbitMQConsumerCollectionAspect.aspectOf();
     }
-    
-    private static final class MockConsumer implements Consumer {
+
+    static final class MockConsumer implements Consumer {
         public void handleCancel(String arg0) throws IOException {
+            // do nothing
         }
 
         public void handleCancelOk(String arg0) {
+            // do nothing
         }
 
         public void handleConsumeOk(String arg0) {
+            // do nothing
         }
 
         public void handleDelivery(String consumerTag, Envelope envelope,
                 BasicProperties props, byte[] body) throws IOException {
+            // do nothing
         }
 
         public void handleRecoverOk() {
+            // do nothing
         }
 
         public void handleShutdownSignal(String arg0, ShutdownSignalException arg1) {
+            // do nothing
         }
     }
     
@@ -161,14 +167,15 @@ public class RabbitMQConsumerCollectionAspectTest extends OperationCollectionAsp
         private BasicProperties props;
         private byte[] body;
         
+        @SuppressWarnings("hiding")
         public MockChannel(Envelope envelope, BasicProperties props, byte[] body) {
-            super();
             this.envelope = envelope;
             this.props = props;
             this.body = body;
         }
 
         public void addShutdownListener(ShutdownListener arg0) {
+            // do nothing
         }
 
         public ShutdownSignalException getCloseReason() {
@@ -180,24 +187,31 @@ public class RabbitMQConsumerCollectionAspectTest extends OperationCollectionAsp
         }
 
         public void notifyListeners() {
+            // do nothing
         }
 
         public void removeShutdownListener(ShutdownListener arg0) {
+            // do nothing
         }
 
         public void abort() throws IOException {
+            // do nothing
         }
 
         public void abort(int arg0, String arg1) throws IOException {
+            // do nothing
         }
 
         public void asyncRpc(Method arg0) throws IOException {
+            // do nothing
         }
 
         public void basicAck(long arg0, boolean arg1) throws IOException {
+            // do nothing
         }
 
         public void basicCancel(String arg0) throws IOException {
+            // do nothing
         }
 
         public String basicConsume(String arg0, Consumer arg1)
@@ -234,22 +248,27 @@ public class RabbitMQConsumerCollectionAspectTest extends OperationCollectionAsp
 
         public void basicNack(long arg0, boolean arg1, boolean arg2)
                 throws IOException {
+            // do nothing
         }
 
         public void basicPublish(String arg0, String arg1,
                 BasicProperties arg2, byte[] arg3) throws IOException {
+            // do nothing
         }
 
         public void basicPublish(String arg0, String arg1, boolean arg2,
                 boolean arg3, BasicProperties arg4, byte[] arg5)
                 throws IOException {
+            // do nothing
         }
 
         public void basicQos(int arg0) throws IOException {
+            // do nothing
         }
 
         public void basicQos(int arg0, int arg1, boolean arg2)
                 throws IOException {
+            // do nothing
         }
 
         public RecoverOk basicRecover() throws IOException {
@@ -261,15 +280,19 @@ public class RabbitMQConsumerCollectionAspectTest extends OperationCollectionAsp
         }
 
         public void basicRecoverAsync(boolean arg0) throws IOException {
+            // do nothing
         }
 
         public void basicReject(long arg0, boolean arg1) throws IOException {
+            // do nothing
         }
 
         public void close() throws IOException {
+            // do nothing
         }
 
         public void close(int arg0, String arg1) throws IOException {
+            // do nothing
         }
 
         public SelectOk confirmSelect() throws IOException {
@@ -424,15 +447,19 @@ public class RabbitMQConsumerCollectionAspectTest extends OperationCollectionAsp
         }
 
         public void setConfirmListener(ConfirmListener arg0) {
+            // do nothing
         }
 
         public void setDefaultConsumer(Consumer arg0) {
+            // do nothing
         }
 
         public void setFlowListener(FlowListener arg0) {
+            // do nothing
         }
 
         public void setReturnListener(ReturnListener arg0) {
+            // do nothing
         }
 
         public CommitOk txCommit() throws IOException {
@@ -448,5 +475,4 @@ public class RabbitMQConsumerCollectionAspectTest extends OperationCollectionAsp
             return null;
         }
     }
-
 }

@@ -37,16 +37,15 @@ import com.springsource.insight.intercept.trace.TraceId;
 public abstract class AbstractRabbitMQResourceAnalyzerTest {
 
 	protected abstract AbstractRabbitMQResourceAnalyzer getAnalyzer();
-	private RabbitPluginOperationType operationType;
+	private final RabbitPluginOperationType operationType;
 
-	public AbstractRabbitMQResourceAnalyzerTest(RabbitPluginOperationType operationType) {
-		super();
-		this.operationType = operationType;
+	public AbstractRabbitMQResourceAnalyzerTest(RabbitPluginOperationType type) {
+		this.operationType = type;
 	}
 
 	protected void addOperationProps(Operation operation, boolean addRouting, boolean addExchange){
 		operation.putAnyNonEmpty("host", "127.0.0.1");
-		operation.putAnyNonEmpty("port", 5672);
+		operation.put("port", 5672);
 	}
 
 

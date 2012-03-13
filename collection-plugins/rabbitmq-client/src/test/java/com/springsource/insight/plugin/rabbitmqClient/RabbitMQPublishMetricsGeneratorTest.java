@@ -21,7 +21,8 @@ public class RabbitMQPublishMetricsGeneratorTest extends AbstractRabbitMQMetrics
 		super(RabbitPluginOperationType.PUBLISH);
 	}
 
-	protected AbstractRabbitMetricsGenerator getMetricsGenerator() {
+	@Override
+    protected AbstractRabbitMetricsGenerator getMetricsGenerator() {
         return new RabbitMQPublishMetricsGenerator();
     }
 

@@ -34,11 +34,10 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 
 	static final String RABBIT = "RabbitMQ";
 
-	public RabbitPluginOperationType operationType;
+	final RabbitPluginOperationType operationType;
 
-	AbstractRabbitMQResourceAnalyzer(RabbitPluginOperationType operationType) {
-		super();
-		this.operationType = operationType;
+	AbstractRabbitMQResourceAnalyzer(RabbitPluginOperationType type) {
+		this.operationType = type;
 	}
 
 	protected abstract String getExchange(Operation op);
@@ -78,7 +77,7 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 			String label = buildLabel(op);
 			String host = op.get("host", String.class);            
 			Integer portProperty = op.get("port", Integer.class);
-			int port = portProperty == null ? -1 : portProperty;
+			int port = portProperty == null ? -1 : portProperty.intValue();
 
 			String hashString = MD5NameGenerator.getName(label + host + port);
 

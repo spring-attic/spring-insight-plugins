@@ -25,6 +25,9 @@ import com.springsource.insight.intercept.operation.Operation;
 
 
 public aspect RabbitMQPublishCollectionAspect extends AbstractRabbitMQCollectionAspect {
+    public RabbitMQPublishCollectionAspect () {
+        super();
+    }
 
     public pointcut publish(String exchange, String routingKey, boolean mandatory, 
                                         boolean immediate, BasicProperties props, byte[] body)

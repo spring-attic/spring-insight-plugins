@@ -32,6 +32,9 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
 
 public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectionAspect {
+    public RabbitMQConsumerCollectionAspect () {
+        super();
+    }
 
     // Holds Operations in progress for a given Channel
     // According to the API, the Channel should only be
@@ -134,7 +137,7 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
 
         OperationMap map = op.createMap("envelope");
 
-        map.putAnyNonEmpty("deliveryTag", envelope.getDeliveryTag());
+        map.put("deliveryTag", envelope.getDeliveryTag());
         map.putAnyNonEmpty("exchange", envelope.getExchange());
         map.putAnyNonEmpty("routingKey", envelope.getRoutingKey());
         return op;

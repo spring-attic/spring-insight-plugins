@@ -72,8 +72,8 @@ public class RabbitMQPublishCollectionAspectTest extends OperationCollectionAspe
         
         assertEquals(exchange, op.get("exchange"));
         assertEquals(routingKey, op.get("routingKey"));
-        assertEquals(mandatory, op.get("mandatory"));
-        assertEquals(immediate, op.get("immediate"));
+        assertEquals(Boolean.valueOf(mandatory), op.get("mandatory"));
+        assertEquals(Boolean.valueOf(immediate), op.get("immediate"));
         
         assertOperation(op, props, body);
     }
@@ -82,7 +82,7 @@ public class RabbitMQPublishCollectionAspectTest extends OperationCollectionAspe
         
         assertEquals(OperationType.valueOf("rabbitmq-client-publish"), op.getType());
         assertEquals("Publish", op.getLabel());
-        assertEquals(body.length, (int)op.get("bytes", Integer.class));
+        assertEquals(Integer.valueOf(body.length), op.get("bytes", Integer.class));
         
         assertNull(op.get("connectionUrl"));
         assertNull(op.get("serverVersion"));
@@ -104,10 +104,10 @@ public class RabbitMQPublishCollectionAspectTest extends OperationCollectionAspe
                .contentEncoding("UTF-8")
                .contentType("TEXT")
                .correlationId("None")
-               .deliveryMode(3)
+               .deliveryMode(Integer.valueOf(3))
                .expiration("Never")
                .messageId("Message-1")
-               .priority(4)
+               .priority(Integer.valueOf(4))
                .timestamp(new Date());
         
         return builder.build();
@@ -118,8 +118,9 @@ public class RabbitMQPublishCollectionAspectTest extends OperationCollectionAspe
         return RabbitMQPublishCollectionAspect.aspectOf();
     }
     
-    private static final class MockChannel implements Channel {
+    static final class MockChannel implements Channel {
         public void addShutdownListener(ShutdownListener arg0) {
+            // do nothing
         }
 
         public ShutdownSignalException getCloseReason() {
@@ -131,24 +132,31 @@ public class RabbitMQPublishCollectionAspectTest extends OperationCollectionAspe
         }
 
         public void notifyListeners() {
+            // do nothing
         }
 
         public void removeShutdownListener(ShutdownListener arg0) {
+            // do nothing
         }
 
         public void abort() throws IOException {
+            // do nothing
         }
 
         public void abort(int arg0, String arg1) throws IOException {
+            // do nothing
         }
 
         public void asyncRpc(Method arg0) throws IOException {
+            // do nothing
         }
 
         public void basicAck(long arg0, boolean arg1) throws IOException {
+            // do nothing
         }
 
         public void basicCancel(String arg0) throws IOException {
+            // do nothing
         }
 
         public String basicConsume(String arg0, Consumer arg1)
@@ -179,22 +187,27 @@ public class RabbitMQPublishCollectionAspectTest extends OperationCollectionAspe
 
         public void basicNack(long arg0, boolean arg1, boolean arg2)
                 throws IOException {
+            // do nothing
         }
 
         public void basicPublish(String arg0, String arg1,
                 BasicProperties arg2, byte[] arg3) throws IOException {
+            // do nothing
         }
 
         public void basicPublish(String arg0, String arg1, boolean arg2,
                 boolean arg3, BasicProperties arg4, byte[] arg5)
                 throws IOException {
+            // do nothing
         }
 
         public void basicQos(int arg0) throws IOException {
+            // do nothing
         }
 
         public void basicQos(int arg0, int arg1, boolean arg2)
                 throws IOException {
+            // do nothing
         }
 
         public RecoverOk basicRecover() throws IOException {
@@ -206,15 +219,19 @@ public class RabbitMQPublishCollectionAspectTest extends OperationCollectionAspe
         }
 
         public void basicRecoverAsync(boolean arg0) throws IOException {
+            // do nothing
         }
 
         public void basicReject(long arg0, boolean arg1) throws IOException {
+            // do nothing
         }
 
         public void close() throws IOException {
+            // do nothing
         }
 
         public void close(int arg0, String arg1) throws IOException {
+            // do nothing
         }
 
         public SelectOk confirmSelect() throws IOException {
@@ -369,15 +386,19 @@ public class RabbitMQPublishCollectionAspectTest extends OperationCollectionAspe
         }
 
         public void setConfirmListener(ConfirmListener arg0) {
+            // do nothing
         }
 
         public void setDefaultConsumer(Consumer arg0) {
+            // do nothing
         }
 
         public void setFlowListener(FlowListener arg0) {
+            // do nothing
         }
 
         public void setReturnListener(ReturnListener arg0) {
+            // do nothing
         }
 
         public CommitOk txCommit() throws IOException {
@@ -393,5 +414,4 @@ public class RabbitMQPublishCollectionAspectTest extends OperationCollectionAspe
             return null;
         }
     }
-
 }

@@ -36,7 +36,7 @@ public abstract class AbstractRabbitMQCollectionAspect extends OperationCollecti
         map.putAnyNonEmpty("Type", props.getType());
         map.putAnyNonEmpty("App Id", props.getAppId());
         map.putAnyNonEmpty("User Id", props.getUserId());
-        map.putAnyNonEmpty("Class Id", props.getClassId());
+        map.put("Class Id", props.getClassId());
         map.putAnyNonEmpty("Reply To", props.getReplyTo());
         map.putAnyNonEmpty("Priority", props.getPriority());
         map.putAnyNonEmpty("Class Name", props.getClassName());
