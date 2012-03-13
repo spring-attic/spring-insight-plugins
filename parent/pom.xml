@@ -221,9 +221,31 @@
                     <configuration>
                         <lifecycleMappingMetadata>
                             <pluginExecutions>
+                                    <!-- TODO remove this definition when same gmaven
+                                        plugin used throughout (see below) -->
                                 <pluginExecution>
                                     <pluginExecutionFilter>
                                         <groupId>org.codehaus.groovy.maven</groupId>
+                                        <artifactId>gmaven-plugin</artifactId>
+                                        <versionRange>[1.0,)</versionRange>
+                                        <goals>
+                                            <goal>execute</goal>
+                                            <goal>compile</goal>
+                                            <goal>testCompile</goal>
+                                            <goal>generateStubs</goal>
+                                            <goal>generateTestStubs</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <execute>
+                                            <runOnIncremental>false</runOnIncremental>
+                                        </execute>
+                                    </action>
+                                </pluginExecution>
+
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.codehaus.gmaven</groupId>
                                         <artifactId>gmaven-plugin</artifactId>
                                         <versionRange>[1.0,)</versionRange>
                                         <goals>
