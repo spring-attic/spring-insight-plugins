@@ -1,8 +1,8 @@
-h1. Community Plugin Repository for Spring Insight
+h1. Community Plugin Repository for Insight Developer and Insight Operations
 
-h2. What is Spring Insight Developer Edition?
+h2. What is Insight Developer Edition?
 
-Spring Insight is a VMware® Web application that gives you real-time visibility into application behavior and performance at the code-level. Released as part of vFabric and AppInsight.
+Insight is a VMware® Web application that gives you real-time visibility into application behavior and performance at the code-level. Released as part of vFabric and AppInsight.
 
 * Insight DevEdition answers the question: "What just happened?"
 * Insight Operations answers the question: "How does my code perform in production?"
@@ -18,6 +18,11 @@ h2. Creating a Plugin
 * Clone this code  <code>git clone https://github.com/SpringSource/spring-insight-plugins</code>
 * Develop your plugin, using the other plugins as examples, or insight [at] vmware [dot] org for advice
 * Make pull request!
+
+h2. Resources
+
+* Checkout our webinar on developing plugins at: http://www.youtube.com/watch?v=YR3CYnryflw
+* Tutorial (outdated, new version coming soon!): http://static.springsource.com/projects/tc-server/2.5/devedition/htmlsingle/devedition.html#tutorial-plugin
 
 h2. Requirements for a Plugin
 

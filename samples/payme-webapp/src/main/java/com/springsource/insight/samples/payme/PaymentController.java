@@ -37,18 +37,27 @@ public class PaymentController {
 
     @RequestMapping("/")
 	public ModelAndView paymentHandler(@RequestParam(value="delay", defaultValue=DEFAULT_DELAY) int maxDelay) {
-        ModelAndView paymentAmount = new ModelAndView("gotpaid");
         int randomPayment = getRandomPaymentAmount();
+        return backdoor(randomPayment, maxDelay);
+	}
+
+    /**
+     * Mapping used to help us create specific error conditions within the insight plugin
+     */
+    @RequestMapping("/backdoor")
+    public ModelAndView backdoor(@RequestParam(value="amount", defaultValue="-999") int amount, @RequestParam(value="delay", defaultValue=DEFAULT_DELAY) int maxDelay) {
+        ModelAndView paymentAmount = new ModelAndView("gotpaid");
         FakeAccount account = getAccount();
         account.setMaxDelay(maxDelay);
-        
+
         // This call to setBalance() is intercepted and recorded by Insight when using
         // the insight-myplugin scaffold.
-        account.setBalance(randomPayment);
-        
+        account.setBalance(amount);
+
         paymentAmount.addObject("account", account);
-		return paymentAmount;
-	}
+        return paymentAmount;
+    }
+
 	
 	private int getRandomPaymentAmount() {
 	    return rand.nextInt(1000) + 30;

@@ -31,6 +31,10 @@ import com.springsource.insight.intercept.operation.OperationType;
  * 
  * The {@link AbstractOperationCollectionAspect} does most of the heavy lifting in cases
  * like this, where we only depend on the arguments passed into the method.
+ *
+ * We simulate an error condition within a plugin. Bugs within plugins could occur normally or
+ * there could be an unexpected version change within the instrumented library. In either
+ * case insight should catch these without interfering with the application.
  */
 public aspect CashMoneyOperationCollectionAspect
     extends AbstractOperationCollectionAspect
@@ -45,6 +49,16 @@ public aspect CashMoneyOperationCollectionAspect
     protected Operation createOperation(JoinPoint jp) {
         Object[] args = jp.getArgs();
         Integer newBalance = (Integer)args[0];
+
+        /**
+         * Simulate a bug in the plugin. Bugs within plugins should be caught by insight. See the
+         * insight logs to see these errors.
+         */
+        if (newBalance == -999) {
+            System.out.println("Simulated Plugin Bug");
+            throw new IllegalStateException("CashMoneyOperationCollectionAspect SIMULATED PLUGIN BUG");
+        }
+
         return new Operation()
             .type(TYPE)
             .sourceCodeLocation(getSourceCodeLocation(jp))
