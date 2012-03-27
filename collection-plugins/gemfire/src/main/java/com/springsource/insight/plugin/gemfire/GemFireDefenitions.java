@@ -21,7 +21,6 @@ import com.springsource.insight.intercept.operation.OperationType;
 public interface GemFireDefenitions {
 
 	static final GemFireType  TYPE_QUERY = new GemFireType("Query", OperationType.valueOf("gemfire_query_operation"));
-	static final GemFireType  TYPE_REGION = new GemFireType("Region", OperationType.valueOf("gemfire_region_operation"));
 	
 	static final String GEMFIRE = "GemFire";
 	
