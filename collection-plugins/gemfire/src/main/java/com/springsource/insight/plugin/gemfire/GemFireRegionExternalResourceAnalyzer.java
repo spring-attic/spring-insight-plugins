@@ -16,9 +16,12 @@
 
 package com.springsource.insight.plugin.gemfire;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
+import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
 import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
@@ -29,15 +32,19 @@ import com.springsource.insight.intercept.trace.Trace;
 
 public class GemFireRegionExternalResourceAnalyzer implements ExternalResourceAnalyzer {
 
-	public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
-		List<Frame> frames = trace.getLastFramesOfType(GemFireDefenitions.TYPE_REGION.getType());		
-		List<ExternalResourceDescriptor> descriptors = new ArrayList<ExternalResourceDescriptor>();
-		
+	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
+		Collection<Frame> frames = trace.getLastFramesOfType(GemFireDefenitions.TYPE_REGION.getType());		
+		if ((frames == null) || frames.isEmpty()) {
+		    return Collections.emptyList();
+		}
+
+		List<ExternalResourceDescriptor> descriptors = new LinkedList<ExternalResourceDescriptor>();
 		for (Frame frame : frames) {			
-			Object regionFullPathObj = frame.getOperation().get(GemFireDefenitions.FIELD_PATH);
-			String regionFullPath = regionFullPathObj == null ? null : regionFullPathObj.toString();
-			OperationList servers = (OperationList) frame.getOperation().get(GemFireDefenitions.FIELD_SERVERS);
-			if (servers == null || servers.size() == 0) {
+            Operation       op = frame.getOperation();
+			Object          regionFullPathObj = op.get(GemFireDefenitions.FIELD_PATH);
+			String          regionFullPath = (regionFullPathObj == null) ? null : regionFullPathObj.toString();
+			OperationList   servers = op.get(GemFireDefenitions.FIELD_SERVERS, OperationList.class);
+			if ((servers == null) || (servers.size() <= 0)) {
 				continue;
 			}
 			
@@ -51,6 +58,4 @@ public class GemFireRegionExternalResourceAnalyzer implements ExternalResourceAn
 		
 		return descriptors;
 	}
-	
-
 }

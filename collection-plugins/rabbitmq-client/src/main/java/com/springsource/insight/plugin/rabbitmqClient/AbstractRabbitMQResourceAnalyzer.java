@@ -17,6 +17,8 @@
 package com.springsource.insight.plugin.rabbitmqClient;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
@@ -65,12 +67,12 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 	}
 
 	public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
-		List<Frame> queueFrames = trace.getLastFramesOfType(operationType.getOperationType());
+		Collection<Frame> queueFrames = trace.getLastFramesOfType(operationType.getOperationType());
+		if ((queueFrames == null) || queueFrames.isEmpty()) {
+		    return Collections.emptyList();
+		}
 
-		List<ExternalResourceDescriptor> queueDescriptors = new ArrayList<ExternalResourceDescriptor>();
-		String vendor = RABBIT;
-		String type = ExternalResourceType.QUEUE.name();
-
+		List<ExternalResourceDescriptor> queueDescriptors = new ArrayList<ExternalResourceDescriptor>(queueFrames.size());
 		for (Frame queueFrame : queueFrames) {
 			Operation op = queueFrame.getOperation();
 
@@ -81,7 +83,14 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 
 			String hashString = MD5NameGenerator.getName(label + host + port);
 
-			ExternalResourceDescriptor descriptor = new ExternalResourceDescriptor(queueFrame, RABBIT + ":" + hashString, RABBIT + "-" + label, type, vendor, host, port);
+			ExternalResourceDescriptor descriptor =
+			        new ExternalResourceDescriptor(queueFrame,
+			                                        RABBIT + ":" + hashString,
+			                                        RABBIT + "-" + label,
+			                                        ExternalResourceType.QUEUE.name(),
+			                                        RABBIT,
+			                                        host,
+			                                        port);
 			queueDescriptors.add(descriptor);            
 		}
 

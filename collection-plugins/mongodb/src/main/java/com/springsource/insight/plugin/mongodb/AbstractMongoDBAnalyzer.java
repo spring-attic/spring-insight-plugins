@@ -17,6 +17,8 @@
 package com.springsource.insight.plugin.mongodb;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import com.springsource.insight.intercept.operation.Operation;
@@ -33,23 +35,24 @@ import com.springsource.insight.intercept.trace.Trace;
  */
 public abstract class AbstractMongoDBAnalyzer implements ExternalResourceAnalyzer {
 
-	private OperationType operationType;
+	private final OperationType operationType;
 
-	AbstractMongoDBAnalyzer(OperationType operationType) {
-		super();
-		this.operationType = operationType;
+	AbstractMongoDBAnalyzer(OperationType type) {
+		this.operationType = type;
 	}
 	
 	public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
-		List<Frame> dbFrames = trace.getLastFramesOfType(operationType);
-		
-		List<ExternalResourceDescriptor> dbDescriptors = new ArrayList<ExternalResourceDescriptor>();
-		
+		Collection<Frame> dbFrames = trace.getLastFramesOfType(operationType);
+		if ((dbFrames == null) || dbFrames.isEmpty()) {
+		    return Collections.emptyList();
+		}
+
+		List<ExternalResourceDescriptor> dbDescriptors = new ArrayList<ExternalResourceDescriptor>(dbFrames.size());
 		for (Frame dbFrame : dbFrames) {
 			Operation op = dbFrame.getOperation();
 			String host = op.get("host", String.class);           
 			Integer portProperty = op.get("port", Integer.class);
-			int port = portProperty == null ? -1 : portProperty;
+			int port = portProperty == null ? -1 : portProperty.intValue();
 			
 			String dbName = op.get("dbName", String.class);
 			

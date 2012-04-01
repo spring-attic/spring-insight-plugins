@@ -19,6 +19,7 @@ package com.springsource.insight.plugin.gemfire;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 
@@ -70,8 +71,9 @@ public class GemFireRegionExternalResourceAnalyzerTest {
 				new Date(),
 				TraceId.valueOf("fake-id"),
 				frame);
-
-		ExternalResourceDescriptor externalResourceDescriptor = analyzer.locateExternalResourceName(trace).get(0);
+		Collection<ExternalResourceDescriptor>    res=analyzer.locateExternalResourceName(trace);
+		assertEquals("Mismatched number of results", 1, res.size());
+		ExternalResourceDescriptor externalResourceDescriptor = res.iterator().next();
 
 		assertEquals(frame, externalResourceDescriptor.getFrame());
 		assertEquals(ExternalResourceType.KVSTORE.name(), externalResourceDescriptor.getType());
@@ -100,8 +102,9 @@ public class GemFireRegionExternalResourceAnalyzerTest {
 				new Date(),
 				TraceId.valueOf("fake-id"),
 				frame);
-
-		ExternalResourceDescriptor externalResourceDescriptor = analyzer.locateExternalResourceName(trace).get(0);
+        Collection<ExternalResourceDescriptor>    res=analyzer.locateExternalResourceName(trace);
+        assertEquals("Mismatched number of results", 1, res.size());
+        ExternalResourceDescriptor externalResourceDescriptor = res.iterator().next();
 
 		assertEquals(frame, externalResourceDescriptor.getFrame());
 		assertEquals(ExternalResourceType.KVSTORE.name(), externalResourceDescriptor.getType());

@@ -17,6 +17,8 @@
 package com.springsource.insight.plugin.redis;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import com.springsource.insight.intercept.operation.Operation;
@@ -36,15 +38,18 @@ public class RedisDBAnalyzer implements ExternalResourceAnalyzer {
 	public static final OperationType TYPE =  OperationType.valueOf("redis-client-method");
 	
 	public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
-		List<Frame> dbFrames = trace.getLastFramesOfType(TYPE);
-		
-		List<ExternalResourceDescriptor> dbDescriptors = new ArrayList<ExternalResourceDescriptor>();
+		Collection<Frame> dbFrames = trace.getLastFramesOfType(TYPE);
+		if ((dbFrames == null) || dbFrames.isEmpty()) {
+		    return Collections.emptyList();
+		}
+
+		List<ExternalResourceDescriptor> dbDescriptors = new ArrayList<ExternalResourceDescriptor>(dbFrames.size());
 		
 		for (Frame dbFrame : dbFrames) {
 			Operation op = dbFrame.getOperation();
 			String host = op.get("host", String.class);           
 			Integer portProperty = op.get("port", Integer.class);
-			int port = portProperty == null ? -1 : portProperty;
+			int port = portProperty == null ? -1 : portProperty.intValue();
 			
 			String dbName = op.get("dbName", String.class);
 			
