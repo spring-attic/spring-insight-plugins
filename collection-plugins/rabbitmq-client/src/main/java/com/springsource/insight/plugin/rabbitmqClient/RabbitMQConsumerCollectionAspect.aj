@@ -43,11 +43,15 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
 
     public pointcut handleDelivery(String consumerTag, Envelope envelope, BasicProperties props, byte[] body)
         : execution(void Consumer+.handleDelivery(String, Envelope, BasicProperties, byte[]))
-                        && args(consumerTag, envelope, props, body);
+       && args(consumerTag, envelope, props, body)
+       && if(collect(thisJoinPointStaticPart))
+        ;
     
     public pointcut basicGet(String queue, boolean ack) 
         : execution(GetResponse Channel+.basicGet(String, boolean)) 
-                        && args(queue, ack);
+       && args(queue, ack)
+       && if(collect(thisJoinPointStaticPart))
+        ;
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     before(String queue, boolean ack)
@@ -127,7 +131,10 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
     }
 
     private Operation createOperation() {
-        return new Operation().type(RabbitPluginOperationType.CONSUME.getOperationType()).label(RabbitPluginOperationType.CONSUME.getLabel());
+        return new Operation()
+                    .type(RabbitPluginOperationType.CONSUME.getOperationType())
+                    .label(RabbitPluginOperationType.CONSUME.getLabel())
+                    ;
     }
 
     private Operation applyMessageData(Operation op, Envelope envelope, byte[] body) {
@@ -135,11 +142,11 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
             op.put("bytes", body.length);
         }
 
-        OperationMap map = op.createMap("envelope");
-
-        map.put("deliveryTag", envelope.getDeliveryTag());
-        map.putAnyNonEmpty("exchange", envelope.getExchange());
-        map.putAnyNonEmpty("routingKey", envelope.getRoutingKey());
+        OperationMap map = op.createMap("envelope")
+                .put("deliveryTag", envelope.getDeliveryTag())
+                .putAnyNonEmpty("exchange", envelope.getExchange())
+                .putAnyNonEmpty("routingKey", envelope.getRoutingKey())
+                ;
         return op;
     }
 }

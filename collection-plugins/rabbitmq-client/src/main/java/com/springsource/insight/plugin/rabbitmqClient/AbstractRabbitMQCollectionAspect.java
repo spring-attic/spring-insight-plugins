@@ -20,15 +20,23 @@ import java.net.InetAddress;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.aspectj.lang.JoinPoint;
+
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.impl.AMQConnection;
 import com.rabbitmq.client.impl.LongString;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
+import com.springsource.insight.collection.strategies.BasicCollectionAspectProperties;
+import com.springsource.insight.collection.strategies.CollectionAspectProperties;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
 
 public abstract class AbstractRabbitMQCollectionAspect extends OperationCollectionAspectSupport {
+    protected static final CollectionAspectProperties aspectProperties=new BasicCollectionAspectProperties(false);
+    protected static final boolean collect (JoinPoint.StaticPart staticPart) {
+        return strategies.collect(aspectProperties, staticPart);
+    }
 
     protected void applyPropertiesData(Operation op, BasicProperties props) {
         OperationMap map = op.createMap("props");
