@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:insight="http://www.springframework.org/schema/insight-idk"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
+
+	<insight:plugin name="WebFlow" version="${project.version}" publisher="SpringSource" />
+
+    <insight:operation-view operation="wf-start" template="com/springsource/insight/plugin/webflow/start.ftl"/>
+	<insight:operation-view operation="wf-state" template="com/springsource/insight/plugin/webflow/state.ftl"/>
+	<insight:operation-view operation="wf-action" template="com/springsource/insight/plugin/webflow/action.ftl"/>
+	<insight:operation-view operation="wf-transition" template="com/springsource/insight/plugin/webflow/transition.ftl"/>
+	
+	<insight:operation-group group="WebFlow" operation="wf-start" />
+	<insight:operation-group group="WebFlow" operation="wf-state" />
+	<insight:operation-group group="WebFlow" operation="wf-action" />
+	<insight:operation-group group="WebFlow" operation="wf-transition" />
+</beans>
