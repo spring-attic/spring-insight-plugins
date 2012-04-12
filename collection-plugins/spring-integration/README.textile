@@ -9,8 +9,9 @@ This plugin is compatible with the 1.7+ versions of insight.
 
 h2. Installation
 
-This is a core plugin of Insight 1.7+ but earlier users may
-install this plugin by copying the plugin jar to
+This is a core plugin of Insight 1.7+ but if you are building this yourself
+place the plugin in the following directory:
+
 <code>
   insight/collection-plugins
 </code>
