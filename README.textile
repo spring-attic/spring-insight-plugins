@@ -11,6 +11,9 @@ See more at "http://www.springsource.org/insight":http://www.springsource.org/in
 
 h2. Installing and Using Plugins
 
+Plugins for different versions of Insight can be downloaded from: 
+  "http://maven.springframework.org/release/com/springsource/insight/plugins/":http://maven.springframework.org/release/com/springsource/insight/plugins/
+
 Plugins must be copied into the "insight/collection-plugins" directory of an Insight Developer Edition and Insight Dashboard/Agent.
 
 h2. Creating a Plugin
