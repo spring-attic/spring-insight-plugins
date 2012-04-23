@@ -108,4 +108,9 @@ public aspect RedisMapOperationCollectionAspect extends AbstractOperationCollect
 
         return op;
     }
+
+    @Override
+    public String getPluginName() {
+        return "redis";
+    }
 }

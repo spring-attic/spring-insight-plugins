@@ -75,4 +75,9 @@ public aspect MongoCursorOperationCollectionAspect extends
         return op;
 
     }
+
+    @Override
+    public String getPluginName() {
+        return "mongodb";
+    }
 }

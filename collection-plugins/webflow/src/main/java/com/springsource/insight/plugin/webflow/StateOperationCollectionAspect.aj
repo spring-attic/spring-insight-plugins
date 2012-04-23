@@ -146,4 +146,9 @@ public privileged aspect StateOperationCollectionAspect extends AbstractOperatio
 			}
 			return actionList;
 		}
+
+    @Override
+    public String getPluginName() {
+        return "webflow";
+    }
 }

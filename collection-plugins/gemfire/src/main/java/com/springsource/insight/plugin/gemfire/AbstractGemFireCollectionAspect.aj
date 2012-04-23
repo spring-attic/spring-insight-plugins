@@ -52,4 +52,11 @@ public abstract aspect AbstractGemFireCollectionAspect extends AbstractOperation
         
         return op;
     }
+
+    @Override
+    public String getPluginName() {
+        return "gemfire";
+    }
+
+
 }

@@ -33,7 +33,7 @@ public aspect RabbitMQPublishCollectionAspect extends AbstractRabbitMQCollection
                                         boolean immediate, BasicProperties props, byte[] body)
         : execution(void Channel+.basicPublish(String, String, boolean, boolean, BasicProperties,byte[])) 
        && args(exchange,routingKey,mandatory,immediate,props,body)
-       && if(collect(thisJoinPointStaticPart))
+       && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
         ;
     
     @SuppressAjWarnings({"adviceDidNotMatch"})
@@ -80,4 +80,7 @@ public aspect RabbitMQPublishCollectionAspect extends AbstractRabbitMQCollection
             : publish(exchange,routingKey,mandatory,immediate,props,body) {
         getCollector().exitAbnormal(t);
     }
+
+    public boolean isEndpoint() { return false; }
+    public String getPluginName() { return "rabbitmq-client"; }
 }

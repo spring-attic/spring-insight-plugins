@@ -37,4 +37,9 @@ public aspect StartOperationCollectionAspect extends AbstractOperationCollection
 	        
 	        return operation;
 	    }
+
+    @Override
+    public String getPluginName() {
+        return "webflow";
+    }
 }

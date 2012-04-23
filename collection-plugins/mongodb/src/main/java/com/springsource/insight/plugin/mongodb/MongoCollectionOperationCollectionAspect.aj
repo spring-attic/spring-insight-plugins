@@ -103,4 +103,9 @@ public aspect MongoCollectionOperationCollectionAspect extends
 
         return op;
     }
+
+    @Override
+    public String getPluginName() {
+        return "mongodb";
+    }
 }

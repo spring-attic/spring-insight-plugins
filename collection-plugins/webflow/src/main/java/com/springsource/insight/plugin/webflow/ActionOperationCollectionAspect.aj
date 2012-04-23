@@ -27,4 +27,8 @@ public privileged aspect ActionOperationCollectionAspect extends AbstractOperati
 	    						.sourceCodeLocation(getSourceCodeLocation(jp))
 	            	            .put("action", expression);
 	    }
+    @Override
+    public String getPluginName() {
+        return "webflow";
+    }
 }
