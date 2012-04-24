@@ -19,6 +19,7 @@
         <commons.logging.version>1.1.1</commons.logging.version>
         <log4j.version>1.2.16</log4j.version>
         <commons.math.version>2.1</commons.math.version>
+        <commons.io.version>1.4</commons.io.version>
         <clover2.version>2.6.3</clover2.version>
         <slf4j.version>1.6.1</slf4j.version>
         <servlet-api.version>2.5</servlet-api.version>
