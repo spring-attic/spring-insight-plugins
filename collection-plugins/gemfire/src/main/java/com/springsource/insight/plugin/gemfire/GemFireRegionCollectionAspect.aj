@@ -44,7 +44,7 @@ public aspect GemFireRegionCollectionAspect extends AbstractGemFireCollectionAsp
     public GemFireRegionCollectionAspect() {
 		super(GemFireDefenitions.TYPE_REGION);
 	}
-    
+
     @Override
     protected Operation createOperation(final JoinPoint jp) {
     	Operation op = createBasicOperation(jp);

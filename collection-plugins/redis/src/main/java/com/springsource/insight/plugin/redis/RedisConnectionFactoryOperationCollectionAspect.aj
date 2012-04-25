@@ -58,4 +58,9 @@ public aspect RedisConnectionFactoryOperationCollectionAspect extends AbstractOp
 
         return op;
     }
+
+    @Override
+    public String getPluginName() {
+        return "redis";
+    }
 }

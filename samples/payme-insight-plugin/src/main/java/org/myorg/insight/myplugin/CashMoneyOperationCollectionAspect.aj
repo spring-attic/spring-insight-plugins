@@ -70,4 +70,9 @@ public aspect CashMoneyOperationCollectionAspect
     public boolean isEndpoint() {
         return true; // Always include this frame in the trace
 }
+
+    @Override
+    public String getPluginName() {
+        return "payme";
+    }
 }

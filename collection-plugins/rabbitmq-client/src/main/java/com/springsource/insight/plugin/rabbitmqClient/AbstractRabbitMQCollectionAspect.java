@@ -33,10 +33,6 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
 
 public abstract class AbstractRabbitMQCollectionAspect extends OperationCollectionAspectSupport {
-    protected static final CollectionAspectProperties aspectProperties=new BasicCollectionAspectProperties(false);
-    protected static final boolean collect (JoinPoint.StaticPart staticPart) {
-        return strategies.collect(aspectProperties, staticPart);
-    }
 
     protected void applyPropertiesData(Operation op, BasicProperties props) {
         OperationMap map = op.createMap("props");

@@ -122,4 +122,9 @@ public aspect IntegrationOperationCollectionAspect
         return true;
     }
 
+    @Override
+    public String getPluginName() {
+        return "spring-integration";
+    }
+
 }

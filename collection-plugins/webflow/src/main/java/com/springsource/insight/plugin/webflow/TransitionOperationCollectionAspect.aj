@@ -58,4 +58,9 @@ public privileged aspect TransitionOperationCollectionAspect extends AbstractOpe
 	        
 	        return operation;
 	    }
+
+    @Override
+    public String getPluginName() {
+        return "webflow";
+    }
 }

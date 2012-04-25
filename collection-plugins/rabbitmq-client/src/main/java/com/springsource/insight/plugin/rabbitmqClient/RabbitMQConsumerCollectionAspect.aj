@@ -19,6 +19,7 @@ package com.springsource.insight.plugin.rabbitmqClient;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
@@ -32,6 +33,7 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
 
 public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectionAspect {
+
     public RabbitMQConsumerCollectionAspect () {
         super();
     }
@@ -44,13 +46,13 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
     public pointcut handleDelivery(String consumerTag, Envelope envelope, BasicProperties props, byte[] body)
         : execution(void Consumer+.handleDelivery(String, Envelope, BasicProperties, byte[]))
        && args(consumerTag, envelope, props, body)
-       && if(collect(thisJoinPointStaticPart))
+       && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
         ;
     
     public pointcut basicGet(String queue, boolean ack) 
         : execution(GetResponse Channel+.basicGet(String, boolean)) 
        && args(queue, ack)
-       && if(collect(thisJoinPointStaticPart))
+       && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
         ;
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
@@ -149,4 +151,7 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
                 ;
         return op;
     }
+
+    public boolean isEndpoint() { return true; }
+    public String getPluginName() { return "rabbitmq-client"; }
 }

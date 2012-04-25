@@ -49,4 +49,9 @@ public aspect MongoDbOperationCollectionAspect extends AbstractOperationCollecti
         
         return op;
     }
+
+    @Override
+    public String getPluginName() {
+        return "mongodb";
+    }
 }
