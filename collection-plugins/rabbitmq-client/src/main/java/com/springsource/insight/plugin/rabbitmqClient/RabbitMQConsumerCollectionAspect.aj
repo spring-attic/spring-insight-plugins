@@ -19,8 +19,6 @@ package com.springsource.insight.plugin.rabbitmqClient;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.springsource.insight.collection.strategies.BasicCollectionAspectProperties;
-import com.springsource.insight.collection.strategies.CollectionAspectProperties;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 
