@@ -12,8 +12,8 @@
 	<insight:operation-view operation="wf-action" template="com/springsource/insight/plugin/webflow/action.ftl"/>
 	<insight:operation-view operation="wf-transition" template="com/springsource/insight/plugin/webflow/transition.ftl"/>
 	
-	<insight:operation-group group="webflow" operation="wf-start" />
-	<insight:operation-group group="webflow" operation="wf-state" />
-	<insight:operation-group group="webflow" operation="wf-action" />
-	<insight:operation-group group="webflow" operation="wf-transition" />
+	<insight:operation-group group="WebFramework" operation="wf-start" />
+	<insight:operation-group group="WebFramework" operation="wf-state" />
+	<insight:operation-group group="WebFramework" operation="wf-action" />
+	<insight:operation-group group="WebFramework" operation="wf-transition" />
 </beans>

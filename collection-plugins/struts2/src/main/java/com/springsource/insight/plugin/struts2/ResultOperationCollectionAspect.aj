@@ -1,0 +1,62 @@
+package com.springsource.insight.plugin.struts2;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import org.aspectj.lang.JoinPoint;
+
+import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.ValidationAware;
+
+import com.springsource.insight.collection.AbstractOperationCollectionAspect;
+import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.OperationMap;
+
+/**
+ * Collection operation for Struts2 overall action result  
+ */
+public privileged aspect ResultOperationCollectionAspect extends AbstractOperationCollectionAspect {
+    public pointcut collectionPoint() :
+    	execution(void org.apache.struts2.dispatcher.ServletDispatcherResult.doExecute(String, ActionInvocation));
+
+    protected Operation createOperation(JoinPoint jp) {
+    	Object[] args = jp.getArgs();
+    	ActionInvocation aci=(ActionInvocation)args[1];
+    	
+    	// get resolve view
+		String view=(String)args[0];
+		// get result code
+		String result=aci.getResultCode();
+		
+		// get fields validation errors 
+		Map<String, List<String>> errs=null;
+		Object action=aci.getAction();
+    	if (action instanceof ValidationAware) {
+    		errs=((ValidationAware)action).getFieldErrors();
+    	}
+		
+		Operation operation=new Operation().type(OperationCollectionTypes.RESULT_TYPE.type)
+    						.label(OperationCollectionTypes.RESULT_TYPE.label+" ["+result+"]")
+    						.sourceCodeLocation(getSourceCodeLocation(jp))
+    						.put("view", view)
+    						.put("resultCode",result);
+		
+		if (errs!=null && !errs.isEmpty()) {
+			// add fields validation errors
+			OperationMap map=operation.createMap("errs");			
+			Set<Entry<String, List<String>>> entries=errs.entrySet();
+			for(Entry<String, List<String>> item: entries) {
+				map.put(item.getKey(), item.getValue().get(0));
+			}
+		}
+    	
+    	return operation;
+    }
+    
+	@Override
+    public String getPluginName() {
+		return "struts2";
+	}
+}

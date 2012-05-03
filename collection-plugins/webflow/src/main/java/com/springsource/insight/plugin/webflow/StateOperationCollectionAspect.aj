@@ -88,8 +88,7 @@ public privileged aspect StateOperationCollectionAspect extends AbstractOperatio
 			}
 			
 			if (!state.getAttributes().isEmpty()) {
-				OperationMap attribs = operation.createMap("attribs");
-				OperationCollectionUtils.putAll(attribs, state.getAttributes().asMap());
+				operation.createMap("attribs").putAnyAll(state.getAttributes().asMap());
 			}
 			
 			/*List<TransitionExecutingFlowExecutionExceptionHandler> excepts=state.getExceptionHandlerSet().exceptionHandlers;

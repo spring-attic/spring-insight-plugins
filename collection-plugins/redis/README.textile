@@ -1,4 +1,4 @@
-h3. Redis Plugin Spring Insight
+h3. Redis Plugin for Spring Insight
 
 This plugin supports Jedis and Spring-Data-Redis libraries.
 

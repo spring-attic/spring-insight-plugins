@@ -31,8 +31,7 @@ public aspect StartOperationCollectionAspect extends AbstractOperationCollection
 	        operation.put("flowId", flow.getId());
 	        
 	        if (params!=null && !params.isEmpty()) {
-	        	OperationMap initParams = operation.createMap("initParams");
-	        	OperationCollectionUtils.putAll(initParams, params.asMap());
+	        	operation.createMap("initParams").putAnyAll(params.asMap());
 	        }
 	        
 	        return operation;

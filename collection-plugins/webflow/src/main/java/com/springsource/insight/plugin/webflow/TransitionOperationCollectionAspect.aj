@@ -40,8 +40,7 @@ public privileged aspect TransitionOperationCollectionAspect extends AbstractOpe
 	        		.put("stateId", transition.getTargetStateId());
 	    	
 	    	if (!transition.getAttributes().isEmpty()) {
-	    		OperationMap initParams = operation.createMap("attribs");
-	    		OperationCollectionUtils.putAll(initParams, transition.getAttributes().asMap());
+	    		operation.createMap("attribs").putAnyAll(transition.getAttributes().asMap());
 	    	}
 	        
 	    	// get transition's activities

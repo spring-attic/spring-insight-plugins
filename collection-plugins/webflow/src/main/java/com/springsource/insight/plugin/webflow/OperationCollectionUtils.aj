@@ -54,14 +54,4 @@ public privileged aspect OperationCollectionUtils {
 		
 		return expression;
 	}
-	
-	public static void putAll(OperationMap opMap, Map<String,Object> map) {
-		if (map!=null) {
-			Set<Map.Entry<String, Object>> entries=map.entrySet();
-			for(Map.Entry<String, Object> item: entries) {
-				Object value=item.getValue();
-				opMap.put(item.getKey(), (value!=null)?value.toString():null);
-			}
-		}
-	}
 }
