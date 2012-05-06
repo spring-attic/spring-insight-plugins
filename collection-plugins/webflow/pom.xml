@@ -8,7 +8,7 @@
 	<packaging>jar</packaging>
 
 	<properties>
-		<spring.webflow.version>2.3.1.BUILD-SNAPSHOT</spring.webflow.version>
+		<spring.webflow.version>2.3.1.RELEASE</spring.webflow.version>
 	</properties>
 
 	<parent>
