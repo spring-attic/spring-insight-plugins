@@ -5,9 +5,11 @@ target
 .project
 .classpath
 .svn
+.springBeans
 *.iml
 *.ipr
 *.iws
 .idea/
-
+_ajdump
+dependency-reduced-pom.xml
 dist/cloudfoundry/installer/src/main/ruby/installer/public/insight.war
