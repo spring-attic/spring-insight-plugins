@@ -40,7 +40,7 @@ public aspect HibernateSessionOperationCollectionAspect extends AbstractOperatio
      * Example usage of disabling a plugin based upon some versioning criteria
      */
     static {
-        assertCompatible(HibernateSessionOperationCollectionAspect.class, "hibernate", Session.class, "3.2", "4.1");
+        assertCompatible(HibernateSessionOperationCollectionAspect.class, "hibernate", Session.class, "3.0", "4.1");
     }
 
     public HibernateSessionOperationCollectionAspect() {
