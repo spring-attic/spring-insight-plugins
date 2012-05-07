@@ -94,6 +94,13 @@
                         </configuration>
                     </execution>
                 </executions>
+				  <dependencies>
+						<dependency>
+							<groupId>org.aspectj</groupId>
+							<artifactId>aspectjtools</artifactId>
+							<version>${aspectj.version}</version>
+						</dependency>
+				  </dependencies>
             </plugin>
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
