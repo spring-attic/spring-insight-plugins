@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:insight="http://www.springframework.org/schema/insight-idk"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
+
+	<insight:plugin name="jta" version="${project.version}" publisher="SpringSource" />
+
+        <!-- NOTE: we use the same FTL file for all operations since they look the same -->
+	<insight:operation-view operation="jta-tx-op" template="com/springsource/insight/plugin/jta/jta.ftl"/>
+	<insight:operation-group group="Database" operation="jta-tx-op" />
+    <bean class="com.springsource.insight.plugin.jta.TransactionMetricsGenerator" />
+    
+    <insight:operation-view operation="jta-tx-mgr" template="com/springsource/insight/plugin/jta/jta.ftl"/>
+    <insight:operation-group group="Database" operation="jta-tx-mgr" />
+    <bean class="com.springsource.insight.plugin.jta.TransactionManagerMetricsGenerator" />
+
+    <insight:operation-view operation="jta-tx-user" template="com/springsource/insight/plugin/jta/jta.ftl"/>
+    <insight:operation-group group="Database" operation="jta-tx-user" />
+    <bean class="com.springsource.insight.plugin.jta.UserTransactionMetricsGenerator" />
+    
+</beans>

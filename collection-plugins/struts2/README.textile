@@ -1,4 +1,4 @@
-h3. Struts2 Plugin for Spring Insight
+h1. Struts2 Plugin for Spring Insight
 
 Provides data for following aspects of the Struts2 framework:
 Start Proxy Execution, Custom Interceptions, Actions and Validation, Execution Result

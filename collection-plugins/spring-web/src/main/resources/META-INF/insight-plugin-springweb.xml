@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:insight="http://www.springframework.org/schema/insight-idk"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
+
+	<insight:plugin name="spring-web" version="${project.version}" publisher="SpringSource" />
+
+	<insight:operation-view operation="init_binder" template="com/springsource/insight/plugin/springweb/binder/init_binder.ftl"/>
+	<insight:operation-view operation="model_attribute" template="com/springsource/insight/plugin/springweb/modelattribute/model_attribute.ftl"/>
+	<insight:operation-view operation="view_render" template="com/springsource/insight/plugin/springweb/view/render/view_render.ftl"/>
+	<insight:operation-view operation="view_resolver" template="com/springsource/insight/plugin/springweb/view/resolver/view_resolver.ftl"/>
+	<insight:operation-view operation="web_request" template="com/springsource/insight/plugin/springweb/request/web_request.ftl"/>
+	
+	<insight:operation-group group="Web" operation="init_binder" />
+	<insight:operation-group group="Web" operation="controller_method" />
+	<insight:operation-group group="Web" operation="MODEL_ATTRIBUTE" />
+	<insight:operation-group group="Web" operation="VIEW_RENDER" />
+	<insight:operation-group group="Web" operation="VIEW_RESOLVER" />
+
+    <bean class="com.springsource.insight.plugin.springweb.controller.ControllerEndPointAnalyzer"/>
+
+</beans>

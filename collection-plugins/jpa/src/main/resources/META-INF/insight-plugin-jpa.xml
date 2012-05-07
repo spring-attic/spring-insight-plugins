@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:insight="http://www.springframework.org/schema/insight-idk"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
+
+	<insight:plugin name="jpa" version="${project.version}" publisher="SpringSource" />
+
+    <insight:operation-group group="Database" operation="jpa-entity-manager" />
+    <insight:operation-view operation="jpa-entity-manager" template="com/springsource/insight/plugin/jpa/entity-manager.ftl"/>
+    <bean class="com.springsource.insight.plugin.jpa.EntityManagerMetricsGenerator" />
+
+    <insight:operation-group group="Database" operation="jpa-tx-entity" />
+    <insight:operation-view operation="jpa-tx-entity" template="com/springsource/insight/plugin/jpa/tx-entity.ftl"/>
+    <bean class="com.springsource.insight.plugin.jpa.EntityTransactionMetricsGenerator" />
+
+</beans>

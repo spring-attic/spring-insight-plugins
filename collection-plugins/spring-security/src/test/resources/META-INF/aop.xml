@@ -1,0 +1,9 @@
+<aspectj>
+    <!-- -verbose -showWeaveInfo  -->
+    <weaver options="-Xlint:ignore -verbose">
+        <include within="*"/>
+
+        <dump within="com.springsource.insight.plugin.spring.security..*" beforeandafter="true" />
+        <dump within="org.springframework.security..*" beforeandafter="true" />
+    </weaver>
+</aspectj>

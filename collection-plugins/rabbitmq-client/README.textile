@@ -1,4 +1,4 @@
-h3. RabbitMQ Plugin for Spring Insight
+h1. RabbitMQ Plugin for Spring Insight
 
 This plugin supports the java client library provided by the RabbitMQ team. 
 This plugin provides an endpoint for consuming messages from RabbitMQ.

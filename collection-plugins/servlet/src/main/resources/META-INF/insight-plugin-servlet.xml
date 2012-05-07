@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:insight="http://www.springframework.org/schema/insight-idk"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
+
+	<insight:plugin name="servlet" version="${project.version}" publisher="SpringSource" />
+
+	<insight:operation-view operation="http" template="com/springsource/insight/plugin/servlet/http.ftl"/>
+	<insight:operation-view operation="servlet-filter" template="com/springsource/insight/plugin/servlet/servlet-filter.ftl"/>
+	<insight:operation-view operation="servlet-listener" template="com/springsource/insight/plugin/servlet/servlet-listener.ftl"/>
+	<insight:operation-view operation="request_dispatch" template="com/springsource/insight/plugin/servlet/request-dispatch.ftl"/>
+	
+	<insight:operation-group group="Web" operation="http" />
+	<insight:operation-group group="Web" operation="servlet-listener" />
+	<insight:operation-group group="Web" operation="servlet-filter" />
+	<insight:operation-group group="Servlet Filters" operation="servlet-filter" />
+	
+    <bean class="com.springsource.insight.plugin.servlet.ServletEndPointAnalyzer" />
+    <bean class="com.springsource.insight.plugin.servlet.RequestDispatchEndPointAnalyzer" />
+
+    <bean class="com.springsource.insight.plugin.servlet.LifecycleEndPointAnalyzer" />
+
+    <bean class="com.springsource.insight.plugin.servlet.HttpStatusTraceErrorAnalyzer" />
+
+    <bean class="com.springsource.insight.plugin.servlet.RequestResponseSizeMetricsGenerator" />
+
+</beans>

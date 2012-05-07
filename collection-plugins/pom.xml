@@ -32,6 +32,35 @@
 		<module>spring-integration</module>
 		<module>webflow</module>
 		<module>struts2</module>
+		<module>hibernate</module>
+		<module>ehcache</module>
+		<module>eclipse-persistence</module>
+		<module>ejb3</module>
+		<module>files-tracker</module>
+		<module>jax-rs</module>
+		<module>jws</module>
+		<module>jta</module>
+		<module>grails</module>
+		<module>httpclient3</module>
+		<module>httpclient4</module>
+		<module>jdbc</module>
+		<module>jpa</module>
+		<module>jms</module>
+		<module>ldap</module>
+		<module>logging</module>
+		<module>mail</module>
+		<module>method-endpoint</module>
+		<module>quartz</module>
+		<module>run-exec</module>
+		<module>servlet</module>
+		<module>socket</module>
+		<module>spring-core</module>
+		<module>spring-batch</module>
+	    <module>spring-data</module>
+		<module>spring-web</module>
+		<module>spring-tx</module>
+		<module>spring-security</module>
+		<module>tomcat</module>
 	</modules>
 	
 </project>
