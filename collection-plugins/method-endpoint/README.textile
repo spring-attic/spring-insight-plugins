@@ -1,0 +1,15 @@
+h1. Method End Point Plugin for Spring Insight
+
+h2. Compatibility
+
+This plugin is compatible with the 1.5+ versions of insight.
+
+h2. Installation
+
+You may install this plugin by copying the plugin jar to
+<code>
+  insight/collection-plugins
+</code>
+
+For both the Dashboard and Insight Agent. You should see the
+plugin listed under the administration panel.
