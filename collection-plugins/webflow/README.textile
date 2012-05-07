@@ -1,7 +1,6 @@
 h1. Spring WebFlow Plugin for Spring Insight
 
-Provides data for following aspects of the Spring WebFlow framework:
-Start Flow, State processing, Action execution and Transition flow
+This plugins supports @Repository Spring Data APIs
 
 h2. Compatibility
 
@@ -10,8 +9,7 @@ be compatible with 1.5+ (not tested).
 
 h2. Installation
 
-This is a core plugin of Insight 1.9+ but earlier users may
-install this plugin by copying the plugin jar to
+You may install this plugin by copying the plugin jar to
 <code>
   insight/collection-plugins
 </code>

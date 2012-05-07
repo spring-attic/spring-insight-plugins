@@ -2,6 +2,21 @@ h1. MongoDB plugin for Spring Insight
 
 Spring Insight runs in the SpringSource tc Server. See http://www.springsource.org/insight for details. This plugin adds instrumentation to for web applications that use MongoDB (http://www.mongodb.org) through the MongoDB Java driver, which typically works outside the normal ORM flow. 
 
+h2. Compatibility
+
+This plugin is compatible with the 1.8+ versions of insight. It may
+be compatible with 1.5+ (not tested).
+
+h2. Installation
+
+You may install this plugin by copying the plugin jar to
+<code>
+  insight/collection-plugins
+</code>
+
+For both the Dashboard and Insight Agent. You should see the
+plugin listed under the administration panel.
+
 h2. What does it do?
 
 It instruments calls to MongoDB from the Java driver. Typical calls on the DBCollection class are traced, as are the DB.command() calls that are not covered by these. 
@@ -9,38 +24,6 @@ It instruments calls to MongoDB from the Java driver. Typical calls on the DBCol
 The DBCursor.next() call is traced but the information for each call is limited. For example, it does not provide the corresponding DBCollection (yet).
 
 Some attempt is made to decode parameters and return values for common and MongoDB types we know about.
-
-h2. Installing the plugin
-
-Get the code: <code>git clone https://github.com/SpringSource/spring-insight-plugins</code>
-
-Now build it:
-
-<pre>
-<code>
-cd spring-insight-plugins/collection-plugins/mongodb
-mvn clean package
-</code>
-</pre>
-
-You'll need to have tc Server Developer Edition installed. Let's call the location of that <code>tcServer</code>.
-
-Now copy the plugin jar to the right place under <code>tcServer</code>.
-
-<pre>
-<code>
-cp target/insight-plugin-mongodb-x.x.jar tcServer/spring-insight-instance/insight/collection-plugins
-</code>
-</pre>
-
-h2. Running the plugin
-
-# Start up Spring Insight Server as usual (see the Spring tc Server Developer Edition documentation) and make sure your WAR file is loaded. Start your application and make sure it's running.
-# Browse to http://localhost:8080/insight to see the Spring Insight dashboard. Click on the Administration button and then _Collection Plug-ins_ under _Reports and Statistics_.
-# If you can see the mongodb plugin it's installed and running.
-# Run through your application in a way you're sure exercises MongoDB. Then go back to the Spring Insight dashboard to see the traces.
-
-Have fun! And let me know what doesn't work well.
 
 h2. Known issues
 
@@ -54,6 +37,4 @@ h2. Contact
 
 Maintained by the Insight Team insight [at] vmware [dot] com
 Contributed by Stephen Harrison (stephen [at] harrison [dot] org)
-Merged and Updated to Insight 1.7.0 by the Insight Team
-
-
+Merged and Updated to Insight 1.8.0 by the Insight Team

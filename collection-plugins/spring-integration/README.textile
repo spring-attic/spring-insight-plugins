@@ -1,17 +1,15 @@
 h3. Spring Integration Plugin Spring Insight
 
-This plugin provides information from the core Spring Integration libraries.
-It provides a new endpoint for analysis.
+This plugins supports @Repository Spring Data APIs
 
 h2. Compatibility
 
-This plugin is compatible with the 1.7+ versions of insight. 
+This plugin is compatible with the 1.8+ versions of insight. It may
+be compatible with 1.5+ (not tested).
 
 h2. Installation
 
-This is a core plugin of Insight 1.7+ but if you are building this yourself
-place the plugin in the following directory:
-
+You may install this plugin by copying the plugin jar to
 <code>
   insight/collection-plugins
 </code>

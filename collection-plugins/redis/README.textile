@@ -4,13 +4,12 @@ This plugin supports Jedis and Spring-Data-Redis libraries.
 
 h2. Compatibility
 
-This plugin is compatible with the 1.7+ versions of insight. It may
-be compatible with 1.5/1.6 ( not tested ).
+This plugin is compatible with the 1.8+ versions of insight. It may
+be compatible with 1.5+ (not tested).
 
 h2. Installation
 
-This is a core plugin of Insight 1.7+ but earlier users may
-install this plugin by copying the plugin jar to
+You may install this plugin by copying the plugin jar to
 <code>
   insight/collection-plugins
 </code>
