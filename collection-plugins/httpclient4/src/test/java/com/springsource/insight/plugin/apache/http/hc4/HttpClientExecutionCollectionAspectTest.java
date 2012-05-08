@@ -54,6 +54,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.mortbay.component.LifeCycle.Listener;
 import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.HttpConnection;
 import org.mortbay.jetty.Request;
@@ -444,6 +445,14 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
 
         protected TestHandler () {
             super();
+        }
+
+        public void addLifeCycleListener(Listener listener) {
+            // ignored
+        }
+
+        public void removeLifeCycleListener(Listener listener) {
+            // ignored
         }
 
         public void stop() throws Exception {
