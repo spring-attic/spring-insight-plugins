@@ -480,6 +480,9 @@
                         <goals>
                             <goal>sources</goal>
                         </goals>
+                        <configuration>
+                            <markersDirectory>${settings.localRepository}/com/springsource/insight/dependency-maven-plugin-markers</markersDirectory>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
