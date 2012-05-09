@@ -60,7 +60,7 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 			String example = getExample(label);
 			EndPointName endPointName = getName(label);
 
-			return new EndPointAnalysis(endPointName, endPointLabel, example, 1);
+			return new EndPointAnalysis(endPointName, endPointLabel, example, 1, op);
 		}
 
 		return null;

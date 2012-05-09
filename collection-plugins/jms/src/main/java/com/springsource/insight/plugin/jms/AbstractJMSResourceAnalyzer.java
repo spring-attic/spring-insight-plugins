@@ -54,7 +54,7 @@ abstract class AbstractJMSResourceAnalyzer implements EndPointAnalyzer,ExternalR
             String example = getExample(label);
             EndPointName endPointName = getName(label);
             
-            return new EndPointAnalysis(endPointName, endPointLabel, example, 1);
+            return new EndPointAnalysis(endPointName, endPointLabel, example, 1, op);
         }
         
         return null;

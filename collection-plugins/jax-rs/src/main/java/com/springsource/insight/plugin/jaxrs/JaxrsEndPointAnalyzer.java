@@ -44,7 +44,7 @@ public class JaxrsEndPointAnalyzer implements EndPointAnalyzer {
         final Frame         rootFrame=trace.getRootFrame();
         final Operation     rootOperation=rootFrame.getOperation();
         final String        example=getExampleRequest(trace.getFirstFrameOfType(OperationType.HTTP), frame, rootOperation);
-        return new EndPointAnalysis(endPointName, op.getLabel(), example, FrameUtil.getDepth(frame));
+        return new EndPointAnalysis(endPointName, op.getLabel(), example, FrameUtil.getDepth(frame), op);
     }
 
     public String getExampleRequest(Frame httpFrame, Frame frame, Operation rootOperation) {

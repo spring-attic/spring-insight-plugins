@@ -65,7 +65,7 @@ public class ControllerEndPointAnalyzer implements EndPointAnalyzer {
             EndPointName endPointName = EndPointName.valueOf(controllerOp);
             String endPointLabel = controllerOp.getLabel();            
             int score = FrameUtil.getDepth(controllerFrame);
-            return new EndPointAnalysis(endPointName, endPointLabel, examplePath, score);
+            return new EndPointAnalysis(endPointName, endPointLabel, examplePath, score, controllerOp);
         }
         return null;
     }

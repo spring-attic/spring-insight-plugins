@@ -40,6 +40,6 @@ public class RequestDispatchEndPointAnalyzer implements EndPointAnalyzer {
         String endPointLabel = op.getLabel();
         String endPointExample = op.getLabel();
         
-        return new EndPointAnalysis(name, endPointLabel, endPointExample, 0);
+        return new EndPointAnalysis(name, endPointLabel, endPointExample, 0, op);
     }
 }

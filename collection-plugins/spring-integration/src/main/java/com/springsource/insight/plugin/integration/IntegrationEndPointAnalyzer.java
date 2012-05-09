@@ -55,7 +55,7 @@ public class IntegrationEndPointAnalyzer implements EndPointAnalyzer {
         String label = name.getName();
         String exampleRequest = (String) op.get("siComponentType");
         int score = FrameUtil.getDepth(si);
-        return new EndPointAnalysis(name, label, exampleRequest, score);
+        return new EndPointAnalysis(name, label, exampleRequest, score, op);
     }
 
 }

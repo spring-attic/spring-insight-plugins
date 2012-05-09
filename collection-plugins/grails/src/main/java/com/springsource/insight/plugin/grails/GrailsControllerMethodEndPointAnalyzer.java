@@ -52,6 +52,6 @@ public class GrailsControllerMethodEndPointAnalyzer implements EndPointAnalyzer 
         int score = FrameUtil.getDepth(grailsFrame);        
         return new EndPointAnalysis(EndPointName.valueOf(resourceKey),
                                     resourceLabel,
-                                    exampleRequest, score); 
+                                    exampleRequest, score, operation); 
     }
 }
