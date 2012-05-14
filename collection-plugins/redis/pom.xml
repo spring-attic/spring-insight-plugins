@@ -67,6 +67,12 @@
         -->
 
 		<!-- Test dependencies -->
+       <dependency>
+           <groupId>org.aspectj</groupId>
+           <artifactId>aspectjweaver</artifactId>
+           <version>${aspectj.version}</version>
+           <scope>test</scope>
+       </dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

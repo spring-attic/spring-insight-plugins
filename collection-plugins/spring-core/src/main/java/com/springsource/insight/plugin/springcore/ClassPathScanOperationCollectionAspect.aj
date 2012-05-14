@@ -22,6 +22,10 @@ import org.springframework.context.annotation.ClassPathScanningCandidateComponen
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 public aspect ClassPathScanOperationCollectionAspect extends MethodOperationCollectionAspect {
+    public ClassPathScanOperationCollectionAspect() {
+        super();
+    }
+
     public pointcut findPathMatchingResources()
         : execution(* PathMatchingResourcePatternResolver+.findPathMatchingResources(..));
 

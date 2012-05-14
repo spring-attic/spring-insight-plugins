@@ -34,10 +34,12 @@ import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationType;
 
 public aspect FilterOperationCollectionAspect extends AbstractOperationCollectionAspect {
-    
     private static final OperationType TYPE = OperationType.valueOf("servlet-filter");
+    private final Map<Filter, Operation> opCache = new ConcurrentHashMap<Filter, Operation>();
 
-    private Map<Filter, Operation> opCache = new ConcurrentHashMap<Filter, Operation>();
+    public FilterOperationCollectionAspect() {
+        super();
+    }
 
     public pointcut collectionPoint() 
         : execution(* Filter+.doFilter(ServletRequest, ServletResponse, FilterChain));
