@@ -29,9 +29,12 @@ import com.springsource.insight.intercept.operation.OperationList;
 import com.springsource.insight.intercept.operation.OperationType;
 
 public aspect ServletContextListenerOperationDestroyedCollectionAspect extends AbstractOperationCollectionAspect {
-    
     private static final OperationType TYPE = LifecycleEndPointAnalyzer.SERVLET_LISTENER_TYPE;
     
+    public ServletContextListenerOperationDestroyedCollectionAspect() {
+        super();
+    }
+
     public pointcut collectionPoint() 
         : execution(* ServletContextListener+.contextDestroyed(ServletContextEvent));
 
