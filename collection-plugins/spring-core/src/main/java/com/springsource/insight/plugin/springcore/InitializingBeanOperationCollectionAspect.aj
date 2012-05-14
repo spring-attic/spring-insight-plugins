@@ -23,6 +23,10 @@ import com.springsource.insight.collection.method.AnnotationDrivenMethodOperatio
 import javax.annotation.PostConstruct;
 
 public aspect InitializingBeanOperationCollectionAspect extends MethodOperationCollectionAspect {
+    public InitializingBeanOperationCollectionAspect() {
+        super();
+    }
+
     public pointcut afterPropertiesSet()
         : execution(* InitializingBean+.afterPropertiesSet(..));
 
