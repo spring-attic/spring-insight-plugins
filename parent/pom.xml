@@ -49,6 +49,7 @@
         <jackson.version>1.8.2</jackson.version>
         <org.springframework.amqp.version>1.0.0.RELEASE</org.springframework.amqp.version>
         <commons.codec.version>1.5</commons.codec.version>
+        <json-lib.version>2.2.3</json-lib.version>
         <!-- maven-rpm-plugin .. while not the newest, does not have bugs the newer versions have -->
         <rpm.version>2.0-beta-4</rpm.version>
         <cloudfoundry.version>0.7.0</cloudfoundry.version>
