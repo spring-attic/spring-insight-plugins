@@ -31,18 +31,24 @@ import com.springsource.insight.intercept.operation.Operation;
  * @properties: action
  */
 public privileged aspect ActionOperationCollectionAspect extends AbstractOperationCollectionAspect {
-	    public pointcut collectionPoint() 
-	    	: execution(Event org.springframework.webflow.execution.ActionExecutor.execute(Action, RequestContext));
+    public ActionOperationCollectionAspect() {
+        super();
+    }
 
-	    protected Operation createOperation(JoinPoint jp) {
-	    	Object[] args = jp.getArgs();
-	    	String expression=OperationCollectionUtils.getActionExpression((AnnotatedAction)args[0]);
-	        
-	    	return new Operation().type(OperationCollectionTypes.ACTION_TYPE.type)
-	    						.label(OperationCollectionTypes.ACTION_TYPE.label+" ["+expression+"]")
-	    						.sourceCodeLocation(getSourceCodeLocation(jp))
-	            	            .put("action", expression);
-	    }
+    public pointcut collectionPoint() 
+    	: execution(Event org.springframework.webflow.execution.ActionExecutor.execute(Action, RequestContext));
+
+    @Override
+    protected Operation createOperation(JoinPoint jp) {
+    	Object[] args = jp.getArgs();
+    	String expression=OperationCollectionUtils.getActionExpression((AnnotatedAction)args[0]);
+        
+    	return new Operation().type(OperationCollectionTypes.ACTION_TYPE.type)
+    						.label(OperationCollectionTypes.ACTION_TYPE.label+" ["+expression+"]")
+    						.sourceCodeLocation(getSourceCodeLocation(jp))
+            	            .put("action", expression);
+    }
+
     @Override
     public String getPluginName() {
         return "webflow";
