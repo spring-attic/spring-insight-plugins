@@ -28,11 +28,16 @@ import com.springsource.insight.intercept.operation.Operation;
  * Do not collect internal Struts2 interceptors.
  */
 public privileged aspect InterceptOperationCollectionAspect extends AbstractOperationCollectionAspect {
+    public InterceptOperationCollectionAspect() {
+        super();
+    }
+
     public pointcut collectionPoint() :
     	execution(String com.opensymphony.xwork2.interceptor.Interceptor+.intercept(ActionInvocation))
     	// do not collect internal Struts2 interceptors
 		&& !within(com.opensymphony.xwork2.interceptor..*) && !within(org.apache.struts2.interceptor..*);
 
+    @Override
     protected Operation createOperation(JoinPoint jp) {
     	String interceptor=jp.getThis().getClass().getName();
         

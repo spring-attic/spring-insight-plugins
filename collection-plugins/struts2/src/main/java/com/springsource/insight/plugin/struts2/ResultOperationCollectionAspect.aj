@@ -34,9 +34,14 @@ import com.springsource.insight.intercept.operation.OperationMap;
  * Collection operation for Struts2 overall action result  
  */
 public privileged aspect ResultOperationCollectionAspect extends AbstractOperationCollectionAspect {
+    public ResultOperationCollectionAspect() {
+        super();
+    }
+
     public pointcut collectionPoint() :
     	execution(void org.apache.struts2.dispatcher.ServletDispatcherResult.doExecute(String, ActionInvocation));
 
+    @Override
     protected Operation createOperation(JoinPoint jp) {
     	Object[] args = jp.getArgs();
     	ActionInvocation aci=(ActionInvocation)args[1];
