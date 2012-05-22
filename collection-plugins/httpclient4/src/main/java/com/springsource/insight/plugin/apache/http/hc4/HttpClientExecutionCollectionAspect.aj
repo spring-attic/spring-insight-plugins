@@ -43,6 +43,8 @@ import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.collection.OperationCollector;
 import com.springsource.insight.intercept.InterceptConfiguration;
+import com.springsource.insight.intercept.color.Color;
+import com.springsource.insight.intercept.color.ColorManager.ColorParams;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationList;
@@ -117,8 +119,19 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
             : withResponseExecution()
            && (!cflowbelow(withResponseExecution()))
            && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart)) {
-        Operation    op=enterOperation(thisJoinPointStaticPart);
-        HttpRequest  request=HttpPlaceholderRequest.resolveHttpRequest(thisJoinPoint.getArgs());
+        final Operation    op=enterOperation(thisJoinPointStaticPart);
+        final HttpRequest  request=HttpPlaceholderRequest.resolveHttpRequest(thisJoinPoint.getArgs());
+        
+        colorForward(new ColorParams() {
+			public void setColor(String key, String value) {
+				request.addHeader(key, value);
+				}
+
+			public Operation getOperation() {
+				return op;
+			}
+		});
+
         try
         {
             HttpResponse    response=proceed();
@@ -149,9 +162,20 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
            && (!cflowbelow(withResponseHandlerExecutionFlow()))
            && args(handler)
            && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart)) {
-        Operation           op=enterOperation(thisJoinPointStaticPart);
+        final Operation     op=enterOperation(thisJoinPointStaticPart);
         Object[]            args=thisJoinPoint.getArgs();
-        HttpRequest         request=HttpPlaceholderRequest.resolveHttpRequest(args);
+        final HttpRequest   request=HttpPlaceholderRequest.resolveHttpRequest(args);
+
+        colorForward(new ColorParams() {
+			public void setColor(String key, String value) {
+				request.addHeader(key, value);
+			}
+
+            public Operation getOperation() {
+				return op;
+			}
+		});
+
         // must be final or the anonymous class cannot reference it...
         final AtomicReference<HttpResponse> rspRef=new AtomicReference<HttpResponse>(null);
         final ResponseHandler<?>            rspHandler=handler;

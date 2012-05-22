@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.springsource.insight.intercept.color.ColorManager;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
 import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
@@ -44,6 +45,7 @@ public class GemFireRegionExternalResourceAnalyzer implements ExternalResourceAn
 			Object          regionFullPathObj = op.get(GemFireDefenitions.FIELD_PATH);
 			String          regionFullPath = (regionFullPathObj == null) ? null : regionFullPathObj.toString();
 			OperationList   servers = op.get(GemFireDefenitions.FIELD_SERVERS, OperationList.class);
+            String color = ColorManager.getInstance().getColor(op);
 			if ((servers == null) || (servers.size() <= 0)) {
 				continue;
 			}
@@ -51,7 +53,7 @@ public class GemFireRegionExternalResourceAnalyzer implements ExternalResourceAn
 			for (int i = 0; i < servers.size(); i++) {
 				String server = servers.get(i).toString();
 				String name = MD5NameGenerator.getName(server+regionFullPath);
-				ExternalResourceDescriptor desc = new ExternalResourceDescriptor(frame, GemFireDefenitions.GEMFIRE + ":" + name, regionFullPath, ExternalResourceType.KVSTORE.name(), GemFireDefenitions.GEMFIRE, server, -1);
+				ExternalResourceDescriptor desc = new ExternalResourceDescriptor(frame, GemFireDefenitions.GEMFIRE + ":" + name, regionFullPath, ExternalResourceType.KVSTORE.name(), GemFireDefenitions.GEMFIRE, server, -1, color);
 				descriptors.add(desc);
 			}			
 		}

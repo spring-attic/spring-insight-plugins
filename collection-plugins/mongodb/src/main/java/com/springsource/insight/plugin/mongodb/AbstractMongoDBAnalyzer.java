@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.springsource.insight.intercept.color.ColorManager;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
@@ -57,14 +58,15 @@ public abstract class AbstractMongoDBAnalyzer implements ExternalResourceAnalyze
 			String dbName = op.get("dbName", String.class);
 			
 			String mongoHash = MD5NameGenerator.getName(dbName+host+port);
-			
+			String color = ColorManager.getInstance().getColor(op);
 			dbDescriptors.add(new ExternalResourceDescriptor(dbFrame,
 					"mongo:" + mongoHash,
 					dbName,
 					ExternalResourceType.DATABASE.name(),
 					"MongoDB",
 					host,
-					port) );			
+					port,
+                    color) );			
 		}
 		
 		return dbDescriptors;
