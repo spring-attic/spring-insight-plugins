@@ -15,7 +15,12 @@
  */
 package com.springsource.insight.plugin.jaxrs;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+
 import java.util.Date;
+import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.PathParam;
@@ -24,14 +29,24 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
 import com.springsource.insight.intercept.operation.OperationMap;
+import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
+import com.springsource.insight.intercept.topology.ExternalResourceType;
+import com.springsource.insight.intercept.topology.MD5NameGenerator;
+import com.springsource.insight.intercept.trace.Frame;
+import com.springsource.insight.intercept.trace.SimpleFrameBuilder;
+import com.springsource.insight.intercept.trace.Trace;
+import com.springsource.insight.intercept.trace.TraceId;
 
 /**
  */
 public class JaxrsOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
     private final RestServiceInstance   _testService;
+    private final JaxrsExternalResourceAnalyzer analyzer = new JaxrsExternalResourceAnalyzer();
+    
     public JaxrsOperationCollectionAspectTest() {
         _testService = new RestServiceInstance();
     }
@@ -113,11 +128,34 @@ public class JaxrsOperationCollectionAspectTest extends OperationCollectionAspec
                 Assert.assertEquals("Mismatched path param enum", JaxrsParamType.PATH, enumType);
             }
             
+            //test external resources
+            SimpleFrameBuilder builder = new SimpleFrameBuilder();
+            builder.enter(op);           
+            Frame frame = builder.exit();
+            Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
+            
+            List<ExternalResourceDescriptor> externalResourceDescriptors = (List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
+            assertNotNull("No descriptors extracted", externalResourceDescriptors);
+            ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);        
+    		assertSame("Mismatched operation instance", op, descriptor.getFrame().getOperation());
+    		assertDescriptorContents("testExactlyTwoDifferentExternalResourceNames", expTemplate, descriptor);
+            
             return op;
         } finally {
             testService.destroy();
         }
     }
+    
+    private static ExternalResourceDescriptor assertDescriptorContents (String testName, String path, ExternalResourceDescriptor descriptor) {
+
+        assertEquals(testName + ": Mismatched label", path, descriptor.getLabel());
+        assertEquals(testName + ": Mismatched type", ExternalResourceType.WEB_SERVICE.name(), descriptor.getType());
+
+        String expectedHash = MD5NameGenerator.getName(path);
+        assertEquals(testName + ": Mismatched name", JaxrsDefinitions.TYPE.getName() + ":" + expectedHash, descriptor.getName());
+        return descriptor;
+    }
+    
     /*
      * @see com.springsource.insight.collection.OperationCollectionAspectTestSupport#getAspect()
      */

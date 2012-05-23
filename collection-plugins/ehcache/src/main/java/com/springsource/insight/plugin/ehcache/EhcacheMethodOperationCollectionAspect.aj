@@ -48,7 +48,7 @@ public abstract aspect EhcacheMethodOperationCollectionAspect extends MethodOper
     Operation initCommonFields (Operation op, Ehcache cache, String method, Object key) {
          op.type(EhcacheDefinitions.CACHE_OPERATION)
            .put(EhcacheDefinitions.METHOD_ATTRIBUTE, method)
-           .putAnyNonEmpty(EhcacheDefinitions.KEY_ATTRIBUTE, key)
+           .putAnyNonEmpty(EhcacheDefinitions.KEY_ATTRIBUTE, (key!=null)?key.toString():null)
            .label(method + " " + op.get(EhcacheDefinitions.KEY_ATTRIBUTE))
            .putAnyNonEmpty(EhcacheDefinitions.NAME_ATTRIBUTE, cache.getName())
            ;
@@ -84,7 +84,7 @@ public abstract aspect EhcacheMethodOperationCollectionAspect extends MethodOper
         return map.putAnyNonEmpty("diskStorePath", config.getDiskStorePath())
                   .put("maxElementsInMemory", config.getMaxElementsInMemory())
                   .put("TTLSeconds", config.getTimeToLiveSeconds())
-                  .putAnyNonEmpty("transactionalMode", config.getTransactionalMode())
+                  .putAnyNonEmpty("transactionalMode", config.getTransactionalMode().name())
                   ;
                   
     }

@@ -64,8 +64,10 @@ public aspect EhcacheGetOperationCollectionAspect extends EhcacheMethodOperation
 
         @Override
         protected void processNormalExit(Operation op, Object returnValue) {
-            if (returnValue instanceof Element)
-                op.putAnyNonEmpty(EhcacheDefinitions.VALUE_ATTRIBUTE, ((Element) returnValue).getObjectValue());
+            if (returnValue instanceof Element) {
+            	Object value=((Element) returnValue).getObjectValue();
+                op.putAnyNonEmpty(EhcacheDefinitions.VALUE_ATTRIBUTE, (value!=null)?value.toString():null);
+            }
             super.processNormalExit(op, returnValue);
         }
     }

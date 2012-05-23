@@ -13,6 +13,10 @@
 		<version>1.9.0-CI-SNAPSHOT</version>
 		<relativePath>../../parent</relativePath>
 	</parent>
+    
+    <properties>
+        <spring.core.version>3.1.0.RELEASE</spring.core.version>
+    </properties>
 	
 	<dependencies>
 		<!-- Provided dependencies (part of Insight) -->
@@ -34,7 +38,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>${spring.framework.version}</version>
+			<version>${spring.core.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		
