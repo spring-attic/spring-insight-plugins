@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.springsource.insight.intercept.color.ColorManager;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
@@ -45,9 +46,10 @@ public class MailResourceAnalyzer implements ExternalResourceAnalyzer {
 			String protocol = op.get(MailDefinitions.SEND_PROTOCOL, String.class); 
 			String label = protocol.toUpperCase() + ":" + host + ((port > 0) ? (":" + port) : "");
 			String hashString = MD5NameGenerator.getName(label);
+            String color = ColorManager.getInstance().getColor(op);
 
 			ExternalResourceDescriptor descriptor = new ExternalResourceDescriptor(
-					mailFrame, protocol + ":" + hashString, label, RESOURCE_TYPE, protocol, host, port);
+					mailFrame, protocol + ":" + hashString, label, RESOURCE_TYPE, protocol, host, port, color);
 			mailDescriptors.add(descriptor);            
 		}
 

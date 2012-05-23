@@ -32,8 +32,13 @@ import com.springsource.insight.intercept.operation.OperationMap;
  * Collection operation for Struts2 flow execution start  
  */
 public privileged aspect StartOperationCollectionAspect extends AbstractOperationCollectionAspect {
+    public StartOperationCollectionAspect() {
+        super();
+    }
+
     public pointcut collectionPoint() : execution(String com.opensymphony.xwork2.ActionProxy+.execute());
 
+    @Override
     protected Operation createOperation(JoinPoint jp) {
     	ActionProxy actionProxy=(ActionProxy)jp.getThis();
     	// get Struts action name 

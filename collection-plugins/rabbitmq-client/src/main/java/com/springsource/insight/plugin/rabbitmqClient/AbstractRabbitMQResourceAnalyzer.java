@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.springsource.insight.intercept.color.ColorManager;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointName;
@@ -80,7 +81,7 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 			String host = op.get("host", String.class);            
 			Integer portProperty = op.get("port", Integer.class);
 			int port = portProperty == null ? -1 : portProperty.intValue();
-
+            String color = ColorManager.getInstance().getColor(op);
 			String hashString = MD5NameGenerator.getName(label + host + port);
 
 			ExternalResourceDescriptor descriptor =
@@ -90,7 +91,8 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 			                                        ExternalResourceType.QUEUE.name(),
 			                                        RABBIT,
 			                                        host,
-			                                        port);
+			                                        port,
+                                                    color);
 			queueDescriptors.add(descriptor);            
 		}
 

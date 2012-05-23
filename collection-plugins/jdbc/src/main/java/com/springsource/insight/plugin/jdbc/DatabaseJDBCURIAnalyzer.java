@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.springsource.insight.intercept.color.ColorManager;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationType;
@@ -108,8 +109,10 @@ public abstract class DatabaseJDBCURIAnalyzer implements ExternalResourceAnalyze
 			port = uri.getPort();			
 		}
 		
+        String color = ColorManager.getInstance().getColor(frame.getOperation());
+        
 		// for  Non-URI based and special cases the host and port remain default
-		ExternalResourceDescriptor hashed = new ExternalResourceDescriptor(frame, jdbcScheme + ":1:" + jdbcHash, "", ExternalResourceType.DATABASE.name(), jdbcScheme, host, port);
+		ExternalResourceDescriptor hashed = new ExternalResourceDescriptor(frame, jdbcScheme + ":1:" + jdbcHash, "", ExternalResourceType.DATABASE.name(), jdbcScheme, host, port, color);
 		return Arrays.asList(hashed);
 	}
 
@@ -126,8 +129,9 @@ public abstract class DatabaseJDBCURIAnalyzer implements ExternalResourceAnalyze
 				String host = urlMetaData.getHost();
 				int port = urlMetaData.getPort();
 				String jdbcHash = MD5NameGenerator.getName(connectionString);
-
-				ExternalResourceDescriptor descriptor = new ExternalResourceDescriptor(frame, vendor + ":" + instance + ":" + jdbcHash, databaseName, ExternalResourceType.DATABASE.name(), vendor, host, port);
+                String color = ColorManager.getInstance().getColor(frame.getOperation());
+                
+				ExternalResourceDescriptor descriptor = new ExternalResourceDescriptor(frame, vendor + ":" + instance + ":" + jdbcHash, databaseName, ExternalResourceType.DATABASE.name(), vendor, host, port, color);
 				externalResourceDescriptors.add(descriptor);
 				
 				//using the same instance index as we're assuming no more than one parser will ever succeed in parsing the same url

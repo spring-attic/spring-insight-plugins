@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.springsource.insight.intercept.color.ColorManager;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
@@ -73,6 +74,8 @@ public class LdapExternalResourceAnalyzer implements ExternalResourceAnalyzer {
         try
         {
             URI uri=new URI(uriValue);
+            String color = ColorManager.getInstance().getColor(op);
+            
             return new ExternalResourceDescriptor(
                             frame,
                             MD5NameGenerator.getName(uriValue),
@@ -80,7 +83,8 @@ public class LdapExternalResourceAnalyzer implements ExternalResourceAnalyzer {
                             ExternalResourceType.LDAP.name(),
                             uriValue,     // vendor
                             uri.getHost(),
-                            resolvePort(uri));    
+                            resolvePort(uri),
+                            color);    
         }
         catch(URISyntaxException e)
         {

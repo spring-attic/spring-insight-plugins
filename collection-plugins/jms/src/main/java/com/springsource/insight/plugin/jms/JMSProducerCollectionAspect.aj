@@ -25,6 +25,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.color.ColorManager.ColorParams;
 
 public aspect JMSProducerCollectionAspect extends AbstractJMSCollectionAspect {
     private static final MessageOperationMap map = new MessageOperationMap();
@@ -38,21 +39,35 @@ public aspect JMSProducerCollectionAspect extends AbstractJMSCollectionAspect {
     before() : producer() {
         try {
             JoinPoint jp = thisJoinPoint; 
-            Message message = JMSPluginUtils.getMessage(jp.getArgs());
+            final Message message = JMSPluginUtils.getMessage(jp.getArgs());
             if (message != null) {
                 MessageWrapper wrapper = MessageWrapper.instance(message);
-                Operation op = map.get(wrapper);
-            
+                final Operation op = map.get(wrapper);            
+
+                colorForward(new ColorParams() {
+                    public void setColor(String key, String value) {
+                        try {
+                            message.setStringProperty(key, value);
+                        } catch (JMSException e) {
+                            //Nothing we can do, can't color forward
+                        }
+                    }
+
+                    public Operation getOperation() {
+                        return op;
+                    }
+                });
+
                 //check that we didn't enter the frame for this message
                 //if so don't enter again
                 if (op == null) {
                 
-                    op = createOperation(jp);
-                    applyDestinationData(jp, op);
+                    Operation op1 = createOperation(jp);
+                    applyDestinationData(jp, op1);
                 
-                    map.put(wrapper, op, jp.toLongString());
+                    map.put(wrapper, op1, jp.toLongString());
                 
-                    getCollector().enter(op);
+                    getCollector().enter(op1);
                 }
             }
         } catch (Throwable t) {

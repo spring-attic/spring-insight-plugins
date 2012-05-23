@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import com.springsource.insight.intercept.color.ColorManager;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationList;
@@ -79,12 +80,15 @@ public class HttpExternalResourceAnalyzer implements ExternalResourceAnalyzer {
             String name = MD5NameGenerator.getName(uri);
             String host = uri.getHost();
             String server = resolveServerType(op);
+            String color = ColorManager.getInstance().getColor(op);
+            
             return new ExternalResourceDescriptor(frame, name,
                     ((server == null) ? "" : server + ": ") + host,    // label
                     ExternalResourceType.WEB_SERVER.name(),
                     server,     // vendor
                     host,
-                    resolvePort(uri));    
+                    resolvePort(uri),
+                    color);    
         }
         catch(URISyntaxException e)
         {

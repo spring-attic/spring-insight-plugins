@@ -38,6 +38,8 @@ import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.collection.OperationCollector;
 import com.springsource.insight.intercept.InterceptConfiguration;
+import com.springsource.insight.intercept.color.Color;
+import com.springsource.insight.intercept.color.ColorManager.ColorParams;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationList;
@@ -116,8 +118,19 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
         : clientExecutionFlow()
        && (!cflowbelow(clientExecutionFlow()))
        && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart)) {
-        Operation   op=enterOperation(thisJoinPointStaticPart);
-        HttpMethod  method=HttpPlaceholderMethod.resolveHttpMethod(thisJoinPoint.getArgs());
+        final Operation   op=enterOperation(thisJoinPointStaticPart);
+        final HttpMethod  method=HttpPlaceholderMethod.resolveHttpMethod(thisJoinPoint.getArgs());
+
+        colorForward(new ColorParams() {
+			public void setColor(String key, String value) {
+				method.addRequestHeader(key, value);
+			}
+
+            public Operation getOperation() {
+				return op;
+			}
+		});
+
         try
         {
             int statusCode=proceed();
