@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.springsource.insight.intercept.color.ColorManager;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
@@ -47,7 +48,9 @@ public class JaxrsExternalResourceAnalyzer implements ExternalResourceAnalyzer {
 			}
 			
 			String hashString = MD5NameGenerator.getName(path);
-			ExternalResourceDescriptor desc = new ExternalResourceDescriptor(frame, JaxrsDefinitions.TYPE.getName() + ":" + hashString, path, ExternalResourceType.WEB_SERVICE.name(), JaxrsDefinitions.TYPE.getName());
+			String color = ColorManager.getInstance().getColor(op);
+			ExternalResourceDescriptor desc = new ExternalResourceDescriptor(frame, JaxrsDefinitions.TYPE.getName() + ":" + hashString, path,
+																			ExternalResourceType.WEB_SERVICE.name(), JaxrsDefinitions.TYPE.getName(), color);
 			descriptors.add(desc);			
 		}
 		

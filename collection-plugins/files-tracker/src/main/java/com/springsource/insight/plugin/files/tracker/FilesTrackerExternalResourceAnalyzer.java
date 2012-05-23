@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.springsource.insight.intercept.color.ColorManager;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
@@ -47,7 +48,9 @@ public class FilesTrackerExternalResourceAnalyzer implements ExternalResourceAna
 			}
 			
 			String hashString = MD5NameGenerator.getName(path);
-			ExternalResourceDescriptor desc = new ExternalResourceDescriptor(frame, FilesTrackerDefinitions.TYPE.getName() + ":" + hashString, path, ExternalResourceType.FILESTORE.name(), FilesTrackerDefinitions.TYPE.getName());
+			String color = ColorManager.getInstance().getColor(op);
+			ExternalResourceDescriptor desc = new ExternalResourceDescriptor(frame, FilesTrackerDefinitions.TYPE.getName() + ":" + hashString, path,
+																			ExternalResourceType.FILESTORE.name(), FilesTrackerDefinitions.TYPE.getName(), color);
 			descriptors.add(desc);			
 		}
 		
