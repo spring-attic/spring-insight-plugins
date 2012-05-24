@@ -19,15 +19,17 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Assert;
-
 import org.junit.Test;
+import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
+import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
-import org.quartz.TriggerUtils;
+import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.utils.Key;
 
 import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
@@ -45,8 +47,13 @@ public class QuartzSchedulerOperationCollectionAspectTest extends OperationColle
     public void testCollectionPoint () throws SchedulerException, InterruptedException {
         SchedulerFactory    sf = new StdSchedulerFactory();
         Scheduler           sched = sf.getScheduler();
-        Trigger             trigger = TriggerUtils.makeImmediateTrigger("testCollectionPoint", 0, 125L);
-        JobDetail           jobDetail = new JobDetail("testCollectionPointJob", "testCollectionPointGroup", QuartzSchedulerMockJob.class);
+        
+        Trigger trigger = TriggerBuilder.newTrigger()
+        				.withIdentity("testCollectionPoint").startNow()
+        	    		.withSchedule(SimpleScheduleBuilder.simpleSchedule().withRepeatCount(0).withIntervalInMilliseconds(125L))
+        	    		.build();
+        
+        JobDetail jobDetail = JobBuilder.newJob(QuartzSchedulerMockJob.class).withIdentity("testCollectionPointJob", "testCollectionPointGroup").build();
 
         sched.scheduleJob(jobDetail, trigger);
         sched.start();
@@ -66,9 +73,10 @@ public class QuartzSchedulerOperationCollectionAspectTest extends OperationColle
     }
 
     private static void assertJobDetails (Operation op, JobDetail detail) {
-        assertOperationValue(op, "name", detail.getName());
-        assertOperationValue(op, "group", detail.getGroup());
-        assertOperationValue(op, "fullName", detail.getFullName());
+    	Key jobKey=detail.getKey();
+        assertOperationValue(op, "name", jobKey.getName());
+        assertOperationValue(op, "group", jobKey.getGroup());
+        assertOperationValue(op, "fullName", jobKey.getGroup()+"."+jobKey.getName());
         assertOperationValue(op, "description", detail.getDescription());
         assertOperationValue(op, "jobClass", detail.getJobClass().getName());
     }

@@ -157,6 +157,12 @@
                     <argLine>
                         -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
                     </argLine>
+                    <systemProperties>
+                        <property>
+                            <name>java.net.preferIPv4Stack</name>
+                            <value>true</value>
+                        </property>
+                    </systemProperties>
                 </configuration>
             </plugin>
             <plugin>

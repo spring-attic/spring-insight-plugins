@@ -70,10 +70,10 @@ public abstract class EhcacheOperationCollectionAspectTestSupport
         Assert.assertEquals("Mismatched operation type", EhcacheDefinitions.CACHE_OPERATION, op.getType());
         Assert.assertEquals("Mismatched cache name", TEST_CACHE_NAME,op.get(EhcacheDefinitions.NAME_ATTRIBUTE, String.class));
         Assert.assertEquals("Mismatched method", method, op.get(EhcacheDefinitions.METHOD_ATTRIBUTE, String.class));
-        Assert.assertEquals("Mismatched key", key, op.get(EhcacheDefinitions.KEY_ATTRIBUTE));
+        Assert.assertEquals("Mismatched key", key.toString(), op.get(EhcacheDefinitions.KEY_ATTRIBUTE));
 
         if (value != null) {
-            Assert.assertEquals("Mismatched value", value, op.get(EhcacheDefinitions.VALUE_ATTRIBUTE));
+            Assert.assertEquals("Mismatched value", value.toString(), op.get(EhcacheDefinitions.VALUE_ATTRIBUTE));
         }
         return op;
     }

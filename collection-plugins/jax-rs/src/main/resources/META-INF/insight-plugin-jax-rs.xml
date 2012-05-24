@@ -9,5 +9,5 @@
     <insight:operation-view operation="jax-rs" template="com/springsource/insight/plugin/jaxrs/jax-rs.ftl"/>
 
     <bean class="com.springsource.insight.plugin.jaxrs.JaxrsEndPointAnalyzer"/>
-
+    <bean class="com.springsource.insight.plugin.jaxrs.JaxrsExternalResourceAnalyzer" />
 </beans>

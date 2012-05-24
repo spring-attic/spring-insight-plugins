@@ -45,12 +45,14 @@ public aspect EhcacheReplaceOperationCollectionAspect extends EhcacheMethodOpera
         Element oldElement=(Element) args[0];
         initCommonFields(op, cache, EhcacheDefinitions.RPL_METHOD, oldElement.getObjectKey());
 
+        Object value;
         if (args.length > 1) {
             Element newElement=(Element) args[1];
-            op.putAnyNonEmpty(EhcacheDefinitions.VALUE_ATTRIBUTE, newElement.getObjectValue());
+            value=newElement.getObjectValue();
         } else {    // this is a one argument replacement - i.e., the element contains BOTH key and value
-            op.putAnyNonEmpty(EhcacheDefinitions.VALUE_ATTRIBUTE, oldElement.getObjectValue());
+            value=oldElement.getObjectValue();
         }
+        op.putAnyNonEmpty(EhcacheDefinitions.VALUE_ATTRIBUTE, (value!=null)?value.toString():null);
 
         return op;
     }
