@@ -25,7 +25,7 @@ h2. Creating a Plugin
 h2. Resources
 
 * Checkout our webinar on developing plugins at: http://www.youtube.com/watch?v=YR3CYnryflw
-* Tutorial (outdated, new version coming soon!): http://static.springsource.com/projects/tc-server/2.5/devedition/htmlsingle/devedition.html#tutorial-plugin
+* Tutorial: http://pubs.vmware.com/vfabric51/index.jsp?topic=/com.vmware.vfabric.tc-server.2.7/devedition/tutorial-plugin.html
 
 h2. Requirements for a Plugin
 
