@@ -42,22 +42,8 @@ public aspect JMSProducerCollectionAspect extends AbstractJMSCollectionAspect {
             final Message message = JMSPluginUtils.getMessage(jp.getArgs());
             if (message != null) {
                 MessageWrapper wrapper = MessageWrapper.instance(message);
-                final Operation op = map.get(wrapper);            
-
-                colorForward(new ColorParams() {
-                    public void setColor(String key, String value) {
-                        try {
-                            message.setStringProperty(key, value);
-                        } catch (JMSException e) {
-                            //Nothing we can do, can't color forward
-                        }
-                    }
-
-                    public Operation getOperation() {
-                        return op;
-                    }
-                });
-
+                final Operation op = map.get(wrapper);
+                
                 //check that we didn't enter the frame for this message
                 //if so don't enter again
                 if (op == null) {
@@ -68,6 +54,20 @@ public aspect JMSProducerCollectionAspect extends AbstractJMSCollectionAspect {
                     map.put(wrapper, op1, jp.toLongString());
                 
                     getCollector().enter(op1);
+                    
+                    colorForward(new ColorParams() {
+                        public void setColor(String key, String value) {
+                            try {
+                                message.setStringProperty(key, value);
+                            } catch (JMSException e) {
+                                //Nothing we can do, can't color forward
+                            }
+                        }
+
+                        public Operation getOperation() {
+                            return op;
+                        }
+                    });
                 }
             }
         } catch (Throwable t) {

@@ -23,7 +23,6 @@ import com.springsource.insight.collection.errorhandling.CollectionErrors;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 
-import com.springsource.insight.intercept.color.Color;
 import com.springsource.insight.intercept.color.ColorManager.ExtractColorParams;
 import com.springsource.insight.intercept.operation.Operation;
 
@@ -50,14 +49,14 @@ public aspect JMSConsumerCollectionAspect extends AbstractJMSCollectionAspect {
             //for now there is no way to discard a frame once it was entered
             getCollector().enter(op);
 
-	    //Set the color for this frame
+            //Set the color for this frame
             extractColor(new ExtractColorParams() {				
-	        public String getColor(String key) {
-	            try {
-		        return message.getStringProperty(key);
-		    } catch (JMSException e) {
-		        return null;
-		    }
+    	        public String getColor(String key) {
+    	            try {
+        		        return message.getStringProperty(key);
+        		    } catch (JMSException e) {
+        		        return null;
+        		    }
                 }
             });
 
