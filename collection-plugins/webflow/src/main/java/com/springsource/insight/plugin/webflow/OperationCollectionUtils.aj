@@ -28,7 +28,11 @@ import com.springsource.insight.intercept.operation.OperationMap;
 
 
 public privileged aspect OperationCollectionUtils {
-	/*
+	public OperationCollectionUtils() {
+        super();
+    }
+
+    /*
 	 * get action's expression string
 	 * @param Action
 	 */
@@ -54,8 +58,7 @@ public privileged aspect OperationCollectionUtils {
 				}
 			}
 		}
-		else
-		if (action instanceof SetAction) {
+		else if (action instanceof SetAction) {
 			// set action
 			SetAction setAction = (SetAction)action;
 			result=setAction.nameExpression.toString();

@@ -23,6 +23,7 @@ import com.springsource.insight.collection.errorhandling.CollectionErrors;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 
+import com.springsource.insight.intercept.color.ColorManager.ExtractColorParams;
 import com.springsource.insight.intercept.operation.Operation;
 
 public aspect JMSConsumerCollectionAspect extends AbstractJMSCollectionAspect {
@@ -32,7 +33,7 @@ public aspect JMSConsumerCollectionAspect extends AbstractJMSCollectionAspect {
         ;
     
 	@SuppressAjWarnings({"adviceDidNotMatch"})
-    after() returning(Message message) : consumer() {
+    after() returning(final Message message) : consumer() {
         if (message != null) {
             JoinPoint jp = thisJoinPoint;
             
@@ -47,6 +48,18 @@ public aspect JMSConsumerCollectionAspect extends AbstractJMSCollectionAspect {
             //we enter and exit cause we want to ignore null messages
             //for now there is no way to discard a frame once it was entered
             getCollector().enter(op);
+
+            //Set the color for this frame
+            extractColor(new ExtractColorParams() {				
+    	        public String getColor(String key) {
+    	            try {
+        		        return message.getStringProperty(key);
+        		    } catch (JMSException e) {
+        		        return null;
+        		    }
+                }
+            });
+
             getCollector().exitNormal(message);
         }
     }

@@ -31,27 +31,32 @@ import com.springsource.insight.intercept.operation.OperationMap;
  * @properties: flowId, initParams<String,Object>
  */
 public aspect StartOperationCollectionAspect extends AbstractOperationCollectionAspect {
-	    public pointcut collectionPoint() 
-	    	: execution(void org.springframework.webflow.engine.impl.FlowExecutionImpl.start(Flow, MutableAttributeMap, RequestControlContext));
+    public StartOperationCollectionAspect() {
+        super();
+    }
 
-	    @SuppressWarnings("unchecked")
-		protected Operation createOperation(JoinPoint jp) {
-	    	Object[] args = jp.getArgs();
-	    	Flow flow = (Flow)args[0];
-	    	MutableAttributeMap params=(MutableAttributeMap)args[1];
-	        
-	    	Operation  operation = new Operation().type(OperationCollectionTypes.START_TYPE.type)
-	    										.label(OperationCollectionTypes.START_TYPE.label+" ["+flow.getId()+"]")
-	    										.sourceCodeLocation(getSourceCodeLocation(jp));
-	            
-	        operation.put("flowId", flow.getId());
-	        
-	        if (params!=null && !params.isEmpty()) {
-	        	operation.createMap("initParams").putAnyAll(params.asMap());
-	        }
-	        
-	        return operation;
-	    }
+    public pointcut collectionPoint() 
+    	: execution(void org.springframework.webflow.engine.impl.FlowExecutionImpl.start(Flow, MutableAttributeMap, RequestControlContext));
+
+    @Override
+    @SuppressWarnings("unchecked")
+	protected Operation createOperation(JoinPoint jp) {
+    	Object[] args = jp.getArgs();
+    	Flow flow = (Flow)args[0];
+    	MutableAttributeMap params=(MutableAttributeMap)args[1];
+        
+    	Operation  operation = new Operation().type(OperationCollectionTypes.START_TYPE.type)
+    										.label(OperationCollectionTypes.START_TYPE.label+" ["+flow.getId()+"]")
+    										.sourceCodeLocation(getSourceCodeLocation(jp));
+            
+        operation.put("flowId", flow.getId());
+        
+        if (params!=null && !params.isEmpty()) {
+        	operation.createMap("initParams").putAnyAll(params.asMap());
+        }
+        
+        return operation;
+    }
 
     @Override
     public String getPluginName() {

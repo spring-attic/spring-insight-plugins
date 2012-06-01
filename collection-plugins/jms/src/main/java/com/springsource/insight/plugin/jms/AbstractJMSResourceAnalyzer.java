@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.springsource.insight.intercept.color.ColorManager;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointName;
@@ -54,7 +55,7 @@ abstract class AbstractJMSResourceAnalyzer implements EndPointAnalyzer,ExternalR
             String example = getExample(label);
             EndPointName endPointName = getName(label);
             
-            return new EndPointAnalysis(endPointName, endPointLabel, example, 1);
+            return new EndPointAnalysis(endPointName, endPointLabel, example, 1, op);
         }
         
         return null;
@@ -74,7 +75,7 @@ abstract class AbstractJMSResourceAnalyzer implements EndPointAnalyzer,ExternalR
 			String host = op.get("host", String.class);            
 			Integer portProperty = op.get("port", Integer.class);
 			int port = portProperty == null ? -1 : portProperty.intValue();
-
+            String color = ColorManager.getInstance().getColor(op);
 			String hashString = MD5NameGenerator.getName(label + host + port);
 
 			ExternalResourceDescriptor descriptor =
@@ -84,7 +85,8 @@ abstract class AbstractJMSResourceAnalyzer implements EndPointAnalyzer,ExternalR
 			                                        ExternalResourceType.QUEUE.name(),
 			                                        JMS,
 			                                        host,
-			                                        port);
+			                                        port,
+                                                    color);
 			queueDescriptors.add(descriptor);            
 		}
 

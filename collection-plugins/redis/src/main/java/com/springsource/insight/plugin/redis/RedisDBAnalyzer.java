@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.springsource.insight.intercept.color.ColorManager;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
@@ -50,7 +51,7 @@ public class RedisDBAnalyzer implements ExternalResourceAnalyzer {
 			String host = op.get("host", String.class);           
 			Integer portProperty = op.get("port", Integer.class);
 			int port = portProperty == null ? -1 : portProperty.intValue();
-			
+			String color = ColorManager.getInstance().getColor(op);
 			String dbName = op.get("dbName", String.class);
 			
 			String redisHash = MD5NameGenerator.getName(dbName+host+port);
@@ -61,7 +62,8 @@ public class RedisDBAnalyzer implements ExternalResourceAnalyzer {
 					ExternalResourceType.DATABASE.name(),
 					"Redis",
 					host,
-					port) );			
+					port,
+                    color) );			
 		}
 		
 		return dbDescriptors;

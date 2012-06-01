@@ -29,6 +29,7 @@ import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import com.rabbitmq.client.GetResponse;
+import com.springsource.insight.intercept.color.ColorManager.ExtractColorParams;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
 
@@ -94,7 +95,7 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
     }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
-    before(String consumerTag, Envelope envelope, BasicProperties props, byte[] body)
+    before(String consumerTag, Envelope envelope, final BasicProperties props, byte[] body)
             : handleDelivery(consumerTag, envelope, props, body) {
 
         Consumer consumer = (Consumer) thisJoinPoint.getThis();
@@ -111,6 +112,24 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
         }
         if (props != null) {
             applyPropertiesData(op, props);
+            
+            extractColor(new ExtractColorParams() {
+                public String getColor(String key) {
+                    String color = null;
+                    
+                    if (props != null) {
+                        Map<String, Object> headers = props.getHeaders();
+                        
+                        if (headers != null) {
+                            Object obj = headers.get(key);
+                            color = obj != null ? obj.toString() : null;
+                        }
+                    }
+                     
+                    return color;
+                }
+            });
+            
         }
         if (envelope != null) {
             applyMessageData(op, envelope, body);

@@ -38,7 +38,7 @@ public class RunExecEndPointAnalyzer implements EndPointAnalyzer {
             return null;
         } else {
             // NOTE: we return a score of zero so as to let other endpoints "beat" this one
-            return new EndPointAnalysis(EndPointName.valueOf(op), op.getLabel(), op.getLabel(), 0);
+            return new EndPointAnalysis(EndPointName.valueOf(op), op.getLabel(), op.getLabel(), 0, op);
         }
     }
 

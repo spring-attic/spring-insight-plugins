@@ -16,24 +16,26 @@
 
 package com.springsource.insight.plugin.rabbitmqClient;
 
+import java.lang.reflect.Field;
 import java.net.InetAddress;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.aspectj.lang.JoinPoint;
-
-import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.AMQP.BasicProperties;
+import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.impl.AMQConnection;
 import com.rabbitmq.client.impl.LongString;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.strategies.BasicCollectionAspectProperties;
-import com.springsource.insight.collection.strategies.CollectionAspectProperties;
+import com.springsource.insight.intercept.color.ColorManager.ColorParams;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
+import com.springsource.insight.util.ExtraReflectionUtils;
 
 public abstract class AbstractRabbitMQCollectionAspect extends OperationCollectionAspectSupport {
-
+    private Field messageHeaders = ExtraReflectionUtils.getAccessibleField(BasicProperties.class, "headers");
+    
     protected void applyPropertiesData(Operation op, BasicProperties props) {
         OperationMap map = op.createMap("props");
 
@@ -110,6 +112,34 @@ public abstract class AbstractRabbitMQCollectionAspect extends OperationCollecti
         }
         
         return version;
+    }
+    
+    protected void colorForward(BasicProperties props, final Operation op) {
+        try {
+            final Map<String, Object> map = new HashMap<String, Object>();
+            
+            if (props != null) {
+                Map<String, Object> old = props.getHeaders();
+                
+                if (!old.isEmpty()) {
+                    map.putAll(old);
+                }
+                
+                colorForward(new ColorParams() {
+                    public void setColor(String key, String value) {
+                        map.put(key, value);
+                    }
+                    
+                    public Operation getOperation() {
+                        return op;
+                    }
+                });
+                
+                ExtraReflectionUtils.setField(messageHeaders, props, Collections.unmodifiableMap(map));
+            }
+        } catch (Exception e) {
+            //nothing to do...
+        }
     }
 
 }

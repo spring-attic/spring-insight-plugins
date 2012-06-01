@@ -55,6 +55,6 @@ public class LifecycleEndPointAnalyzer implements EndPointAnalyzer {
         String endPointExample = op.get("event", String.class);
 
         return new EndPointAnalysis(EndPointName.valueOf(endPointName), endPointLabel,
-                                    endPointExample, ANALYSIS_SCORE);
+                                    endPointExample, ANALYSIS_SCORE, op);
     }
 }

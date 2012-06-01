@@ -25,4 +25,6 @@ public final class JaxrsDefinitions {
     }
 
     public static final OperationType   TYPE=OperationType.valueOf("jax-rs");
+    
+    public static final String REQ_TEMPLATE="requestTemplate";
 }

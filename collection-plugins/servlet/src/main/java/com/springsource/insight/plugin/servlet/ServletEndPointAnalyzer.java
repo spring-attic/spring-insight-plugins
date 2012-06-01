@@ -53,7 +53,7 @@ public class ServletEndPointAnalyzer implements EndPointAnalyzer {
         String endPointLabel = "Servlet: " + servletName;
 
         return new EndPointAnalysis(EndPointName.valueOf(endPointKey), endPointLabel,
-                                    getExampleRequest(op), ANALYSIS_SCORE);
+                                    getExampleRequest(op), ANALYSIS_SCORE, op);
     }
 
     String sanitizeEndPointKey(String endPointKey) {

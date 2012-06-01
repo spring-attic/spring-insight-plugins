@@ -37,7 +37,7 @@ public class QuartzSchedulerEndPointAnalyzer implements EndPointAnalyzer {
             return null;
         }
 
-        return new EndPointAnalysis(EndPointName.valueOf(op), op.getLabel(), op.getLabel(), 0);
+        return new EndPointAnalysis(EndPointName.valueOf(op), op.getLabel(), op.getLabel(), 0, op);
     }
 
 }

@@ -28,7 +28,11 @@ import com.springsource.insight.intercept.operation.Operation;
  * Collection operation for Struts2 action invocations 
  */
 public privileged aspect ActionOperationCollectionAspect extends AbstractOperationCollectionAspect {
-	public pointcut collectionPoint() :
+    public ActionOperationCollectionAspect () {
+        super();
+    }
+
+    public pointcut collectionPoint() :
 		( ( // execution action
 			execution(public String com.opensymphony.xwork2.ActionSupport+.*())
 			||
@@ -42,7 +46,8 @@ public privileged aspect ActionOperationCollectionAspect extends AbstractOperati
 		|| execution(@Action public String *()); 
 		
 
-	protected Operation createOperation(JoinPoint jp) {
+	@Override
+    protected Operation createOperation(JoinPoint jp) {
 		Signature actionSign = jp.getSignature();
 		String action = actionSign.getDeclaringTypeName() + "." + actionSign.getName() + "()";
 

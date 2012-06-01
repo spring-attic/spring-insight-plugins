@@ -45,8 +45,9 @@ public aspect EhcachePutOperationCollectionAspect extends EhcacheMethodOperation
     }
 
     Operation createPutOperation (Operation op, Ehcache cache, Element elem) {
+    	Object value=elem.getObjectValue();
         return initCommonFields(op, cache, EhcacheDefinitions.PUT_METHOD, elem.getObjectKey())
-                    .putAnyNonEmpty(EhcacheDefinitions.VALUE_ATTRIBUTE, elem.getObjectValue())
+                    .putAnyNonEmpty(EhcacheDefinitions.VALUE_ATTRIBUTE, (value!=null)?value.toString():null)
                     ;
     }
 }

@@ -57,6 +57,6 @@ public class TopLevelMethodEndPointAnalyzer implements EndPointAnalyzer {
         	exampleRequest = args.get(0, String.class); 
         }
         int score = 0;
-        return new EndPointAnalysis(name, label, exampleRequest, score);
+        return new EndPointAnalysis(name, label, exampleRequest, score, rootOp);
     }
 }

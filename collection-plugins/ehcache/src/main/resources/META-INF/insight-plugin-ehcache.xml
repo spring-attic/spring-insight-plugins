@@ -6,8 +6,8 @@
         http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
     <insight:plugin name="ehcache" version="${project.version}" publisher="SpringSource" />
-    <!-- <insight:operation-view operation="ehcache-operation" template="com/springsource/insight/plugin/ehcache/ehcache.ftl"/>-->
     
+    <insight:operation-view operation="ehcache-operation" template="com/springsource/insight/plugin/ehcache/ehcache.ftl"/>
     <insight:operation-group group="Ehcahce" operation="ehcache-operation" />
     
     <bean class="com.springsource.insight.plugin.ehcache.EhcacheResourceAnalyzer" />

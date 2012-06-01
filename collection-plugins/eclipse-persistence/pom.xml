@@ -73,6 +73,12 @@
 
 			<!-- Test dependencies -->
         <dependency>
+           <groupId>org.aspectj</groupId>
+           <artifactId>aspectjweaver</artifactId>
+           <version>${aspectj.version}</version>
+           <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-commons-core</artifactId>
             <version>${spring.data.commons.version}</version>

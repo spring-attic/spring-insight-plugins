@@ -36,19 +36,18 @@ public aspect RabbitMQPublishCollectionAspect extends AbstractRabbitMQCollection
        && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
         ;
     
-    @SuppressAjWarnings({"adviceDidNotMatch"})
-    before(String exchange, String routingKey, boolean mandatory, boolean immediate, BasicProperties props,byte[] body)
-        : publish(exchange,routingKey,mandatory,immediate,props,body) {
+    void around(String exchange, String routingKey, boolean mandatory, boolean immediate, BasicProperties props,byte[] body) : 
+        publish(exchange,routingKey,mandatory,immediate,props,body) {
         
-        Operation op = new Operation()
-            .type(RabbitPluginOperationType.PUBLISH.getOperationType())
-            .label(RabbitPluginOperationType.PUBLISH.getLabel())
-            .put("exchange", exchange)
-            .put("routingKey", routingKey)
-            .put("mandatory", mandatory)
-            .put("immediate", immediate)
-            ;        
-        
+        final Operation op = new Operation()
+        .type(RabbitPluginOperationType.PUBLISH.getOperationType())
+        .label(RabbitPluginOperationType.PUBLISH.getLabel())
+        .put("exchange", exchange)
+        .put("routingKey", routingKey)
+        .put("mandatory", mandatory)
+        .put("immediate", immediate)
+        ;        
+    
         Channel channel = (Channel) thisJoinPoint.getThis();
         Connection conn = channel.getConnection();
         
@@ -60,25 +59,24 @@ public aspect RabbitMQPublishCollectionAspect extends AbstractRabbitMQCollection
             applyConnectionData(op, conn);
         }
         
+        if (props == null) {
+            BasicProperties.Builder builder = new BasicProperties.Builder();
+            props = builder.build();
+        }
+        
         if (props != null) {
             applyPropertiesData(op, props);
         }
         
         getCollector().enter(op);
-    }
-    
-    @SuppressAjWarnings({"adviceDidNotMatch"})
-    after(String exchange, String routingKey, boolean mandatory, boolean immediate, BasicProperties props,byte[] body)
-        returning()
-            : publish(exchange,routingKey,mandatory,immediate,props,body) {
-        getCollector().exitNormal();
-    }
-            
-    @SuppressAjWarnings({"adviceDidNotMatch"})
-    after(String exchange, String routingKey, boolean mandatory, boolean immediate, BasicProperties props,byte[] body)
-        throwing(Throwable t)
-            : publish(exchange,routingKey,mandatory,immediate,props,body) {
-        getCollector().exitAbnormal(t);
+        colorForward(props, op);
+        
+        try {
+            proceed(exchange,routingKey,mandatory,immediate,props,body);
+            getCollector().exitNormal();
+        } catch (Exception e) {
+            getCollector().exitAbnormal(e);
+        }
     }
 
     public boolean isEndpoint() { return false; }

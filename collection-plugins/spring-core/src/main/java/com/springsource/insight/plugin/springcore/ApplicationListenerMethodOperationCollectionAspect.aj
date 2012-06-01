@@ -37,6 +37,10 @@ import com.springsource.insight.collection.method.MethodOperationCollectionAspec
  *            with 54 characters!
  */
 public aspect ApplicationListenerMethodOperationCollectionAspect extends MethodOperationCollectionAspect {
+    public ApplicationListenerMethodOperationCollectionAspect() {
+        super();
+    }
+
     public pointcut appListener()
         : execution(* ApplicationListener+.onApplicationEvent(..));
 

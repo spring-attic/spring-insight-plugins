@@ -30,6 +30,7 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mortbay.component.LifeCycle.Listener;
 import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.HttpConnection;
 import org.mortbay.jetty.Request;
@@ -178,7 +179,15 @@ public class HttpURLConnectionOperationCollectionAspectTest
             
             started = false;
         }
-        
+
+        public void addLifeCycleListener(Listener listener) {
+            // ignored
+        }
+
+        public void removeLifeCycleListener(Listener listener) {
+            // ignored
+        }
+
         public void start() throws Exception {
             if (started) {
                 throw new IllegalStateException("Double start");

@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.springsource.insight.intercept.color.ColorManager;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
@@ -70,12 +71,15 @@ public class SocketExternalResourceAnalyzer implements ExternalResourceAnalyzer 
         int     port=op.get(SocketDefinitions.PORT_ATTR, Integer.class).intValue();
         String  uri=op.get(OperationFields.URI,String.class);
         ExternalResourceType    type=(uri == null) ? ExternalResourceType.SERVER : ExternalResourceType.WEB_SERVER;
+        String color = ColorManager.getInstance().getColor(op);
+        
         return new ExternalResourceDescriptor(frame,
         									  MD5NameGenerator.getName(addr + ":" + port),
                                               op.getLabel(),
                                               type.name(),
                                               null,
                                               addr,
-                                              port);
+                                              port,
+                                              color);
     }
 }

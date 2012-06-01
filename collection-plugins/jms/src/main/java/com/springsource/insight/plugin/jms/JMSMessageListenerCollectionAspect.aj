@@ -16,10 +16,14 @@
 package com.springsource.insight.plugin.jms;
 
 import javax.jms.Message;
+import javax.jms.JMSException;
 
 import com.springsource.insight.collection.errorhandling.CollectionErrors;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
+
+import com.springsource.insight.intercept.color.Color;
+import com.springsource.insight.intercept.color.ColorManager.ExtractColorParams;
 
 import com.springsource.insight.intercept.operation.Operation;
 
@@ -31,7 +35,7 @@ public aspect JMSMessageListenerCollectionAspect extends AbstractJMSCollectionAs
         ;
 
 	@SuppressAjWarnings({"adviceDidNotMatch"})
-    before(Message message) : messageListener(message) {
+    before(final Message message) : messageListener(message) {
         JoinPoint jp = thisJoinPoint;
         if (message != null) {
             Operation op = createOperation(jp);
@@ -41,7 +45,19 @@ public aspect JMSMessageListenerCollectionAspect extends AbstractJMSCollectionAs
             } catch (Throwable t) {
                 CollectionErrors.markCollectionError(this.getClass(), t);
             }
+
             getCollector().enter(op);
+            
+            //Set the color for this frame
+            extractColor(new ExtractColorParams() {				
+                public String getColor(String key) {
+                    try {
+                        return message.getStringProperty(key);
+                    } catch (JMSException e) {
+                        return null;
+                    }
+                }
+            });
         }
     }
     

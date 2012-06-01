@@ -16,7 +16,7 @@
 
 	<properties>
 			<!-- NOTE: it seems to be compliant with 2.x as well -->
-		<quartz.version>1.8.5</quartz.version>
+		<quartz.version>2.0.2</quartz.version>
         <slf4j.version>1.5.8</slf4j.version>
 	</properties>
 
@@ -37,6 +37,12 @@
 		</dependency>
         
         <!-- Test dependencies -->
+        <dependency>
+           <groupId>org.aspectj</groupId>
+           <artifactId>aspectjweaver</artifactId>
+           <version>${aspectj.version}</version>
+           <scope>test</scope>
+        </dependency>
         <dependency> <!-- Required by quartz -->
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>

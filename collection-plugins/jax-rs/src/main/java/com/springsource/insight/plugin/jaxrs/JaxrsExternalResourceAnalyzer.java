@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package com.springsource.insight.plugin.mongodb;
+package com.springsource.insight.plugin.jaxrs;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.springsource.insight.intercept.color.ColorManager;
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
@@ -31,45 +30,30 @@ import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
 
-/**
- * 
- */
-public abstract class AbstractMongoDBAnalyzer implements ExternalResourceAnalyzer {
+public class JaxrsExternalResourceAnalyzer implements ExternalResourceAnalyzer {
 
-	private final OperationType operationType;
-
-	AbstractMongoDBAnalyzer(OperationType type) {
-		this.operationType = type;
-	}
-	
-	public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
-		Collection<Frame> dbFrames = trace.getLastFramesOfType(operationType);
-		if ((dbFrames == null) || dbFrames.isEmpty()) {
+	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
+		Collection<Frame> frames = trace.getLastFramesOfType(JaxrsDefinitions.TYPE);		
+		if ((frames == null) || frames.isEmpty()) {
 		    return Collections.emptyList();
 		}
 
-		List<ExternalResourceDescriptor> dbDescriptors = new ArrayList<ExternalResourceDescriptor>(dbFrames.size());
-		for (Frame dbFrame : dbFrames) {
-			Operation op = dbFrame.getOperation();
-			String host = op.get("host", String.class);           
-			Integer portProperty = op.get("port", Integer.class);
-			int port = portProperty == null ? -1 : portProperty.intValue();
+		List<ExternalResourceDescriptor> descriptors = new LinkedList<ExternalResourceDescriptor>();
+		for (Frame frame : frames) {			
+            Operation op = frame.getOperation();
+            
+			String path = op.get(JaxrsDefinitions.REQ_TEMPLATE, String.class);
+			if (path == null) {
+				continue;
+			}
 			
-			String dbName = op.get("dbName", String.class);
-			
-			String mongoHash = MD5NameGenerator.getName(dbName+host+port);
+			String hashString = MD5NameGenerator.getName(path);
 			String color = ColorManager.getInstance().getColor(op);
-			dbDescriptors.add(new ExternalResourceDescriptor(dbFrame,
-					"mongo:" + mongoHash,
-					dbName,
-					ExternalResourceType.DATABASE.name(),
-					"MongoDB",
-					host,
-					port,
-                    color) );			
+			ExternalResourceDescriptor desc = new ExternalResourceDescriptor(frame, JaxrsDefinitions.TYPE.getName() + ":" + hashString, path,
+																			ExternalResourceType.WEB_SERVICE.name(), JaxrsDefinitions.TYPE.getName(), color);
+			descriptors.add(desc);			
 		}
 		
-		return dbDescriptors;
+		return descriptors;
 	}
-
 }

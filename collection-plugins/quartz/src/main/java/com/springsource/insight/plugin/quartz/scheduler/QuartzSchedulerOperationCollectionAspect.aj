@@ -21,6 +21,7 @@ import org.aspectj.lang.JoinPoint;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.Trigger;
+import org.quartz.utils.Key;
 
 import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
 import com.springsource.insight.intercept.InterceptConfiguration;
@@ -55,38 +56,53 @@ public aspect QuartzSchedulerOperationCollectionAspect extends MethodOperationCo
 
         createOperationJobDetail(op, context.getJobDetail());
         if (collectExtraInformation()) {
-            createOperationTrigger(op, context.getTrigger());
+            createOperationTrigger(op, context.getTrigger(), context.getJobDetail().getKey());
         }
         return op;
     }
 
     Operation createOperationJobDetail (Operation op, JobDetail detail) {
         String description =  detail.getDescription() == null ? "" : " - " + detail.getDescription();
-        return op.label(detail.getFullName() + description)
-          .putAnyNonEmpty("name", detail.getName())
-          .putAnyNonEmpty("group", detail.getGroup())
-          .putAnyNonEmpty("fullName", detail.getFullName())
-          .putAnyNonEmpty("description", detail.getDescription())
+        
+        Key jobKey=detail.getKey();
+        String jobGroup=jobKey.getGroup();
+        String jobName=jobKey.getName();  
+        String fullName=jobGroup+"."+jobName;
+        
+        return op.label(fullName + description)
+          .putAnyNonEmpty("name", jobName)
+          .putAnyNonEmpty("group", jobGroup)
+          .putAnyNonEmpty("fullName", fullName)
+          .putAnyNonEmpty("description", description)
           .put("jobClass", detail.getJobClass().getName())
           ;
     }
 
-    OperationMap createOperationTrigger (Operation op, Trigger trigger) {
+    OperationMap createOperationTrigger (Operation op, Trigger trigger, Key jobKey) {
+    	Key triggerKey=trigger.getKey();
+        String triggerGroup=triggerKey.getGroup();
+    	String triggerName=triggerKey.getName();
+        
+   		String jobGroup=jobKey.getGroup();
+   		String jobName=jobKey.getName();
+    	
         return op.createMap("trigger")
                 .put("priority", trigger.getPriority())
-                .putAnyNonEmpty("name", trigger.getName())
-                .putAnyNonEmpty("group", trigger.getGroup())
-                .putAnyNonEmpty("fullName", trigger.getFullName())
-                .putAnyNonEmpty("description", trigger.getDescription())
-                .putAnyNonEmpty("jobName", trigger.getJobName())
-                .putAnyNonEmpty("jobGroup", trigger.getJobGroup())
-                .putAnyNonEmpty("fullJobName", trigger.getFullJobName())
+                 .putAnyNonEmpty("description", trigger.getDescription())
+   
+                .putAnyNonEmpty("name", triggerName)
+                .putAnyNonEmpty("group", triggerGroup)
+                .putAnyNonEmpty("fullName", triggerGroup+"."+triggerName)
+                
+                .putAnyNonEmpty("jobName", jobName)
+                .putAnyNonEmpty("jobGroup", jobGroup)
+                .putAnyNonEmpty("fullJobName", jobGroup+"."+jobName)
+                
                 .putAnyNonEmpty("calendarName", trigger.getCalendarName())
                 .putAnyNonEmpty("startTime", safeCloneDate(trigger.getStartTime()))
                 .putAnyNonEmpty("endTime", safeCloneDate(trigger.getEndTime()))
                 .putAnyNonEmpty("previousFireTime", safeCloneDate(trigger.getPreviousFireTime()))
-                .putAnyNonEmpty("nextFireTime", safeCloneDate(trigger.getNextFireTime()))
-                ;
+                .putAnyNonEmpty("nextFireTime", safeCloneDate(trigger.getNextFireTime()));
     }
 
     /*
