@@ -22,6 +22,11 @@ import org.hibernate.event.DirtyCheckEventListener;
 /**
  */
 public class DummyDirtyCheckListenerImpl implements DirtyCheckEventListener {
+    private static final long serialVersionUID = -1604582768922159793L;
+    public DummyDirtyCheckListenerImpl () {
+        super();
+    }
+
     public void onDirtyCheck(DirtyCheckEvent event) throws HibernateException {
         // nothing.
     }

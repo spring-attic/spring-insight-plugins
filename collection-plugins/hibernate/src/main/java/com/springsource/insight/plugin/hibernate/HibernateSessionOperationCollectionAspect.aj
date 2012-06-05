@@ -114,6 +114,6 @@ public aspect HibernateSessionOperationCollectionAspect extends AbstractOperatio
 
     @Override
     public String getPluginName() {
-        return new HibernateConfig().plugin().getName();
+        return "hibernate";
     }
 }

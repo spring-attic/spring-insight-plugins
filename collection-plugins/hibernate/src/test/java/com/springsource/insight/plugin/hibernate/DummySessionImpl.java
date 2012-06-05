@@ -40,10 +40,14 @@ import org.hibernate.jdbc.Work;
 import org.hibernate.stat.SessionStatistics;
 
 public class DummySessionImpl implements Session {
-
+    private static final long serialVersionUID = 7080645949615301278L;
     protected static final int DUMMY_ENTITY_COUNT = -1;
     protected static final int DUMMY_COLLECTION_COUNT = -1;
     protected static final FlushMode DUMMY_FLUSH_MODE = FlushMode.MANUAL;
+
+    public DummySessionImpl () {
+        super();
+    }
 
     public Transaction beginTransaction() throws HibernateException {
         // TODO Auto-generated method stub
