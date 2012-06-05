@@ -36,8 +36,12 @@ public class GrailsControllerMethodEndPointAnalyzer implements EndPointAnalyzer 
             return null;
         }
         
-        Frame httpFrame = trace.getFirstFrameOfType(OperationType.HTTP);
-        if ((httpFrame == null) || (!FrameUtil.frameIsAncestor(httpFrame, grailsFrame))) {
+        return makeEndPoint(grailsFrame, -1); 
+    }
+
+    private EndPointAnalysis makeEndPoint(Frame grailsFrame, int score) {
+        Frame httpFrame = FrameUtil.getFirstParentOfType(grailsFrame, OperationType.HTTP);
+        if (httpFrame == null) {
             return null;
         }
         
@@ -49,9 +53,31 @@ public class GrailsControllerMethodEndPointAnalyzer implements EndPointAnalyzer 
         
         Operation httpOperation = httpFrame.getOperation();
         String exampleRequest = httpOperation.getLabel();
-        int score = FrameUtil.getDepth(grailsFrame);        
+        
+        if (score == -1) {
+            score = FrameUtil.getDepth(grailsFrame);        
+        }
+        
         return new EndPointAnalysis(EndPointName.valueOf(resourceKey),
                                     resourceLabel,
-                                    exampleRequest, score, operation); 
+                                    exampleRequest, score, operation);
+    }
+
+    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
+        Frame parent = FrameUtil.getLastParentOfType(frame, TYPE);
+        
+        if (parent != null) {
+            return null;
+        }
+        
+        return makeEndPoint(frame, depth);
+    }
+
+    public int getScore(Frame frame, int depth) {
+        return depth;
+    }
+
+    public OperationType[] getOperationTypes() {
+        return new OperationType[] {TYPE};
     }
 }

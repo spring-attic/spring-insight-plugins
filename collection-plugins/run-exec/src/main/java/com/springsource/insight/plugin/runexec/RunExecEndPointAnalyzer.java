@@ -19,6 +19,7 @@ import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.FrameUtil;
 import com.springsource.insight.intercept.trace.Trace;
@@ -33,6 +34,10 @@ public class RunExecEndPointAnalyzer implements EndPointAnalyzer {
 
     public EndPointAnalysis locateEndPoint(Trace trace) {
         Frame       frame=resolveEndPointFrame(trace);
+        return makeEndPoint(frame);
+    }
+
+    private EndPointAnalysis makeEndPoint(Frame frame) {
         Operation   op=(frame == null) ? null : frame.getOperation();
         if (op == null) {
             return null;
@@ -64,5 +69,27 @@ public class RunExecEndPointAnalyzer implements EndPointAnalyzer {
         } else {
             return runFrame;
         }
+    }
+
+    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
+        Frame parent = FrameUtil.getLastParentOfType(frame, RunExecDefinitions.EXEC_OP);
+        
+        if (parent == null) {
+            parent = FrameUtil.getLastParentOfType(frame, RunExecDefinitions.RUN_OP);
+        }
+        
+        if (parent != null) {
+            return null;
+        }
+        
+        return makeEndPoint(frame);
+    }
+
+    public int getScore(Frame frame, int depth) {
+        return depth;
+    }
+
+    public OperationType[] getOperationTypes() {
+        return new OperationType[] {RunExecDefinitions.EXEC_OP, RunExecDefinitions.RUN_OP} ;
     }
 }

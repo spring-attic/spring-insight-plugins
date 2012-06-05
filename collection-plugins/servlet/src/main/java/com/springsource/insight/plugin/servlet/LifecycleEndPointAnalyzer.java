@@ -57,4 +57,19 @@ public class LifecycleEndPointAnalyzer implements EndPointAnalyzer {
         return new EndPointAnalysis(EndPointName.valueOf(endPointName), endPointLabel,
                                     endPointExample, ANALYSIS_SCORE, op);
     }
+
+    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
+        if (frame.isRoot()) {
+            makeEndPoint(frame);
+        }
+        return null;
+    }
+
+    public int getScore(Frame frame, int depth) {
+        return ANALYSIS_SCORE;
+    }
+
+    public OperationType[] getOperationTypes() {
+        return new OperationType[] {SERVLET_LISTENER_TYPE, LIFECYCLE_TYPE_TYPE};
+    }
 }

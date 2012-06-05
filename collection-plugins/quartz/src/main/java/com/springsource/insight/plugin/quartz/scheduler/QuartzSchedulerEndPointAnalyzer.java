@@ -19,7 +19,9 @@ import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.trace.Frame;
+import com.springsource.insight.intercept.trace.FrameUtil;
 import com.springsource.insight.intercept.trace.Trace;
 
 /**
@@ -32,12 +34,34 @@ public class QuartzSchedulerEndPointAnalyzer implements EndPointAnalyzer {
 
     public EndPointAnalysis locateEndPoint(Trace trace) {
         Frame     frame=trace.getFirstFrameOfType(QuartzSchedulerDefinitions.TYPE);
+        return makeEndPoint(frame);
+    }
+
+    private EndPointAnalysis makeEndPoint(Frame frame) {
         Operation op=(frame == null) ? null : frame.getOperation();
         if (op == null) {
             return null;
         }
 
         return new EndPointAnalysis(EndPointName.valueOf(op), op.getLabel(), op.getLabel(), 0, op);
+    }
+
+    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
+        Frame parent = FrameUtil.getLastParentOfType(frame, QuartzSchedulerDefinitions.TYPE);
+        
+        if (parent != null) {
+            return null;
+        }
+        
+        return makeEndPoint(frame);
+    }
+
+    public int getScore(Frame frame, int depth) {
+        return 0;
+    }
+
+    public OperationType[] getOperationTypes() {
+        return new OperationType[] {QuartzSchedulerDefinitions.TYPE};
     }
 
 }

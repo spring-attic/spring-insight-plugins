@@ -44,7 +44,11 @@ public class TopLevelMethodEndPointAnalyzer implements EndPointAnalyzer {
     		return null;
     	}
     	
-    	Operation rootOp = root.getOperation();
+    	return makeEndPoint(root);
+    }
+
+    private EndPointAnalysis makeEndPoint(Frame root) {
+        Operation rootOp = root.getOperation();
         if (!rootOp.getType().equals(TYPE)) {
         	return null;
     	}
@@ -58,5 +62,17 @@ public class TopLevelMethodEndPointAnalyzer implements EndPointAnalyzer {
         }
         int score = 0;
         return new EndPointAnalysis(name, label, exampleRequest, score, rootOp);
+    }
+
+    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
+        return frame.isRoot() ? makeEndPoint(frame) : null;
+    }
+
+    public int getScore(Frame frame, int depth) {
+        return 0;
+    }
+
+    public OperationType[] getOperationTypes() {
+        return new OperationType[] {OperationType.METHOD};
     }
 }

@@ -35,25 +35,54 @@ public class JaxrsEndPointAnalyzer implements EndPointAnalyzer {
 
     public EndPointAnalysis locateEndPoint(Trace trace) {
         final Frame     frame=trace.getFirstFrameOfType(JaxrsDefinitions.TYPE);
+        final Frame     rootFrame=trace.getRootFrame();
+        
+        return makeEndPoint(frame, rootFrame, -1);
+    }
+
+    private EndPointAnalysis makeEndPoint(Frame frame, Frame rootFrame, int score) {
         final Operation op=(frame == null) ? null : frame.getOperation();
         if (op == null) {
             return null;
         }
 
         final EndPointName  endPointName=EndPointName.valueOf(op);
-        final Frame         rootFrame=trace.getRootFrame();
         final Operation     rootOperation=rootFrame.getOperation();
-        final String        example=getExampleRequest(trace.getFirstFrameOfType(OperationType.HTTP), frame, rootOperation);
-        return new EndPointAnalysis(endPointName, op.getLabel(), example, FrameUtil.getDepth(frame), op);
+        final Frame         httpFrame=FrameUtil.getFirstParentOfType(frame, OperationType.HTTP);
+        final String        example=getExampleRequest(httpFrame, frame, rootOperation);
+        
+        if (score == -1) {
+            score = FrameUtil.getDepth(frame);
+        }
+        
+        return new EndPointAnalysis(endPointName, op.getLabel(), example, score, op);
     }
 
     public String getExampleRequest(Frame httpFrame, Frame frame, Operation rootOperation) {
-        if ((httpFrame == null) || (!FrameUtil.frameIsAncestor(httpFrame, frame))) {
+        if (httpFrame == null) {
             return rootOperation.getLabel();
         }
 
         Operation operation = httpFrame.getOperation();
         OperationMap details = operation.get("request", OperationMap.class);
         return details.get("method") + " " + details.get(OperationFields.URI);
+    }
+
+    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
+        Frame parent = FrameUtil.getLastParentOfType(frame, JaxrsDefinitions.TYPE);
+        
+        if (parent != null) {
+            return null;
+        }
+        
+        return makeEndPoint(frame, FrameUtil.getRoot(frame), depth);
+    }
+
+    public int getScore(Frame frame, int depth) {
+        return depth;
+    }
+
+    public OperationType[] getOperationTypes() {
+        return new OperationType[] {JaxrsDefinitions.TYPE};
     }
 }

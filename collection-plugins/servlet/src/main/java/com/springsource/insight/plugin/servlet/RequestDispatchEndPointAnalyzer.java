@@ -21,6 +21,7 @@ import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.trace.Frame;
+import com.springsource.insight.intercept.trace.FrameUtil;
 import com.springsource.insight.intercept.trace.Trace;
 
 public class RequestDispatchEndPointAnalyzer implements EndPointAnalyzer {
@@ -30,6 +31,10 @@ public class RequestDispatchEndPointAnalyzer implements EndPointAnalyzer {
             return null;
         }
 
+        return makeEndPoint(dispatchFrame);
+    }
+
+    private EndPointAnalysis makeEndPoint(Frame dispatchFrame) {
         Operation op = dispatchFrame.getOperation();
         Boolean fromValue=op.get("from", Boolean.class);
         if ((fromValue == null) || (!fromValue.booleanValue())) {
@@ -41,5 +46,23 @@ public class RequestDispatchEndPointAnalyzer implements EndPointAnalyzer {
         String endPointExample = op.getLabel();
         
         return new EndPointAnalysis(name, endPointLabel, endPointExample, 0, op);
+    }
+
+    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
+        Frame parent = FrameUtil.getLastParentOfType(frame, OperationType.REQUEST_DISPATCH);
+        
+        if (parent != null) {
+            return null;
+        }
+        
+        return makeEndPoint(frame);
+    }
+
+    public int getScore(Frame frame, int depth) {
+        return 0;
+    }
+
+    public OperationType[] getOperationTypes() {
+        return new OperationType[] {OperationType.REQUEST_DISPATCH};
     }
 }
