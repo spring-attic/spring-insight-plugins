@@ -67,6 +67,7 @@
                     <archive>
                         <manifestEntries>
                             <Insight-Weave-Phase>all</Insight-Weave-Phase>
+                            <Insight-Plugin-Descriptor></Insight-Plugin-Descriptor>
                         </manifestEntries>
                     </archive>
                 </configuration>

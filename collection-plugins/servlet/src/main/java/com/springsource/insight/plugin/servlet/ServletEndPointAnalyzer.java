@@ -30,6 +30,7 @@ import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.trace.Frame;
+import com.springsource.insight.intercept.trace.FrameUtil;
 import com.springsource.insight.intercept.trace.Trace;
 
 public class ServletEndPointAnalyzer implements EndPointAnalyzer {
@@ -63,5 +64,23 @@ public class ServletEndPointAnalyzer implements EndPointAnalyzer {
     String getExampleRequest(Operation op) {
         OperationMap request = op.get("request", OperationMap.class);
         return request.get("method") + " " + request.get(OperationFields.URI);
+    }
+
+    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
+        Frame parent = FrameUtil.getLastParentOfType(frame, OperationType.HTTP);
+        
+        if (parent != null) {
+            return null;
+        }
+        
+        return makeEndPoint(frame);
+    }
+
+    public int getScore(Frame frame, int depth) {
+        return ANALYSIS_SCORE;
+    }
+
+    public OperationType[] getOperationTypes() {
+        return new OperationType[] {OperationType.HTTP};
     }
 }

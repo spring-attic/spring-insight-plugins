@@ -85,6 +85,7 @@
                     <archive>
                         <manifestEntries>
                             <Insight-Weave-Phase>all</Insight-Weave-Phase>
+                            <Insight-Plugin-Descriptor>com.springsource.insight.plugin.quartz.scheduler.QuartzPluginRuntimeDescriptor</Insight-Plugin-Descriptor>
                         </manifestEntries>
                     </archive>
                 </configuration>

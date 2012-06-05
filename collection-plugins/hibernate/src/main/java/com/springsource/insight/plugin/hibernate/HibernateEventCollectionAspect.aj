@@ -15,40 +15,40 @@
  */
 package com.springsource.insight.plugin.hibernate;
 
-import com.springsource.insight.intercept.plugin.PluginDescriptor;
+import org.aspectj.lang.JoinPoint;
 import org.hibernate.event.DirtyCheckEventListener;
 import org.hibernate.event.FlushEventListener;
 import org.hibernate.event.def.AbstractFlushingEventListener;
 
 import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
-import org.aspectj.lang.JoinPoint;
 
-public aspect HibernateEventCollectionAspect  extends MethodOperationCollectionAspect {
-
+public aspect HibernateEventCollectionAspect extends MethodOperationCollectionAspect {
     public pointcut dirtyCheck()
-    : execution(void DirtyCheckEventListener.onDirtyCheck(..));
+        : execution(void DirtyCheckEventListener.onDirtyCheck(..));
 
     public pointcut flushEvent()
-    : execution(void FlushEventListener.onFlush(..));
+        : execution(void FlushEventListener.onFlush(..));
 
     public pointcut abstractPrepareFlushing()
-    : execution(* AbstractFlushingEventListener.prepare*(..));
+        : execution(* AbstractFlushingEventListener.prepare*(..));
 
     public pointcut abstractFlushing()
-    : execution(* AbstractFlushingEventListener.flush*(..));
+        : execution(* AbstractFlushingEventListener.flush*(..));
 
     public pointcut collectionPoint()
-    : dirtyCheck() || flushEvent() || abstractPrepareFlushing() || abstractFlushing();
+        : dirtyCheck() || flushEvent() || abstractPrepareFlushing() || abstractFlushing();
 
     @Override
     public Operation createOperation(JoinPoint jp) {
-        return super.createOperation(jp).label("Hibernate " + jp.getStaticPart().getSignature().getName());
+        return super.createOperation(jp)
+                    .label("Hibernate " + jp.getStaticPart().getSignature().getName())
+                    ;
     }
 
     @Override
     public String getPluginName() {
-        return new HibernateConfig().plugin().getName();
+        return "hibernate";
     }
 
 }

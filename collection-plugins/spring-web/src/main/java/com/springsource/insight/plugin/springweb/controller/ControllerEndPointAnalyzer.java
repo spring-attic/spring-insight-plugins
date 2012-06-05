@@ -49,13 +49,18 @@ public class ControllerEndPointAnalyzer implements EndPointAnalyzer {
      * Returns null otherwise.
      */
     public EndPointAnalysis locateEndPoint(Trace trace) {
-        Frame httpFrame = trace.getFirstFrameOfType(httpOpType);
-        if (httpFrame == null) {
+        Frame controllerFrame = trace.getFirstFrameOfType(CONTROLLER_METHOD_TYPE);
+        return makeEndPoint(controllerFrame, -1);
+    }
+
+    private EndPointAnalysis makeEndPoint(Frame controllerFrame, int score) {
+        if (controllerFrame == null) {
             return null;
         }
-
-        Frame controllerFrame = trace.getFirstFrameOfType(CONTROLLER_METHOD_TYPE);
-        if (controllerFrame == null || !FrameUtil.frameIsAncestor(httpFrame, controllerFrame)) {
+        
+        Frame httpFrame = FrameUtil.getFirstParentOfType(controllerFrame, httpOpType);
+        
+        if (httpFrame == null) {
             return null;
         }
 
@@ -63,8 +68,10 @@ public class ControllerEndPointAnalyzer implements EndPointAnalyzer {
         if (controllerOp != null) {
             String examplePath = getExampleRequest(httpFrame);
             EndPointName endPointName = EndPointName.valueOf(controllerOp);
-            String endPointLabel = controllerOp.getLabel();            
-            int score = FrameUtil.getDepth(controllerFrame);
+            String endPointLabel = controllerOp.getLabel(); 
+            if (score == -1) {
+                score = FrameUtil.getDepth(controllerFrame);
+            }
             return new EndPointAnalysis(endPointName, endPointLabel, examplePath, score, controllerOp);
         }
         return null;
@@ -74,5 +81,23 @@ public class ControllerEndPointAnalyzer implements EndPointAnalyzer {
         Operation operation = httpFrame.getOperation();
         OperationMap details = operation.get("request", OperationMap.class);
         return details.get("method") + " " + details.get(OperationFields.URI);
+    }
+
+    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
+        Frame parent = FrameUtil.getLastParentOfType(frame, CONTROLLER_METHOD_TYPE);
+        
+        if (parent != null) {
+            return null;
+        }
+        
+        return makeEndPoint(frame, depth);
+    }
+
+    public int getScore(Frame frame, int depth) {
+        return depth;
+    }
+
+    public OperationType[] getOperationTypes() {
+        return new OperationType[] {CONTROLLER_METHOD_TYPE};
     }
 }

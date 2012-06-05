@@ -36,17 +36,27 @@ public class JwsEndPointAnalyzer implements EndPointAnalyzer {
 
     public EndPointAnalysis locateEndPoint(Trace trace) {
         final Frame     frame=trace.getFirstFrameOfType(JwsDefinitions.TYPE);
+        final Frame     rootFrame=trace.getRootFrame();
+        
+        return makeEndPoint(frame, rootFrame, -1);
+    }
+
+    private EndPointAnalysis makeEndPoint(Frame frame, Frame rootFrame, int score) {
         final Operation op=(frame == null) ? null : frame.getOperation();
         if (op == null) {
             return null;
         }
 
         final EndPointName  endPointName=EndPointName.valueOf(op);
-        final Frame         rootFrame=trace.getRootFrame();
         final Operation     rootOperation=rootFrame.getOperation();
-        final String        example=getExampleRequest(trace.getFirstFrameOfType(OperationType.HTTP), frame, rootOperation);
+        final Frame         httpFrame=FrameUtil.getFirstParentOfType(frame, OperationType.HTTP);
+        final String        example=getExampleRequest(httpFrame, frame, rootOperation);
 
-        return new EndPointAnalysis(endPointName, op.getLabel(), example, FrameUtil.getDepth(frame), op);
+        if (score == -1) {
+            score = FrameUtil.getDepth(frame);
+        }
+        
+        return new EndPointAnalysis(endPointName, op.getLabel(), example, score, op);
     }
 
     public String getExampleRequest(Frame httpFrame, Frame frame, Operation rootOperation) {
@@ -57,6 +67,25 @@ public class JwsEndPointAnalyzer implements EndPointAnalyzer {
         Operation operation = httpFrame.getOperation();
         OperationMap details = operation.get("request", OperationMap.class);
         return details.get("method") + " " + details.get(OperationFields.URI);
+    }
+
+    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
+        Frame parent = FrameUtil.getLastParentOfType(frame, JwsDefinitions.TYPE);
+        
+        if (parent != null) {
+            return null;
+        }
+        
+        Frame rootFrame = FrameUtil.getRoot(frame);
+        return makeEndPoint(frame, rootFrame, depth);
+    }
+
+    public int getScore(Frame frame, int depth) {
+        return depth;
+    }
+
+    public OperationType[] getOperationTypes() {
+        return new OperationType[] {JwsDefinitions.TYPE};
     }
 
 }

@@ -26,11 +26,13 @@ import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
+import com.springsource.insight.intercept.trace.FrameUtil;
 import com.springsource.insight.intercept.trace.Trace;
 
 public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyzer, ExternalResourceAnalyzer {
@@ -53,7 +55,11 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 			return null;
 		}
 
-		Operation op = frame.getOperation();
+		return makeEndPoint(frame);
+	}
+
+    private EndPointAnalysis makeEndPoint(Frame frame) {
+        Operation op = frame.getOperation();
 		if (op != null) {
 			String label = buildLabel(op);
 			String endPointLabel = RABBIT + "-" + label;
@@ -65,7 +71,7 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 		}
 
 		return null;
-	}
+    }
 
 	public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
 		Collection<Frame> queueFrames = trace.getLastFramesOfType(operationType.getOperationType());
@@ -131,6 +137,24 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 
 	private static boolean isTrimEmpty(String str){
 		return (str == null) || (str.trim().length() == 0);
+	}
+	
+	public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
+	    Frame parent = FrameUtil.getLastParentOfType(frame, operationType.getOperationType());
+	    
+	    if (parent != null) {
+	        return null;
+	    }
+	    
+	    return makeEndPoint(frame);
+	}
+	
+	public int getScore(Frame frame, int depth) {
+	    return 1;
+	}
+	
+	public OperationType[] getOperationTypes() {
+	    return new OperationType[] {operationType.getOperationType()};
 	}
 
 }

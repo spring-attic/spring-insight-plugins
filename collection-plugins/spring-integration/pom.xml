@@ -184,6 +184,17 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Insight-Plugin-Descriptor>com.springsource.insight.plugin.integration.IntegrationPluginRuntimeDescriptor</Insight-Plugin-Descriptor>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	

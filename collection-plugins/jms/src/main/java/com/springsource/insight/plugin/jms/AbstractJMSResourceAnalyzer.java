@@ -25,11 +25,13 @@ import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
+import com.springsource.insight.intercept.trace.FrameUtil;
 import com.springsource.insight.intercept.trace.Trace;
 
 abstract class AbstractJMSResourceAnalyzer implements EndPointAnalyzer,ExternalResourceAnalyzer {
@@ -47,6 +49,10 @@ abstract class AbstractJMSResourceAnalyzer implements EndPointAnalyzer,ExternalR
             return null;
         }
 
+        return makeEndPoint(frame);
+    }
+
+    private EndPointAnalysis makeEndPoint(Frame frame) {
         Operation op = frame.getOperation();
         if (op != null) {
         	String label = buildLabel(op);
@@ -107,4 +113,22 @@ abstract class AbstractJMSResourceAnalyzer implements EndPointAnalyzer,ExternalR
 
         return type + "#" + name;
 	}
+    
+    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
+        Frame parent = FrameUtil.getLastParentOfType(frame, operationType.getOperationType());
+        
+        if (parent != null) {
+            return null;
+        }
+        
+        return makeEndPoint(frame);
+    }
+    
+    public int getScore(Frame frame, int depth) {
+        return 1;
+    }
+    
+    public OperationType[] getOperationTypes() {
+        return new OperationType[] {operationType.getOperationType()};
+    }
 }

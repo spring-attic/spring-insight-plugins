@@ -13,21 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.springsource.insight.plugin.hibernate;
+package com.springsource.insight.plugin.quartz.scheduler;
 
-import org.hibernate.HibernateException;
-import org.hibernate.event.DirtyCheckEvent;
-import org.hibernate.event.DirtyCheckEventListener;
+import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
+import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
-/**
- */
-public class DummyDirtyCheckListenerImpl implements DirtyCheckEventListener {
-    private static final long serialVersionUID = -1604582768922159793L;
-    public DummyDirtyCheckListenerImpl () {
-        super();
+public class QuartzPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
+
+    @Override
+    public EndPointAnalyzer[] getEndPointAnalyzers() {
+        return toArray(new QuartzSchedulerEndPointAnalyzer());
     }
 
-    public void onDirtyCheck(DirtyCheckEvent event) throws HibernateException {
-        // nothing.
-    }
 }

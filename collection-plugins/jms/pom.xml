@@ -74,6 +74,7 @@
 					<archive>
 						<manifestEntries>
 							<Insight-Weave-Phase>all</Insight-Weave-Phase>
+							<Insight-Plugin-Descriptor>com.springsource.insight.plugin.jms.JmsPluginRuntimeDescriptor</Insight-Plugin-Descriptor>
 						</manifestEntries>
 					</archive>
 				</configuration>

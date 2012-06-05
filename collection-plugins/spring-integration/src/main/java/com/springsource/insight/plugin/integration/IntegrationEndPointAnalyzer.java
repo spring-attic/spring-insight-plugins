@@ -34,9 +34,11 @@ public class IntegrationEndPointAnalyzer implements EndPointAnalyzer {
     private static OperationType integrationType = OperationType.valueOf("integration_operation");
     
     public EndPointAnalysis locateEndPoint(Trace trace) {
-
-
         Frame si = trace.getFirstFrameOfType(integrationType);
+        return makeEndPoint(si, -1);
+    }
+
+    private EndPointAnalysis makeEndPoint(Frame si, int score) {
         if (si == null) {
             return null;
         }
@@ -54,8 +56,29 @@ public class IntegrationEndPointAnalyzer implements EndPointAnalyzer {
 
         String label = name.getName();
         String exampleRequest = (String) op.get("siComponentType");
-        int score = FrameUtil.getDepth(si);
+        
+        if (score == -1) {
+            score = FrameUtil.getDepth(si);
+        }
+        
         return new EndPointAnalysis(name, label, exampleRequest, score, op);
     }
 
+    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
+        Frame parent = FrameUtil.getLastParentOfType(frame, integrationType);
+        
+        if (parent != null) {
+            return null;
+        }
+        
+        return makeEndPoint(frame, depth);
+    }
+
+    public int getScore(Frame frame, int depth) {
+        return depth;
+    }
+
+    public OperationType[] getOperationTypes() {
+        return new OperationType[] {integrationType};
+    }
 }
