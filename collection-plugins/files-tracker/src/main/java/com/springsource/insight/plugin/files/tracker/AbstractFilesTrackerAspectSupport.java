@@ -280,6 +280,6 @@ public abstract class AbstractFilesTrackerAspectSupport extends OperationCollect
 
     @Override
     public String getPluginName() {
-        return "files-tracker";
+        return FilesTrackerPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

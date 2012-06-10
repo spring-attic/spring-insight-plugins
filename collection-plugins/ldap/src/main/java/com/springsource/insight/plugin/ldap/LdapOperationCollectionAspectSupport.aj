@@ -247,5 +247,5 @@ public abstract aspect LdapOperationCollectionAspectSupport
     }
 
     @Override
-    public String getPluginName() { return "javax-naming-ldap"; }
+    public String getPluginName() { return LdapPluginRuntimeDescriptor.PLUGIN_NAME; }
 }

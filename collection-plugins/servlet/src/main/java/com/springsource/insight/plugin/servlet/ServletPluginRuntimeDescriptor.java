@@ -19,7 +19,8 @@ import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class ServletPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
-
+    public static final String PLUGIN_NAME = "servlet";
+    
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
         return toArray(
@@ -27,6 +28,11 @@ public class ServletPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
                 new RequestDispatchEndPointAnalyzer(),
                 new ServletEndPointAnalyzer()
         );
+    }
+
+    @Override
+    public String getPluginName() {
+        return PLUGIN_NAME;
     }
 
 }

@@ -66,5 +66,5 @@ public abstract aspect JtaOperationCollectionAspect extends AbstractOperationCol
     }
 
     @Override
-    public String getPluginName() { return "jta"; }
+    public String getPluginName() { return JtaPluginRuntimeDescriptor.PLUGIN_NAME; }
 }

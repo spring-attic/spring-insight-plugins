@@ -19,10 +19,16 @@ import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class RunExecPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
-
+    public static final String PLUGIN_NAME = "run-exec";
+    
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
         return toArray(new RunExecEndPointAnalyzer());
+    }
+
+    @Override
+    public String getPluginName() {
+        return PLUGIN_NAME;
     }
 
 }

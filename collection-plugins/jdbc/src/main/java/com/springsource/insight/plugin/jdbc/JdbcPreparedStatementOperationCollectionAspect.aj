@@ -165,6 +165,6 @@ public aspect JdbcPreparedStatementOperationCollectionAspect
 
     @Override
     public String getPluginName() {
-        return "jdbc";
+        return JdbcRuntimePluginDescriptor.PLUGIN_NAME;
     }
 }

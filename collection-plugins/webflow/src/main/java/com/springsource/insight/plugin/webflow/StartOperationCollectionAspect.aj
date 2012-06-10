@@ -60,6 +60,6 @@ public aspect StartOperationCollectionAspect extends AbstractOperationCollection
 
     @Override
     public String getPluginName() {
-        return "webflow";
+        return WebflowPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

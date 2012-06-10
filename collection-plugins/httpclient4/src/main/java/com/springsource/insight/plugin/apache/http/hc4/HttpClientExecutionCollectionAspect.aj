@@ -325,6 +325,6 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
 
     @Override
     public String getPluginName() {
-        return "apache-httpclient4";
+        return HC4PluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

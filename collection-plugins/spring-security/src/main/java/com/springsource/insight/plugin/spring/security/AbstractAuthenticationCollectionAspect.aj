@@ -59,6 +59,6 @@ public abstract aspect AbstractAuthenticationCollectionAspect extends MethodOper
     
     @Override
     public String getPluginName() {
-        return "spring-security";
+        return SpringSecurityPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

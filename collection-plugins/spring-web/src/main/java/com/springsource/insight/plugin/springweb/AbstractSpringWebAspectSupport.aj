@@ -17,6 +17,6 @@ public abstract aspect AbstractSpringWebAspectSupport extends AbstractOperationC
 
     @Override
     public String getPluginName() {
-        return "spring-web";
+        return SpringWebPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

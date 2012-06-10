@@ -44,7 +44,7 @@ public aspect MessageSendOperationCollectionAspect extends MethodOperationCollec
 
     @Override
     public String getPluginName() {
-        return "javax-mail";
+        return MailPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 
     public pointcut collectionPoint()

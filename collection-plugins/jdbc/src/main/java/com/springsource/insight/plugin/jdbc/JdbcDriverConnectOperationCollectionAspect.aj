@@ -92,7 +92,7 @@ public aspect JdbcDriverConnectOperationCollectionAspect extends AbstractOperati
 
     @Override
     public String getPluginName() {
-        return "jdbc";
+        return JdbcRuntimePluginDescriptor.PLUGIN_NAME;
     }
 
     ObscuredValueMarker getSensitiveValueMarker () {

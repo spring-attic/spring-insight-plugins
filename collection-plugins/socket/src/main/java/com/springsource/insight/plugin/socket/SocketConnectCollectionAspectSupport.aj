@@ -41,6 +41,6 @@ public abstract aspect SocketConnectCollectionAspectSupport extends SocketOperat
 
     @Override
     public String getPluginName() {
-        return "socket";
+        return SocketPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

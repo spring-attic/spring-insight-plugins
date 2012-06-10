@@ -79,6 +79,6 @@ public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAs
     
     @Override
     public String getPluginName() {
-        return "jms";
+        return JmsPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

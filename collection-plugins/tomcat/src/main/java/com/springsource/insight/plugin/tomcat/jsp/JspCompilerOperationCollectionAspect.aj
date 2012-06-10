@@ -49,6 +49,6 @@ public aspect JspCompilerOperationCollectionAspect extends AbstractOperationColl
 
     @Override
     public String getPluginName() {
-        return "tomcat";
+        return TomcatPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

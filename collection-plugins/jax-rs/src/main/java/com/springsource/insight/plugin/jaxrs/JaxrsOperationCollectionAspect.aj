@@ -96,7 +96,7 @@ public aspect JaxrsOperationCollectionAspect extends MethodOperationCollectionAs
 
     @Override
     public String getPluginName() {
-        return "jax-rs";
+        return JaxrsPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 
     @SuppressWarnings("unchecked")

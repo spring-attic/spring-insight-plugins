@@ -65,6 +65,9 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <archive>
+                    	<manifest>
+                    		<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                    	</manifest>
                         <manifestEntries>
                             <Insight-Weave-Phase>all</Insight-Weave-Phase>
                             <Insight-Plugin-Descriptor></Insight-Plugin-Descriptor>

@@ -70,7 +70,7 @@ public aspect ServletContextListenerOperationInitializedCollectionAspect extends
 
     @Override
     public String getPluginName() {
-        return "servlet";
+        return ServletPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 
 }

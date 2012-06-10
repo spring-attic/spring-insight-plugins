@@ -20,6 +20,8 @@ import com.springsource.insight.collection.method.MethodOperationCollectionAspec
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.plugin.springweb.ControllerPointcuts;
+import com.springsource.insight.plugin.springweb.SpringWebPluginRuntimeDescriptor;
+
 import org.aspectj.lang.JoinPoint;
 
 public aspect ControllerOperationCollectionAspect extends MethodOperationCollectionAspect {
@@ -40,7 +42,7 @@ public aspect ControllerOperationCollectionAspect extends MethodOperationCollect
 
     @Override
     public String getPluginName() {
-        return "spring-web";
+        return SpringWebPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 
 }

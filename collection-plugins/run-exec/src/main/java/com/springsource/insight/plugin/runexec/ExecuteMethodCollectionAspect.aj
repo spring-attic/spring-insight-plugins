@@ -89,6 +89,6 @@ public abstract aspect ExecuteMethodCollectionAspect
     
     @Override
     public String getPluginName() {
-        return "run-exec";
+        return RunExecPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

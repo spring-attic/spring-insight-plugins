@@ -69,6 +69,6 @@ public privileged aspect StartOperationCollectionAspect extends AbstractOperatio
     
 	@Override
     public String getPluginName() {
-		return "struts2";
+		return Struts2PluginRuntimeDescriptor.PLUGIN_NAME;
 	}
 }

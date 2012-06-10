@@ -174,6 +174,6 @@ public privileged aspect StateOperationCollectionAspect extends AbstractOperatio
 
     @Override
     public String getPluginName() {
-        return "webflow";
+        return WebflowPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

@@ -92,7 +92,7 @@ public aspect RepositoryMethodOperationCollectionAspect extends MethodOperationC
 
     @Override
     public String getPluginName() {
-        return "spring-data";
+        return SpringDataPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 
     boolean collectExtraInformation() {

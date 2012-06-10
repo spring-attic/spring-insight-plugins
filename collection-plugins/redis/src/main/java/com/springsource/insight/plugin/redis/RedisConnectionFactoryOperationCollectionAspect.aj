@@ -61,6 +61,6 @@ public aspect RedisConnectionFactoryOperationCollectionAspect extends AbstractOp
 
     @Override
     public String getPluginName() {
-        return "redis";
+        return RedisPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

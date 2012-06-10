@@ -100,7 +100,7 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
 
     @Override
     public String getPluginName() {
-        return "apache-httpclient3";
+        return HC3PluginRuntimeDescriptor.PLUGIN_NAME;
     }
 
     void setSensitiveValueMarker(ObscuredValueMarker marker) {

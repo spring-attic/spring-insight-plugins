@@ -23,6 +23,7 @@ import com.springsource.insight.collection.method.MethodOperationCollectionAspec
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.SourceCodeLocation;
 import com.springsource.insight.plugin.springweb.LegacyControllerPointcuts;
+import com.springsource.insight.plugin.springweb.SpringWebPluginRuntimeDescriptor;
 
 /**
  * Creates an operation for implementors of the Spring MVC Controller
@@ -61,6 +62,6 @@ public aspect LegacyControllerOperationCollectionAspect
 
     @Override
     public String getPluginName() {
-        return "spring-web";
+        return SpringWebPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

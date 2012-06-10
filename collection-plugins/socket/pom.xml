@@ -63,7 +63,11 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <archive>
+                    	<manifest>
+                    		<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                    	</manifest>
                         <manifestEntries>
+							<Insight-Plugin-Descriptor>com.springsource.insight.plugin.socket.SocketPluginRuntimeDescriptor</Insight-Plugin-Descriptor>
                             <Insight-Weave-Phase>all</Insight-Weave-Phase>
                         </manifestEntries>
                     </archive>

@@ -123,6 +123,6 @@ public aspect QuartzSchedulerOperationCollectionAspect extends MethodOperationCo
 
     @Override
     public String getPluginName() {
-        return "quartz-scheduler";
+        return QuartzPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

@@ -186,6 +186,21 @@
                     <header>../../aslHeader.txt</header>
                 </configuration>
             </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+                    	<manifest>
+                    		<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                    	</manifest>
+						<manifestEntries>
+							<Insight-Weave-Phase>all</Insight-Weave-Phase>
+							<Insight-Plugin-Descriptor>com.springsource.insight.plugin.webflow.WebflowPluginRuntimeDescriptor</Insight-Plugin-Descriptor>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
