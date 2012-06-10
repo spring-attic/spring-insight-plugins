@@ -57,6 +57,7 @@ public class JdbcPreparedStatementOperationCollectionAspectTest
 
         Operation   operation=getLastEntered();
         assertEquals(sql, operation.get("sql"));
+        @SuppressWarnings("unchecked")
         List<String> parameters = (List<String>) operation.asMap().get("params");
         assertEquals(2, parameters.size());
         assertArrayEquals(new Object[] { "Agim", Date.valueOf("2009-06-01").toString() }, parameters.toArray());
@@ -74,6 +75,7 @@ public class JdbcPreparedStatementOperationCollectionAspectTest
 
         Operation   operation=getLastEntered();
         assertEquals(sql, operation.get("sql"));
+        @SuppressWarnings("unchecked")
         List<String> parameters = (List<String>) operation.asMap().get("params");
         assertEquals(1, parameters.size());
         assertArrayEquals(new Object[] { "Agim" }, parameters.toArray());
@@ -92,6 +94,7 @@ public class JdbcPreparedStatementOperationCollectionAspectTest
 
         Operation   operation=getLastEntered();
         assertEquals(sql, operation.get("sql"));
+        @SuppressWarnings("unchecked")
         Map<String, String> parameters = (Map<String, String>) operation.asMap().get("params");
         assertEquals(1, parameters.size());
         assertEquals("someValue", parameters.get("@p1"));

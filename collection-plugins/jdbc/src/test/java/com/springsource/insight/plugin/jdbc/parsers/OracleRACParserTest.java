@@ -46,8 +46,8 @@ public class OracleRACParserTest {
         "(ADDRESS = (PROTOCOL = TCP)(HOST = 10.17.184.139)(PORT = 1521)) " +
         "(CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = RAC.WORLD)(FAILOVER_MODE =(TYPE = SELECT)(METHOD = PRECONNECT)(RETRIES = 5)(DELAY = 1)) ) )";
 		HashMap<String, Integer> hostToPortHash = new HashMap<String, Integer>(); 
-		hostToPortHash.put("10.17.184.138", 1520);
-		hostToPortHash.put("10.17.184.139", 1521);
+		hostToPortHash.put("10.17.184.138", Integer.valueOf(1520));
+		hostToPortHash.put("10.17.184.139", Integer.valueOf(1521));
 		testMultipleHostsOrPorts(connectionUrl, hostToPortHash);
 	}
 	
@@ -57,8 +57,8 @@ public class OracleRACParserTest {
 		String connectionUrl =  "jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 10.17.184.138)(PORT = boat)) " +
         "(ADDRESS = (PROTOCOL = TCP)(HOST = 10.17.184.139)(PORT = 1521)))";
 		HashMap<String, Integer> hostToPortHash = new HashMap<String, Integer>(); 
-		hostToPortHash.put("10.17.184.138", -1);
-		hostToPortHash.put("10.17.184.139", 1521);
+		hostToPortHash.put("10.17.184.138", Integer.valueOf(-1));
+		hostToPortHash.put("10.17.184.139", Integer.valueOf(1521));
 		testMultipleHostsOrPorts(connectionUrl, hostToPortHash);
 	}
 	
@@ -68,8 +68,8 @@ public class OracleRACParserTest {
 		String connectionUrl =  "jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 10.17.184.138)) " +
                     "(ADDRESS = (PROTOCOL = TCP)(HOST = 10.17.184.139)(PORT = 1521)))";
 		HashMap<String, Integer> hostToPortHash = new HashMap<String, Integer>(); 
-		hostToPortHash.put("10.17.184.138", -1);
-		hostToPortHash.put("10.17.184.139", 1521);
+		hostToPortHash.put("10.17.184.138", Integer.valueOf(-1));
+		hostToPortHash.put("10.17.184.139", Integer.valueOf(1521));
 		testMultipleHostsOrPorts(connectionUrl, hostToPortHash);
 	}
 	
@@ -79,7 +79,7 @@ public class OracleRACParserTest {
 		String connectionUrl =   "jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 10.17.184.138)(PORT = 1520)) " +
         "(ADDRESS = (PROTOCOL = TCP)(PORT = 1521)))";
 		HashMap<String, Integer> hostToPortHash = new HashMap<String, Integer>(); 
-		hostToPortHash.put("10.17.184.138", 1520);
+		hostToPortHash.put("10.17.184.138", Integer.valueOf(1520));
 		testMultipleHostsOrPorts(connectionUrl, hostToPortHash);
 	}
 	
@@ -91,8 +91,7 @@ public class OracleRACParserTest {
 		for (JdbcUrlMetaData actual: actualJdbcUrlMetaData) {
 			String actualHost = actual.getHost();
 			assertEquals(actual, 
-			new SimpleJdbcUrlMetaData(actualHost, hostToPortHash.get(actualHost), 
-													null, connectionUrl, getType()));
+			new SimpleJdbcUrlMetaData(actualHost, hostToPortHash.get(actualHost).intValue(), null, connectionUrl, getType()));
 		}	
 	}
 

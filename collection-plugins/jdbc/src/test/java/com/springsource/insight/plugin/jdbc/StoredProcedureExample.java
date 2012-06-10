@@ -28,6 +28,7 @@ public class StoredProcedureExample {
             rs.next();
             return rs.getInt(1);
         } catch (SQLException ex) {
+            // ignored
         } finally {
             rs.close();
             stmt.close();

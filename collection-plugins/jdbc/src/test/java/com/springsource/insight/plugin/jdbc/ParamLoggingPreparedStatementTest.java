@@ -59,7 +59,7 @@ public class ParamLoggingPreparedStatementTest
                     ps.setString(1, "Agim");
                     return null;
                 } else if (method.getName().equals("execute")) {
-                    return ps.execute();
+                    return Boolean.valueOf(ps.execute());
                 } else {
                     throw new RuntimeException("foo");
                 } 

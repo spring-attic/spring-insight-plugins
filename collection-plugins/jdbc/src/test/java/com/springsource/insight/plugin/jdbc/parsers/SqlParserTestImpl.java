@@ -45,15 +45,14 @@ public abstract class SqlParserTestImpl implements SqlParsetTest {
 		private final int port;
 		private final String dbname;
 
-		public SqlTestEntry(final String connectionUrl,
-				final String host,
-				final int port,
-				final String dbname) {
-			super();
-			this.connectionUrl = connectionUrl;
-			this.host = host;
-			this.port = port;
-			this.dbname = dbname;
+		public SqlTestEntry(final String dbConnectionURL,
+				            final String dbHost,
+				            final int dbPort,
+				            final String dbName) {
+			this.connectionUrl = dbConnectionURL;
+			this.host = dbHost;
+			this.port = dbPort;
+			this.dbname = dbName;
 		}
 
 		public String getConnectionUrl() {
@@ -71,7 +70,6 @@ public abstract class SqlParserTestImpl implements SqlParsetTest {
 		public String getDbname() {
 			return dbname;
 		}
-
 	}
 
 	public abstract DatabaseType getType();

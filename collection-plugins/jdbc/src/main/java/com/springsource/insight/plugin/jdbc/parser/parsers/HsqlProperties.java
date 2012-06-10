@@ -98,10 +98,8 @@ public class HsqlProperties {
 	}
 
 	public String setPropertyIfNotExists(String key, String value) {
-
-		value = getProperty(key, value);
-
-		return setProperty(key, value);
+		String    resProp=getProperty(key, value);
+		return setProperty(key, resProp);
 	}
 
 	public Properties getProperties() {
@@ -122,7 +120,7 @@ public class HsqlProperties {
 
 		try {
 			if (prop != null) {
-				defaultValue = Integer.parseInt(prop);
+				return Integer.parseInt(prop);
 			}
 		} catch (NumberFormatException e) {
 		    // ignored
@@ -178,17 +176,12 @@ public class HsqlProperties {
 
 	// copied from org.hsqldb.lib.ArrayUtil
 	public static Object resizeArray(Object source, int newsize) {
-
-		Object newarray =
-			Array.newInstance(source.getClass().getComponentType(), newsize);
-		int oldsize = Array.getLength(source);
-
+		Object newarray =Array.newInstance(source.getClass().getComponentType(), newsize);
+		int   oldsize=Array.getLength(source), cpysize=newsize;
 		if (oldsize < newsize) {
-			newsize = oldsize;
+		    cpysize = oldsize;
 		}
-
-		System.arraycopy(source, 0, newarray, 0, newsize);
-
+		System.arraycopy(source, 0, newarray, 0, cpysize);
 		return newarray;
 	}
 

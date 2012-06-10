@@ -34,7 +34,8 @@ public class HsqlParserTest extends SqlParserTestImpl implements SqlParsetTest {
 														 "testdb"));
 	}
 
-	public DatabaseType getType() {
+	@Override
+    public DatabaseType getType() {
 		return DatabaseType.HSQLDB;
 	}
 

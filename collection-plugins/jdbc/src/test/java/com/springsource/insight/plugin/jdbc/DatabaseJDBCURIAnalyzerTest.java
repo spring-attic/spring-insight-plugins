@@ -136,7 +136,7 @@ public class DatabaseJDBCURIAnalyzerTest {
 		assertEquals("", res.getLabel());
 		assertEquals("server-address", res.getHost());
 		assertEquals(8080, res.getPort());
-		assertEquals("mydb:1:" + new MD5NameGenerator().getName(testUri), res.getName());
+		assertEquals("mydb:1:" + MD5NameGenerator.getName(testUri), res.getName());
 	}
 	
 	static class TestJDBCURIAnalyzer extends DatabaseJDBCURIAnalyzer {

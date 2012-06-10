@@ -60,10 +60,9 @@ public class JdbcOperationFinalizer implements OperationFinalizer {
         }
     }
     
-    public static void addParam(Operation operation, int index, Object param) {
+    public static void addParam(Operation operation, int paramIndex, Object param) {
         // JDBC indexes are 1-based, so let's adjust it to the modern world first!
-        index--;
-        
+        int index=paramIndex - 1;
         synchronized (operation) {
             List<Object> params = indexedParamStorage.get(operation);
             if (params == null) {

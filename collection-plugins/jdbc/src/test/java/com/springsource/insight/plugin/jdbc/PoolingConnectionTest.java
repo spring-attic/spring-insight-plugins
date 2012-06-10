@@ -57,7 +57,7 @@ public class PoolingConnectionTest
         DataSourceConnectionFactory connFactory = new DataSourceConnectionFactory(dataSource);
         ObjectPool connPool = new GenericObjectPool();
         PoolableConnectionFactory poolFactory = new PoolableConnectionFactory(connFactory, connPool, null, null, false, true);
-        PoolingDataSource poolDs = new PoolingDataSource(connPool);
+        PoolingDataSource poolDs = new PoolingDataSource(poolFactory.getPool());
         
         String sql = "select * from appointment where owner = 'Agim'";
         Connection c = poolDs.getConnection();

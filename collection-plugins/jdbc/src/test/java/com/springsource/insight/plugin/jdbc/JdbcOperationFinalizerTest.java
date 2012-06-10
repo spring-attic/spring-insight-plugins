@@ -41,6 +41,7 @@ public class JdbcOperationFinalizerTest {
         JdbcOperationFinalizer.addParam(operation, 2, "b"); // this is 1-based index
         
         operation.finalizeConstruction();
+        @SuppressWarnings("unchecked")
         List<String> params = (List<String>) operation.asMap().get("params");
         
         assertEquals(2, params.size());
@@ -54,6 +55,7 @@ public class JdbcOperationFinalizerTest {
         JdbcOperationFinalizer.addParam(operation, 1, "a"); // this is 1-based index
         
         operation.finalizeConstruction();
+        @SuppressWarnings("unchecked")
         List<String> params = (List<String>) operation.asMap().get("params");
         
         assertEquals(2, params.size());
@@ -67,6 +69,7 @@ public class JdbcOperationFinalizerTest {
         JdbcOperationFinalizer.addParam(operation, "key2", "value2");
         
         operation.finalizeConstruction();
+        @SuppressWarnings("unchecked")
         Map<String,String> params = (Map<String,String>) operation.asMap().get("params");
         
         assertEquals(2, params.size());

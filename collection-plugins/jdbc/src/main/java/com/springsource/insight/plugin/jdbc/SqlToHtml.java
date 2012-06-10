@@ -45,9 +45,13 @@ public class SqlToHtml {
                                                 { "GROUP BY ", "-groupBy" },
                                                 { "HAVING ", "-having" },
                                                 { "SET ", "-set" } };
+    private final SQLFormatter  formatter=new SQLFormatter();
+    public SqlToHtml () {
+        super();
+    }
 
-    public String toHtml(String sql, String keywordClass) {
-        sql = new SQLFormatter().prettyPrint(sql);
+    public String toHtml(String query, String keywordClass) {
+        String  sql=formatter.prettyPrint(query);
         sql = HtmlUtils.htmlEscape(sql);
         for (int i = 0; i < KEYWORDS.length; i++) {
             String keyword = KEYWORDS[i][0];
