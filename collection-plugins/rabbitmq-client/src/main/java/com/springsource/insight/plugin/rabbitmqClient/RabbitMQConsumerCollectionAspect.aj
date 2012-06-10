@@ -172,5 +172,5 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
     }
 
     public boolean isEndpoint() { return true; }
-    public String getPluginName() { return "rabbitmq-client"; }
+    public String getPluginName() { return RabbitMQPluginRuntimeDescriptor.PLUGIN_NAME; }
 }

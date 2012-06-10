@@ -65,6 +65,9 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <archive>
+                    	<manifest>
+                    		<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                    	</manifest>
                         <manifestEntries>
                             <Insight-Weave-Phase>all</Insight-Weave-Phase>
                             <Insight-Plugin-Descriptor>com.springsource.insight.plugin.ejb3.Ejb3PluginRuntimeDescriptor</Insight-Plugin-Descriptor>

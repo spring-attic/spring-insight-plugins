@@ -215,6 +215,20 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+                    	<manifest>
+                    		<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                    	</manifest>
+						<manifestEntries>
+							<Insight-Plugin-Descriptor>com.springsource.insight.plugin.eclipse.persistence.EclipsePersistencePluginRuntimeDescriptor</Insight-Plugin-Descriptor>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	

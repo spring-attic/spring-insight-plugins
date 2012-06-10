@@ -93,6 +93,6 @@ public abstract aspect SpringBatchOperationCollectionAspect extends MethodOperat
     
     @Override
     public String getPluginName() {
-        return "spring-batch";
+        return SpringBatchPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

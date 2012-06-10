@@ -18,12 +18,13 @@ package com.springsource.insight.plugin.springweb.validation;
 
 import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
 import com.springsource.insight.plugin.springweb.ControllerPointcuts;
+import com.springsource.insight.plugin.springweb.SpringWebPluginRuntimeDescriptor;
 
 public aspect ValidationOperationCollectionAspect extends MethodOperationCollectionAspect {
     public pointcut collectionPoint() : ControllerPointcuts.validation();
 
     @Override
     public String getPluginName() {
-        return "spring-web";
+        return SpringWebPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

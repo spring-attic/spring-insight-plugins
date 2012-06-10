@@ -219,6 +219,9 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
 					<archive>
+                    	<manifest>
+                    		<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                    	</manifest>
 						<manifestEntries>
 							<Insight-Plugin-Descriptor>com.springsource.insight.plugin.grails.GrailsPluginRuntimeDescriptor</Insight-Plugin-Descriptor>
 						</manifestEntries>

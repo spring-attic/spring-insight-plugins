@@ -81,6 +81,6 @@ public privileged aspect TransitionOperationCollectionAspect extends AbstractOpe
 
     @Override
     public String getPluginName() {
-        return "webflow";
+        return WebflowPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

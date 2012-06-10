@@ -124,7 +124,7 @@ public aspect IntegrationOperationCollectionAspect
 
     @Override
     public String getPluginName() {
-        return "spring-integration";
+        return IntegrationPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 
 }

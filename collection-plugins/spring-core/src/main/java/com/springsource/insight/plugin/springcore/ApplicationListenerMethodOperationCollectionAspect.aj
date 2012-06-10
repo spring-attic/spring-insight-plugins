@@ -58,7 +58,7 @@ public aspect ApplicationListenerMethodOperationCollectionAspect extends MethodO
 
     @Override
     public String getPluginName() {
-        return "spring-core";
+        return SpringCorePluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }
 

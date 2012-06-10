@@ -97,6 +97,6 @@ public aspect UserDetailsManagerCollectionAspect extends MethodOperationCollecti
 
     @Override
     public String getPluginName() {
-        return "spring-security";
+        return SpringSecurityPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

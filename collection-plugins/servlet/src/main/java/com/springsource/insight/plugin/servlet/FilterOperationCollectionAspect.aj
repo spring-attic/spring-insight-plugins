@@ -86,6 +86,6 @@ public aspect FilterOperationCollectionAspect extends AbstractOperationCollectio
 
     @Override
     public String getPluginName() {
-        return "servlet";
+        return ServletPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

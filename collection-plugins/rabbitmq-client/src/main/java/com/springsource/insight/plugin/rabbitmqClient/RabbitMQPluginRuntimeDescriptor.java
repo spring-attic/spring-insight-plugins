@@ -19,7 +19,8 @@ import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class RabbitMQPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
-
+    public static final String PLUGIN_NAME = "rabbitmq-client";
+    
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
         EndPointAnalyzer[] analyzers = new EndPointAnalyzer[] {
@@ -28,6 +29,11 @@ public class RabbitMQPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
         };
         
         return analyzers;
+    }
+
+    @Override
+    public String getPluginName() {
+        return PLUGIN_NAME;
     }
 
 }

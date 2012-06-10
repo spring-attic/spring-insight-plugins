@@ -50,5 +50,5 @@ public abstract aspect LoggingMethodOperationCollectionAspect extends MethodOper
     }
     
     @Override
-    public String getPluginName() { return "logging"; }
+    public String getPluginName() { return LoggingPluginRuntimeDescriptor.PLUGIN_NAME; }
 }

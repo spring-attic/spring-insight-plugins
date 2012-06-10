@@ -74,6 +74,6 @@ public aspect RedisClientAspect extends AbstractOperationCollectionAspect {
 
     @Override
     public String getPluginName() {
-        return "redis";
+        return RedisPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

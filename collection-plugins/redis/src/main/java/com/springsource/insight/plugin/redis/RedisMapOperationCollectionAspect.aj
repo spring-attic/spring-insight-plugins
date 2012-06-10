@@ -111,6 +111,6 @@ public aspect RedisMapOperationCollectionAspect extends AbstractOperationCollect
 
     @Override
     public String getPluginName() {
-        return "redis";
+        return RedisPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

@@ -189,6 +189,9 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
 					<archive>
+                    	<manifest>
+                    		<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                    	</manifest>
 						<manifestEntries>
 							<Insight-Plugin-Descriptor>com.springsource.insight.plugin.integration.IntegrationPluginRuntimeDescriptor</Insight-Plugin-Descriptor>
 						</manifestEntries>

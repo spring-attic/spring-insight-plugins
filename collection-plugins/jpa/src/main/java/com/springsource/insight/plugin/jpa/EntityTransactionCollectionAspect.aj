@@ -35,7 +35,7 @@ public aspect EntityTransactionCollectionAspect extends AbstractOperationCollect
 
     @Override
     public String getPluginName() {
-        return "jpa";
+        return JpaPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 
     public pointcut collectionPoint()

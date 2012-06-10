@@ -45,5 +45,5 @@ public abstract aspect JpaEntityManagerCollectionAspect extends MethodOperationC
     }
 
     @Override
-    public String getPluginName() {return "jpa";}
+    public String getPluginName() {return JpaPluginRuntimeDescriptor.PLUGIN_NAME;}
 }

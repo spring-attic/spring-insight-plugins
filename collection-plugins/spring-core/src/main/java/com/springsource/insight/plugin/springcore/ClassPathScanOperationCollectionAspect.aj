@@ -42,7 +42,7 @@ public aspect ClassPathScanOperationCollectionAspect extends MethodOperationColl
 
     @Override
     public String getPluginName() {
-        return "spring-core";
+        return SpringCorePluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }
 

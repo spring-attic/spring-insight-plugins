@@ -36,7 +36,7 @@ public aspect JdbcConnectionCloseOperationCollectionAspect extends OperationColl
 
     @Override
     public String getPluginName() {
-        return "jdbc";
+        return JdbcRuntimePluginDescriptor.PLUGIN_NAME;
     }
 
     public pointcut collectionPoint()

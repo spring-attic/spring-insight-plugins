@@ -55,7 +55,7 @@ public abstract aspect AbstractGemFireCollectionAspect extends AbstractOperation
 
     @Override
     public String getPluginName() {
-        return "gemfire";
+        return GemFirePluginRuntimeDescriptor.PLUGIN_NAME;
     }
 
 

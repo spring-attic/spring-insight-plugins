@@ -55,7 +55,7 @@ public aspect JwsOperationCollectionAspect extends MethodOperationCollectionAspe
 
     @Override
     public String getPluginName() {
-        return "jws";
+        return JwsPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 
     protected static final Operation updateOperation (final JoinPoint jp, final Operation op) {

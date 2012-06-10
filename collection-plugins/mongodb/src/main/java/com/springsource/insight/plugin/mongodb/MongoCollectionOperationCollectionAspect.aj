@@ -106,6 +106,6 @@ public aspect MongoCollectionOperationCollectionAspect extends
 
     @Override
     public String getPluginName() {
-        return "mongodb";
+        return MongoDBPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

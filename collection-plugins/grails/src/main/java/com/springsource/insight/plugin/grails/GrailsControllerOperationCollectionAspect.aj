@@ -54,6 +54,6 @@ public aspect GrailsControllerOperationCollectionAspect
 
     @Override
     public String getPluginName() {
-        return "grails";
+        return GrailsPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }
