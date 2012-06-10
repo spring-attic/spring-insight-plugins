@@ -15,6 +15,9 @@
  */
 package com.springsource.insight.plugin.jdbc;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -48,6 +51,32 @@ public class JdbcConnectionCloseOperationCollectionAspectTest
         }
         
         assertCloseDetails(connectUrl);
+    }
+
+    @Test
+    public void testCloseException() throws Exception {
+        Class<?>[]          interfaces={ Connection.class };
+        final SQLException  toThrow=new SQLException("testCloseException");
+        InvocationHandler   h=new InvocationHandler() {
+                public Object invoke(Object proxy, Method method, Object[] args)
+                        throws Throwable {
+                    if ("close".equals(method.getName())) {
+                        throw toThrow;
+                    }
+                    return null;
+                }
+            };
+        Connection      conn=(Connection) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), interfaces, h);
+        final String    URL="jdbc:test:testCloseException";
+        tracker.startTracking(conn, URL);
+        try {
+            conn.close();
+            Assert.fail("Unexpected closure success");
+        } catch(SQLException e) {
+            Assert.assertSame("Mismatched thrown exception", toThrow, e);
+        }
+        
+        assertCloseDetails(URL);
     }
 
     @Test
