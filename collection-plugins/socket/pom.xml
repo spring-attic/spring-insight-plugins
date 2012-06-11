@@ -68,7 +68,6 @@
                     	</manifest>
                         <manifestEntries>
 							<Insight-Plugin-Descriptor>com.springsource.insight.plugin.socket.SocketPluginRuntimeDescriptor</Insight-Plugin-Descriptor>
-                            <Insight-Weave-Phase>all</Insight-Weave-Phase>
                         </manifestEntries>
                     </archive>
                 </configuration>

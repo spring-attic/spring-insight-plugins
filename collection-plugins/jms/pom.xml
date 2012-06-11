@@ -75,8 +75,7 @@
                     	<manifest>
                     		<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                     	</manifest>
-						<manifestEntries>
-							<Insight-Weave-Phase>all</Insight-Weave-Phase>
+						<manifestEntries>							
 							<Insight-Plugin-Descriptor>com.springsource.insight.plugin.jms.JmsPluginRuntimeDescriptor</Insight-Plugin-Descriptor>
 						</manifestEntries>
 					</archive>

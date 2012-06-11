@@ -126,8 +126,7 @@
                     	<manifest>
                     		<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                     	</manifest>
-						<manifestEntries>
-							<Insight-Weave-Phase>all</Insight-Weave-Phase>
+						<manifestEntries>							
 							<Insight-Plugin-Descriptor>com.springsource.insight.plugin.jdbc.JdbcRuntimePluginDescriptor</Insight-Plugin-Descriptor>
 						</manifestEntries>
 					</archive>
