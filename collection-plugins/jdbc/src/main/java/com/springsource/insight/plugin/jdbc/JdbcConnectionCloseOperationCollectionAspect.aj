@@ -23,6 +23,7 @@ import org.aspectj.lang.annotation.SuppressAjWarnings;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.OperationCollector;
+import com.springsource.insight.util.ExceptionUtils;
 
 /**
  * Intercepts {@link Connection#close()} call for tracking purposes
@@ -43,7 +44,7 @@ public aspect JdbcConnectionCloseOperationCollectionAspect extends OperationColl
         : execution(* Connection+.close());
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
-    Object around (Connection conn) throws SQLException
+    Object around (Connection conn)
             : collectionPoint()
            && target(conn)
            && if(strategies.collect(thisAspectInstance,thisJoinPointStaticPart)) {
@@ -65,11 +66,12 @@ public aspect JdbcConnectionCloseOperationCollectionAspect extends OperationColl
             }
 
             return returnValue;
-        } catch(SQLException e) {
+        } catch(Throwable t) {
             if (collector != null) {
-                collector.exitAbnormal(e);
+                collector.exitAbnormal(t);
             }
-            throw e;
+            ExceptionUtils.rethrowException(t);
+            return null;
         }
     }
 }
