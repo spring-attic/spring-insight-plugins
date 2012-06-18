@@ -24,14 +24,13 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import org.junit.Assert;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * 
  */
-public class FileOutputCollectionAspectTest extends FilesTrackerAspectTestSupport {
+public class FileOutputCollectionAspectTest extends FilesOpenTrackerAspectTestSupport {
     protected static File TEST_FILE;
     public FileOutputCollectionAspectTest() {
         super();

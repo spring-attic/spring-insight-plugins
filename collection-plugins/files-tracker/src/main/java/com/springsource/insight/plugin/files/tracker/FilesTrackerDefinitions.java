@@ -29,7 +29,9 @@ public final class FilesTrackerDefinitions {
     /**
      * Operation type (open, close)
      */
-    public static final String  OPTYPE_ATTR="op-type";
+    public static final String  OPTYPE_ATTR="op-type",
+                                    OPEN_OP="open",
+                                    CLOSE_OP="close";
     /**
      * Path attribute
      */

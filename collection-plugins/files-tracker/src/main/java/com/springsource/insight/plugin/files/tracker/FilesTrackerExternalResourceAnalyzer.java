@@ -29,28 +29,38 @@ import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
+import com.springsource.insight.util.ListUtil;
+import com.springsource.insight.util.StringUtil;
 
 public class FilesTrackerExternalResourceAnalyzer implements ExternalResourceAnalyzer {
+    private final ColorManager  colorManager;
+    public FilesTrackerExternalResourceAnalyzer () {
+        colorManager = ColorManager.getInstance();
+    }
 
 	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
 		Collection<Frame> frames = trace.getLastFramesOfType(FilesTrackerDefinitions.TYPE);		
-		if ((frames == null) || frames.isEmpty()) {
+		if (ListUtil.size(frames) <= 0) {
 		    return Collections.emptyList();
 		}
 
 		List<ExternalResourceDescriptor> descriptors = new LinkedList<ExternalResourceDescriptor>();
 		for (Frame frame : frames) {			
-            Operation       op = frame.getOperation();
-            
-			String path = op.get(FilesTrackerDefinitions.PATH_ATTR, String.class);
-			if (path == null) {
+            Operation    op=frame.getOperation();
+			String       path=op.get(FilesTrackerDefinitions.PATH_ATTR, String.class);
+			if (StringUtil.isEmpty(path)) {
 				continue;
 			}
-			
+
 			String hashString = MD5NameGenerator.getName(path);
-			String color = ColorManager.getInstance().getColor(op);
-			ExternalResourceDescriptor desc = new ExternalResourceDescriptor(frame, FilesTrackerDefinitions.TYPE.getName() + ":" + hashString, path,
-																			ExternalResourceType.FILESTORE.name(), FilesTrackerDefinitions.TYPE.getName(), color);
+			String color = colorManager.getColor(op);
+			ExternalResourceDescriptor desc =
+			        new ExternalResourceDescriptor(frame,
+			                                       FilesTrackerDefinitions.TYPE.getName() + ":" + hashString,
+			                                       path,
+			                                       ExternalResourceType.FILESTORE.name(),
+			                                       FilesTrackerDefinitions.TYPE.getName(),
+			                                       color);
 			descriptors.add(desc);			
 		}
 		

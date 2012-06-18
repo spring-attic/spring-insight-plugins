@@ -20,8 +20,8 @@ import java.io.Closeable;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 
-import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.util.StringUtil;
 
 /**
  * 
@@ -47,15 +47,15 @@ public privileged aspect FileCloseCollectionAspect extends AbstractFilesTrackerA
     
     Operation registerCloseOperation (JoinPoint.StaticPart staticPart, Closeable instance) {
         String  filePath=unmapClosedFile(instance);
-        if ((filePath == null) || (filePath.length() <= 0)) {
+        if (StringUtil.isEmpty(filePath)) {
             return null;    // just means we did not intercept the open call...
+        } else {
+            return registerOperation(createCloseOperation(staticPart, filePath));
         }
-
-        return registerOperation(new Operation()
-                         .type(FilesTrackerDefinitions.TYPE)
-                         .label("Close " + filePath)
-                         .sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(staticPart))
-                         .put(FilesTrackerDefinitions.OPTYPE_ATTR, "close")
-                         .put(FilesTrackerDefinitions.PATH_ATTR, filePath));
     }
+    
+    Operation createCloseOperation (JoinPoint.StaticPart staticPart, String filePath) {
+        return createOperation(staticPart, FilesTrackerDefinitions.CLOSE_OP, filePath);
+    }
+
 }

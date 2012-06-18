@@ -27,10 +27,12 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.springsource.insight.util.ClassUtil;
+
 /**
  * Runs junit tests on {@link FileInputCollectionAspect}
  */
-public class FileInputCollectionAspectTest extends FilesTrackerAspectTestSupport {
+public class FileInputCollectionAspectTest extends FilesOpenTrackerAspectTestSupport {
     protected static File TEST_FILE;
     public FileInputCollectionAspectTest() {
         super();
@@ -39,7 +41,7 @@ public class FileInputCollectionAspectTest extends FilesTrackerAspectTestSupport
     @BeforeClass
     public static void setupInputTestFile () throws Exception {
         Assert.assertNull("Test file already initialized", TEST_FILE);
-        ClassLoader cl=Thread.currentThread().getContextClassLoader();
+        ClassLoader cl=ClassUtil.getDefaultClassLoader(FileInputCollectionAspectTest.class);
         URL         url=cl.getResource("input-test-file.txt");
         Assert.assertNotNull("Cannot resolve input test file location", url);
         TEST_FILE = new File(url.toURI());

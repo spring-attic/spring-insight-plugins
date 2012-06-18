@@ -16,11 +16,14 @@
 package com.springsource.insight.plugin.files.tracker;
 
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
-import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;;
+import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class FilesTrackerPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "files-tracker";
-    
+    public FilesTrackerPluginRuntimeDescriptor () {
+        super();
+    }
+
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
         return null;
@@ -30,5 +33,4 @@ public class FilesTrackerPluginRuntimeDescriptor extends PluginRuntimeDescriptor
     public String getPluginName() {
         return PLUGIN_NAME;
     }
-
 }

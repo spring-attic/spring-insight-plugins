@@ -20,7 +20,6 @@ import java.io.File;
 
 import org.aspectj.lang.JoinPoint;
 
-import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
@@ -49,14 +48,23 @@ public abstract class FileOpenTrackerAspectSupport extends AbstractFilesTrackerA
                                                String               mode) {
         mapOpenedFile(instance, filePath, mode);
         
-        return registerOperation(new Operation()
-                        .type(FilesTrackerDefinitions.TYPE)
-                        .label("Open " + filePath + " (mode=" + mode + ")")
-                        .sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(staticPart))
-                        .put(FilesTrackerDefinitions.OPTYPE_ATTR, "open")
-                        .put(FilesTrackerDefinitions.PATH_ATTR, filePath)
-                        .put(FilesTrackerDefinitions.MODE_ATTR, mode)
-                        );
-        
+        return registerOperation(createOpenOperation(staticPart, filePath, mode));
+    }
+
+    Operation createOpenOperation (JoinPoint.StaticPart staticPart, String filePath, String mode) {
+        return createOperation(staticPart, FilesTrackerDefinitions.OPEN_OP, filePath)
+                    .put(FilesTrackerDefinitions.MODE_ATTR, mode)
+                    ;
+    }
+
+    @Override
+    protected String createOperationLabel (Operation op) {
+        return super.createOperationLabel(op)
+                   + " (mode=" +  op.get(FilesTrackerDefinitions.MODE_ATTR, String.class) + ")"
+                   ;
+    }
+
+    static final String createOperationLabel (String action, String mode, String path) {
+        return createOperationLabel(action, path) + " (mode=" + mode + ")";
     }
 }

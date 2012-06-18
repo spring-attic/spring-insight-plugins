@@ -33,6 +33,7 @@ import com.springsource.insight.intercept.InterceptConfiguration;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.plugin.files.tracker.AbstractFilesTrackerAspectSupport.CacheKey;
 import com.springsource.insight.plugin.files.tracker.AbstractFilesTrackerAspectSupport.FilesCache;
+import com.springsource.insight.util.StringUtil;
 
 /**
  * 
@@ -58,7 +59,7 @@ public abstract class FilesTrackerAspectTestSupport extends OperationCollectionA
             Assert.assertTrue("Tracking map does not contain input path",
                               AbstractFilesTrackerAspectSupport.trackedFilesMap.containsValue(filePath));
             
-            if ((mode != null) && (mode.length() > 0)) {
+            if (!StringUtil.isEmpty(mode)) {
                 Assert.assertEquals("Mismatched mode", mode, op.get(FilesTrackerDefinitions.MODE_ATTR, String.class));
             }
             

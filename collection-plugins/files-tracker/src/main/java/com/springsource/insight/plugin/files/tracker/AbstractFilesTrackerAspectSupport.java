@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import org.aspectj.lang.JoinPoint;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
+import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.collection.OperationCollector;
 import com.springsource.insight.collection.strategies.BasicCollectionAspectProperties;
 import com.springsource.insight.collection.strategies.CollectionAspectProperties;
@@ -37,6 +38,8 @@ import com.springsource.insight.intercept.plugin.CollectionSettingName;
 import com.springsource.insight.intercept.plugin.CollectionSettingsRegistry;
 import com.springsource.insight.intercept.plugin.CollectionSettingsUpdateListener;
 import com.springsource.insight.intercept.trace.FrameBuilder;
+import com.springsource.insight.util.StringFormatterUtils;
+import com.springsource.insight.util.StringUtil;
 
 /**
  * 
@@ -106,6 +109,7 @@ public abstract class AbstractFilesTrackerAspectSupport extends OperationCollect
             return op;
         }
 
+        op.label(createOperationLabel(op));
         /*
          * NOTE: we generate a zero-duration frame since the purpose of this
          * plugin is to track the files. Furthermore, actually measuring the
@@ -115,6 +119,15 @@ public abstract class AbstractFilesTrackerAspectSupport extends OperationCollect
         collector.enter(op);
         collector.exitNormal();
         return op;
+    }
+
+    Operation createOperation (JoinPoint.StaticPart staticPart, String action, String filePath) {
+        return new Operation()
+                    .type(FilesTrackerDefinitions.TYPE)
+                    .sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(staticPart))
+                    .put(FilesTrackerDefinitions.OPTYPE_ATTR, action)
+                    .put(FilesTrackerDefinitions.PATH_ATTR, filePath)
+                    ;
     }
 
     Operation addExtraInformation (Operation op, File f) {
@@ -194,6 +207,26 @@ public abstract class AbstractFilesTrackerAspectSupport extends OperationCollect
         }
 
         return filePath;
+    }
+
+    protected String createOperationLabel (Operation op) {
+        if (op == null) {
+            return null;
+        } else {
+            return createOperationLabel(op.get(FilesTrackerDefinitions.OPTYPE_ATTR, String.class),
+                                        op.get(FilesTrackerDefinitions.PATH_ATTR, String.class));
+        }
+    }
+
+    static final String createOperationLabel (String action, String path) {
+        String  displayAction=StringUtil.capitalize(action);
+        String  displayPath=StringUtil.chopHeadAndEllipsify(path, StringFormatterUtils.MAX_PARAM_LENGTH);
+        return displayAction + " " + displayPath;
+    }
+
+    @Override
+    public String getPluginName() {
+        return FilesTrackerPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 
     /**
@@ -276,10 +309,5 @@ public abstract class AbstractFilesTrackerAspectSupport extends OperationCollect
             else
                 return new CacheKey(instance);
         }
-    }
-
-    @Override
-    public String getPluginName() {
-        return FilesTrackerPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }
