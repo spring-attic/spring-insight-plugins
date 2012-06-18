@@ -19,12 +19,10 @@ package com.springsource.insight.plugin.rmi;
 import java.rmi.Remote;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**

@@ -7,5 +7,6 @@
 
     <insight:plugin name="rmi" version="${project.version}" publisher="SpringSource" />
     <insight:operation-view operation="rmi-action" template="com/springsource/insight/plugin/rmi/rmi-action.ftl"/>
+    <insight:operation-view operation="rmi-list" template="com/springsource/insight/plugin/rmi/rmi-list.ftl"/>
 
 </beans>
