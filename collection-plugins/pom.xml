@@ -51,6 +51,7 @@
 		<module>mail</module>
 		<module>method-endpoint</module>
 		<module>quartz</module>
+		<module>rmi</module>
 		<module>run-exec</module>
 		<module>servlet</module>
 		<module>socket</module>
