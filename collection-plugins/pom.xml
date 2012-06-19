@@ -29,8 +29,6 @@
 		<module>gemfire</module>	
 		<module>mongodb</module>
 		<module>rabbitmq-client</module>
-		<module>spring-integration</module>
-		<module>webflow</module>
 		<module>struts2</module>
 		<module>hibernate</module>
 		<module>ehcache</module>
@@ -57,10 +55,12 @@
 		<module>socket</module>
 		<module>spring-core</module>
 		<module>spring-batch</module>
-	    <module>spring-data</module>
+		<module>spring-data</module>
 		<module>spring-web</module>
 		<module>spring-tx</module>
 		<module>spring-security</module>
+		<module>spring-integration</module>
+		<module>spring-webflow</module>
 		<module>tomcat</module>
 	</modules>
 
