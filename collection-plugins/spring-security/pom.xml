@@ -7,12 +7,12 @@
     <name>com.springsource.insight.plugins:spring-security</name>
     <packaging>jar</packaging>
     
-    <parent>
-        <groupId>com.springsource.insight</groupId>
-        <artifactId>community-plugins</artifactId>
-        <version>1.9.0-CI-SNAPSHOT</version>
-        <relativePath>../parent</relativePath>
-    </parent>
+	<parent>
+		<groupId>com.springsource.insight</groupId>
+		<artifactId>community-plugins</artifactId>
+		<version>1.9.0-CI-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
     
     <dependencies>
         <!-- Provided dependencies (part of the user application) -->
