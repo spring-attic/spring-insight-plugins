@@ -7,12 +7,12 @@
 	<name>com.springsource.insight.plugins:spring-data</name>
 	<packaging>jar</packaging>
 	
-    <parent>
-        <groupId>com.springsource.insight</groupId>
-        <artifactId>community-plugins</artifactId>
-        <version>1.9.0-CI-SNAPSHOT</version>
-        <relativePath>../parent</relativePath>
-    </parent>
+	<parent>
+		<groupId>com.springsource.insight</groupId>
+		<artifactId>community-plugins</artifactId>
+		<version>1.9.0-CI-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
 
         <!--
             Note: spring-data-mongo relies on spring framework 3.1.0 (which

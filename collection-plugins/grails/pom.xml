@@ -7,12 +7,12 @@
 	<name>com.springsource.insight.plugins:grails</name>
 	<packaging>jar</packaging>
 	
-    <parent>
-        <groupId>com.springsource.insight</groupId>
-	    <artifactId>community-plugins</artifactId>
-        <version>1.9.0-CI-SNAPSHOT</version>
-        <relativePath>../parent</relativePath>
-    </parent>
+	<parent>
+		<groupId>com.springsource.insight</groupId>
+		<artifactId>community-plugins</artifactId>
+		<version>1.9.0-CI-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
 	
 	<properties>
 		<grails.version>1.2.0</grails.version>

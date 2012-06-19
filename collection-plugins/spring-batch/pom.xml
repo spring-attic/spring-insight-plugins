@@ -7,12 +7,12 @@
 	<name>com.springsource.insight.plugins:spring-batch</name>
 	<packaging>jar</packaging>
 	
-    <parent>
-        <groupId>com.springsource.insight</groupId>
-        <artifactId>community-plugins</artifactId>
-        <version>1.9.0-CI-SNAPSHOT</version>
-        <relativePath>../parent</relativePath>
-    </parent>
+	<parent>
+		<groupId>com.springsource.insight</groupId>
+		<artifactId>community-plugins</artifactId>
+		<version>1.9.0-CI-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
 
 	<properties>
 		<spring.batch.version>2.1.8.RELEASE</spring.batch.version>
