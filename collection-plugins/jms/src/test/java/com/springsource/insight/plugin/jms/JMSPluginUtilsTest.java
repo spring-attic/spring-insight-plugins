@@ -103,7 +103,7 @@ public class JMSPluginUtilsTest {
     static Map<String, Object> mockAttributes(Message message) throws JMSException {
         final Map<String, Object> mockMap = new HashMap<String, Object>(); 
         mockMap.put("test-string", "test-value");
-        mockMap.put("test-int", 1);
+        mockMap.put("test-int", Integer.valueOf(1));
         
         when(message.getPropertyNames()).thenReturn(new Enumeration<String>() {
             Iterator<String> iter = mockMap.keySet().iterator();
@@ -158,14 +158,15 @@ public class JMSPluginUtilsTest {
         
         OperationMap opMap = (OperationMap) map;
         
-        assertEquals(message.getJMSCorrelationID(), opMap.get(CORRELATION_ID));
-        assertEquals(getDeliveryMode(message.getJMSDeliveryMode()).getLabel(), opMap.get(DELIVERY_MODE));
-        assertEquals(message.getJMSExpiration(), opMap.get(EXPIRATION));
-        assertEquals(message.getJMSMessageID(), opMap.get(MESSAGE_ID));
-        assertEquals(message.getJMSPriority(), opMap.get(PRIORITY));
-        assertEquals(message.getJMSRedelivered(), opMap.get(REDELIVERED));
+        assertEquals(CORRELATION_ID, message.getJMSCorrelationID(), opMap.get(CORRELATION_ID));
+        assertEquals(DELIVERY_MODE, getDeliveryMode(message.getJMSDeliveryMode()).getLabel(), opMap.get(DELIVERY_MODE));
+        assertEquals(EXPIRATION, Long.valueOf(message.getJMSExpiration()), opMap.get(EXPIRATION));
+        assertEquals(MESSAGE_ID, message.getJMSMessageID(), opMap.get(MESSAGE_ID));
+        assertEquals(PRIORITY, Integer.valueOf(message.getJMSPriority()), opMap.get(PRIORITY));
+        assertEquals(REDELIVERED, Boolean.valueOf(message.getJMSRedelivered()), opMap.get(REDELIVERED));
     }
 
+    @SuppressWarnings("boxing")
     static void mockHeaders(Message message) throws JMSException {
         when(message.getJMSCorrelationID()).thenReturn("1");
         when(message.getJMSDeliveryMode()).thenReturn(DeliveryMode.PERSISTENT);

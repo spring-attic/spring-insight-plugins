@@ -61,11 +61,13 @@ public class JMSProducerCollectionAspectTest extends OperationCollectionAspectTe
     }
     
     private static class MockProducer implements MessageProducer {
-        private Map<String, Object> msgAttributesMap;
-        private Queue queue;
+        Map<String, Object> msgAttributesMap;
+        final Queue queue;
         
-        public MockProducer(Queue queue) throws JMSException {
-            this.queue = queue;
+        public MockProducer(Queue q) throws JMSException {
+            if ((this.queue=q) == null) {
+                throw new JMSException("No queue");
+            }
         }
 
         public void close() throws JMSException {

@@ -35,8 +35,6 @@ import org.aspectj.lang.reflect.MethodSignature;
 import com.springsource.insight.collection.FrameBuilderHintObscuredValueMarker;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.OperationCollector;
-import com.springsource.insight.collection.strategies.BasicCollectionAspectProperties;
-import com.springsource.insight.collection.strategies.CollectionAspectProperties;
 import com.springsource.insight.intercept.InterceptConfiguration;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
@@ -68,7 +66,6 @@ public abstract aspect LdapOperationCollectionAspectSupport
     protected final Logger  logger=Logger.getLogger(getClass().getName());
     protected ObscuredValueMarker obscuredMarker =
             new FrameBuilderHintObscuredValueMarker(configuration.getFrameBuilder());
-    protected static final CollectionAspectProperties aspectProperties=new BasicCollectionAspectProperties(false, "ldap");
 
     protected static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
     protected static final CollectionSettingName    OBFUSCATED_PROPERTIES_SETTING =
@@ -125,7 +122,7 @@ public abstract aspect LdapOperationCollectionAspectSupport
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     Object around () throws NamingException
-        : collectionPoint() && if(strategies.collect(aspectProperties,thisJoinPointStaticPart)) {
+        : collectionPoint() && if(strategies.collect(thisAspectInstance,thisJoinPointStaticPart)) {
         Operation           op=createOperation(thisJoinPoint);
         OperationCollector  collector=(op == null) ? null : getCollector();
         if (collector != null) {

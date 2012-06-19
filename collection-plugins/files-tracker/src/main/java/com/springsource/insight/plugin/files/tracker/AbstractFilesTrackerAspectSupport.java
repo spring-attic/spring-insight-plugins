@@ -30,8 +30,6 @@ import org.aspectj.lang.JoinPoint;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.collection.OperationCollector;
-import com.springsource.insight.collection.strategies.BasicCollectionAspectProperties;
-import com.springsource.insight.collection.strategies.CollectionAspectProperties;
 import com.springsource.insight.intercept.InterceptConfiguration;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.plugin.CollectionSettingName;
@@ -46,7 +44,6 @@ import com.springsource.insight.util.StringUtil;
  */
 public abstract class AbstractFilesTrackerAspectSupport extends OperationCollectionAspectSupport {
     private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
-    protected static final CollectionAspectProperties aspectProperties=new BasicCollectionAspectProperties(false, "files-tracker");
 
     public static final int DEFAULT_FILE_CACHE_SIZE=256;
     public static final boolean DEFAULT_SUPPRESS_MAPPINGS_WARNINGS_VALUE=true;

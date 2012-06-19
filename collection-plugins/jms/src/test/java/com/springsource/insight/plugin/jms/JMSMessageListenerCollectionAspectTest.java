@@ -64,6 +64,10 @@ public class JMSMessageListenerCollectionAspectTest extends OperationCollectionA
     }
 
     private static class MockMessageListener implements MessageListener {
+        public MockMessageListener () {
+            super();
+        }
+
         public void onMessage(Message msg) {
             // do nothing
         }

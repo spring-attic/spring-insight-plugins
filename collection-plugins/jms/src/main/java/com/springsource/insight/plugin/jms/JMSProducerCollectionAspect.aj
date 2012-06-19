@@ -29,10 +29,13 @@ import com.springsource.insight.intercept.color.ColorManager.ColorParams;
 
 public aspect JMSProducerCollectionAspect extends AbstractJMSCollectionAspect {
     private static final MessageOperationMap map = new MessageOperationMap();
-    
+    public JMSProducerCollectionAspect () {
+        super();
+    }
+
     public pointcut producer()
         : execution(void javax.jms.MessageProducer+.send(..))
-       && if(strategies.collect(aspectProperties,thisJoinPointStaticPart))
+       && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
         ;
 
 	@SuppressAjWarnings({"adviceDidNotMatch"})

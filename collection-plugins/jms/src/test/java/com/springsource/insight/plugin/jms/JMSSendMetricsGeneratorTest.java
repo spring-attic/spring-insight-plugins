@@ -21,7 +21,8 @@ public class JMSSendMetricsGeneratorTest extends AbstractJMSMetricsGeneratorTest
 		super(JMSPluginOperationType.SEND);
 	}
 
-	protected AbstractJMSMetricsGenerator getMetricsGenerator() {
+	@Override
+    protected AbstractJMSMetricsGenerator getMetricsGenerator() {
         return new JMSSendMetricsGenerator();
     }
 }

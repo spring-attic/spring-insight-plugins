@@ -39,11 +39,10 @@ import com.springsource.insight.intercept.trace.TraceId;
 public abstract class AbstractJMSResourceAnalyzerTest {
 
 	protected abstract AbstractJMSResourceAnalyzer getAnalyzer();
-	private JMSPluginOperationType operationType;
+	private final JMSPluginOperationType operationType;
 
-	public AbstractJMSResourceAnalyzerTest(JMSPluginOperationType operationType) {
-		super();
-		this.operationType = operationType;
+	protected AbstractJMSResourceAnalyzerTest(JMSPluginOperationType type) {
+		this.operationType = type;
 	}
 	
     @Test

@@ -21,7 +21,8 @@ public class JMSReceiveMetricsGeneratorTest extends AbstractJMSMetricsGeneratorT
 		super(JMSPluginOperationType.RECEIVE);
 	}
 
-	protected AbstractJMSMetricsGenerator getMetricsGenerator() {
+	@Override
+    protected AbstractJMSMetricsGenerator getMetricsGenerator() {
         return new JMSReceiveMetricsGenerator();
     }
 

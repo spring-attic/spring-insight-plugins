@@ -40,7 +40,7 @@ public privileged aspect FileCloseCollectionAspect extends AbstractFilesTrackerA
     after (Closeable c) returning
         :  call(void Closeable+.close())
         && target(c)
-        && if(strategies.collect(aspectProperties, thisJoinPointStaticPart))
+        && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
     {
         registerCloseOperation(thisJoinPointStaticPart, c);
     }
