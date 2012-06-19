@@ -7,21 +7,14 @@
     <version>1.9.0-CI-SNAPSHOT</version>
     <packaging>jar</packaging>
     
-    <parent>
-        <groupId>com.springsource.insight</groupId>
-        <artifactId>community</artifactId>
-        <version>1.9.0-CI-SNAPSHOT</version>
-        <relativePath>../../parent</relativePath>
-    </parent>
+	<parent>
+		<groupId>com.springsource.insight</groupId>
+		<artifactId>community-plugins</artifactId>
+		<version>1.9.0-CI-SNAPSHOT</version>
+		<relativePath>../parent</relativePath>
+	</parent>
 
     <dependencies>
-        <!-- Provided dependencies (part of Insight) -->
-        <dependency>
-            <groupId>com.springsource.insight</groupId>
-            <artifactId>insight-idk</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
 
         <!-- Provided dependencies (part of the user application) -->
 		<dependency>
@@ -42,38 +35,14 @@
         
         <!-- Test dependencies -->
         <dependency>
-           <groupId>org.aspectj</groupId>
-           <artifactId>aspectjweaver</artifactId>
-           <version>${aspectj.version}</version>
-           <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-nop</artifactId>
             <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>${mockito.version}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -88,14 +57,6 @@
                         </manifestEntries>
                     </archive>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>aspectj-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>com.atlassian.maven.plugins</groupId>
-                <artifactId>maven-clover2-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -115,18 +76,7 @@
                             <value>org.apache.commons.logging.impl.NoOpLog</value>
                         </property>
                     </systemProperties>
-                    <argLine>
-                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
-                    </argLine>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>
@@ -135,18 +85,6 @@
                     <header>../../aslHeader.txt</header>
                 </configuration>
             </plugin>
-            <!-- Avoid the automatic attempt to download the sources on every build
-                since some of the are never available -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>ignore</id>
-                        <phase>none</phase>
-                    </execution>
-                </executions>
-            </plugin>           
         </plugins>
     </build>
     
