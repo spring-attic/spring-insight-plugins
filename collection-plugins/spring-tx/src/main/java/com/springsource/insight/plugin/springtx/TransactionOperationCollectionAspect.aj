@@ -24,8 +24,6 @@ import org.springframework.transaction.TransactionStatus;
 
 import com.springsource.insight.collection.DefaultOperationCollector;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.strategies.BasicCollectionAspectProperties;
-import com.springsource.insight.collection.strategies.CollectionAspectProperties;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 
@@ -39,7 +37,6 @@ import com.springsource.insight.intercept.operation.OperationType;
  *
  */
 public aspect TransactionOperationCollectionAspect extends OperationCollectionAspectSupport {
-    private static final CollectionAspectProperties aspectProperties=new BasicCollectionAspectProperties(false, "spring-tx");
     static final OperationType TYPE = OperationType.valueOf("transaction");
     
     public TransactionOperationCollectionAspect() {
@@ -54,7 +51,7 @@ public aspect TransactionOperationCollectionAspect extends OperationCollectionAs
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after(TransactionDefinition txDefinition) returning(TransactionStatus txStatus)
         : TransactionPointcuts.transactionBegin(txDefinition)
-       && if(strategies.collect(aspectProperties,thisJoinPointStaticPart)) {
+       && if(strategies.collect(thisAspectInstance,thisJoinPointStaticPart)) {
         // Record only if this is a new transaction 
         // (i.e. not a nested transaction with REQUIRED propagation)
         if (txStatus.isNewTransaction()) {
@@ -65,7 +62,7 @@ public aspect TransactionOperationCollectionAspect extends OperationCollectionAs
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after(TransactionStatus txStatus) returning 
         : TransactionPointcuts.transactionCommit(txStatus)
-       && if(strategies.collect(aspectProperties,thisJoinPointStaticPart)) {
+       && if(strategies.collect(thisAspectInstance,thisJoinPointStaticPart)) {
         // Record only if the transaction has completed (committed or rolled back) and is a new (top-level) tx
         if (txStatus.isNewTransaction() && txStatus.isCompleted()) {
             getCollector().exitNormal(TransactionOperationStatus.Committed);
@@ -75,7 +72,7 @@ public aspect TransactionOperationCollectionAspect extends OperationCollectionAs
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after(TransactionStatus txStatus) returning 
         : TransactionPointcuts.transactionRollback(txStatus)
-       && if(strategies.collect(aspectProperties,thisJoinPointStaticPart)) {
+       && if(strategies.collect(thisAspectInstance,thisJoinPointStaticPart)) {
         // Record only if the transaction has completed (committed or rolled back) and is a new (top-level) tx
          if (txStatus.isNewTransaction() && txStatus.isCompleted()) {
             getCollector().exitNormal(TransactionOperationStatus.RolledBack);

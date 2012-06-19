@@ -15,23 +15,25 @@
  */
 package com.springsource.insight.plugin.jms;
 
-import javax.jms.Message;
 import javax.jms.JMSException;
+import javax.jms.Message;
 
-import com.springsource.insight.collection.errorhandling.CollectionErrors;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 
-import com.springsource.insight.intercept.color.Color;
+import com.springsource.insight.collection.errorhandling.CollectionErrors;
 import com.springsource.insight.intercept.color.ColorManager.ExtractColorParams;
-
 import com.springsource.insight.intercept.operation.Operation;
 
 public aspect JMSMessageListenerCollectionAspect extends AbstractJMSCollectionAspect {
+    public JMSMessageListenerCollectionAspect () {
+        super();
+    }
+
     public pointcut messageListener(Message message)
         : execution(void javax.jms.MessageListener+.onMessage(Message))
        && args(message)
-       && if(strategies.collect(aspectProperties,thisJoinPointStaticPart))
+       && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
         ;
 
 	@SuppressAjWarnings({"adviceDidNotMatch"})

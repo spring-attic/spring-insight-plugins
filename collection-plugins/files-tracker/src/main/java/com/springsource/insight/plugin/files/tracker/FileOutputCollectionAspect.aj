@@ -46,7 +46,7 @@ public privileged aspect FileOutputCollectionAspect extends FileOpenTrackerAspec
         || call(PrintWriter+.new(File))
         || call(PrintStream+.new(File)))
         && args(f)
-        && if(strategies.collect(aspectProperties, thisJoinPointStaticPart))
+        && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
     {
         registerOpenOperation(thisJoinPointStaticPart, r, f, "w");
     }
@@ -58,7 +58,7 @@ public privileged aspect FileOutputCollectionAspect extends FileOpenTrackerAspec
         || call(PrintWriter+.new(String))
         || call(PrintStream+.new(String)))
         && args(f)
-        && if(strategies.collect(aspectProperties, thisJoinPointStaticPart))
+        && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
     {
         registerOpenOperation(thisJoinPointStaticPart, r, f, "w");
     }
@@ -67,7 +67,7 @@ public privileged aspect FileOutputCollectionAspect extends FileOpenTrackerAspec
     after (File f, boolean appendMode) returning(Closeable r)
         : (call(FileOutputStream+.new(File,boolean)) || call(FileWriter+.new(File,boolean)))
         && args(f,appendMode)
-        && if(strategies.collect(aspectProperties, thisJoinPointStaticPart))
+        && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
     {
         registerOpenOperation(thisJoinPointStaticPart, r, f, resolveWriteMode(appendMode));
     }
@@ -76,7 +76,7 @@ public privileged aspect FileOutputCollectionAspect extends FileOpenTrackerAspec
     after (String f, boolean appendMode) returning(Closeable r)
         : (call(FileOutputStream+.new(String,boolean)) || call(FileWriter+.new(String,boolean)))
         && args(f,appendMode)
-        && if(strategies.collect(aspectProperties, thisJoinPointStaticPart))
+        && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
     {
         registerOpenOperation(thisJoinPointStaticPart, r, f, resolveWriteMode(appendMode));
     }
@@ -85,7 +85,7 @@ public privileged aspect FileOutputCollectionAspect extends FileOpenTrackerAspec
     after (File f, String csn) returning(Closeable r)
         : (call(PrintWriter+.new(File,String)) || call(PrintStream+.new(File,String)))
         && args(f,csn)
-        && if(strategies.collect(aspectProperties, thisJoinPointStaticPart))
+        && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
     {
         Operation   op=registerOpenOperation(thisJoinPointStaticPart, r, f, "w");
         if (op != null)
@@ -96,7 +96,7 @@ public privileged aspect FileOutputCollectionAspect extends FileOpenTrackerAspec
     after (String f, String csn) returning(Closeable r)
         : (call(PrintWriter+.new(String,String)) || call(PrintStream+.new(String,String)))
         && args(f,csn)
-        && if(strategies.collect(aspectProperties, thisJoinPointStaticPart))
+        && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
     {
         Operation   op=registerOpenOperation(thisJoinPointStaticPart, r, f, "w");
         if (op != null)

@@ -16,13 +16,12 @@
 package com.springsource.insight.plugin.jdbc;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
-import com.springsource.insight.collection.errorhandling.CollectionErrors;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.OperationCollector;
+import com.springsource.insight.collection.errorhandling.CollectionErrors;
 import com.springsource.insight.util.ExceptionUtils;
 
 /**
@@ -40,8 +39,7 @@ public aspect JdbcConnectionCloseOperationCollectionAspect extends OperationColl
         return JdbcRuntimePluginDescriptor.PLUGIN_NAME;
     }
 
-    public pointcut collectionPoint()
-        : execution(* Connection+.close());
+    public pointcut collectionPoint() : execution(* Connection+.close());
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     Object around (Connection conn)

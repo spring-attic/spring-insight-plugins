@@ -19,18 +19,14 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 
-import com.springsource.insight.collection.errorhandling.CollectionErrors;
 import org.aspectj.lang.JoinPoint;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.strategies.BasicCollectionAspectProperties;
-import com.springsource.insight.collection.strategies.CollectionAspectProperties;
+import com.springsource.insight.collection.errorhandling.CollectionErrors;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 
 public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAspectSupport {
-    protected static final CollectionAspectProperties aspectProperties=new BasicCollectionAspectProperties(false, "jms");
-
     abstract JMSPluginOperationType getOperationType();
     
     Operation createOperation(JoinPoint jp) {

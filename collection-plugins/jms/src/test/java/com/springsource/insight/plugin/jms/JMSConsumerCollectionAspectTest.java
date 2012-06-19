@@ -59,9 +59,9 @@ public class JMSConsumerCollectionAspectTest extends OperationCollectionAspectTe
     }
     
     private static class MockConsumer implements MessageConsumer {
-        private MessageConsumer _mock;
-        private TextMessage _mockMessage;
-        private Map<String, Object> msgAttributesMap;
+        MessageConsumer _mock;
+        TextMessage _mockMessage;
+        Map<String, Object> msgAttributesMap;
         
         public MockConsumer(Queue queue) throws JMSException {
             _mockMessage = mock(TextMessage.class);

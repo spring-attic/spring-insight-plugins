@@ -27,9 +27,13 @@ import com.springsource.insight.intercept.color.ColorManager.ExtractColorParams;
 import com.springsource.insight.intercept.operation.Operation;
 
 public aspect JMSConsumerCollectionAspect extends AbstractJMSCollectionAspect {
+    public JMSConsumerCollectionAspect () {
+        super();
+    }
+
     public pointcut consumer()
         : execution(Message javax.jms.MessageConsumer+.receive*(..))
-       && if(strategies.collect(aspectProperties,thisJoinPointStaticPart))
+       && if(strategies.collect(thisAspectInstance,thisJoinPointStaticPart))
         ;
     
 	@SuppressAjWarnings({"adviceDidNotMatch"})

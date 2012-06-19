@@ -31,7 +31,6 @@ import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
 
 import com.springsource.insight.collection.method.TrailingMethodOperationCollectionAspect;
-import com.springsource.insight.collection.strategies.BasicCollectionAspectProperties;
 import com.springsource.insight.collection.strategies.CollectionAspectProperties;
 import com.springsource.insight.intercept.operation.Operation;
 

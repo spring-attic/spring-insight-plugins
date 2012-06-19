@@ -41,7 +41,7 @@ public privileged aspect FileInputCollectionAspect extends FileOpenTrackerAspect
     after (File f) returning(Closeable r)
         : (call(FileInputStream+.new(File)) || call(FileReader+.new(File)))
        && args(f)
-       && if(strategies.collect(aspectProperties, thisJoinPointStaticPart))
+       && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
     {
         registerOpenOperation(thisJoinPointStaticPart, r, f, "r");
     }
@@ -50,7 +50,7 @@ public privileged aspect FileInputCollectionAspect extends FileOpenTrackerAspect
     after (String f) returning(Closeable r)
         : (call(FileInputStream+.new(String)) || call(FileReader+.new(String)))
        && args(f)
-       && if(strategies.collect(aspectProperties, thisJoinPointStaticPart))
+       && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
     {
         registerOpenOperation(thisJoinPointStaticPart, r, f, "r");
     }
@@ -59,7 +59,7 @@ public privileged aspect FileInputCollectionAspect extends FileOpenTrackerAspect
     after (File f, String mode) returning(Closeable r)
         : call(RandomAccessFile+.new(File,String))
        && args(f,mode)
-       && if(strategies.collect(aspectProperties, thisJoinPointStaticPart))
+       && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
     {
         registerOpenOperation(thisJoinPointStaticPart, r, f, mode);
     }
@@ -68,7 +68,7 @@ public privileged aspect FileInputCollectionAspect extends FileOpenTrackerAspect
     after (String f, String mode) returning(Closeable r)
         : call(RandomAccessFile+.new(String,String))
        && args(f,mode)
-       && if(strategies.collect(aspectProperties, thisJoinPointStaticPart))
+       && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
     {
         registerOpenOperation(thisJoinPointStaticPart, r, f, mode);
     }

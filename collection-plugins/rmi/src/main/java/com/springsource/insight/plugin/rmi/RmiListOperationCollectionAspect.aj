@@ -32,10 +32,11 @@ public aspect RmiListOperationCollectionAspect extends OperationCollectionAspect
 	public RmiListOperationCollectionAspect() {
 		super();
 	}
-	
+
 	public pointcut list() : execution (* Registry.list());
 	
-	String[] around() : list() {
+	String[] around()
+ 	   : list() && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart)) {
 		Operation op = new Operation()
 							.type(RmiDefinitions.RMI_LIST)
 							.label("List bound remotes");
