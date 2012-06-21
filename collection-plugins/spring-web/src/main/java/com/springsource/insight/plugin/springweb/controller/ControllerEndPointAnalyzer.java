@@ -53,28 +53,29 @@ public class ControllerEndPointAnalyzer implements EndPointAnalyzer {
         return makeEndPoint(controllerFrame, -1);
     }
 
-    private EndPointAnalysis makeEndPoint(Frame controllerFrame, int score) {
+    private EndPointAnalysis makeEndPoint(Frame controllerFrame, int currentScore) {
         if (controllerFrame == null) {
             return null;
         }
         
         Frame httpFrame = FrameUtil.getFirstParentOfType(controllerFrame, httpOpType);
-        
         if (httpFrame == null) {
             return null;
         }
 
         Operation controllerOp = controllerFrame.getOperation();
-        if (controllerOp != null) {
-            String examplePath = getExampleRequest(httpFrame);
-            EndPointName endPointName = EndPointName.valueOf(controllerOp);
-            String endPointLabel = controllerOp.getLabel(); 
-            if (score == -1) {
-                score = FrameUtil.getDepth(controllerFrame);
-            }
-            return new EndPointAnalysis(endPointName, endPointLabel, examplePath, score, controllerOp);
+        if (controllerOp == null) {
+        	return null;
         }
-        return null;
+        String examplePath = getExampleRequest(httpFrame);
+        EndPointName endPointName = EndPointName.valueOf(controllerOp);
+        String endPointLabel = controllerOp.getLabel();
+        int	score = currentScore;
+        if (score == -1) {
+            score = FrameUtil.getDepth(controllerFrame);
+        }
+
+        return new EndPointAnalysis(endPointName, endPointLabel, examplePath, score, controllerOp);
     }
 
     public String getExampleRequest(Frame httpFrame) {

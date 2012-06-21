@@ -77,7 +77,11 @@ public class ModelAttributeOperationCollectionAspectTest extends OperationCollec
     }
 
     @Controller
-    private static class ExampleController {
+    static class ExampleController {
+    	ExampleController () {
+    		super();
+    	}
+
         @ModelAttribute("specialAccount")
         public Account namedAccount_specialAccount() {
             return new Account();
@@ -99,6 +103,9 @@ public class ModelAttributeOperationCollectionAspectTest extends OperationCollec
         }
     }
     
-    private static class Account {
+    static class Account {
+    	Account () {
+    		super();
+		}
     }
 }

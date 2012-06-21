@@ -18,19 +18,17 @@ package com.springsource.insight.plugin.springweb.view.resolver;
 
 import java.util.Locale;
 
-import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
 import org.aspectj.lang.JoinPoint;
 import org.springframework.web.servlet.View;
 
-import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.collection.DefaultOperationCollector;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
+import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
 import com.springsource.insight.plugin.springweb.ControllerPointcuts;
 import com.springsource.insight.plugin.springweb.view.ViewUtils;
 
-public aspect ViewResolverOperationCollectionAspect  extends AbstractSpringWebAspectSupport {
-    
+public aspect ViewResolverOperationCollectionAspect extends AbstractSpringWebAspectSupport {
     private static final OperationType TYPE = OperationType.valueOf("view_resolver");
     
     public ViewResolverOperationCollectionAspect() {
@@ -50,10 +48,15 @@ public aspect ViewResolverOperationCollectionAspect  extends AbstractSpringWebAs
             .type(TYPE)
             .sourceCodeLocation(getSourceCodeLocation(jp))
             .put("viewName", viewName)
-            .put("locale", locale.toString());
+            .put("locale", locale.toString())
+            ;
     }
 
     static class ViewResolverMetricCollector extends DefaultOperationCollector {
+    	ViewResolverMetricCollector () {
+    		super();
+    	}
+
         @Override
         public void processNormalExit(Operation op, Object returnValue) {
             if (returnValue != null) {

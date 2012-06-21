@@ -43,12 +43,17 @@ public class ValidationOperationCollectionAspectTest extends OperationCollection
         return ValidationOperationCollectionAspect.aspectOf();
     }
     
-    private static class ExampleValidator implements Validator {
+    static class ExampleValidator implements Validator {
+    	ExampleValidator () {
+    		super();
+    	}
+
         public boolean supports(Class<?> clazz) {
             return false;
         }
 
         public void validate(Object target, Errors errors) {
+        	// ignored
         }
     }
 }

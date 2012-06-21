@@ -18,25 +18,28 @@ package com.springsource.insight.plugin.springweb.view.render;
 
 import java.util.Map;
 
-import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
 import org.aspectj.lang.JoinPoint;
 import org.springframework.web.servlet.View;
 
-import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationType;
+import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
 import com.springsource.insight.plugin.springweb.ControllerPointcuts;
 import com.springsource.insight.plugin.springweb.view.ViewUtils;
 import com.springsource.insight.util.StringFormatterUtils;
 
 public aspect ViewRenderOperationCollectionAspect extends AbstractSpringWebAspectSupport {
-    
-    private static final OperationType TYPE = OperationType.valueOf("view_render");
+    static final OperationType TYPE = OperationType.valueOf("view_render");
+
+    public ViewRenderOperationCollectionAspect () {
+    	super();
+    }
     
     public pointcut collectionPoint() : ControllerPointcuts.renderView();
     
-    protected Operation createOperation(JoinPoint jp) {
+    @Override
+	protected Operation createOperation(JoinPoint jp) {
         View view = (View)jp.getThis();
         String resolvedView = ViewUtils.getViewDescription(view);
         String viewType = view.getClass().getName();
@@ -50,7 +53,7 @@ public aspect ViewRenderOperationCollectionAspect extends AbstractSpringWebAspec
             .put("contentType", contentType);
         // TODO move into a finalizer
         OperationMap model = operation.createMap("model");
-        for (Map.Entry<String, String> entry : StringFormatterUtils.formatMap((Map)jp.getArgs()[0]).entrySet()) {
+        for (Map.Entry<String, String> entry : StringFormatterUtils.formatMap((Map<?,?>)jp.getArgs()[0]).entrySet()) {
             model.put(entry.getKey(), entry.getValue());
         }
         return operation;

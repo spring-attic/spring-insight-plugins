@@ -37,9 +37,10 @@ public class ControllerOperationCollectionAspectTest extends OperationCollection
     }
     
     @Controller
-    private static class ExampleController {
+    static class ExampleController {
         @RequestMapping(value="/example")
         public void example() {
+        	// do nothing
         }
     }
     

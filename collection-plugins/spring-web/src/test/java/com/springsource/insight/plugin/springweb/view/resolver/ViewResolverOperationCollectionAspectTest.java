@@ -59,13 +59,21 @@ public class ViewResolverOperationCollectionAspectTest
         assertEquals(Locale.US.toString(), operation.get("locale"));
     }
 
-    private static class ExampleViewResolver implements ViewResolver {
+    static class ExampleViewResolver implements ViewResolver {
+    	ExampleViewResolver () {
+    		super();
+    	}
+
         public View resolveViewName(String viewName, Locale locale) throws Exception {
             return new JstlView("testUrl");
         }
     }
 
-    private static class NullViewResolver implements ViewResolver {
+    static class NullViewResolver implements ViewResolver {
+    	NullViewResolver () {
+    		super();
+    	}
+
         public View resolveViewName(String viewName, Locale locale) throws Exception {
             return null;
         }

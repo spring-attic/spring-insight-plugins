@@ -18,20 +18,22 @@ package com.springsource.insight.plugin.springweb.binder;
 
 import java.util.Map;
 
-import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
 import org.aspectj.lang.JoinPoint;
 import org.springframework.validation.DataBinder;
 
-import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFinalizer;
 import com.springsource.insight.intercept.operation.OperationList;
 import com.springsource.insight.intercept.operation.OperationType;
+import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
 import com.springsource.insight.plugin.springweb.ControllerPointcuts;
 
 public aspect InitBinderOperationCollectionAspect extends AbstractSpringWebAspectSupport {
-    
-    private static final OperationType TYPE = OperationType.valueOf("init_binder");
+    static final OperationType TYPE = OperationType.valueOf("init_binder");
+
+    public InitBinderOperationCollectionAspect () {
+    	super();
+    }
     
     public pointcut collectionPoint() : ControllerPointcuts.initBinder();
 
@@ -45,11 +47,13 @@ public aspect InitBinderOperationCollectionAspect extends AbstractSpringWebAspec
     }
 
     private static class InitBinderOperationFinalizer implements OperationFinalizer {
-
         private static final InitBinderOperationFinalizer INSTANCE = new InitBinderOperationFinalizer();
-        
         private static final String JOINPOINT_KEY = InitBinderOperationFinalizer.class.getName() + "#JOINPOINT_KEY";
-        
+
+        InitBinderOperationFinalizer () {
+        	super();
+        }
+
         public static void register(Operation operation, JoinPoint jp) {
             operation.addFinalizer(INSTANCE)
                 .addFinalizerObject(JOINPOINT_KEY, jp);
