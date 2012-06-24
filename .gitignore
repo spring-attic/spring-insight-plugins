@@ -5,6 +5,7 @@ target
 .project
 .classpath
 .springBeans
+.externalToolBuilders
 .svn
 *.iml
 *.ipr
