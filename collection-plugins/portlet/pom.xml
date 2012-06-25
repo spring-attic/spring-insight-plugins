@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.springsource.insight.plugins</groupId>
+	<artifactId>insight-plugin-portlet</artifactId>
+	<name>com.springsource.insight.plugins:portlet</name>
+	<packaging>jar</packaging>
+	
+	<parent>
+		<groupId>com.springsource.insight</groupId>
+		<artifactId>community</artifactId>
+		<version>1.9.0-CI-SNAPSHOT</version>
+		<relativePath>../../parent</relativePath>
+	</parent>
+	
+	<dependencies>
+		<!-- Provided dependencies (part of the user application) -->
+        <dependency>
+            <groupId>javax.portlet</groupId>
+            <artifactId>portlet-api</artifactId>
+            <version>2.0</version>
+        </dependency>
+        
+        <!-- Provided dependencies (part of Insight) -->
+        <dependency>
+            <groupId>com.springsource.insight</groupId>
+            <artifactId>insight-idk</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+		
+		<!-- Test dependencies -->
+       <dependency>
+           <groupId>org.aspectj</groupId>
+           <artifactId>aspectjweaver</artifactId>
+           <version>${aspectj.version}</version>
+           <scope>test</scope>
+       </dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>${mockito.version}</version>
+			<scope>test</scope>
+		</dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.framework.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>net.sf.portletunit</groupId>
+            <artifactId>portletunit2</artifactId>
+            <version>1.0.2</version>
+            <scope>test</scope>
+        </dependency>
+	</dependencies>
+	
+	<build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>aspectj-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>test-compile</goal>
+                        </goals>
+                        <configuration>
+                            <outxml>true</outxml>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.11</version>
+                <configuration>
+                    <useSystemClassLoader>false</useSystemClassLoader>
+                    <!--systemProperties>
+                        <property>
+                            <name>aspectj.overweaving</name>
+                            <value>true</value>
+                        </property>
+                    </systemProperties-->
+                    <argLine>
+                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+                    </argLine>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <configuration>
+                    <header>../../aslHeader.txt</header>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+	
+</project>

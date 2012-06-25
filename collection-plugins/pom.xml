@@ -61,6 +61,7 @@
 		<module>spring-web</module>
 		<module>spring-webflow</module>
 		<module>struts2</module>
+		<module>portlet</module>
 		<module>tomcat</module>
 	</modules>
 
