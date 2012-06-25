@@ -27,7 +27,6 @@ public abstract class AbstractSqlPatternParser extends AbstractSqlParser {
     private final SqlParserPattern[] patterns;
     
     public AbstractSqlPatternParser(@SuppressWarnings("hiding") SqlParserPattern... patterns) {
-        super();
         this.patterns = patterns;
     }
     
