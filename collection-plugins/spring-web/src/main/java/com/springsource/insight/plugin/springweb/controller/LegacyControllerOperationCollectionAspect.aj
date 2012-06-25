@@ -38,9 +38,11 @@ import com.springsource.insight.plugin.springweb.SpringWebPluginRuntimeDescripto
  * which houses handleRequest, but should point at the user's code, which will have the
  * real handler implementation (albeit with a likely different name)
  */
-public aspect LegacyControllerOperationCollectionAspect
-    extends MethodOperationCollectionAspect
-{
+public aspect LegacyControllerOperationCollectionAspect extends MethodOperationCollectionAspect {
+	public LegacyControllerOperationCollectionAspect () {
+		super();
+	}
+
     public pointcut collectionPoint() : LegacyControllerPointcuts.controllerHandlerMethod();
 
     @Override
@@ -57,7 +59,7 @@ public aspect LegacyControllerOperationCollectionAspect
     public SourceCodeLocation getSourceCodeLocation(JoinPoint jp) {
         MethodSignature mSig = (MethodSignature) jp.getSignature();
         String className = jp.getTarget().getClass().getName();
-        return new SourceCodeLocation(className, mSig.getName(), 1);
+        return new SourceCodeLocation(className, mSig.getName(), jp.getSourceLocation().getLine());
     }
 
     @Override

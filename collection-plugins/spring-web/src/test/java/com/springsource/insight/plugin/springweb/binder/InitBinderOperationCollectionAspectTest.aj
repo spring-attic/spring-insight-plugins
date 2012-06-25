@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.DataBinder;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.context.request.WebRequest;
@@ -37,7 +38,8 @@ import com.springsource.insight.intercept.operation.Operation;
 public aspect InitBinderOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
     private ExampleController testController;
     
-    @Before
+    @Override
+	@Before
     public void setUp() {
         super.setUp();
         testController = new ExampleController();
@@ -51,7 +53,7 @@ public aspect InitBinderOperationCollectionAspectTest extends OperationCollectio
         verify(spiedOperationCollector).enter(operationCaptor.capture());
         Operation operation = operationCaptor.getValue();
         operation.finalizeConstruction();
-        assertEquals(WebDataBinder.DEFAULT_OBJECT_NAME, operation.get("objectName"));
+        assertEquals(DataBinder.DEFAULT_OBJECT_NAME, operation.get("objectName"));
         assertEquals("unknown", operation.get("targetType"));
         assertEquals(Arrays.asList("allowed1", "allowed2"), operation.asMap().get("allowedFields"));
         assertEquals(Arrays.asList("required1", "required2"), operation.asMap().get("requiredFields"));
@@ -66,7 +68,7 @@ public aspect InitBinderOperationCollectionAspectTest extends OperationCollectio
         verify(spiedOperationCollector).enter(operationCaptor.capture());
         Operation operation = operationCaptor.getValue();
         operation.finalizeConstruction();
-        assertEquals(WebDataBinder.DEFAULT_OBJECT_NAME, operation.get("objectName"));
+        assertEquals(DataBinder.DEFAULT_OBJECT_NAME, operation.get("objectName"));
         assertEquals(getClass().getName(), operation.get("targetType"));
         assertEquals(Arrays.asList("allowed1", "allowed2"), operation.asMap().get("allowedFields"));
         assertEquals(Collections.emptyList(), operation.asMap().get("requiredFields"));
@@ -91,7 +93,11 @@ public aspect InitBinderOperationCollectionAspectTest extends OperationCollectio
     }
 
     @Controller
-    private static class ExampleController {
+    static class ExampleController {
+    	ExampleController () {
+    		super();
+    	}
+
         @InitBinder
         public void initBinderFirstParam(WebDataBinder dataBinder) throws Exception {
             dataBinder.setAllowedFields(new String[]{"allowed1", "allowed2"});

@@ -19,6 +19,7 @@ package com.springsource.insight.plugin.springweb.request;
 import static com.springsource.insight.intercept.operation.OperationFields.EXCEPTION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +49,8 @@ public class WebRequestOperationCollectionAspectTest
     private MockServletConfig config;
     private MockHttpServletResponse response;
     
-    @Before
+    @Override
+	@Before
     public void setUp() {
         super.setUp();
 
@@ -72,11 +74,12 @@ public class WebRequestOperationCollectionAspectTest
             servlet.service(request, response);
             fail("Should have failed");
         } catch(NestedServletException e) {
+        	// expected ignored
         }
         
         Operation   operation=getLastEntered();
         assertEquals("Spring Web Dispatch", operation.getLabel());
-        assertTrue(operation.get("error", Boolean.class));
+        assertTrue(operation.get("error", Boolean.class).booleanValue());
         assertTrue(operation.get(EXCEPTION, String.class).startsWith("java.lang.RuntimeException: El-Kabong"));
         assertTrue(operation.get(EXCEPTION, String.class).contains("throwExceptionFromMethod"));
     }
@@ -91,17 +94,17 @@ public class WebRequestOperationCollectionAspectTest
         assertEquals("Spring Web Dispatch", operation.getLabel());
         assertEquals("GET", operation.get("method"));
         assertEquals("/success", operation.get(OperationFields.URI));
-        assertTrue(!operation.get("error", Boolean.class));
+        assertFalse(operation.get("error", Boolean.class).booleanValue());
     }
     
-    public OperationCollectionAspectSupport getAspect() {
+    @Override
+	public OperationCollectionAspectSupport getAspect() {
         return WebRequestOperationCollectionAspect.aspectOf();
     }
 
-    public static class MyContext
-        extends StaticWebApplicationContext
-    {
-        public void refresh() {
+    public static class MyContext extends StaticWebApplicationContext {
+        @Override
+		public void refresh() {
             registerSingleton("/success", MyController.class);
             registerSingleton("/fail", MyController.class);            
             super.refresh();

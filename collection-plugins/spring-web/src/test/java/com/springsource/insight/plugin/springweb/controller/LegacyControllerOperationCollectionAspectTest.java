@@ -17,6 +17,7 @@
 package com.springsource.insight.plugin.springweb.controller;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,32 +32,38 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.SourceCodeLocation;
 
 public class LegacyControllerOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
+	public LegacyControllerOperationCollectionAspectTest () {
+		super();
+	}
+
     @Test
     public void controllerMonitored() {
         ExampleController testController = new ExampleController();
         testController.handleRequest(null, null);
 
         Operation   op=getLastEntered();
+        assertNotNull("No operation extracted", op);
+        assertEquals("Mismatched type", ControllerEndPointAnalyzer.CONTROLLER_METHOD_TYPE, op.getType());
+
         SourceCodeLocation source = op.getSourceCodeLocation();
-        assertEquals(ExampleController.class.getName(), source.getClassName());
-        assertEquals("handleRequest", source.getMethodName());
-        assertEquals(1, source.getLineNumber());
+        assertEquals("Mismatched source class", ExampleController.class.getName(), source.getClassName());
+        assertEquals("Mismatched method name", "handleRequest", source.getMethodName());
     }
     
-    private static class ExampleControllerBase implements Controller {
+    static class ExampleControllerBase implements Controller {
         public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) {
             return null;
         }
     }
     
-    private static class ExampleController extends ExampleControllerBase {
-
+    static class ExampleController extends ExampleControllerBase {
+    	public ExampleController () {
+    		super();
+    	}
     }
     
     @Override
     public OperationCollectionAspectSupport getAspect() {
         return LegacyControllerOperationCollectionAspect.aspectOf();
     }
-    
-
 }

@@ -90,7 +90,7 @@
         <dependency> <!-- used by Spring -->
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
-            <version>1</version>
+            <version>${javax.inject.version}</version>
             <scope>test</scope>
         </dependency>
 

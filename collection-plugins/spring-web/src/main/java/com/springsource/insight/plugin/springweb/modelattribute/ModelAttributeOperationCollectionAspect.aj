@@ -18,16 +18,15 @@ package com.springsource.insight.plugin.springweb.modelattribute;
 
 import java.lang.reflect.Method;
 
-import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.Conventions;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.collection.DefaultOperationCollector;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
+import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
 import com.springsource.insight.plugin.springweb.ControllerPointcuts;
 import com.springsource.insight.util.StringFormatterUtils;
 
@@ -62,7 +61,10 @@ public aspect ModelAttributeOperationCollectionAspect extends AbstractSpringWebA
         return Conventions.getVariableNameForReturnType(((MethodSignature)jp.getSignature()).getMethod());
     }
     
-    private static class ModelAttributeOperationCollector extends DefaultOperationCollector {
+    static class ModelAttributeOperationCollector extends DefaultOperationCollector {
+    	ModelAttributeOperationCollector  () {
+    		super();
+    	}
 
         @Override
         protected void processNormalExit(Operation op, Object returnValue) {

@@ -21,24 +21,21 @@ import static com.springsource.insight.intercept.operation.OperationFields.EXCEP
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
 import org.aspectj.lang.JoinPoint;
 
-import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.collection.DefaultOperationCollector;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
+import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
 import com.springsource.insight.plugin.springweb.SpringWebPointcuts;
 import com.springsource.insight.util.StringUtil;
 
-public aspect WebRequestOperationCollectionAspect
-    extends AbstractSpringWebAspectSupport
-{
-    public pointcut collectionPoint() : SpringWebPointcuts.processWebRequest();
-    
+public aspect WebRequestOperationCollectionAspect extends AbstractSpringWebAspectSupport {
     public WebRequestOperationCollectionAspect() {
         super(new WebRequestOperationCollector());
     }
+
+    public pointcut collectionPoint() : SpringWebPointcuts.processWebRequest();
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
@@ -52,10 +49,14 @@ public aspect WebRequestOperationCollectionAspect
             .type(OperationType.WEB_REQUEST)
             .sourceCodeLocation(getSourceCodeLocation(jp))
             .put("method", request.getMethod())
-            .put("uri", request.getRequestURI());
+            .put("uri", request.getRequestURI())
+            ;
     }
 
-    private static class WebRequestOperationCollector extends DefaultOperationCollector {
+    static class WebRequestOperationCollector extends DefaultOperationCollector {
+    	WebRequestOperationCollector () {
+    		super();
+    	}
 
         @Override
         protected void processNormalExit(Operation op) {
@@ -70,7 +71,8 @@ public aspect WebRequestOperationCollectionAspect
         @Override
         protected void processAbnormalExit(Operation op, Throwable throwable) {
             op.put("error", true)
-                .put(EXCEPTION, StringUtil.throwableToString(throwable));
+                .put(EXCEPTION, StringUtil.throwableToString(throwable))
+                ;
             
         }
         
