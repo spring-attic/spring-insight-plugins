@@ -20,8 +20,7 @@ import com.springsource.insight.intercept.operation.OperationType;
 /**
  * 
  */
-public class JdbcDriverExternalResourceAnalyzer
-        extends DatabaseJDBCURIAnalyzer {
+public class JdbcDriverExternalResourceAnalyzer extends DatabaseJDBCURIAnalyzer {
     public static final OperationType   TYPE=OperationType.valueOf("jdbc-connect");
     public JdbcDriverExternalResourceAnalyzer () {
         super(TYPE);

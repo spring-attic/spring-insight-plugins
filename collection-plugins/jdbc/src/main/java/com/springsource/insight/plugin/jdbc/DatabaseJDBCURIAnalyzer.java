@@ -35,6 +35,8 @@ import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.plugin.jdbc.parser.DatabaseType;
 import com.springsource.insight.plugin.jdbc.parser.JdbcUrlMetaData;
+import com.springsource.insight.util.ListUtil;
+import com.springsource.insight.util.StringUtil;
 
 /**
  * Locates the JDBC URI of the database from a trace and locates all the external
@@ -64,7 +66,7 @@ public abstract class DatabaseJDBCURIAnalyzer implements ExternalResourceAnalyze
 		for (Frame dbFrame : dbFrames) {
 		    Operation op = dbFrame.getOperation();
 			String    uri = op.get(OperationFields.CONNECTION_URL, String.class);
-			if ((uri == null) || (uri.length() <= 0)) {
+			if (StringUtil.isEmpty(uri)) {
 				continue;
 			}
 			dbDescriptors.addAll(extractMeaningfulNames(dbFrame, uri)); 
@@ -89,8 +91,7 @@ public abstract class DatabaseJDBCURIAnalyzer implements ExternalResourceAnalyze
 		return getFallbackDescriptor(frame, connectionString);
 	}
 
-	private List<ExternalResourceDescriptor> getFallbackDescriptor(
-			Frame frame, String connectionString) {
+	private List<ExternalResourceDescriptor> getFallbackDescriptor(Frame frame, String connectionString) {
 		String workingConnectionString = connectionString.replaceFirst("jdbc:", "");
 		int indexOfFirstColon = workingConnectionString.indexOf(':');
 
@@ -116,31 +117,37 @@ public abstract class DatabaseJDBCURIAnalyzer implements ExternalResourceAnalyze
 		return Arrays.asList(hashed);
 	}
 
-	private List<ExternalResourceDescriptor> getParserRecognizedDescriptors(Frame frame,
-			String connectionString) {		
-		List<JdbcUrlMetaData> urlMetaDataList = DatabaseType.parse(connectionString);
-
-		if (urlMetaDataList != null && urlMetaDataList.size() > 0){
-			List<ExternalResourceDescriptor> externalResourceDescriptors = new ArrayList<ExternalResourceDescriptor>();
-			int instance = 1;
-			for (JdbcUrlMetaData urlMetaData : urlMetaDataList) {
-				String databaseName = urlMetaData.getDatabaseName();
-				String vendor = urlMetaData.getVendorName();
-				String host = urlMetaData.getHost();
-				int port = urlMetaData.getPort();
-				String jdbcHash = MD5NameGenerator.getName(connectionString);
-                String color = ColorManager.getInstance().getColor(frame.getOperation());
-                
-				ExternalResourceDescriptor descriptor = new ExternalResourceDescriptor(frame, vendor + ":" + instance + ":" + jdbcHash, databaseName, ExternalResourceType.DATABASE.name(), vendor, host, port, color);
-				externalResourceDescriptors.add(descriptor);
-				
-				//using the same instance index as we're assuming no more than one parser will ever succeed in parsing the same url
-				instance++;
-			}
-			return externalResourceDescriptors;
+	private List<ExternalResourceDescriptor> getParserRecognizedDescriptors(Frame frame, String connectionString) {		
+		Collection<? extends JdbcUrlMetaData> urlMetaDataList = DatabaseType.parse(connectionString);
+		if (ListUtil.size(urlMetaDataList) <= 0) {
+			return null;
 		}
-		
-		return null;
+
+		List<ExternalResourceDescriptor> externalResourceDescriptors = new ArrayList<ExternalResourceDescriptor>(urlMetaDataList.size());
+		int instance = 1;
+		ColorManager	colorManager=ColorManager.getInstance();
+		for (JdbcUrlMetaData urlMetaData : urlMetaDataList) {
+			String databaseName = urlMetaData.getDatabaseName();
+			String vendor = urlMetaData.getVendorName();
+			String host = urlMetaData.getHost();
+			int port = urlMetaData.getPort();
+			String jdbcHash = MD5NameGenerator.getName(connectionString);
+			String color = colorManager.getColor(frame.getOperation());
+                
+			ExternalResourceDescriptor descriptor=new ExternalResourceDescriptor(frame, 
+																				 vendor + ":" + instance + ":" + jdbcHash,
+																				 databaseName,
+																				 ExternalResourceType.DATABASE.name(),
+																				 vendor,
+																				 host,
+																				 port,
+																				 color);
+			externalResourceDescriptors.add(descriptor);
+			//using the same instance index as we're assuming no more than one parser will ever succeed in parsing the same url
+			instance++;
+		}
+
+		return externalResourceDescriptors;
 	}
 	
 	/**
