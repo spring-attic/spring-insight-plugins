@@ -49,7 +49,7 @@ public aspect RmiOperationCollectionAspect extends MethodOperationCollectionAspe
 		String name = (String) jp.getArgs()[0];
 		return super.createOperation(jp)
 					.type(RmiDefinitions.RMI_ACTION)
-					.label(/* TODO StringUtil.capitalize(action) */ action + " " + StringUtil.chopTailAndEllipsify(name, StringFormatterUtils.MAX_PARAM_LENGTH))
+					.label(StringUtil.capitalize(action) + " " + StringUtil.chopTailAndEllipsify(name, StringFormatterUtils.MAX_PARAM_LENGTH))
 					.put(RmiDefinitions.ACTION_ATTR, action)
 					.put(RmiDefinitions.NAME_ATTR, name)
 					;
