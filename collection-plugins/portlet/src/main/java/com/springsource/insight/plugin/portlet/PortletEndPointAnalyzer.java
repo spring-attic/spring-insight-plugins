@@ -28,6 +28,10 @@ public class PortletEndPointAnalyzer implements EndPointAnalyzer {
     private static final int ANALYSIS_SCORE = 0;
     private static final OperationType opType=OperationCollectionTypes.RENDER_TYPE.type;
 
+    public PortletEndPointAnalyzer () {
+    	super();
+    }
+
     public EndPointAnalysis locateEndPoint(Trace trace) {
         Frame firstFrame = trace.getFirstFrameOfType(opType);
         if (firstFrame == null) {

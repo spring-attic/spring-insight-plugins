@@ -8,9 +8,9 @@
 	
 	<parent>
 		<groupId>com.springsource.insight</groupId>
-		<artifactId>community</artifactId>
+		<artifactId>community-plugins</artifactId>
 		<version>1.9.0-CI-SNAPSHOT</version>
-		<relativePath>../../parent</relativePath>
+		<relativePath>..</relativePath>
 	</parent>
 	
 	<dependencies>
@@ -88,57 +88,21 @@
 	</dependencies>
 	
 	<build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>aspectj-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile</goal>
-                            <goal>test-compile</goal>
-                        </goals>
-                        <configuration>
-                            <outxml>true</outxml>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.11</version>
+                <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
-                    <useSystemClassLoader>false</useSystemClassLoader>
-                    <!--systemProperties>
-                        <property>
-                            <name>aspectj.overweaving</name>
-                            <value>true</value>
-                        </property>
-                    </systemProperties-->
-                    <argLine>
-                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
-                    </argLine>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>                            
+                            <Insight-Plugin-Descriptor>com.springsource.insight.plugin.portlet.PortletPluginRuntimeDescriptor</Insight-Plugin-Descriptor>
+                        </manifestEntries>
+                    </archive>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-            </plugin>
-            
             <plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
