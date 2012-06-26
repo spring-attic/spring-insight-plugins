@@ -46,6 +46,7 @@
 		<module>mail</module>
 		<module>method-endpoint</module>
 		<module>mongodb</module>
+		<module>portlet</module>
 		<module>quartz</module>
 		<module>rabbitmq-client</module>
 		<module>rmi</module>
@@ -61,7 +62,6 @@
 		<module>spring-web</module>
 		<module>spring-webflow</module>
 		<module>struts2</module>
-		<module>portlet</module>
 		<module>tomcat</module>
 	</modules>
 

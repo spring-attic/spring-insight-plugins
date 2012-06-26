@@ -6,12 +6,12 @@
 	<name>com.springsource.insight.plugins:portlet</name>
 	<packaging>jar</packaging>
 	
-	<parent>
-		<groupId>com.springsource.insight</groupId>
-		<artifactId>community</artifactId>
-		<version>1.9.0-CI-SNAPSHOT</version>
-		<relativePath>../../parent</relativePath>
-	</parent>
+    <parent>
+        <groupId>com.springsource.insight</groupId>
+        <artifactId>community-plugins</artifactId>
+        <version>1.9.0-CI-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
 	
 	<dependencies>
 		<!-- Provided dependencies (part of the user application) -->
@@ -30,24 +30,6 @@
         </dependency>
 		
 		<!-- Test dependencies -->
-       <dependency>
-           <groupId>org.aspectj</groupId>
-           <artifactId>aspectjweaver</artifactId>
-           <version>${aspectj.version}</version>
-           <scope>test</scope>
-       </dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>${mockito.version}</version>
-			<scope>test</scope>
-		</dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
@@ -88,30 +70,7 @@
 	</dependencies>
 	
 	<build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-
         <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>aspectj-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile</goal>
-                            <goal>test-compile</goal>
-                        </goals>
-                        <configuration>
-                            <outxml>true</outxml>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -131,28 +90,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
+                        <!-- special extra configuration beyond the default for other plugins -->
                     <useSystemClassLoader>false</useSystemClassLoader>
-                    <!--systemProperties>
-                        <property>
-                            <name>aspectj.overweaving</name>
-                            <value>true</value>
-                        </property>
-                    </systemProperties-->
-                    <argLine>
-                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
-                    </argLine>
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-            </plugin>
-            
             <plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
