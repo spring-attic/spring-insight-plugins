@@ -32,10 +32,13 @@ import com.springsource.insight.intercept.operation.OperationMap;
  * This aspect create insight operation for general Portlet
  */
 abstract aspect GenericOperationCollectionAspect extends AbstractOperationCollectionAspect {
-	
+	protected GenericOperationCollectionAspect () {
+		super();
+	}
+
 	@Override
     public String getPluginName() {
-        return "portlet";
+        return PortletPluginRuntimeDescriptor.NAME;
     }
 
 	protected Operation createOperation(JoinPoint jp, OperationCollectionTypes opType) {
@@ -62,6 +65,7 @@ abstract aspect GenericOperationCollectionAspect extends AbstractOperationCollec
 			operation.put("winId", req.getWindowID());
 		}
 		catch(Error e) {
+			// ignored
 		}
 		
 		createMap(operation,"preferences",preferences);

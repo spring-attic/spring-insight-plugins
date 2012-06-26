@@ -43,6 +43,7 @@ public privileged aspect ActionOperationCollectionAspect extends GenericOperatio
 			op.put("actionPhase", req.getParameter(ActionRequest.ACTION_PHASE));
 		}
 		catch(Error e) {
+			// ignored
 		}
 		
 		return op;

@@ -29,8 +29,8 @@ public enum OperationCollectionTypes {
 	final public OperationType type;
 	final public String label;
 
-	private OperationCollectionTypes(String typeId, String label) {
+	private OperationCollectionTypes(String typeId, String typeLabel) {
 		this.type=OperationType.valueOf(typeId);
-		this.label = label;
+		this.label = typeLabel;
 	}
 }

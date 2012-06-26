@@ -23,6 +23,8 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
  * 
  */
 public class PortletPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
+	public static final String	NAME="portlet";
+
 	public PortletPluginRuntimeDescriptor() {
 		super();
 	}
@@ -34,7 +36,7 @@ public class PortletPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
 
 	@Override
 	public String getPluginName() {
-		return "portlet";
+		return NAME;
 	}
 
 }

@@ -30,7 +30,10 @@ import com.springsource.insight.intercept.operation.Operation;
  * @type: portlet-event
  */
 public privileged aspect EventOperationCollectionAspect extends GenericOperationCollectionAspect {
-    
+    public EventOperationCollectionAspect () {
+    	super();
+    }
+
     public pointcut collectionPoint() : execution(void javax.portlet.EventPortlet+.processEvent(EventRequest, EventResponse)) ||
     									execution(@ProcessEvent void *(EventRequest, EventResponse));
 

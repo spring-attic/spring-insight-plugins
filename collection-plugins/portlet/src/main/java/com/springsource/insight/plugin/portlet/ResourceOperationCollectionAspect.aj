@@ -28,6 +28,10 @@ import com.springsource.insight.intercept.operation.Operation;
  * @type: portlet-resource
  */
 public privileged aspect ResourceOperationCollectionAspect extends GenericOperationCollectionAspect {
+	public ResourceOperationCollectionAspect () {
+		super();
+	}
+
     public pointcut collectionPoint() : execution(void javax.portlet.ResourceServingPortlet+.serveResource(ResourceRequest, ResourceResponse));
 
 	@Override
