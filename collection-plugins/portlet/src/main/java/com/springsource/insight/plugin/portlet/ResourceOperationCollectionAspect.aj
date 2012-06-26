@@ -16,6 +16,7 @@
 
 package com.springsource.insight.plugin.portlet;
 
+import javax.portlet.PortletRequest;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 
@@ -42,6 +43,6 @@ public privileged aspect ResourceOperationCollectionAspect extends GenericOperat
 		return createOperation(jp, OperationCollectionTypes.RESOURCE_TYPE)
 				.put("ETag", req.getETag())
 				.put("resourceCacheability", req.getCacheability())
-	            .put("resourcePhase", req.getParameter(ResourceRequest.RESOURCE_PHASE));
+	            .put("resourcePhase", req.getParameter(PortletRequest.RESOURCE_PHASE));
 	}
 }

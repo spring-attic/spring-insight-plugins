@@ -19,6 +19,7 @@ package com.springsource.insight.plugin.portlet;
 import javax.portlet.Event;
 import javax.portlet.EventRequest;
 import javax.portlet.EventResponse;
+import javax.portlet.PortletRequest;
 import javax.portlet.ProcessEvent;
 
 import org.aspectj.lang.JoinPoint;
@@ -46,6 +47,6 @@ public privileged aspect EventOperationCollectionAspect extends GenericOperation
 		return createOperation(jp, OperationCollectionTypes.EVENT_TYPE)
 				.put("eventName", event.getName())
 				.putAny("eventValue", event.getValue())
-				.put("eventPhase", req.getParameter(EventRequest.EVENT_PHASE));
+				.put("eventPhase", req.getParameter(PortletRequest.EVENT_PHASE));
 	}
 }

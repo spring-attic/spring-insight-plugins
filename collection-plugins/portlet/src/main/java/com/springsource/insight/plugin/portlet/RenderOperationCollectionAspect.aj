@@ -16,6 +16,7 @@
 
 package com.springsource.insight.plugin.portlet;
 
+import javax.portlet.PortletRequest;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.portlet.RenderMode;
@@ -46,8 +47,8 @@ public privileged aspect RenderOperationCollectionAspect extends GenericOperatio
 		Operation op=createOperation(jp, OperationCollectionTypes.RENDER_TYPE);
 		try {
 			//portlet2 support
-			op.put("renderPhase", req.getParameter(RenderRequest.RENDER_PHASE));
-	        op.put("renderPart", req.getParameter(RenderRequest.RENDER_PART));
+			op.put("renderPhase", req.getParameter(PortletRequest.RENDER_PHASE));
+	        op.put("renderPart", req.getParameter(PortletRequest.RENDER_PART));
 	        op.put("ETag", req.getETag());
 		}
 		catch(Error e) {

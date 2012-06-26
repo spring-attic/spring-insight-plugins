@@ -18,6 +18,7 @@ package com.springsource.insight.plugin.portlet;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
+import javax.portlet.PortletRequest;
 import javax.portlet.ProcessAction;
 import org.aspectj.lang.JoinPoint;
 import com.springsource.insight.intercept.operation.Operation;
@@ -40,7 +41,7 @@ public privileged aspect ActionOperationCollectionAspect extends GenericOperatio
 		try {
 			//portlet2 support
 			op.put("actionName", req.getParameter(ActionRequest.ACTION_NAME));
-			op.put("actionPhase", req.getParameter(ActionRequest.ACTION_PHASE));
+			op.put("actionPhase", req.getParameter(PortletRequest.ACTION_PHASE));
 		}
 		catch(Error e) {
 			// ignored
