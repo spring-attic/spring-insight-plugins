@@ -15,8 +15,8 @@
  */
 package com.springsource.insight.plugin.portlet;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -55,16 +55,13 @@ public class ActionOperationCollectionAspectTest extends OperationCollectionAspe
 		assertNotNull("No operation data is intercepted",op);
 
 		// Step 3:  Validate
-		assertTrue("Invalid operation type: "+op.getType().getName()+", expected: "+OperationCollectionTypes.ACTION_TYPE.type.getName(),
-					op.getType().equals(OperationCollectionTypes.ACTION_TYPE.type));
+		assertEquals("Invalid operation type", OperationCollectionTypes.ACTION_TYPE.type, op.getType());
 
-		String portletName=(String)op.get("name");
-		assertTrue("Invalid portlet name: "+portletName+", expected: "+ExamplePortlet.NAME,
-					portletName!=null && portletName.equals(ExamplePortlet.NAME));
+		String portletName=op.get("name", String.class);
+		assertEquals("Invalid portlet name", ExamplePortlet.NAME, portletName);
 		
-		String portletMode=(String)op.get("mode");
-		assertTrue("Invalid portlet mode: "+portletMode+", expected: view",
-					portletMode!=null && portletMode.equals("view"));
+		String portletMode=op.get("mode", String.class);
+		assertEquals("Invalid portlet mode", "view", portletMode);
 	}
 	
 	@Override

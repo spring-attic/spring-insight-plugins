@@ -37,12 +37,13 @@ public privileged aspect ResourceOperationCollectionAspect extends GenericOperat
 
 	@Override
 	protected Operation createOperation(JoinPoint jp) {
-		Object[] args = jp.getArgs();
+		Object[] 		args=jp.getArgs();
 		ResourceRequest req=(ResourceRequest)args[0];
         
 		return createOperation(jp, OperationCollectionTypes.RESOURCE_TYPE)
-				.put("ETag", req.getETag())
-				.put("resourceCacheability", req.getCacheability())
-	            .put("resourcePhase", req.getParameter(PortletRequest.RESOURCE_PHASE));
+				.putAnyNonEmpty("ETag", req.getETag())
+				.putAnyNonEmpty("resourceCacheability", req.getCacheability())
+	            .putAnyNonEmpty("resourcePhase", req.getParameter(PortletRequest.RESOURCE_PHASE))
+	            ;
 	}
 }

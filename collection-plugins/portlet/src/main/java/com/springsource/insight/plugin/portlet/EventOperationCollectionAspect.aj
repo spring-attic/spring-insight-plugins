@@ -40,13 +40,14 @@ public privileged aspect EventOperationCollectionAspect extends GenericOperation
 
 	@Override
 	protected Operation createOperation(JoinPoint jp) {
-		Object[] args = jp.getArgs();
+		Object[] 	 args=jp.getArgs();
 		EventRequest req=(EventRequest)args[0];
-		Event event=req.getEvent();
+		Event 		 event=req.getEvent();
 		
 		return createOperation(jp, OperationCollectionTypes.EVENT_TYPE)
-				.put("eventName", event.getName())
+				.putAnyNonEmpty("eventName", event.getName())
 				.putAny("eventValue", event.getValue())
-				.put("eventPhase", req.getParameter(PortletRequest.EVENT_PHASE));
+				.putAnyNonEmpty("eventPhase", req.getParameter(PortletRequest.EVENT_PHASE))
+				;
 	}
 }

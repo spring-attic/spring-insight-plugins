@@ -28,20 +28,23 @@ import com.springsource.insight.intercept.operation.Operation;
  * @type: portlet-action
  */
 public privileged aspect ActionOperationCollectionAspect extends GenericOperationCollectionAspect {
-    
+    public ActionOperationCollectionAspect () {
+    	super();
+    }
+
     public pointcut collectionPoint() : execution(void javax.portlet.Portlet+.processAction(ActionRequest, ActionResponse)) ||
     									execution(@ProcessAction void *(ActionRequest, ActionResponse));
 
 	@Override
 	protected Operation createOperation(JoinPoint jp) {
-		Object[] args = jp.getArgs();
+		Object[] 	  args=jp.getArgs();
 		ActionRequest req=(ActionRequest)args[0];
 		
 		Operation op=createOperation(jp, OperationCollectionTypes.ACTION_TYPE);
 		try {
 			//portlet2 support
-			op.put("actionName", req.getParameter(ActionRequest.ACTION_NAME));
-			op.put("actionPhase", req.getParameter(PortletRequest.ACTION_PHASE));
+			op.putAnyNonEmpty("actionName", req.getParameter(ActionRequest.ACTION_NAME));
+			op.putAnyNonEmpty("actionPhase", req.getParameter(PortletRequest.ACTION_PHASE));
 		}
 		catch(Error e) {
 			// ignored

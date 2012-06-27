@@ -24,10 +24,13 @@ import javax.portlet.ActionResponse;
 import javax.portlet.GenericPortlet;
 import javax.portlet.PortletException;
 import javax.portlet.PortletMode;
+import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletRequestDispatcher;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+
+import com.springsource.insight.util.StringUtil;
 
 public class ExamplePortlet extends GenericPortlet {
 	public static final String NAME="example-portlet";
@@ -36,8 +39,12 @@ public class ExamplePortlet extends GenericPortlet {
 	protected static final String VIEW_SUFFIX = ".jsp";
 	protected static final String OPERATOR_PREF = "example.operator";
 	
-	protected static Random random = new Random();
+	protected final Random random = new Random();
+	public ExamplePortlet () {
+		super();
+	}
 
+	@Override
 	public void render(RenderRequest request, RenderResponse response)
 			throws PortletException, IOException {
 		
@@ -46,10 +53,11 @@ public class ExamplePortlet extends GenericPortlet {
 		
 		// Check the operator being used in equations ('+' or '-')
 		String operator = getOperator(request);
+		PortletMode	mode=request.getPortletMode();
 		
 		// Choose view
 		String view;
-		if (request.getPortletMode().equals(PortletMode.VIEW)) {
+		if (PortletMode.VIEW.equals(mode)) {
 			view = "ask";
 			request.setAttribute("term1", new Integer(random.nextInt(10)));
 			request.setAttribute("term2", new Integer(random.nextInt(10)));
@@ -58,17 +66,14 @@ public class ExamplePortlet extends GenericPortlet {
 				request.setAttribute("answerCorrect", Boolean.valueOf(request.getParameter("answerCorrect")));
 			}
 		}
-		else
-		if (request.getPortletMode().equals(PortletMode.EDIT)) {
+		else if (PortletMode.EDIT.equals(mode)) {
 			view = "edit";
 			request.setAttribute("operator", operator);
 		}
-		else
-		if (request.getPortletMode().equals(PortletMode.HELP)) {
+		else if (PortletMode.HELP.equals(mode)) {
 			view = "help";
-		}
-		else {
-			throw new PortletException("Unsupported portlet mode");
+		} else {
+			throw new PortletException("Unsupported portlet mode: " + mode);
 		}
 		
 		// Render view as a JSP page
@@ -76,46 +81,52 @@ public class ExamplePortlet extends GenericPortlet {
 		dispatcher.include(request, response);
 	}
 
+	@Override
 	public void processAction(ActionRequest request, ActionResponse response)
 			throws PortletException, IOException {
 		
 		// Check, based on mode, if this is an equation answer or configuration request
-		if (request.getPortletMode().equals(PortletMode.VIEW)) {
+		PortletMode	mode=request.getPortletMode();
+		if (PortletMode.VIEW.equals(mode)) {
 			processEquationAnswer(request, response);
 		}
-		else
-		if (request.getPortletMode().equals(PortletMode.EDIT)) {
+		else if (PortletMode.EDIT.equals(mode)) {
 			processConfigurationRequest(request, response);
 		}
 	}
 
 	protected void processEquationAnswer(ActionRequest request, ActionResponse response) {
-		if (request.getParameter("answer") != null
-				&& !"".equals(request.getParameter("answer"))) {
-			int term1 = Integer.parseInt(request.getParameter("term1"));
-			int term2 = Integer.parseInt(request.getParameter("term2"));
-			int result;
-			String operator = getOperator(request);
-			if (operator.equals("+")) {
-				result = term1 + term2;
-			} else {
-				result = term1 - term2;
-			}
-			if (result == Integer.parseInt(request.getParameter("answer"))) {
-				response.setRenderParameter("answerCorrect", "true");
-			} else {
-				response.setRenderParameter("answerCorrect", "false");
-			}
+		String	answer=request.getParameter("answer");
+		if (StringUtil.isEmpty(answer)) {
+			return;
+		}
+
+		int term1 = Integer.parseInt(request.getParameter("term1"));
+		int term2 = Integer.parseInt(request.getParameter("term2"));
+		int result;
+		String operator = getOperator(request);
+		if ("+".equals(operator)) {
+			result = term1 + term2;
+		} else {
+			result = term1 - term2;
+		}
+
+		if (result == Integer.parseInt(answer)) {
+			response.setRenderParameter("answerCorrect", "true");
+		} else {
+			response.setRenderParameter("answerCorrect", "false");
 		}
 	}
 
 	protected void processConfigurationRequest(ActionRequest request, ActionResponse response) 
 		throws PortletException {
 		String operator = request.getParameter("operator");
-		request.getPreferences().setValue(OPERATOR_PREF, operator);
+		PortletPreferences	preferences=request.getPreferences();
+		preferences.setValue(OPERATOR_PREF, operator);
 	}
 	
 	protected String getOperator(PortletRequest request) {
-		return request.getPreferences().getValue(OPERATOR_PREF, "+");		
+		PortletPreferences	preferences=request.getPreferences();
+		return preferences.getValue(OPERATOR_PREF, "+");		
 	}
 }

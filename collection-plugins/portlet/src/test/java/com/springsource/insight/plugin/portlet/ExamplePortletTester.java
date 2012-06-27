@@ -38,10 +38,12 @@ public class ExamplePortletTester extends PortletUnitTestCase {
         super(ExamplePortlet.NAME);
     }
     
-    public void setUp() throws Exception {
-    	if (tester==null)
+    @Override
+	public void setUp() throws Exception {
+    	if (tester==null) {
     		tester = new WebTester();
-    	
+    	}
+
     	System.setProperty("org.apache.pluto.embedded.portletId", ExamplePortlet.NAME);
         server = new Server(8989);
         WebAppContext webapp = new WebAppContext("src/test/webapp", "/" + contextName);
@@ -55,7 +57,8 @@ public class ExamplePortletTester extends PortletUnitTestCase {
         getTestContext().setBaseUrl("http://localhost:8989/" + contextName);
     }
     
-    public void tearDown() throws Exception {
+    @Override
+	public void tearDown() throws Exception {
         server.stop();
     }
 
