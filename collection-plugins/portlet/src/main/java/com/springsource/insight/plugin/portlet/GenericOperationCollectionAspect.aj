@@ -27,6 +27,7 @@ import org.aspectj.lang.JoinPoint;
 
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.util.ArrayUtil;
 import com.springsource.insight.util.StringUtil;
@@ -71,6 +72,11 @@ abstract aspect GenericOperationCollectionAspect extends AbstractOperationCollec
     						.label("Portlet: '"+portletName+"' ["+opType.label+"]")
     						.sourceCodeLocation(getSourceCodeLocation(jp))
     						.put("name", portletName)
+    						.putAnyNonEmpty("scheme", req.getScheme())
+    						.putAnyNonEmpty("server", req.getServerName())
+    						.put("port", req.getServerPort())
+    						.putAnyNonEmpty("contextPath", req.getContextPath())
+    						.putAnyNonEmpty(OperationFields.URI, createRequestURI(req))
             	            .put("mode", String.valueOf(req.getPortletMode()))
             	            .put("winState", String.valueOf(req.getWindowState()))
             	            ;
@@ -88,7 +94,32 @@ abstract aspect GenericOperationCollectionAspect extends AbstractOperationCollec
 		
 		return operation;
 	}
-	
+
+	static String createRequestURI (PortletRequest req) {
+		if (req == null) {
+			return null;
+		}
+
+		String	scheme=req.getScheme(), server=req.getServerName();
+		if (StringUtil.isEmpty(scheme) || StringUtil.isEmpty(server)) {
+			return null;
+		}
+
+		int				port=req.getServerPort();
+		String			contextPath=req.getContextPath();
+		StringBuilder	sb=new StringBuilder(scheme.length() + 4 + server.length() + 6 + StringUtil.getSafeLength(contextPath));
+		sb.append(scheme).append("://").append(server);
+		if (port > 0) {
+			sb.append(':').append(port);
+		}
+
+		if (StringUtil.getSafeLength(contextPath) > 0) {
+			sb.append(contextPath);
+		}
+
+		return sb.toString();
+	}
+
 	static OperationMap createMap(Operation op, String name, Map<String, String[]> values) {
 		if ((values == null) || values.isEmpty()) {
 			return null;

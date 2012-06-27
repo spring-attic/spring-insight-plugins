@@ -30,9 +30,12 @@ import org.mortbay.jetty.webapp.WebAppContext;
  * Portlet1 test case
  */
 public class ExamplePortletTester extends PortletUnitTestCase {
-	private static final String contextName = "test";
+	public static final String CONTEXT_NAME = "test";
+	public static final String	TEST_HOST="localhost";
+	public static final int	TEST_PORT=8989;
+	public static final String	TEST_URL="http://" + TEST_HOST + ":" + TEST_PORT + "/" + CONTEXT_NAME;
+
 	private Server server;
-	
 	
     public ExamplePortletTester() {
         super(ExamplePortlet.NAME);
@@ -45,8 +48,8 @@ public class ExamplePortletTester extends PortletUnitTestCase {
     	}
 
     	System.setProperty("org.apache.pluto.embedded.portletId", ExamplePortlet.NAME);
-        server = new Server(8989);
-        WebAppContext webapp = new WebAppContext("src/test/webapp", "/" + contextName);
+        server = new Server(TEST_PORT);
+        WebAppContext webapp = new WebAppContext("src/test/webapp", "/" + CONTEXT_NAME);
         webapp.setDefaultsDescriptor("/WEB-INF/jetty-pluto-web-default.xml");
         ServletHolder portletServlet = new ServletHolder(new PortletServlet());
         portletServlet.setInitParameter("portlet-name", ExamplePortlet.NAME);
@@ -54,7 +57,7 @@ public class ExamplePortletTester extends PortletUnitTestCase {
         webapp.addServlet(portletServlet, "/PlutoInvoker/" + ExamplePortlet.NAME);
         server.addHandler(webapp);
         server.start();
-        getTestContext().setBaseUrl("http://localhost:8989/" + contextName);
+        getTestContext().setBaseUrl(TEST_URL);
     }
     
     @Override

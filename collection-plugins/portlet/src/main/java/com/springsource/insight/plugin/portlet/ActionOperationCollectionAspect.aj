@@ -43,8 +43,9 @@ public privileged aspect ActionOperationCollectionAspect extends GenericOperatio
 		Operation op=createOperation(jp, OperationCollectionTypes.ACTION_TYPE);
 		try {
 			//portlet2 support
-			op.putAnyNonEmpty("actionName", req.getParameter(ActionRequest.ACTION_NAME));
-			op.putAnyNonEmpty("actionPhase", req.getParameter(PortletRequest.ACTION_PHASE));
+			op.putAnyNonEmpty("actionName", req.getParameter(ActionRequest.ACTION_NAME))
+			  .putAnyNonEmpty("actionPhase", req.getParameter(PortletRequest.ACTION_PHASE))
+			  ;
 		}
 		catch(Error e) {
 			// ignored

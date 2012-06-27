@@ -15,33 +15,15 @@
  */
 package com.springsource.insight.plugin.portlet;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
-import com.springsource.insight.intercept.operation.Operation;
 
-public class ActionOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-	private static ExamplePortletTester tester;
-	
-	@BeforeClass
-    public static void setUpClass() throws Exception {
-        // Code executed before the first test method
-		tester=new ExamplePortletTester();
-		tester.setUp();
-    }
-	
-	@AfterClass
-    public static void tearDownClass() throws Exception {
-        // Code executed after the last test method
-		tester.tearDown();
-    }
-	
+public class ActionOperationCollectionAspectTest extends GenericOperationCollectionTestSupport {
+	public ActionOperationCollectionAspectTest () {
+		super();
+	}
+
 	/*
 	 * tests view render 
 	 */
@@ -49,19 +31,7 @@ public class ActionOperationCollectionAspectTest extends OperationCollectionAspe
 	public void testView() throws Exception {
 		// Step 1: Execute test
 		tester.doAction();
-
-		// Step 2:  Get the Operation that was just created by our aspect
-		Operation op = getLastEntered();
-		assertNotNull("No operation data is intercepted",op);
-
-		// Step 3:  Validate
-		assertEquals("Invalid operation type", OperationCollectionTypes.ACTION_TYPE.type, op.getType());
-
-		String portletName=op.get("name", String.class);
-		assertEquals("Invalid portlet name", ExamplePortlet.NAME, portletName);
-		
-		String portletMode=op.get("mode", String.class);
-		assertEquals("Invalid portlet mode", "view", portletMode);
+		validate(OperationCollectionTypes.ACTION_TYPE, "view");
 	}
 	
 	@Override
