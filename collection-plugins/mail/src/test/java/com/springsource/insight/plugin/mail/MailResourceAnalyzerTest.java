@@ -89,7 +89,7 @@ public class MailResourceAnalyzerTest {
         assertEquals(testName + ": Mismatched vendor", PROTOCOL, descriptor.getVendor());
         assertEquals(testName + ": Mismatched host", host, descriptor.getHost());
         assertEquals(testName + ": Mismatched port", PORT.intValue(), descriptor.getPort());
-        assertEquals(testName + ": Mismatched direction", false, descriptor.isIncoming());
+        assertEquals(testName + ": Mismatched direction", Boolean.FALSE, Boolean.valueOf(descriptor.isIncoming()));
         
 
         String expectedHash = MD5NameGenerator.getName(label);
