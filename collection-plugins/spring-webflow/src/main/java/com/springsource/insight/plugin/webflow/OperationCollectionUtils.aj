@@ -16,15 +16,10 @@
 
 package com.springsource.insight.plugin.webflow;
 
-import java.util.Map;
-import java.util.Set;
-
 import org.springframework.webflow.action.EvaluateAction;
 import org.springframework.webflow.action.SetAction;
 import org.springframework.webflow.execution.Action;
 import org.springframework.webflow.execution.AnnotatedAction;
-
-import com.springsource.insight.intercept.operation.OperationMap;
 
 
 public privileged aspect OperationCollectionUtils {

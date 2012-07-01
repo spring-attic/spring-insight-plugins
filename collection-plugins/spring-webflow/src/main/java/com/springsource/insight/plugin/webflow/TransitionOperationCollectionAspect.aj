@@ -31,7 +31,6 @@ import org.springframework.webflow.engine.support.TransitionCriteriaChain;
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
-import com.springsource.insight.intercept.operation.OperationMap;
 
 /**
  * This aspect create insight operation for Webflow Transition activity

@@ -23,7 +23,6 @@ import org.springframework.webflow.engine.RequestControlContext;
 
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.operation.OperationMap;
 
 /**
  * This aspect create insight operation for Webflow Start activity

@@ -98,8 +98,8 @@ public class WebFlowExecutionTest extends AbstractXmlFlowExecutionTests {
 			name="new";
 		}
 
-		public DummyPersonBean(String name) {
-			this.name=name;
+		public DummyPersonBean(String nameValue) {
+			this.name=nameValue;
 		}
 	}
 

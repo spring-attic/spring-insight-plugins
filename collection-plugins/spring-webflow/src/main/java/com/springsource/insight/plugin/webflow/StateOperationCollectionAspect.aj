@@ -34,7 +34,6 @@ import org.springframework.webflow.engine.ViewState;
 import org.springframework.webflow.engine.builder.BinderConfiguration;
 import org.springframework.webflow.engine.builder.BinderConfiguration.Binding;
 import org.springframework.webflow.execution.Action;
-import org.springframework.webflow.execution.AnnotatedAction;
 import org.springframework.webflow.execution.RequestContext;
 import org.springframework.webflow.execution.ViewFactory;
 import org.springframework.webflow.mvc.view.AbstractMvcViewFactory;
@@ -42,7 +41,6 @@ import org.springframework.webflow.mvc.view.AbstractMvcViewFactory;
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
-import com.springsource.insight.intercept.operation.OperationMap;
 
 
 /**
