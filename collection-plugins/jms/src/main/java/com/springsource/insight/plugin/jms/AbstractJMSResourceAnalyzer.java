@@ -38,11 +38,11 @@ abstract class AbstractJMSResourceAnalyzer implements EndPointAnalyzer,ExternalR
     
 	static final String JMS = "JMS";
     protected final JMSPluginOperationType operationType;
-    protected final Boolean isIncoming;
+    protected final boolean isIncoming;
     
-    AbstractJMSResourceAnalyzer(JMSPluginOperationType type, Boolean isIncoming) {
+    AbstractJMSResourceAnalyzer(JMSPluginOperationType type, boolean incoming) {
         this.operationType = type;
-        this.isIncoming = isIncoming;
+        this.isIncoming = incoming;
     }
 
     public EndPointAnalysis locateEndPoint(Trace trace) {

@@ -40,11 +40,11 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 	static final String RABBIT = "RabbitMQ";	
 
 	final RabbitPluginOperationType operationType;
-	final Boolean isIncoming;
+	final boolean isIncoming;
 
-	AbstractRabbitMQResourceAnalyzer(RabbitPluginOperationType type, Boolean isIncoming) {
+	AbstractRabbitMQResourceAnalyzer(RabbitPluginOperationType type, boolean incoming) {
 		this.operationType = type;
-		this.isIncoming = isIncoming;
+		this.isIncoming = incoming;
 	}
 
 	protected abstract String getExchange(Operation op);

@@ -112,7 +112,7 @@ public class HttpExternalResourceAnalyzerTest extends Assert {
         assertEquals("Mismatched type", ExternalResourceType.WEB_SERVER.name(), res.getType());
         assertEquals("Mismatched host", uri.getHost(), res.getHost());
         assertEquals("Mismatched port", HttpExternalResourceAnalyzer.resolvePort(uri), res.getPort());
-        assertEquals("Mismatched direction", false, res.getIsIncoming());
+        assertEquals("Mismatched direction", false, res.isIncoming());
     }
 
     static Frame createFrame (Frame parent, URI uri) {

@@ -32,6 +32,9 @@ import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
 
 public class GemFireRegionExternalResourceAnalyzer implements ExternalResourceAnalyzer {
+	public GemFireRegionExternalResourceAnalyzer () {
+		super();
+	}
 
 	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
 		Collection<Frame> frames = trace.getLastFramesOfType(GemFireDefenitions.TYPE_REGION.getType());		
