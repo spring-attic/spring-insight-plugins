@@ -23,7 +23,6 @@ import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
-import javax.transaction.Transaction;
 import javax.transaction.UserTransaction;
 
 import org.junit.Test;
