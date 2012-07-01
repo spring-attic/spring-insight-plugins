@@ -27,36 +27,45 @@ import org.springframework.data.redis.support.collections.RedisMap;
  * Dummy implementation of RedisMap
  */
 public class DummyRedisMapImpl<K,V> extends ConcurrentHashMap<K,V> implements RedisMap<K, V> {
+	private static final long serialVersionUID = 3994606419128106022L;
 
-
-    public V put(K key, V value) {
+	@Override
+	public V put(K key, V value) {
         return null;
     }
 
-    public V putIfAbsent(K key, V value) {
+    @Override
+	public V putIfAbsent(K key, V value) {
         return null;
     }
 
-    public void putAll(Map<? extends K, ? extends V> map) {
+    @Override
+	public void putAll(Map<? extends K, ? extends V> map) {
+    	// ignored
     }
 
-    public V replace(K key, V value) {
+    @Override
+	public V replace(K key, V value) {
         return null;
     }
 
-    public boolean replace(K key, V oldValue, V newValue) {
+    @Override
+	public boolean replace(K key, V oldValue, V newValue) {
         return false;
     }
 
-    public V get(Object key) {
+    @Override
+	public V get(Object key) {
         return null;
     }
 
-    public V remove(Object key) {
+    @Override
+	public V remove(Object key) {
         return null;
     }
 
-    public boolean remove(Object key, Object value) {
+    @Override
+	public boolean remove(Object key, Object value) {
         return false;
     }
 
@@ -93,5 +102,6 @@ public class DummyRedisMapImpl<K,V> extends ConcurrentHashMap<K,V> implements Re
     }
 
     public void rename(String k) {
+    	// ignored
     }
 }

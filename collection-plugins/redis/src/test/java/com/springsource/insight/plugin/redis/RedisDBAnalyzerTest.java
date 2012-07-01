@@ -71,7 +71,7 @@ public class RedisDBAnalyzerTest {
 		assertEquals("dbName", externalResourceDescriptor.getLabel());
 		assertEquals("localhost", externalResourceDescriptor.getHost());
 		assertEquals(6379, externalResourceDescriptor.getPort());
-		assertEquals(false, externalResourceDescriptor.isIncoming());
+		assertEquals(Boolean.FALSE, Boolean.valueOf(externalResourceDescriptor.isIncoming()));
 	}
 
 	@Test
@@ -79,13 +79,13 @@ public class RedisDBAnalyzerTest {
 		Operation op1 = new Operation();
 		op1.type(RedisDBAnalyzer.TYPE);		
 		op1.putAnyNonEmpty("host", "127.0.0.1");
-		op1.putAnyNonEmpty("port", 6379);
+		op1.put("port", 6379);
 		op1.put("dbName", "dbName");
 		
 		Operation op2 = new Operation();
 		op2.type(RedisDBAnalyzer.TYPE);	
 		
-		op2.putAnyNonEmpty("port", 6379);
+		op2.put("port", 6379);
 		op2.put("dbName", "dbName2");
 		
 		Operation dummyOp = new Operation();
@@ -114,7 +114,7 @@ public class RedisDBAnalyzerTest {
 		assertEquals(6379, descriptor.getPort());
 		String expectedHash = MD5NameGenerator.getName("dbName2"+null+6379);
 		assertEquals("redis:" + expectedHash, descriptor.getName());
-		assertEquals(false, descriptor.isIncoming());
+		assertEquals(Boolean.FALSE, Boolean.valueOf(descriptor.isIncoming()));
 
 		descriptor = externalResourceDescriptors.get(1);        
 		assertEquals(op1, descriptor.getFrame().getOperation());
@@ -125,6 +125,6 @@ public class RedisDBAnalyzerTest {
 		assertEquals(6379, descriptor.getPort());
 		expectedHash = MD5NameGenerator.getName("dbName127.0.0.1"+6379);
 		assertEquals("redis:" + expectedHash, descriptor.getName());
-		assertEquals(false, descriptor.isIncoming());
+		assertEquals(Boolean.FALSE, Boolean.valueOf(descriptor.isIncoming()));
 	}
 }

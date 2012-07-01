@@ -78,7 +78,6 @@ public class RedisMapOperationCollectionAspectTest extends OperationCollectionAs
     public void getAndCollect() {
         String method = "get";
         String key = "key2";
-        String value = "value2";
 
         RedisMap<String, String> map = new DummyRedisMapImpl<String, String>();
         map.get(key);
@@ -107,7 +106,6 @@ public class RedisMapOperationCollectionAspectTest extends OperationCollectionAs
     public void removeAndCollect() {
         String method = "remove";
         String key = "key2";
-        String value = "value2";
 
         RedisMap<String, String> map = new DummyRedisMapImpl<String, String>();
         map.remove(key);

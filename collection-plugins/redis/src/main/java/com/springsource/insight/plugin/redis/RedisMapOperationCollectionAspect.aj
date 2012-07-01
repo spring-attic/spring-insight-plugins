@@ -56,9 +56,9 @@ public aspect RedisMapOperationCollectionAspect extends AbstractOperationCollect
         Operation op = new Operation()
             .type(TYPE)
             .put("method", method);
-        RedisMap map = (RedisMap)jp.getTarget();
+        RedisMap<?,?> map = (RedisMap<?,?>)jp.getTarget();
         String mapKey = map.getKey();
-        if (mapKey == null) {
+        if (StringUtil.isEmpty(mapKey)) {
             mapKey = "?";
         }
         op.put("mapKey", mapKey);
@@ -70,7 +70,7 @@ public aspect RedisMapOperationCollectionAspect extends AbstractOperationCollect
 
             if(argLen == 1) {
                 if(StringUtil.safeCompare(method, "putAll") == 0) {
-                    op.put("size", ((Map)args[0]).size());
+                    op.put("size", ((Map<?,?>)args[0]).size());
                 }
                 else if(StringUtil.safeCompare(method, "get") == 0) {
                     op.put("key", objectToString(args[0]));

@@ -23,6 +23,7 @@ import java.util.Collection;
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
+import com.springsource.insight.util.ArrayUtil;
 import com.springsource.insight.util.StringUtil;
 
 import org.aspectj.lang.JoinPoint;
@@ -51,26 +52,23 @@ public aspect RedisCollectionOperationAspect extends AbstractOperationCollection
         Operation op = new Operation()
             .type(TYPE)
             .put("method", method);
-        AbstractRedisCollection collection = (AbstractRedisCollection)jp.getTarget();
+        AbstractRedisCollection<?> collection = (AbstractRedisCollection<?>)jp.getTarget();
         String collectionKey = collection.getKey();
-        if (collectionKey == null) {
+        if (StringUtil.isEmpty(collectionKey)) {
             collectionKey = "?";
         }
         op.put("collectionKey", collectionKey);
         op.label("RedisCollection: " + collectionKey + "." + method + "()");
         Object[] args = jp.getArgs();
-        if(args != null && args.length == 1) {
+        if(ArrayUtil.length(args) == 1) {
             if(StringUtil.safeCompare(method, "add") == 0) {
                 op.put("value", objectToString(args[0]));
-            }
-            else if(StringUtil.safeCompare(method, "addAll") == 0) {
-                op.put("size", ((Collection)args[0]).size());
-            }
-            else if(StringUtil.safeCompare(method, "remove") == 0) {
+            } else if(StringUtil.safeCompare(method, "addAll") == 0) {
+                op.put("size", ((Collection<?>)args[0]).size());
+            } else if(StringUtil.safeCompare(method, "remove") == 0) {
                 op.put("value", objectToString(args[0]));
-            }
-            else if(StringUtil.safeCompare(method, "removeAll") == 0) {
-                op.put("size", ((Collection)args[0]).size());
+            } else if(StringUtil.safeCompare(method, "removeAll") == 0) {
+                op.put("size", ((Collection<?>)args[0]).size());
             }
         }
 

@@ -54,7 +54,9 @@ public aspect RedisConnectionFactoryOperationCollectionAspect extends AbstractOp
 			op.put("host", redisConnectionFactory.getClass().getMethod("getHostName").invoke(redisConnectionFactory).toString());
 			op.put("port", Integer.parseInt(redisConnectionFactory.getClass().getMethod("getPort").invoke(redisConnectionFactory).toString()));
 			op.put("dbName", redisConnectionFactory.getClass().getMethod("getDatabase").invoke(redisConnectionFactory).toString());
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			// ignored
+		}
 
         return op;
     }

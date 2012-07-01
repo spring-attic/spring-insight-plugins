@@ -18,6 +18,7 @@ package com.springsource.insight.plugin.redis;
 
 import org.aspectj.lang.JoinPoint;
 
+import redis.clients.jedis.Client;
 import redis.clients.jedis.Jedis;
 
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
@@ -64,10 +65,13 @@ public aspect RedisClientAspect extends AbstractOperationCollectionAspect {
         
         Jedis jedis = (Jedis) jp.getTarget();
         try {
-			op.put("dbName", jedis.getClient().getDB().toString());
-			op.put("host", jedis.getClient().getHost());
-			op.put("port", jedis.getClient().getPort());
-		} catch (Exception e) {}
+        	Client	client=jedis.getClient();
+			op.put("dbName", client.getDB().toString());
+			op.put("host", client.getHost());
+			op.put("port", client.getPort());
+		} catch (Exception e) {
+			// ignored
+		}
         
         return op;
     }
