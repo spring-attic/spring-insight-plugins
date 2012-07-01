@@ -82,7 +82,7 @@ public class ApplicationListenerMethodOperationCollectionAspectTest extends Oper
         assertOperationBelongsToClass(operation, MyApplicationListener.class);
     }
     
-    private void assertOperationBelongsToClass(Operation op, Class clazz) {
+    private void assertOperationBelongsToClass(Operation op, Class<?> clazz) {
         op.finalizeConstruction();
         assertEquals(clazz.getSimpleName(), op.get("shortClassName"));
         assertTrue(op.get("methodName") + " does not start with onApplicationEvent", op.get("methodName", String.class).startsWith("onApplicationEvent"));
@@ -97,20 +97,25 @@ public class ApplicationListenerMethodOperationCollectionAspectTest extends Oper
     }
 
     public static class MyEventSource {
+    	public MyEventSource () {
+    		super();
+    	}
     }
     
     public static class MyEvent extends ApplicationEvent {
-        public MyEvent(MyEventSource source) {
-            super(source);
+		private static final long serialVersionUID = 1L;
+
+		public MyEvent(MyEventSource src) {
+            super(src);
         }
         
-        public MyEvent(String source) {
-            super(source);
+        public MyEvent(String src) {
+            super(src);
         }
     }
     
     public static class MyApplicationListener implements ApplicationListener<MyEvent> {
-        private MyEvent lastEvent = null;
+        private MyEvent lastEvent ;
 
         public ApplicationEvent getLastEvent() {
             return lastEvent;

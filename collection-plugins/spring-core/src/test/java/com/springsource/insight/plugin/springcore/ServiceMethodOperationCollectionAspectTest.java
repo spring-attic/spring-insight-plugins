@@ -48,7 +48,12 @@ public class ServiceMethodOperationCollectionAspectTest extends OperationCollect
     
     @Service
     private static class ExampleService {
+    	public ExampleService () {
+    		super();
+    	}
+
         public void perform() {
+        	// do nothing
         }
     }
 }

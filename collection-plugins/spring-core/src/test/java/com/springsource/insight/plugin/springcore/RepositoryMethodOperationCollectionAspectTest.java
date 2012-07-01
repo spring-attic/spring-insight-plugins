@@ -47,6 +47,10 @@ public class RepositoryMethodOperationCollectionAspectTest extends OperationColl
 
     @Repository
     private static class ExampleRepository {
+    	public ExampleRepository () {
+    		super();
+    	}
+
         public void perform() {
             System.out.println("test");
         }

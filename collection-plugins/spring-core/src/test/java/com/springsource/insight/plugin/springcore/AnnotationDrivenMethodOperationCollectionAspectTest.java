@@ -41,14 +41,14 @@ public class AnnotationDrivenMethodOperationCollectionAspectTest {
     @Service
     private static class ExampleService {
         public void service() {
-            
+        	// do nothing
         }
     }
     
     @Repository
     private static class ExampleRepository {
         public void update() {
-            
+        	// do nothing
         }
     }
     
@@ -56,7 +56,7 @@ public class AnnotationDrivenMethodOperationCollectionAspectTest {
     @Repository
     private static class ExampleRepositoryThatIsAlsoService {
         public void update() {
-            
+        	// do nothing
         }
     }
 }

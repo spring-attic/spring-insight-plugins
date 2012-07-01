@@ -55,14 +55,14 @@ public class InitializingBeanOperationCollectionAspectTest extends OperationColl
 
     class MyInitializingBean implements InitializingBean {
         public void afterPropertiesSet() {
-
+        	// do nothing
         }
     }
 
     class PostConstructBean {
         @PostConstruct
         public void postConstruct() {
-
+        	// do nothing
         }
     }
 }
