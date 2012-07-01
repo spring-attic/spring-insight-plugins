@@ -40,16 +40,17 @@ import com.springsource.insight.intercept.operation.Operation;
  * 
  * @author Gary Russell
  */
-public class IntegrationOperationCollectionAspectTest
-    extends OperationCollectionAspectTestSupport
-{
-    @Mock
-    private javax.jms.Message mockMessage;
-    
+public class IntegrationOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
     private Message<String> transformedMessage;
-    
+
+    public IntegrationOperationCollectionAspectTest () {
+    	super();
+    }
+
     @Before
-    public void init() {
+    @Override
+    public void setUp() {
+    	super.setUp();
         initMocks(this);
     }
     
@@ -100,6 +101,9 @@ public class IntegrationOperationCollectionAspectTest
     }
 
     private class MyChannel extends IntegrationObjectSupport implements MessageChannel {
+    	public MyChannel () {
+    		super();
+    	}
 
         public boolean send(Message<?> message) {
             return this.send(message, -1);
@@ -108,22 +112,27 @@ public class IntegrationOperationCollectionAspectTest
         public boolean send(Message<?> message, long timeout) {
             return false;
         }
-        
     }
     
     private class MyHandler extends IntegrationObjectSupport implements MessageHandler {
+    	public MyHandler () {
+    		super();
+    	}
 
         public void handleMessage(Message<?> message) throws MessagingException {
+        	// do nothing
         }
-        
     }
     
     private class MyTransformer extends IntegrationObjectSupport implements Transformer {
+    	public MyTransformer () {
+    		super();
+    	}
 
-        public Message<?> transform(Message<?> message) {
+        @SuppressWarnings("synthetic-access")
+		public Message<?> transform(Message<?> message) {
             return transformedMessage;
         }
-        
     }
 
     

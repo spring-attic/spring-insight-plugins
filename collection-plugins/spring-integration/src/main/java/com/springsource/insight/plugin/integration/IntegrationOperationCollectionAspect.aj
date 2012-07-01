@@ -97,7 +97,7 @@ public aspect IntegrationOperationCollectionAspect
 
         // Payload type can be different on every message
         Message<?> message = (Message<?>) jp.getArgs()[0];
-        Class payloadClazz = message.getPayload().getClass();
+        Class<?> payloadClazz = message.getPayload().getClass();
         String payloadType;
         if (!payloadClazz.isArray()) {
             payloadType = payloadClazz.getName();
