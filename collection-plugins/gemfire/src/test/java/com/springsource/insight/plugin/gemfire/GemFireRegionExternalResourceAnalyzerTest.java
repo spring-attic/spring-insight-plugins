@@ -80,7 +80,7 @@ public class GemFireRegionExternalResourceAnalyzerTest {
 		assertEquals(GemFireDefenitions.GEMFIRE + ":" + MD5NameGenerator.getName(uri+fieldPath), externalResourceDescriptor.getName());
 		assertEquals(GemFireDefenitions.GEMFIRE, externalResourceDescriptor.getVendor());
 		assertEquals(fieldPath, externalResourceDescriptor.getLabel());
-		assertEquals(false, externalResourceDescriptor.isIncoming());
+		assertEquals(Boolean.FALSE, Boolean.valueOf(externalResourceDescriptor.isIncoming()));
 		
 	}
 
@@ -112,7 +112,7 @@ public class GemFireRegionExternalResourceAnalyzerTest {
 		assertEquals(GemFireDefenitions.GEMFIRE + ":" + MD5NameGenerator.getName(uri+null), externalResourceDescriptor.getName());
 		assertEquals(GemFireDefenitions.GEMFIRE, externalResourceDescriptor.getVendor());
 		assertEquals(null, externalResourceDescriptor.getLabel());		
-		assertEquals(false, externalResourceDescriptor.isIncoming());
+		assertEquals(Boolean.FALSE, Boolean.valueOf(externalResourceDescriptor.isIncoming()));
 	}
 	
 }

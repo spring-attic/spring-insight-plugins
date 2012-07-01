@@ -30,13 +30,13 @@ public interface GemFireDefenitions {
 	static final String FIELD_PATH = "fullPath";
 	
 	class GemFireType {
-		private String label;
-		private OperationType type;
+		private final String label;
+		private final OperationType type;
 		
-		public GemFireType(String label, OperationType type) {
+		public GemFireType(String lavelValue, OperationType typeValue) {
 			super();
-			this.label = label;
-			this.type = type;
+			this.label = lavelValue;
+			this.type = typeValue;
 		}
 		public String getLabel() {
 			return label;

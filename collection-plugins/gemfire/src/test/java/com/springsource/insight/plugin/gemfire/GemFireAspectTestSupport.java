@@ -25,11 +25,16 @@ import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public abstract class GemFireAspectTestSupport extends OperationCollectionAspectTestSupport {
-
 	private Cache cache;
 
+	protected GemFireAspectTestSupport () {
+		super();
+	}
+
 	@Before
-	public void setup() {
+	@Override
+	public void setUp() {
+		super.setUp();
     	cache = new CacheFactory()
         .set("name", "Test")
         .set("log-level", "warning")
