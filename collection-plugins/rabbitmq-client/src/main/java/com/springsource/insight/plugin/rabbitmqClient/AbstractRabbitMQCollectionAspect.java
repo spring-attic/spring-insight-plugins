@@ -32,10 +32,16 @@ import com.springsource.insight.intercept.color.ColorManager.ColorParams;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.util.ExtraReflectionUtils;
+import com.springsource.insight.util.MapUtil;
+import com.springsource.insight.util.ReflectionUtils;
 
 public abstract class AbstractRabbitMQCollectionAspect extends OperationCollectionAspectSupport {
-    private Field messageHeaders = ExtraReflectionUtils.getAccessibleField(BasicProperties.class, "headers");
-    
+    private final Field messageHeaders = ExtraReflectionUtils.getAccessibleField(BasicProperties.class, "headers");
+
+    protected AbstractRabbitMQCollectionAspect () {
+    	super();
+    }
+
     protected void applyPropertiesData(Operation op, BasicProperties props) {
         OperationMap map = op.createMap("props");
 
@@ -73,45 +79,40 @@ public abstract class AbstractRabbitMQCollectionAspect extends OperationCollecti
     }
 
     protected void applyConnectionData(Operation op, Connection conn) {
-        String connectionUrl = null;
-        
+        InetAddress	address = conn.getAddress();
+        String		host = address.getHostAddress();
+        int			port = conn.getPort();
+        final String connectionUrl;
         if (conn instanceof AMQConnection) {
             connectionUrl = conn.toString();
         } else {
-            InetAddress address = conn.getAddress();
-            int port = conn.getPort();
-            
-            StringBuilder sb = new StringBuilder("amqp://");
-            sb.append(address.getHostAddress()).append(":").append(port);
-            
-            connectionUrl = sb.toString();
+            connectionUrl = "amqp://" + host + ":" + port; 
         }
         
-        op.put("host", conn.getAddress().getHostAddress());
-        op.put("port", conn.getPort());
+        op.put("host", host);
+        op.put("port", port);
         op.put("connectionUrl", connectionUrl);
         
         //try to extract server version
-        String version = getVersion(conn.getServerProperties());
-        op.put("serverVersion", version);
+        String serverVersion = getVersion(conn.getServerProperties());
+        op.putAnyNonEmpty("serverVersion", serverVersion);
         
         //try to extract client version
-        version = getVersion(conn.getClientProperties());
-        op.put("clientVersion", version);
+        String	clientVersion = getVersion(conn.getClientProperties());
+        op.putAnyNonEmpty("clientVersion", clientVersion);
     }
 
-    private String getVersion(Map<String, Object> properties) {
-        String version = null;
-        
-        if (properties != null) {
-            Object obj = properties.get("version");
-            
-            if (obj != null) {
-                version = String.valueOf(obj); 
-            }
+    static String getVersion(Map<String,?> properties) {
+        if (MapUtil.size(properties) <= 0) {
+        	return null;
         }
         
-        return version;
+        Object obj = properties.get("version");
+        if (obj != null) {
+        	return String.valueOf(obj); 
+        } else {
+        	return null;
+        }
     }
     
     protected void colorForward(BasicProperties props, final Operation op) {
@@ -120,8 +121,7 @@ public abstract class AbstractRabbitMQCollectionAspect extends OperationCollecti
             
             if (props != null) {
                 Map<String, Object> old = props.getHeaders();
-                
-                if (!old.isEmpty()) {
+                if (MapUtil.size(old) > 0) {
                     map.putAll(old);
                 }
                 
@@ -135,7 +135,7 @@ public abstract class AbstractRabbitMQCollectionAspect extends OperationCollecti
                     }
                 });
                 
-                ExtraReflectionUtils.setField(messageHeaders, props, Collections.unmodifiableMap(map));
+                ReflectionUtils.setField(messageHeaders, props, Collections.unmodifiableMap(map));
             }
         } catch (Exception e) {
             //nothing to do...

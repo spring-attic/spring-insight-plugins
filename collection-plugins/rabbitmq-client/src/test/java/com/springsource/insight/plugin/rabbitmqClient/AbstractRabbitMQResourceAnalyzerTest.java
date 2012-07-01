@@ -215,15 +215,13 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest {
 		assertEquals(5672, descriptor.getPort());
 		String expectedHash = MD5NameGenerator.getName(stringTohash);
 		assertEquals("RabbitMQ:" + expectedHash, descriptor.getName());
-		assertEquals(isIncoming, descriptor.isIncoming());
+		assertEquals(Boolean.valueOf(isIncoming), Boolean.valueOf(descriptor.isIncoming()));
 	}
 
 	Operation createOperation() {
-		Operation op = new Operation()
-		.type(operationType.getOperationType())
-		.label(operationType.getLabel());
-		return op;
+		return new Operation()
+					.type(operationType.getOperationType())
+					.label(operationType.getLabel())
+					;
 	}
-
-
 }

@@ -19,7 +19,6 @@ package com.springsource.insight.plugin.rabbitmqClient;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
@@ -140,14 +139,12 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after(String consumerTag, Envelope envelope, BasicProperties props, byte[] body) returning()
             : handleDelivery(consumerTag, envelope, props, body) {
-
          getCollector().exitNormal();
     }
     
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after(String consumerTag, Envelope envelope, BasicProperties props, byte[] body) throwing(Throwable t) 
             : handleDelivery(consumerTag, envelope, props, body) {
-
         getCollector().exitAbnormal(t);
     }
 
@@ -163,14 +160,21 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
             op.put("bytes", body.length);
         }
 
-        OperationMap map = op.createMap("envelope")
-                .put("deliveryTag", envelope.getDeliveryTag())
-                .putAnyNonEmpty("exchange", envelope.getExchange())
-                .putAnyNonEmpty("routingKey", envelope.getRoutingKey())
-                ;
+        OperationMap map = op.createMap("envelope");
+        map.put("deliveryTag", envelope.getDeliveryTag())
+           .putAnyNonEmpty("exchange", envelope.getExchange())
+           .putAnyNonEmpty("routingKey", envelope.getRoutingKey())
+           ;
         return op;
     }
 
-    public boolean isEndpoint() { return true; }
-    public String getPluginName() { return RabbitMQPluginRuntimeDescriptor.PLUGIN_NAME; }
+    @Override
+	public boolean isEndpoint() {
+    	return true;
+   	}
+
+    @Override
+	public String getPluginName() {
+    	return RabbitMQPluginRuntimeDescriptor.PLUGIN_NAME;
+    }
 }

@@ -16,8 +16,6 @@
 
 package com.springsource.insight.plugin.rabbitmqClient;
 
-import org.aspectj.lang.annotation.SuppressAjWarnings;
-
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -79,6 +77,13 @@ public aspect RabbitMQPublishCollectionAspect extends AbstractRabbitMQCollection
         }
     }
 
-    public boolean isEndpoint() { return false; }
-    public String getPluginName() { return RabbitMQPluginRuntimeDescriptor.PLUGIN_NAME; }
+    @Override
+	public boolean isEndpoint() {
+    	return false;
+    }
+
+    @Override
+	public String getPluginName() {
+    	return RabbitMQPluginRuntimeDescriptor.PLUGIN_NAME;
+   	}
 }
