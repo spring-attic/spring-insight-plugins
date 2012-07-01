@@ -64,7 +64,7 @@ public aspect QuartzSchedulerOperationCollectionAspect extends MethodOperationCo
     Operation createOperationJobDetail (Operation op, JobDetail detail) {
         String description =  detail.getDescription() == null ? "" : " - " + detail.getDescription();
         
-        Key jobKey=detail.getKey();
+        Key<?> jobKey=detail.getKey();
         String jobGroup=jobKey.getGroup();
         String jobName=jobKey.getName();  
         String fullName=jobGroup+"."+jobName;
@@ -78,8 +78,8 @@ public aspect QuartzSchedulerOperationCollectionAspect extends MethodOperationCo
           ;
     }
 
-    OperationMap createOperationTrigger (Operation op, Trigger trigger, Key jobKey) {
-    	Key triggerKey=trigger.getKey();
+    OperationMap createOperationTrigger (Operation op, Trigger trigger, Key<?> jobKey) {
+    	Key<?> triggerKey=trigger.getKey();
         String triggerGroup=triggerKey.getGroup();
     	String triggerName=triggerKey.getName();
         

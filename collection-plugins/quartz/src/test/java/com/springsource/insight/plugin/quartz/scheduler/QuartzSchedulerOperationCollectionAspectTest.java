@@ -73,7 +73,7 @@ public class QuartzSchedulerOperationCollectionAspectTest extends OperationColle
     }
 
     private static void assertJobDetails (Operation op, JobDetail detail) {
-    	Key jobKey=detail.getKey();
+    	Key<?> jobKey=detail.getKey();
         assertOperationValue(op, "name", jobKey.getName());
         assertOperationValue(op, "group", jobKey.getGroup());
         assertOperationValue(op, "fullName", jobKey.getGroup()+"."+jobKey.getName());
@@ -81,8 +81,7 @@ public class QuartzSchedulerOperationCollectionAspectTest extends OperationColle
         assertOperationValue(op, "jobClass", detail.getJobClass().getName());
     }
 
-    private static void assertOperationValue (Operation op, String key, Object expected)
-    {
+    private static void assertOperationValue (Operation op, String key, Object expected) {
         Assert.assertEquals("Mismatched " + key + " value", expected, op.get(key));
     }
 }
