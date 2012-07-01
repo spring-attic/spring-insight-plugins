@@ -63,25 +63,39 @@ public aspect FilterOperationCollectionAspect extends AbstractOperationCollectio
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     before(): execution(* Filter+.init(FilterConfig)) {
-        Filter filter = (Filter) thisJoinPoint.getThis();
-        FilterConfig config = (FilterConfig) thisJoinPoint.getArgs()[0];
-
-        Operation  operation = new Operation();
-        operation.type(TYPE).put("filterClass", filter.getClass().getName());
-        operation.label("Filter: " + config.getFilterName())
-                .put("filterName", config.getFilterName());
-        OperationMap initParams = operation.createMap("initParams");
-        for (Enumeration<String> initParamNames = config.getInitParameterNames(); initParamNames.hasMoreElements(); ) {
-            String name = initParamNames.nextElement();
-            initParams.put(name, config.getInitParameter(name));
-        }
-        opCache.put(filter, operation);
-
+        createFilterOperation(thisJoinPoint);
     }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     before() : execution(* Filter+.destroy()) {
-        opCache.remove((Filter) thisJoinPoint.getThis());
+        opCache.remove(thisJoinPoint.getThis());
+    }
+
+    Operation createFilterOperation (JoinPoint jp) {
+        Filter 			filter=(Filter) jp.getThis();
+        FilterConfig	config=(FilterConfig) jp.getArgs()[0];
+    	Operation		operation=createFilterOperation(new Operation()
+    										.type(TYPE)
+    										.sourceCodeLocation(getSourceCodeLocation(jp)),
+    								 filter,
+    								 config);
+        opCache.put(filter, operation);
+        return operation;
+    }
+
+    Operation createFilterOperation (Operation operation, Filter filter, FilterConfig config) {
+    	operation.label("Filter: " + config.getFilterName())
+    			 .put("filterClass", filter.getClass().getName())
+    			 .put("filterName", config.getFilterName())
+    			 ;
+
+    	OperationMap initParams = operation.createMap("initParams");
+    	for (@SuppressWarnings("unchecked") Enumeration<String> initParamNames=config.getInitParameterNames(); initParamNames.hasMoreElements(); ) {
+    		String name = initParamNames.nextElement();
+    		initParams.put(name, config.getInitParameter(name));
+    	}
+
+    	return operation;
     }
 
     @Override

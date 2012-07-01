@@ -27,6 +27,7 @@ import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationType;
+import com.springsource.insight.util.StringUtil;
 
 public aspect ServletContextListenerOperationInitializedCollectionAspect extends AbstractOperationCollectionAspect {
     private static final OperationType TYPE = LifecycleEndPointAnalyzer.SERVLET_LISTENER_TYPE;
@@ -44,7 +45,7 @@ public aspect ServletContextListenerOperationInitializedCollectionAspect extends
         ServletContextEvent event = (ServletContextEvent) jp.getArgs()[0];
         ServletContext context = event.getServletContext();
         String application = context.getContextPath();
-        if ("".equals(application)) {
+        if (StringUtil.isEmpty(application)) {
             application = "/";
         }
         Operation operation = new Operation()
@@ -56,7 +57,7 @@ public aspect ServletContextListenerOperationInitializedCollectionAspect extends
             .put("event", "Initialize")
             .put("application", application);
         OperationMap contextParams = operation.createMap("contextParams");
-        for (Enumeration<String> paramNames = context.getInitParameterNames(); paramNames.hasMoreElements();) {
+        for (@SuppressWarnings("unchecked") Enumeration<String> paramNames = context.getInitParameterNames(); paramNames.hasMoreElements();) {
             String name = paramNames.nextElement();
             contextParams.put(name, event.getServletContext().getInitParameter(name));
         }

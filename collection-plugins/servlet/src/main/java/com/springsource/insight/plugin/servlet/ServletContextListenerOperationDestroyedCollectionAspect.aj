@@ -27,6 +27,7 @@ import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
 import com.springsource.insight.intercept.operation.OperationType;
+import com.springsource.insight.util.StringUtil;
 
 public aspect ServletContextListenerOperationDestroyedCollectionAspect extends AbstractOperationCollectionAspect {
     private static final OperationType TYPE = LifecycleEndPointAnalyzer.SERVLET_LISTENER_TYPE;
@@ -44,9 +45,10 @@ public aspect ServletContextListenerOperationDestroyedCollectionAspect extends A
         ServletContextEvent event = (ServletContextEvent) jp.getArgs()[0];
         ServletContext context = event.getServletContext();
         String application = context.getContextPath();
-        if ("".equals(application)) {
+        if (StringUtil.isEmpty(application)) {
             application = "/";
         }
+
         Operation operation = new Operation()
             .type(TYPE)
             .label("Servlet Context: " + application + " Destroyed")
@@ -56,7 +58,7 @@ public aspect ServletContextListenerOperationDestroyedCollectionAspect extends A
             .put("event", "Destroy")
             .put("application", application);
         OperationList contextParams = operation.createList("contextParams");
-        for (Enumeration<String> paramNames = context.getInitParameterNames(); paramNames.hasMoreElements();) {
+        for (@SuppressWarnings("unchecked") Enumeration<String> paramNames = context.getInitParameterNames(); paramNames.hasMoreElements();) {
             String name = paramNames.nextElement();
             contextParams.createMap().put("name", name).put("value", event.getServletContext().getInitParameter(name));
         }
