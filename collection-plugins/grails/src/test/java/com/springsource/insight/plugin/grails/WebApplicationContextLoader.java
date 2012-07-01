@@ -81,9 +81,11 @@ public class WebApplicationContextLoader
     }
 
     protected void customizeContext(GenericWebApplicationContext context) {
+    	// do nothing
     }
 
     protected void customizeBeanFactory(DefaultListableBeanFactory defaultListableBeanFactory) {
+    	// do nothing
     }
 
     private void prepareContext(GenericWebApplicationContext context) {

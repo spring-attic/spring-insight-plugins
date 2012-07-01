@@ -61,7 +61,8 @@ public class GrailsControllerOperationCollectionAspectTest
     private MockHttpServletResponse response;
     private GrailsWebRequest mockRequest;
 
-    @Before
+    @Override
+	@Before
     public void setUp() {
         super.setUp();
         request = new MockHttpServletRequest();
@@ -71,14 +72,14 @@ public class GrailsControllerOperationCollectionAspectTest
     
     @Test
     public void controllerMonitored() throws Exception {
-        Map actionParams = new HashMap();
+        Map<String,String> actionParams = new HashMap<String,String>();
         actionParams.put("param1", "val1");
         actionParams.put("param2", "val2");        
         ExampleHelper testHelper = new ExampleHelper("", actionParams);
 
         request.setMethod("PUT");
-        ModelAndView model = testHelper.handleURI("/my/uri", mockRequest, new HashMap());
-        assertEquals(true, model.getModelMap().get("success"));
+        ModelAndView model = testHelper.handleURI("/my/uri", mockRequest, new HashMap<String,String>());
+        assertEquals(Boolean.TRUE, model.getModelMap().get("success"));
         Operation op = getLastEntered();
         assertEquals("MyClass#gettinAction", op.getLabel());
         SourceCodeLocation sourceCode = op.getSourceCodeLocation();
@@ -94,9 +95,10 @@ public class GrailsControllerOperationCollectionAspectTest
     public void controllerMonitored_exceptionBeforeActionOrController() throws Exception {
         ExampleHelper testHelper = new ExampleHelper("blowUpBeforeController", Collections.EMPTY_MAP);
         try {
-            testHelper.handleURI("uri", mockRequest, new HashMap());
+            testHelper.handleURI("uri", mockRequest, new HashMap<String,String>());
             fail("Expected exception");
         } catch (RuntimeException e) {
+        	// ignored
         }
 
         Operation op = getLastEntered();
@@ -108,9 +110,10 @@ public class GrailsControllerOperationCollectionAspectTest
     public void controllerMonitored_exceptionButControllerIsKnown() throws Exception {
         ExampleHelper testHelper = new ExampleHelper("blowUpAfterController", Collections.EMPTY_MAP);
         try {
-            testHelper.handleURI("uri", mockRequest, new HashMap());
+            testHelper.handleURI("uri", mockRequest, new HashMap<String,String>());
             fail("Expected exception");
         } catch (RuntimeException e) {
+        	// ignored
         }
 
         Operation op = getLastEntered();
@@ -122,9 +125,10 @@ public class GrailsControllerOperationCollectionAspectTest
     public void controllerMonitored_exceptionButControllerAndActionAreKnown() throws Exception {
         ExampleHelper testHelper = new ExampleHelper("blowUpAfterAction", Collections.EMPTY_MAP);
         try {
-            testHelper.handleURI("uri", mockRequest, new HashMap());
+            testHelper.handleURI("uri", mockRequest, new HashMap<String,String>());
             fail("Expected exception");
         } catch (RuntimeException e) {
+        	// ignored
         }
 
         Operation op = getLastEntered();
@@ -141,15 +145,15 @@ public class GrailsControllerOperationCollectionAspectTest
      */
     private static class ExampleHelper implements GrailsControllerHelper {
         private String whenToBlowUp;
-        private Map actionParams;
+        private Map<String,String> actionParams;
 
-        ExampleHelper() {
-            this("", Collections.EMPTY_MAP);
+        public ExampleHelper() {
+            this("", Collections.<String,String>emptyMap());
         }
 
-        ExampleHelper(String whenToBlowUp, Map actionParams) {
-            this.whenToBlowUp = whenToBlowUp;
-            this.actionParams = actionParams;
+        ExampleHelper(String blowUp, Map<String,String> params) {
+            this.whenToBlowUp = blowUp;
+            this.actionParams = params;
         }
 
         public GrailsControllerClass getControllerClassByName(String arg) {
@@ -207,6 +211,7 @@ public class GrailsControllerOperationCollectionAspectTest
             }
 
             GrailsControllerClass controllerClass = getControllerClassByURI(uri);
+            assertNotNull(controllerClass);
             if (whenToBlowUp.equals("blowUpAfterController")) {
                 throw new RuntimeException("Kaboom2");
             }
@@ -220,14 +225,14 @@ public class GrailsControllerOperationCollectionAspectTest
             
             Closure action = mock(Closure.class);
             handleAction(controller, action, webRequest.getCurrentRequest(),
-                         webRequest.getCurrentResponse(), new HashMap());
+                         webRequest.getCurrentResponse(), new HashMap<String,String>());
             
             if (whenToBlowUp.equals("blowUpAfterAction")) {
                 throw new RuntimeException("Kaboom3");
             }
             
             ModelAndView res = new ModelAndView();
-            res.addObject("success", true);
+            res.addObject("success", Boolean.TRUE);
             return res;
         }
     }
