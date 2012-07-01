@@ -24,12 +24,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HostConfiguration;
+import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.StatusLine;
 import org.apache.commons.httpclient.URIException;
-
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 
@@ -38,7 +37,6 @@ import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.collection.OperationCollector;
 import com.springsource.insight.intercept.InterceptConfiguration;
-import com.springsource.insight.intercept.color.Color;
 import com.springsource.insight.intercept.color.ColorManager.ColorParams;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
