@@ -58,7 +58,7 @@ public class FilesTrackerExternalResourceAnalyzerTest {
 
         String expectedHash = MD5NameGenerator.getName(path);
         assertEquals(testName + ": Mismatched name", FilesTrackerDefinitions.TYPE.getName() + ":" + expectedHash, descriptor.getName());
-        assertEquals(testName + ": Mismatched direction", false, descriptor.isIncoming());
+        assertEquals(testName + ": Mismatched direction", Boolean.FALSE, Boolean.valueOf(descriptor.isIncoming()));
         return descriptor;
     }
 	
