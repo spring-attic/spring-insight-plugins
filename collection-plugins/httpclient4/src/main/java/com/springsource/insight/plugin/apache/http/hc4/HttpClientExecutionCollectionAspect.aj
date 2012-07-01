@@ -43,7 +43,6 @@ import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.collection.OperationCollector;
 import com.springsource.insight.intercept.InterceptConfiguration;
-import com.springsource.insight.intercept.color.Color;
 import com.springsource.insight.intercept.color.ColorManager.ColorParams;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
@@ -272,8 +271,8 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
         return op;
     }
 
-    static String createVersionValue (ProtocolVersion version) {
-        return version.getProtocol() + "/" + String.valueOf(version.getMajor()) + "." + String.valueOf(version.getMinor());
+    static String createVersionValue (ProtocolVersion protoVersion) {
+        return protoVersion.getProtocol() + "/" + String.valueOf(protoVersion.getMajor()) + "." + String.valueOf(protoVersion.getMinor());
     }
 
     OperationMap fillInResponseDetails(OperationMap op, HttpResponse response, boolean collectExtra) {

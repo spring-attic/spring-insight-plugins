@@ -54,7 +54,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.mortbay.component.LifeCycle.Listener;
 import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.HttpConnection;
 import org.mortbay.jetty.Request;
@@ -499,8 +498,8 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
             return this.server;
         }
 
-        public void setServer(Server server) {
-            this.server = server;
+        public void setServer(Server s) {
+            this.server = s;
         }
         
         public void handle (String target, HttpServletRequest request,
