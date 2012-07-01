@@ -29,14 +29,18 @@ public class Person
     private String email;
     private int age;
 
+    public Person () {
+    	super();
+    }
+
     public String getFirstName()
     {
         return firstName;
     }
 
-    public void setFirstName(String firstName)
+    public void setFirstName(String name)
     {
-        this.firstName = firstName;
+        this.firstName = name;
     }
 
     public String getLastName()
@@ -44,9 +48,9 @@ public class Person
         return lastName;
     }
 
-    public void setLastName(String lastName)
+    public void setLastName(String name)
     {
-        this.lastName = lastName;
+        this.lastName = name;
     }
 
     public String getEmail()
@@ -54,9 +58,9 @@ public class Person
         return email;
     }
 
-    public void setEmail(String email)
+    public void setEmail(String mail)
     {
-        this.email = email;
+        this.email = mail;
     }
 
     public int getAge()
@@ -64,15 +68,16 @@ public class Person
         return age;
     }
 
-    public void setAge( int age)
+    public void setAge(int value)
     {
-        this.age = age;
+        this.age = value;
     }
 
 
-    public String toString()
+    @Override
+	public String toString()
     {
-        return "First Name: " + getFirstName() + " Last Name:  " + getLastName() + 
-        " Email:      " + getEmail() + " Age:      " + getAge() ;
+        return "First Name: " + getFirstName() + " Last Name:  " + getLastName()
+        	+ " Email:      " + getEmail() + " Age:      " + getAge() ;
     }
 }

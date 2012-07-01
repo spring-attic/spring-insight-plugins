@@ -18,8 +18,8 @@ package com.springsource.insight.plugin.struts2;
 
 import org.apache.struts2.StrutsTestCase;
 
+import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionProxy;
-import com.opensymphony.xwork2.ActionSupport;
 import com.springsource.insight.plugin.struts2.test.action.RegisterAction;
 import com.springsource.insight.plugin.struts2.test.action.RegisterValidationAction;
 
@@ -37,9 +37,9 @@ public class Struts2Tests extends StrutsTestCase {
 	private Struts2Tests() {
 		try {
 			super.setUp();
-		}
-		catch (Exception e) {
-			assertNotNull("The Struts2 context is not initiated: "+e, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail("Failed (" + e.getClass().getSimpleName() + ") to initialize the Struts2 context: "+e.getMessage());
 		}
 	}
 	
@@ -60,7 +60,7 @@ public class Struts2Tests extends StrutsTestCase {
 		assertNotNull("The action is null but should not be.", action);
 		
 		String result = actionProxy.execute();
-		assertEquals("The execute method did not return " + ActionSupport.SUCCESS + " but should have.", ActionSupport.SUCCESS, result);
+		assertEquals("The execute method did not return " + Action.SUCCESS + " but should have.", Action.SUCCESS, result);
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class Struts2Tests extends StrutsTestCase {
 		assertNotNull("The action is null but should not be.", action);
 	
 		String result = actionProxy.execute();
-		assertEquals("The execute method did not return " + ActionSupport.INPUT	+ " but should have.", ActionSupport.INPUT, result);
+		assertEquals("The execute method did not return " + Action.INPUT	+ " but should have.", Action.INPUT, result);
 
 	}
 }
