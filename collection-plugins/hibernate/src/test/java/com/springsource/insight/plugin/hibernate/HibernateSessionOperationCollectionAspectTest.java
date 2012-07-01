@@ -31,8 +31,8 @@ public class HibernateSessionOperationCollectionAspectTest
         Operation op = getLastEntered();
         assertEquals("Hibernate Session." + method, op.getLabel());
         assertEquals(OperationType.valueOf("hibernate"), op.getType());
-        assertEquals(DummySessionImpl.DUMMY_COLLECTION_COUNT, op.get("collectionCount"));
-        assertEquals(DummySessionImpl.DUMMY_ENTITY_COUNT, op.get("entityCount"));
+        assertEquals(Integer.valueOf(DummySessionImpl.DUMMY_COLLECTION_COUNT), op.get("collectionCount"));
+        assertEquals(Integer.valueOf(DummySessionImpl.DUMMY_ENTITY_COUNT), op.get("entityCount"));
         assertEquals(DummySessionImpl.DUMMY_FLUSH_MODE.toString(), op.get("flushMode"));
 	}
 	
