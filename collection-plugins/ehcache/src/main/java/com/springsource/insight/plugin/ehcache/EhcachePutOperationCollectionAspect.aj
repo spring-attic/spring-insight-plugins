@@ -26,6 +26,9 @@ import com.springsource.insight.intercept.operation.Operation;
  * 
  */
 public aspect EhcachePutOperationCollectionAspect extends EhcacheMethodOperationCollectionAspect {
+	public EhcachePutOperationCollectionAspect () {
+		super();
+	}
 
     public pointcut putValueFlow ()
         : execution(* Ehcache+.put(..))

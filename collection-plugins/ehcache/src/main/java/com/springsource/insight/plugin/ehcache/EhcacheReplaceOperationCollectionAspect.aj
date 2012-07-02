@@ -26,6 +26,10 @@ import com.springsource.insight.intercept.operation.Operation;
  * 
  */
 public aspect EhcacheReplaceOperationCollectionAspect extends EhcacheMethodOperationCollectionAspect {
+	public EhcacheReplaceOperationCollectionAspect () {
+		super();
+	}
+
     public pointcut replaceValueFlow ()
         : execution(* Ehcache+.replace(Element,Element))
        || execution(* Ehcache+.replace(Element))
@@ -45,12 +49,12 @@ public aspect EhcacheReplaceOperationCollectionAspect extends EhcacheMethodOpera
         Element oldElement=(Element) args[0];
         initCommonFields(op, cache, EhcacheDefinitions.RPL_METHOD, oldElement.getObjectKey());
 
-        Object value;
+        final Object value;
         if (args.length > 1) {
             Element newElement=(Element) args[1];
-            value=newElement.getObjectValue();
+            value = newElement.getObjectValue();
         } else {    // this is a one argument replacement - i.e., the element contains BOTH key and value
-            value=oldElement.getObjectValue();
+            value = oldElement.getObjectValue();
         }
         op.putAnyNonEmpty(EhcacheDefinitions.VALUE_ATTRIBUTE, (value!=null)?value.toString():null);
 

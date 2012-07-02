@@ -27,6 +27,10 @@ import com.springsource.insight.intercept.operation.Operation;
  * 
  */
 public aspect EhcacheRemoveOperationCollectionAspect extends EhcacheMethodOperationCollectionAspect {
+	public EhcacheRemoveOperationCollectionAspect () {
+		super();
+	}
+
     public pointcut removeValueFlow ()
         : execution(* Ehcache+.remove(..))
        || execution(* Ehcache+.removeQuiet(..))
