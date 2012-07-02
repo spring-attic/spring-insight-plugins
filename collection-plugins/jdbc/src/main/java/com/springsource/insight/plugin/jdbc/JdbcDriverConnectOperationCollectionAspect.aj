@@ -39,6 +39,7 @@ import com.springsource.insight.intercept.plugin.CollectionSettingsRegistry;
 import com.springsource.insight.intercept.plugin.CollectionSettingsUpdateListener;
 import com.springsource.insight.intercept.trace.FrameBuilder;
 import com.springsource.insight.intercept.trace.ObscuredValueMarker;
+import com.springsource.insight.util.MapUtil;
 import com.springsource.insight.util.StringUtil;
 
 /**
@@ -133,11 +134,11 @@ public aspect JdbcDriverConnectOperationCollectionAspect extends AbstractOperati
     }
 
     static OperationMap addConnectionProperties (Operation op, Properties props) {
-        if ((props == null) || props.isEmpty()) {   // OK if no properties specified...
-            return null;
+        OperationMap    connProps=op.createMap("params");
+        if (MapUtil.size(props) <= 0) {   // OK if no properties specified...
+            return connProps;
         }
 
-        OperationMap    connProps=op.createMap("params");
         for (Map.Entry<?,?> pe : props.entrySet()) {
             Object  key=pe.getKey(), value=pe.getValue();
             if (!(key instanceof String)) {
