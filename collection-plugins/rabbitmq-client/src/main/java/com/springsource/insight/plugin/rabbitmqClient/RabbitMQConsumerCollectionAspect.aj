@@ -111,7 +111,13 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
         }
         if (props != null) {
             applyPropertiesData(op, props);
-            
+        }
+        if (envelope != null) {
+            applyMessageData(op, envelope, body);
+        }
+        getCollector().enter(op);
+        
+        if (props != null) {
             extractColor(new ExtractColorParams() {
                 public String getColor(String key) {
                     String color = null;
@@ -124,16 +130,11 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
                             color = obj != null ? obj.toString() : null;
                         }
                     }
-                     
+                    
                     return color;
                 }
             });
-            
         }
-        if (envelope != null) {
-            applyMessageData(op, envelope, body);
-        }
-        getCollector().enter(op);
     }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
