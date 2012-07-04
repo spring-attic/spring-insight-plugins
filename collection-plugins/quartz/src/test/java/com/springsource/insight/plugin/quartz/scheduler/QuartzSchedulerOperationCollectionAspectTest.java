@@ -29,7 +29,6 @@ import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
-import org.quartz.utils.Key;
 
 import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
@@ -39,6 +38,8 @@ import com.springsource.insight.intercept.operation.Operation;
  */
 public class QuartzSchedulerOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
     static final Semaphore  SIGNALLER=new Semaphore(0, true);
+    private static final QuartzKeyValueAccessor	keyAccessor=QuartzKeyValueAccessor.getInstance();
+
     public QuartzSchedulerOperationCollectionAspectTest() {
         super();
     }
@@ -73,10 +74,10 @@ public class QuartzSchedulerOperationCollectionAspectTest extends OperationColle
     }
 
     private static void assertJobDetails (Operation op, JobDetail detail) {
-    	Key<?> jobKey=detail.getKey();
-        assertOperationValue(op, "name", jobKey.getName());
-        assertOperationValue(op, "group", jobKey.getGroup());
-        assertOperationValue(op, "fullName", jobKey.getGroup()+"."+jobKey.getName());
+    	Object jobKey=detail.getKey();
+        assertOperationValue(op, "name", keyAccessor.getName(jobKey));
+        assertOperationValue(op, "group", keyAccessor.getGroup(jobKey));
+        assertOperationValue(op, "fullName", keyAccessor.getFullName(jobKey));
         assertOperationValue(op, "description", detail.getDescription());
         assertOperationValue(op, "jobClass", detail.getJobClass().getName());
     }

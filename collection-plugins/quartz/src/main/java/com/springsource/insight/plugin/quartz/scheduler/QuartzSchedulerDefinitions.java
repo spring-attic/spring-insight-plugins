@@ -22,7 +22,7 @@ import com.springsource.insight.intercept.operation.OperationType;
  */
 public final class QuartzSchedulerDefinitions {
     private QuartzSchedulerDefinitions() {
-        // no instance
+       	throw new UnsupportedOperationException("No instance allowed");
     }
 
     public static final OperationType   TYPE=OperationType.valueOf("quartz-scheduler");
