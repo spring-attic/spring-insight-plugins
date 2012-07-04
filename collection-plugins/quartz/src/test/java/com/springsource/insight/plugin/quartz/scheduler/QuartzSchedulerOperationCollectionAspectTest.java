@@ -32,6 +32,7 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.OperationMap;
 
 /**
  * 
@@ -46,15 +47,15 @@ public class QuartzSchedulerOperationCollectionAspectTest extends OperationColle
 
     @Test
     public void testCollectionPoint () throws SchedulerException, InterruptedException {
-        SchedulerFactory    sf = new StdSchedulerFactory();
-        Scheduler           sched = sf.getScheduler();
+        SchedulerFactory    sf=new StdSchedulerFactory();
+        Scheduler           sched=sf.getScheduler();
         
         Trigger trigger = TriggerBuilder.newTrigger()
-        				.withIdentity("testCollectionPoint").startNow()
+        				.withIdentity("testCollectionPointTrigger", "testCollectionPointTriggerGroup").startNow()
         	    		.withSchedule(SimpleScheduleBuilder.simpleSchedule().withRepeatCount(0).withIntervalInMilliseconds(125L))
         	    		.build();
         
-        JobDetail jobDetail = JobBuilder.newJob(QuartzSchedulerMockJob.class).withIdentity("testCollectionPointJob", "testCollectionPointGroup").build();
+        JobDetail jobDetail = JobBuilder.newJob(QuartzSchedulerMockJob.class).withIdentity("testCollectionPointJob", "testCollectionPointJobGroup").build();
 
         sched.scheduleJob(jobDetail, trigger);
         sched.start();
@@ -65,7 +66,9 @@ public class QuartzSchedulerOperationCollectionAspectTest extends OperationColle
         Operation   op=getLastEntered();
         Assert.assertNotNull("No operation extracted", op);
         Assert.assertEquals("Mismatched type", QuartzSchedulerDefinitions.TYPE, op.getType());
+
         assertJobDetails(op, jobDetail);
+        assertTriggerDetails(op, trigger);
     }
 
     @Override
@@ -73,16 +76,45 @@ public class QuartzSchedulerOperationCollectionAspectTest extends OperationColle
         return QuartzSchedulerOperationCollectionAspect.aspectOf();
     }
 
-    private static void assertJobDetails (Operation op, JobDetail detail) {
-    	Object jobKey=detail.getKey();
-        assertOperationValue(op, "name", keyAccessor.getName(jobKey));
-        assertOperationValue(op, "group", keyAccessor.getGroup(jobKey));
-        assertOperationValue(op, "fullName", keyAccessor.getFullName(jobKey));
-        assertOperationValue(op, "description", detail.getDescription());
-        assertOperationValue(op, "jobClass", detail.getJobClass().getName());
+    private static OperationMap assertTriggerDetails (Operation op, Trigger trigger) {
+    	return assertTriggerDetails((op == null) ? null : op.get("trigger", OperationMap.class), trigger);
     }
 
-    private static void assertOperationValue (Operation op, String key, Object expected) {
-        Assert.assertEquals("Mismatched " + key + " value", expected, op.get(key));
+    private static OperationMap assertTriggerDetails (OperationMap map, Trigger trigger) {
+    	Assert.assertNotNull("No trigger details", map);
+    	assertKeyValue(map, trigger.getKey());
+    	Assert.assertEquals("Mismatched priority value", Integer.valueOf(trigger.getPriority()), map.get("priority", Integer.class));
+    	assertOperationStringValue(map, "description", trigger.getDescription());
+    	assertOperationStringValue(map, "calendarName", trigger.getCalendarName());
+    	return map;
+    }
+
+    private static void assertKeyValue (OperationMap map, Object key) {
+        assertOperationStringValue(map, "name", keyAccessor.getName(key));
+        assertOperationStringValue(map, "group", keyAccessor.getGroup(key));
+        assertOperationStringValue(map, "fullName", keyAccessor.getFullName(key));
+    }
+
+    private static void assertOperationStringValue (OperationMap op, String key, String expected) {
+        Assert.assertEquals("Mismatched map=" + key + " value", expected, op.get(key, String.class));
+    }
+
+    private static Operation assertJobDetails (Operation op, JobDetail detail) {
+        Assert.assertNotNull("No operation extracted", op);
+
+        assertKeyValue(op, detail.getKey());
+        assertOperationStringValue(op, "description", detail.getDescription());
+        assertOperationStringValue(op, "jobClass", detail.getJobClass().getName());
+        return op;
+    }
+
+    private static void assertKeyValue (Operation op, Object key) {
+        assertOperationStringValue(op, "name", keyAccessor.getName(key));
+        assertOperationStringValue(op, "group", keyAccessor.getGroup(key));
+        assertOperationStringValue(op, "fullName", keyAccessor.getFullName(key));
+    }
+
+    private static void assertOperationStringValue (Operation op, String key, String expected) {
+        Assert.assertEquals("Mismatched op=" + key + " value", expected, op.get(key, String.class));
     }
 }
