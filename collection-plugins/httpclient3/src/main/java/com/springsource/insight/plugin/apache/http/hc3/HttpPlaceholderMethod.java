@@ -15,10 +15,16 @@
  */
 package com.springsource.insight.plugin.apache.http.hc3;
 
+import java.lang.reflect.Field;
+
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.StatusLine;
+
+import com.springsource.insight.util.ArrayUtil;
+import com.springsource.insight.util.ExtraReflectionUtils;
+import com.springsource.insight.util.ReflectionUtils;
 
 /**
  * Placeholder {@link HttpMethod} implementation used in the <code>around</code>
@@ -36,13 +42,17 @@ final class HttpPlaceholderMethod extends HttpMethodBase {
      */
     static final HttpMethod PLACEHOLDER=new HttpPlaceholderMethod();
 
+    static final StatusLine	PLACEHOLDER_STATUS;
+    static {
+    	try {
+    		PLACEHOLDER_STATUS = new StatusLine("HTTP/1.1 500 Placeholder method used");
+		} catch(HttpException e) {	// unexpected
+			throw new RuntimeException(e);
+		}
+    }
+
     private HttpPlaceholderMethod() {
         super(HttpClientDefinitions.PLACEHOLDER_URI_VALUE);
-        try {
-            this.statusLine = new StatusLine("HTTP/1.1 500 Placeholder method used");
-        } catch(HttpException e) {  // unexpected
-            throw new IllegalStateException("Failed to generate initial status line");
-        }
     }
 
     @Override
@@ -50,8 +60,25 @@ final class HttpPlaceholderMethod extends HttpMethodBase {
         return HttpClientDefinitions.PLACEHOLDER_METHOD_NAME;
     }
 
-    static HttpMethod resolveHttpMethod(Object... args) {
-        if ((args == null) || (args.length <= 0)) {
+    @Override
+	public int getStatusCode() {
+    	StatusLine	st=getStatusLine();
+		return st.getStatusCode();
+	}
+
+	@Override
+	public String getStatusText() {
+    	StatusLine	st=getStatusLine();
+		return st.getReasonPhrase();
+	}
+
+	@Override
+	public StatusLine getStatusLine() {
+		return PLACEHOLDER_STATUS;
+	}
+
+	static HttpMethod resolveHttpMethod(Object... args) {
+        if (ArrayUtil.length(args) <= 0) {
             return PLACEHOLDER;
         }
         
