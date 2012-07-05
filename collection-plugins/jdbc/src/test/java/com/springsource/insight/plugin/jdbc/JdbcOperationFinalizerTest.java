@@ -15,22 +15,24 @@
  */
 package com.springsource.insight.plugin.jdbc;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.springsource.insight.intercept.operation.Operation;
 
-public class JdbcOperationFinalizerTest {
-    
+public class JdbcOperationFinalizerTest extends Assert {
     private Operation operation;
     
+    public JdbcOperationFinalizerTest () {
+    	super();
+    }
+
     @Before
-    public void setup() {
+    public void setUp() {
         operation = new Operation().type(JdbcOperationExternalResourceAnalyzer.TYPE);
         JdbcOperationFinalizer.register(operation);
     }
@@ -78,80 +80,81 @@ public class JdbcOperationFinalizerTest {
     }
         
     @Test
-    public void createLabel_select() {
-        assertEquals("JDBC SELECT (TABLE)", JdbcOperationFinalizer.createLabel("SELECT * FROM table"));
-        assertEquals("JDBC SELECT (TABLE)", JdbcOperationFinalizer.createLabel("SELECT * FROM table t"));
-        assertEquals("JDBC SELECT (TABLE)", JdbcOperationFinalizer.createLabel("SELECT * FROM table "));
+    public void testCreateLabelSelect() {
+        assertEquals("JDBC SELECT (TABLE)", JdbcOperationFinalizer.createLabel("select * from table"));
+        assertEquals("JDBC SELECT (TABLE)", JdbcOperationFinalizer.createLabel("select * from table t"));
+        assertEquals("JDBC SELECT (TABLE)", JdbcOperationFinalizer.createLabel("select * from table t where x"));
         assertEquals("JDBC SELECT", JdbcOperationFinalizer.createLabel("SELECT * FROM"));
-        assertEquals("JDBC SELECT", JdbcOperationFinalizer.createLabel("SELECT * FROM "));
     }
     
     @Test
-    public void createLabel_insert() {
-        assertEquals("JDBC INSERT (TABLE)", JdbcOperationFinalizer.createLabel("INSERT INTO table VALUES ..."));
-        assertEquals("JDBC INSERT (TABLE)", JdbcOperationFinalizer.createLabel("INSERT INTO table"));
-        assertEquals("JDBC INSERT (TABLE)", JdbcOperationFinalizer.createLabel("INSERT INTO table "));
+    public void testCreateLabelInsert() {
+        assertEquals("JDBC INSERT (TABLE)", JdbcOperationFinalizer.createLabel("insert into table values ..."));
+        assertEquals("JDBC INSERT (TABLE)", JdbcOperationFinalizer.createLabel("insert into table"));
         assertEquals("JDBC INSERT", JdbcOperationFinalizer.createLabel("INSERT INTO"));
-        assertEquals("JDBC INSERT", JdbcOperationFinalizer.createLabel("INSERT INTO "));
     }
     
     @Test
-    public void createLabel_delete() {
-        assertEquals("JDBC DELETE (TABLE)", JdbcOperationFinalizer.createLabel("DELETE FROM table WHERE ..."));
-        assertEquals("JDBC DELETE (TABLE)", JdbcOperationFinalizer.createLabel("DELETE FROM table"));
-        assertEquals("JDBC DELETE (TABLE)", JdbcOperationFinalizer.createLabel("DELETE FROM table "));
+    public void testCreateLabelDelete() {
+        assertEquals("JDBC DELETE (TABLE)", JdbcOperationFinalizer.createLabel("delete from table where ..."));
+        assertEquals("JDBC DELETE (TABLE)", JdbcOperationFinalizer.createLabel("delete from table"));
         assertEquals("JDBC DELETE", JdbcOperationFinalizer.createLabel("DELETE FROM"));
-        assertEquals("JDBC DELETE", JdbcOperationFinalizer.createLabel("DELETE FROM "));
     }
     
     @Test
-    public void createLabel_update() {
-        assertEquals("JDBC UPDATE (TABLE)", JdbcOperationFinalizer.createLabel("UPDATE table SET ..."));
-        assertEquals("JDBC UPDATE (TABLE)", JdbcOperationFinalizer.createLabel("UPDATE table"));
-        assertEquals("JDBC UPDATE (TABLE)", JdbcOperationFinalizer.createLabel("UPDATE table "));
+    public void testCreateLabelUpdate() {
+        assertEquals("JDBC UPDATE (TABLE)", JdbcOperationFinalizer.createLabel("update table set ..."));
+        assertEquals("JDBC UPDATE (TABLE)", JdbcOperationFinalizer.createLabel("update table"));
         assertEquals("JDBC UPDATE", JdbcOperationFinalizer.createLabel("UPDATE"));
-        assertEquals("JDBC UPDATE", JdbcOperationFinalizer.createLabel("UPDATE "));
     }
     
     @Test
-    public void createLabel_call() {
+    public void testCreateLabelCall() {
         assertEquals("JDBC CALL (FUNC)", JdbcOperationFinalizer.createLabel("CALL func args"));
         assertEquals("JDBC CALL (FUNC)", JdbcOperationFinalizer.createLabel("CALL func"));
-        assertEquals("JDBC CALL (FUNC)", JdbcOperationFinalizer.createLabel("CALL func "));
         assertEquals("JDBC CALL", JdbcOperationFinalizer.createLabel("CALL"));
-        assertEquals("JDBC CALL", JdbcOperationFinalizer.createLabel("CALL "));
     }
     
     @Test
-    public void createLabel_checkpoint() {
+    public void testCreateLabelCheckpoint() {
         assertEquals("JDBC CHECKPOINT", JdbcOperationFinalizer.createLabel("CHECKPOINT"));
         assertEquals("JDBC CHECKPOINT", JdbcOperationFinalizer.createLabel("CHECKPOINT FUBAR"));
     }
     
     @Test
-    public void createLabel_createTable() {
-        assertEquals("JDBC CREATE TABLE", JdbcOperationFinalizer.createLabel("CREATE TABLE FUBAR(BAZ)"));
-        assertEquals("JDBC CREATE TABLE", JdbcOperationFinalizer.createLabel("CREATE TABLE "));
+    public void testCreateLabelCreateTable() {
+        assertEquals("JDBC CREATE TABLE (FUBAR)", JdbcOperationFinalizer.createLabel("CREATE TABLE FUBAR(BAZ)"));
         assertEquals("JDBC CREATE TABLE", JdbcOperationFinalizer.createLabel("CREATE TABLE"));
     }
-    
+
     @Test
-    public void createLabel_createIndex() {
-        assertEquals("JDBC CREATE INDEX", JdbcOperationFinalizer.createLabel("CREATE INDEX FUBAR(BAZ)"));
-        assertEquals("JDBC CREATE INDEX", JdbcOperationFinalizer.createLabel("CREATE INDEX "));
+    public void testCreateLabelAlterTable() {
+        assertEquals("JDBC ALTER TABLE (FUBAR)", JdbcOperationFinalizer.createLabel("alter table fubar modify column x"));
+        assertEquals("JDBC ALTER TABLE", JdbcOperationFinalizer.createLabel("ALTER TABLE"));
+    }
+
+    @Test
+    public void testCreateLabelDropTable() {
+        assertEquals("JDBC DROP TABLE (FUBAR)", JdbcOperationFinalizer.createLabel("drop table fubar purge erase"));
+        assertEquals("JDBC DROP TABLE", JdbcOperationFinalizer.createLabel("drop table"));
+    }
+
+    @Test
+    public void testCreateLabelCreateIndex() {
+        assertEquals("JDBC CREATE INDEX (FUBAR)", JdbcOperationFinalizer.createLabel("create index fubar(baz)"));
         assertEquals("JDBC CREATE INDEX", JdbcOperationFinalizer.createLabel("CREATE INDEX"));
-        assertEquals("JDBC CREATE INDEX", JdbcOperationFinalizer.createLabel("CREATE UNIQUE INDEX"));
-        assertEquals("JDBC CREATE INDEX", JdbcOperationFinalizer.createLabel("CREATE UNIQUE INDEX BARFO"));
+        assertEquals("JDBC CREATE UNIQUE INDEX (BARFO)", JdbcOperationFinalizer.createLabel("create unique index barfo(blah)"));
+        assertEquals("JDBC CREATE UNIQUE INDEX", JdbcOperationFinalizer.createLabel("CREATE UNIQUE INDEX"));
     }
     
     @Test
-    public void createLabel_dml() {
+    public void testCreateLabelDml() {
         assertEquals("JDBC DML", JdbcOperationFinalizer.createLabel("CREATE INMEMORY TABLE FUBAR(BAZ)"));
         assertEquals("JDBC DML", JdbcOperationFinalizer.createLabel("CREATE USER BARFO"));
     }
     
     @Test
-    public void createLabel_statement() {
+    public void testCreateLabelStatement() {
         assertEquals("JDBC STATEMENT", JdbcOperationFinalizer.createLabel("ALTER MY DRESS"));
     }
     

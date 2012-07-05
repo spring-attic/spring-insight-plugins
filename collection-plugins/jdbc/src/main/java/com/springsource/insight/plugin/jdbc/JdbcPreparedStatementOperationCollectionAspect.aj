@@ -17,6 +17,7 @@ package com.springsource.insight.plugin.jdbc;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -135,17 +136,21 @@ public aspect JdbcPreparedStatementOperationCollectionAspect
         }
     }
 
-    private Operation createOperationForStatement(JoinPoint jp, PreparedStatement statement, String sql) {
+    Operation createOperationForStatement(JoinPoint jp, PreparedStatement statement, String sql) {
         Operation operation = new Operation()
                 .type(JdbcOperationExternalResourceAnalyzer.TYPE)
                 .sourceCodeLocation(getSourceCodeLocation(jp))
-                .put("sql", sql);
+                .put("sql", sql)
+                ;
 
         // always return an operation
         try {
             JdbcOperationFinalizer.register(operation);
             addStatementToMap(statement, operation);
-            operation.put(OperationFields.CONNECTION_URL, statement.getConnection().getMetaData().getURL());
+
+            Connection	connection = statement.getConnection();
+            DatabaseMetaData	metaData = connection.getMetaData();
+            operation.put(OperationFields.CONNECTION_URL, metaData.getURL());
         } catch(SQLException e) {
             // ignore, possibly expected
         } catch (Throwable t) {
@@ -161,7 +166,6 @@ public aspect JdbcPreparedStatementOperationCollectionAspect
     private void addStatementToMap(PreparedStatement ps, Operation op) {
         storage.put(ps, op);
     }
-
 
     @Override
     public String getPluginName() {

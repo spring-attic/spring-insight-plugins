@@ -15,22 +15,21 @@
  */
 package com.springsource.insight.plugin.jdbc;
 
+import org.junit.Assert;
 import org.junit.Test;
 
-import com.springsource.insight.plugin.jdbc.SQLFormatter;
-
-import static org.junit.Assert.*;
-
-public class SQLFormatterTest {
+public class SQLFormatterTest extends Assert {
+    private final SQLFormatter fmt = new SQLFormatter();
+	public SQLFormatterTest () {
+		super();
+	}
     @Test
     public void testSimpleSqlWithCapitalization() {
-        SQLFormatter fmt = new SQLFormatter();
         assertEquals("SELECT * \n    FROM users ", fmt.prettyPrint("select * from users")); 
     }
     
     @Test
     public void testBogusSql() {
-        SQLFormatter fmt = new SQLFormatter();
         assertEquals("Barf on this baby ", fmt.prettyPrint("Barf on this baby"));
     }
 }

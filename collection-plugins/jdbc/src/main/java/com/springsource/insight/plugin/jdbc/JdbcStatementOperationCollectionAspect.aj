@@ -15,6 +15,8 @@
  */
 package com.springsource.insight.plugin.jdbc;
 
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -38,8 +40,10 @@ public aspect JdbcStatementOperationCollectionAspect
             .put("sql", (String)jp.getArgs()[0]);
         JdbcOperationFinalizer.register(operation);
         try {
-            Statement statement = (Statement) jp.getTarget();
-            operation.put(OperationFields.CONNECTION_URL, statement.getConnection().getMetaData().getURL());            
+            Statement 	statement = (Statement) jp.getTarget();
+            Connection	connection = statement.getConnection();
+            DatabaseMetaData	metaData = connection.getMetaData();
+            operation.put(OperationFields.CONNECTION_URL, metaData.getURL());            
         } catch (SQLException e) {
             // ignore
         }

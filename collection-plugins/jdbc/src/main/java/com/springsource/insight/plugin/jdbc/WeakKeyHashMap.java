@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class WeakKeyHashMap<K, V> {
     private final ConcurrentHashMap<WeakRef<K, V>, WeakRef<K, V>> map = new ConcurrentHashMap<WeakRef<K, V>, WeakRef<K, V>>();
-    private final ReferenceQueue<V> refQueue = new ReferenceQueue();
+    private final ReferenceQueue<V> refQueue = new ReferenceQueue<V>();
 
     public int size() {
         return map.size();
@@ -74,9 +74,11 @@ public class WeakKeyHashMap<K, V> {
     }
 
     private void cleanupRefQueue() {
-        Reference ref;
+        @SuppressWarnings("rawtypes")
+		Reference ref;
         while ((ref = refQueue.poll()) != null) {
-            WeakRef<K, V> softRef = (WeakRef<K, V>)ref;
+            @SuppressWarnings("unchecked")
+			WeakRef<K, V> softRef = (WeakRef<K, V>)ref;
             if (map.remove(softRef) == null) {
                 // System.out.println("Remove cleared ref, but it wasn't found in our map!");
             }
@@ -91,10 +93,11 @@ public class WeakKeyHashMap<K, V> {
         private final int hashCode;
         private final B hardRef;
         
-        public WeakRef(A obj, ReferenceQueue queue, @SuppressWarnings("hiding") B hardRef) {
+        @SuppressWarnings({ "unchecked", "rawtypes"})
+		public WeakRef(A obj, ReferenceQueue queue, B hardReference) {
             super(obj, queue);
             this.hashCode = System.identityHashCode(obj);
-            this.hardRef = hardRef;
+            this.hardRef = hardReference;
         }
         
         public B getHardRef() {
@@ -111,7 +114,8 @@ public class WeakKeyHashMap<K, V> {
             if (other == null) {
                 return false;
             }
-            WeakRef o = (WeakRef)other;
+            @SuppressWarnings("rawtypes")
+			WeakRef o = (WeakRef)other;
             return o.get() == get();
         }
     }

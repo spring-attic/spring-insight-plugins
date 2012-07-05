@@ -29,6 +29,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import com.springsource.insight.util.ArrayUtil;
+
 /*
  * Lots of this could be abstracted out into a word-wrapping class.
  */
@@ -57,24 +59,34 @@ public class SQLFormatter {
     private String wrapIndent = "        ";
     private String clauseIndent = "    ";
 
-    private static final String[] selectSeparators = new String[]{
-        "FROM ", "WHERE ", "ORDER BY ", // ### is this order correct?
-        "GROUP BY ", "HAVING ", };
+    private static final String[] selectSeparators = {
+	        "FROM ", "WHERE ", "ORDER BY ", // ### is this order correct?
+	        "GROUP BY ", "HAVING "
+       };
 
-    private static final String[] insertSeparators = new String[]{
-        "VALUES ", };
+    private static final String[] insertSeparators = {
+	        "VALUES "
+	    };
 
-    private static final String[] updateSeparators = new String[]{
-        "SET ", "WHERE ", };
+    private static final String[] updateSeparators = {
+        "SET ", "WHERE "
+      };
 
-    private static final String[] deleteSeparators = new String[]{
-        "WHERE ", };
+    private static final String[] deleteSeparators = {
+        "WHERE "
+      };
 
-    private static final String[] createTableSeparators = new String[]{
-        "( ", };
+    private static final String[] createTableSeparators = {
+        "( "
+     };
 
-    private static final String[] createIndexSeparators = new String[]{
-        "ON ", "( ", };
+    private static final String[] createIndexSeparators = {
+        "ON ", "( "
+      };
+
+    public SQLFormatter () {
+    	super();
+    }
 
     public void setNewline(String val) {
         newline = val;
@@ -183,7 +195,7 @@ public class SQLFormatter {
         else if (lowerCaseSql.startsWith("create index"))
             separators = createIndexSeparators;
         else
-            separators = new String[0];
+            separators = ArrayUtil.EMPTY_STRINGS;
 
         int start = 0;
         int end = -1;
