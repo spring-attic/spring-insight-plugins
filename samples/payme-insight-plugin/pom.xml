@@ -10,7 +10,7 @@
 	<properties>
 		<insight.version>1.9.0-CI-SNAPSHOT</insight.version>
 		<aspectj.version>1.7.0.M1</aspectj.version>
-		<spring.framework.version>3.0.5.RELEASE</spring.framework.version>
+		<spring.framework.version>3.1.1.RELEASE</spring.framework.version>
 		<junit.version>4.5</junit.version>
 		<mockito.version>1.8.0</mockito.version>
 	</properties>

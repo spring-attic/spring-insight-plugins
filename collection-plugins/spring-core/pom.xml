@@ -13,10 +13,6 @@
 		<version>1.9.0-CI-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-    
-    <properties>
-        <spring.framework.version>3.1.0.RELEASE</spring.framework.version>
-    </properties>
 	
 	<dependencies>
 		<dependency>
