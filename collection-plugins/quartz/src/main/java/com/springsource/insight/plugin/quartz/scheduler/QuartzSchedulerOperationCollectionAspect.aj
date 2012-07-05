@@ -19,9 +19,6 @@ import java.util.Date;
 import java.util.logging.Logger;
 
 import org.aspectj.lang.JoinPoint;
-import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
-import org.quartz.Trigger;
 
 import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
 import com.springsource.insight.intercept.InterceptConfiguration;
@@ -31,42 +28,43 @@ import com.springsource.insight.intercept.trace.FrameBuilder;
 import com.springsource.insight.util.StringUtil;
 
 /**
- * 
+ * <B>Note:</B> the aspect uses reflective access in order to be compatible with
+ * version 1.8 as well as 2.0 and 2.1
  */
 public aspect QuartzSchedulerOperationCollectionAspect extends MethodOperationCollectionAspect {
     private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
     private final Logger	logger=Logger.getLogger(getClass().getName());
-    private final QuartzKeyValueAccessor	keyAccessor=QuartzKeyValueAccessor.getInstance();
 
     public QuartzSchedulerOperationCollectionAspect () {
     	super();
     }
 
     public pointcut collectionPoint()
-        : execution(* org.quartz.Job.execute(JobExecutionContext))
+        : execution(* org.quartz.Job.execute(org.quartz.JobExecutionContext))
         ;
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Operation   op=super.createOperation(jp)
-                        .type(QuartzSchedulerDefinitions.TYPE);
-        return createOperation(op, (JobExecutionContext) jp.getArgs()[0]);
+        Operation   op=super.createOperation(jp).type(QuartzSchedulerDefinitions.TYPE);
+        Object[]	args=jp.getArgs();
+        return createOperation(op, args[0]);
     }
 
-    Operation createOperation (Operation op, JobExecutionContext context) {
+    Operation createOperation (Operation op, Object context) {
+    	QuartzJobExecutionContextValueAccessor	contextAccessor=QuartzJobExecutionContextValueAccessor.getInstance();
     	try {
-	        op.putAnyNonEmpty("fireTime", safeCloneDate(context.getFireTime()))
-	          .put("refireCount", context.getRefireCount())
-	          .putAnyNonEmpty("scheduledFireTime", safeCloneDate(context.getScheduledFireTime()))
-	          .putAnyNonEmpty("previousFireTime", safeCloneDate(context.getPreviousFireTime()))
-	          .putAnyNonEmpty("nextFireTime", safeCloneDate(context.getNextFireTime()))
+	        op.putAnyNonEmpty("fireTime", safeCloneDate(contextAccessor.getFireTime(context)))
+	          .putAnyNonEmpty("refireCount", contextAccessor.getRefireCount(context))
+	          .putAnyNonEmpty("scheduledFireTime", safeCloneDate(contextAccessor.getScheduledFireTime(context)))
+	          .putAnyNonEmpty("previousFireTime", safeCloneDate(contextAccessor.getPreviousFireTime(context)))
+	          .putAnyNonEmpty("nextFireTime", safeCloneDate(contextAccessor.getNextFireTime(context)))
 	          ;
     	} catch(Error e) {
     		logger.warning("Failed (" + e.getClass().getSimpleName() + ")"
     				     + " to populate context values: " + e.getMessage());
     	}
 
-        JobDetail	jobDetail=context.getJobDetail();
+        Object	jobDetail=contextAccessor.getJobDetail(context);
         try {
         	createOperationJobDetail(op, jobDetail);
     	} catch(Error e) {
@@ -76,7 +74,7 @@ public aspect QuartzSchedulerOperationCollectionAspect extends MethodOperationCo
 
         if (collectExtraInformation()) {
             try {
-            	createOperationTrigger(op, context.getTrigger(), jobDetail);
+            	createOperationTrigger(op, contextAccessor.getTrigger(context), jobDetail);
         	} catch(Error e) {
         		logger.warning("Failed (" + e.getClass().getSimpleName() + ")"
         				     + " to populate trigger values: " + e.getMessage());
@@ -86,36 +84,44 @@ public aspect QuartzSchedulerOperationCollectionAspect extends MethodOperationCo
         return op;
     }
 
-    Operation createOperationJobDetail (Operation op, JobDetail detail) {
-        String description=detail.getDescription();
-        Object jobKey=detail.getKey();
+    Operation createOperationJobDetail (Operation op, Object detail) {
+    	QuartzJobDetailValueAccessor	detailAccessor=QuartzJobDetailValueAccessor.getInstance();
+        String description=detailAccessor.getDescription(detail);
+        Object jobKey=detailAccessor.getKey(detail);
+        Class<?> jobClass=detailAccessor.getJobClass(detail);
+
+        QuartzKeyValueAccessor	keyAccessor=QuartzKeyValueAccessor.getInstance();
    		String jobGroup=keyAccessor.getGroup(jobKey);
    		String jobName=keyAccessor.getName(jobKey);
         String fullName=keyAccessor.getFullName(jobKey);
-        
+
         return op.label(fullName + (StringUtil.isEmpty(description) ? "" : " - " + description))
         		 .putAnyNonEmpty("name", jobName)
         		 .putAnyNonEmpty("group", jobGroup)
         		 .putAnyNonEmpty("fullName", fullName)
         		 .putAnyNonEmpty("description", description)
-        		 .put("jobClass", detail.getJobClass().getName())
+        		 .putAnyNonEmpty("jobClass", (jobClass == null) ? null : jobClass.getName())
         		 ;
     }
 
-    OperationMap createOperationTrigger (Operation op, Trigger trigger, JobDetail jobDetail) {
-    	Object	triggerKey=trigger.getKey();
+    OperationMap createOperationTrigger (Operation op, Object trigger, Object jobDetail) {
+    	QuartzTriggerValueAccessor	triggerAccessor=QuartzTriggerValueAccessor.getInstance();
+    	Object	triggerKey=triggerAccessor.getKey(trigger);
+
+        QuartzKeyValueAccessor	keyAccessor=QuartzKeyValueAccessor.getInstance();
    		String 	triggerGroup=keyAccessor.getGroup(triggerKey);
    		String 	triggerName=keyAccessor.getName(triggerKey);
    		String	triggerFullName=keyAccessor.getFullName(triggerKey);
 
-   		Object	jobKey=jobDetail.getKey();
+    	QuartzJobDetailValueAccessor	detailAccessor=QuartzJobDetailValueAccessor.getInstance();
+   		Object	jobKey=detailAccessor.getKey(jobDetail);
    		String 	jobGroup=keyAccessor.getGroup(jobKey);
    		String 	jobName=keyAccessor.getName(jobKey);
    		String	jobFullName=keyAccessor.getFullName(jobKey);
     	
    		return op.createMap("trigger")
-                 .put("priority", trigger.getPriority())
-                 .putAnyNonEmpty("description", trigger.getDescription())
+                 .putAnyNonEmpty("priority", triggerAccessor.getPriority(trigger))
+                 .putAnyNonEmpty("description", triggerAccessor.getDescription(trigger))
    
                  .putAnyNonEmpty("name", triggerName)
                  .putAnyNonEmpty("group", triggerGroup)
@@ -125,11 +131,11 @@ public aspect QuartzSchedulerOperationCollectionAspect extends MethodOperationCo
                  .putAnyNonEmpty("jobGroup", jobGroup)
                  .putAnyNonEmpty("fullJobName", jobFullName)
                 
-                 .putAnyNonEmpty("calendarName", trigger.getCalendarName())
-                 .putAnyNonEmpty("startTime", safeCloneDate(trigger.getStartTime()))
-                 .putAnyNonEmpty("endTime", safeCloneDate(trigger.getEndTime()))
-                 .putAnyNonEmpty("previousFireTime", safeCloneDate(trigger.getPreviousFireTime()))
-                 .putAnyNonEmpty("nextFireTime", safeCloneDate(trigger.getNextFireTime()))
+                 .putAnyNonEmpty("calendarName", triggerAccessor.getCalendarName(trigger))
+                 .putAnyNonEmpty("startTime", safeCloneDate(triggerAccessor.getStartTime(trigger)))
+                 .putAnyNonEmpty("endTime", safeCloneDate(triggerAccessor.getEndTime(trigger)))
+                 .putAnyNonEmpty("previousFireTime", safeCloneDate(triggerAccessor.getPreviousFireTime(trigger)))
+                 .putAnyNonEmpty("nextFireTime", safeCloneDate(triggerAccessor.getNextFireTime(trigger)))
                  ;
     }
     /*

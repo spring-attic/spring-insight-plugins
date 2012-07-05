@@ -15,19 +15,12 @@
  */
 package com.springsource.insight.plugin.quartz.scheduler;
 
-import java.util.logging.Logger;
-
-import org.quartz.utils.Key;
-
 import com.springsource.insight.util.StringUtil;
-import com.springsource.insight.util.props.BeanPropertiesSource;
 
 /**
  * 
  */
-public final class QuartzKeyValueAccessor {
-	private BeanPropertiesSource	keySource;
-	private final Logger	logger=Logger.getLogger(getClass().getName());
+public final class QuartzKeyValueAccessor extends AbstractQuartzValueAccessor {
 	private static class LazyFieldHolder {
 		static final QuartzKeyValueAccessor	accessor=new QuartzKeyValueAccessor();
 	}
@@ -37,12 +30,7 @@ public final class QuartzKeyValueAccessor {
 	}
 
 	QuartzKeyValueAccessor () {
-    	try {
-    		keySource = new BeanPropertiesSource(Key.class);
-    	} catch(Throwable e) {
-    		logger.warning("Failed (" + e.getClass().getSimpleName() + ")"
-   					     + " to get key bean properties: " + e.getMessage());
-    	}
+		super("org.quartz.utils.Key");
 	}
 
 	public String getFullName (Object key) {
@@ -69,16 +57,6 @@ public final class QuartzKeyValueAccessor {
 	}
 
     private String getKeyValue (Object key, String name) {
-    	if ((key == null) || (keySource == null)) {
-    		return null;
-    	}
-
-    	try {
-    		return keySource.getProperty(key, name, String.class);
-    	} catch(Exception e) {
-    		logger.warning("getKeyValue(" + name + ") failed (" + e.getClass().getSimpleName() + ")"
-    			      	 + " to retrieve value: " + e.getMessage());
-    		return null;
-    	}
+    	return getProperty(key, name, String.class);
     }
 }
