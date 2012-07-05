@@ -14,10 +14,6 @@
 		<relativePath>..</relativePath>
 	</parent>
 
-	<properties>
-		<spring.webflow.version>2.3.1.RELEASE</spring.webflow.version>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.webflow</groupId>

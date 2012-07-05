@@ -13,6 +13,8 @@
     <properties>
         <spring.framework.version>3.1.1.RELEASE</spring.framework.version>
         <spring.security.version>3.0.5.RELEASE</spring.security.version>
+		<spring.webflow.version>2.3.1.RELEASE</spring.webflow.version>
+        <spring.integration.version>2.0.3.RELEASE</spring.integration.version>
         <aspectj.version>1.7.0.RC1</aspectj.version>
         <junit.version>4.5</junit.version>
         <mockito.version>1.8.0</mockito.version>
@@ -27,7 +29,6 @@
         <freemarker.version>2.3.15</freemarker.version>
         <jstl.version>1.2</jstl.version>
         <cglib.version>2.2</cglib.version>
-        <spring.integration.version>2.0.3.RELEASE</spring.integration.version>
         <activemq.version>5.4.2</activemq.version>
         <xbean.version>3.5</xbean.version>
         <catalina.version>6.0.18</catalina.version>
