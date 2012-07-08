@@ -15,14 +15,13 @@
  */
 package com.springsource.insight.plugin.jdbc;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Before;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.springsource.insight.intercept.application.ApplicationName;
@@ -42,17 +41,12 @@ import com.springsource.insight.util.time.TimeRange;
 
 /**
  */
-public class DatabaseJDBCURIAnalyzerTest {
-	private DatabaseJDBCURIAnalyzer dbAnalyzer;
+public class DatabaseJDBCURIAnalyzerTest extends Assert {
+	private final DatabaseJDBCURIAnalyzer dbAnalyzer=new TestJDBCURIAnalyzer();
 	
 	public DatabaseJDBCURIAnalyzerTest() {
         super();
     }
-
-    @Before
-	public void setup() {
-		dbAnalyzer = new TestJDBCURIAnalyzer();
-	}
 
 	@Test
 	public void testLocateDatabaseURI() throws Exception {
@@ -71,12 +65,14 @@ public class DatabaseJDBCURIAnalyzerTest {
 				TraceId.valueOf("fake-id"),
 				frame);
 
-		ExternalResourceDescriptor externalResourceDescriptor = dbAnalyzer.locateExternalResourceName(trace).get(0);
+		List<ExternalResourceDescriptor>	descList=dbAnalyzer.locateExternalResourceName(trace);
+		assertEquals("Mismatched num of descriptors", 1, descList.size());
+		ExternalResourceDescriptor externalResourceDescriptor = descList.get(0);
 
-		assertEquals(frame, externalResourceDescriptor.getFrame());
-		assertEquals(ExternalResourceType.DATABASE.name(), externalResourceDescriptor.getType());
-		assertEquals("foobar:1:" + MD5NameGenerator.getName(jdbcUri), externalResourceDescriptor.getName());
-		assertEquals(Boolean.FALSE, Boolean.valueOf(externalResourceDescriptor.isIncoming()));
+		assertEquals("Mismatched extracted frame", frame, externalResourceDescriptor.getFrame());
+		assertEquals("Mismatched resource type", ExternalResourceType.DATABASE.name(), externalResourceDescriptor.getType());
+		assertEquals("Mismatched resource name", "foobar:1:" + MD5NameGenerator.getName(jdbcUri), externalResourceDescriptor.getName());
+		assertEquals("Mismatched incoming value", Boolean.FALSE, Boolean.valueOf(externalResourceDescriptor.isIncoming()));
 	}
 
 	@Test

@@ -18,7 +18,6 @@ package com.springsource.insight.plugin.jdbc;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -58,7 +57,7 @@ public abstract class DatabaseJDBCURIAnalyzer implements ExternalResourceAnalyze
 	
 	public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
 	    Collection<Frame> dbFrames = trace.getLastFramesOfType(opType);
-		if ((dbFrames == null) || dbFrames.isEmpty()) {
+		if (ListUtil.size(dbFrames) <= 0) {
 		    return Collections.emptyList();
 		}
 
@@ -81,23 +80,22 @@ public abstract class DatabaseJDBCURIAnalyzer implements ExternalResourceAnalyze
 	 * actually work.
 	 */
 	public List<ExternalResourceDescriptor> extractMeaningfulNames(Frame frame, String connectionString) {
-		
 		// hope some parser recognizes the string
 		List<ExternalResourceDescriptor> parserRecognizedDescriptors = getParserRecognizedDescriptors(frame, connectionString);
-		if (parserRecognizedDescriptors != null){
+		if (ListUtil.size(parserRecognizedDescriptors) > 0) {
 			return parserRecognizedDescriptors;
 		}
 		
 		return getFallbackDescriptor(frame, connectionString);
 	}
 
-	private List<ExternalResourceDescriptor> getFallbackDescriptor(Frame frame, String connectionString) {
+	static List<ExternalResourceDescriptor> getFallbackDescriptor(Frame frame, String connectionString) {
 		String workingConnectionString = connectionString.replaceFirst("jdbc:", "");
 		int indexOfFirstColon = workingConnectionString.indexOf(':');
-
 		if (indexOfFirstColon <= 0) {
 			return Collections.emptyList();
 		}
+
 		String jdbcScheme = workingConnectionString.substring(0, indexOfFirstColon);
 		String jdbcHash = MD5NameGenerator.getName(connectionString);
 
@@ -110,29 +108,33 @@ public abstract class DatabaseJDBCURIAnalyzer implements ExternalResourceAnalyze
 			port = uri.getPort();			
 		}
 		
-        String color = ColorManager.getInstance().getColor(frame.getOperation());
+		ColorManager	colorManager=ColorManager.getInstance();
+		Operation		op=frame.getOperation();
+		String 			color=colorManager.getColor(op);
         
 		// for  Non-URI based and special cases the host and port remain default
-		ExternalResourceDescriptor hashed = new ExternalResourceDescriptor(frame, jdbcScheme + ":1:" + jdbcHash, "", ExternalResourceType.DATABASE.name(), jdbcScheme, host, port, color, false);
-		return Arrays.asList(hashed);
+		ExternalResourceDescriptor hashed =
+				new ExternalResourceDescriptor(frame, jdbcScheme + ":1:" + jdbcHash, "", ExternalResourceType.DATABASE.name(), jdbcScheme, host, port, color, false);
+		return Collections.singletonList(hashed);
 	}
 
-	private List<ExternalResourceDescriptor> getParserRecognizedDescriptors(Frame frame, String connectionString) {		
+	static List<ExternalResourceDescriptor> getParserRecognizedDescriptors(Frame frame, String connectionString) {		
 		Collection<? extends JdbcUrlMetaData> urlMetaDataList = DatabaseType.parse(connectionString);
 		if (ListUtil.size(urlMetaDataList) <= 0) {
-			return null;
+			return Collections.emptyList();
 		}
 
 		List<ExternalResourceDescriptor> externalResourceDescriptors = new ArrayList<ExternalResourceDescriptor>(urlMetaDataList.size());
-		int instance = 1;
+		int 			instance = 1;
 		ColorManager	colorManager=ColorManager.getInstance();
+		Operation		op=frame.getOperation();
+		String 			color=colorManager.getColor(op);
 		for (JdbcUrlMetaData urlMetaData : urlMetaDataList) {
 			String databaseName = urlMetaData.getDatabaseName();
 			String vendor = urlMetaData.getVendorName();
 			String host = urlMetaData.getHost();
 			int port = urlMetaData.getPort();
 			String jdbcHash = MD5NameGenerator.getName(connectionString);
-			String color = colorManager.getColor(frame.getOperation());
                 
 			ExternalResourceDescriptor descriptor=new ExternalResourceDescriptor(frame, 
 																				 vendor + ":" + instance + ":" + jdbcHash,
@@ -150,12 +152,16 @@ public abstract class DatabaseJDBCURIAnalyzer implements ExternalResourceAnalyze
 		return externalResourceDescriptors;
 	}
 	
-	/**
+	/*
 	 * Try to pull a uri out of the jdbc url. If no uri is to be found, return null
 	 */
-	private URI extractURI(String possibleURI) {
-		String workingName = possibleURI;
-		while (workingName.indexOf(':') > 0) {
+	static URI extractURI(String possibleURI) {
+		for (String workingName = possibleURI; StringUtil.getSafeLength(workingName) > 0; ) {
+			int	colonPos=workingName.indexOf(':');
+			if (colonPos < 0) {
+				break;
+			}
+
 			try {
 				// extract a host/port if we can
 				URI uri = new URI(workingName);
@@ -165,10 +171,14 @@ public abstract class DatabaseJDBCURIAnalyzer implements ExternalResourceAnalyze
 			} catch (URISyntaxException e) {
 				// swallow anything that scares us
 			}
-			workingName = workingName.substring(workingName.indexOf(':') + 1, workingName.length());
+
+			if (colonPos >= (workingName.length() - 1)) {
+				break;
+			}
+
+			workingName = workingName.substring(colonPos + 1, workingName.length());
 		}
+
 		return null;
 	}
-
-
 }
