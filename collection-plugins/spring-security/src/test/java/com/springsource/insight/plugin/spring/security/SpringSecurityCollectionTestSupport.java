@@ -35,7 +35,7 @@ public abstract class SpringSecurityCollectionTestSupport
         super();
     }
 
-    protected OperationList assertGrantedAuthoritiesInstances (OperationList grantedList, Collection<GrantedAuthority> grants) {
+    protected OperationList assertGrantedAuthoritiesInstances (OperationList grantedList, Collection<? extends GrantedAuthority> grants) {
         return assertGrantedAuthorities(grantedList, AuthorityUtils.authorityListToSet(grants));
     }
 
