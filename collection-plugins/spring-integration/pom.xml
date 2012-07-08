@@ -13,10 +13,6 @@
 		<version>1.9.0-CI-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-    
-    <properties>
-        <spring.integration.version>2.1.0.RELEASE</spring.integration.version>
-    </properties>
 	
 	<dependencies>
 		<!-- Provided dependencies (part of the user application) -->
