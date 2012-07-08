@@ -45,11 +45,12 @@ public aspect GemFireRegionCollectionAspect extends AbstractGemFireCollectionAsp
 		super(GemFireDefenitions.TYPE_REGION);
 	}
 
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     protected Operation createOperation(final JoinPoint jp) {
     	Operation op = createBasicOperation(jp);
    
-    	Region region = (Region) jp.getThis();
+    	Region<?,?> region = (Region<?,?>) jp.getThis();
     	
     	addServers(op, region.getCache());    	
         op.put(GemFireDefenitions.FIELD_PATH, region.getFullPath());
@@ -58,7 +59,8 @@ public aspect GemFireRegionCollectionAspect extends AbstractGemFireCollectionAsp
         return op;
     }
     
-    private void addServers(Operation op, Cache cache) {
+    @SuppressWarnings("deprecation")
+	private void addServers(Operation op, Cache cache) {
     	Set<Object> servers = new HashSet<Object>();
     	for (CacheServer server : cache.getCacheServers()) {
     		servers.add(server.getBindAddress());

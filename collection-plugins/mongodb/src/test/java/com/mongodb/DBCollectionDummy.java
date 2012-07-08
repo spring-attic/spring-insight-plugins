@@ -62,7 +62,7 @@ public class DBCollectionDummy extends DBCollection {
 //	execution(void DBCollection.dropIndexes(..));
     @Override
     public void dropIndexes(String key) {
-
+    	// do nothing
     }
 
 //	execution(WriteResult DBCollection.insert(DBObject[], WriteConcern));
@@ -83,7 +83,8 @@ public class DBCollectionDummy extends DBCollection {
         return null;
     }
 
-    Iterator<com.mongodb.DBObject> __find(DBObject ref ,
+    @Override
+	Iterator<com.mongodb.DBObject> __find(DBObject ref ,
                                           DBObject fields,
                                           int numToSkip,
                                           int batchSize,
@@ -101,9 +102,11 @@ public class DBCollectionDummy extends DBCollection {
 //	execution(void DBCollection.createIndex(DBObject, DBObject));
     @Override
     public void createIndex(DBObject dbObject, DBObject dbObject1) throws MongoException {
+    	// do nothing
     }
 
     @Override
     protected void doapply(DBObject dbObject) {
+    	// do nothing
     }
 }

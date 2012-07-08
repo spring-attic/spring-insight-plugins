@@ -79,7 +79,7 @@ public class MongoArgumentUtils {
      * {@link String} and trim the result, perhaps using ellipses if we truncate
      * it
      */
-    private static final StringForm<Object> DefaultStringForm = new StringForm<Object>() {
+    public static final StringForm<Object> DefaultStringForm = new StringForm<Object>() {
         public String stringify(final Object object) {
             return object.toString();
         }
@@ -89,7 +89,7 @@ public class MongoArgumentUtils {
      * For a {@link DBCursor}, we get the {@link DBCollection} name, the query
      * and the keys wanted
      */
-    private static final StringForm<DBCursor> DBCursorStringForm = new StringForm<DBCursor>() {
+    public static final StringForm<DBCursor> DBCursorStringForm = new StringForm<DBCursor>() {
         public String stringify(final DBCursor cursor) {
             return "DBCursor(" + MongoArgumentUtils.toString(cursor.getQuery()) + ", "
                     + MongoArgumentUtils.toString(cursor.getKeysWanted()) + ")";
@@ -100,7 +100,7 @@ public class MongoArgumentUtils {
      * This type is common for inserts. In fact, even a single insert gets
      * converted to a {@link DBObject}[]
      */
-    private static final StringForm<DBObject[]> DBObjectArrayStringForm = new StringForm<DBObject[]>() {
+    public static final StringForm<DBObject[]> DBObjectArrayStringForm = new StringForm<DBObject[]>() {
         public String stringify(final DBObject[] array) {
             return "DBObject" + MongoArgumentUtils.toString(array);
         }
@@ -115,8 +115,11 @@ public class MongoArgumentUtils {
      * variable (STRING_FORM_MAP) in any of the put() calls, which you'd have to
      * if you did it long hand.
      */
-    private static final Map<Class<?>, StringForm<? extends Object>> STRING_FORM_MAP = new HashMap<Class<?>, StringForm<? extends Object>>() {
-        {
+    @SuppressWarnings("synthetic-access")
+	public static final Map<Class<?>, StringForm<? extends Object>> STRING_FORM_MAP = new HashMap<Class<?>, StringForm<? extends Object>>() {
+		private static final long serialVersionUID = 1L;
+
+		{
             // Wrapper classes
             //
             for (Class<?> cls : SIMPLE_CLASSES) {
@@ -156,7 +159,9 @@ public class MongoArgumentUtils {
     public static List<String> toString(final Object[] array,
                                         final int maxLength) {
         return new ArrayList<String>() {
-            {
+			private static final long serialVersionUID = 1L;
+
+			{
                 int soFar = 0;
 
                 for (final Object arg : array) {
@@ -203,7 +208,7 @@ public class MongoArgumentUtils {
         return cls.getSimpleName();
     }
 
-    private static String toString(final DBObject dbObject) {
+    public static String toString(final DBObject dbObject) {
         return dbObject == null ? null : trimWithEllipsis(dbObject.toString());
     }
 

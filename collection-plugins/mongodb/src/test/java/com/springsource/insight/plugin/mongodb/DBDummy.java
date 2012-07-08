@@ -29,30 +29,39 @@ public class DBDummy extends DB {
         super(mongo, name);
     }
 
-    public CommandResult command(com.mongodb.DBObject cmd)
+    @Override
+	public CommandResult command(com.mongodb.DBObject cmd)
             throws com.mongodb.MongoException {
         return null;
     }
 
-    public CommandResult command(com.mongodb.DBObject cmd, int options)
+    @Override
+	public CommandResult command(com.mongodb.DBObject cmd, int options)
             throws com.mongodb.MongoException {
         return null;
     }
 
-    public CommandResult command(java.lang.String cmd)
+    @Override
+	public CommandResult command(java.lang.String cmd)
             throws com.mongodb.MongoException {
         return null;
     }
 
 
     @Override
-    public void requestStart() {}
+    public void requestStart() {
+    	// do nothing
+    }
 
     @Override
-    public void requestDone() {}
+    public void requestDone() {
+    	// do nothing
+    }
 
     @Override
-    public void requestEnsureConnection() {}
+    public void requestEnsureConnection() {
+    	// do nothing
+    }
 
     @Override
     protected DBCollection doGetCollection(String s) {

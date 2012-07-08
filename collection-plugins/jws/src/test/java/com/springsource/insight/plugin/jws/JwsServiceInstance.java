@@ -47,7 +47,7 @@ public class JwsServiceInstance {
                       partName=JwsServiceDefinitions.YESTERDAY_PARAM,
                       targetNamespace=JwsServiceDefinitions.TARGET_NAMESPACE,
                       header=JwsServiceDefinitions.HEADER_PARAM)    long now,
-            @SuppressWarnings("unused") boolean ignoredValue) {
+            boolean ignoredValue) {
         return new Date(now - 86400000L);
     }
 
@@ -59,7 +59,7 @@ public class JwsServiceInstance {
                       partName=JwsServiceDefinitions.TOMORROW_PARAM,
                       targetNamespace=JwsServiceDefinitions.TARGET_NAMESPACE,
                       header=JwsServiceDefinitions.HEADER_PARAM)    long now,
-            @SuppressWarnings("unused") boolean ignoredValue) {
+            boolean ignoredValue) {
         return new Date(now + 86400000L);
     }
 }

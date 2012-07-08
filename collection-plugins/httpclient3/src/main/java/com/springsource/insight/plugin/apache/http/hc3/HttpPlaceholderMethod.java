@@ -15,16 +15,12 @@
  */
 package com.springsource.insight.plugin.apache.http.hc3;
 
-import java.lang.reflect.Field;
-
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.StatusLine;
 
 import com.springsource.insight.util.ArrayUtil;
-import com.springsource.insight.util.ExtraReflectionUtils;
-import com.springsource.insight.util.ReflectionUtils;
 
 /**
  * Placeholder {@link HttpMethod} implementation used in the <code>around</code>

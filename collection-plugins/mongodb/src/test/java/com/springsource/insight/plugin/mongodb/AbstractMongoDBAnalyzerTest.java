@@ -75,21 +75,21 @@ public abstract class AbstractMongoDBAnalyzerTest {
 		assertEquals("dbName", externalResourceDescriptor.getLabel());
 		assertEquals("localhost", externalResourceDescriptor.getHost());
 		assertEquals(6379, externalResourceDescriptor.getPort());
-		assertEquals(false, externalResourceDescriptor.isIncoming());
+		assertEquals(Boolean.FALSE, Boolean.valueOf(externalResourceDescriptor.isIncoming()));
 	}
 
 	@Test
 	public void testExactlyTwoDifferentExternalResourceNames() {   	
 		Operation op1 = new Operation();
 		op1.type(getType());		
-		op1.putAnyNonEmpty("host", "127.0.0.1");
-		op1.putAnyNonEmpty("port", 6379);
+		op1.put("host", "127.0.0.1");
+		op1.put("port", 6379);
 		op1.put("dbName", "dbName");
 		
 		Operation op2 = new Operation();
 		op2.type(getType());	
 		
-		op2.putAnyNonEmpty("port", 6379);
+		op2.put("port", 6379);
 		op2.put("dbName", "dbName2");
 		
 		Operation dummyOp = new Operation();
@@ -118,7 +118,7 @@ public abstract class AbstractMongoDBAnalyzerTest {
 		assertEquals(6379, descriptor.getPort());
 		String expectedHash = MD5NameGenerator.getName("dbName2"+null+6379);
 		assertEquals("mongo:" + expectedHash, descriptor.getName());
-		assertEquals(false, descriptor.isIncoming());
+		assertEquals(Boolean.FALSE, Boolean.valueOf(descriptor.isIncoming()));
 
 		descriptor = externalResourceDescriptors.get(1);        
 		assertEquals(op1, descriptor.getFrame().getOperation());
@@ -129,6 +129,6 @@ public abstract class AbstractMongoDBAnalyzerTest {
 		assertEquals(6379, descriptor.getPort());
 		expectedHash = MD5NameGenerator.getName("dbName127.0.0.1"+6379);
 		assertEquals("mongo:" + expectedHash, descriptor.getName());
-		assertEquals(false, descriptor.isIncoming());
+		assertEquals(Boolean.FALSE, Boolean.valueOf(descriptor.isIncoming()));
 	}
 }

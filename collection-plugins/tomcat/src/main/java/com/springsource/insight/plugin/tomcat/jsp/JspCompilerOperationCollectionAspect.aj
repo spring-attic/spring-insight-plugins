@@ -24,9 +24,12 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 
 public aspect JspCompilerOperationCollectionAspect extends AbstractOperationCollectionAspect {
-    
     private static final OperationType type = OperationType.valueOf("jsp-compiler");
-    
+
+    public JspCompilerOperationCollectionAspect () {
+    	super();
+    }
+
     public pointcut compileExecution() 
         : execution(* Compiler+.compile(..));
 
@@ -36,7 +39,8 @@ public aspect JspCompilerOperationCollectionAspect extends AbstractOperationColl
     public pointcut collectionPoint() 
         : compileExecution() && !cflowbelow(compileExecution());
 
-    protected Operation createOperation(JoinPoint jp) {
+    @Override
+	protected Operation createOperation(JoinPoint jp) {
         Compiler compiler = (Compiler) jp.getThis();
         String jspName = compiler.getCompilationContext().getJspFile();
         String compilerName = compiler.getClass().getName();

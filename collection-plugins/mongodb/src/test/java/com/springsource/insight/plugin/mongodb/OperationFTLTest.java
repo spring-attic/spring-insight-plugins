@@ -49,7 +49,8 @@ public class OperationFTLTest extends AbstractOperationViewTest {
         super(MongoDBOperationAnalyzer.TYPE);
     }
 
-    @Test
+    @SuppressWarnings("boxing")
+	@Test
     public void testView() throws Exception {
         JoinPoint jp = mock(JoinPoint.class);
         Signature sig = mock(Signature.class);

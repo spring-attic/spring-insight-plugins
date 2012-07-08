@@ -25,6 +25,8 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MapReduceOutput;
+import com.mongodb.Mongo;
+import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
 import com.mongodb.WriteResult;
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
@@ -33,39 +35,42 @@ import com.springsource.insight.intercept.operation.OperationList;
 
 public aspect MongoCollectionOperationCollectionAspect extends
         AbstractOperationCollectionAspect {
+	public MongoCollectionOperationCollectionAspect () {
+		super();
+	}
 
 	public pointcut insertExecute(): 
-	execution(WriteResult DBCollection.insert(DBObject[], WriteConcern));
+		execution(WriteResult DBCollection.insert(DBObject[], WriteConcern));
 
     public pointcut updateExecute(): 
-	execution(WriteResult DBCollection.update(DBObject, DBObject, boolean, boolean));
+    	execution(WriteResult DBCollection.update(DBObject, DBObject, boolean, boolean));
 
     public pointcut removeExecute(): 
-	execution(WriteResult DBCollection.remove(DBObject, WriteConcern));
+    	execution(WriteResult DBCollection.remove(DBObject, WriteConcern));
 
     public pointcut saveExecute():
-	execution(WriteResult DBCollection.save(..));
+    	execution(WriteResult DBCollection.save(..));
 
     public pointcut findExecute(): 
-	execution(* DBCollection.find*(..));
+    	execution(* DBCollection.find*(..));
 
     public pointcut createIndexExecute(): 
-	execution(void DBCollection.createIndex(DBObject, DBObject));
+    	execution(void DBCollection.createIndex(DBObject, DBObject));
 
     public pointcut getCountExecute(): 
-	execution(long DBCollection.getCount(DBObject, DBObject, long, long));
+    	execution(long DBCollection.getCount(DBObject, DBObject, long, long));
 
     public pointcut groupExecute(): 
-	execution(DBObject DBCollection.group(..));
+    	execution(DBObject DBCollection.group(..));
 
     public pointcut distinctExecute(): 
-	execution(List DBCollection.distinct(String,DBObject));
+    	execution(List DBCollection.distinct(String,DBObject));
 
     public pointcut mapReduceExecute(): 
-	execution(MapReduceOutput DBCollection.mapReduce(..));
+    	execution(MapReduceOutput DBCollection.mapReduce(..));
 
     public pointcut dropIndexExecute(): 
-	execution(void DBCollection.dropIndexes(..));
+    	execution(void DBCollection.dropIndexes(..));
 
     public pointcut collectionPoint():
         insertExecute() ||
@@ -78,7 +83,8 @@ public aspect MongoCollectionOperationCollectionAspect extends
         (groupExecute() && !cflowbelow(groupExecute()))||
         distinctExecute() ||
         (mapReduceExecute() && !cflowbelow(mapReduceExecute())) ||
-        dropIndexExecute();
+        dropIndexExecute()
+        ;
 
     @Override
     protected Operation createOperation(final JoinPoint joinPoint) {
@@ -97,9 +103,14 @@ public aspect MongoCollectionOperationCollectionAspect extends
         DB db = collection.getDB();
         try {
         	op.put("dbName", db.getName());
-			op.put("host", db.getMongo().getAddress().getHost());
-			op.put("port", db.getMongo().getAddress().getPort());
-		} catch (Exception e) {}
+        	
+        	Mongo			mongo=db.getMongo();
+        	ServerAddress	address=mongo.getAddress();
+			op.put("host", address.getHost());
+			op.put("port", address.getPort());
+		} catch (Exception e) {
+			// ignored
+		}
 
         return op;
     }

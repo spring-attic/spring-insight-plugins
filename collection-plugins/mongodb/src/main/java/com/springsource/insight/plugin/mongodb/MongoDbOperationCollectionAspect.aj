@@ -22,11 +22,16 @@ import org.aspectj.lang.JoinPoint;
 
 import com.mongodb.CommandResult;
 import com.mongodb.DB;
+import com.mongodb.Mongo;
+import com.mongodb.ServerAddress;
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
 
 public aspect MongoDbOperationCollectionAspect extends AbstractOperationCollectionAspect {
+	public MongoDbOperationCollectionAspect () {
+		super();
+	}
 
     public pointcut collectionPoint(): execution(CommandResult DB.command(..));
 
@@ -43,9 +48,14 @@ public aspect MongoDbOperationCollectionAspect extends AbstractOperationCollecti
         DB db = (DB) jp.getTarget();
         try {
         	op.put("dbName", db.getName());
-			op.put("host", db.getMongo().getAddress().getHost());
-			op.put("port", db.getMongo().getAddress().getPort());
-		} catch (Exception e) {}
+
+        	Mongo			mongo=db.getMongo();
+        	ServerAddress	address=mongo.getAddress();
+			op.put("host", address.getHost());
+			op.put("port", address.getPort());
+		} catch (Exception e) {
+			// ignored
+		}
         
         return op;
     }

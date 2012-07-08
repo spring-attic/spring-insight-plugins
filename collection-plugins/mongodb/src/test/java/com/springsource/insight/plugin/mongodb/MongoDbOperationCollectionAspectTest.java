@@ -33,9 +33,13 @@ import static org.junit.Assert.assertNull;
  */
 public class MongoDbOperationCollectionAspectTest
         extends OperationCollectionAspectTestSupport {
+	public MongoDbOperationCollectionAspectTest () {
+		super();
+	}
 
     // execution(CommandResult DB.command(..));
-    @Test
+    @SuppressWarnings("boxing")
+	@Test
     public void dbCommand() throws Exception {
         Mongo mongo = mock(Mongo.class);
         ServerAddress address = mock(ServerAddress.class);
@@ -44,8 +48,7 @@ public class MongoDbOperationCollectionAspectTest
         when(mongo.getAddress()).thenReturn(address);
         DB db = new DBDummy(mongo, "my thing");
         db.command("Hello there");
-        Operation op = (Operation) getLastEntered();
-        op.finalizeConstruction();
+        Operation op = getLastEntered();
         assertNotNull(op);
         assertEquals("MongoDB: DB.command()", op.getLabel());
         assertEquals(MongoDBOperationAnalyzer.TYPE, op.getType());
@@ -61,8 +64,7 @@ public class MongoDbOperationCollectionAspectTest
         Mongo mongo = mock(Mongo.class);
         DB db = new DBDummy(mongo, "my thing");
         db.command("Hello there");
-        Operation op = (Operation) getLastEntered();
-        op.finalizeConstruction();
+        Operation op = getLastEntered();
         assertNotNull(op);
         assertEquals("MongoDB: DB.command()", op.getLabel());
         assertEquals(MongoDBOperationAnalyzer.TYPE, op.getType());

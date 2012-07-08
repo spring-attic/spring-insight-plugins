@@ -114,7 +114,7 @@ public class MockDatabaseSession implements DatabaseSession {
         throw new UnsupportedOperationException("copyObject(" + original + ") N/A");
     }
 
-    public Object copyObject(Object original, @SuppressWarnings("deprecation") ObjectCopyingPolicy policy) {
+    public Object copyObject(Object original, ObjectCopyingPolicy policy) {
         throw new UnsupportedOperationException("copyObject(" + original + ")[" + policy + "] N/A");
     }
 

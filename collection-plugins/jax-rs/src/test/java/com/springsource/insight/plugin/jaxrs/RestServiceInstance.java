@@ -39,12 +39,12 @@ public class RestServiceInstance {
     }
 
     @GET @Path(RestServiceDefinitions.YESTERDAY_PATH)
-    public Date getYesterdayDate (@PathParam("{now}") long now, @SuppressWarnings("unused") boolean ignoredValue) {
+    public Date getYesterdayDate (@PathParam("{now}") long now, boolean ignoredValue) {
         return new Date(now - 86400000L);
     }
 
     @GET @Path(RestServiceDefinitions.TOMORROW_PATH)
-    public Date getTomorrowDate (@PathParam("{now}") long now, @SuppressWarnings("unused") boolean ignoredValue) {
+    public Date getTomorrowDate (@PathParam("{now}") long now, boolean ignoredValue) {
         return new Date(now + 86400000L);
     }
 

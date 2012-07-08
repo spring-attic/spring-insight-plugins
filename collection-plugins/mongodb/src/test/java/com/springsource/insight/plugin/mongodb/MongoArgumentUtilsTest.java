@@ -50,39 +50,46 @@ public class MongoArgumentUtilsTest {
         assertEquals("true", MongoArgumentUtils.toString(Boolean.TRUE));
     }
 
-    @Test
+    @SuppressWarnings("boxing")
+	@Test
     public void testByteValue() {
         assertEquals("42", MongoArgumentUtils.toString((byte) 42));
     }
 
-    @Test
+    @SuppressWarnings("boxing")
+	@Test
     public void testCharacterValue() {
         assertEquals("A", MongoArgumentUtils.toString('A'));
     }
 
-    @Test
+    @SuppressWarnings("boxing")
+	@Test
     public void testShortValue() {
         assertEquals("42", MongoArgumentUtils.toString((short) 42));
     }
 
-    @Test
+    @SuppressWarnings("boxing")
+	@Test
     public void testIntegerValue() {
         assertEquals("42", MongoArgumentUtils.toString(42));
     }
 
-    @Test
+    @SuppressWarnings("boxing")
+	@Test
     public void testLongValue() {
-        assertEquals("42", MongoArgumentUtils.toString((long) 42));
+        assertEquals("42", MongoArgumentUtils.toString(42L));
     }
 
-    @Test
+    @SuppressWarnings("boxing")
+	@Test
     public void testFloatValue() {
         assertEquals("42.0", MongoArgumentUtils.toString((float) 42.0));
     }
 
-    @Test
+    @SuppressWarnings("boxing")
+	@Test
     public void testDoubleValue() {
-        assertEquals("42.0", MongoArgumentUtils.toString(42.0));
+        assertEquals("42.0", MongoArgumentUtils.toString(42.0d));
     }
 
     @Test
