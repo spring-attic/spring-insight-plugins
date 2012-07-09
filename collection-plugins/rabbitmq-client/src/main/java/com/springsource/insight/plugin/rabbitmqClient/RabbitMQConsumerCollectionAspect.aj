@@ -58,7 +58,7 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
     @SuppressAjWarnings({"adviceDidNotMatch"})
     before(String queue, boolean ack)
             : basicGet(queue, ack) {
-        Channel channel = ((Channel) thisJoinPoint.getThis());
+        Channel channel = (Channel) thisJoinPoint.getThis();
         Operation op = createOperation();
         opHolder.put(channel,op);
         getCollector().enter(op);
@@ -68,18 +68,22 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
     after(String queue, boolean ack) returning(GetResponse resp)
             : basicGet(queue, ack) {
         // get the originating operation
-        Channel channel = ((Channel) thisJoinPoint.getThis());
+        Channel channel = (Channel) thisJoinPoint.getThis();
         Connection conn = channel.getConnection();
         Operation op = opHolder.get(channel);
         opHolder.remove(channel);
         if (conn != null) {
             applyConnectionData(op, conn);
         }
-        if (resp.getProps() != null) {
-            applyPropertiesData(op, resp.getProps());
+
+        BasicProperties	props=resp.getProps();
+        if (props != null) {
+            applyPropertiesData(op, props);
         }
-        if (resp.getEnvelope() != null) {
-            applyMessageData(op, resp.getEnvelope(), resp.getBody());
+
+        Envelope	envelope=resp.getEnvelope();
+        if (envelope != null) {
+            applyMessageData(op, envelope, resp.getBody());
         }
         getCollector().exitNormal(resp);
     }
@@ -87,7 +91,7 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after(String queue, boolean ack) throwing(Throwable t)
             : basicGet(queue, ack) {
-        Channel channel = ((Channel) thisJoinPoint.getThis());
+        Channel channel = (Channel) thisJoinPoint.getThis();
         opHolder.remove(channel);
 
         getCollector().exitAbnormal(t);
