@@ -20,14 +20,8 @@ import com.springsource.insight.intercept.operation.Operation;
 
 
 public class RabbitMQPublishResourceAnalyzerTest extends AbstractRabbitMQResourceAnalyzerTest {
-
 	public RabbitMQPublishResourceAnalyzerTest() {
-		super(RabbitPluginOperationType.PUBLISH, false);
-	}
-
-	@Override
-	protected AbstractRabbitMQResourceAnalyzer getAnalyzer() {
-		return new RabbitMQPublishResourceAnalyzer();
+		super(new RabbitMQPublishResourceAnalyzer());
 	}
 	
 	@Override

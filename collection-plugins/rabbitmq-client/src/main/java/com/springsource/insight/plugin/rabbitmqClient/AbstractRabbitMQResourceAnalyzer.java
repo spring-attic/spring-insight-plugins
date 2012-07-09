@@ -34,17 +34,27 @@ import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.FrameUtil;
 import com.springsource.insight.intercept.trace.Trace;
+import com.springsource.insight.util.StringUtil;
 
 public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyzer, ExternalResourceAnalyzer {
+	public static final String RABBIT = "RabbitMQ";	
 
-	static final String RABBIT = "RabbitMQ";	
+	private final RabbitPluginOperationType operationType;
+	private final boolean isIncoming;
 
-	final RabbitPluginOperationType operationType;
-	final boolean isIncoming;
-
-	AbstractRabbitMQResourceAnalyzer(RabbitPluginOperationType type, boolean incoming) {
-		this.operationType = type;
+	protected AbstractRabbitMQResourceAnalyzer(RabbitPluginOperationType type, boolean incoming) {
+		if ((this.operationType=type) == null) {
+			throw new IllegalStateException("No operation type specified");
+		}
 		this.isIncoming = incoming;
+	}
+
+	public final boolean isIncomingResource () {
+		return isIncoming;
+	}
+
+	public final RabbitPluginOperationType getRabbitPluginOperationType () {
+		return operationType;
 	}
 
 	protected abstract String getExchange(Operation op);
@@ -82,14 +92,14 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 		}
 
 		List<ExternalResourceDescriptor> queueDescriptors = new ArrayList<ExternalResourceDescriptor>(queueFrames.size());
+		ColorManager					 colorManager=ColorManager.getInstance();
 		for (Frame queueFrame : queueFrames) {
 			Operation op = queueFrame.getOperation();
-
 			String label = buildLabel(op);
 			String host = op.get("host", String.class);            
 			Integer portProperty = op.get("port", Integer.class);
 			int port = portProperty == null ? -1 : portProperty.intValue();
-            String color = ColorManager.getInstance().getColor(op);
+            String color = colorManager.getColor(op);
 			String hashString = MD5NameGenerator.getName(label + host + port);
 
 			ExternalResourceDescriptor descriptor =
@@ -116,20 +126,23 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 	}
 
 	private String buildLabel(Operation op) {
-		StringBuilder sb = new StringBuilder();
-
 		String routingKey = getRoutingKey(op);
 		String exchange = getExchange(op);      
+		boolean hasExchange = !isTrimEmpty(exchange), hasRoutingKey=!isTrimEmpty(routingKey);
+		if ((!hasExchange) && (!hasRoutingKey)) {
+			return "<no-data>";
+		}
 
-		boolean hasExchange = !isTrimEmpty(exchange);		
-
+		StringBuilder sb = new StringBuilder(StringUtil.getSafeLength(exchange)
+										   + StringUtil.getSafeLength(routingKey)
+										   + 24 /* extra text */);
 		if (hasExchange) {
 			sb.append("Exchange#").append(exchange);
 		} 
 
-		if (!isTrimEmpty(routingKey)) {				
+		if (hasRoutingKey) {				
 			if (hasExchange) {
-				sb.append(" ");
+				sb.append(' ');
 			}
 			sb.append("RoutingKey#").append(routingKey);
 		}
@@ -138,7 +151,7 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 	}
 
 	private static boolean isTrimEmpty(String str){
-		return (str == null) || (str.trim().length() == 0);
+		return (str == null) || (str.trim().length() <= 0);
 	}
 	
 	public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
@@ -157,6 +170,11 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 	
 	public OperationType[] getOperationTypes() {
 	    return new OperationType[] {operationType.getOperationType()};
+	}
+
+	@Override
+	public String toString() {
+		return getRabbitPluginOperationType().name() + "[incoming=" + isIncomingResource() + "]";
 	}
 
 }
