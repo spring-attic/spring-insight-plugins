@@ -58,11 +58,6 @@ public aspect RabbitMQPublishCollectionAspect extends AbstractRabbitMQCollection
             applyConnectionData(op, conn);
         }
         
-        if (props == null) {
-            BasicProperties.Builder builder = new BasicProperties.Builder();
-            props = builder.build();
-        }
-        
         if (props != null) {
             applyPropertiesData(op, props);
         }
