@@ -21,6 +21,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.springsource.insight.collection.OperationCollector;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.util.ExceptionUtils;
 
 
 public aspect RabbitMQPublishCollectionAspect extends AbstractRabbitMQCollectionAspect {
@@ -71,6 +72,7 @@ public aspect RabbitMQPublishCollectionAspect extends AbstractRabbitMQCollection
             collector.exitNormal();
         } catch (Exception e) {
         	collector.exitAbnormal(e);
+        	ExceptionUtils.rethrowException(e);
         }
     }
 
