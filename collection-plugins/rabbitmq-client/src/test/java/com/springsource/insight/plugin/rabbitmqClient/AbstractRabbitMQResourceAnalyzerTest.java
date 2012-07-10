@@ -76,7 +76,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 		Trace trace = createValidTrace(op);
 
 		List<ExternalResourceDescriptor> externalResourceDescriptors = analyzer.locateExternalResourceName(trace);
-		assertExternalResourceDescriptors(externalResourceDescriptors, "Exchange#e", trace, "Exchange#e127.0.0.15672");
+		assertExternalResourceDescriptors(externalResourceDescriptors, "Exchange#e", trace, "Exchange#e127.0.0.15672" + isIncoming);
 	}
 
 	@Test
@@ -104,7 +104,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 		Trace trace = createValidTrace(op);
 
 		List<ExternalResourceDescriptor> externalResourceDescriptors = analyzer.locateExternalResourceName(trace);
-		assertExternalResourceDescriptors(externalResourceDescriptors, "RoutingKey#rk", trace, "RoutingKey#rk127.0.0.15672");
+		assertExternalResourceDescriptors(externalResourceDescriptors, "RoutingKey#rk", trace, "RoutingKey#rk127.0.0.15672" + isIncoming);
 	}
 
 	@Test
@@ -134,7 +134,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 
 		List<ExternalResourceDescriptor> externalResourceDescriptors = analyzer.locateExternalResourceName(trace);
 
-		assertExternalResourceDescriptors(externalResourceDescriptors, "Exchange#e RoutingKey#rk", trace, "Exchange#e RoutingKey#rk127.0.0.15672");
+		assertExternalResourceDescriptors(externalResourceDescriptors, "Exchange#e RoutingKey#rk", trace, "Exchange#e RoutingKey#rk127.0.0.15672" + isIncoming);
 	}
 
 	@Test
@@ -169,7 +169,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 		assertEquals("RabbitMQ", descriptor.getVendor());
 		assertEquals("127.0.0.2", descriptor.getHost());
 		assertEquals(5673, descriptor.getPort());
-		String expectedHash = MD5NameGenerator.getName("RoutingKey#rk127.0.0.25673");
+		String expectedHash = MD5NameGenerator.getName("RoutingKey#rk127.0.0.25673" + isIncoming);
 		assertEquals("RabbitMQ:" + expectedHash, descriptor.getName());
 
 		descriptor = externalResourceDescriptors.get(1);        
@@ -179,7 +179,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 		assertEquals("RabbitMQ", descriptor.getVendor());
 		assertEquals("127.0.0.1", descriptor.getHost());
 		assertEquals(5672, descriptor.getPort());
-		expectedHash = MD5NameGenerator.getName("Exchange#e RoutingKey#rk127.0.0.15672");
+		expectedHash = MD5NameGenerator.getName("Exchange#e RoutingKey#rk127.0.0.15672" + isIncoming);
 		assertEquals("RabbitMQ:" + expectedHash, descriptor.getName());
 	}
 

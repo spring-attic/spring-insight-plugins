@@ -100,7 +100,7 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 			Integer portProperty = op.get("port", Integer.class);
 			int port = portProperty == null ? -1 : portProperty.intValue();
             String color = colorManager.getColor(op);
-			String hashString = MD5NameGenerator.getName(label + host + port);
+			String hashString = MD5NameGenerator.getName(label + host + port + isIncoming);
 
 			ExternalResourceDescriptor descriptor =
 			        new ExternalResourceDescriptor(queueFrame,
