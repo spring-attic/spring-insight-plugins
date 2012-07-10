@@ -17,6 +17,7 @@
 package com.springsource.insight.plugin.rabbitmqClient;
 
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.util.KeyValPair;
 
 
 public class RabbitMQPublishResourceAnalyzerTest extends AbstractRabbitMQResourceAnalyzerTest {
@@ -25,13 +26,19 @@ public class RabbitMQPublishResourceAnalyzerTest extends AbstractRabbitMQResourc
 	}
 	
 	@Override
-	protected void addOperationProps(Operation operation, boolean addRouting, boolean addExchange){
+	protected KeyValPair<String,String> addOperationProps(Operation operation, boolean addRouting, boolean addExchange){
+		KeyValPair<String,String>	res=super.addOperationProps(operation, addRouting, addExchange);
+
 		if (addExchange){
-			operation.put("exchange", "e");
+			operation.put("exchange", TEST_EXCHANGE);
+			res = setExchange(res, TEST_EXCHANGE);
 		}
+
 		if (addRouting){
-			operation.put("routingKey", "rk");
+			operation.put("routingKey", TEST_ROUTING_KEY);
+			res = setRoutingKey(res, TEST_ROUTING_KEY);
 		}
-		super.addOperationProps(operation, addRouting, addExchange);
+
+		return res;
 	}
 }
