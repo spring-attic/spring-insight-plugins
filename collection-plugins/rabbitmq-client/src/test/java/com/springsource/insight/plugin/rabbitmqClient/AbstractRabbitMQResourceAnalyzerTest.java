@@ -23,20 +23,23 @@ import org.junit.Test;
 
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
+import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
-import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.SimpleFrameBuilder;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
+import com.springsource.insight.util.KeyValPair;
 
 public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 	private final RabbitPluginOperationType operationType;
 	private final boolean isIncoming;
 	private final AbstractRabbitMQResourceAnalyzer analyzer;
+	protected static final String	TEST_EXCHANGE="e", TEST_ROUTING_KEY="rk", TEST_HOST="127.0.0.1";
+	protected static final int	TEST_PORT=5672;
 
 	public AbstractRabbitMQResourceAnalyzerTest(AbstractRabbitMQResourceAnalyzer analyzerInstance) {
 		if ((analyzer=analyzerInstance) == null) {
@@ -46,107 +49,64 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 		this.isIncoming = analyzerInstance.isIncomingResource();
 	}
 
-	protected void addOperationProps(Operation operation, boolean addRouting, boolean addExchange){
-		operation.putAnyNonEmpty("host", "127.0.0.1");
-		operation.put("port", 5672);
-	}
-
 	@Test
 	public void testExchangeLocateEndPoint() {
 		Operation op = createOperation();
-		addOperationProps(op, false, true);
+		KeyValPair<String,String>	props=addOperationProps(op, false, true);
 		Trace trace = createValidTrace(op);
-
-		EndPointAnalysis analysis = analyzer.locateEndPoint(trace);
-		String name = analysis.getEndPointName().getName();
-		String example = analysis.getExample();
-		String lbl = analysis.getResourceLabel();
-		int score = analysis.getScore();
-
-		assertEquals("Exchange#e", name);
-		assertEquals(operationType.getEndPointPrefix()+"Exchange#e", example);
-		assertEquals("RabbitMQ-Exchange#e", lbl);
-		assertEquals(1, score);
+		assertAnalysisResult(trace, props);
 	}
 
 	@Test
 	public void testExchangeLocateExternalResourceName() {
 		Operation op = createOperation();   	
-		addOperationProps(op, false, true);
+		KeyValPair<String,String>	props=addOperationProps(op, false, true);
 		Trace trace = createValidTrace(op);
-
-		List<ExternalResourceDescriptor> externalResourceDescriptors = analyzer.locateExternalResourceName(trace);
-		assertExternalResourceDescriptors(externalResourceDescriptors, "Exchange#e", trace, "Exchange#e127.0.0.15672");
+		assertExternalResourceDescriptors(trace, props);
 	}
 
 	@Test
 	public void testRoutingKeyLocateEndPoint() {
 		Operation op = createOperation();
-		addOperationProps(op, true, false);
+		KeyValPair<String,String>	props=addOperationProps(op, true, false);
 		Trace trace = createValidTrace(op);
-
-		EndPointAnalysis analysis = analyzer.locateEndPoint(trace);
-		String name = analysis.getEndPointName().getName();
-		String example = analysis.getExample();
-		String lbl = analysis.getResourceLabel();
-		int score = analysis.getScore();
-
-		assertEquals("RoutingKey#rk", name);
-		assertEquals(operationType.getEndPointPrefix()+"RoutingKey#rk", example);
-		assertEquals("RabbitMQ-RoutingKey#rk", lbl);
-		assertEquals(1, score);
+		assertAnalysisResult(trace, props);
 	}
 
 	@Test
 	public void testRoutingKeyExternalResourceName() {
 		Operation op = createOperation();   	
-		addOperationProps(op, true, false);
+		KeyValPair<String,String>	props=addOperationProps(op, true, false);
 		Trace trace = createValidTrace(op);
-
-		List<ExternalResourceDescriptor> externalResourceDescriptors = analyzer.locateExternalResourceName(trace);
-		assertExternalResourceDescriptors(externalResourceDescriptors, "RoutingKey#rk", trace, "RoutingKey#rk127.0.0.15672");
+		assertExternalResourceDescriptors(trace, props);
 	}
 
 	@Test
 	public void testBothLocateEndPoint() {
 		Operation op = createOperation();
-		addOperationProps(op, true, true);
+		KeyValPair<String,String>	props=addOperationProps(op, true, true);
 		Trace trace = createValidTrace(op);
-
-		EndPointAnalysis analysis = analyzer.locateEndPoint(trace);
-
-		String name = analysis.getEndPointName().getName();
-		String example = analysis.getExample();
-		String lbl = analysis.getResourceLabel();
-		int score = analysis.getScore();
-
-		assertEquals("Exchange#e RoutingKey#rk", name);
-		assertEquals(operationType.getEndPointPrefix()+"Exchange#e RoutingKey#rk", example);
-		assertEquals("RabbitMQ-Exchange#e RoutingKey#rk", lbl);
-		assertEquals(1, score);
+		assertAnalysisResult(trace, props);
 	}
 
 	@Test
 	public void testBothExternalResourceName() {
 		Operation op = createOperation();
-		addOperationProps(op, true, true);
+		KeyValPair<String,String>	props=addOperationProps(op, true, true);
 		Trace trace = createValidTrace(op);
-
-		List<ExternalResourceDescriptor> externalResourceDescriptors = analyzer.locateExternalResourceName(trace);
-
-		assertExternalResourceDescriptors(externalResourceDescriptors, "Exchange#e RoutingKey#rk", trace, "Exchange#e RoutingKey#rk127.0.0.15672");
+		assertExternalResourceDescriptors(trace, props);
 	}
 
 	@Test
 	public void testExactlyTwoDifferentExternalResourceNames() {   	
-		Operation op1 = createOperation();
-		addOperationProps(op1, true, true);
-		Operation op2 = createOperation();
-		addOperationProps(op2, true, false);
-		op2.put("host", "127.0.0.2");
-		op2.put("port", 5673);
-		Operation dummyOp = new Operation();
+		final String	OTHER_HOST="127.0.0.2";
+		final int		OTHER_PORT=5673;
+		Operation op1 = createOperation(TEST_HOST, TEST_PORT);
+		KeyValPair<String,String>	props1=addOperationProps(op1, true, true);
+		Operation op2 = createOperation(OTHER_HOST, OTHER_PORT);
+		KeyValPair<String,String>	props2=addOperationProps(op2, true, false);
 
+		Operation dummyOp = new Operation();
 		SimpleFrameBuilder builder = new SimpleFrameBuilder();
 		builder.enter(new Operation().type(OperationType.HTTP));
 		builder.enter(op2);
@@ -159,28 +119,27 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 		Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
 
 		List<ExternalResourceDescriptor> externalResourceDescriptors = analyzer.locateExternalResourceName(trace);
+		assertEquals("Mismatched number of resources", 2, externalResourceDescriptors.size());        
+		ExternalResourceDescriptor	desc2=
+				assertExternalResourceDescriptorContent(externalResourceDescriptors.get(0), createLabel(props2), OTHER_HOST, OTHER_PORT, null);
+		assertSame("Mismatched 2nd frame operation", op2, desc2.getFrame().getOperation());
 
-		assertEquals(2, externalResourceDescriptors.size());        
+		ExternalResourceDescriptor	desc1 =
+				assertExternalResourceDescriptorContent(externalResourceDescriptors.get(1), createLabel(props1), TEST_HOST, TEST_PORT, null);
+		assertSame("Mismatched 1st frame operation", op1, desc1.getFrame().getOperation());
+	}
 
-		ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);        
-		assertEquals(op2, descriptor.getFrame().getOperation());
-		assertEquals("RabbitMQ-" + "RoutingKey#rk", descriptor.getLabel());
-		assertEquals(ExternalResourceType.QUEUE.name(), descriptor.getType());
-		assertEquals("RabbitMQ", descriptor.getVendor());
-		assertEquals("127.0.0.2", descriptor.getHost());
-		assertEquals(5673, descriptor.getPort());
-		String expectedHash = MD5NameGenerator.getName("RoutingKey#rk127.0.0.25673");
-		assertEquals("RabbitMQ:" + expectedHash, descriptor.getName());
+	// returns exchange + routing key
+	protected KeyValPair<String,String> addOperationProps(Operation operation, boolean addRouting, boolean addExchange){
+		return null;
+	}
 
-		descriptor = externalResourceDescriptors.get(1);        
-		assertEquals(op1, descriptor.getFrame().getOperation());
-		assertEquals("RabbitMQ-" + "Exchange#e RoutingKey#rk", descriptor.getLabel());
-		assertEquals(ExternalResourceType.QUEUE.name(), descriptor.getType());
-		assertEquals("RabbitMQ", descriptor.getVendor());
-		assertEquals("127.0.0.1", descriptor.getHost());
-		assertEquals(5672, descriptor.getPort());
-		expectedHash = MD5NameGenerator.getName("Exchange#e RoutingKey#rk127.0.0.15672");
-		assertEquals("RabbitMQ:" + expectedHash, descriptor.getName());
+	protected static final KeyValPair<String,String> setExchange (KeyValPair<String,String> org, String exchange) {
+		return new KeyValPair<String, String>(exchange, (org == null) ? null : org.getValue());
+	}
+
+	protected static final KeyValPair<String,String> setRoutingKey (KeyValPair<String,String> org, String key) {
+		return new KeyValPair<String, String>((org == null) ? null : org.getKey(), key);
 	}
 
 	static Trace createValidTrace(Operation op) {
@@ -192,25 +151,71 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 		return Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
 	}
 
-	void assertExternalResourceDescriptors(List<ExternalResourceDescriptor> externalResourceDescriptors, String label, Trace trace, String stringTohash){
-		assertEquals(1, externalResourceDescriptors.size());        
-		ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);
+	List<ExternalResourceDescriptor> assertExternalResourceDescriptors(Trace trace, KeyValPair<String,String> props) {
+		return assertExternalResourceDescriptors(trace, createLabel(props));
+	}
 
-		assertEquals(trace.getRootFrame(), descriptor.getFrame());
-		assertEquals("RabbitMQ-" + label, descriptor.getLabel());
-		assertEquals(ExternalResourceType.QUEUE.name(), descriptor.getType());
-		assertEquals("RabbitMQ", descriptor.getVendor());
-		assertEquals("127.0.0.1", descriptor.getHost());
-		assertEquals(5672, descriptor.getPort());
-		String expectedHash = MD5NameGenerator.getName(stringTohash);
-		assertEquals("RabbitMQ:" + expectedHash, descriptor.getName());
-		assertEquals(Boolean.valueOf(isIncoming), Boolean.valueOf(descriptor.isIncoming()));
+	private void assertAnalysisResult(Trace trace, KeyValPair<String,String> props) {
+		EndPointAnalysis	analysis=analyzer.locateEndPoint(trace);
+		assertNotNull("No endpoint analysis located", analysis);
+
+		EndPointName	endpoint=analysis.getEndPointName();
+		String 			lbl=createLabel(props);
+		String			resLabel=AbstractRabbitMQResourceAnalyzer.buildResourceLabel(lbl);
+
+		assertEquals("Mismatched endpoint name", lbl, endpoint.getName());
+		assertEquals("Mismatched example", AbstractRabbitMQResourceAnalyzer.buildDefaultExample(operationType, lbl), analysis.getExample());
+		assertEquals("Mismatched resource label", resLabel, analysis.getResourceLabel());
+		assertEquals("Mismatched score", 1, analysis.getScore());
+	}
+
+	List<ExternalResourceDescriptor> assertExternalResourceDescriptors (Trace trace, String label) {
+		List<ExternalResourceDescriptor> externalResourceDescriptors=analyzer.locateExternalResourceName(trace);
+		assertExternalResourceDescriptors(externalResourceDescriptors, label, trace);
+		return externalResourceDescriptors;
+	}
+
+	ExternalResourceDescriptor assertExternalResourceDescriptors(List<ExternalResourceDescriptor> externalResourceDescriptors, String label, Trace trace){
+		assertEquals("Mismatched num. of resources", 1, externalResourceDescriptors.size());        
+		ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);
+		assertExternalResourceDescriptorContent(descriptor, label, TEST_HOST, TEST_PORT, trace);
+		return descriptor;
+	}
+
+	ExternalResourceDescriptor assertExternalResourceDescriptorContent (ExternalResourceDescriptor descriptor,
+												  String label, String host, int port,
+												  Trace trace) {
+		if (trace != null) {
+			assertEquals("Mismatched root frame", trace.getRootFrame(), descriptor.getFrame());
+		}
+
+		assertEquals("Mismatched label", AbstractRabbitMQResourceAnalyzer.buildResourceLabel(label), descriptor.getLabel());
+		assertEquals("Mismatched type", ExternalResourceType.QUEUE.name(), descriptor.getType());
+		assertEquals("Mismatched vendor", AbstractRabbitMQResourceAnalyzer.RABBIT, descriptor.getVendor());
+		assertEquals("Mismatched host", host, descriptor.getHost());
+		assertEquals("Mismatched port", port, descriptor.getPort());
+
+		assertEquals("Mismatched hash value", AbstractRabbitMQResourceAnalyzer.buildResourceName(label, host, port), descriptor.getName());
+		assertEquals("Mismatched direction", Boolean.valueOf(isIncoming), Boolean.valueOf(descriptor.isIncoming()));
+		return descriptor;
+	}
+
+	private static String createLabel (KeyValPair<String,String> props) {
+		return AbstractRabbitMQResourceAnalyzer.buildDefaultLabel(
+				(props == null) ? null : props.getKey(),
+				(props == null) ? null : props.getValue());
 	}
 
 	Operation createOperation() {
+		return createOperation(TEST_HOST, TEST_PORT);
+	}
+	
+	Operation createOperation (String host, int port) {
 		return new Operation()
 					.type(operationType.getOperationType())
 					.label(operationType.getLabel())
+					.putAnyNonEmpty("host", host)
+					.put("port", port)
 					;
 	}
 }

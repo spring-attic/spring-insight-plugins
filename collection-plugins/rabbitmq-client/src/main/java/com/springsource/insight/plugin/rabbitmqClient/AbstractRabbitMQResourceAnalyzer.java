@@ -34,10 +34,17 @@ import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.FrameUtil;
 import com.springsource.insight.intercept.trace.Trace;
-import com.springsource.insight.util.StringUtil;
 
 public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyzer, ExternalResourceAnalyzer {
 	public static final String RABBIT = "RabbitMQ";	
+	/**
+	 * Placeholder string used if no exchange name specified
+	 */
+	public static final String NO_EXCHANGE = "<no-exchange>";
+	/**
+	 * Placeholder string used if no routing key available
+	 */
+	public static final String NO_ROUTING_KEY = "<no-routing-key>";
 
 	private final RabbitPluginOperationType operationType;
 	private final boolean isIncoming;
@@ -100,54 +107,75 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 			Integer portProperty = op.get("port", Integer.class);
 			int port = portProperty == null ? -1 : portProperty.intValue();
             String color = colorManager.getColor(op);
-			String hashString = MD5NameGenerator.getName(label + host + port);
 
 			ExternalResourceDescriptor descriptor =
 			        new ExternalResourceDescriptor(queueFrame,
-			                                        RABBIT + ":" + hashString,
-			                                        RABBIT + "-" + label,
-			                                        ExternalResourceType.QUEUE.name(),
-			                                        RABBIT,
-			                                        host,
-			                                        port,
-                                                    color, isIncoming);
+			                                       buildResourceName(label, host, port),
+			                                       buildResourceLabel(label),
+			                                       ExternalResourceType.QUEUE.name(),
+			                                       RABBIT,
+			                                       host,
+			                                       port,
+                                                   color, isIncoming);
 			queueDescriptors.add(descriptor);            
 		}
 
 		return queueDescriptors;
 	}
 
-	private EndPointName getName(String label) {
+	static String buildResourceName (String label, String host, int port) {
+		return buildResourceHash(MD5NameGenerator.getName(createExternalResourceName(label, host, port)));
+	}
+
+	static String buildResourceHash (String hashString) {
+		return RABBIT + ":" + hashString;
+	}
+
+	static String buildResourceLabel (String label) {
+		return RABBIT + "-" + label;
+	}
+
+	protected EndPointName getName(String label) {
 		return EndPointName.valueOf(label);
 	}
 
-	private String getExample(String label) {
-		return operationType.getEndPointPrefix() + label;
+	protected String getExample(String label) {
+		return buildDefaultExample(operationType,  label);
 	}
 
-	private String buildLabel(Operation op) {
-		String routingKey = getRoutingKey(op);
-		String exchange = getExchange(op);      
+	static String buildDefaultExample (RabbitPluginOperationType type, String label) {
+		return type.getEndPointPrefix() + label;
+	}
+
+	protected String buildLabel(Operation op) {
+		return buildLabel(getExchange(op), getRoutingKey(op));      
+	}
+
+	protected String buildLabel(String exchange, String routingKey) {
+		return buildDefaultLabel(exchange, routingKey);
+	}
+
+	static final String buildDefaultLabel (String xcg, String rtKey) {
+		String	exchange=xcg, routingKey=rtKey;
 		boolean hasExchange = !isTrimEmpty(exchange), hasRoutingKey=!isTrimEmpty(routingKey);
-		if ((!hasExchange) && (!hasRoutingKey)) {
-			return "<no-data>";
+		if (!hasExchange) {
+			exchange = NO_EXCHANGE;
 		}
 
-		StringBuilder sb = new StringBuilder(StringUtil.getSafeLength(exchange)
-										   + StringUtil.getSafeLength(routingKey)
-										   + 24 /* extra text */);
-		if (hasExchange) {
-			sb.append("Exchange#").append(exchange);
-		} 
-
-		if (hasRoutingKey) {				
-			if (hasExchange) {
-				sb.append(' ');
-			}
-			sb.append("RoutingKey#").append(routingKey);
+		if (!hasRoutingKey) {
+			routingKey = NO_ROUTING_KEY;
 		}
 
-		return sb.toString();
+		return new StringBuilder(exchange.length() + routingKey.length() +  24 /* extra text */)
+					.append("Exchange#").append(exchange)
+					.append(' ')
+					.append("RoutingKey#").append(routingKey)
+					.toString()
+					;
+	}
+
+	static String createExternalResourceName (String label, String host, int port) {
+		return label + host + port;
 	}
 
 	private static boolean isTrimEmpty(String str){
