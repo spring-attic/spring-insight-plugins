@@ -19,25 +19,21 @@ package com.springsource.insight.plugin.gemfire;
 import org.aspectj.lang.JoinPoint;
 
 import com.gemstone.gemfire.cache.query.Query;
-import com.gemstone.gemfire.cache.query.internal.DefaultQuery;
 import com.springsource.insight.intercept.operation.Operation;
 
 public aspect GemFireQueryCollectionAspect extends AbstractGemFireCollectionAspect {
-	
-    public pointcut collectionPoint(): execution(* Query.execute*(..));
-
     public GemFireQueryCollectionAspect() {
 		super(GemFireDefenitions.TYPE_QUERY);
 	}
+
+    public pointcut collectionPoint(): execution(* Query.execute*(..));
     
     @Override
     protected Operation createOperation(final JoinPoint jp) {
     	Operation op = createBasicOperation(jp);
    
-    	DefaultQuery query = (DefaultQuery) jp.getThis();
+    	Query query = (Query) jp.getThis();
         op.put(GemFireDefenitions.FIELD_QUERY, query.getQueryString());
-        
-        
         return op;
     }
 }
