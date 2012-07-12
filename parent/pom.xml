@@ -15,7 +15,7 @@
         <spring.security.version>3.1.0.RELEASE</spring.security.version>
 		<spring.webflow.version>2.3.1.RELEASE</spring.webflow.version>
         <spring.integration.version>2.1.3.RELEASE</spring.integration.version>
-        <aspectj.version>1.7.0.RC1</aspectj.version>
+        <aspectj.version>1.7.0</aspectj.version>
         <junit.version>4.5</junit.version>
         <mockito.version>1.8.0</mockito.version>
         <commons.logging.version>1.1.1</commons.logging.version>
@@ -178,6 +178,17 @@
     </repositories>
 
     <pluginRepositories>
+        <pluginRepository>
+            <id>spring-release</id>
+            <name>Spring Release Repository</name>
+            <url>http://maven.springframework.org/release</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+        </pluginRepository>
         <!-- Milestone repository for the aspectj milestone release -->
         <pluginRepository>
             <id>spring-milestone</id>
