@@ -30,10 +30,15 @@ public abstract class AbstractQuartzValueAccessor extends BeanPropertiesSource {
 
 	@Override
 	public <T> T getProperty (Object target, String name, Class<T> attrType) {
+		if (target == null) {
+			return null;
+		}
+
 		try {
 			return super.getProperty(target, name, attrType);
 		} catch(Exception e) {
-			logger.warning("getProperty(" + name + ")[" + attrType.getSimpleName() + "]"
+			logger.warning("getProperty(" + getBeanClass().getSimpleName() + "@" + name + ")"
+						+ "[" + attrType.getSimpleName() + "]"
 						+ " failed (" + e.getClass().getSimpleName() + ")"
 						+ " to retrieve: " + e.getMessage());
 			return null;
