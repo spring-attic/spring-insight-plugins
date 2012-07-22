@@ -39,11 +39,7 @@ public class FileOutputCollectionAspectTest extends FilesOpenTrackerAspectTestSu
     @BeforeClass
     public static void setupInputTestFile () throws Exception {
         Assert.assertNull("Test file already initialized", TEST_FILE);
-
-        String  tmpDir=System.getProperty("java.io.tmpdir");
-        Assert.assertTrue("Missing TEMP folder location value", (tmpDir != null) && (tmpDir.length() > 0));
-
-        TEST_FILE = new File(new File(tmpDir), "output-test-file.txt");
+        TEST_FILE = new File(resolveTestDirRoot(FileOutputCollectionAspectTest.class), "output-test-file.txt");
     }
 
     @Test

@@ -17,11 +17,13 @@
 package com.springsource.insight.plugin.files.tracker;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 
 import org.junit.Assert;
 
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.util.ClassUtil;
 
 
 /**
@@ -30,6 +32,17 @@ import com.springsource.insight.intercept.operation.Operation;
 public abstract class FilesOpenTrackerAspectTestSupport extends FilesTrackerAspectTestSupport {
     protected FilesOpenTrackerAspectTestSupport() {
         super();
+    }
+
+    protected static final File resolveTestDirRoot (Class<?> anchorClass) {
+		File	anchorFile=ClassUtil.getClassContainerLocationFile(anchorClass);
+	    for (File classPath=anchorFile; classPath != null; classPath = classPath.getParentFile()) {
+	        if ("target".equals(classPath.getName()) && classPath.isDirectory()) {
+	        	return classPath;
+	        }
+	    }
+
+        throw new IllegalStateException("No target folder for " + anchorClass.getSimpleName() + " at " + anchorFile);
     }
 
     @Override
