@@ -15,58 +15,25 @@
  */
 package com.springsource.insight.plugin.jcr;
 
+import com.springsource.insight.intercept.endpoint.AbstractSingleTypeEndpointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.FrameUtil;
-import com.springsource.insight.intercept.trace.Trace;
 
-public class JCREndPointAnalyzer implements EndPointAnalyzer {
-    private static final int ANALYSIS_SCORE = 0;
-    private static final OperationType opType=OperationCollectionTypes.LOGIN_TYPE.type;
-
-    public JCREndPointAnalyzer () {
-    	super();
+public class JCREndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
+    public JCREndPointAnalyzer() {
+        super(OperationCollectionTypes.LOGIN_TYPE.type);
     }
 
-    public EndPointAnalysis locateEndPoint(Trace trace) {
-        Frame firstFrame = trace.getFirstFrameOfType(opType);
-        if (firstFrame == null) {
-            return null;
-        }
-
-        return makeEndPoint(firstFrame);
-    }
-    
-    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
-        Frame parent = FrameUtil.getLastParentOfType(frame, opType);
-        if (parent != null) {
-            return null;
-        }
+    @Override
+	protected EndPointAnalysis makeEndPoint(Frame frame, int score) {
+        Operation 		op=frame.getOperation();
         
-        return makeEndPoint(frame);
-    }
-
-    private EndPointAnalysis makeEndPoint(Frame frame) {
-        Operation op = frame.getOperation();
         String workspaceName=op.get("workspace", String.class);
         String repoName=op.get("repository", String.class);
+        String endPointName = repoName+(workspaceName!=null?"."+workspaceName:"");
         
-        String endPointName = "JCR: " + repoName+"."+workspaceName;
-
-        return new EndPointAnalysis(EndPointName.valueOf(endPointName), endPointName,
-        							repoName+"."+workspaceName,
-        							ANALYSIS_SCORE, op);
-    }
-
-    public int getScore(Frame frame, int depth) {
-        return ANALYSIS_SCORE;
-    }
-
-    public OperationType[] getOperationTypes() {
-        return new OperationType[] {opType};
-    }
+        return new EndPointAnalysis(EndPointName.valueOf(endPointName), "JCR: "+endPointName, endPointName, score, op);
+    } 
 }
