@@ -36,6 +36,7 @@
 		<module>httpclient3</module>
 		<module>httpclient4</module>
 		<module>jax-rs</module>
+		<module>jcr</module>
 		<module>jdbc</module>
 		<module>jms</module>
 		<module>jpa</module>
