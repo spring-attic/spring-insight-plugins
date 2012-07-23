@@ -23,11 +23,14 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.springsource.insight.intercept.application.ApplicationName;
+import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
+import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.server.ServerName;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.FrameId;
+import com.springsource.insight.intercept.trace.FrameUtil;
 import com.springsource.insight.intercept.trace.SimpleFrame;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
@@ -38,55 +41,91 @@ import com.springsource.insight.util.time.TimeRange;
  */
 public class RunExecEndPointAnalyzerTest extends Assert {
     private static final AtomicLong frameIdGenerator=new AtomicLong(0L);
+    private static final RunExecEndPointAnalyzer	analyzer=new RunExecEndPointAnalyzer();
+
     public RunExecEndPointAnalyzerTest() {
         super();
     }
 
     @Test
     public void testResolveEndPointFrameOnBothMissing () {
-        assertNull(RunExecEndPointAnalyzer.resolveEndPointFrame(createTrace(createFrame(null, OperationType.valueOf("fake-op")))));
+    	Trace	trace=createTrace(createFrame(null, OperationType.valueOf("fake-op")));
+    	Frame	frame=RunExecEndPointAnalyzer.resolveEndPointFrame(trace);
+        assertNull("Unexpected resolved frame: " + frame, frame);
+
+        frame = analyzer.getScoringFrame(trace);
+        assertNull("Unexpected scoring frame: " + frame, frame);
+
+        EndPointAnalysis	endPoint=analyzer.locateEndPoint(trace);
+        assertNull("Unexpected endpoint: " + endPoint, endPoint);
     }
 
     @Test
     public void testResolveEndPointFrameOnExecOnly () {
-        assertResolutionResult(
-                RunExecEndPointAnalyzer.resolveEndPointFrame(createTrace(createFrame(null, RunExecDefinitions.EXEC_OP))),
-                RunExecDefinitions.EXEC_OP);
+    	Trace	trace=createTrace(createFrame(null, RunExecDefinitions.EXEC_OP));
+        Frame	frame=assertResolutionResult(RunExecEndPointAnalyzer.resolveEndPointFrame(trace), RunExecDefinitions.EXEC_OP);
+        assertAnalysisResult(trace, frame);
     }
 
     @Test
     public void testResolveEndPointFrameOnRunOnly () {
-        assertResolutionResult(
-                RunExecEndPointAnalyzer.resolveEndPointFrame(createTrace(createFrame(null, RunExecDefinitions.RUN_OP))),
-                RunExecDefinitions.RUN_OP);
+    	Trace	trace=createTrace(createFrame(null, RunExecDefinitions.RUN_OP));
+        Frame	frame=assertResolutionResult(RunExecEndPointAnalyzer.resolveEndPointFrame(trace), RunExecDefinitions.RUN_OP);
+        assertAnalysisResult(trace, frame);
     }
 
     @Test
     public void testResolveEndPointFrameOnExecFirst () {
         Frame   execFrame=createFrame(null, RunExecDefinitions.EXEC_OP);
-        createFrame(execFrame, RunExecDefinitions.RUN_OP);
-        
-        Frame   resFrame=RunExecEndPointAnalyzer.resolveEndPointFrame(createTrace(execFrame));
+        Frame	runFrame=createFrame(execFrame, RunExecDefinitions.RUN_OP);
+        assertNotNull("No run frame created", runFrame);
+
+        Trace	trace=createTrace(execFrame);
+        Frame   resFrame=RunExecEndPointAnalyzer.resolveEndPointFrame(trace);
         assertSame("Mismatched resolved frame", execFrame, resFrame);
+        assertAnalysisResult(trace, resFrame);
     }
 
     @Test
     public void testResolveEndPointFrameOnRunFirst () {
         Frame   runFrame=createFrame(null, RunExecDefinitions.RUN_OP);
-        createFrame(runFrame, RunExecDefinitions.EXEC_OP);
+        Frame	execFrame=createFrame(runFrame, RunExecDefinitions.EXEC_OP);
+        assertNotNull("No exec frame created", execFrame);
 
-        Frame   resFrame=RunExecEndPointAnalyzer.resolveEndPointFrame(createTrace(runFrame));
+        Trace	trace=createTrace(runFrame);
+        Frame   resFrame=RunExecEndPointAnalyzer.resolveEndPointFrame(trace);
         assertSame("Mismatched resolved frame", runFrame, resFrame);
+        assertAnalysisResult(trace, resFrame);
     }
 
-    static void assertResolutionResult (Frame frame, OperationType expType) {
+    static Frame assertResolutionResult (Frame frame, OperationType expType) {
         assertNotNull("No frame", frame);
         
         Operation   op=frame.getOperation();
         assertNotNull("No operation", op);
         assertEquals("Mismatched operation type", expType, op.getType());
+        return frame;
     }
 
+    static EndPointAnalysis assertAnalysisResult (Trace trace, Frame scoreFrame) {
+    	EndPointAnalysis	a1=analyzer.locateEndPoint(trace);
+    	assertNotNull("No analysis extracted for trace=" + trace, a1);
+    	assertAnalysisResult(a1, scoreFrame);
+
+    	EndPointAnalysis	a2=analyzer.locateEndPoint(scoreFrame, FrameUtil.getDepth(scoreFrame));
+    	assertEquals("Mismatched frame analysis result", a1, a2);
+    	return a1;
+    }
+
+    static Operation assertAnalysisResult (EndPointAnalysis a, Frame frame) {
+        Operation   op=frame.getOperation();
+        assertEquals("Mismatched endpoint name", EndPointName.valueOf(op), a.getEndPointName());
+        assertEquals("Mismatched label", op.getLabel(), a.getResourceLabel());
+        assertEquals("Mismatched example", op.getLabel(), a.getExample());
+        assertEquals("Mismatched score", RunExecEndPointAnalyzer.DEFAULT_SCORE, a.getScore());
+        return op;
+
+    }
     static Frame createFrame (Frame parent, OperationType opType) {
         Operation op = new Operation().type(opType);
         

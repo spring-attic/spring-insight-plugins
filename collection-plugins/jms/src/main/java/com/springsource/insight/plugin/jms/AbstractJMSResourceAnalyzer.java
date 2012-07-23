@@ -21,52 +21,47 @@ import java.util.Collections;
 import java.util.List;
 
 import com.springsource.insight.intercept.color.ColorManager;
+import com.springsource.insight.intercept.endpoint.AbstractSingleTypeEndpointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.FrameUtil;
 import com.springsource.insight.intercept.trace.Trace;
 
-abstract class AbstractJMSResourceAnalyzer implements EndPointAnalyzer,ExternalResourceAnalyzer {
-    
-	static final String JMS = "JMS";
+abstract class AbstractJMSResourceAnalyzer extends AbstractSingleTypeEndpointAnalyzer implements ExternalResourceAnalyzer {
+	public static final String JMS = "JMS";
+	public static final int	DEFAULT_SCORE = 1;
     protected final JMSPluginOperationType operationType;
     protected final boolean isIncoming;
     
     AbstractJMSResourceAnalyzer(JMSPluginOperationType type, boolean incoming) {
+    	super(type.getOperationType());
         this.operationType = type;
         this.isIncoming = incoming;
     }
 
-    public EndPointAnalysis locateEndPoint(Trace trace) {
-        Frame frame = trace.getFirstFrameOfType(operationType.getOperationType());
-        if (frame == null) {
-            return null;
-        }
-
-        return makeEndPoint(frame);
+    @Override
+	public int getScore(Frame frame, int depth) {
+    	if (validateScoringFrame(frame) != null) {
+    		return DEFAULT_SCORE;
+    	} else {
+    		return Integer.MAX_VALUE;
+    	}
     }
 
-    private EndPointAnalysis makeEndPoint(Frame frame) {
+    @Override
+	protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
         Operation op = frame.getOperation();
-        if (op != null) {
-        	String label = buildLabel(op);
-			String endPointLabel = JMS + "-" + label;
-			
-            String example = getExample(label);
-            EndPointName endPointName = getName(label);
+        String label = buildLabel(op);
+        String endPointLabel = JMS + "-" + label;
+        String example = getExample(label);
+        EndPointName endPointName = getName(label);
             
-            return new EndPointAnalysis(endPointName, endPointLabel, example, 1, op);
-        }
-        
-        return null;
+        return new EndPointAnalysis(endPointName, endPointLabel, example, DEFAULT_SCORE, op);
     }
     
    public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
@@ -115,22 +110,4 @@ abstract class AbstractJMSResourceAnalyzer implements EndPointAnalyzer,ExternalR
 
         return type + "#" + name;
 	}
-    
-    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
-        Frame parent = FrameUtil.getLastParentOfType(frame, operationType.getOperationType());
-        
-        if (parent != null) {
-            return null;
-        }
-        
-        return makeEndPoint(frame);
-    }
-    
-    public int getScore(Frame frame, int depth) {
-        return 1;
-    }
-    
-    public OperationType[] getOperationTypes() {
-        return new OperationType[] {operationType.getOperationType()};
-    }
 }

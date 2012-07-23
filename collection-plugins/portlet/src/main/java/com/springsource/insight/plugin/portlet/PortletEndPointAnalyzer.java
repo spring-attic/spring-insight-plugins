@@ -15,55 +15,33 @@
  */
 package com.springsource.insight.plugin.portlet;
 
+import com.springsource.insight.intercept.endpoint.AbstractSingleTypeEndpointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.FrameUtil;
-import com.springsource.insight.intercept.trace.Trace;
 
-public class PortletEndPointAnalyzer implements EndPointAnalyzer {
-    private static final int ANALYSIS_SCORE = 0;
-    private static final OperationType opType=OperationCollectionTypes.RENDER_TYPE.type;
+public class PortletEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
+    public static final int ANALYSIS_SCORE = 0;
+    public static final OperationType opType=OperationCollectionTypes.RENDER_TYPE.type;
 
     public PortletEndPointAnalyzer () {
-    	super();
+    	super(opType);
     }
 
-    public EndPointAnalysis locateEndPoint(Trace trace) {
-        Frame firstFrame = trace.getFirstFrameOfType(opType);
-        if (firstFrame == null) {
-            return null;
-        }
-
-        return makeEndPoint(firstFrame);
-    }
-    
-    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
-        Frame parent = FrameUtil.getLastParentOfType(frame, opType);
-        if (parent != null) {
-            return null;
-        }
-        
-        return makeEndPoint(frame);
-    }
-
-    private EndPointAnalysis makeEndPoint(Frame frame) {
-        Operation op = frame.getOperation();
-        String portletName=op.get("name", String.class);
-        String endPointLabel = "Portlet: " + portletName;
-
-        return new EndPointAnalysis(EndPointName.valueOf(portletName), endPointLabel,
-        							portletName+"."+op.get("mode", String.class), ANALYSIS_SCORE, op);
-    }
-
+    @Override
     public int getScore(Frame frame, int depth) {
         return ANALYSIS_SCORE;
     }
 
-    public OperationType[] getOperationTypes() {
-        return new OperationType[] {opType};
+    @Override
+    protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
+        Operation op = frame.getOperation();
+        String portletName=op.get("name", String.class);
+        String endPointLabel = "Portlet: " + portletName;
+        String	example=portletName+"."+op.get("mode", String.class);
+        return new EndPointAnalysis(EndPointName.valueOf(portletName), endPointLabel, example, ANALYSIS_SCORE, op);
     }
+
 }

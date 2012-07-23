@@ -15,8 +15,8 @@
  */
 package com.springsource.insight.plugin.ejb3;
 
+import com.springsource.insight.intercept.endpoint.AbstractSingleTypeEndpointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
@@ -24,66 +24,33 @@ import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.FrameUtil;
-import com.springsource.insight.intercept.trace.Trace;
 
 /**
  */
-public class Ejb3LocalServiceEndPointAnalyzer implements EndPointAnalyzer {
+public class Ejb3LocalServiceEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
     public Ejb3LocalServiceEndPointAnalyzer() {
-        super();
+        super(Ejb3LocalServiceDefinitions.TYPE);
     }
 
-    public EndPointAnalysis locateEndPoint(final Trace trace) {
-        final Frame     frame=trace.getFirstFrameOfType(Ejb3LocalServiceDefinitions.TYPE);
-        final Frame     rootFrame=trace.getRootFrame();
-        
-        return makeEndPoint(frame, rootFrame, -1);
-    }
-
-    private EndPointAnalysis makeEndPoint(Frame frame, Frame rootFrame, int score) {
-        final Operation op=(frame == null) ? null : frame.getOperation();
-        if (op == null) {
-            return null;
-        }
-
-        final EndPointName  endPointName=EndPointName.valueOf(op);
-        final Operation     rootOperation=rootFrame.getOperation();
-        final String        example=getExampleRequest(frame, rootOperation);
-        
-        if (score == -1) {
-            score = FrameUtil.getDepth(frame);
-        }
-        
+    @Override
+	protected EndPointAnalysis makeEndPoint(Frame frame, int score) {
+        Operation 		op=frame.getOperation();
+        EndPointName  	endPointName=EndPointName.valueOf(op);
+    	Frame 			rootFrame=FrameUtil.getRoot(frame);
+        Operation     	rootOperation=rootFrame.getOperation();
+        String        	example=getExampleRequest(frame, rootOperation);
         return new EndPointAnalysis(endPointName, op.getLabel(), example, score, op);
     }
 
-    public String getExampleRequest(Frame frame, Operation rootOperation) {
+	public String getExampleRequest(Frame frame, Operation rootOperation) {
         Frame httpFrame = FrameUtil.getLastParentOfType(frame, OperationType.HTTP);
-        
-        if ((httpFrame == null)) {
+        if (httpFrame == null) {
             return rootOperation.getLabel();
         }
 
         Operation operation = httpFrame.getOperation();
         OperationMap details = operation.get("request", OperationMap.class);
-        return details.get("method") + " " + details.get(OperationFields.URI);
-    }
-
-    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
-        Frame parent = FrameUtil.getFirstParentOfType(frame, Ejb3LocalServiceDefinitions.TYPE);
-        
-        if (parent != null) {
-            return null;
-        }
-        
-        return makeEndPoint(frame, FrameUtil.getRoot(frame), depth);
-    }
-
-    public int getScore(Frame frame, int depth) {
-        return depth;
-    }
-
-    public OperationType[] getOperationTypes() {
-        return new OperationType[] {Ejb3LocalServiceDefinitions.TYPE};
+        return ((details == null) ? "???" : String.valueOf(details.get("method")))
+             + " " + ((details == null) ? "<UNKNOWN>" : details.get(OperationFields.URI));
     }
 }

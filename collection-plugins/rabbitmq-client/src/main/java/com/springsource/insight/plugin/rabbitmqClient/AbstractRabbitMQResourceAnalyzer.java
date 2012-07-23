@@ -22,20 +22,18 @@ import java.util.Collections;
 import java.util.List;
 
 import com.springsource.insight.intercept.color.ColorManager;
+import com.springsource.insight.intercept.endpoint.AbstractSingleTypeEndpointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.FrameUtil;
 import com.springsource.insight.intercept.trace.Trace;
 
-public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyzer, ExternalResourceAnalyzer {
+public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTypeEndpointAnalyzer implements ExternalResourceAnalyzer {
 	public static final String RABBIT = "RabbitMQ";	
 	/**
 	 * Placeholder string used if no exchange name specified
@@ -45,14 +43,13 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 	 * Placeholder string used if no routing key available
 	 */
 	public static final String NO_ROUTING_KEY = "<no-routing-key>";
-
+	public static final int	DEFAULT_SCORE=1;
 	private final RabbitPluginOperationType operationType;
 	private final boolean isIncoming;
 
 	protected AbstractRabbitMQResourceAnalyzer(RabbitPluginOperationType type, boolean incoming) {
-		if ((this.operationType=type) == null) {
-			throw new IllegalStateException("No operation type specified");
-		}
+		super(type.getOperationType());
+		this.operationType = type;
 		this.isIncoming = incoming;
 	}
 
@@ -64,32 +61,24 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 		return operationType;
 	}
 
-	protected abstract String getExchange(Operation op);
+    @Override
+	public int getScore(Frame frame, int depth) {
+    	if (validateScoringFrame(frame) != null) {
+    		return DEFAULT_SCORE;
+    	} else {
+    		return Integer.MAX_VALUE;
+    	}
+    }
 
-	protected abstract String getRoutingKey(Operation op);
-
-	public EndPointAnalysis locateEndPoint(Trace trace) {
-		Frame frame = trace.getFirstFrameOfType(operationType.getOperationType());
-		if (frame == null) {
-			return null;
-		}
-
-		return makeEndPoint(frame);
-	}
-
-    private EndPointAnalysis makeEndPoint(Frame frame) {
+    @Override
+	protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
         Operation op = frame.getOperation();
-		if (op != null) {
-			String label = buildLabel(op);
-			String endPointLabel = RABBIT + "-" + label;
+        String label = buildLabel(op);
+        String endPointLabel = RABBIT + "-" + label;
+        String example = getExample(label);
+        EndPointName endPointName = getName(label);
 
-			String example = getExample(label);
-			EndPointName endPointName = getName(label);
-
-			return new EndPointAnalysis(endPointName, endPointLabel, example, 1, op);
-		}
-
-		return null;
+        return new EndPointAnalysis(endPointName, endPointLabel, example, DEFAULT_SCORE, op);
     }
 
 	public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
@@ -122,6 +111,10 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 
 		return queueDescriptors;
 	}
+
+	protected abstract String getExchange(Operation op);
+
+	protected abstract String getRoutingKey(Operation op);
 
 	static String buildResourceName (String label, String host, int port, boolean isIncoming) {
 		return buildResourceHash(MD5NameGenerator.getName(createExternalResourceName(label, host, port, isIncoming)));
@@ -180,24 +173,6 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements EndPointAnalyz
 
 	private static boolean isTrimEmpty(String str){
 		return (str == null) || (str.trim().length() <= 0);
-	}
-	
-	public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
-	    Frame parent = FrameUtil.getLastParentOfType(frame, operationType.getOperationType());
-	    
-	    if (parent != null) {
-	        return null;
-	    }
-	    
-	    return makeEndPoint(frame);
-	}
-	
-	public int getScore(Frame frame, int depth) {
-	    return 1;
-	}
-	
-	public OperationType[] getOperationTypes() {
-	    return new OperationType[] {operationType.getOperationType()};
 	}
 
 	@Override

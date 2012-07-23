@@ -15,53 +15,37 @@
  */
 package com.springsource.insight.plugin.quartz.scheduler;
 
+import com.springsource.insight.intercept.endpoint.AbstractSingleTypeEndpointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.FrameUtil;
-import com.springsource.insight.intercept.trace.Trace;
 
 /**
  * 
  */
-public class QuartzSchedulerEndPointAnalyzer implements EndPointAnalyzer {
+public class QuartzSchedulerEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer{
+	public static final int	DEFAULT_SCORE=0;
+
     public QuartzSchedulerEndPointAnalyzer() {
-        super();
+        super(QuartzSchedulerDefinitions.TYPE);
     }
 
-    public EndPointAnalysis locateEndPoint(Trace trace) {
-        Frame     frame=trace.getFirstFrameOfType(QuartzSchedulerDefinitions.TYPE);
-        return makeEndPoint(frame);
+    @Override
+	public int getScore(Frame frame, int depth) {
+    	if (validateScoringFrame(frame) == null) {
+    		return Integer.MIN_VALUE;
+    	} else {
+    		return DEFAULT_SCORE;
+    	}
     }
 
-    private EndPointAnalysis makeEndPoint(Frame frame) {
-        Operation op=(frame == null) ? null : frame.getOperation();
-        if (op == null) {
-            return null;
-        }
-
-        return new EndPointAnalysis(EndPointName.valueOf(op), op.getLabel(), op.getLabel(), 0, op);
+    @Override
+	protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
+        Operation op=frame.getOperation();
+        return new EndPointAnalysis(EndPointName.valueOf(op), op.getLabel(), op.getLabel(), DEFAULT_SCORE, op);
     }
 
-    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
-        Frame parent = FrameUtil.getLastParentOfType(frame, QuartzSchedulerDefinitions.TYPE);
-        
-        if (parent != null) {
-            return null;
-        }
-        
-        return makeEndPoint(frame);
-    }
 
-    public int getScore(Frame frame, int depth) {
-        return 0;
-    }
-
-    public OperationType[] getOperationTypes() {
-        return new OperationType[] {QuartzSchedulerDefinitions.TYPE};
-    }
 
 }

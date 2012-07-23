@@ -16,6 +16,10 @@
 
 package com.springsource.insight.plugin.methodEndPoint;
 
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
@@ -23,21 +27,23 @@ import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationType;
-import com.springsource.insight.intercept.trace.*;
-import org.junit.Before;
-import org.junit.Test;
+import com.springsource.insight.intercept.trace.Frame;
+import com.springsource.insight.intercept.trace.FrameBuilder;
+import com.springsource.insight.intercept.trace.SimpleFrameBuilder;
+import com.springsource.insight.intercept.trace.Trace;
+import com.springsource.insight.intercept.trace.TraceId;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-public class TopLevelMethodEndPointAnalyzerTest {
-    private ApplicationName app = ApplicationName.valueOf("app");    
-    private TopLevelMethodEndPointAnalyzer endPointAnalyzer;
+public class TopLevelMethodEndPointAnalyzerTest extends Assert {
+    private static final ApplicationName app = ApplicationName.valueOf("app");    
+    private static final TopLevelMethodEndPointAnalyzer	endPointAnalyzer = new TopLevelMethodEndPointAnalyzer();
     private Operation methodOp;
     
+    public TopLevelMethodEndPointAnalyzerTest () {
+    	super();
+    }
+
     @Before
     public void setUp() {
-        endPointAnalyzer = new TopLevelMethodEndPointAnalyzer();
         methodOp = OperationCollectionUtil.methodOperation(MyClass.class.getName(), "MyClass.file", 123,
                                                            "MyClass#myMethod", "myMethod", "myMethod(String, Object)",
                                                            "MyClass", new String[] { "arg1", "java.lang.Object" });
@@ -63,23 +69,31 @@ public class TopLevelMethodEndPointAnalyzerTest {
         b.enter(other);
         Thread.sleep(100);
         Frame nestedMethodFrame = b.exit();        
+        assertNotNull("No nested frame", nestedMethodFrame);
         Frame simpleFrame = b.exit();
+        assertNotNull("No simple frame", simpleFrame);
         Frame methodFrame = b.exit();
         Trace trace = Trace.newInstance(app, TraceId.valueOf("0"), methodFrame);
-        EndPointAnalysis endPoint = endPointAnalyzer.locateEndPoint(trace); 
-        assertEquals(EndPointName.valueOf(methodOp.getSourceCodeLocation().getClassName() + "#" + methodOp.get(OperationFields.METHOD_SIGNATURE)), endPoint.getEndPointName());
-        assertEquals("MyClass#myMethod", endPoint.getResourceLabel());        
+        EndPointAnalysis endPoint = endPointAnalyzer.locateEndPoint(trace);
+        assertNotNull("No endpoint extracted", endPoint);
+        assertEquals("Mismatched endpoint name",
+        		EndPointName.valueOf(methodOp.getSourceCodeLocation().getClassName() + "#" + methodOp.get(OperationFields.METHOD_SIGNATURE)),
+        		endPoint.getEndPointName());
+        assertEquals("Mismatched label", "MyClass#myMethod", endPoint.getResourceLabel());
+        assertEquals("Mismatched score", TopLevelMethodEndPointAnalyzer.DEFAULT_SCORE, endPoint.getScore());
     }
     
     @Test
-    public void locateEndPoint_methodOperationNotTopLevel() {
+    public void locateEndPointMethodOperationNotTopLevel() {
         FrameBuilder b = new SimpleFrameBuilder();
         Operation httpOp = new Operation().type(OperationType.HTTP);
         b.enter(httpOp);
         b.enter(methodOp);
-        Frame annotatedFrame = b.exit();        
+        Frame annotatedFrame = b.exit(); 
+        assertNotNull("No annotated frame", annotatedFrame);
         Frame httpFrame = b.exit();
         Trace trace = Trace.newInstance(app, TraceId.valueOf("0"), httpFrame);
-        assertNull(endPointAnalyzer.locateEndPoint(trace)); 
+        EndPointAnalysis	result=endPointAnalyzer.locateEndPoint(trace);
+        assertNull("Unexpected endpoint: " + result, result); 
     }
 }

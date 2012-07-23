@@ -16,49 +16,31 @@
 
 package com.springsource.insight.plugin.springbatch;
 
+import com.springsource.insight.intercept.endpoint.AbstractSingleTypeEndpointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.FrameUtil;
-import com.springsource.insight.intercept.trace.Trace;
 
-public class SpringBatchEndPointAnalyzer implements EndPointAnalyzer {
+public class SpringBatchEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
+	public static final int	DEFAULT_SCORE=0;
+
     public SpringBatchEndPointAnalyzer() {
-        super();
+        super(SpringBatchDefinitions.BATCH_TYPE);
     }
 
-    public EndPointAnalysis locateEndPoint(Trace trace) {
-        Frame       frame=trace.getFirstFrameOfType(SpringBatchDefinitions.BATCH_TYPE);
-        return makeEndPoint(frame);
-    }
-
-    private EndPointAnalysis makeEndPoint(Frame frame) {
-        Operation   op=(frame == null) ? null : frame.getOperation();
-        if (op == null) {
-            return null;
-        }
-
-        return new EndPointAnalysis(EndPointName.valueOf(op), op.getLabel(), op.getLabel(), 0, op);
-    }
-
-    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
-        Frame parent = FrameUtil.getLastParentOfType(frame, SpringBatchDefinitions.BATCH_TYPE);
-        
-        if (parent != null) {
-            return null;
-        }
-        
-        return makeEndPoint(frame);
-    }
-
+    @Override
     public int getScore(Frame frame, int depth) {
-        return 0;
+    	if (validateScoringFrame(frame) == null) {
+    		return Integer.MIN_VALUE;
+    	} else {
+    		return DEFAULT_SCORE;
+    	}
     }
 
-    public OperationType[] getOperationTypes() {
-        return new OperationType[] {SpringBatchDefinitions.BATCH_TYPE};
+    @Override
+    protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
+        Operation   op=frame.getOperation();
+        return new EndPointAnalysis(EndPointName.valueOf(op), op.getLabel(), op.getLabel(), DEFAULT_SCORE, op);
     }
 }

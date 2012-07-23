@@ -15,8 +15,8 @@
  */
 package com.springsource.insight.plugin.jaxrs;
 
+import com.springsource.insight.intercept.endpoint.AbstractSingleTypeEndpointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
@@ -24,37 +24,22 @@ import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.FrameUtil;
-import com.springsource.insight.intercept.trace.Trace;
 
 /**
  */
-public class JaxrsEndPointAnalyzer implements EndPointAnalyzer {
+public class JaxrsEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
     public JaxrsEndPointAnalyzer() {
-        super();
+        super(JaxrsDefinitions.TYPE);
     }
 
-    public EndPointAnalysis locateEndPoint(Trace trace) {
-        final Frame     frame=trace.getFirstFrameOfType(JaxrsDefinitions.TYPE);
-        final Frame     rootFrame=trace.getRootFrame();
-        
-        return makeEndPoint(frame, rootFrame, -1);
-    }
-
-    private EndPointAnalysis makeEndPoint(Frame frame, Frame rootFrame, int score) {
-        final Operation op=(frame == null) ? null : frame.getOperation();
-        if (op == null) {
-            return null;
-        }
-
-        final EndPointName  endPointName=EndPointName.valueOf(op);
-        final Operation     rootOperation=rootFrame.getOperation();
-        final Frame         httpFrame=FrameUtil.getFirstParentOfType(frame, OperationType.HTTP);
-        final String        example=getExampleRequest(httpFrame, frame, rootOperation);
-        
-        if (score == -1) {
-            score = FrameUtil.getDepth(frame);
-        }
-        
+    @Override
+	protected EndPointAnalysis makeEndPoint(Frame frame, int score) {
+		Operation	  op=frame.getOperation();
+        EndPointName  endPointName=EndPointName.valueOf(op);
+        Frame 		  rootFrame=FrameUtil.getRoot(frame);
+        Operation     rootOperation=rootFrame.getOperation();
+        Frame         httpFrame=FrameUtil.getFirstParentOfType(frame, OperationType.HTTP);
+        String        example=getExampleRequest(httpFrame, frame, rootOperation);
         return new EndPointAnalysis(endPointName, op.getLabel(), example, score, op);
     }
 
@@ -65,24 +50,7 @@ public class JaxrsEndPointAnalyzer implements EndPointAnalyzer {
 
         Operation operation = httpFrame.getOperation();
         OperationMap details = operation.get("request", OperationMap.class);
-        return details.get("method") + " " + details.get(OperationFields.URI);
-    }
-
-    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
-        Frame parent = FrameUtil.getLastParentOfType(frame, JaxrsDefinitions.TYPE);
-        
-        if (parent != null) {
-            return null;
-        }
-        
-        return makeEndPoint(frame, FrameUtil.getRoot(frame), depth);
-    }
-
-    public int getScore(Frame frame, int depth) {
-        return depth;
-    }
-
-    public OperationType[] getOperationTypes() {
-        return new OperationType[] {JaxrsDefinitions.TYPE};
+        return ((details == null) ? "???" : String.valueOf(details.get("method")))
+             + " " + ((details == null) ? "<UNKNOWN>" : details.get(OperationFields.URI));
     }
 }

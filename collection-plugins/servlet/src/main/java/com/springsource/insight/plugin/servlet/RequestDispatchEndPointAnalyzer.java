@@ -15,54 +15,65 @@
  */
 package com.springsource.insight.plugin.servlet;
 
+import com.springsource.insight.intercept.endpoint.AbstractSingleTypeEndpointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.FrameUtil;
 import com.springsource.insight.intercept.trace.Trace;
 
-public class RequestDispatchEndPointAnalyzer implements EndPointAnalyzer {
-    public EndPointAnalysis locateEndPoint(Trace trace) {
-        Frame dispatchFrame = trace.getFirstFrameOfType(OperationType.REQUEST_DISPATCH);
-        if (dispatchFrame == null) {
-            return null;
-        }
+public class RequestDispatchEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
+	public static final int	DEFAULT_SCORE=0;
 
-        return makeEndPoint(dispatchFrame);
+	public RequestDispatchEndPointAnalyzer () {
+		super(OperationType.REQUEST_DISPATCH);
+	}
+
+	@Override
+	public Frame getScoringFrame(Trace trace) {
+		Frame	frame=super.getScoringFrame(trace);
+		if (frame == null) {
+			return frame;
+		}
+
+    	if (validateScoringFrame(frame) == null) {
+    		return null;
+    	} else {
+    		return frame;
+    	}
+	}
+
+    @Override
+    public int getScore(Frame frame, int depth) {
+    	if (validateScoringFrame(frame) == null) {
+    		return Integer.MIN_VALUE;
+    	} else {
+    		return DEFAULT_SCORE;
+    	}
     }
 
-    private EndPointAnalysis makeEndPoint(Frame dispatchFrame) {
-        Operation op = dispatchFrame.getOperation();
-        Boolean fromValue=op.get("from", Boolean.class);
+	@Override
+	protected OperationType validateScoringFrame(Frame frame) {
+		OperationType	type=super.validateScoringFrame(frame);
+		if (type == null) {
+			return null;
+		}
+
+		Operation	op=frame.getOperation();
+        Boolean 	fromValue=op.get("from", Boolean.class);
         if ((fromValue == null) || (!fromValue.booleanValue())) {
             return null;
         }
-        
-        EndPointName name = EndPointName.valueOf(op.getLabel().replace('/', '_'));
-        String endPointLabel = op.getLabel();
-        String endPointExample = op.getLabel();
-        
-        return new EndPointAnalysis(name, endPointLabel, endPointExample, 0, op);
-    }
 
-    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
-        Frame parent = FrameUtil.getLastParentOfType(frame, OperationType.REQUEST_DISPATCH);
-        
-        if (parent != null) {
-            return null;
-        }
-        
-        return makeEndPoint(frame);
-    }
+        return type;
+	}
 
-    public int getScore(Frame frame, int depth) {
-        return 0;
-    }
-
-    public OperationType[] getOperationTypes() {
-        return new OperationType[] {OperationType.REQUEST_DISPATCH};
+	@Override
+	protected EndPointAnalysis makeEndPoint(Frame dispatchFrame, int depth) {
+        Operation 		op=dispatchFrame.getOperation();
+        String		 	label=op.getLabel();
+        EndPointName	name=EndPointName.valueOf(label.replace('/', '_'));
+        return new EndPointAnalysis(name, label, label, DEFAULT_SCORE, op);
     }
 }

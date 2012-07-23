@@ -15,9 +15,7 @@
  */
 package com.springsource.insight.plugin.servlet;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.springsource.insight.intercept.application.ApplicationName;
@@ -28,25 +26,29 @@ import com.springsource.insight.intercept.trace.SimpleFrameBuilder;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
 
-public class LifecycleEndPointAnalyzerTest {
-    
-    private ApplicationName app = ApplicationName.valueOf("app");
-    
+public class LifecycleEndPointAnalyzerTest extends Assert {
+    private static final ApplicationName app = ApplicationName.valueOf("app");
+    private static final LifecycleEndPointAnalyzer analyzer = new LifecycleEndPointAnalyzer();
+
+    public LifecycleEndPointAnalyzerTest () {
+    	super();
+    }
+
     @Test
     public void locateEndPoint() {
-        LifecycleEndPointAnalyzer analyzer = new LifecycleEndPointAnalyzer();
         Trace trace = createLifecycleEndPointTrace();
         EndPointAnalysis analysis = analyzer.locateEndPoint(trace);
-        assertEquals("Lifecycle", analysis.getResourceLabel());
-        assertEquals("lifecycle", analysis.getEndPointName().getName());
-        assertEquals("start", analysis.getExample());
+        assertEquals("Mismatched label", LifecycleEndPointAnalyzer.ENDPOINT_LABEL, analysis.getResourceLabel());
+        assertEquals("Mismatched endpoint name", LifecycleEndPointAnalyzer.ENDPOINT_NAME, analysis.getEndPointName());
+        assertEquals("Mismatched example", "start", analysis.getExample());
+        assertEquals("Mismatched score", LifecycleEndPointAnalyzer.ANALYSIS_SCORE, analysis.getScore());
     }
     
     @Test
     public void locateEndPoint_noHttp() {
-        LifecycleEndPointAnalyzer analyzer = new LifecycleEndPointAnalyzer();
         Trace trace = createNonLifecycleTrace();
-        assertNull(analyzer.locateEndPoint(trace));
+        EndPointAnalysis	result=analyzer.locateEndPoint(trace);
+        assertNull("Unexpected analysis result: " + result, result);
     }
     
     private Trace createNonLifecycleTrace() {

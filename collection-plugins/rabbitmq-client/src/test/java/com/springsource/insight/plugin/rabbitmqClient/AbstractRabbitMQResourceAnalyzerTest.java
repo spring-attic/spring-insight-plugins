@@ -166,7 +166,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 		assertEquals("Mismatched endpoint name", lbl, endpoint.getName());
 		assertEquals("Mismatched example", AbstractRabbitMQResourceAnalyzer.buildDefaultExample(operationType, lbl), analysis.getExample());
 		assertEquals("Mismatched resource label", resLabel, analysis.getResourceLabel());
-		assertEquals("Mismatched score", 1, analysis.getScore());
+		assertEquals("Mismatched score", AbstractRabbitMQResourceAnalyzer.DEFAULT_SCORE, analysis.getScore());
 	}
 
 	List<ExternalResourceDescriptor> assertExternalResourceDescriptors (Trace trace, String label) {
