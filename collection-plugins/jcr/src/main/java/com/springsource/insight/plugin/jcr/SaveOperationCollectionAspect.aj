@@ -29,20 +29,20 @@ import com.springsource.insight.intercept.operation.Operation;
  * This aspect intercepts all JCR Item requests for: save, refresh, remove, update and addNode
  */
 public privileged aspect SaveOperationCollectionAspect extends AbstractOperationCollectionAspect {
-    
+    public SaveOperationCollectionAspect () {
+    	super();
+    }
+
     public pointcut itemSave(): execution(public void javax.jcr.Item+.save()) && if(SaveOperationCollectionAspect.isItemSaveEnabled(thisJoinPoint));
     public pointcut itemRefresh(): execution(public void javax.jcr.Item+.refresh(boolean));
-    	
 	
 	public pointcut collectionPoint() : itemSave() || itemRefresh();
-	
 	
 	public static boolean isItemSaveEnabled(JoinPoint jp) {
     	Item item=(Item)jp.getTarget();
     	try {
 			return !item.getSession().getUserID().equals("system"); // filter save requests in chain
-		}
-		catch (RepositoryException e) {
+		} catch (RepositoryException e) {
 			return false;
 		}
     }
@@ -53,8 +53,7 @@ public privileged aspect SaveOperationCollectionAspect extends AbstractOperation
     	String path=null;
     	try {
     		path=item.getPath(); //relating item path
-		}
-		catch (RepositoryException e) {
+		} catch (RepositoryException e) {
 			//ignore
 		}
 
@@ -62,15 +61,15 @@ public privileged aspect SaveOperationCollectionAspect extends AbstractOperation
     	Operation op=new Operation().type(OperationCollectionTypes.WORKSPACE_TYPE.type)
     								.label(OperationCollectionTypes.WORKSPACE_TYPE.label+" "+method+" ["+path+"]")
     								.sourceCodeLocation(getSourceCodeLocation(jp))
-    								.put("workspace", JCRCollectionUtils.getWorkspaceName(item))
-    								.put("path", path);
+    								.putAnyNonEmpty("workspace", JCRCollectionUtils.getWorkspaceName(item))
+    								.putAnyNonEmpty("path", path);
     	
     	//add request parameters
     	Object[] args = jp.getArgs();
-    	
-    	if (method.equals("refresh"))
-    		op.put("keepChanges", (Boolean)args[0]);
-    			
+    	if (method.equals("refresh")) {
+    		op.put("keepChanges", ((Boolean)args[0]).booleanValue());
+    	}
+
     	return op;
     }
 

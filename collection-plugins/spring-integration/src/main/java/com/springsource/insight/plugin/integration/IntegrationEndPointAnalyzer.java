@@ -67,12 +67,12 @@ public class IntegrationEndPointAnalyzer extends AbstractSingleTypeEndpointAnaly
 	}
 
     @Override
-	protected EndPointAnalysis makeEndPoint(Frame si, int score) {
+	protected EndPointAnalysis makeEndPoint(Frame si, int depth) {
         Operation op = si.getOperation();
         String exampleRequest = op.get("siComponentType", String.class);
         String opLabel = op.getLabel();
         EndPointName name = EndPointName.valueOf(opLabel);
         String label = name.getName();
-        return new EndPointAnalysis(name, label, exampleRequest, score, op);
+        return new EndPointAnalysis(name, label, exampleRequest, EndPointAnalysis.depth2score(depth), op);
     }
 }

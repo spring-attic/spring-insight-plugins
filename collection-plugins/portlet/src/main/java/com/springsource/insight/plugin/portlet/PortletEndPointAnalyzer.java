@@ -23,7 +23,13 @@ import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.trace.Frame;
 
 public class PortletEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
-    public static final int ANALYSIS_SCORE = 0;
+    /**
+     * The <U>static</U> score value assigned to endpoints - <B>Note:</B>
+     * we return a score of {@link EndPointAnalysis#CEILING_LAYER_SCORE} so as
+     * to let other endpoints &quot;beat&quot; this one
+     */
+	public static final int	ANALYSIS_SCORE=EndPointAnalysis.CEILING_LAYER_SCORE;
+
     public static final OperationType opType=OperationCollectionTypes.RENDER_TYPE.type;
 
     public PortletEndPointAnalyzer () {
@@ -32,7 +38,11 @@ public class PortletEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer 
 
     @Override
     public int getScore(Frame frame, int depth) {
-        return ANALYSIS_SCORE;
+    	if (validateScoringFrame(frame) == null) {
+    		return EndPointAnalysis.MIN_SCORE_VALUE;
+    	} else {
+    		return ANALYSIS_SCORE;
+    	}
     }
 
     @Override

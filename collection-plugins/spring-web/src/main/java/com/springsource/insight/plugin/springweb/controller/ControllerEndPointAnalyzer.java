@@ -39,20 +39,21 @@ import com.springsource.insight.intercept.trace.FrameUtil;
  */
 public class ControllerEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
     public static final OperationType CONTROLLER_METHOD_TYPE = OperationType.valueOf("controller_method");
+    public static final String	LEGACY_PROPNAME="legacyController";
 
     public ControllerEndPointAnalyzer () {
     	super(CONTROLLER_METHOD_TYPE);
     }
 
     @Override
-	protected EndPointAnalysis makeEndPoint(Frame controllerFrame, int score) {
+	protected EndPointAnalysis makeEndPoint(Frame controllerFrame, int depth) {
         Operation controllerOp = controllerFrame.getOperation();
         Frame httpFrame = FrameUtil.getFirstParentOfType(controllerFrame, OperationType.HTTP);
         String examplePath = getExampleRequest(httpFrame, controllerOp);
         EndPointName endPointName = EndPointName.valueOf(controllerOp);
         String endPointLabel = controllerOp.getLabel();
 
-        return new EndPointAnalysis(endPointName, endPointLabel, examplePath, score, controllerOp);
+        return new EndPointAnalysis(endPointName, endPointLabel, examplePath, EndPointAnalysis.depth2score(depth), controllerOp);
     }
 
     public String getExampleRequest(Frame httpFrame, Operation controllerOp) {

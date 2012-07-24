@@ -43,7 +43,13 @@ public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTyp
 	 * Placeholder string used if no routing key available
 	 */
 	public static final String NO_ROUTING_KEY = "<no-routing-key>";
-	public static final int	DEFAULT_SCORE=1;
+    /**
+     * The <U>static</U> score value assigned to endpoints - <B>Note:</B>
+     * we return a score of {@link EndPointAnalysis#CEILING_LAYER_SCORE} so as
+     * to let other endpoints &quot;beat&quot; this one
+     */
+	public static final int	DEFAULT_SCORE = EndPointAnalysis.CEILING_LAYER_SCORE;
+
 	private final RabbitPluginOperationType operationType;
 	private final boolean isIncoming;
 
@@ -66,7 +72,7 @@ public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTyp
     	if (validateScoringFrame(frame) != null) {
     		return DEFAULT_SCORE;
     	} else {
-    		return Integer.MAX_VALUE;
+    		return EndPointAnalysis.MIN_SCORE_VALUE;
     	}
     }
 

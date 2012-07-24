@@ -34,7 +34,13 @@ import com.springsource.insight.intercept.trace.Trace;
 
 abstract class AbstractJMSResourceAnalyzer extends AbstractSingleTypeEndpointAnalyzer implements ExternalResourceAnalyzer {
 	public static final String JMS = "JMS";
-	public static final int	DEFAULT_SCORE = 1;
+    /**
+     * The <U>static</U> score value assigned to endpoints - <B>Note:</B>
+     * we return a score of {@link EndPointAnalysis#CEILING_LAYER_SCORE} so as
+     * to let other endpoints &quot;beat&quot; this one
+     */
+	public static final int	DEFAULT_SCORE = EndPointAnalysis.CEILING_LAYER_SCORE;
+
     protected final JMSPluginOperationType operationType;
     protected final boolean isIncoming;
     
@@ -49,7 +55,7 @@ abstract class AbstractJMSResourceAnalyzer extends AbstractSingleTypeEndpointAna
     	if (validateScoringFrame(frame) != null) {
     		return DEFAULT_SCORE;
     	} else {
-    		return Integer.MAX_VALUE;
+    		return EndPointAnalysis.MIN_SCORE_VALUE;
     	}
     }
 
@@ -71,30 +77,33 @@ abstract class AbstractJMSResourceAnalyzer extends AbstractSingleTypeEndpointAna
 		}
 
 		List<ExternalResourceDescriptor> queueDescriptors=new ArrayList<ExternalResourceDescriptor>(queueFrames.size());
+		ColorManager					 colorManager=ColorManager.getInstance();
 		for (Frame queueFrame : queueFrames) {
-			Operation op = queueFrame.getOperation();
-
-			String label = buildLabel(op);
-			String host = op.get("host", String.class);            
-			Integer portProperty = op.get("port", Integer.class);
-			int port = portProperty == null ? -1 : portProperty.intValue();
-            String color = ColorManager.getInstance().getColor(op);
-			String hashString = MD5NameGenerator.getName(label + host + port + isIncoming);
-
-			ExternalResourceDescriptor descriptor =
-			        new ExternalResourceDescriptor(queueFrame,
-			                                        JMS + ":" + hashString,
-			                                        JMS + "-" + label,
-			                                        ExternalResourceType.QUEUE.name(),
-			                                        JMS,
-			                                        host,
-			                                        port,
-                                                    color, isIncoming);
+			ExternalResourceDescriptor descriptor = createExternalResourceDescriptor(colorManager, queueFrame);
 			queueDescriptors.add(descriptor);            
 		}
 
 		return queueDescriptors;
 	}
+
+    ExternalResourceDescriptor createExternalResourceDescriptor (ColorManager colorManager, Frame queueFrame) {
+		Operation op = queueFrame.getOperation();
+		String label = buildLabel(op);
+		String host = op.get("host", String.class);            
+		Number portProperty = op.get("port", Number.class);
+		int port = portProperty == null ? -1 : portProperty.intValue();
+        String color = colorManager.getColor(op);
+		String hashString = MD5NameGenerator.getName(label + host + port + isIncoming);
+
+        return new ExternalResourceDescriptor(queueFrame,
+                JMS + ":" + hashString,
+                JMS + "-" + label,
+                ExternalResourceType.QUEUE.name(),
+                JMS,
+                host,
+                port,
+                color, isIncoming);
+    }
 
     private EndPointName getName(String label) {
 		return EndPointName.valueOf(label);
@@ -104,7 +113,7 @@ abstract class AbstractJMSResourceAnalyzer extends AbstractSingleTypeEndpointAna
     	return operationType.getEndPointPrefix() + label;
     }
     
-    private String buildLabel(Operation op) {
+    static String buildLabel(Operation op) {
     	String type = op.get("destinationType", String.class);
         String name = op.get("destinationName", String.class);
 

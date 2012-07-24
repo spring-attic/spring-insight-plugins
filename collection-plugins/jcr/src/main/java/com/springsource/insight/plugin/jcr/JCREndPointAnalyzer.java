@@ -27,13 +27,13 @@ public class JCREndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
     }
 
     @Override
-	protected EndPointAnalysis makeEndPoint(Frame frame, int score) {
+	protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
         Operation 		op=frame.getOperation();
         
         String workspaceName=op.get("workspace", String.class);
         String repoName=op.get("repository", String.class);
         String endPointName = repoName+(workspaceName!=null?"."+workspaceName:"");
         
-        return new EndPointAnalysis(EndPointName.valueOf(endPointName), "JCR: "+endPointName, endPointName, score, op);
+        return new EndPointAnalysis(EndPointName.valueOf(endPointName), "JCR: "+endPointName, endPointName, EndPointAnalysis.depth2score(depth), op);
     } 
 }

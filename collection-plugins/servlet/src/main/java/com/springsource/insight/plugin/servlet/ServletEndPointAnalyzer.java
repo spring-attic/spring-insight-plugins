@@ -15,13 +15,6 @@
  */
 package com.springsource.insight.plugin.servlet;
 
-/**
- * Locates servlet endpoints within Traces.  
- * 
- * If an HttpOperation is detected, an endpoint analysis will be returned.
- * The score of the analysis will always be 0, and its endpoint key/label
- * will be based on the servlet's name.
- */
 import com.springsource.insight.intercept.endpoint.AbstractSingleTypeEndpointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.endpoint.EndPointName;
@@ -32,8 +25,16 @@ import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.util.StringUtil;
 
+/**
+ * Locates servlet endpoints within Traces.  
+ * 
+ * If an HTTP {@link Operation} is detected, an endpoint analysis will be returned.
+ * The score of the analysis will always be 0, and its endpoint key/label
+ * will be based on the servlet's name.
+ */
 public class ServletEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
-    public static final int ANALYSIS_SCORE = 0;
+    public static final int ANALYSIS_SCORE = EndPointAnalysis.TOP_LAYER_SCORE;
+
     public ServletEndPointAnalyzer () {
     	super(OperationType.HTTP);
     }
@@ -41,7 +42,7 @@ public class ServletEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer 
     @Override
     public int getScore(Frame frame, int depth) {
     	if (validateScoringFrame(frame) == null) {
-    		return Integer.MIN_VALUE;
+    		return EndPointAnalysis.MIN_SCORE_VALUE;
     	} else {
     		return ANALYSIS_SCORE;
     	}
@@ -56,8 +57,7 @@ public class ServletEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer 
         String endPointKey = sanitizeEndPointKey(servletName);
         String endPointLabel = "Servlet: " + servletName;
 
-        return new EndPointAnalysis(EndPointName.valueOf(endPointKey), endPointLabel,
-                                    getExampleRequest(op), ANALYSIS_SCORE, op);
+        return new EndPointAnalysis(EndPointName.valueOf(endPointKey), endPointLabel, getExampleRequest(op), ANALYSIS_SCORE, op);
     }
 
     static String sanitizeEndPointKey(String endPointKey) {

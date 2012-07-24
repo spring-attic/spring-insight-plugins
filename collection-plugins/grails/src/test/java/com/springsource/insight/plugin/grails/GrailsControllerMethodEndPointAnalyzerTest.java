@@ -113,7 +113,7 @@ public class GrailsControllerMethodEndPointAnalyzerTest extends Assert {
         assertEquals("Mismatched endpoint name", epName, ep.getEndPointName());
 
     	assertEquals("Mismatched label", operation.getLabel(), ep.getResourceLabel());
-    	assertEquals("Mismatched score", FrameUtil.getDepth(grailsFrame), ep.getScore());
+    	assertEquals("Mismatched score", EndPointAnalysis.depth2score(FrameUtil.getDepth(grailsFrame)), ep.getScore());
 
     	if (httpFrame == null) {
     		assertEquals("Mismatched grails example", operation.getLabel(), ep.getExample());

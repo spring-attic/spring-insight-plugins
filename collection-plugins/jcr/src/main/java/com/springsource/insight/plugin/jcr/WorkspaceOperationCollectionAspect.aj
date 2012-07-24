@@ -20,11 +20,15 @@ import org.aspectj.lang.JoinPoint;
 
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.util.ArrayUtil;
 
 /**
  * This aspect intercepts all JCR Workspace/Session requests for: save, refresh, copy, clone, move
  */
 public privileged aspect WorkspaceOperationCollectionAspect extends AbstractOperationCollectionAspect {
+	public WorkspaceOperationCollectionAspect () {
+		super();
+	}
 
 	public pointcut workspaceCopy(): execution(public void javax.jcr.Workspace+.copy(String, String)) ||
 									execution(public void javax.jcr.Workspace+.copy(String, String, String));
@@ -34,10 +38,8 @@ public privileged aspect WorkspaceOperationCollectionAspect extends AbstractOper
 	public pointcut workspaceMove(): execution(public void javax.jcr.Workspace+.move(String, String)) ||
 									execution(public void javax.jcr.Session+.move(String, String));
 	
- 
     public pointcut collectionPoint() : workspaceCopy() || workspaceClone() || workspaceMove();
 
-    
     @Override
     protected Operation createOperation(JoinPoint jp) {
     	String method=jp.getSignature().getName();
@@ -46,38 +48,56 @@ public privileged aspect WorkspaceOperationCollectionAspect extends AbstractOper
     	Operation op=new Operation().type(OperationCollectionTypes.WORKSPACE_TYPE.type)
     								.label(OperationCollectionTypes.WORKSPACE_TYPE.label+" "+method)
     								.sourceCodeLocation(getSourceCodeLocation(jp))
-    								.put("workspace", JCRCollectionUtils.getWorkspaceName(jp.getTarget()));
+    								.putAnyNonEmpty("workspace", JCRCollectionUtils.getWorkspaceName(jp.getTarget()))
+    								;
     	
     	//add request parameters
-    	if (method.equals("copy"))
-    		createCopyOperation(args, op);
-    	else
-    	if (method.equals("clone"))
-    		createCloneOperation(args, op);
-    	else
-    	if (method.equals("move"))
-    		createMoveOperation(args, op);
-    		
+    	if (method.equals("copy")) {
+    		createCopyOperation(op, args);
+    	} else if (method.equals("clone")) {
+    		createCloneOperation(op, args);
+    	} else if (method.equals("move")) {
+    		createMoveOperation(op, args);
+    	}
+
     	return op;
     }
     
-    private void createCopyOperation(Object[] args, Operation op) {
-    	op.put("destAbsPath", (String)args[args.length-1]);
-    	op.put("srcAbsPath", (String)args[args.length-2]);
-    	if (args.length==3)
-    		op.put("srcWorkspace", (String)args[0]);
+    static Operation createCopyOperation(Operation op, Object ... args) {
+    	if (ArrayUtil.length(args) <= 1) {
+    		return op;
+    	}
+
+    	op.putAnyNonEmpty("destAbsPath", args[args.length-1])
+    	  .putAnyNonEmpty("srcAbsPath", args[args.length-2])
+    	  ;
+    	if (args.length==3) {
+    		op.putAnyNonEmpty("srcWorkspace", args[0]);
+    	}
+
+    	return op;
     }
     
-    private void createCloneOperation(Object[] args, Operation op) {
-    	op.put("srcWorkspace", (String)args[0]);
-    	op.put("srcAbsPath", (String)args[1]);
-    	op.put("destAbsPath", (String)args[2]);
-    	op.put("removeExisting", (String)args[3]);
+    static Operation createCloneOperation(Operation op, Object ... args) {
+    	if (ArrayUtil.length(args) <= 3) {
+    		return op;
+    	}
+
+    	return op.putAnyNonEmpty("srcWorkspace", args[0])
+    			 .putAnyNonEmpty("srcAbsPath", args[1])
+    			 .putAnyNonEmpty("destAbsPath", args[2])
+    			 .putAnyNonEmpty("removeExisting", args[3])
+    			 ;
     }
     
-    private void createMoveOperation(Object[] args, Operation op) {
-    	op.put("srcAbsPath", (String)args[0]);
-    	op.put("destAbsPath", (String)args[1]);
+    static Operation createMoveOperation(Operation op, Object ... args) {
+    	if (ArrayUtil.length(args) <= 1) {
+    		return op;
+    	}
+
+    	return op.putAnyNonEmpty("srcAbsPath", args[0])
+    			 .putAnyNonEmpty("destAbsPath", args[1])
+    			 ;
     }
 
 	@Override

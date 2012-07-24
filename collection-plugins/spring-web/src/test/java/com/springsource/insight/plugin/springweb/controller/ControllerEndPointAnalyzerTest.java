@@ -16,6 +16,14 @@
 
 package com.springsource.insight.plugin.springweb.controller;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.Collections;
+
+import org.junit.Assert;
+import org.junit.Test;
+
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.endpoint.EndPointName;
@@ -23,46 +31,44 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.trace.Frame;
+import com.springsource.insight.intercept.trace.FrameId;
+import com.springsource.insight.intercept.trace.FrameUtil;
+import com.springsource.insight.intercept.trace.SimpleFrame;
 import com.springsource.insight.intercept.trace.SimpleFrameBuilder;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
-import org.junit.Test;
+import com.springsource.insight.util.time.TimeRange;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+public class ControllerEndPointAnalyzerTest extends Assert {
+    private static final ControllerEndPointAnalyzer analyzer = new ControllerEndPointAnalyzer();
+    private static final String	TEST_VERB="GET", TEST_PATH="/path?fuu=bar";
+    private static final String	TEST_CLASS_NAME="MyClass", TEST_METHOD_NAME="method";
+    private static final String	TEST_CLASS_PATH="com.class." + TEST_CLASS_NAME, TEST_SIGNATURE=TEST_METHOD_NAME + "()";
 
-public class ControllerEndPointAnalyzerTest {
+	public ControllerEndPointAnalyzerTest () {
+		super();
+	}
 
     @Test
-    public void analyze() {
-        Trace trace = createValidTrace();
-        ControllerEndPointAnalyzer analyzer = new ControllerEndPointAnalyzer();
-        EndPointAnalysis analysis = analyzer.locateEndPoint(trace);
-        assertNotNull(analysis);
-        assertEquals("GET /path?fuu=bar", analysis.getExample());        
-        assertEquals(EndPointName.valueOf("com.class.MyClass#method()"), analysis.getEndPointName());
-        assertEquals("MyClass#method", analysis.getResourceLabel());
-        assertEquals(1, analysis.getScore());
-    }
-    
-    @Test
-    public void analyze_topLevelNotHttp() {
-        ControllerEndPointAnalyzer analyzer = new ControllerEndPointAnalyzer();
-        
-        SimpleFrameBuilder builder = new SimpleFrameBuilder();
-        builder.enter(new Operation().type(ControllerEndPointAnalyzer.CONTROLLER_METHOD_TYPE));
-        Frame root = builder.exit();
-        Trace trace = mock(Trace.class);        
-        when(trace.getRootFrame()).thenReturn(root);
-        
-        assertNull(analyzer.locateEndPoint(trace));
+    public void testDefaultAnalysis() {
+        Trace 	trace=createValidTrace();
+        Frame	scoreFrame=analyzer.getScoringFrame(trace);
+        assertEndPointAnalysis("traceAnalysis", analyzer.locateEndPoint(trace), scoreFrame);
+        assertEndPointAnalysis("frameAnalysis", analyzer.locateEndPoint(scoreFrame, FrameUtil.getDepth(scoreFrame)), scoreFrame);
     }
 
     @Test
-    public void analyze_noControllerFrame() {
-        ControllerEndPointAnalyzer analyzer = new ControllerEndPointAnalyzer();
-        
+    public void testAnalyzeNoHttpFrame() {
+    	Operation	op=createControllerOperation();
+    	Frame		frame=new SimpleFrame(FrameId.valueOf("3777347"), null, op, new TimeRange(1L, 10L), Collections.<Frame>emptyList());
+    	Trace		trace=Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
+    	EndPointAnalysis	analysis=analyzer.locateEndPoint(trace);
+        assertNotNull("No analysis result", analysis);
+        assertEquals("Mismatched example", op.getLabel(), analysis.getExample());
+    }
+
+    @Test
+    public void testAnalyzeNoControllerFrame() {
         Operation httpOp = new Operation().type(OperationType.HTTP);
         httpOp.createMap("request").put(OperationFields.URI, "/foo");
 
@@ -73,22 +79,38 @@ public class ControllerEndPointAnalyzerTest {
         when(trace.getRootFrame()).thenReturn(root);
         when(trace.getAppName()).thenReturn(ApplicationName.valueOf("app"));
         
-        assertNull(analyzer.locateEndPoint(trace));
+        EndPointAnalysis analysis=analyzer.locateEndPoint(trace);
+        assertNull("Unexpected result: " + analysis, analysis);
     }
-    
+
+    private static EndPointAnalysis assertEndPointAnalysis (String testName, EndPointAnalysis analysis, Frame scoreFrame) {
+        assertNotNull(testName + ": No analysis result", analysis);
+        assertEquals(testName + ": Mismatched example", TEST_VERB + " " + TEST_PATH, analysis.getExample());        
+        assertEquals(testName + ": Mismatched endpoint", EndPointName.valueOf(TEST_CLASS_PATH + "#" + TEST_SIGNATURE), analysis.getEndPointName());
+        assertEquals(testName + ": Mismatched label", TEST_CLASS_NAME + "#" + TEST_METHOD_NAME, analysis.getResourceLabel());
+        assertEquals(testName + ": Mismatched score", EndPointAnalysis.depth2score(FrameUtil.getDepth(scoreFrame)), analysis.getScore());
+        return analysis;
+    }
+
     public static Trace createValidTrace() {
         SimpleFrameBuilder builder = new SimpleFrameBuilder();
         Operation httpOp = new Operation().type(OperationType.HTTP);
         httpOp.createMap("request")
-            .put(OperationFields.URI, "/path?fuu=bar")
-            .put("method", "GET");
+            .put(OperationFields.URI, TEST_PATH)
+            .put("method", TEST_VERB);
         builder.enter(httpOp);
-        builder.enter(new Operation().type(ControllerEndPointAnalyzer.CONTROLLER_METHOD_TYPE)
-                                     .put(OperationFields.CLASS_NAME, "com.class.MyClass")
-                                     .put(OperationFields.METHOD_SIGNATURE, "method()")
-                                     .label("MyClass#method"));
+        builder.enter(createControllerOperation());
         builder.exit();
         Frame httpFrame = builder.exit();
         return Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), httpFrame);
+    }
+
+    private static Operation createControllerOperation () {
+    	return new Operation()
+    			.type(ControllerEndPointAnalyzer.CONTROLLER_METHOD_TYPE)
+                .put(OperationFields.CLASS_NAME, TEST_CLASS_PATH)
+                .put(OperationFields.METHOD_SIGNATURE, TEST_SIGNATURE)
+                .label(TEST_CLASS_NAME + "#" + TEST_METHOD_NAME)
+                ;
     }
 }

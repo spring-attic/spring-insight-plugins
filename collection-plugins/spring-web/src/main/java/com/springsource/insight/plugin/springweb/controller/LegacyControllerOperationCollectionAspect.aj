@@ -18,12 +18,10 @@ package com.springsource.insight.plugin.springweb.controller;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.aspectj.lang.reflect.SourceLocation;
 
-import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
-import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.SourceCodeLocation;
 import com.springsource.insight.plugin.springweb.LegacyControllerPointcuts;
-import com.springsource.insight.plugin.springweb.SpringWebPluginRuntimeDescriptor;
 
 /**
  * Creates an operation for implementors of the Spring MVC Controller
@@ -38,32 +36,19 @@ import com.springsource.insight.plugin.springweb.SpringWebPluginRuntimeDescripto
  * which houses handleRequest, but should point at the user's code, which will have the
  * real handler implementation (albeit with a likely different name)
  */
-public aspect LegacyControllerOperationCollectionAspect extends MethodOperationCollectionAspect {
+public aspect LegacyControllerOperationCollectionAspect extends AbstractControllerOperationCollectionAspect {
 	public LegacyControllerOperationCollectionAspect () {
-		super();
+		super(true);
 	}
 
     public pointcut collectionPoint() : LegacyControllerPointcuts.controllerHandlerMethod();
 
     @Override
-    public Operation createOperation(JoinPoint jp) {
-        return super.createOperation(jp).type(ControllerEndPointAnalyzer.CONTROLLER_METHOD_TYPE);
-    }
-
-    @Override
-    public boolean isEndpoint() {
-        return true;
-    }
-
-    @Override
     public SourceCodeLocation getSourceCodeLocation(JoinPoint jp) {
         MethodSignature mSig = (MethodSignature) jp.getSignature();
-        String className = jp.getTarget().getClass().getName();
-        return new SourceCodeLocation(className, mSig.getName(), jp.getSourceLocation().getLine());
-    }
-
-    @Override
-    public String getPluginName() {
-        return SpringWebPluginRuntimeDescriptor.PLUGIN_NAME;
+        Object		target=jp.getTarget();
+        Class<?>	targetClass=target.getClass();
+        SourceLocation	jpSource=jp.getSourceLocation();
+        return new SourceCodeLocation(targetClass.getName(), mSig.getName(), jpSource.getLine());
     }
 }

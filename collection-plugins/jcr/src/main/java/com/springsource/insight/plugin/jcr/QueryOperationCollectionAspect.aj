@@ -27,18 +27,21 @@ import com.springsource.insight.intercept.operation.Operation;
  * This aspect intercepts all JCR Query requests
  */
 public privileged aspect QueryOperationCollectionAspect extends AbstractOperationCollectionAspect {
- 
+	public QueryOperationCollectionAspect () {
+		super();
+	}
+
     public pointcut collectionPoint() : execution(public QueryResult javax.jcr.query.Query+.execute());
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
     	Query query=(Query)jp.getTarget();
-    	
     			
     	return new Operation().type(OperationCollectionTypes.QUERY_TYPE.type)
     						.label(OperationCollectionTypes.QUERY_TYPE.label)
     						.sourceCodeLocation(getSourceCodeLocation(jp))
-    						.put("statement", query.getStatement());
+    						.put("statement", query.getStatement())
+    						;
     }
 
 	@Override

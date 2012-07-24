@@ -25,29 +25,28 @@ import org.aspectj.lang.JoinPoint;
 
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.util.ArrayUtil;
 
 
 /**
  * This aspect intercepts all JCR GetNode(s) requests
  */
 public privileged aspect GetNodeOperationCollectionAspect extends AbstractOperationCollectionAspect {
-    
-	public pointcut getNode(): execution(public Node javax.jcr.Node+.getNode(String)) && if(GetNodeOperationCollectionAspect.isGetItemEnabled(thisJoinPoint));;
-	
+    public GetNodeOperationCollectionAspect () {
+    	super();
+    }
+
+	public pointcut getNode(): execution(public Node javax.jcr.Node+.getNode(String)) && if(GetNodeOperationCollectionAspect.isGetItemEnabled(thisJoinPoint));
 	public pointcut getNodes(): execution(public NodeIterator javax.jcr.Node+.getNodes(..));
-	
 	public pointcut getItem(): execution(public Item javax.jcr.Session+.getItem(String));
 	
-	
 	public pointcut collectionPoint() : getNode() || getNodes() || getItem();
-	
 	
 	public static boolean isGetItemEnabled(JoinPoint jp) {
     	Item item=(Item)jp.getTarget();
     	try {
 			return !item.getSession().getUserID().equals("system"); // filter get requests in chain
-		}
-		catch (RepositoryException e) {
+		} catch (RepositoryException e) {
 			return false;
 		}
     }
@@ -60,29 +59,28 @@ public privileged aspect GetNodeOperationCollectionAspect extends AbstractOperat
     	Operation op=new Operation().type(OperationCollectionTypes.GET_TYPE.type)
     								.label(OperationCollectionTypes.GET_TYPE.label+method)
     								.sourceCodeLocation(getSourceCodeLocation(jp))
-    								.put("workspace", JCRCollectionUtils.getWorkspaceName(targ));
+    								.putAnyNonEmpty("workspace", JCRCollectionUtils.getWorkspaceName(targ));
 
     	try {
 			if (targ instanceof Item) {
-				op.put("path", ((Item)targ).getPath()); //relating node path
+				op.putAnyNonEmpty("path", ((Item)targ).getPath()); //relating node path
 			}
-		}
-		catch (RepositoryException e) {
+		} catch (RepositoryException e) {
 			//ignore
 		}
 
     	//add request parameters
     	Object[] args = jp.getArgs();
-    	
-    	if (method.equals("getNode"))
-    		op.put("relPath", (String)args[0]);
-    	else
-    	if (method.equals("getNodes") && args.length>0)
-    		op.put("namePattern", (String)args[0]);
-    	else
-        if (method.equals("getItem"))
-        	op.put("absPath", (String)args[0]);
-    			
+    	if (ArrayUtil.length(args) > 0) {
+	    	if (method.equals("getNode")) {
+	    		op.putAnyNonEmpty("relPath", args[0]);
+	    	} else if (method.equals("getNodes")) {
+	    		op.putAnyNonEmpty("namePattern", args[0]);
+	    	} else if (method.equals("getItem")) {
+	        	op.putAnyNonEmpty("absPath", args[0]);
+	    	}
+    	}
+
     	return op;
     }
 

@@ -33,14 +33,14 @@ public class JaxrsEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
     }
 
     @Override
-	protected EndPointAnalysis makeEndPoint(Frame frame, int score) {
+	protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
 		Operation	  op=frame.getOperation();
         EndPointName  endPointName=EndPointName.valueOf(op);
         Frame 		  rootFrame=FrameUtil.getRoot(frame);
         Operation     rootOperation=rootFrame.getOperation();
         Frame         httpFrame=FrameUtil.getFirstParentOfType(frame, OperationType.HTTP);
         String        example=getExampleRequest(httpFrame, frame, rootOperation);
-        return new EndPointAnalysis(endPointName, op.getLabel(), example, score, op);
+        return new EndPointAnalysis(endPointName, op.getLabel(), example, EndPointAnalysis.depth2score(depth), op);
     }
 
     public String getExampleRequest(Frame httpFrame, Frame frame, Operation rootOperation) {

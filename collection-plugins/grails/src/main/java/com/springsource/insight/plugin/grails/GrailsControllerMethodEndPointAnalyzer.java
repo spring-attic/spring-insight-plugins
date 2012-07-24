@@ -33,7 +33,7 @@ public class GrailsControllerMethodEndPointAnalyzer extends AbstractSingleTypeEn
     }
 
 	@Override
-	protected EndPointAnalysis makeEndPoint(Frame grailsFrame, int score) {
+	protected EndPointAnalysis makeEndPoint(Frame grailsFrame, int depth) {
         Operation operation = grailsFrame.getOperation();
         String resourceKey = makeResourceKey(operation.getSourceCodeLocation());
         String resourceLabel = operation.getLabel();
@@ -43,7 +43,9 @@ public class GrailsControllerMethodEndPointAnalyzer extends AbstractSingleTypeEn
         String 		exampleRequest = httpOperation.getLabel();
         return new EndPointAnalysis(EndPointName.valueOf(resourceKey),
                                     resourceLabel,
-                                    exampleRequest, score, operation);
+                                    exampleRequest,
+                                    EndPointAnalysis.depth2score(depth),
+                                    operation);
     }
 
 	static String makeResourceKey (SourceCodeLocation actionLocation) {

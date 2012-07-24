@@ -35,7 +35,13 @@ import com.springsource.insight.intercept.trace.Trace;
  * scheduled threads, etc.)
  */
 public class TopLevelMethodEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
-	public static final int	DEFAULT_SCORE=0;
+    /**
+     * The <U>static</U> score value assigned to endpoints - <B>Note:</B>
+     * we return a score of {@link EndPointAnalysis#CEILING_LAYER_SCORE} so as
+     * to let other endpoints &quot;beat&quot; this one
+     */
+	public static final int	DEFAULT_SCORE=EndPointAnalysis.CEILING_LAYER_SCORE;
+
     public TopLevelMethodEndPointAnalyzer () {
     	super(OperationType.METHOD);
     }
@@ -43,7 +49,7 @@ public class TopLevelMethodEndPointAnalyzer extends AbstractSingleTypeEndpointAn
     @Override
 	public int getScore(Frame frame, int depth) {
     	if (validateScoringFrame(frame) == null) {
-    		return Integer.MIN_VALUE;
+    		return EndPointAnalysis.MIN_SCORE_VALUE;
     	} else {
     		return DEFAULT_SCORE;
     	}
@@ -73,7 +79,7 @@ public class TopLevelMethodEndPointAnalyzer extends AbstractSingleTypeEndpointAn
         Operation rootOp = root.getOperation();
         EndPointName name = EndPointName.valueOf(rootOp);
         String label = rootOp.getLabel();
-        String exampleRequest = "";
+        String exampleRequest = label;
         OperationList args = rootOp.get(OperationFields.ARGUMENTS, OperationList.class);
         if ((args != null) && (args.size() == 1)) {
         	exampleRequest = args.get(0, String.class); 

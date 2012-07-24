@@ -32,9 +32,16 @@ import com.springsource.insight.intercept.trace.Trace;
  * 
  */
 public class RunExecEndPointAnalyzer extends AbstractEndPointAnalyzer {
+	/**
+	 * The {@link List} of {@link OperationType}-s that mark a run/execute frame
+	 */
 	public static final List<OperationType>	OPS=Collections.unmodifiableList(Arrays.asList(RunExecDefinitions.EXEC_OP, RunExecDefinitions.RUN_OP));
-    // NOTE: we return a score of zero so as to let other endpoints "beat" this one
-	public static final int	DEFAULT_SCORE=0;
+    /**
+     * The <U>static</U> score value assigned to endpoints - <B>Note:</B>
+     * we return a score of {@link EndPointAnalysis#TOP_LAYER_SCORE} so as
+     * to let other endpoints &quot;beat&quot; this one
+     */
+	public static final int	DEFAULT_SCORE=EndPointAnalysis.TOP_LAYER_SCORE;
 
     public RunExecEndPointAnalyzer() {
         super(OPS);
@@ -48,14 +55,14 @@ public class RunExecEndPointAnalyzer extends AbstractEndPointAnalyzer {
     @Override
 	public int getScore(Frame frame, int depth) {
     	if (validateScoringFrame(frame) == null) {
-    		return Integer.MIN_VALUE;
+    		return EndPointAnalysis.MIN_SCORE_VALUE;
     	} else {
     		return DEFAULT_SCORE;
     	}
     }
 
 	@Override
-	protected EndPointAnalysis makeEndPoint(Frame frame, int deptj) {
+	protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
         Operation   op=frame.getOperation();
         return new EndPointAnalysis(EndPointName.valueOf(op), op.getLabel(), op.getLabel(), DEFAULT_SCORE, op);
     }

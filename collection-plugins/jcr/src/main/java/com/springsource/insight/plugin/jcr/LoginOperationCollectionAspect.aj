@@ -16,9 +16,9 @@
 
 package com.springsource.insight.plugin.jcr;
 
+import javax.jcr.Credentials;
 import javax.jcr.Repository;
 import javax.jcr.Session;
-import javax.jcr.Credentials;
 import javax.jcr.SimpleCredentials;
 
 import org.aspectj.lang.JoinPoint;
@@ -30,10 +30,12 @@ import com.springsource.insight.intercept.operation.Operation;
  * This aspect intercepts all JCR Login
  */
 public privileged aspect LoginOperationCollectionAspect extends AbstractOperationCollectionAspect {
+	public LoginOperationCollectionAspect () {
+		super();
+	}
 
 	public pointcut collectionPoint() : execution(public Session javax.jcr.Repository+.login(Credentials, String)) && if(LoginOperationCollectionAspect.isEnabled(thisJoinPoint));
-    
-	
+
     public static boolean isEnabled(JoinPoint jp) {
     	Repository repo=(Repository)jp.getTarget();
     	return repo.getClass().getSimpleName().endsWith("Impl"); // filter multiple login requests in chain
@@ -44,18 +46,20 @@ public privileged aspect LoginOperationCollectionAspect extends AbstractOperatio
     	Object[] args = jp.getArgs();
     	Repository repo=(Repository)jp.getTarget();
     	
-    	SimpleCredentials credentials=(SimpleCredentials)args[0];
+    	Credentials credentials=(Credentials)args[0];
     	String workspaceName=(String)args[1];
     			
     	Operation op=new Operation().type(OperationCollectionTypes.LOGIN_TYPE.type)
     								.label(OperationCollectionTypes.LOGIN_TYPE.label+(workspaceName!=null?" ["+workspaceName+"]":""))
     								.sourceCodeLocation(getSourceCodeLocation(jp))
-    								.put("repository", repo.getDescriptor(Repository.REP_NAME_DESC))
-    								.put("workspace", workspaceName);
+    								.putAnyNonEmpty("repository", repo.getDescriptor(Repository.REP_NAME_DESC))
+    								.putAnyNonEmpty("workspace", workspaceName)
+    								;
     						
-    	if (credentials!=null) {
-    		op.put("user", credentials.getUserID());
-    		op.put("pass", credentials.getPassword().toString());
+    	if (credentials instanceof SimpleCredentials) {
+    		SimpleCredentials	auth=(SimpleCredentials) credentials;
+    		op.putAnyNonEmpty("user", auth.getUserID());
+    		op.putAnyNonEmpty("pass", JCRCollectionUtils.safeToString(auth.getPassword()));
     	}
     	
     	return op;

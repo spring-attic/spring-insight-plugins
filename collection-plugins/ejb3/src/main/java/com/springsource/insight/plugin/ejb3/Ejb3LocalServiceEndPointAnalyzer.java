@@ -33,13 +33,13 @@ public class Ejb3LocalServiceEndPointAnalyzer extends AbstractSingleTypeEndpoint
     }
 
     @Override
-	protected EndPointAnalysis makeEndPoint(Frame frame, int score) {
+	protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
         Operation 		op=frame.getOperation();
         EndPointName  	endPointName=EndPointName.valueOf(op);
     	Frame 			rootFrame=FrameUtil.getRoot(frame);
         Operation     	rootOperation=rootFrame.getOperation();
         String        	example=getExampleRequest(frame, rootOperation);
-        return new EndPointAnalysis(endPointName, op.getLabel(), example, score, op);
+        return new EndPointAnalysis(endPointName, op.getLabel(), example, EndPointAnalysis.depth2score(depth), op);
     }
 
 	public String getExampleRequest(Frame frame, Operation rootOperation) {

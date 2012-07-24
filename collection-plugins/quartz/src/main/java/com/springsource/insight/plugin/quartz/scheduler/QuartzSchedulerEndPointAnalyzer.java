@@ -25,7 +25,12 @@ import com.springsource.insight.intercept.trace.Frame;
  * 
  */
 public class QuartzSchedulerEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer{
-	public static final int	DEFAULT_SCORE=0;
+    /**
+     * The <U>static</U> score value assigned to endpoints - <B>Note:</B>
+     * we return a score of {@link EndPointAnalysis#CEILING_LAYER_SCORE} so as
+     * to let other endpoints &quot;beat&quot; this one
+     */
+	public static final int	DEFAULT_SCORE=EndPointAnalysis.CEILING_LAYER_SCORE;
 
     public QuartzSchedulerEndPointAnalyzer() {
         super(QuartzSchedulerDefinitions.TYPE);
@@ -34,7 +39,7 @@ public class QuartzSchedulerEndPointAnalyzer extends AbstractSingleTypeEndpointA
     @Override
 	public int getScore(Frame frame, int depth) {
     	if (validateScoringFrame(frame) == null) {
-    		return Integer.MIN_VALUE;
+    		return EndPointAnalysis.MIN_SCORE_VALUE;
     	} else {
     		return DEFAULT_SCORE;
     	}
@@ -45,7 +50,4 @@ public class QuartzSchedulerEndPointAnalyzer extends AbstractSingleTypeEndpointA
         Operation op=frame.getOperation();
         return new EndPointAnalysis(EndPointName.valueOf(op), op.getLabel(), op.getLabel(), DEFAULT_SCORE, op);
     }
-
-
-
 }

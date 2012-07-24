@@ -30,12 +30,15 @@ import com.springsource.insight.intercept.operation.Operation;
  * This aspect intercepts all JCR Item requests for: save, refresh, remove, update and addNode
  */
 public privileged aspect ItemOperationCollectionAspect extends AbstractOperationCollectionAspect {
+	public ItemOperationCollectionAspect () {
+		super();
+	}
+
     public pointcut itemRemove() : execution(public void javax.jcr.Item+.remove());
 	public pointcut nodeUpdate(): execution(public void javax.jcr.Node+.update(String));
 	public pointcut nodeAdd(): execution(public Node javax.jcr.Node+.addNode(..));
 		
 	public pointcut collectionPoint() : itemRemove() || nodeUpdate() || nodeAdd();
-
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
@@ -43,8 +46,7 @@ public privileged aspect ItemOperationCollectionAspect extends AbstractOperation
     	String path=null;
     	try {
     		path=item.getPath(); //relating item path
-		}
-		catch (RepositoryException e) {
+		} catch (RepositoryException e) {
 			//ignore
 		}
 
@@ -52,17 +54,16 @@ public privileged aspect ItemOperationCollectionAspect extends AbstractOperation
     	Operation op=new Operation().type(OperationCollectionTypes.ITEM_TYPE.type)
     								.label(OperationCollectionTypes.ITEM_TYPE.label+" "+method+" ["+path+"]")
     								.sourceCodeLocation(getSourceCodeLocation(jp))
-    								.put("workspace", JCRCollectionUtils.getWorkspaceName(item))
-    								.put("path", path);
+    								.putAnyNonEmpty("workspace", JCRCollectionUtils.getWorkspaceName(item))
+    								.putAnyNonEmpty("path", path);
     	
     	//add request parameters
     	Object[] args = jp.getArgs();
-    	
-    	if (method.equals("update"))
-    		op.put("srcWorkspace", (String)args[0]);
-    	else
-        if (method.equals("addNode"))
-        	op.put("relPath", (String)args[0]);
+    	if (method.equals("update")) {
+    		op.putAnyNonEmpty("srcWorkspace", args[0]);
+    	} else if (method.equals("addNode")) {
+        	op.putAnyNonEmpty("relPath", args[0]);
+    	}
     			
     	return op;
     }

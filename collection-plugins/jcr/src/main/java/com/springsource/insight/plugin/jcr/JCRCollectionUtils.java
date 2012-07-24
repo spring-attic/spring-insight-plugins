@@ -20,24 +20,34 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
 
-public class JCRCollectionUtils {
+import com.springsource.insight.util.ArrayUtil;
+
+public final class JCRCollectionUtils {
+	private JCRCollectionUtils () {
+		throw new UnsupportedOperationException("No instance");
+	}
+
 	public static String getWorkspaceName(Object targ) {
-		String workspaceName=null;
-		
 		try {
-			if (targ instanceof Item)
-				workspaceName=((Item)targ).getSession().getWorkspace().getName();
-			else
-			if (targ instanceof Workspace)
-		    	workspaceName=((Workspace)targ).getName();
-			else
-			if (targ instanceof Session)
-				workspaceName=((Session)targ).getWorkspace().getName();
-		}
-		catch (RepositoryException e) {
+			if (targ instanceof Item) {
+				return getWorkspaceName(((Item)targ).getSession());
+			} else if (targ instanceof Session) {
+				return getWorkspaceName(((Session)targ).getWorkspace());
+			} else if (targ instanceof Workspace) {
+		    	return ((Workspace)targ).getName();
+			}
+		} catch (RepositoryException e) {
 			//ignore
 		}
 		
-		return workspaceName;
+		return null;
+	}
+	
+	public static String safeToString (char ... chars) {
+		if (ArrayUtil.length(chars) <= 0) {
+			return "";
+		} else {
+			return new String(chars);
+		}
 	}
 }
