@@ -39,13 +39,37 @@ import com.springsource.insight.intercept.trace.FrameUtil;
  */
 public class ControllerEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
     public static final OperationType CONTROLLER_METHOD_TYPE = OperationType.valueOf("controller_method");
+    /**
+     * The property used to mark legacy controller operations
+     */
     public static final String	LEGACY_PROPNAME="legacyController";
+    /**
+     * The <U>static</U> score assigned to legacy controllers - it is just slightly
+     * above that of a servlet and/or queue operation
+     */
+    public static final int	LEGACY_SCORE=EndPointAnalysis.CEILING_LAYER_SCORE + 1;
 
     public ControllerEndPointAnalyzer () {
     	super(CONTROLLER_METHOD_TYPE);
     }
 
     @Override
+	public int getScore(Frame frame, int depth) {
+		OperationType	opType=validateScoringFrame(frame);
+		if (opType == null) {
+			return EndPointAnalysis.MIN_SCORE_VALUE;
+		}
+
+		Operation	op=frame.getOperation();
+		Boolean		legacy=op.get(LEGACY_PROPNAME, Boolean.class);
+		if ((legacy != null) && legacy.booleanValue()) {
+			return LEGACY_SCORE;
+		} else {
+			return EndPointAnalysis.depth2score(depth);
+		}
+	}
+
+	@Override
 	protected EndPointAnalysis makeEndPoint(Frame controllerFrame, int depth) {
         Operation controllerOp = controllerFrame.getOperation();
         Frame httpFrame = FrameUtil.getFirstParentOfType(controllerFrame, OperationType.HTTP);
