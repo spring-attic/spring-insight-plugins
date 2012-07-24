@@ -72,9 +72,4 @@ public aspect JMSMessageListenerCollectionAspect extends AbstractJMSCollectionAs
     after(Message message) throwing(Throwable exception) : messageListener(message) {
         getCollector().exitAbnormal(exception);
     }
-
-    @Override
-    public boolean isEndpoint() {
-    	return true;
-    }
 }

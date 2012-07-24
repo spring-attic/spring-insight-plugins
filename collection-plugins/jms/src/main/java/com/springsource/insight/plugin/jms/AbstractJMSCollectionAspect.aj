@@ -86,6 +86,11 @@ public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAs
     }
 
     @Override
+    public boolean isEndpoint() {
+    	return true;
+    }
+
+    @Override
     public String getPluginName() {
         return JmsPluginRuntimeDescriptor.PLUGIN_NAME;
     }
