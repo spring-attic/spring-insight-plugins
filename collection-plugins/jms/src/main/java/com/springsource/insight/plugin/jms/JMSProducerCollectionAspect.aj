@@ -29,8 +29,9 @@ import com.springsource.insight.intercept.color.ColorManager.ColorParams;
 
 public aspect JMSProducerCollectionAspect extends AbstractJMSCollectionAspect {
     private static final MessageOperationMap map = new MessageOperationMap();
+
     public JMSProducerCollectionAspect () {
-        super();
+        super(JMSPluginOperationType.SEND);
     }
 
     public pointcut producer()
@@ -118,17 +119,14 @@ public aspect JMSProducerCollectionAspect extends AbstractJMSCollectionAspect {
         }
     }
     
-    @Override
-    JMSPluginOperationType getOperationType() {
-        return JMSPluginOperationType.SEND;
-    }
-    
-    private void applyDestinationData(JoinPoint jp, Operation op) {
+    private Operation applyDestinationData(JoinPoint jp, Operation op) {
         try {
             Destination dest = ((MessageProducer) jp.getThis()).getDestination();
             applyDestinationData(dest, op);
         } catch (JMSException e) {
             // ignored - TODO consider logging
         }
+
+        return op;
     }
 }
