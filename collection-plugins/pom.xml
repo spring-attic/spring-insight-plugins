@@ -45,7 +45,6 @@
 		<module>ldap</module>
 		<module>logging</module>
 		<module>mail</module>
-		<module>method-endpoint</module>
 		<module>mongodb</module>
 		<module>portlet</module>
 		<module>quartz</module>
