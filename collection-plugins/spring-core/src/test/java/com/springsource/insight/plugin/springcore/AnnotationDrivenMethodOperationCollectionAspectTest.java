@@ -16,28 +16,41 @@
 
 package com.springsource.insight.plugin.springcore;
 
+import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import static org.junit.Assert.*;
-
 import com.springsource.insight.collection.method.MethodOperationsCollected;
 
-public class AnnotationDrivenMethodOperationCollectionAspectTest {
+public class AnnotationDrivenMethodOperationCollectionAspectTest extends Assert {
+	public AnnotationDrivenMethodOperationCollectionAspectTest () {
+		super();
+	}
 
     @Test
     public void methodOperationsCollectedAnnotationAppliedCorrectly() {
-        Class<ExampleRepositoryThatIsAlsoService> exampleDualClass = ExampleRepositoryThatIsAlsoService.class;
-        assertTrue(exampleDualClass.isAnnotationPresent(MethodOperationsCollected.class));
-
-        Class<ExampleService> exampleServiceClass = ExampleService.class;
-        assertTrue(exampleServiceClass.isAnnotationPresent(MethodOperationsCollected.class));
-
-        Class<ExampleRepository> exampleRepositoryClass = ExampleRepository.class;
-        assertTrue(exampleRepositoryClass.isAnnotationPresent(MethodOperationsCollected.class));
+    	for (Class<?> testClass : new Class[] {
+		    			ExampleComponent.class,
+		    			ExampleService.class,
+		    			ExampleRepository.class,
+		    			ExampleRepositoryThatIsAlsoService.class }) {
+    		assertIsMethodOperationsCollected(testClass);
+    	}
     }
-    
+
+    private static void assertIsMethodOperationsCollected (Class<?> clazz) {
+    	assertTrue(clazz.getSimpleName() + " not annotated", clazz.isAnnotationPresent(MethodOperationsCollected.class));
+    }
+
+    @Component
+    private static class ExampleComponent {
+        public void doIt () {
+        	// do nothing
+        }
+    }
+
     @Service
     private static class ExampleService {
         public void service() {

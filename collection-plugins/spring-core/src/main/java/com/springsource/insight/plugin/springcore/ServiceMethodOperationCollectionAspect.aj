@@ -20,6 +20,9 @@ import org.springframework.stereotype.Service;
 
 import com.springsource.insight.collection.method.MethodOperationsCollected;
 
+/**
+ * Causes all {@link Service} annotated classes to be instrumented
+ */
 public aspect ServiceMethodOperationCollectionAspect {
     declare @type: @Service * : @MethodOperationsCollected;
 }

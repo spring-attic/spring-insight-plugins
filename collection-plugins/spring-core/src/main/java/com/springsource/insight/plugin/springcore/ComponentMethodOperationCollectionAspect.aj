@@ -18,11 +18,12 @@ package com.springsource.insight.plugin.springcore;
 
 import com.springsource.insight.collection.method.MethodOperationsCollected;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 /**
- * Causes all {@link Repository} annotated classes to be instrumented
+ * Causes all {@link Component} annotated classes to be instrumented
  */
-public aspect RepositoryMethodOperationCollectionAspect {
-    declare @type: @Repository * : @MethodOperationsCollected;
+public aspect ComponentMethodOperationCollectionAspect {
+    declare @type: @Component * : @MethodOperationsCollected;
+
 }
