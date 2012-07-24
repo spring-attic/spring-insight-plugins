@@ -32,7 +32,6 @@ public class AnnotationDrivenMethodOperationCollectionAspectTest extends Assert 
     @Test
     public void methodOperationsCollectedAnnotationAppliedCorrectly() {
     	for (Class<?> testClass : new Class[] {
-		    			ExampleComponent.class,
 		    			ExampleService.class,
 		    			ExampleRepository.class,
 		    			ExampleRepositoryThatIsAlsoService.class }) {
@@ -42,13 +41,6 @@ public class AnnotationDrivenMethodOperationCollectionAspectTest extends Assert 
 
     private static void assertIsMethodOperationsCollected (Class<?> clazz) {
     	assertTrue(clazz.getSimpleName() + " not annotated", clazz.isAnnotationPresent(MethodOperationsCollected.class));
-    }
-
-    @Component
-    private static class ExampleComponent {
-        public void doIt () {
-        	// do nothing
-        }
     }
 
     @Service
