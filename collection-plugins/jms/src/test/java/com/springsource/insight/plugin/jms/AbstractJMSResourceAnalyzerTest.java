@@ -104,7 +104,7 @@ public abstract class AbstractJMSResourceAnalyzerTest extends Assert {
 		assertEquals("JMS", descriptor.getVendor());
 		assertEquals(null, descriptor.getHost());
 		assertEquals(-1, descriptor.getPort());
-		String expectedHash = MD5NameGenerator.getName("Queue#test.queuenull-1" + isIncoming);
+		String expectedHash = MD5NameGenerator.getName("Queue#test.queuenull-1");
 		assertEquals("JMS:" + expectedHash, descriptor.getName());
 		assertEquals(Boolean.valueOf(isIncoming), Boolean.valueOf(descriptor.isIncoming()));
 	}
@@ -139,7 +139,7 @@ public abstract class AbstractJMSResourceAnalyzerTest extends Assert {
 		assertEquals("JMS", descriptor.getVendor());
 		assertEquals("127.0.0.2", descriptor.getHost());
 		assertEquals(1111, descriptor.getPort());
-		String expectedHash = MD5NameGenerator.getName("Queue#test.queue127.0.0.21111" + isIncoming);
+		String expectedHash = MD5NameGenerator.getName("Queue#test.queue127.0.0.21111");
 		assertEquals("JMS:" + expectedHash, descriptor.getName());
 		assertEquals(Boolean.valueOf(isIncoming), Boolean.valueOf(descriptor.isIncoming()));
 
@@ -150,7 +150,7 @@ public abstract class AbstractJMSResourceAnalyzerTest extends Assert {
 		assertEquals("JMS", descriptor.getVendor());
 		assertEquals(null, descriptor.getHost());
 		assertEquals(-1, descriptor.getPort());
-		expectedHash = MD5NameGenerator.getName("Queue#test.queuenull-1" + isIncoming);
+		expectedHash = MD5NameGenerator.getName("Queue#test.queuenull-1");
 		assertEquals("JMS:" + expectedHash, descriptor.getName());
 		assertEquals(Boolean.valueOf(isIncoming), Boolean.valueOf(descriptor.isIncoming()));
 	}

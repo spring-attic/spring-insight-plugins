@@ -195,7 +195,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 		assertEquals("Mismatched host", host, descriptor.getHost());
 		assertEquals("Mismatched port", port, descriptor.getPort());
 
-		assertEquals("Mismatched hash value", AbstractRabbitMQResourceAnalyzer.buildResourceName(label, host, port, isIncoming), descriptor.getName());
+		assertEquals("Mismatched hash value", AbstractRabbitMQResourceAnalyzer.buildResourceName(label, host, port), descriptor.getName());
 		assertEquals("Mismatched direction", Boolean.valueOf(isIncoming), Boolean.valueOf(descriptor.isIncoming()));
 		return descriptor;
 	}

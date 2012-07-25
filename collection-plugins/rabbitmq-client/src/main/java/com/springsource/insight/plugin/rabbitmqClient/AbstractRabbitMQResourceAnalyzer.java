@@ -105,7 +105,7 @@ public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTyp
 
 			ExternalResourceDescriptor descriptor =
 			        new ExternalResourceDescriptor(queueFrame,
-			                                       buildResourceName(label, host, port, isIncoming),
+			                                       buildResourceName(label, host, port),
 			                                       buildResourceLabel(label),
 			                                       ExternalResourceType.QUEUE.name(),
 			                                       RABBIT,
@@ -122,8 +122,8 @@ public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTyp
 
 	protected abstract String getRoutingKey(Operation op);
 
-	static String buildResourceName (String label, String host, int port, boolean isIncoming) {
-		return buildResourceHash(MD5NameGenerator.getName(createExternalResourceName(label, host, port, isIncoming)));
+	static String buildResourceName (String label, String host, int port) {
+		return buildResourceHash(MD5NameGenerator.getName(createExternalResourceName(label, host, port)));
 	}
 
 	static String buildResourceHash (String hashString) {
@@ -173,8 +173,8 @@ public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTyp
 					;
 	}
 
-	static String createExternalResourceName (String label, String host, int port, boolean isIncoming) {
-		return label + host + port + isIncoming;
+	static String createExternalResourceName (String label, String host, int port) {
+		return label + host + port;
 	}
 
 	private static boolean isTrimEmpty(String str){

@@ -93,7 +93,7 @@ abstract class AbstractJMSResourceAnalyzer extends AbstractSingleTypeEndpointAna
 		Number portProperty = op.get("port", Number.class);
 		int port = portProperty == null ? -1 : portProperty.intValue();
         String color = colorManager.getColor(op);
-		String hashString = MD5NameGenerator.getName(label + host + port + isIncoming);
+		String hashString = MD5NameGenerator.getName(label + host + port);
 
         return new ExternalResourceDescriptor(queueFrame,
                 JMS + ":" + hashString,
