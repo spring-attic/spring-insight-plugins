@@ -31,7 +31,6 @@ import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationType;
-import com.springsource.insight.intercept.resource.ResourceKey;
 import com.springsource.insight.intercept.server.ServerName;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
@@ -186,9 +185,6 @@ public abstract class AbstractJMSResourceAnalyzerTest extends Assert {
 
     		EndPointAnalysis	analysis=analyzer.locateEndPoint(TEST_TRACE);
     		assertNotNull("No analysis for " + destType + "[" + destName + "]", analysis);
-
-    		ResourceKey	resKey=ExternalResourceDescriptor.makeKey(analysis.getEndPointName(), TEST_TRACE.getAppName(), TEST_TRACE.getServer(), desc);
-    		System.out.append('\t').append(destType.name()).append('[').append(destName).append("]: ").println(resKey);
     	}
     }
 

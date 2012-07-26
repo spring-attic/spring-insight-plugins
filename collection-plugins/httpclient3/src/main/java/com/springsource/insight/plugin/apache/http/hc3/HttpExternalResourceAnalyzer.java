@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import com.springsource.insight.intercept.color.ColorManager;
+import com.springsource.insight.intercept.endpoint.EndPointAnalyzersRegistry;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationList;
@@ -79,10 +80,41 @@ public class HttpExternalResourceAnalyzer implements ExternalResourceAnalyzer {
         try
         {
             URI uri=new URI(uriValue);
-            String name = MD5NameGenerator.getName(uri);
             String host = uri.getHost();
             String server = resolveServerType(op);
             String color = ColorManager.getInstance().getColor(op);
+            String app = null;
+            String ser = null;
+            String ep  = null;
+            
+            OperationMap responseDetails = (op == null) ? null : op.get("response", OperationMap.class);
+            
+            if (responseDetails != null) {
+                OperationList headersList = responseDetails.get("headers", OperationList.class);
+                
+                if (headersList != null) {
+                    for(int i=0; i<headersList.size(); i++) {
+                        OperationMap map = headersList.get(i, OperationMap.class);
+                        
+                        String headerName = map.get(OperationUtils.NAME_KEY, String.class);
+                        String headerValue = map.get(OperationUtils.VALUE_KEY, String.class);
+                        
+                        if (app != null && EndPointAnalyzersRegistry.APP_TOKEN_NAME.equals(headerName)) {
+                            app = headerValue;
+                        } else if (ser != null && EndPointAnalyzersRegistry.SERVER_TOKEN_NAME.equals(headerName)) {
+                            ser = headerValue;
+                        } else if (ep != null && EndPointAnalyzersRegistry.TOKEN_NAME.equals(headerName)) {
+                            ep = headerValue;
+                        } 
+                        
+                        if (app != null && ser != null && ep != null) {
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            String name = createName(uri, app, ser, ep);
             
             return new ExternalResourceDescriptor(frame, name,
                     ((server == null) ? "" : server + ": ") + host,    // label
@@ -90,13 +122,25 @@ public class HttpExternalResourceAnalyzer implements ExternalResourceAnalyzer {
                     server,     // vendor
                     host,
                     resolvePort(uri),
-                    color, false);    
+                    color, false, app, ser, ep);    
         }
         catch(URISyntaxException e)
         {
             logger.warning("Failed to parse " + uriValue + ": " + e.getMessage());
             return null;
         }
+    }
+    
+    static String createName(URI uri, String app, String ser, String ep) {
+        StringBuilder sb = new StringBuilder(uri.toASCIIString());
+        
+        if (!StringUtil.isEmpty(app)) {
+            sb.append(app);
+            sb.append(ser);
+            sb.append(ep);
+        }
+        
+        return MD5NameGenerator.getName(sb.toString());
     }
 
     // look for the "Server" response header
