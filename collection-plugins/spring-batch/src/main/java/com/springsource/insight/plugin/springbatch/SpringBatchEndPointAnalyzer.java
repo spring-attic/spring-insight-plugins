@@ -35,17 +35,13 @@ public class SpringBatchEndPointAnalyzer extends AbstractSingleTypeEndpointAnaly
     }
 
     @Override
-    public int getScore(Frame frame, int depth) {
-    	if (validateScoringFrame(frame) == null) {
-    		return EndPointAnalysis.MIN_SCORE_VALUE;
-    	} else {
-    		return DEFAULT_SCORE;
-    	}
+    protected int getDefaultScore(int depth) {
+    	return DEFAULT_SCORE;
     }
 
     @Override
     protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
         Operation   op=frame.getOperation();
-        return new EndPointAnalysis(EndPointName.valueOf(op), op.getLabel(), op.getLabel(), DEFAULT_SCORE, op);
+        return new EndPointAnalysis(EndPointName.valueOf(op), op.getLabel(), op.getLabel(), getOperationScore(op, depth), op);
     }
 }

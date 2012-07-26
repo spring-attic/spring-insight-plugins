@@ -53,22 +53,6 @@ public class ControllerEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyz
     	super(CONTROLLER_METHOD_TYPE);
     }
 
-    @Override
-	public int getScore(Frame frame, int depth) {
-		OperationType	opType=validateScoringFrame(frame);
-		if (opType == null) {
-			return EndPointAnalysis.MIN_SCORE_VALUE;
-		}
-
-		Operation	op=frame.getOperation();
-		Boolean		legacy=op.get(LEGACY_PROPNAME, Boolean.class);
-		if ((legacy != null) && legacy.booleanValue()) {
-			return LEGACY_SCORE;
-		} else {
-			return EndPointAnalysis.depth2score(depth);
-		}
-	}
-
 	@Override
 	protected EndPointAnalysis makeEndPoint(Frame controllerFrame, int depth) {
         Operation controllerOp = controllerFrame.getOperation();
@@ -77,7 +61,7 @@ public class ControllerEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyz
         EndPointName endPointName = EndPointName.valueOf(controllerOp);
         String endPointLabel = controllerOp.getLabel();
 
-        return new EndPointAnalysis(endPointName, endPointLabel, examplePath, EndPointAnalysis.depth2score(depth), controllerOp);
+        return new EndPointAnalysis(endPointName, endPointLabel, examplePath, getOperationScore(controllerOp, depth), controllerOp);
     }
 
     public String getExampleRequest(Frame httpFrame, Operation controllerOp) {

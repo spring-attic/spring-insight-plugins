@@ -40,12 +40,8 @@ public class ServletEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer 
     }
 
     @Override
-    public int getScore(Frame frame, int depth) {
-    	if (validateScoringFrame(frame) == null) {
-    		return EndPointAnalysis.MIN_SCORE_VALUE;
-    	} else {
-    		return ANALYSIS_SCORE;
-    	}
+    protected int getDefaultScore(int depth) {
+    	return ANALYSIS_SCORE;
     }
 
     @Override
@@ -57,7 +53,7 @@ public class ServletEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer 
         String endPointKey = sanitizeEndPointKey(servletName);
         String endPointLabel = "Servlet: " + servletName;
 
-        return new EndPointAnalysis(EndPointName.valueOf(endPointKey), endPointLabel, getExampleRequest(op), ANALYSIS_SCORE, op);
+        return new EndPointAnalysis(EndPointName.valueOf(endPointKey), endPointLabel, getExampleRequest(op), getOperationScore(op, depth), op);
     }
 
     static String sanitizeEndPointKey(String endPointKey) {

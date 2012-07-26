@@ -39,7 +39,7 @@ public class Ejb3LocalServiceEndPointAnalyzer extends AbstractSingleTypeEndpoint
     	Frame 			rootFrame=FrameUtil.getRoot(frame);
         Operation     	rootOperation=rootFrame.getOperation();
         String        	example=getExampleRequest(frame, rootOperation);
-        return new EndPointAnalysis(endPointName, op.getLabel(), example, EndPointAnalysis.depth2score(depth), op);
+        return new EndPointAnalysis(endPointName, op.getLabel(), example, getOperationScore(op, depth), op);
     }
 
 	public String getExampleRequest(Frame frame, Operation rootOperation) {

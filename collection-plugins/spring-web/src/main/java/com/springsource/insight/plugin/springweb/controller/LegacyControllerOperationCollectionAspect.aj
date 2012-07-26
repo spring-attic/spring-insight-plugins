@@ -20,6 +20,8 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.aspectj.lang.reflect.SourceLocation;
 
+import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
+import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.SourceCodeLocation;
 import com.springsource.insight.plugin.springweb.LegacyControllerPointcuts;
 
@@ -44,6 +46,13 @@ public aspect LegacyControllerOperationCollectionAspect extends AbstractControll
     public pointcut collectionPoint() : LegacyControllerPointcuts.controllerHandlerMethod();
 
     @Override
+	public Operation createOperation(JoinPoint jp) {
+		return super.createOperation(jp)
+				    .put(EndPointAnalysis.SCORE_FIELD, ControllerEndPointAnalyzer.LEGACY_SCORE)
+				    ;
+	}
+
+	@Override
     public SourceCodeLocation getSourceCodeLocation(JoinPoint jp) {
         MethodSignature mSig = (MethodSignature) jp.getSignature();
         Object		target=jp.getTarget();

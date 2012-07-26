@@ -44,7 +44,7 @@ public class GrailsControllerMethodEndPointAnalyzer extends AbstractSingleTypeEn
         return new EndPointAnalysis(EndPointName.valueOf(resourceKey),
                                     resourceLabel,
                                     exampleRequest,
-                                    EndPointAnalysis.depth2score(depth),
+                                    getOperationScore(operation, depth),
                                     operation);
     }
 

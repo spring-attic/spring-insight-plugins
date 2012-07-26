@@ -37,12 +37,8 @@ public class PortletEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer 
     }
 
     @Override
-    public int getScore(Frame frame, int depth) {
-    	if (validateScoringFrame(frame) == null) {
-    		return EndPointAnalysis.MIN_SCORE_VALUE;
-    	} else {
-    		return ANALYSIS_SCORE;
-    	}
+    protected int getDefaultScore(int depth) {
+    	return ANALYSIS_SCORE;
     }
 
     @Override
@@ -51,7 +47,7 @@ public class PortletEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer 
         String portletName=op.get("name", String.class);
         String endPointLabel = "Portlet: " + portletName;
         String	example=portletName+"."+op.get("mode", String.class);
-        return new EndPointAnalysis(EndPointName.valueOf(portletName), endPointLabel, example, ANALYSIS_SCORE, op);
+        return new EndPointAnalysis(EndPointName.valueOf(portletName), endPointLabel, example, getOperationScore(op, depth), op);
     }
 
 }

@@ -34,6 +34,6 @@ public class JCREndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
         String repoName=op.get("repository", String.class);
         String endPointName = repoName+(workspaceName!=null?"."+workspaceName:"");
         
-        return new EndPointAnalysis(EndPointName.valueOf(endPointName), "JCR: "+endPointName, endPointName, EndPointAnalysis.depth2score(depth), op);
+        return new EndPointAnalysis(EndPointName.valueOf(endPointName), "JCR: "+endPointName, endPointName, getOperationScore(op, depth), op);
     } 
 }

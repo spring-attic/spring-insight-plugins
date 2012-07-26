@@ -19,12 +19,12 @@ package com.springsource.insight.plugin.springweb.request;
 import static com.springsource.insight.intercept.operation.OperationFields.EXCEPTION;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.aspectj.lang.JoinPoint;
 
 import com.springsource.insight.collection.DefaultOperationCollector;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
 import com.springsource.insight.plugin.springweb.SpringWebPointcuts;
@@ -42,14 +42,13 @@ public aspect WebRequestOperationCollectionAspect extends AbstractSpringWebAspec
         Object[] args = jp.getArgs();
 
         HttpServletRequest request = (HttpServletRequest) args[0];
-        HttpServletResponse response = (HttpServletResponse) args[1];
 
         return new Operation()
             .label("Spring Web Dispatch")
             .type(OperationType.WEB_REQUEST)
             .sourceCodeLocation(getSourceCodeLocation(jp))
             .put("method", request.getMethod())
-            .put("uri", request.getRequestURI())
+            .put(OperationFields.URI, request.getRequestURI())
             ;
     }
 

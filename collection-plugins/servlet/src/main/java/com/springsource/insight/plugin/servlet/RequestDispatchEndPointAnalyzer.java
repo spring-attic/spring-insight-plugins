@@ -50,12 +50,8 @@ public class RequestDispatchEndPointAnalyzer extends AbstractSingleTypeEndpointA
 	}
 
     @Override
-    public int getScore(Frame frame, int depth) {
-    	if (validateScoringFrame(frame) == null) {
-    		return EndPointAnalysis.MIN_SCORE_VALUE;
-    	} else {
-    		return DEFAULT_SCORE;
-    	}
+    protected int getDefaultScore(int depth) {
+    	return DEFAULT_SCORE;
     }
 
 	@Override
@@ -79,6 +75,6 @@ public class RequestDispatchEndPointAnalyzer extends AbstractSingleTypeEndpointA
         Operation 		op=dispatchFrame.getOperation();
         String		 	label=op.getLabel();
         EndPointName	name=EndPointName.valueOf(label.replace('/', '_'));
-        return new EndPointAnalysis(name, label, label, DEFAULT_SCORE, op);
+        return new EndPointAnalysis(name, label, label, getOperationScore(op, depth), op);
     }
 }

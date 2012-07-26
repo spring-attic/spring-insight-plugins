@@ -40,7 +40,7 @@ public class JaxrsEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
         Operation     rootOperation=rootFrame.getOperation();
         Frame         httpFrame=FrameUtil.getFirstParentOfType(frame, OperationType.HTTP);
         String        example=getExampleRequest(httpFrame, frame, rootOperation);
-        return new EndPointAnalysis(endPointName, op.getLabel(), example, EndPointAnalysis.depth2score(depth), op);
+        return new EndPointAnalysis(endPointName, op.getLabel(), example, getOperationScore(op, depth), op);
     }
 
     public String getExampleRequest(Frame httpFrame, Frame frame, Operation rootOperation) {

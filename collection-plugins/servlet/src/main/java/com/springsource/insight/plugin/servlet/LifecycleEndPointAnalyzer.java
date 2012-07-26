@@ -69,13 +69,9 @@ public class LifecycleEndPointAnalyzer extends AbstractEndPointAnalyzer {
 	}
 
 	@Override
-	public int getScore(Frame frame, int depth) {
-		if (validateScoringFrame(frame) == null) {
-			return EndPointAnalysis.MIN_SCORE_VALUE;
-		} else {
-			return ANALYSIS_SCORE;
-		}
-    }
+	protected int getDefaultScore(int depth) {
+		return ANALYSIS_SCORE;
+	}
 
 	@Override
 	protected OperationType validateScoringFrame(Frame frame) {
@@ -91,6 +87,6 @@ public class LifecycleEndPointAnalyzer extends AbstractEndPointAnalyzer {
         Operation op = lifecycleFrame.getOperation();
         String endPointExample = op.get("event", String.class);
 
-        return new EndPointAnalysis(ENDPOINT_NAME, ENDPOINT_LABEL, endPointExample, ANALYSIS_SCORE, op);
+        return new EndPointAnalysis(ENDPOINT_NAME, ENDPOINT_LABEL, endPointExample, getOperationScore(op, depth), op);
     }
 }

@@ -51,15 +51,11 @@ abstract class AbstractJMSResourceAnalyzer extends AbstractSingleTypeEndpointAna
     }
 
     @Override
-	public int getScore(Frame frame, int depth) {
-    	if (validateScoringFrame(frame) != null) {
-    		return DEFAULT_SCORE;
-    	} else {
-    		return EndPointAnalysis.MIN_SCORE_VALUE;
-    	}
-    }
+	protected int getDefaultScore(int depth) {
+		return DEFAULT_SCORE;
+	}
 
-    @Override
+	@Override
 	protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
         Operation op = frame.getOperation();
         String label = buildLabel(op);
@@ -67,7 +63,7 @@ abstract class AbstractJMSResourceAnalyzer extends AbstractSingleTypeEndpointAna
         String example = getExample(label);
         EndPointName endPointName = getName(label);
             
-        return new EndPointAnalysis(endPointName, endPointLabel, example, DEFAULT_SCORE, op);
+        return new EndPointAnalysis(endPointName, endPointLabel, example, getOperationScore(op, depth), op);
     }
     
    public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
