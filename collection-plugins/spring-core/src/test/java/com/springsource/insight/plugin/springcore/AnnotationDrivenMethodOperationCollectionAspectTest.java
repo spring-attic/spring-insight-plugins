@@ -32,9 +32,9 @@ public class AnnotationDrivenMethodOperationCollectionAspectTest extends Assert 
     @Test
     public void methodOperationsCollectedAnnotationAppliedCorrectly() {
     	for (Class<?> testClass : new Class[] {
+    					ExampleComponent.class,
 		    			ExampleService.class,
-		    			ExampleRepository.class,
-		    			ExampleRepositoryThatIsAlsoService.class }) {
+		    			ExampleRepository.class }) {
     		assertIsMethodOperationsCollected(testClass);
     	}
     }
@@ -43,25 +43,28 @@ public class AnnotationDrivenMethodOperationCollectionAspectTest extends Assert 
     	assertTrue(clazz.getSimpleName() + " not annotated", clazz.isAnnotationPresent(MethodOperationsCollected.class));
     }
 
-    @Service
-    private static class ExampleService {
-        public void service() {
-        	// do nothing
-        }
+    private static class BaseBean implements Runnable {
+    	public BaseBean () {
+    		super();
+    	}
+
+    	public void run () {
+    		// ignored
+    	}
     }
-    
-    @Repository
-    private static class ExampleRepository {
-        public void update() {
-        	// do nothing
-        }
+
+    @Component
+    private static class ExampleComponent extends BaseBean {
+    	// do nothing
     }
-    
+
     @Service
+    private static class ExampleService extends BaseBean {
+    	// do nothing
+    }
+
     @Repository
-    private static class ExampleRepositoryThatIsAlsoService {
-        public void update() {
-        	// do nothing
-        }
+    private static class ExampleRepository extends BaseBean {
+    	// do nothing
     }
 }
