@@ -16,13 +16,13 @@
 
 package com.springsource.insight.plugin.springcore;
 
-import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
-import org.springframework.beans.factory.InitializingBean;
-import com.springsource.insight.collection.method.AnnotationDrivenMethodOperationCollectionAspect;
-
 import javax.annotation.PostConstruct;
 
-public aspect InitializingBeanOperationCollectionAspect extends MethodOperationCollectionAspect {
+import org.springframework.beans.factory.InitializingBean;
+
+import com.springsource.insight.collection.method.AnnotationDrivenMethodOperationCollectionAspect;
+
+public aspect InitializingBeanOperationCollectionAspect extends SpringLifecycleMethodOperationCollectionAspect {
     public InitializingBeanOperationCollectionAspect() {
         super();
     }
@@ -36,10 +36,5 @@ public aspect InitializingBeanOperationCollectionAspect extends MethodOperationC
     public pointcut collectionPoint() :
         (afterPropertiesSet() || postConstruct()) &&
         !AnnotationDrivenMethodOperationCollectionAspect.collectionPoint();
-
-    @Override
-    public String getPluginName() {
-        return SpringCorePluginRuntimeDescriptor.PLUGIN_NAME;
-    }
 }
 
