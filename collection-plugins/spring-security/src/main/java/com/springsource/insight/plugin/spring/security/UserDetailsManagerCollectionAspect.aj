@@ -71,7 +71,7 @@ public aspect UserDetailsManagerCollectionAspect extends MethodOperationCollecti
          || "deleteUser".equals(actionName)
          || "userExists".equals(actionName)) {
             String  username=(String) args[0];
-            op.put("username", username);
+            op.putAnyNonEmpty("username", username);
             collector.markSensitiveString(username);
         } else if ("createUser".equals(actionName) || "updateUser".equals(actionName)) {
             UserDetails details=(UserDetails) args[0];
@@ -81,8 +81,8 @@ public aspect UserDetailsManagerCollectionAspect extends MethodOperationCollecti
             }
         } else if ("changePassword".equals(actionName)) {
             String  oldPassword=(String) args[0], newPassword=(String) args[1];
-            op.put("oldPassword", oldPassword)
-              .put("newPassword", newPassword);
+            op.putAnyNonEmpty("oldPassword", oldPassword)
+              .putAnyNonEmpty("newPassword", newPassword);
             collector.markSensitiveString(oldPassword);
             collector.markSensitiveString(newPassword);
         }
