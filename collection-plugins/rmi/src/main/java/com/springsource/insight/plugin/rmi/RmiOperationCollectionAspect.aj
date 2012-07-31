@@ -23,6 +23,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 
 import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
+import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.util.StringFormatterUtils;
 import com.springsource.insight.util.StringUtil;
@@ -52,6 +53,7 @@ public aspect RmiOperationCollectionAspect extends MethodOperationCollectionAspe
 					.label(StringUtil.capitalize(action) + " " + StringUtil.chopTailAndEllipsify(name, StringFormatterUtils.MAX_PARAM_LENGTH))
 					.put(RmiDefinitions.ACTION_ATTR, action)
 					.put(RmiDefinitions.NAME_ATTR, name)
+					.put(EndPointAnalysis.SCORE_FIELD, EndPointAnalysis.TOP_LAYER_SCORE)
 					;
 	}
 	
