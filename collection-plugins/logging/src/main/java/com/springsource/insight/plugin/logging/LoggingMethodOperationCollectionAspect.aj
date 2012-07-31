@@ -18,6 +18,7 @@ package com.springsource.insight.plugin.logging;
 import org.aspectj.lang.JoinPoint;
 
 import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
+import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.util.StringFormatterUtils;
 
@@ -25,11 +26,15 @@ import com.springsource.insight.util.StringFormatterUtils;
  * 
  */
 public abstract aspect LoggingMethodOperationCollectionAspect extends MethodOperationCollectionAspect {
+	protected LoggingMethodOperationCollectionAspect () {
+		super();
+	}
 
     protected Operation createOperation(JoinPoint jp, Class<?> logger, String level, String msg, Throwable t) {
         Operation   op=super.createOperation(jp)
                         .type(LoggingDefinitions.TYPE)
                         .label(level + ": " + truncateMessage(msg))
+                        .put(EndPointAnalysis.SCORE_FIELD, EndPointAnalysis.DEFAULT_LAYER_SCORE)
                         .put(LoggingDefinitions.FRAMEWORK_ATTR, logger.getName())
                         .put(LoggingDefinitions.LEVEL_ATTR, level)
                         .putAnyNonEmpty(LoggingDefinitions.MESSAGE_ATTR, msg)
