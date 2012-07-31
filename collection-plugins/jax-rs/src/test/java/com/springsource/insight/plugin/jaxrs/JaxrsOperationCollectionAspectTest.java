@@ -147,18 +147,15 @@ public class JaxrsOperationCollectionAspectTest extends OperationCollectionAspec
     }
     
     private static ExternalResourceDescriptor assertDescriptorContents (String testName, String path, ExternalResourceDescriptor descriptor) {
-
         assertEquals(testName + ": Mismatched label", path, descriptor.getLabel());
         assertEquals(testName + ": Mismatched type", ExternalResourceType.WEB_SERVICE.name(), descriptor.getType());
 
         String expectedHash = MD5NameGenerator.getName(path);
         assertEquals(testName + ": Mismatched name", JaxrsDefinitions.TYPE.getName() + ":" + expectedHash, descriptor.getName());
+        assertEquals(testName + ": Mismatched direction", Boolean.TRUE, Boolean.valueOf(descriptor.isIncoming()));
         return descriptor;
     }
-    
-    /*
-     * @see com.springsource.insight.collection.OperationCollectionAspectTestSupport#getAspect()
-     */
+
     @Override   // co-variant return
     public JaxrsOperationCollectionAspect getAspect() {
         return JaxrsOperationCollectionAspect.aspectOf();
