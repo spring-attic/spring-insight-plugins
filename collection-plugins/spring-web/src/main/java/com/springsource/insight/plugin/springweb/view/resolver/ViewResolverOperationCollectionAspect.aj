@@ -59,7 +59,7 @@ public aspect ViewResolverOperationCollectionAspect extends AbstractSpringWebAsp
 
         @Override
         public void processNormalExit(Operation op, Object returnValue) {
-            if (returnValue != null) {
+            if (returnValue instanceof View) {
                 View view = (View) returnValue;
                 op.put("resolvedView", ViewUtils.getViewDescription(view))
                     .put("contentType", view.getContentType());

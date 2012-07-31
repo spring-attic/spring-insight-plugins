@@ -29,6 +29,7 @@ import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
 import com.springsource.insight.plugin.springweb.ControllerPointcuts;
 import com.springsource.insight.util.StringFormatterUtils;
+import com.springsource.insight.util.StringUtil;
 
 public aspect ModelAttributeOperationCollectionAspect extends AbstractSpringWebAspectSupport {
     
@@ -54,10 +55,11 @@ public aspect ModelAttributeOperationCollectionAspect extends AbstractSpringWebA
     private String extractModelAttributeName(JoinPoint jp) {
         Method method = ((MethodSignature)jp.getSignature()).getMethod();
         ModelAttribute ma = method.getAnnotation(ModelAttribute.class);
-        String modelAttrName = ma.value();
-        if((modelAttrName != null) && (modelAttrName.length() != 0)) {
-            return ma.value();
+        String modelAttrName = (ma == null) ? null : ma.value();
+        if(!StringUtil.isEmpty(modelAttrName)) {
+            return modelAttrName;
         }
+
         return Conventions.getVariableNameForReturnType(((MethodSignature)jp.getSignature()).getMethod());
     }
     

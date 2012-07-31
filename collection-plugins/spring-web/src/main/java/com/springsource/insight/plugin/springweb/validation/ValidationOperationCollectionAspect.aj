@@ -21,6 +21,10 @@ import com.springsource.insight.plugin.springweb.ControllerPointcuts;
 import com.springsource.insight.plugin.springweb.SpringWebPluginRuntimeDescriptor;
 
 public aspect ValidationOperationCollectionAspect extends MethodOperationCollectionAspect {
+	public ValidationOperationCollectionAspect () {
+		super();
+	}
+
     public pointcut collectionPoint() : ControllerPointcuts.validation();
 
     @Override

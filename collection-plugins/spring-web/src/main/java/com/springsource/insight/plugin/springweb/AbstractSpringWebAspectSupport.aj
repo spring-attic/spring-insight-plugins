@@ -23,7 +23,7 @@ import com.springsource.insight.collection.OperationCollector;
  * Abstract Base Class for the Spring Web Plugin
  */
 public abstract aspect AbstractSpringWebAspectSupport extends AbstractOperationCollectionAspect {
-    public AbstractSpringWebAspectSupport() {
+    protected AbstractSpringWebAspectSupport() {
         super();
     }
 
