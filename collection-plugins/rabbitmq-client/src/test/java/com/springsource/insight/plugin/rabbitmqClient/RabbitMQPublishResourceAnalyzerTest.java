@@ -26,8 +26,8 @@ public class RabbitMQPublishResourceAnalyzerTest extends AbstractRabbitMQResourc
 	}
 	
 	@Override
-	protected KeyValPair<String,String> addOperationProps(Operation operation, boolean addRouting, boolean addExchange){
-		KeyValPair<String,String>	res=super.addOperationProps(operation, addRouting, addExchange);
+	protected KeyValPair<String,String> addOperationProps(Operation operation, boolean addRouting, boolean addExchange, Boolean useTempRoutingKey){
+		KeyValPair<String,String>	res = null;
 
 		if (addExchange){
 			operation.put("exchange", TEST_EXCHANGE);
@@ -35,8 +35,12 @@ public class RabbitMQPublishResourceAnalyzerTest extends AbstractRabbitMQResourc
 		}
 
 		if (addRouting){
-			operation.put("routingKey", TEST_ROUTING_KEY);
-			res = setRoutingKey(res, TEST_ROUTING_KEY);
+			String routingKey = TEST_ROUTING_KEY;
+			if (useTempRoutingKey){
+				routingKey = TEST_TEMP_ROUTING_KEY;
+			}
+			operation.put("routingKey", routingKey);
+			res = setRoutingKey(res, routingKey);
 		}
 
 		return res;

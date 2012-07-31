@@ -32,23 +32,26 @@ import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
+import com.springsource.insight.util.StringUtil;
 
 public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTypeEndpointAnalyzer implements ExternalResourceAnalyzer {
 	public static final String RABBIT = "RabbitMQ";	
 	/**
 	 * Placeholder string used if no exchange name specified
 	 */
-	public static final String NO_EXCHANGE = "<no-exchange>";
+	public static final String NO_EXCHANGE = "DefaultExchange";
+
 	/**
-	 * Placeholder string used if no routing key available
+	 * The <U>static</U> score value assigned to endpoints - <B>Note:</B>
+	 * we return a score of {@link EndPointAnalysis#CEILING_LAYER_SCORE} so as
+	 * to let other endpoints &quot;beat&quot; this one
 	 */
-	public static final String NO_ROUTING_KEY = "<no-routing-key>";
-    /**
-     * The <U>static</U> score value assigned to endpoints - <B>Note:</B>
-     * we return a score of {@link EndPointAnalysis#CEILING_LAYER_SCORE} so as
-     * to let other endpoints &quot;beat&quot; this one
-     */
 	public static final int	DEFAULT_SCORE = EndPointAnalysis.CEILING_LAYER_SCORE;
+
+	private static final String UNNAMED_TEMP_QUEUE_KEY_PREFIX = "amq.gen-";
+	private static final String UNNAMED_TEMP_QUEUE_LABEL = "temporaryQueue";
+	private static final String UNNAMED_RPC_QUEUE_KEY_PREFIX = "amqp.gen-";
+	private static final String UNNAMED_RPC_QUEUE_LABEL = "temporaryQueue(RPC)";
 
 	private final RabbitPluginOperationType operationType;
 	private final boolean isIncoming;
@@ -67,26 +70,26 @@ public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTyp
 		return operationType;
 	}
 
-    @Override
+	@Override
 	protected int getDefaultScore(int depth) {
 		return DEFAULT_SCORE;
 	}
 
-    @Override
+	@Override
 	protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
-        Operation op = frame.getOperation();
-        String label = buildLabel(op);
-        String endPointLabel = RABBIT + "-" + label;
-        String example = getExample(label);
-        EndPointName endPointName = getName(label);
+		Operation op = frame.getOperation();
+		String label = buildLabel(op);
+		String endPointLabel = RABBIT + "-" + label;
+		String example = getExample(label);
+		EndPointName endPointName = getName(label);
 
-        return new EndPointAnalysis(endPointName, endPointLabel, example, getOperationScore(op, depth), op);
-    }
+		return new EndPointAnalysis(endPointName, endPointLabel, example, getOperationScore(op, depth), op);
+	}
 
 	public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
 		Collection<Frame> queueFrames = trace.getLastFramesOfType(operationType.getOperationType());
 		if ((queueFrames == null) || queueFrames.isEmpty()) {
-		    return Collections.emptyList();
+			return Collections.emptyList();
 		}
 
 		List<ExternalResourceDescriptor> queueDescriptors = new ArrayList<ExternalResourceDescriptor>(queueFrames.size());
@@ -97,17 +100,17 @@ public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTyp
 			String host = op.get("host", String.class);            
 			Integer portProperty = op.get("port", Integer.class);
 			int port = portProperty == null ? -1 : portProperty.intValue();
-            String color = colorManager.getColor(op);			
+			String color = colorManager.getColor(op);			
 
 			ExternalResourceDescriptor descriptor =
-			        new ExternalResourceDescriptor(queueFrame,
-			                                       buildResourceName(label, host, port),
-			                                       buildResourceLabel(label),
-			                                       ExternalResourceType.QUEUE.name(),
-			                                       RABBIT,
-			                                       host,
-			                                       port,
-                                                   color, isIncoming);
+					new ExternalResourceDescriptor(queueFrame,
+							buildResourceName(label, host, port),
+							buildResourceLabel(label),
+							ExternalResourceType.QUEUE.name(),
+							RABBIT,
+							host,
+							port,
+							color, isIncoming);
 			queueDescriptors.add(descriptor);            
 		}
 
@@ -150,23 +153,33 @@ public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTyp
 		return buildDefaultLabel(exchange, routingKey);
 	}
 
-	static final String buildDefaultLabel (String xcg, String rtKey) {
-		String	exchange=xcg, routingKey=rtKey;
-		boolean hasExchange = !isTrimEmpty(exchange), hasRoutingKey=!isTrimEmpty(routingKey);
+	static final String buildDefaultLabel (String exchange, String routingKey) {
+		boolean hasExchange = !isTrimEmpty(exchange);
+		boolean hasRoutingKey=!isTrimEmpty(routingKey);
+
 		if (!hasExchange) {
 			exchange = NO_EXCHANGE;
 		}
 
-		if (!hasRoutingKey) {
-			routingKey = NO_ROUTING_KEY;
+		if (hasRoutingKey) {
+			if (routingKey.startsWith(UNNAMED_TEMP_QUEUE_KEY_PREFIX)){
+				routingKey = UNNAMED_TEMP_QUEUE_LABEL;
+			}
+			if (routingKey.startsWith(UNNAMED_RPC_QUEUE_KEY_PREFIX)){			
+				routingKey = UNNAMED_RPC_QUEUE_LABEL;
+			}
 		}
 
-		return new StringBuilder(exchange.length() + routingKey.length() +  24 /* extra text */)
-					.append("Exchange#").append(exchange)
-					.append(' ')
-					.append("RoutingKey#").append(routingKey)
-					.toString()
-					;
+		StringBuilder sb = new StringBuilder(StringUtil.getSafeLength(exchange)
+				+ StringUtil.getSafeLength(routingKey)
+				+ 24 /* extra text */);		
+			sb.append("Exchange#").append(exchange);
+		
+		if (hasRoutingKey) {				
+			sb.append(' ').append("RoutingKey#").append(routingKey);
+		}
+
+		return sb.toString();
 	}
 
 	static String createExternalResourceName (String label, String host, int port) {

@@ -38,7 +38,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 	private final RabbitPluginOperationType operationType;
 	private final boolean isIncoming;
 	private final AbstractRabbitMQResourceAnalyzer analyzer;
-	protected static final String	TEST_EXCHANGE="e", TEST_ROUTING_KEY="rk", TEST_HOST="127.0.0.1";
+	protected static final String	TEST_EXCHANGE="e", TEST_ROUTING_KEY="rk", TEST_HOST="127.0.0.1", TEST_TEMP_ROUTING_KEY="amq.gen-rk77";
 	protected static final int	TEST_PORT=5672;
 
 	public AbstractRabbitMQResourceAnalyzerTest(AbstractRabbitMQResourceAnalyzer analyzerInstance) {
@@ -52,15 +52,15 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 	@Test
 	public void testExchangeLocateEndPoint() {
 		Operation op = createOperation();
-		KeyValPair<String,String>	props=addOperationProps(op, false, true);
+		KeyValPair<String,String>	props=addOperationProps(op, false, true, false);
 		Trace trace = createValidTrace(op);
-		assertAnalysisResult(trace, props);
+		assertAnalysisResult(trace, createLabel(props));
 	}
 
 	@Test
 	public void testExchangeLocateExternalResourceName() {
 		Operation op = createOperation();   	
-		KeyValPair<String,String>	props=addOperationProps(op, false, true);
+		KeyValPair<String,String>	props=addOperationProps(op, false, true, false);
 		Trace trace = createValidTrace(op);
 		assertExternalResourceDescriptors(trace, props);
 	}
@@ -68,15 +68,23 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 	@Test
 	public void testRoutingKeyLocateEndPoint() {
 		Operation op = createOperation();
-		KeyValPair<String,String>	props=addOperationProps(op, true, false);
+		KeyValPair<String,String>	props=addOperationProps(op, true, false, false);
 		Trace trace = createValidTrace(op);
-		assertAnalysisResult(trace, props);
+		assertAnalysisResult(trace, createLabel(props));
+	}
+	
+	@Test
+	public void testTempRoutingKeyLocateEndPoint() {
+		Operation op = createOperation();
+		KeyValPair<String,String>	props=addOperationProps(op, true, false, true);
+		Trace trace = createValidTrace(op);
+		assertAnalysisResult(trace, "Exchange#DefaultExchange RoutingKey#temporaryQueue");
 	}
 
 	@Test
 	public void testRoutingKeyExternalResourceName() {
 		Operation op = createOperation();   	
-		KeyValPair<String,String>	props=addOperationProps(op, true, false);
+		KeyValPair<String,String>	props=addOperationProps(op, true, false, false);
 		Trace trace = createValidTrace(op);
 		assertExternalResourceDescriptors(trace, props);
 	}
@@ -84,15 +92,15 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 	@Test
 	public void testBothLocateEndPoint() {
 		Operation op = createOperation();
-		KeyValPair<String,String>	props=addOperationProps(op, true, true);
+		KeyValPair<String,String>	props=addOperationProps(op, true, true, false);
 		Trace trace = createValidTrace(op);
-		assertAnalysisResult(trace, props);
+		assertAnalysisResult(trace, createLabel(props));
 	}
 
 	@Test
 	public void testBothExternalResourceName() {
 		Operation op = createOperation();
-		KeyValPair<String,String>	props=addOperationProps(op, true, true);
+		KeyValPair<String,String>	props=addOperationProps(op, true, true, false);
 		Trace trace = createValidTrace(op);
 		assertExternalResourceDescriptors(trace, props);
 	}
@@ -102,9 +110,9 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 		final String	OTHER_HOST="127.0.0.2";
 		final int		OTHER_PORT=5673;
 		Operation op1 = createOperation(TEST_HOST, TEST_PORT);
-		KeyValPair<String,String>	props1=addOperationProps(op1, true, true);
+		KeyValPair<String,String>	props1=addOperationProps(op1, true, true, false);
 		Operation op2 = createOperation(OTHER_HOST, OTHER_PORT);
-		KeyValPair<String,String>	props2=addOperationProps(op2, true, false);
+		KeyValPair<String,String>	props2=addOperationProps(op2, true, false, false);
 
 		Operation dummyOp = new Operation();
 		SimpleFrameBuilder builder = new SimpleFrameBuilder();
@@ -130,9 +138,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 	}
 
 	// returns exchange + routing key
-	protected KeyValPair<String,String> addOperationProps(Operation operation, boolean addRouting, boolean addExchange){
-		return null;
-	}
+	abstract protected KeyValPair<String,String> addOperationProps(Operation operation, boolean addRouting, boolean addExchange, Boolean useTempRoutingKey);
 
 	protected static final KeyValPair<String,String> setExchange (KeyValPair<String,String> org, String exchange) {
 		return new KeyValPair<String, String>(exchange, (org == null) ? null : org.getValue());
@@ -155,16 +161,15 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 		return assertExternalResourceDescriptors(trace, createLabel(props));
 	}
 
-	private void assertAnalysisResult(Trace trace, KeyValPair<String,String> props) {
+	private void assertAnalysisResult(Trace trace, String label) {
 		EndPointAnalysis	analysis=analyzer.locateEndPoint(trace);
 		assertNotNull("No endpoint analysis located", analysis);
 
-		EndPointName	endpoint=analysis.getEndPointName();
-		String 			lbl=createLabel(props);
-		String			resLabel=AbstractRabbitMQResourceAnalyzer.buildResourceLabel(lbl);
+		EndPointName	endpoint=analysis.getEndPointName();		
+		String			resLabel=AbstractRabbitMQResourceAnalyzer.buildResourceLabel(label);
 
-		assertEquals("Mismatched endpoint name", lbl, endpoint.getName());
-		assertEquals("Mismatched example", AbstractRabbitMQResourceAnalyzer.buildDefaultExample(operationType, lbl), analysis.getExample());
+		assertEquals("Mismatched endpoint name", label, endpoint.getName());
+		assertEquals("Mismatched example", AbstractRabbitMQResourceAnalyzer.buildDefaultExample(operationType, label), analysis.getExample());
 		assertEquals("Mismatched resource label", resLabel, analysis.getResourceLabel());
 		assertEquals("Mismatched score", AbstractRabbitMQResourceAnalyzer.DEFAULT_SCORE, analysis.getScore());
 	}
