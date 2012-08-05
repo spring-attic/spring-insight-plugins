@@ -96,6 +96,12 @@
 		</dependency>
 		
 		<!-- Test dependencies -->
+        <dependency>	<!-- required due to surefire categories -->
+            <groupId>com.springsource.insight</groupId>
+            <artifactId>insight-util</artifactId>
+            <version>${project.version}</version>
+			<scope>test</scope>
+        </dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
