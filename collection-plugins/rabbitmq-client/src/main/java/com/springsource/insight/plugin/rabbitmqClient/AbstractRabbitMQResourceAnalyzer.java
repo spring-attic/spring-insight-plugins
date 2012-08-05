@@ -49,9 +49,9 @@ public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTyp
 	public static final int	DEFAULT_SCORE = EndPointAnalysis.CEILING_LAYER_SCORE;
 
 	public static final String UNNAMED_TEMP_QUEUE_KEY_PREFIX = "amq.gen-";
-	public static final String UNNAMED_TEMP_QUEUE_LABEL = "temporaryQueue";
+	public static final String UNNAMED_TEMP_QUEUE_LABEL = "AMQP internal routing";
 	public static final String UNNAMED_RPC_QUEUE_KEY_PREFIX = "amqp.gen-";
-	public static final String UNNAMED_RPC_QUEUE_LABEL = "temporaryQueue(RPC)";
+	public static final String UNNAMED_RPC_QUEUE_LABEL = "RPC internal routing";
 
 	private final RabbitPluginOperationType operationType;
 	private final boolean isIncoming;
