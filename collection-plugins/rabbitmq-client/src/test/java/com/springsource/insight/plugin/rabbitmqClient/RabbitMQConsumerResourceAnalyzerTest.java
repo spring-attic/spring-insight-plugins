@@ -27,7 +27,7 @@ public class RabbitMQConsumerResourceAnalyzerTest extends AbstractRabbitMQResour
 	}
 
 	@Override
-	protected KeyValPair<String,String> addOperationProps(Operation operation, boolean addRouting, boolean addExchange, Boolean useTempRoutingKey){
+	protected KeyValPair<String,String> addInitialOperationProps(Operation operation, boolean addRouting, boolean addExchange, Boolean useTempRoutingKey){
 		KeyValPair<String,String>	res = null;
 
 		OperationMap map = operation.createMap("envelope");

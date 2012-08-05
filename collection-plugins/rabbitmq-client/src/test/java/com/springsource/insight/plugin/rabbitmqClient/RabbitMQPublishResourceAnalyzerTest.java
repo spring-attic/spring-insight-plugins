@@ -26,7 +26,7 @@ public class RabbitMQPublishResourceAnalyzerTest extends AbstractRabbitMQResourc
 	}
 	
 	@Override
-	protected KeyValPair<String,String> addOperationProps(Operation operation, boolean addRouting, boolean addExchange, Boolean useTempRoutingKey){
+	protected KeyValPair<String,String> addInitialOperationProps(Operation operation, boolean addRouting, boolean addExchange, Boolean useTempRoutingKey){
 		KeyValPair<String,String>	res = null;
 
 		if (addExchange){

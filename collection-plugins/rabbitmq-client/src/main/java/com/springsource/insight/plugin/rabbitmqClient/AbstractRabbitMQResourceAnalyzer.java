@@ -48,10 +48,10 @@ public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTyp
 	 */
 	public static final int	DEFAULT_SCORE = EndPointAnalysis.CEILING_LAYER_SCORE;
 
-	private static final String UNNAMED_TEMP_QUEUE_KEY_PREFIX = "amq.gen-";
-	private static final String UNNAMED_TEMP_QUEUE_LABEL = "temporaryQueue";
-	private static final String UNNAMED_RPC_QUEUE_KEY_PREFIX = "amqp.gen-";
-	private static final String UNNAMED_RPC_QUEUE_LABEL = "temporaryQueue(RPC)";
+	public static final String UNNAMED_TEMP_QUEUE_KEY_PREFIX = "amq.gen-";
+	public static final String UNNAMED_TEMP_QUEUE_LABEL = "temporaryQueue";
+	public static final String UNNAMED_RPC_QUEUE_KEY_PREFIX = "amqp.gen-";
+	public static final String UNNAMED_RPC_QUEUE_LABEL = "temporaryQueue(RPC)";
 
 	private final RabbitPluginOperationType operationType;
 	private final boolean isIncoming;
@@ -70,6 +70,10 @@ public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTyp
 		return operationType;
 	}
 
+	protected abstract String getExchange(Operation op);
+	
+	protected abstract String getRoutingKey(Operation op);
+
 	@Override
 	protected int getDefaultScore(int depth) {
 		return DEFAULT_SCORE;
@@ -78,10 +82,10 @@ public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTyp
 	@Override
 	protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
 		Operation op = frame.getOperation();
-		String label = buildLabel(op);
-		String endPointLabel = RABBIT + "-" + label;
-		String example = getExample(label);
-		EndPointName endPointName = getName(label);
+		String label = buildLabel(getFinalExchangeName(getExchange(op)), getFinalRoutingKey(getRoutingKey(op)), true);
+		String endPointLabel = buildEndPointLabel(label);
+		String example = buildExample(label);
+		EndPointName endPointName = EndPointName.valueOf(label);
 
 		return new EndPointAnalysis(endPointName, endPointLabel, example, getOperationScore(op, depth), op);
 	}
@@ -96,95 +100,99 @@ public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTyp
 		ColorManager					 colorManager=ColorManager.getInstance();
 		for (Frame queueFrame : queueFrames) {
 			Operation op = queueFrame.getOperation();
-			String label = buildLabel(op);
 			String host = op.get("host", String.class);            
 			Integer portProperty = op.get("port", Integer.class);
 			int port = portProperty == null ? -1 : portProperty.intValue();
 			String color = colorManager.getColor(op);			
 
-			ExternalResourceDescriptor descriptor =
+			String finalExchange = getFinalExchangeName(getExchange(op));
+			String finalRoutingKey = getFinalRoutingKey(getRoutingKey(op));
+			String exchangeResourceName = buildExternalResourceName(finalExchange, finalRoutingKey, false, host, port);
+			
+			ExternalResourceDescriptor externalResourceExchangeDescriptor =
 					new ExternalResourceDescriptor(queueFrame,
-							buildResourceName(label, host, port),
-							buildResourceLabel(label),
+							exchangeResourceName,
+							buildExternalResourceLabel(buildLabel(finalExchange, finalRoutingKey, false)),
 							ExternalResourceType.QUEUE.name(),
 							RABBIT,
 							host,
 							port,
 							color, isIncoming);
-			queueDescriptors.add(descriptor);            
+			queueDescriptors.add(externalResourceExchangeDescriptor);            
+
+			if (!isTrimEmpty(getRoutingKey(op))){ 
+				ExternalResourceDescriptor externalResourceRoutingKeyDescriptor =
+						new ExternalResourceDescriptor(queueFrame,
+								buildExternalResourceName(finalExchange, finalRoutingKey, true, host, port),
+								buildExternalResourceLabel(buildLabel(finalExchange, finalRoutingKey, true)),
+								ExternalResourceType.QUEUE.name(),
+								RABBIT,
+								host,
+								port,
+								color, isIncoming, exchangeResourceName);
+				queueDescriptors.add(externalResourceRoutingKeyDescriptor);            
+			}
+
 		}
 
 		return queueDescriptors;
 	}
+	
 
-	protected abstract String getExchange(Operation op);
-
-	protected abstract String getRoutingKey(Operation op);
-
-	static String buildResourceName (String label, String host, int port) {
-		return buildResourceHash(MD5NameGenerator.getName(createExternalResourceName(label, host, port)));
-	}
-
-	static String buildResourceHash (String hashString) {
-		return RABBIT + ":" + hashString;
-	}
-
-	static String buildResourceLabel (String label) {
-		return RABBIT + "-" + label;
-	}
-
-	protected EndPointName getName(String label) {
-		return EndPointName.valueOf(label);
-	}
-
-	protected String getExample(String label) {
-		return buildDefaultExample(operationType,  label);
-	}
-
-	static String buildDefaultExample (RabbitPluginOperationType type, String label) {
-		return type.getEndPointPrefix() + label;
-	}
-
-	protected String buildLabel(Operation op) {
-		return buildLabel(getExchange(op), getRoutingKey(op));      
-	}
-
-	protected String buildLabel(String exchange, String routingKey) {
-		return buildDefaultLabel(exchange, routingKey);
-	}
-
-	static final String buildDefaultLabel (String exchange, String routingKey) {
+	public static String getFinalExchangeName(String exchange){		
 		boolean hasExchange = !isTrimEmpty(exchange);
-		boolean hasRoutingKey=!isTrimEmpty(routingKey);
-
 		if (!hasExchange) {
 			exchange = NO_EXCHANGE;
 		}
+		return exchange;
+	}
 
+	public static String getFinalRoutingKey(String routingKey){
+		boolean hasRoutingKey=!isTrimEmpty(routingKey);
 		if (hasRoutingKey) {
 			if (routingKey.startsWith(UNNAMED_TEMP_QUEUE_KEY_PREFIX)){
 				routingKey = UNNAMED_TEMP_QUEUE_LABEL;
 			}
-			if (routingKey.startsWith(UNNAMED_RPC_QUEUE_KEY_PREFIX)){			
+			else if (routingKey.startsWith(UNNAMED_RPC_QUEUE_KEY_PREFIX)){			
 				routingKey = UNNAMED_RPC_QUEUE_LABEL;
 			}
 		}
+		return routingKey;
+	}
 
-		StringBuilder sb = new StringBuilder(StringUtil.getSafeLength(exchange)
-				+ StringUtil.getSafeLength(routingKey)
-				+ 24 /* extra text */);		
-			sb.append("Exchange#").append(exchange);
+	public static String buildEndPointLabel(String label){
+		return RABBIT + "-" + label; 
+	}
+	
+	public String buildExample(String label) {
+		return operationType.getEndPointPrefix() + label;
+	}
+	
+	
+	public static String buildExternalResourceName (String finalExchange, String finalRoutingKey, boolean useRoutingKey, String host, int port) {
 		
-		if (hasRoutingKey) {				
-			sb.append(' ').append("RoutingKey#").append(routingKey);
+		return RABBIT + ":" + MD5NameGenerator.getName(finalExchange + (useRoutingKey ? finalRoutingKey : "") + host + port);
+	}
+
+	public static String buildExternalResourceLabel (String label) {
+		return RABBIT + "-" + label;
+	}
+
+	public static String buildLabel (String finalExchange, String finalRoutingKey, boolean useRoutingKey) {
+		boolean hasRoutingKey=!isTrimEmpty(finalRoutingKey);
+
+		StringBuilder sb = new StringBuilder(StringUtil.getSafeLength(finalExchange)
+				+ StringUtil.getSafeLength(finalRoutingKey)
+				+ 24 /* extra text */);		
+		sb.append("Exchange#").append(finalExchange);
+
+		if (hasRoutingKey && useRoutingKey) {				
+			sb.append(' ').append("RoutingKey#").append(finalRoutingKey);
 		}
 
 		return sb.toString();
 	}
 
-	static String createExternalResourceName (String label, String host, int port) {
-		return label + host + port;
-	}
 
 	private static boolean isTrimEmpty(String str){
 		return (str == null) || (str.trim().length() <= 0);
