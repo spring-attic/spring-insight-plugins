@@ -17,16 +17,18 @@
 package com.springsource.insight.plugin.rabbitmqClient;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.impl.AMQConnection;
-import com.rabbitmq.client.impl.LongString;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.intercept.color.ColorManager.ColorParams;
 import com.springsource.insight.intercept.operation.Operation;
@@ -37,6 +39,30 @@ import com.springsource.insight.util.ReflectionUtils;
 
 public abstract class AbstractRabbitMQCollectionAspect extends OperationCollectionAspectSupport {
     private final Field messageHeaders = ExtraReflectionUtils.getAccessibleField(BasicProperties.class, "headers");
+    private final static Method getBytesMethod;
+    
+    @SuppressWarnings("rawtypes")
+	private static Class longStringClass;
+    
+    private static final Logger  _logger = Logger.getLogger(AbstractRabbitMQCollectionAspect.class.getName());
+    
+    static{
+    	try {
+			longStringClass = Class.forName("com.rabbitmq.client.impl.LongString");
+		} catch (ClassNotFoundException e) {
+			try {
+				longStringClass = Class.forName("com.rabbitmq.client.LongString");
+			} catch (ClassNotFoundException e1) {
+				_logger.warning("Cannot find LongString class from amqp-client jar");				
+			}
+		}
+    	
+    	if (longStringClass != null) {
+			getBytesMethod = ExtraReflectionUtils.getAccessibleMethod(longStringClass, "getBytes");
+		} else {
+			getBytesMethod = null;
+		}
+    }
 
     protected AbstractRabbitMQCollectionAspect () {
     	super();
@@ -68,15 +94,28 @@ public abstract class AbstractRabbitMQCollectionAspect extends OperationCollecti
             for (Entry<String, Object> entry : headers.entrySet()) {
                 Object value = entry.getValue();
                 
-                if (value instanceof LongString) {
-                    byte[] bytes = ((LongString) value).getBytes();
-                    value = new String(bytes);
+                if (longStringClass != null && value!=null && value.getClass().isAssignableFrom(longStringClass)) {
+                	byte[] bytes = null;
+                	
+					try {
+						bytes = (byte[]) getBytesMethod.invoke(value);
+					} catch (Exception e) {
+						if (_logger.isLoggable(Level.FINE)) {
+							_logger.log(Level.FINE, "couldn't get getBytes from LongString", e);
+						}
+					}
+					
+					if (bytes != null) {
+						value = new String(bytes);
+						headersMap.putAnyNonEmpty(entry.getKey(), value);
+					}
                 }
                 
-                headersMap.putAnyNonEmpty(entry.getKey(), value);
             }
         }
     }
+    
+    
 
     protected void applyConnectionData(Operation op, Connection conn) {
         InetAddress	address = conn.getAddress();
