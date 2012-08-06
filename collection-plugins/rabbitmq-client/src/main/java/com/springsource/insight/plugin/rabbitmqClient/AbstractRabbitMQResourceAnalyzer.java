@@ -39,7 +39,7 @@ public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTyp
 	/**
 	 * Placeholder string used if no exchange name specified
 	 */
-	public static final String NO_EXCHANGE = "DefaultExchange";
+	public static final String NO_EXCHANGE = "AMQP default";
 
 	/**
 	 * The <U>static</U> score value assigned to endpoints - <B>Note:</B>
