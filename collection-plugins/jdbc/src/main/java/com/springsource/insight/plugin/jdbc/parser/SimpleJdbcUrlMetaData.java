@@ -15,35 +15,32 @@
  */
 package com.springsource.insight.plugin.jdbc.parser;
 
+import com.springsource.insight.util.ObjectUtil;
+
 
 public class SimpleJdbcUrlMetaData implements JdbcUrlMetaData {
-
     private final String host;
     private final int port;
     private final String databaseName;
     private final String connectionUrl;
     private final String vendorName;
-
     private final int hashValue;
 
-    @SuppressWarnings("hiding")
-    public SimpleJdbcUrlMetaData(final String host, final int port, final String databaseName, final String connectionUrl, final String vendorName) {
+    public SimpleJdbcUrlMetaData(String dbHost, int dbPort, String dbName, String url, DatabaseType type) {
+        this(dbHost, dbPort, dbName, url, type.getVendorName());
+    }
 
-        this.host = host;
-        this.port = port;
-        this.databaseName = databaseName;
-        this.connectionUrl = connectionUrl;
-        this.vendorName = vendorName;
+    public SimpleJdbcUrlMetaData(String dbHost, int dbPort, String dbName, String url, final String vendor) {
+        this.host = dbHost;
+        this.port = dbPort;
+        this.databaseName = dbName;
+        this.connectionUrl = url;
+        this.vendorName = vendor;
 
         // we can calculate the hash code since all members are final
         this.hashValue = calcHash();
     }
     
-    @SuppressWarnings("hiding")
-    public SimpleJdbcUrlMetaData(final String host, final int port, final String databaseName, final String connectionUrl, final DatabaseType type) {
-        this(host, port, databaseName, connectionUrl, type.getVendorName());
-    }
-
     public String getHost() {
         return host;
     }
@@ -88,30 +85,14 @@ public class SimpleJdbcUrlMetaData implements JdbcUrlMetaData {
             return false;
         if (getClass() != obj.getClass())
             return false;
+
         SimpleJdbcUrlMetaData other = (SimpleJdbcUrlMetaData) obj;
-        if (connectionUrl == null) {
-            if (other.connectionUrl != null)
-                return false;
-        } else if (!connectionUrl.equals(other.connectionUrl))
-            return false;
-        if (databaseName == null) {
-            if (other.databaseName != null)
-                return false;
-        } else if (!databaseName.equals(other.databaseName))
-            return false;
-        if (host == null) {
-            if (other.host != null)
-                return false;
-        } else if (!host.equals(other.host))
-            return false;
-        if (port != other.port)
-            return false;
-        if (vendorName == null) {
-            if (other.vendorName != null)
-                return false;
-        } else if (!vendorName.equals(other.vendorName))
-            return false;
-        return true;
+        return ObjectUtil.typedEquals(getConnectionUrl(), other.getConnectionUrl())
+        	&& ObjectUtil.typedEquals(getDatabaseName(), other.getDatabaseName())
+        	&& ObjectUtil.typedEquals(getHost(), other.getHost())
+        	&& ObjectUtil.typedEquals(getVendorName(), other.getVendorName())
+        	&& (getPort() == other.getPort())
+        	 ;
     }
 
     @Override

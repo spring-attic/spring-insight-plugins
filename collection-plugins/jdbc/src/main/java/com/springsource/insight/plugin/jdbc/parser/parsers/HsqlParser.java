@@ -30,7 +30,11 @@ public class HsqlParser implements JdbcUrlParser {
     private static final String HOST = "host";
     private static final String PORT = "port";
     private static final String DATABASE = "database";
-    private static final int HSQL_DEFAULT_PORT = 9001;
+    public static final int DEFAULT_CONNECTION_PORT = 9001;
+
+    public HsqlParser () {
+    	super();
+    }
 
     public List<JdbcUrlMetaData> parse(final String connectionUrl, String vendorName) {
 
@@ -38,8 +42,8 @@ public class HsqlParser implements JdbcUrlParser {
         final HsqlProperties hsqlProps = DatabaseURL.parseURL(connectionUrl, true);
         final String type = hsqlProps.getProperty(CONNECTION_TYPE);
 
-        final String host = (DatabaseURL.isInProcessDatabaseType(type) ? "localhost" : hsqlProps.getProperty(HOST));
-        final int port = hsqlProps.getIntegerProperty(PORT, HSQL_DEFAULT_PORT);
+        final String host = (DatabaseURL.isInProcessDatabaseType(type) ? DEFAULT_HOST : hsqlProps.getProperty(HOST));
+        final int port = hsqlProps.getIntegerProperty(PORT, DEFAULT_CONNECTION_PORT);
         final String dbName = hsqlProps.getProperty(DATABASE);
 
         JdbcUrlMetaData simpleJdbcUrlMetaData = new SimpleJdbcUrlMetaData(host, port, dbName, connectionUrl, vendorName);

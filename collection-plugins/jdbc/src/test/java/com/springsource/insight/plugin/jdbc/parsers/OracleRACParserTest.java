@@ -15,28 +15,22 @@
  */
 package com.springsource.insight.plugin.jdbc.parsers;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.springsource.insight.plugin.jdbc.parser.DatabaseType;
 import com.springsource.insight.plugin.jdbc.parser.JdbcUrlMetaData;
-import com.springsource.insight.plugin.jdbc.parser.JdbcUrlParser;
 import com.springsource.insight.plugin.jdbc.parser.SimpleJdbcUrlMetaData;
 import com.springsource.insight.plugin.jdbc.parser.parsers.OracleRACParser;
 
 
-public class OracleRACParserTest {
-    private JdbcUrlParser parser;
-	
-	@Before
-	public void setup() {
-		parser = new OracleRACParser();
-	}
+public class OracleRACParserTest extends SqlParserTestImpl<OracleRACParser> {
+    public OracleRACParserTest () {
+    	super(DatabaseType.ORACLE, new OracleRACParser());
+    }
 	
 	@Test
 	public void testTwoHostsAndPorts() {
@@ -83,20 +77,18 @@ public class OracleRACParserTest {
 		testMultipleHostsOrPorts(connectionUrl, hostToPortHash);
 	}
 	
-	private void testMultipleHostsOrPorts(String connectionUrl, HashMap<String, Integer> hostToPortHash){
-		final List<JdbcUrlMetaData> actualJdbcUrlMetaData = parser.parse(connectionUrl, getType().getVendorName());
+	private void testMultipleHostsOrPorts(String connectionUrl, Map<String, Integer> hostToPortHash){
+		final String				vendorName=databaseType.getVendorName();
+		final List<JdbcUrlMetaData> actualJdbcUrlMetaData = parser.parse(connectionUrl, vendorName);
 		
 		assertEquals(actualJdbcUrlMetaData.size(), hostToPortHash.size());
 		
 		for (JdbcUrlMetaData actual: actualJdbcUrlMetaData) {
 			String actualHost = actual.getHost();
-			assertEquals(actual, 
-			new SimpleJdbcUrlMetaData(actualHost, hostToPortHash.get(actualHost).intValue(), null, connectionUrl, getType()));
-		}	
-	}
-
-	public DatabaseType getType() {
-		return DatabaseType.ORACLE;
+			JdbcUrlMetaData	expected=
+					new SimpleJdbcUrlMetaData(actualHost, hostToPortHash.get(actualHost).intValue(), null, connectionUrl, vendorName);
+			assertEquals("Mismatched result for " + connectionUrl, expected, actual); 
+		}
 	}
 
 }

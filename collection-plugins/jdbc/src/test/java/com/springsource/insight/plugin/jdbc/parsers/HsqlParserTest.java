@@ -15,28 +15,14 @@
  */
 package com.springsource.insight.plugin.jdbc.parsers;
 
-import org.junit.Before;
-
 import com.springsource.insight.plugin.jdbc.parser.DatabaseType;
+import com.springsource.insight.plugin.jdbc.parser.JdbcUrlParser;
 import com.springsource.insight.plugin.jdbc.parser.parsers.HsqlParser;
 
 
-public class HsqlParserTest extends SqlParserTestImpl implements SqlParsetTest {
-
-	@Before
-	public void setup() {
-
-		parser = new HsqlParser();
-		
-		testCases.add(new SqlTestEntry("jdbc:hsqldb:mem:testdb",
-														 "localhost",
-														 9001,
-														 "testdb"));
+public class HsqlParserTest extends SqlParserTestImpl<HsqlParser> {
+	public HsqlParserTest () {
+		super(DatabaseType.HSQLDB, new HsqlParser(),
+			  new SqlTestEntry("jdbc:hsqldb:mem:testdb", JdbcUrlParser.DEFAULT_HOST, HsqlParser.DEFAULT_CONNECTION_PORT, "testdb"));
 	}
-
-	@Override
-    public DatabaseType getType() {
-		return DatabaseType.HSQLDB;
-	}
-
 }

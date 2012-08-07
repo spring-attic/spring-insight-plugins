@@ -25,9 +25,10 @@ import com.springsource.insight.plugin.jdbc.parser.JdbcUrlMetaData;
 import com.springsource.insight.plugin.jdbc.parser.SimpleJdbcUrlMetaData;
 
 public class OracleRACParser extends AbstractSqlParser {
+	public static final int	DEFAULT_CONNECTION_PORT=1521;
 
     public OracleRACParser() {
-        super(1521);
+        super(DEFAULT_CONNECTION_PORT);
     }
 
     public static final Pattern ORACLE_RAC_HOST_PATTERN = Pattern.compile("HOST\\s*=\\s*([^)]+)");

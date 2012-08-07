@@ -13,13 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.springsource.insight.plugin.jdbc.parsers;
 
-import com.springsource.insight.plugin.jdbc.parser.DatabaseType;
-import com.springsource.insight.plugin.jdbc.parser.parsers.SqlFireParser;
 
-public class SqlFireParserTest extends SqlParserTestImpl<SqlFireParser> {
-	public SqlFireParserTest () {
-		super(DatabaseType.SQLFIRE, new SqlFireParser(), new SqlTestEntry("jdbc:sqlfire://localhost:7365/", "localhost", 7365, ""));
+public class SqlTestEntry {
+	private final String connectionUrl;
+	private final String host;
+	private final int port;
+	private final String dbname;
+
+	public SqlTestEntry(String url, String dbHost, int dbPort, String dbName) {
+		this.connectionUrl = url;
+		this.host = dbHost;
+		this.port = dbPort;
+		this.dbname = dbName;
+	}
+
+	public String getConnectionUrl() {
+		return connectionUrl;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public String getHost() {
+		return host;
+	}
+
+	public String getDbname() {
+		return dbname;
+	}
+
+	@Override
+	public String toString() {
+		return getConnectionUrl();
 	}
 }

@@ -15,41 +15,29 @@
  */
 package com.springsource.insight.plugin.jdbc.parsers;
 
-import org.junit.Before;
-
 import com.springsource.insight.plugin.jdbc.parser.DatabaseType;
+import com.springsource.insight.plugin.jdbc.parser.JdbcUrlParser;
 import com.springsource.insight.plugin.jdbc.parser.parsers.MySqlParser;
 
 
-public class MySqlParserTest extends SqlParserTestImpl implements SqlParsetTest {
-
-	@Before
-	public void setup() {
-
-		parser = new MySqlParser();
-
-		testCases.add(new SqlTestEntry("jdbc:mysql://localhost:3307/dbname?user=root&password=admin",
+public class MySqlParserTest extends SqlParserTestImpl<MySqlParser> {
+	public MySqlParserTest () {
+		super(DatabaseType.MYSQL, new MySqlParser(),
+			  new SqlTestEntry("jdbc:mysql://localhost:3307/dbname?user=root&password=admin",
 								"localhost",
 								3307,
-								"dbname"));
-		testCases.add(new SqlTestEntry("jdbc:mysql://localhost/dbname?user=root&password=admin",
+								"dbname"),
+			  new SqlTestEntry("jdbc:mysql://localhost/dbname?user=root&password=admin",
 								"localhost",
-								3306,
-								"dbname"));
-		testCases.add(new SqlTestEntry("jdbc:mysql:///dbname",
+								MySqlParser.DEFAULT_CONNECTION_PORT,
+								"dbname"),
+			  new SqlTestEntry("jdbc:mysql:///dbname",
 								"localhost",
-								3306,
-								"dbname"));
-
-		testCases.add(new SqlTestEntry("jdbc:mysql://:3306/dbname?user=root&password=admin",
-								"localhost",
-								3306,
+								MySqlParser.DEFAULT_CONNECTION_PORT,
+								"dbname"),
+			  new SqlTestEntry("jdbc:mysql://:3306/dbname?user=root&password=admin",
+								JdbcUrlParser.DEFAULT_HOST,
+								MySqlParser.DEFAULT_CONNECTION_PORT,
 								"dbname"));
 	}
-
-	@Override
-	public DatabaseType getType() {
-		return DatabaseType.MYSQL;
-	}
-
 }

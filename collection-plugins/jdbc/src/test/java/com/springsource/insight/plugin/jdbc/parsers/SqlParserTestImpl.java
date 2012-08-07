@@ -15,78 +15,57 @@
  */
 package com.springsource.insight.plugin.jdbc.parsers;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.springsource.insight.plugin.jdbc.parser.DatabaseType;
 import com.springsource.insight.plugin.jdbc.parser.JdbcUrlMetaData;
 import com.springsource.insight.plugin.jdbc.parser.JdbcUrlParser;
 import com.springsource.insight.plugin.jdbc.parser.SimpleJdbcUrlMetaData;
+import com.springsource.insight.util.ArrayUtil;
 
 
-public abstract class SqlParserTestImpl implements SqlParsetTest {
+public abstract class SqlParserTestImpl<P extends JdbcUrlParser> extends Assert {
+	protected final P parser;
+	protected final DatabaseType	databaseType;
+	private final List<SqlTestEntry> testCases;
 
-	protected JdbcUrlParser parser;
-	protected List<SqlTestEntry> testCases = new ArrayList<SqlParserTestImpl.SqlTestEntry>();
+	protected SqlParserTestImpl(DatabaseType dbType, P parserInstance, SqlTestEntry ... testEntries) {
+		if ((databaseType=dbType) == null) {
+			throw new IllegalStateException("No database type specified");
+		}
 
-	public SqlParserTestImpl() {
-		super();
+		if ((parser=parserInstance) == null) {
+			throw new IllegalStateException("No parser instance provided");
+		}
+
+		testCases = (ArrayUtil.length(testEntries) <= 0)
+				? Collections.<SqlTestEntry>emptyList()
+				: Arrays.asList(testEntries)
+				;
 	}
-
-	public class SqlTestEntry {
-
-		private final String connectionUrl;
-		private final String host;
-		private final int port;
-		private final String dbname;
-
-		public SqlTestEntry(final String dbConnectionURL,
-				            final String dbHost,
-				            final int dbPort,
-				            final String dbName) {
-			this.connectionUrl = dbConnectionURL;
-			this.host = dbHost;
-			this.port = dbPort;
-			this.dbname = dbName;
-		}
-
-		public String getConnectionUrl() {
-			return connectionUrl;
-		}
-
-		public int getPort() {
-			return port;
-		}
-
-		public String getHost() {
-			return host;
-		}
-
-		public String getDbname() {
-			return dbname;
-		}
-	}
-
-	public abstract DatabaseType getType();
 
 	@Test
-	public void test() throws Exception {
-
+	public void testTestCases () throws Exception {
+		final String	vendorName=databaseType.getVendorName();
 		for (SqlTestEntry testEntry : testCases) {			
-			final String connectionUrl1 = testEntry.getConnectionUrl();
-			final List<JdbcUrlMetaData> jdbcUrlMetaData = parser.parse(connectionUrl1, getType().getVendorName());
-			final SimpleJdbcUrlMetaData expected = new SimpleJdbcUrlMetaData(testEntry.getHost(),
-					testEntry.getPort(),
-					testEntry.getDbname(),
-					testEntry.getConnectionUrl(),
-					getType().getVendorName());		
+			final String connectionUrl = testEntry.getConnectionUrl();
+			final List<JdbcUrlMetaData> metaDataList = parser.parse(connectionUrl, vendorName);
+			assertNotNull("No result for " + connectionUrl, metaDataList);
+			assertEquals("Multiple results for " + connectionUrl + ": " + metaDataList, 1, metaDataList.size());
 
-			assertEquals(Arrays.asList(expected), jdbcUrlMetaData);
+			JdbcUrlMetaData	actual=metaDataList.get(0);
+			JdbcUrlMetaData expected=new SimpleJdbcUrlMetaData(testEntry.getHost(),
+															   testEntry.getPort(),
+															   testEntry.getDbname(),
+															   connectionUrl,
+															   vendorName);		
+
+			assertEquals("Mismatched results for " + connectionUrl, expected, actual);
 		}
 	}
 }

@@ -15,68 +15,54 @@
  */
 package com.springsource.insight.plugin.jdbc.parsers;
 
-import org.junit.Before;
-
 import com.springsource.insight.plugin.jdbc.parser.DatabaseType;
+import com.springsource.insight.plugin.jdbc.parser.JdbcUrlParser;
 import com.springsource.insight.plugin.jdbc.parser.parsers.OracleParser;
 
 
-public class OracleParserTest extends SqlParserTestImpl {
+public class OracleParserTest extends SqlParserTestImpl<OracleParser> {
+	public OracleParserTest () {
+		super(DatabaseType.ORACLE, new OracleParser(),
+			  // 1st format
+			  new SqlTestEntry("jdbc:oracle:thin:Herong/TopSecret@//10.1.1.1:1522/XE",
+							   "10.1.1.1",
+							   1522,
+					  		   "XE"),
+			  new SqlTestEntry("jdbc:oracle:thin:Herong/TopSecret@//:1521/XE",
+			  		   		   JdbcUrlParser.DEFAULT_HOST,
+			  		   		   OracleParser.DEFAULT_CONNECTION_PORT,
+					           "XE"),
+			  new SqlTestEntry("jdbc:oracle:thin:Herong/TopSecret@///XE",
+					  		   JdbcUrlParser.DEFAULT_HOST,
+					  		   OracleParser.DEFAULT_CONNECTION_PORT,
+					  		   "XE"),
+			  new SqlTestEntry("jdbc:oracle:thin:Herong/TopSecret@//localhost/XE",
+					  		   "localhost",
+					  		   OracleParser.DEFAULT_CONNECTION_PORT,
+					  		   "XE"),
 
-	
-	@Before
-	public void setup() {
-
-		parser = new OracleParser();
-
-		// 1st format
-		testCases.add(new SqlTestEntry("jdbc:oracle:thin:Herong/TopSecret@//10.1.1.1:1522/XE",
-									  "10.1.1.1",
-									  1522,
-									  "XE"));
-		testCases.add(new SqlTestEntry("jdbc:oracle:thin:Herong/TopSecret@//:1521/XE",
-									  "localhost",
-									  1521,
-									  "XE"));
-		testCases.add(new SqlTestEntry("jdbc:oracle:thin:Herong/TopSecret@///XE",
-									  "localhost",
-									  1521,
-									  "XE"));
-
-		testCases.add(new SqlTestEntry("jdbc:oracle:thin:Herong/TopSecret@//localhost/XE",
-									  "localhost",
-									  1521,
-									  "XE"));
-
-		// 2nd format
-		testCases.add(new SqlTestEntry("jdbc:oracle:thin:@172.16.1.9:1522:orcl",
-														 "172.16.1.9",
-														 1522,
-														 "orcl"));
-		testCases.add(new SqlTestEntry("jdbc:oracle:thin:@:1522:orcl",
-															"localhost",
-															1522,
-															"orcl"));
-		testCases.add(new SqlTestEntry("jdbc:oracle:thin:@:orcl",
-																		 "localhost",
-																		 1521,
-																		 "orcl"));
-
-		testCases.add(new SqlTestEntry("jdbc:oracle:thin:@localhost:orcl",
-															"localhost",
-															1521,
-															"orcl"));
+			  // 2nd format
+			  new SqlTestEntry("jdbc:oracle:thin:@172.16.1.9:1522:orcl",
+					  		   "172.16.1.9",
+					  		   1522,
+					  		   "orcl"),
+		      new SqlTestEntry("jdbc:oracle:thin:@:1522:orcl",
+			  		   		   JdbcUrlParser.DEFAULT_HOST,
+		    		 		   1522,
+		    		 		   "orcl"),
+		      new SqlTestEntry("jdbc:oracle:thin:@:orcl",
+	  		   		   		   JdbcUrlParser.DEFAULT_HOST,
+	  		   		   		   OracleParser.DEFAULT_CONNECTION_PORT,
+		    		  		   "orcl"),
+		      new SqlTestEntry("jdbc:oracle:thin:@localhost:orcl",
+		    		  		   "localhost",
+	  		   		   		   OracleParser.DEFAULT_CONNECTION_PORT,
+		    		  		   "orcl"),
 		
-		// 2nd format with user and password
-		testCases.add(new SqlTestEntry("jdbc:oracle:thin:username/pass@oradev.metadyne.uk.com:1021:oradev",
-														 "oradev.metadyne.uk.com",
-														 1021,
-														 "oradev"));
+		      // 2nd format with user and password
+		      new SqlTestEntry("jdbc:oracle:thin:username/pass@oradev.metadyne.uk.com:1021:oradev",
+		    		  		   "oradev.metadyne.uk.com",
+		    		  		   1021,
+		    		  		   "oradev"));
 	}
-	
-	@Override
-	public DatabaseType getType() {
-		return DatabaseType.ORACLE;
-	}
-
 }
