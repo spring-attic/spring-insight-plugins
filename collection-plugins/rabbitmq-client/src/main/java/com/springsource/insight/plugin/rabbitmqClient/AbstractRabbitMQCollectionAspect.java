@@ -33,25 +33,33 @@ import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.intercept.color.ColorManager.ColorParams;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
+import com.springsource.insight.util.ClassUtil;
 import com.springsource.insight.util.ExtraReflectionUtils;
 import com.springsource.insight.util.MapUtil;
 import com.springsource.insight.util.ReflectionUtils;
 
 public abstract class AbstractRabbitMQCollectionAspect extends OperationCollectionAspectSupport {
     private final Field messageHeaders = ExtraReflectionUtils.getAccessibleField(BasicProperties.class, "headers");
-    private final static Method getBytesMethod;
+    private static Method getBytesMethod;
     
     @SuppressWarnings("rawtypes")
 	private static Class longStringClass;
     
     private static final Logger  _logger = Logger.getLogger(AbstractRabbitMQCollectionAspect.class.getName());
     
-    static{
+    protected AbstractRabbitMQCollectionAspect () {
+    	super();
+    	setLongStringClass();
+    }
+
+    private void setLongStringClass() {
+    	ClassLoader cl = ClassUtil.getDefaultClassLoader(getClass());
+    	
     	try {
-			longStringClass = Class.forName("com.rabbitmq.client.impl.LongString");
+			longStringClass = ClassUtil.loadClassByName(cl, "com.rabbitmq.client.impl.LongString");
 		} catch (ClassNotFoundException e) {
 			try {
-				longStringClass = Class.forName("com.rabbitmq.client.LongString");
+				longStringClass = ClassUtil.loadClassByName(cl, "com.rabbitmq.client.LongString");
 			} catch (ClassNotFoundException e1) {
 				_logger.warning("Cannot find LongString class from amqp-client jar");				
 			}
@@ -62,13 +70,10 @@ public abstract class AbstractRabbitMQCollectionAspect extends OperationCollecti
 		} else {
 			getBytesMethod = null;
 		}
-    }
+		
+	}
 
-    protected AbstractRabbitMQCollectionAspect () {
-    	super();
-    }
-
-    protected void applyPropertiesData(Operation op, BasicProperties props) {
+	protected void applyPropertiesData(Operation op, BasicProperties props) {
         OperationMap map = op.createMap("props");
 
         map.putAnyNonEmpty("Type", props.getType());
