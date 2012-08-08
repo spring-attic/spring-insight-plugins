@@ -32,6 +32,7 @@
 		<module>files-tracker</module>
 		<module>gemfire</module>	
 		<module>grails</module>
+		<module>hadoop</module>
 		<module>hibernate</module>
 		<module>httpclient3</module>
 		<module>httpclient4</module>

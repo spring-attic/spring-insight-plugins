@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:insight="http://www.springframework.org/schema/insight-idk"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
+
+	<insight:plugin name="hadoop" version="${project.version}" publisher="SpringSource" />
+
+	<insight:operation-view operation="hdp-job" template="com/springsource/insight/plugin/hadoop/job.ftl"/>
+	<insight:operation-view operation="hdp-mapper" template="com/springsource/insight/plugin/hadoop/mapper.ftl"/>
+	<insight:operation-view operation="hdp-reducer" template="com/springsource/insight/plugin/hadoop/reducer.ftl"/>
+	
+	<insight:operation-group group="Bigdata" operation="hdp-job" />
+	<insight:operation-group group="Bigdata" operation="hdp-mapper" />
+	<insight:operation-group group="Bigdata" operation="hdp-reducer" />
+</beans>
