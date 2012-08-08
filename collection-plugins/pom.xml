@@ -40,6 +40,7 @@
 		<module>jcr</module>
 		<module>jdbc</module>
 		<module>jms</module>
+		<module>jndi</module>
 		<module>jpa</module>
 		<module>jta</module>
 		<module>jws</module>

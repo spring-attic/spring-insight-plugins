@@ -1,4 +1,4 @@
-h1. LDAP Plugin for Spring Insight
+h1. JNDI Plugin for Spring Insight
 
 h2. Compatibility
 

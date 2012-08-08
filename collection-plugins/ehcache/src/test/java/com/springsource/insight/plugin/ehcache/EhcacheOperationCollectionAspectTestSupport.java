@@ -38,6 +38,7 @@ import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.collection.OperationCollector;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.util.ClassUtil;
+import com.springsource.insight.util.FileUtil;
 
 /**
  * 
@@ -106,14 +107,12 @@ public abstract class EhcacheOperationCollectionAspectTestSupport
     }
 
     protected static final File resolveTestDirRoot (Class<?> anchorClass) {
-		File	anchorFile=ClassUtil.getClassContainerLocationFile(anchorClass);
-	    for (File classPath=anchorFile; classPath != null; classPath = classPath.getParentFile()) {
-	        if ("target".equals(classPath.getName()) && classPath.isDirectory()) {
-	        	return classPath;
-	        }
-	    }
+		File	targetDir=FileUtil.detectTargetFolder(anchorClass);
+		if (targetDir == null) {
+			throw new IllegalStateException("No target folder for " + anchorClass.getSimpleName());
+		}
 
-        throw new IllegalStateException("No target folder for " + anchorClass.getSimpleName() + " at " + anchorFile);
+		return targetDir;
     }
 
     @SuppressWarnings("hiding")
