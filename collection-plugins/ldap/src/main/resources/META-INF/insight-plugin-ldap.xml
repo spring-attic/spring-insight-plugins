@@ -10,5 +10,5 @@
     <insight:operation-view operation="javax-naming-ldap" template="com/springsource/insight/plugin/ldap/javax-naming-ldap.ftl"/>
 
     <bean class="com.springsource.insight.plugin.ldap.LdapExternalResourceAnalyzer" />
-
+    <bean class="com.springsource.insight.plugin.ldap.LdapMetricsGenerator" />
 </beans>
