@@ -26,8 +26,10 @@ import java.net.URL;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import com.springsource.insight.util.ClassUtil;
+import com.springsource.insight.util.test.MicroBenchmark;
 
 /**
  * Runs junit tests on {@link FileInputCollectionAspect}
@@ -81,6 +83,7 @@ public class FileInputCollectionAspectTest extends FilesOpenTrackerAspectTestSup
      * synchronization of the tracked files map affects the performance 
      */
     @Test
+    @Category(MicroBenchmark.class)
     public void testSynchronizedAspectPerformance () {
         runSynchronizedAspectPerformance(new FileAccessor() {
             public Closeable createInstance() throws IOException {

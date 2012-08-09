@@ -21,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.trace.ObscuredValueMarker;
+import com.springsource.insight.util.StringUtil;
 
 /**
  * 
@@ -56,7 +57,7 @@ public class UserDetailsOperationCollector extends ObscuringOperationCollector {
     }
     // used for username/password arguments
     void markSensitiveString (String strValue) {
-        if ((strValue != null) && (strValue.length() > 0)) {
+        if (!StringUtil.isEmpty(strValue)) {
             obscuredMarker.markObscured(strValue);
         }
     }
@@ -75,8 +76,8 @@ public class UserDetailsOperationCollector extends ObscuringOperationCollector {
             return map;
         }
 
-        map.put("username", details.getUsername())
-           .put("password", details.getPassword())
+        map.putAnyNonEmpty("username", details.getUsername())
+           .putAnyNonEmpty("password", details.getPassword())
            .put("accountNonExpired", details.isAccountNonExpired())
            .put("accountNonLocked", details.isAccountNonLocked())
            .put("credentialsNonExpired", details.isCredentialsNonExpired())

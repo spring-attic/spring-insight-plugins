@@ -26,6 +26,9 @@ import java.io.PrintWriter;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+import com.springsource.insight.util.test.MicroBenchmark;
 
 /**
  * 
@@ -39,11 +42,7 @@ public class FileOutputCollectionAspectTest extends FilesOpenTrackerAspectTestSu
     @BeforeClass
     public static void setupInputTestFile () throws Exception {
         Assert.assertNull("Test file already initialized", TEST_FILE);
-
-        String  tmpDir=System.getProperty("java.io.tmpdir");
-        Assert.assertTrue("Missing TEMP folder location value", (tmpDir != null) && (tmpDir.length() > 0));
-
-        TEST_FILE = new File(new File(tmpDir), "output-test-file.txt");
+        TEST_FILE = new File(resolveTestDirRoot(FileOutputCollectionAspectTest.class), "output-test-file.txt");
     }
 
     @Test
@@ -146,6 +145,7 @@ public class FileOutputCollectionAspectTest extends FilesOpenTrackerAspectTestSu
      * synchronization of the tracked files map affects the performance 
      */
     @Test
+    @Category(MicroBenchmark.class)
     public void testSynchronizedAspectPerformance () {
         runSynchronizedAspectPerformance(new FileAccessor() {
             public Closeable createInstance() throws IOException {

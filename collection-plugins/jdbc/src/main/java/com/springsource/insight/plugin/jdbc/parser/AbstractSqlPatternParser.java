@@ -15,34 +15,42 @@
  */
 package com.springsource.insight.plugin.jdbc.parser;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.springsource.insight.util.ArrayUtil;
 import com.springsource.insight.util.StringUtil;
 
 public abstract class AbstractSqlPatternParser extends AbstractSqlParser {
     
     private final SqlParserPattern[] patterns;
     
-    public AbstractSqlPatternParser(@SuppressWarnings("hiding") SqlParserPattern... patterns) {
-        this.patterns = patterns;
+    protected AbstractSqlPatternParser(SqlParserPattern... patternValues) {
+        this(DEFAULT_DB_NAME, patternValues);
     }
     
-    public AbstractSqlPatternParser(String defaultDBName, @SuppressWarnings("hiding") SqlParserPattern... patterns) {
-        super(defaultDBName);
-        this.patterns = patterns;
+    protected AbstractSqlPatternParser(String dbName, SqlParserPattern... patternValues) {
+        this(dbName, DEFAULT_HOST, DEFAULT_PORT, patternValues);
     }
     
-    public AbstractSqlPatternParser(int port, @SuppressWarnings("hiding") SqlParserPattern... patterns) {
-        super(port);
-        this.patterns = patterns;
+    protected AbstractSqlPatternParser(int port, SqlParserPattern... patternValues) {
+        this(DEFAULT_HOST, port, patternValues);
     }
-    
-    public AbstractSqlPatternParser(String defaultDBName, String defaultHost, int defaultPort, @SuppressWarnings("hiding") SqlParserPattern... patterns) {
-        super(defaultDBName, defaultHost, defaultPort);
-        this.patterns = patterns;
+
+    protected AbstractSqlPatternParser(String host, int port, SqlParserPattern... patternValues) {
+    	this(DEFAULT_DB_NAME, host, port, patternValues);
+ 	}
+
+    protected AbstractSqlPatternParser(String dbName, String host, int port,SqlParserPattern... patternValues) {
+        super(dbName, host, port);
+
+		if (ArrayUtil.length(patternValues) <= 0) {
+			throw new IllegalStateException("No patterns specified");
+		}
+
+        this.patterns = patternValues;
     }
 
     public List<JdbcUrlMetaData> parse(final String connectionUrl, final String vendorName) {
@@ -66,8 +74,8 @@ public abstract class AbstractSqlPatternParser extends AbstractSqlParser {
                 return null;
             }
 
-            JdbcUrlMetaData simpleJdbcUrlMetaData = new SimpleJdbcUrlMetaData(host, finalPort, databaseName, connectionUrl, vendorName);
-            return Arrays.asList(simpleJdbcUrlMetaData);
+            JdbcUrlMetaData simpleJdbcUrlMetaData=new SimpleJdbcUrlMetaData(host, finalPort, databaseName, connectionUrl, vendorName);
+            return Collections.singletonList(simpleJdbcUrlMetaData);
         }
         
         return null;
@@ -89,7 +97,7 @@ public abstract class AbstractSqlPatternParser extends AbstractSqlParser {
         String res = getGroupValue(matcher, index);
         return StringUtil.isEmpty(res) ? defaultValue : res;
     }
-    
+
     private String getGroupValue(Matcher matcher, int index) {
         String toReturn = null;
         

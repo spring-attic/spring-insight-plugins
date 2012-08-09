@@ -16,8 +16,8 @@
 
 package com.springsource.insight.plugin.springweb.controller;
 
+import com.springsource.insight.intercept.endpoint.AbstractSingleTypeEndpointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
@@ -25,7 +25,6 @@ import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.FrameUtil;
-import com.springsource.insight.intercept.trace.Trace;
 
 /**
  * This trace analyzer simply looks at a Trace and returns a
@@ -38,67 +37,41 @@ import com.springsource.insight.intercept.trace.Trace;
  *    .. (arbitrary nesting) 
  *      .. ControllerMethodOperation
  */
-public class ControllerEndPointAnalyzer implements EndPointAnalyzer {
-    private static final OperationType httpOpType = OperationType.HTTP;
-    static final OperationType CONTROLLER_METHOD_TYPE = OperationType.valueOf("controller_method");
-
+public class ControllerEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
+    public static final OperationType CONTROLLER_METHOD_TYPE = OperationType.valueOf("controller_method");
     /**
-     * Returns a {@link EndPointAnalysis} object if the trace was
-     * successfully determined to match the correct format (http -> controller)
-     * 
-     * Returns null otherwise.
+     * The property used to mark legacy controller operations
      */
-    public EndPointAnalysis locateEndPoint(Trace trace) {
-        Frame controllerFrame = trace.getFirstFrameOfType(CONTROLLER_METHOD_TYPE);
-        return makeEndPoint(controllerFrame, -1);
+    public static final String	LEGACY_PROPNAME="legacyController";
+    /**
+     * The <U>static</U> score assigned to legacy controllers - it is just slightly
+     * above that of a servlet and/or queue operation
+     */
+    public static final int	LEGACY_SCORE=EndPointAnalysis.CEILING_LAYER_SCORE + 1;
+
+    public ControllerEndPointAnalyzer () {
+    	super(CONTROLLER_METHOD_TYPE);
     }
 
-    private EndPointAnalysis makeEndPoint(Frame controllerFrame, int currentScore) {
-        if (controllerFrame == null) {
-            return null;
-        }
-        
-        Frame httpFrame = FrameUtil.getFirstParentOfType(controllerFrame, httpOpType);
-        if (httpFrame == null) {
-            return null;
-        }
-
+	@Override
+	protected EndPointAnalysis makeEndPoint(Frame controllerFrame, int depth) {
         Operation controllerOp = controllerFrame.getOperation();
-        if (controllerOp == null) {
-        	return null;
-        }
-        String examplePath = getExampleRequest(httpFrame);
+        Frame httpFrame = FrameUtil.getFirstParentOfType(controllerFrame, OperationType.HTTP);
+        String examplePath = getExampleRequest(httpFrame, controllerOp);
         EndPointName endPointName = EndPointName.valueOf(controllerOp);
         String endPointLabel = controllerOp.getLabel();
-        int	score = currentScore;
-        if (score == -1) {
-            score = FrameUtil.getDepth(controllerFrame);
-        }
 
-        return new EndPointAnalysis(endPointName, endPointLabel, examplePath, score, controllerOp);
+        return new EndPointAnalysis(endPointName, endPointLabel, examplePath, getOperationScore(controllerOp, depth), controllerOp);
     }
 
-    public String getExampleRequest(Frame httpFrame) {
-        Operation operation = httpFrame.getOperation();
-        OperationMap details = operation.get("request", OperationMap.class);
-        return details.get("method") + " " + details.get(OperationFields.URI);
-    }
+    public String getExampleRequest(Frame httpFrame, Operation controllerOp) {
+    	if (httpFrame != null) {
+	        Operation operation = httpFrame.getOperation();
+	        OperationMap details = operation.get("request", OperationMap.class);
+	        return ((details == null) ? "???" : String.valueOf(details.get("method")))
+                 + " " + ((details == null) ? "<UNKNOWN>" : details.get(OperationFields.URI));
+    	}
 
-    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
-        Frame parent = FrameUtil.getLastParentOfType(frame, CONTROLLER_METHOD_TYPE);
-        
-        if (parent != null) {
-            return null;
-        }
-        
-        return makeEndPoint(frame, depth);
-    }
-
-    public int getScore(Frame frame, int depth) {
-        return depth;
-    }
-
-    public OperationType[] getOperationTypes() {
-        return new OperationType[] {CONTROLLER_METHOD_TYPE};
+    	return controllerOp.getLabel();
     }
 }

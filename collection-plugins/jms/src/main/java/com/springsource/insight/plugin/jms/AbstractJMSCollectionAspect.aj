@@ -27,11 +27,15 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 
 public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAspectSupport {
-    abstract JMSPluginOperationType getOperationType();
+	protected final JMSPluginOperationType optype;
+
+    protected AbstractJMSCollectionAspect (JMSPluginOperationType type) {
+    	if ((optype=type) == null) {
+    		throw new IllegalStateException("No operation type specified");
+    	}
+    }
     
     Operation createOperation(JoinPoint jp) {
-        JMSPluginOperationType optype = getOperationType();
-        
         Operation op = new Operation();
         op.type(optype.getOperationType());
         op.label(optype.getLabel());
@@ -39,31 +43,28 @@ public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAs
         
         return op;
     }
+
+    Operation applyDestinationData(Message message, Operation op) {
+        try {
+            return applyDestinationData(message.getJMSDestination(), op);
+        } catch (JMSException e) {
+            CollectionErrors.markCollectionError(this.getClass(), e);
+            return op;
+        }
+    }
     
-    void applyDestinationData(Destination dest, Operation op) {
+    Operation applyDestinationData(Destination dest, Operation op) {
         try {
             DestinationType destinationType = JMSPluginUtils.getDestinationType(dest);
             String destinationName = JMSPluginUtils.getDestinationName(dest, destinationType);
-            
-            op.put(OperationFields.CLASS_NAME, destinationType.name());
-            op.put(OperationFields.METHOD_SIGNATURE, destinationName);
-            
-            op.put("destinationType", destinationType.name());
-            op.put("destinationName", destinationName);
+            return applyDestinationData(op, destinationType, destinationName);
         } catch (JMSException e) {
             CollectionErrors.markCollectionError(this.getClass(), e);
+            return op;
         }
     }
     
-    void applyDestinationData(Message message, Operation op) {
-        try {
-            applyDestinationData(message.getJMSDestination(), op);
-        } catch (JMSException e) {
-            CollectionErrors.markCollectionError(this.getClass(), e);
-        }
-    }
-    
-    void applyMessageData(Message message, Operation op) {
+    Operation applyMessageData(Message message, Operation op) {
         try {
             JMSPluginUtils.extractMessageTypeAttributes(op, message);
             JMSPluginUtils.extractMessageHeaders(op, message);
@@ -71,8 +72,24 @@ public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAs
         } catch (JMSException e) {
             CollectionErrors.markCollectionError(this.getClass(), e);
         }
+
+        return op;
     }
-    
+
+    static Operation applyDestinationData (Operation op, DestinationType destinationType, String destinationName) {
+        op.put(OperationFields.CLASS_NAME, destinationType.name());
+        op.put(OperationFields.METHOD_SIGNATURE, destinationName);
+        
+        op.put("destinationType", destinationType.name());
+        op.put("destinationName", destinationName);
+        return op;
+    }
+
+    @Override
+    public boolean isEndpoint() {
+    	return true;
+    }
+
     @Override
     public String getPluginName() {
         return JmsPluginRuntimeDescriptor.PLUGIN_NAME;

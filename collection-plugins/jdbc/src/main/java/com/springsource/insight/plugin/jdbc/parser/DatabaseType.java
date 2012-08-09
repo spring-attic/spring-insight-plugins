@@ -24,8 +24,10 @@ import com.springsource.insight.plugin.jdbc.parser.parsers.MssqlParser;
 import com.springsource.insight.plugin.jdbc.parser.parsers.MySqlParser;
 import com.springsource.insight.plugin.jdbc.parser.parsers.OracleParser;
 import com.springsource.insight.plugin.jdbc.parser.parsers.OracleRACParser;
+import com.springsource.insight.plugin.jdbc.parser.parsers.PostgresSqlParser;
 import com.springsource.insight.plugin.jdbc.parser.parsers.SqlFireParser;
 import com.springsource.insight.plugin.jdbc.parser.parsers.SqlFirePeerParser;
+import com.springsource.insight.util.ArrayUtil;
 import com.springsource.insight.util.StringUtil;
 
 public enum DatabaseType {
@@ -33,7 +35,8 @@ public enum DatabaseType {
     ORACLE("oracle", new OracleParser(), new OracleRACParser()), 
     HSQLDB("hsqldb", new HsqlParser()), 
     MSSQL("microsoft", new MssqlParser()),
-    SQLFIRE("sqlfire", new SqlFireParser(), new SqlFirePeerParser());
+    SQLFIRE("sqlfire", new SqlFireParser(), new SqlFirePeerParser()),
+    POSTGRESQL("postgresql", new PostgresSqlParser());
 
     private static final Map<String, DatabaseType> map=new TreeMap<String, DatabaseType>(String.CASE_INSENSITIVE_ORDER);
 
@@ -46,18 +49,32 @@ public enum DatabaseType {
     private final String vendorName;
     private final JdbcUrlParser[] parsers;
 
-    @SuppressWarnings("hiding")
-    private DatabaseType(final String vendorName, final JdbcUrlParser... parsers) {
-        this.vendorName = vendorName;
-        this.parsers = parsers;
+    private DatabaseType(String vendor, JdbcUrlParser... urlParsers) {
+    	if (ArrayUtil.length(urlParsers) <= 0) {
+    		throw new IllegalStateException("No parsers provided");
+    	}
+
+        this.vendorName = vendor;
+        this.parsers = urlParsers;
     }
 
     public String getVendorName() {
         return vendorName;
     }
 
-    public static DatabaseType findByDatabaseName(final String databaseName) {
-        return StringUtil.isEmpty(databaseName) ? null : map.get(databaseName);
+    public List<JdbcUrlMetaData> parseConnectionUrl (final String connectionUrl) {
+        if (StringUtil.isEmpty(connectionUrl)) {
+        	return null;
+        }
+
+        for (JdbcUrlParser parser : parsers) {
+            List<JdbcUrlMetaData> res=parser.parse(connectionUrl, vendorName);
+            if (res != null) {
+            	return res;
+            }
+        }
+
+        return null;	// no successful parsing
     }
 
     public static List<JdbcUrlMetaData> parse(final String connectionUrl) {
@@ -69,16 +86,12 @@ public enum DatabaseType {
         DatabaseType type=(parts.length >= 2) ? findByDatabaseName(parts[1]) : null;
         if (type == null) {	// cannot determine type
         	return null;
+        } else {
+        	return type.parseConnectionUrl(connectionUrl);
         }
-
-        for (JdbcUrlParser parser : type.parsers) {
-            List<JdbcUrlMetaData> res=parser.parse(connectionUrl, type.vendorName);
-            if (res != null) {
-            	return res;
-            }
-        }
-
-        return null;	// no successful parsing
     }
 
+    public static DatabaseType findByDatabaseName(final String databaseName) {
+        return StringUtil.isEmpty(databaseName) ? null : map.get(databaseName);
+    }
 }

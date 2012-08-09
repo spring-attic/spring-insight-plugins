@@ -19,5 +19,9 @@ package com.springsource.insight.plugin.jdbc.parser;
 import java.util.List;
 
 public interface JdbcUrlParser {
-    public List<JdbcUrlMetaData> parse(String connectionUrl, String vendorName);
+    static final String DEFAULT_HOST = "localhost";
+    static final String DEFAULT_DB_NAME = "", UNKNOWN_DATABASE="<unknown>";
+    static final int DEFAULT_PORT = -1;
+
+    List<JdbcUrlMetaData> parse(String connectionUrl, String vendorName);
 }

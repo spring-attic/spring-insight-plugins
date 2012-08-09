@@ -23,17 +23,14 @@ import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 
-public aspect GrailsControllerOperationCollectionAspect
-    extends AbstractOperationCollectionAspect
-{
+public aspect GrailsControllerOperationCollectionAspect extends AbstractOperationCollectionAspect {
+    private static final OperationType TYPE = GrailsControllerMethodEndPointAnalyzer.TYPE;
     
-    private static final OperationType TYPE = OperationType.valueOf("grails_controller_method");
-    
-    public pointcut collectionPoint() : GrailsControllerPointcuts.handleURIMethod();
-
     public GrailsControllerOperationCollectionAspect() {
         super(new GrailsControllerMetricCollector());
     }
+
+    public pointcut collectionPoint() : GrailsControllerPointcuts.handleURIMethod();
 
     @Override
     public Operation createOperation(JoinPoint joinPoint) {

@@ -30,19 +30,19 @@ import com.springsource.insight.collection.method.MethodOperationCollectionAspec
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
 import com.springsource.insight.intercept.operation.OperationMap;
+import com.springsource.insight.util.ArrayUtil;
 /**
  * 
  */
 public aspect JwsOperationCollectionAspect extends MethodOperationCollectionAspect {
-    /*
-     * @see com.springsource.insight.collection.AbstractOperationCollectionAspect#collectionPoint()
-     */
-    public pointcut collectionPoint()
+	public JwsOperationCollectionAspect () {
+		super();
+	}
+
+	public pointcut collectionPoint()
         : execution(* (@WebService *).*(..))
         ;
-    /*
-     * @see com.springsource.insight.collection.method.MethodOperationCollectionAspect#createOperation(org.aspectj.lang.JoinPoint)
-     */
+
     @Override
     protected Operation createOperation(JoinPoint jp) {
         return updateOperation(jp, super.createOperation(jp).type(JwsDefinitions.TYPE));
@@ -107,9 +107,9 @@ public aspect JwsOperationCollectionAspect extends MethodOperationCollectionAspe
     protected static final Operation fillMethodParamsInformation (
             final Operation op, final Class<?>[] paramTypes, final Annotation[][] paramAnns, final Object[] args) {
         if ((op == null)
-         || (paramTypes == null) || (paramTypes.length <= 0)
-         || (paramAnns == null) || (paramAnns.length <= 0)
-         || (args == null) || (args.length <= 0)) {
+         || (ArrayUtil.length(paramTypes) <= 0)
+         || (ArrayUtil.length(paramAnns) <= 0)
+         || (ArrayUtil.length(args) <= 0)) {
             return op;
         }
 

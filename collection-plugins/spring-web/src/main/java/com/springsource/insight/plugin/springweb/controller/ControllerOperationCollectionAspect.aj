@@ -16,33 +16,12 @@
 
 package com.springsource.insight.plugin.springweb.controller;
 
-import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
-import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.plugin.springweb.ControllerPointcuts;
-import com.springsource.insight.plugin.springweb.SpringWebPluginRuntimeDescriptor;
 
-import org.aspectj.lang.JoinPoint;
-
-public aspect ControllerOperationCollectionAspect extends MethodOperationCollectionAspect {
-    
-    private static final OperationType TYPE = ControllerEndPointAnalyzer.CONTROLLER_METHOD_TYPE;
+public aspect ControllerOperationCollectionAspect extends AbstractControllerOperationCollectionAspect {
+    public ControllerOperationCollectionAspect () {
+    	super(false);
+    }
     
 	public pointcut collectionPoint() : ControllerPointcuts.controllerHandlerMethod();
-
-	@Override
-    public Operation createOperation(JoinPoint jp) {
-	    return super.createOperation(jp).type(TYPE);
-    }
-
-    @Override
-    public boolean isEndpoint() {
-        return true;
-    }
-
-    @Override
-    public String getPluginName() {
-        return SpringWebPluginRuntimeDescriptor.PLUGIN_NAME;
-    }
-
 }

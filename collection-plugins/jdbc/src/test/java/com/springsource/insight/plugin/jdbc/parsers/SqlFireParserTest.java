@@ -15,23 +15,11 @@
  */
 package com.springsource.insight.plugin.jdbc.parsers;
 
-import org.junit.Before;
-
 import com.springsource.insight.plugin.jdbc.parser.DatabaseType;
 import com.springsource.insight.plugin.jdbc.parser.parsers.SqlFireParser;
 
-public class SqlFireParserTest extends SqlParserTestImpl {
-
-    @Before
-    public void setup() {
-
-        parser = new SqlFireParser();
-        testCases.add(new SqlTestEntry("jdbc:sqlfire://localhost:1234/", "localhost", 1234, ""));
-    }
-
-    @Override
-    public DatabaseType getType() {
-        return DatabaseType.SQLFIRE;
-    }
-
+public class SqlFireParserTest extends SqlParserTestImpl<SqlFireParser> {
+	public SqlFireParserTest () {
+		super(DatabaseType.SQLFIRE, new SqlFireParser(), new SqlTestEntry("jdbc:sqlfire://localhost:7365/", "localhost", 7365, ""));
+	}
 }

@@ -21,7 +21,6 @@ import org.springframework.context.event.GenericApplicationListenerAdapter;
 import org.springframework.context.event.SourceFilteringListener;
 
 import com.springsource.insight.collection.method.AnnotationDrivenMethodOperationCollectionAspect;
-import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
 
 /**
  * Adds the @MethodOperationCollected annotation to most implementations of
@@ -36,7 +35,7 @@ import com.springsource.insight.collection.method.MethodOperationCollectionAspec
  * @gitBadge  LongestClassName  On October 04, 2010:  you won the LongestClassName badge
  *            with 54 characters!
  */
-public aspect ApplicationListenerMethodOperationCollectionAspect extends MethodOperationCollectionAspect {
+public aspect ApplicationListenerMethodOperationCollectionAspect extends SpringLifecycleMethodOperationCollectionAspect {
     public ApplicationListenerMethodOperationCollectionAspect() {
         super();
     }
@@ -55,10 +54,5 @@ public aspect ApplicationListenerMethodOperationCollectionAspect extends MethodO
         !delegatingGenericListenerAdapter() && 
         !sourceFilteringListener() && 
         !AnnotationDrivenMethodOperationCollectionAspect.collectionPoint();
-
-    @Override
-    public String getPluginName() {
-        return SpringCorePluginRuntimeDescriptor.PLUGIN_NAME;
-    }
 }
 

@@ -16,17 +16,10 @@
 
 package com.springsource.insight.plugin.springcore;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 import org.springframework.stereotype.Service;
 
-import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
-import com.springsource.insight.collection.method.AnnotationDrivenMethodOperationCollectionAspect;
-import com.springsource.insight.intercept.operation.Operation;
-
-public class ServiceMethodOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
+public class ServiceMethodOperationCollectionAspectTest extends StereotypeOperationCollectionAspectTestSupport {
 
     // This test focuses only on selection, since all that 
     // ServiceMethodOperationCollectionAspect contains is a pointcut. 
@@ -36,14 +29,7 @@ public class ServiceMethodOperationCollectionAspectTest extends OperationCollect
     public void serviceCollectedNormalReturn() {
         ExampleService service = new ExampleService();
         service.perform();
-        
-        Operation   operation=getLastEntered();
-        assertEquals("ExampleService#perform", operation.getLabel());
-    }
-    
-    @Override
-    public OperationCollectionAspectSupport getAspect() {
-        return AnnotationDrivenMethodOperationCollectionAspect.aspectOf();
+        assertStereotypeOperation(ExampleService.class, "perform");
     }
     
     @Service

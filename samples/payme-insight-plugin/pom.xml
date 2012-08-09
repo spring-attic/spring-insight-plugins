@@ -6,48 +6,20 @@
 	<version>1.9.0-CI-SNAPSHOT</version>
 	<name>com.springsource.insight.samples:payme-insight-plugin</name>
 	<packaging>jar</packaging>
-	
-	<properties>
-		<insight.version>1.9.0-CI-SNAPSHOT</insight.version>
-		<aspectj.version>1.7.0.M1</aspectj.version>
-		<spring.framework.version>3.1.1.RELEASE</spring.framework.version>
-		<junit.version>4.5</junit.version>
-		<mockito.version>1.8.0</mockito.version>
-	</properties>
-	
-	<repositories>
-		<repository>
-			<id>spring-release</id>
-			<name>Spring Release Repository</name>
-			<url>http://maven.springframework.org/release</url>
-		</repository>
-		<repository>
-			<id>spring-milestone</id>
-			<name>Spring Milestone Repository</name>
-			<url>http://maven.springframework.org/milestone</url>
-		</repository>
-	</repositories>
 
-    <pluginRepositories>
-        <!-- Milestone repository for the aspectj milestone release -->
-        <pluginRepository>
-			<id>spring-milestone</id>
-			<url>http://maven.springframework.org/milestone</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<updatePolicy>never</updatePolicy>
-            </releases>
-        </pluginRepository>
-    </pluginRepositories>
+	<parent>
+		<groupId>com.springsource.insight.samples</groupId>
+		<artifactId>sample-modules</artifactId>
+		<version>1.9.0-CI-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
 
 	<dependencies>
 		<!-- Provided dependencies (part of Insight) -->
 		<dependency>
 			<groupId>com.springsource.insight</groupId>
 			<artifactId>insight-idk</artifactId>
-			<version>${insight.version}</version>
+			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		
@@ -66,6 +38,18 @@
 			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.framework.version}</version>
+            <exclusions>
+                <!-- Exclude Commons Logging in favor of SLF4j -->
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
@@ -73,15 +57,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
+			<version>${servlet-api.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -104,41 +82,29 @@
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-jcl</artifactId>
-			<version>1.5.5</version>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${slf4j.version}</version>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjweaver</artifactId>
 			<version>${aspectj.version}</version>
 			<scope>test</scope>
 		</dependency>
-		
 	</dependencies>
 	
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<configuration>
-					<downloadSources>true</downloadSources>
-					<downloadJavadocs>true</downloadJavadocs>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>aspectj-maven-plugin</artifactId>
-				<version>1.2</version>
 				<executions>
 					<execution>
 						<goals>
@@ -163,35 +129,12 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.4.3</version>
 				<configuration>
 					<argLine>
 						-javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
 					</argLine>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<version>2.4</version>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
-	
-	<distributionManagement>
-		<repository>
-			<id>spring-milestone</id>
-			<name>Spring Milestone Repository</name>
-			<url>s3://maven.springframework.org/milestone</url>
-		</repository>
-		<snapshotRepository>
-			<id>spring-snapshot</id>
-			<name>Spring Snapshot Repository</name>
-			<url>s3://maven.springframework.org/snapshot</url>
-		</snapshotRepository>
-	</distributionManagement>
-	
 </project>

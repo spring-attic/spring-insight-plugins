@@ -6,7 +6,14 @@
 	<version>1.9.0-CI-SNAPSHOT</version>
 	<name>com.springsource.insight.samples:sample-modules</name>
 	<packaging>pom</packaging>
-	
+
+	<parent>
+		<groupId>com.springsource.insight</groupId>
+		<artifactId>community</artifactId>
+		<version>1.9.0-CI-SNAPSHOT</version>
+		<relativePath>../parent</relativePath>
+	</parent>
+
 	<modules>
 		<module>payme-insight-plugin</module>
 		<module>payme-webapp</module>
@@ -16,26 +23,28 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<verbose>true</verbose>
+					<showWarnings>true</showWarnings>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
-				<version>2.4</version>
 				<configuration>
 					<skip>true</skip>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-
-	<distributionManagement>
-		<repository>
-			<id>spring-milestone</id>
-			<name>Spring Milestone Repository</name>
-			<url>s3://maven.springframework.org/milestone</url>
-		</repository>
-		<snapshotRepository>
-			<id>spring-snapshot</id>
-			<name>Spring Snapshot Repository</name>
-			<url>s3://maven.springframework.org/snapshot</url>
-		</snapshotRepository>
-	</distributionManagement>
-	
 </project>

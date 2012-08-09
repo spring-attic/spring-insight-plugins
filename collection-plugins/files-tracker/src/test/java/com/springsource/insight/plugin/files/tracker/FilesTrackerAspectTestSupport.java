@@ -91,7 +91,8 @@ public abstract class FilesTrackerAspectTestSupport extends OperationCollectionA
         final Runtime   RUNTIME=Runtime.getRuntime();
 
         System.out.println("-------------- Synchronized=" + (threads > 1) + " Threads: " + threads + " ------------------");
-        System.out.printf("%10s %20s %20s %20s", "Num. calls/th", "Duration (nano)", "Duration/th", "Used memory (B)\n");
+        System.out.printf("%10s %20s %20s %20s", "Num. calls/th", "Duration (nano)", "Duration/th", "Used memory (B)");
+        System.out.println();
         for (final int  NUM_CALLS : new int[] { 100, 1000, 2500 }) {
             Runnable runner = new Runnable() {
                 public void run() {
@@ -122,10 +123,11 @@ public abstract class FilesTrackerAspectTestSupport extends OperationCollectionA
                 }
             }
             long    endTime=System.nanoTime(), endFree=RUNTIME.freeMemory();
-            System.out.printf("%10d %20d %20d %20d\n",
+            System.out.printf("%10d %20d %20d %20d",
                               Integer.valueOf(NUM_CALLS), Long.valueOf(endTime - startTime),
                               Long.valueOf((endTime - startTime)/threads),
                               Long.valueOf(startFree - endFree));
+            System.out.println();
         }
     }
 

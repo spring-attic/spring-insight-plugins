@@ -16,17 +16,10 @@
 
 package com.springsource.insight.plugin.springcore;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 import org.springframework.stereotype.Repository;
 
-import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
-import com.springsource.insight.collection.method.AnnotationDrivenMethodOperationCollectionAspect;
-import com.springsource.insight.intercept.operation.Operation;
-
-public class RepositoryMethodOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
+public class RepositoryMethodOperationCollectionAspectTest extends StereotypeOperationCollectionAspectTestSupport {
     // This test focuses only on selection, since all that 
     // RepositoryMethodOperationCollectionAspect contains is a pointcut. 
     // Tests for return value, exceptions etc. reside in MethodOperationCollectionAspectTest
@@ -36,13 +29,7 @@ public class RepositoryMethodOperationCollectionAspectTest extends OperationColl
         ExampleRepository repository = new ExampleRepository();
         repository.perform();
         
-        Operation   operation=getLastEntered();
-        assertEquals("ExampleRepository#perform", operation.getLabel());
-    }
-
-    @Override
-    public OperationCollectionAspectSupport getAspect() {
-        return AnnotationDrivenMethodOperationCollectionAspect.aspectOf();
+        assertStereotypeOperation(ExampleRepository.class, "perform");
     }
 
     @Repository

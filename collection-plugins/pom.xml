@@ -36,15 +36,16 @@
 		<module>httpclient3</module>
 		<module>httpclient4</module>
 		<module>jax-rs</module>
+		<module>jcr</module>
 		<module>jdbc</module>
 		<module>jms</module>
+		<module>jndi</module>
 		<module>jpa</module>
 		<module>jta</module>
 		<module>jws</module>
 		<module>ldap</module>
 		<module>logging</module>
 		<module>mail</module>
-		<module>method-endpoint</module>
 		<module>mongodb</module>
 		<module>portlet</module>
 		<module>quartz</module>

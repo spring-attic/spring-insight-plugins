@@ -16,31 +16,30 @@
 package com.springsource.insight.plugin.jdbc.parser;
 
 public abstract class AbstractSqlParser implements JdbcUrlParser {
-    protected static final String DEFAULT_HOST = "localhost";
-    protected static final String DEFAULT_DB_NAME = "";
-    protected static final int DEFAULT_PORT = -1;
-    
     private final String defaultDBName;
     private final String defaultHost;
     private final int defaultPort;
     
-    public AbstractSqlParser() {
+    protected AbstractSqlParser() {
         this(DEFAULT_DB_NAME, DEFAULT_HOST, DEFAULT_PORT);
     }
     
-    public AbstractSqlParser(@SuppressWarnings("hiding") String defaultDBName) {
-        this(defaultDBName, DEFAULT_HOST, DEFAULT_PORT);
+    protected AbstractSqlParser(String dbName) {
+        this(dbName, DEFAULT_HOST, DEFAULT_PORT);
+    }
+
+    protected AbstractSqlParser(int port) {
+        this(DEFAULT_HOST, port);
+    }
+
+    protected AbstractSqlParser(String host, int port) {
+    	this(DEFAULT_DB_NAME, host, port);
     }
     
-    public AbstractSqlParser(int port) {
-        this(DEFAULT_DB_NAME, DEFAULT_HOST, port);
-    }
-    
-    @SuppressWarnings("hiding")
-    public AbstractSqlParser(String defaultDBName, String defaultHost, int defaultPort) {
-        this.defaultDBName = defaultDBName;
-        this.defaultHost = defaultHost;
-        this.defaultPort = defaultPort;
+    protected AbstractSqlParser(String dbName, String host, int port) {
+        this.defaultDBName = dbName;
+        this.defaultHost = host;
+        this.defaultPort = port;
     }
 
     public String getDefaultDatbaseName() {

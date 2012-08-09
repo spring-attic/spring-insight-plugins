@@ -28,7 +28,7 @@ import com.springsource.insight.intercept.operation.Operation;
 
 public aspect JMSConsumerCollectionAspect extends AbstractJMSCollectionAspect {
     public JMSConsumerCollectionAspect () {
-        super();
+        super(JMSPluginOperationType.RECEIVE);
     }
 
     public pointcut consumer()
@@ -73,12 +73,7 @@ public aspect JMSConsumerCollectionAspect extends AbstractJMSCollectionAspect {
         getCollector().exitAbnormal(exception);
     }
     
-    @Override
-    JMSPluginOperationType getOperationType() {
-        return JMSPluginOperationType.RECEIVE;
-    }
-    
-    private void applyAdditionalData(Operation op, JoinPoint jp) {
+    private Operation applyAdditionalData(Operation op, JoinPoint jp) {
         try {
             MessageConsumer consumer =  (MessageConsumer) jp.getThis();
             String selector = consumer.getMessageSelector();
@@ -86,5 +81,7 @@ public aspect JMSConsumerCollectionAspect extends AbstractJMSCollectionAspect {
         } catch (JMSException e) {
             // ignored - TODO consider logging
         }
+
+        return op;
     }
 }

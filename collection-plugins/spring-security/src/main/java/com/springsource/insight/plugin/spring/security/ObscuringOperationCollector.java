@@ -28,6 +28,7 @@ import com.springsource.insight.intercept.operation.OperationList;
 import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.trace.FrameBuilder;
 import com.springsource.insight.intercept.trace.ObscuredValueMarker;
+import com.springsource.insight.util.ListUtil;
 
 /**
  * 
@@ -74,7 +75,7 @@ public abstract class ObscuringOperationCollector extends DefaultOperationCollec
     }
 
     static OperationList updateGrantedAuthorities (OperationList grantedList, Collection<? extends GrantedAuthority> authsList) {
-        if ((authsList != null) && (!authsList.isEmpty())) {
+        if (ListUtil.size(authsList) > 0) {
             for (final GrantedAuthority ga : authsList) {
                 grantedList.add(ga.getAuthority());
             }

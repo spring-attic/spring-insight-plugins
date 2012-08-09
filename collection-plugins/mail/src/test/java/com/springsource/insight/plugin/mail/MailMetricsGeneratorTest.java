@@ -75,8 +75,8 @@ public class MailMetricsGeneratorTest extends AbstractMetricsGeneratorTest {
 	        op.put(ResourceKey.OPERATION_KEY, "insight:name=\"opExtKey\",type=EndpointApplicationServerExternalResource");
 	        op.put("size", 256);
 	        List<Frame> res = new ArrayList<Frame>();
-	        res.add(new SimpleFrame(new FrameId(1), null, op, timeRange, Collections.<Frame>emptyList()));
-	        res.add(new SimpleFrame(new FrameId(1), null, op, timeRange, Collections.<Frame>emptyList()));
+	        res.add(new SimpleFrame(FrameId.valueOf(1), null, op, timeRange, Collections.<Frame>emptyList()));
+	        res.add(new SimpleFrame(FrameId.valueOf(1), null, op, timeRange, Collections.<Frame>emptyList()));
 	        return res;
 	    }
 }

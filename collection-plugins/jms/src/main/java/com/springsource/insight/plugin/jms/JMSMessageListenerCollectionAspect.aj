@@ -27,7 +27,7 @@ import com.springsource.insight.intercept.operation.Operation;
 
 public aspect JMSMessageListenerCollectionAspect extends AbstractJMSCollectionAspect {
     public JMSMessageListenerCollectionAspect () {
-        super();
+        super(JMSPluginOperationType.LISTENER_RECEIVE);
     }
 
     public pointcut messageListener(Message message)
@@ -72,15 +72,4 @@ public aspect JMSMessageListenerCollectionAspect extends AbstractJMSCollectionAs
     after(Message message) throwing(Throwable exception) : messageListener(message) {
         getCollector().exitAbnormal(exception);
     }
-    
-    @Override
-    JMSPluginOperationType getOperationType() {
-        return JMSPluginOperationType.LISTENER_RECEIVE;
-    }
-
-    @Override
-    public boolean isEndpoint() { return true; }
-
-    @Override
-    public String getPluginName() { return "jms"; }
 }

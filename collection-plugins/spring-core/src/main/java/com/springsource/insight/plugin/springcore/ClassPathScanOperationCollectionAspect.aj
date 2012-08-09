@@ -16,12 +16,11 @@
 
 package com.springsource.insight.plugin.springcore;
 
-import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
-public aspect ClassPathScanOperationCollectionAspect extends MethodOperationCollectionAspect {
+public aspect ClassPathScanOperationCollectionAspect extends SpringLifecycleMethodOperationCollectionAspect {
     public ClassPathScanOperationCollectionAspect() {
         super();
     }
@@ -39,10 +38,5 @@ public aspect ClassPathScanOperationCollectionAspect extends MethodOperationColl
         findPathMatchingResources() ||
         scan() ||
         contextRefresh();
-
-    @Override
-    public String getPluginName() {
-        return SpringCorePluginRuntimeDescriptor.PLUGIN_NAME;
-    }
 }
 

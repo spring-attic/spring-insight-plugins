@@ -16,68 +16,39 @@
 
 package com.springsource.insight.plugin.grails;
 
+import com.springsource.insight.intercept.endpoint.AbstractSingleTypeEndpointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.operation.SourceCodeLocation;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.FrameUtil;
-import com.springsource.insight.intercept.trace.Trace;
 
-public class GrailsControllerMethodEndPointAnalyzer implements EndPointAnalyzer {
-    
-    private static final OperationType TYPE = OperationType.valueOf("grails_controller_method");
-    
-    public EndPointAnalysis locateEndPoint(Trace trace) {
-        Frame grailsFrame = trace.getFirstFrameOfType(TYPE);
-        if (grailsFrame == null) {
-            return null;
-        }
-        
-        return makeEndPoint(grailsFrame, -1); 
+public class GrailsControllerMethodEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
+    public static final OperationType TYPE = OperationType.valueOf("grails_controller_method");
+
+    public GrailsControllerMethodEndPointAnalyzer () {
+    	super(TYPE);
     }
 
-    private EndPointAnalysis makeEndPoint(Frame grailsFrame, int score) {
-        Frame httpFrame = FrameUtil.getFirstParentOfType(grailsFrame, OperationType.HTTP);
-        if (httpFrame == null) {
-            return null;
-        }
-        
+	@Override
+	protected EndPointAnalysis makeEndPoint(Frame grailsFrame, int depth) {
         Operation operation = grailsFrame.getOperation();
-        SourceCodeLocation actionLocation = operation.getSourceCodeLocation();
-        
-        String resourceKey = actionLocation.getClassName() + "." + actionLocation.getMethodName();
+        String resourceKey = makeResourceKey(operation.getSourceCodeLocation());
         String resourceLabel = operation.getLabel();
         
-        Operation httpOperation = httpFrame.getOperation();
-        String exampleRequest = httpOperation.getLabel();
-        
-        if (score == -1) {
-            score = FrameUtil.getDepth(grailsFrame);        
-        }
-        
+        Frame 		httpFrame = FrameUtil.getFirstParentOfType(grailsFrame, OperationType.HTTP);
+        Operation	httpOperation = (httpFrame == null) ? operation : httpFrame.getOperation();
+        String 		exampleRequest = httpOperation.getLabel();
         return new EndPointAnalysis(EndPointName.valueOf(resourceKey),
                                     resourceLabel,
-                                    exampleRequest, score, operation);
+                                    exampleRequest,
+                                    getOperationScore(operation, depth),
+                                    operation);
     }
 
-    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
-        Frame parent = FrameUtil.getLastParentOfType(frame, TYPE);
-        
-        if (parent != null) {
-            return null;
-        }
-        
-        return makeEndPoint(frame, depth);
-    }
-
-    public int getScore(Frame frame, int depth) {
-        return depth;
-    }
-
-    public OperationType[] getOperationTypes() {
-        return new OperationType[] {TYPE};
-    }
+	static String makeResourceKey (SourceCodeLocation actionLocation) {
+		return actionLocation.getClassName() + "." + actionLocation.getMethodName();
+	}
 }

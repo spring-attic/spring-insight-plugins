@@ -27,7 +27,9 @@ import com.springsource.insight.plugin.jdbc.parser.AbstractSqlPatternParser;
  * 
  */
 public class MySqlParser extends AbstractSqlPatternParser {
+	public static final int	DEFAULT_CONNECTION_PORT=3306;
+
     public MySqlParser() {
-        super(3306, create("jdbc:mysql://(.*?)(:(.*))?/(.*?)(\\?.*)??", 1, 3, 4));
+        super(DEFAULT_CONNECTION_PORT, create("jdbc:mysql://(.*?)(:(.*))?/(.*?)(\\?.*)??", 1, 3, 4));
     }
 }

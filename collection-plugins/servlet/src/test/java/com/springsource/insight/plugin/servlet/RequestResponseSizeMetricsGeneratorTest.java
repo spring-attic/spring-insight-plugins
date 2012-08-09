@@ -92,7 +92,7 @@ public class RequestResponseSizeMetricsGeneratorTest {
         req.put("contentLength", 1000);        
         OperationMap res = op.createMap("response");
         res.put("contentSize", 4000l);                
-        return new SimpleFrame(new FrameId(1), null, op, timeRange, Collections.<Frame>emptyList());
+        return new SimpleFrame(FrameId.valueOf(1), null, op, timeRange, Collections.<Frame>emptyList());
     }
     
 }

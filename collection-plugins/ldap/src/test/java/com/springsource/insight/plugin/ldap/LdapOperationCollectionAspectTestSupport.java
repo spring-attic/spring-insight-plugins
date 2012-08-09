@@ -59,6 +59,7 @@ import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
 import com.springsource.insight.util.ClassUtil;
 import com.springsource.insight.util.StringUtil;
+import com.springsource.insight.util.FileUtil;
 import com.springsource.insight.util.time.TimeRange;
 
 /**
@@ -180,16 +181,14 @@ public abstract class LdapOperationCollectionAspectTestSupport
             return new File(apacheWorkDir);
         }
 
-		File	anchorFile=ClassUtil.getClassContainerLocationFile(anchorClass);
-        for (File classPath=anchorFile; classPath != null; classPath = classPath.getParentFile()) {
-            if ("target".equals(classPath.getName()) && classPath.isDirectory()) {
-                classPath = new File(classPath, "apacheDSWorkDir");
-                LOG.info("resolveApacheWorkDir(" + anchorClass.getSimpleName() + ") location: " + classPath);
-                return classPath;
-            }
-        }
+		File	targetDir=FileUtil.detectTargetFolder(anchorClass);
+		if (targetDir == null) {
+			throw new IllegalStateException("No target folder for " + anchorClass.getSimpleName());
+		}
 
-        throw new IllegalStateException("No target folder for " + anchorClass.getSimpleName() + " at " + anchorFile);
+		targetDir = new File(targetDir, "apacheDSWorkDir");
+		LOG.info("resolveApacheWorkDir(" + anchorClass.getSimpleName() + ") location: " + targetDir);
+        return targetDir;
     }
 
     private static Collection<Map<String,Set<String>>> readLdifEntries (String location)

@@ -20,6 +20,9 @@ import com.springsource.insight.collection.method.MethodOperationsCollected;
 
 import org.springframework.stereotype.Repository;
 
+/**
+ * Causes all {@link Repository} annotated classes to be instrumented
+ */
 public aspect RepositoryMethodOperationCollectionAspect {
     declare @type: @Repository * : @MethodOperationsCollected;
 }

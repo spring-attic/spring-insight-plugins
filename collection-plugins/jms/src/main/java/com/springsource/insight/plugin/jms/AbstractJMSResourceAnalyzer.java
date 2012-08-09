@@ -21,52 +21,50 @@ import java.util.Collections;
 import java.util.List;
 
 import com.springsource.insight.intercept.color.ColorManager;
+import com.springsource.insight.intercept.endpoint.AbstractSingleTypeEndpointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.FrameUtil;
 import com.springsource.insight.intercept.trace.Trace;
+import com.springsource.insight.util.StringUtil;
 
-abstract class AbstractJMSResourceAnalyzer implements EndPointAnalyzer,ExternalResourceAnalyzer {
-    
-	static final String JMS = "JMS";
+abstract class AbstractJMSResourceAnalyzer extends AbstractSingleTypeEndpointAnalyzer implements ExternalResourceAnalyzer {
+	public static final String JMS = "JMS";
+    /**
+     * The <U>static</U> score value assigned to endpoints - <B>Note:</B>
+     * we return a score of {@link EndPointAnalysis#CEILING_LAYER_SCORE} so as
+     * to let other endpoints &quot;beat&quot; this one
+     */
+	public static final int	DEFAULT_SCORE = EndPointAnalysis.CEILING_LAYER_SCORE;
+
     protected final JMSPluginOperationType operationType;
     protected final boolean isIncoming;
     
     AbstractJMSResourceAnalyzer(JMSPluginOperationType type, boolean incoming) {
+    	super(type.getOperationType());
         this.operationType = type;
         this.isIncoming = incoming;
     }
 
-    public EndPointAnalysis locateEndPoint(Trace trace) {
-        Frame frame = trace.getFirstFrameOfType(operationType.getOperationType());
-        if (frame == null) {
-            return null;
-        }
+    @Override
+	protected int getDefaultScore(int depth) {
+		return DEFAULT_SCORE;
+	}
 
-        return makeEndPoint(frame);
-    }
-
-    private EndPointAnalysis makeEndPoint(Frame frame) {
+	@Override
+	protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
         Operation op = frame.getOperation();
-        if (op != null) {
-        	String label = buildLabel(op);
-			String endPointLabel = JMS + "-" + label;
-			
-            String example = getExample(label);
-            EndPointName endPointName = getName(label);
+        String label = buildLabel(op);
+        String endPointLabel = JMS + "-" + label;
+        String example = getExample(label);
+        EndPointName endPointName = getName(label);
             
-            return new EndPointAnalysis(endPointName, endPointLabel, example, 1, op);
-        }
-        
-        return null;
+        return new EndPointAnalysis(endPointName, endPointLabel, example, getOperationScore(op, depth), op);
     }
     
    public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
@@ -76,30 +74,33 @@ abstract class AbstractJMSResourceAnalyzer implements EndPointAnalyzer,ExternalR
 		}
 
 		List<ExternalResourceDescriptor> queueDescriptors=new ArrayList<ExternalResourceDescriptor>(queueFrames.size());
+		ColorManager					 colorManager=ColorManager.getInstance();
 		for (Frame queueFrame : queueFrames) {
-			Operation op = queueFrame.getOperation();
-
-			String label = buildLabel(op);
-			String host = op.get("host", String.class);            
-			Integer portProperty = op.get("port", Integer.class);
-			int port = portProperty == null ? -1 : portProperty.intValue();
-            String color = ColorManager.getInstance().getColor(op);
-			String hashString = MD5NameGenerator.getName(label + host + port + isIncoming);
-
-			ExternalResourceDescriptor descriptor =
-			        new ExternalResourceDescriptor(queueFrame,
-			                                        JMS + ":" + hashString,
-			                                        JMS + "-" + label,
-			                                        ExternalResourceType.QUEUE.name(),
-			                                        JMS,
-			                                        host,
-			                                        port,
-                                                    color, isIncoming);
+			ExternalResourceDescriptor descriptor = createExternalResourceDescriptor(colorManager, queueFrame);
 			queueDescriptors.add(descriptor);            
 		}
 
 		return queueDescriptors;
 	}
+
+    ExternalResourceDescriptor createExternalResourceDescriptor (ColorManager colorManager, Frame queueFrame) {
+		Operation op = queueFrame.getOperation();
+		String label = buildLabel(op);
+		String host = op.get("host", String.class);            
+		Number portProperty = op.get("port", Number.class);
+		int port = portProperty == null ? -1 : portProperty.intValue();
+        String color = colorManager.getColor(op);
+		String hashString = buildNameHash(label, host, port);
+
+        return new ExternalResourceDescriptor(queueFrame,
+                JMS + ":" + hashString,
+                JMS + "-" + label,
+                ExternalResourceType.QUEUE.name(),
+                JMS,
+                host,
+                port,
+                color, isIncoming);
+    }
 
     private EndPointName getName(String label) {
 		return EndPointName.valueOf(label);
@@ -109,28 +110,30 @@ abstract class AbstractJMSResourceAnalyzer implements EndPointAnalyzer,ExternalR
     	return operationType.getEndPointPrefix() + label;
     }
     
-    private String buildLabel(Operation op) {
+    public static String buildLabel(Operation op) {
     	String type = op.get("destinationType", String.class);
         String name = op.get("destinationName", String.class);
 
-        return type + "#" + name;
+        return buildLabel(type, name);
 	}
     
-    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
-        Frame parent = FrameUtil.getLastParentOfType(frame, operationType.getOperationType());
+    public static String buildLabel(String destType, String destName) {
+        StringBuilder sb = new StringBuilder(StringUtil.getSafeLength(destType) + 1 + StringUtil.getSafeLength(destName));
         
-        if (parent != null) {
-            return null;
-        }
+        sb.append(destType)
+          .append('#')
+          .append(destName);
         
-        return makeEndPoint(frame);
+        return sb.toString();
     }
     
-    public int getScore(Frame frame, int depth) {
-        return 1;
-    }
-    
-    public OperationType[] getOperationTypes() {
-        return new OperationType[] {operationType.getOperationType()};
+    public static String buildNameHash(String label, String host, int port) {
+        StringBuilder sb = new StringBuilder(StringUtil.getSafeLength(label) + 5 /* max. port string length */ + StringUtil.getSafeLength(host));
+        
+        sb.append(label)
+          .append(host)
+          .append(port);
+        
+        return MD5NameGenerator.getName(sb.toString());
     }
 }

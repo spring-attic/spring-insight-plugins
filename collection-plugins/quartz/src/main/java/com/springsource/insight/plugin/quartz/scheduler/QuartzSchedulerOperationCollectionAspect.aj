@@ -40,7 +40,7 @@ public aspect QuartzSchedulerOperationCollectionAspect extends MethodOperationCo
     }
 
     public pointcut collectionPoint()
-        : execution(* org.quartz.Job.execute(org.quartz.JobExecutionContext))
+        : execution(* org.quartz.Job+.execute(..))
         ;
 
     @Override

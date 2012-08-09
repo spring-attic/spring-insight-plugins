@@ -15,8 +15,12 @@
  */
 package com.springsource.insight.plugin.runexec;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import com.springsource.insight.intercept.endpoint.AbstractEndPointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
@@ -27,24 +31,36 @@ import com.springsource.insight.intercept.trace.Trace;
 /**
  * 
  */
-public class RunExecEndPointAnalyzer implements EndPointAnalyzer {
+public class RunExecEndPointAnalyzer extends AbstractEndPointAnalyzer {
+	/**
+	 * The {@link List} of {@link OperationType}-s that mark a run/execute frame
+	 */
+	public static final List<OperationType>	OPS=Collections.unmodifiableList(Arrays.asList(RunExecDefinitions.EXEC_OP, RunExecDefinitions.RUN_OP));
+    /**
+     * The <U>static</U> score value assigned to endpoints - <B>Note:</B>
+     * we return a score of {@link EndPointAnalysis#TOP_LAYER_SCORE} so as
+     * to let other endpoints &quot;beat&quot; this one
+     */
+	public static final int	DEFAULT_SCORE=EndPointAnalysis.TOP_LAYER_SCORE;
+
     public RunExecEndPointAnalyzer() {
-        super();
+        super(OPS);
     }
 
-    public EndPointAnalysis locateEndPoint(Trace trace) {
-        Frame       frame=resolveEndPointFrame(trace);
-        return makeEndPoint(frame);
+    @Override
+	public Frame getScoringFrame(Trace trace) {
+		return resolveEndPointFrame(trace);
+	}
+
+	@Override
+	protected int getDefaultScore(int depth) {
+		return DEFAULT_SCORE;
     }
 
-    private EndPointAnalysis makeEndPoint(Frame frame) {
-        Operation   op=(frame == null) ? null : frame.getOperation();
-        if (op == null) {
-            return null;
-        } else {
-            // NOTE: we return a score of zero so as to let other endpoints "beat" this one
-            return new EndPointAnalysis(EndPointName.valueOf(op), op.getLabel(), op.getLabel(), 0, op);
-        }
+	@Override
+	protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
+        Operation   op=frame.getOperation();
+        return new EndPointAnalysis(EndPointName.valueOf(op), op.getLabel(), op.getLabel(), getOperationScore(op, depth), op);
     }
 
     static Frame resolveEndPointFrame (Trace trace) {
@@ -71,25 +87,4 @@ public class RunExecEndPointAnalyzer implements EndPointAnalyzer {
         }
     }
 
-    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
-        Frame parent = FrameUtil.getLastParentOfType(frame, RunExecDefinitions.EXEC_OP);
-        
-        if (parent == null) {
-            parent = FrameUtil.getLastParentOfType(frame, RunExecDefinitions.RUN_OP);
-        }
-        
-        if (parent != null) {
-            return null;
-        }
-        
-        return makeEndPoint(frame);
-    }
-
-    public int getScore(Frame frame, int depth) {
-        return depth;
-    }
-
-    public OperationType[] getOperationTypes() {
-        return new OperationType[] {RunExecDefinitions.EXEC_OP, RunExecDefinitions.RUN_OP} ;
-    }
 }

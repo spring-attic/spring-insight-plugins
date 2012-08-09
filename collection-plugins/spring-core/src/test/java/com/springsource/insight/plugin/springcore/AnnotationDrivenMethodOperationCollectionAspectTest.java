@@ -16,47 +16,55 @@
 
 package com.springsource.insight.plugin.springcore;
 
+import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import static org.junit.Assert.*;
-
 import com.springsource.insight.collection.method.MethodOperationsCollected;
 
-public class AnnotationDrivenMethodOperationCollectionAspectTest {
+public class AnnotationDrivenMethodOperationCollectionAspectTest extends Assert {
+	public AnnotationDrivenMethodOperationCollectionAspectTest () {
+		super();
+	}
 
     @Test
     public void methodOperationsCollectedAnnotationAppliedCorrectly() {
-        Class<ExampleRepositoryThatIsAlsoService> exampleDualClass = ExampleRepositoryThatIsAlsoService.class;
-        assertTrue(exampleDualClass.isAnnotationPresent(MethodOperationsCollected.class));
+    	for (Class<?> testClass : new Class[] {
+    					ExampleComponent.class,
+		    			ExampleService.class,
+		    			ExampleRepository.class }) {
+    		assertIsMethodOperationsCollected(testClass);
+    	}
+    }
 
-        Class<ExampleService> exampleServiceClass = ExampleService.class;
-        assertTrue(exampleServiceClass.isAnnotationPresent(MethodOperationsCollected.class));
+    private static void assertIsMethodOperationsCollected (Class<?> clazz) {
+    	assertTrue(clazz.getSimpleName() + " not annotated", clazz.isAnnotationPresent(MethodOperationsCollected.class));
+    }
 
-        Class<ExampleRepository> exampleRepositoryClass = ExampleRepository.class;
-        assertTrue(exampleRepositoryClass.isAnnotationPresent(MethodOperationsCollected.class));
+    private static class BaseBean implements Runnable {
+    	public BaseBean () {
+    		super();
+    	}
+
+    	public void run () {
+    		// ignored
+    	}
     }
-    
+
+    @Component
+    private static class ExampleComponent extends BaseBean {
+    	// do nothing
+    }
+
     @Service
-    private static class ExampleService {
-        public void service() {
-        	// do nothing
-        }
+    private static class ExampleService extends BaseBean {
+    	// do nothing
     }
-    
+
     @Repository
-    private static class ExampleRepository {
-        public void update() {
-        	// do nothing
-        }
-    }
-    
-    @Service
-    @Repository
-    private static class ExampleRepositoryThatIsAlsoService {
-        public void update() {
-        	// do nothing
-        }
+    private static class ExampleRepository extends BaseBean {
+    	// do nothing
     }
 }

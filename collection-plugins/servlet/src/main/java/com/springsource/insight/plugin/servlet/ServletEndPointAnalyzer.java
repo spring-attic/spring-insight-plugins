@@ -15,72 +15,58 @@
  */
 package com.springsource.insight.plugin.servlet;
 
-/**
- * Locates servlet endpoints within Traces.  
- * 
- * If an HttpOperation is detected, an endpoint analysis will be returned.
- * The score of the analysis will always be 0, and its endpoint key/label
- * will be based on the servlet's name.
- */
+import com.springsource.insight.intercept.endpoint.AbstractSingleTypeEndpointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.FrameUtil;
-import com.springsource.insight.intercept.trace.Trace;
+import com.springsource.insight.util.StringUtil;
 
-public class ServletEndPointAnalyzer implements EndPointAnalyzer {
-    private static final int ANALYSIS_SCORE = 0;
+/**
+ * Locates servlet endpoints within Traces.  
+ * 
+ * If an HTTP {@link Operation} is detected, an endpoint analysis will be returned.
+ * The score of the analysis will always be 0, and its endpoint key/label
+ * will be based on the servlet's name.
+ */
+public class ServletEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
+    public static final int ANALYSIS_SCORE = EndPointAnalysis.TOP_LAYER_SCORE;
 
-    public EndPointAnalysis locateEndPoint(Trace trace) {
-        Frame httpFrame = trace.getFirstFrameOfType(OperationType.HTTP);
-        if (httpFrame == null) {
-            return null;
-        }
-
-        return makeEndPoint(httpFrame);
+    public ServletEndPointAnalyzer () {
+    	super(OperationType.HTTP);
     }
 
-    private EndPointAnalysis makeEndPoint(Frame httpFrame) {
+    @Override
+    protected int getDefaultScore(int depth) {
+    	return ANALYSIS_SCORE;
+    }
+
+    @Override
+    protected EndPointAnalysis makeEndPoint(Frame httpFrame, int depth) {
         Operation op = httpFrame.getOperation();
         OperationMap request = op.get("request", OperationMap.class);
         
-        String servletName = request.get("servletName", String.class);
+        String servletName = (request == null) ? null : request.get("servletName", String.class);
         String endPointKey = sanitizeEndPointKey(servletName);
         String endPointLabel = "Servlet: " + servletName;
 
-        return new EndPointAnalysis(EndPointName.valueOf(endPointKey), endPointLabel,
-                                    getExampleRequest(op), ANALYSIS_SCORE, op);
+        return new EndPointAnalysis(EndPointName.valueOf(endPointKey), endPointLabel, getExampleRequest(op), getOperationScore(op, depth), op);
     }
 
-    String sanitizeEndPointKey(String endPointKey) {
-        return endPointKey.replace('/', '_');
+    static String sanitizeEndPointKey(String endPointKey) {
+    	if (StringUtil.isEmpty(endPointKey)) {
+    		return "unnonw-servlet-name";
+    	} else {
+    		return endPointKey.replace('/', '_');
+    	}
     }
 
-    String getExampleRequest(Operation op) {
-        OperationMap request = op.get("request", OperationMap.class);
-        return request.get("method") + " " + request.get(OperationFields.URI);
-    }
-
-    public EndPointAnalysis locateEndPoint(Frame frame, int depth) {
-        Frame parent = FrameUtil.getLastParentOfType(frame, OperationType.HTTP);
-        
-        if (parent != null) {
-            return null;
-        }
-        
-        return makeEndPoint(frame);
-    }
-
-    public int getScore(Frame frame, int depth) {
-        return ANALYSIS_SCORE;
-    }
-
-    public OperationType[] getOperationTypes() {
-        return new OperationType[] {OperationType.HTTP};
+    static String getExampleRequest(Operation op) {
+        OperationMap details = op.get("request", OperationMap.class);
+        return ((details == null) ? "???" : String.valueOf(details.get("method")))
+             + " " + ((details == null) ? "<UNKNOWN>" : details.get(OperationFields.URI));
     }
 }

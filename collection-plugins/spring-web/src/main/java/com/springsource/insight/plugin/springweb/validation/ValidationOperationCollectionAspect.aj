@@ -16,14 +16,29 @@
 
 package com.springsource.insight.plugin.springweb.validation;
 
+import org.aspectj.lang.JoinPoint;
+
 import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
+import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
+import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.plugin.springweb.ControllerPointcuts;
 import com.springsource.insight.plugin.springweb.SpringWebPluginRuntimeDescriptor;
 
 public aspect ValidationOperationCollectionAspect extends MethodOperationCollectionAspect {
+	public ValidationOperationCollectionAspect () {
+		super();
+	}
+
     public pointcut collectionPoint() : ControllerPointcuts.validation();
 
     @Override
+	protected Operation createOperation(JoinPoint jp) {
+		return super.createOperation(jp)
+					.put(EndPointAnalysis.SCORE_FIELD, EndPointAnalysis.CEILING_LAYER_SCORE)
+					;
+	}
+
+	@Override
     public String getPluginName() {
         return SpringWebPluginRuntimeDescriptor.PLUGIN_NAME;
     }

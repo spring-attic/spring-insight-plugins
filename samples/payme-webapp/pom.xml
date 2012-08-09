@@ -6,18 +6,20 @@
 	<version>1.9.0-CI-SNAPSHOT</version>
 	<name>com.springsource.insight.samples:payme-webapp</name>
 	<packaging>war</packaging>
-	
-	<properties>
-		<spring.version>3.1.1.RELEASE</spring.version>
-		<slf4j.version>1.5.8</slf4j.version>
-	</properties>
+
+	<parent>
+		<groupId>com.springsource.insight.samples</groupId>
+		<artifactId>sample-modules</artifactId>
+		<version>1.9.0-CI-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
 	
 	<dependencies>
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>${spring.version}</version>
+			<version>${spring.framework.version}</version>
 			<exclusions>
 				<!-- Exclude Commons Logging in favor of SLF4j -->
 				<exclusion>
@@ -29,7 +31,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
-			<version>${spring.version}</version>
+			<version>${spring.framework.version}</version>
 		</dependency>
 		<!-- Logging -->
 		<dependency>
@@ -52,7 +54,7 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.15</version>
+			<version>${log4j.version}</version>
 			<scope>runtime</scope>
 			<exclusions>
 				<exclusion>
@@ -73,7 +75,7 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
+			<version>${servlet-api.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -94,32 +96,28 @@
 		</dependency>
 		
 		<!-- Test dependencies -->
+        <dependency>	<!-- required due to surefire categories -->
+            <groupId>com.springsource.insight</groupId>
+            <artifactId>insight-util</artifactId>
+            <version>${project.version}</version>
+			<scope>test</scope>
+        </dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.5</version>
+			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-			<version>${spring.version}</version>
+			<version>${spring.framework.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<verbose>true</verbose>
-					<source>1.5</source>
-					<target>1.5</target>
-					<showWarnings>true</showWarnings>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -149,28 +147,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<version>2.4</version>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
-	
-	<distributionManagement>
-		<repository>
-			<id>spring-milestone</id>
-			<name>Spring Milestone Repository</name>
-			<url>s3://maven.springframework.org/milestone</url>
-		</repository>
-		<snapshotRepository>
-			<id>spring-snapshot</id>
-			<name>Spring Snapshot Repository</name>
-			<url>s3://maven.springframework.org/snapshot</url>
-		</snapshotRepository>
-	</distributionManagement>
-	
 </project>

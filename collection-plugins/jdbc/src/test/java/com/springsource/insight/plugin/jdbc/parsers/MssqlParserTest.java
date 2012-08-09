@@ -15,42 +15,30 @@
  */
 package com.springsource.insight.plugin.jdbc.parsers;
 
-import org.junit.Before;
-
 import com.springsource.insight.plugin.jdbc.parser.DatabaseType;
+import com.springsource.insight.plugin.jdbc.parser.JdbcUrlParser;
 import com.springsource.insight.plugin.jdbc.parser.parsers.MssqlParser;
 
 
-public class MssqlParserTest extends SqlParserTestImpl implements SqlParsetTest {
-
-	@Before
-	public void setup() {
-
-		parser = new MssqlParser();
-
-		testCases.add(new SqlTestEntry("jdbc:microsoft:sqlserver://host:1434;DatabaseName=dbname",
+public class MssqlParserTest extends SqlParserTestImpl<MssqlParser> {
+	public MssqlParserTest () {
+		super(DatabaseType.MSSQL, new MssqlParser(),
+			  new SqlTestEntry("jdbc:microsoft:sqlserver://host:1434;DatabaseName=dbname",
 								"host",
 								1434,
-								"dbname"));
-		testCases.add(new SqlTestEntry("jdbc:microsoft:sqlserver://host:1434;DatabaseName=",
+								"dbname"),
+			  new SqlTestEntry("jdbc:microsoft:sqlserver://host:1434;DatabaseName=",
 								"host",
 								1434,
-								""));
-		//should it be without the colon? (i.e - jdbc:microsoft:sqlserver://host;DatabaseName=dbname)
-		testCases.add(new SqlTestEntry("jdbc:microsoft:sqlserver://host:;DatabaseName=dbname",
+								JdbcUrlParser.DEFAULT_DB_NAME),
+			  //should it be without the colon? (i.e - jdbc:microsoft:sqlserver://host;DatabaseName=dbname)
+			  new SqlTestEntry("jdbc:microsoft:sqlserver://host:;DatabaseName=dbname",
 								"host",
-								1433,
-								"dbname"));
-
-		testCases.add(new SqlTestEntry("jdbc:microsoft:sqlserver://:1434;DatabaseName=dbname",
-								"localhost",
+								MssqlParser.DEFAULT_CONNECTION_PORT,
+								"dbname"),
+			  new SqlTestEntry("jdbc:microsoft:sqlserver://:1434;DatabaseName=dbname",
+								JdbcUrlParser.DEFAULT_HOST,
 								1434,
 								"dbname"));
 	}
-
-	@Override
-	public DatabaseType getType() {
-		return DatabaseType.MSSQL;
-	}
-
 }

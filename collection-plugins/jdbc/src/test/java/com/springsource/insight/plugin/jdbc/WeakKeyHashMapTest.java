@@ -26,7 +26,7 @@ import org.junit.Test;
 
 public class WeakKeyHashMapTest {
     WeakKeyHashMap<FatObj, String> storage;
-    Random r = new Random();
+    final Random r = new Random(System.nanoTime());
     
     @Before
     public void setUp() {
@@ -43,19 +43,18 @@ public class WeakKeyHashMapTest {
 
     @Test
     public void weakEntriesRemovedOnGC() throws Exception {
-        int numItems = 100;
-        for (int i=0; i< numItems; i++) {
+        final int NUM_ITEMS = 100;
+        for (int i=0; i< NUM_ITEMS; i++) {
             FatObj fatty = new FatObj(r, 1024 * 1024);
             storage.put(fatty, "fubar");
         }
 
-        for (int i=0; i<10; i++) {
-            System.gc();
-        }
-        
+        encourageGC();
+
         // Put operation forces the map to clean its refqueue
         storage.put(new FatObj(r, 1), "val");
-        assertTrue(storage.size() != numItems);
+
+        assertTrue("Storage size unchanged", storage.size() != NUM_ITEMS);
     }
     
     @Test
@@ -74,6 +73,13 @@ public class WeakKeyHashMapTest {
         public FatObj(Random r, int numBytes) {
             bytes = new byte[numBytes];
             r.nextBytes(bytes);
+        }
+    }
+
+    private void encourageGC() {
+    	System.runFinalization();
+    	for (int i= 0 ; i < 20; i++) {
+    		System.gc();
         }
     }
 }

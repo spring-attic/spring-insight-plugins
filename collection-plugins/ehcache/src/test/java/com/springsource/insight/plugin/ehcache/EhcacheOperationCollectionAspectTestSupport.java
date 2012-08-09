@@ -15,6 +15,8 @@
  */
 package com.springsource.insight.plugin.ehcache;
 
+import java.io.File;
+import java.net.URL;
 import java.util.Collection;
 
 import net.sf.ehcache.Cache;
@@ -23,6 +25,9 @@ import net.sf.ehcache.CacheException;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
+import net.sf.ehcache.config.Configuration;
+import net.sf.ehcache.config.ConfigurationFactory;
+import net.sf.ehcache.config.DiskStoreConfiguration;
 import net.sf.ehcache.writer.CacheWriter;
 
 import org.junit.Assert;
@@ -32,6 +37,8 @@ import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.collection.OperationCollector;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.util.ClassUtil;
+import com.springsource.insight.util.FileUtil;
 
 /**
  * 
@@ -84,10 +91,28 @@ public abstract class EhcacheOperationCollectionAspectTestSupport
             return;
         }
 
-        manager = CacheManager.create(EhcacheOperationCollectionAspectTestSupport.class.getResource("/ehcache.xml"));
+        final Class<?>	anchorClass=EhcacheOperationCollectionAspectTestSupport.class;
+        URL				configURL=anchorClass.getResource("/ehcache.xml");
+        Assert.assertNotNull("Cannot find configuration file URL");
+
+        File					testDir=resolveTestDirRoot(anchorClass), testStore=new File(testDir, "ehcache-store");
+        Configuration			config=ConfigurationFactory.parseConfiguration(configURL);
+        DiskStoreConfiguration	diskStore=config.getDiskStoreConfiguration();
+        diskStore.setPath(testStore.getAbsolutePath());
+
+        manager = CacheManager.create(config);
         cache = manager.getCache(TEST_CACHE_NAME);
         Assert.assertNotNull("Test cache not found", cache);
         cache.registerCacheWriter(new TestCacheWriter(cache));
+    }
+
+    protected static final File resolveTestDirRoot (Class<?> anchorClass) {
+		File	targetDir=FileUtil.detectTargetFolder(anchorClass);
+		if (targetDir == null) {
+			throw new IllegalStateException("No target folder for " + anchorClass.getSimpleName());
+		}
+
+		return targetDir;
     }
 
     @SuppressWarnings("hiding")
