@@ -42,7 +42,7 @@
         <ehcache.version>2.3.0</ehcache.version>
         <groovy.version>1.7.0</groovy.version>
         <gmaven.plugin.version>1.0</gmaven.plugin.version>
-		<surefire.plugin.version>2.12</surefire.plugin.version>
+		<surefire.plugin.version>2.12.1</surefire.plugin.version>
         <injection.plugin.version>1.0.2</injection.plugin.version>
         <vfabric.license.client.version>1.0.0.M8</vfabric.license.client.version>
         <aspectj.maven.version>1.2</aspectj.maven.version>
