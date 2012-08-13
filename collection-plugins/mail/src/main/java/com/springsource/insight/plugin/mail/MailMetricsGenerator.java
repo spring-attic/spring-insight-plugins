@@ -15,18 +15,16 @@
  */
 package com.springsource.insight.plugin.mail;
 
-import java.util.List;
-
 import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
 import com.springsource.insight.intercept.metrics.MetricsBag;
 import com.springsource.insight.intercept.metrics.MetricsBag.PointType;
+import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.DataPoint;
 import com.springsource.insight.util.time.TimeUtil;
 
 public class MailMetricsGenerator extends AbstractMetricsGenerator {
-
 	public static final String  MAIL_SIZE_METRIC = "mailSize:type=bytes";
 	
 	public MailMetricsGenerator() {
@@ -36,19 +34,16 @@ public class MailMetricsGenerator extends AbstractMetricsGenerator {
 	@Override
 	protected void addExtraExternalResourceMetrics(Trace trace, Frame opTypeFrame, MetricsBag mb) {
 		// Add the message size data point
-		Number contentSize = (Number) opTypeFrame.getOperation().get("size");
+		Operation	op=opTypeFrame.getOperation();
+		Number 		contentSize = op.get("size", Number.class);
 		// OK if missing - the size is collected only if extra information is enabled
 		if (contentSize == null) {
 		    return;
 		}
+
         mb.add(MAIL_SIZE_METRIC, PointType.GAUGE);
 		int time = TimeUtil.nanosToSeconds(trace.getRange().getStart());
 		DataPoint responseSizePoint = new DataPoint(time, contentSize.doubleValue());
 		mb.add(responseSizePoint, MAIL_SIZE_METRIC);		
-	}
-
-	@Override
-	protected List<Frame> getExternalFramesForMetricGeneration(Trace trace) {
-		return trace.getLastFramesOfType(opType);
 	}
 }

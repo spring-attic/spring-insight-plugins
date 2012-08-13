@@ -16,21 +16,10 @@
 
 package com.springsource.insight.plugin.gemfire;
 
-import java.util.List;
-
 import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
-import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.Trace;
 
 public class GemFireRegionMetricsGenerator extends AbstractMetricsGenerator {
-
 	public GemFireRegionMetricsGenerator() {
 		super(GemFireDefenitions.TYPE_REGION.getType());
 	}
-	
-	@Override
-	protected List<Frame> getExternalFramesForMetricGeneration(Trace trace) {
-		 return trace.getLastFramesOfType(opType);
-	}
-
 }

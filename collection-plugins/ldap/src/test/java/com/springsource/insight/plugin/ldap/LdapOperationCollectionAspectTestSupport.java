@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -58,8 +57,8 @@ import com.springsource.insight.intercept.trace.SimpleFrame;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
 import com.springsource.insight.util.ClassUtil;
-import com.springsource.insight.util.StringUtil;
 import com.springsource.insight.util.FileUtil;
+import com.springsource.insight.util.StringUtil;
 import com.springsource.insight.util.time.TimeRange;
 
 /**
@@ -144,7 +143,7 @@ public abstract class LdapOperationCollectionAspectTestSupport
         return op;
     }
 
-    protected static final List<ExternalResourceDescriptor> assertExternalResourceAnalysis (
+    protected static final Collection<ExternalResourceDescriptor> assertExternalResourceAnalysis (
                 String testName, Operation op, String ldapUrl)
              throws URISyntaxException {
         Frame   frame=new SimpleFrame(FrameId.valueOf("0"), null, op, TimeRange.FULL_RANGE, Collections.<Frame>emptyList());
@@ -153,11 +152,11 @@ public abstract class LdapOperationCollectionAspectTestSupport
                                 new Date(System.currentTimeMillis()),
                                 TraceId.valueOf("0"),
                                 frame);
-        List<ExternalResourceDescriptor>    result=analyzer.locateExternalResourceName(trace);
+        Collection<ExternalResourceDescriptor>    result=analyzer.locateExternalResourceName(trace);
         Assert.assertNotNull(testName + ": No external resources recovered", result);
         Assert.assertEquals(testName + ": Mismatched number of results", 1, result.size());
 
-        ExternalResourceDescriptor  desc=result.get(0);
+        ExternalResourceDescriptor  desc=result.iterator().next();
         Assert.assertSame(testName + ": Mismatched result frame", frame, desc.getFrame());
         Assert.assertEquals(testName + ": Mismathed name",
                             MD5NameGenerator.getName(ldapUrl), desc.getName());

@@ -15,11 +15,7 @@
  */
 package com.springsource.insight.plugin.ldap;
 
-import java.util.List;
-
 import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
-import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.Trace;
 
 /**
  * Generates commands to create
@@ -27,13 +23,7 @@ import com.springsource.insight.intercept.trace.Trace;
  *
  */
 public class LdapMetricsGenerator extends AbstractMetricsGenerator {
-
 	public LdapMetricsGenerator() {
 		super(LdapDefinitions.LDAP_OP);
-	}
-	
-	@Override
-	protected List<Frame> getExternalFramesForMetricGeneration(Trace trace) {
-		return trace.getLastFramesOfType(opType);
 	}
 }

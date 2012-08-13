@@ -36,7 +36,7 @@ public class RabbitMQPublishResourceAnalyzerTest extends AbstractRabbitMQResourc
 
 		if (addRouting){
 			String routingKey = TEST_ROUTING_KEY;
-			if (useTempRoutingKey){
+			if ((useTempRoutingKey != null) && useTempRoutingKey.booleanValue()) {
 				routingKey = TEST_TEMP_ROUTING_KEY;
 			}
 			operation.put("routingKey", routingKey);

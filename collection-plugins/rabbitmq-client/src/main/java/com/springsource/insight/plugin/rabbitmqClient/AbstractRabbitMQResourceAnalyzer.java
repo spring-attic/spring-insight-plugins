@@ -141,20 +141,20 @@ public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTyp
 
 	public static String getFinalExchangeName(String exchange){		
 		boolean hasExchange = !isTrimEmpty(exchange);
-		if (!hasExchange) {
-			exchange = NO_EXCHANGE;
+		if (hasExchange) {
+			return exchange;
+		} else {
+			return NO_EXCHANGE;
 		}
-		return exchange;
 	}
 
 	public static String getFinalRoutingKey(String routingKey){
 		boolean hasRoutingKey=!isTrimEmpty(routingKey);
 		if (hasRoutingKey) {
 			if (routingKey.startsWith(UNNAMED_TEMP_QUEUE_KEY_PREFIX)){
-				routingKey = UNNAMED_TEMP_QUEUE_LABEL;
-			}
-			else if (routingKey.startsWith(UNNAMED_RPC_QUEUE_KEY_PREFIX)){			
-				routingKey = UNNAMED_RPC_QUEUE_LABEL;
+				return UNNAMED_TEMP_QUEUE_LABEL;
+			} else if (routingKey.startsWith(UNNAMED_RPC_QUEUE_KEY_PREFIX)){			
+				return UNNAMED_RPC_QUEUE_LABEL;
 			}
 		}
 		return routingKey;

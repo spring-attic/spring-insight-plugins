@@ -15,10 +15,6 @@
  */
 package com.springsource.insight.plugin.mail;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
@@ -27,13 +23,13 @@ import com.springsource.insight.intercept.metrics.MetricsBag;
 import com.springsource.insight.intercept.metrics.MetricsGenerator;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
-import com.springsource.insight.intercept.resource.ResourceKey;
 import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.FrameId;
-import com.springsource.insight.intercept.trace.SimpleFrame;
 import com.springsource.insight.util.IDataPoint;
 
 public class MailMetricsGeneratorTest extends AbstractMetricsGeneratorTest {
+	public MailMetricsGeneratorTest () {
+		super();
+	}
 
 	@Override
 	protected MetricsGenerator getMetricsGenerator() {
@@ -63,20 +59,20 @@ public class MailMetricsGeneratorTest extends AbstractMetricsGeneratorTest {
         points = mb.getPoints(AbstractMetricsGenerator.INVOCATION_COUNT);
         assertEquals(1, points.size());
         assertEquals(1.0, points.get(0).getValue(), .0001);
-        
+
         points = mb.getPoints(MailMetricsGenerator.MAIL_SIZE_METRIC);
         assertEquals(1, points.size());
         assertEquals(256.0, points.get(0).getValue(), 0.01);
 	}
-	
+
 	@Override
-	 protected List<Frame> makeFrame() {
-	        Operation op = new Operation().type(getOperationType());
-	        op.put(ResourceKey.OPERATION_KEY, "insight:name=\"opExtKey\",type=EndpointApplicationServerExternalResource");
+	protected List<Frame> makeFrame() {
+		List<Frame>	frames=super.makeFrame();
+		for (Frame frame : frames) {
+	        Operation op = frame.getOperation();
 	        op.put("size", 256);
-	        List<Frame> res = new ArrayList<Frame>();
-	        res.add(new SimpleFrame(FrameId.valueOf(1), null, op, timeRange, Collections.<Frame>emptyList()));
-	        res.add(new SimpleFrame(FrameId.valueOf(1), null, op, timeRange, Collections.<Frame>emptyList()));
-	        return res;
 	    }
+
+		return frames;
+	}
 }

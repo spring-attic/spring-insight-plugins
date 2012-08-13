@@ -36,26 +36,27 @@ import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
+import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.StringUtil;
 
 /**
  * 
  */
 public class HttpExternalResourceAnalyzer implements ExternalResourceAnalyzer {
-    private final Logger    logger=Logger.getLogger(getClass().getName());
     public HttpExternalResourceAnalyzer() {
         super();
     }
 
     public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
-        Collection<Frame>   framesList=trace.getAllFramesOfType(HttpClientDefinitions.TYPE);
-        if ((framesList == null) || framesList.isEmpty()) {
+        Collection<Frame>   framesList=trace.getLastFramesOfType(HttpClientDefinitions.TYPE);
+        if (ListUtil.size(framesList) <= 0) {
             return Collections.emptyList();
         }
 
         Set<ExternalResourceDescriptor> resSet=new HashSet<ExternalResourceDescriptor>(framesList.size());
+        ColorManager					colorManager=ColorManager.getInstance();
         for (Frame frame : framesList) {
-            ExternalResourceDescriptor  res=extractExternalResourceDescriptor(frame);
+            ExternalResourceDescriptor  res=extractExternalResourceDescriptor(frame, colorManager);
             if (res == null) {  // can happen if failed to parse the URI somehow
                 continue;
             }
@@ -67,7 +68,7 @@ public class HttpExternalResourceAnalyzer implements ExternalResourceAnalyzer {
         return resSet;
     }
 
-    ExternalResourceDescriptor extractExternalResourceDescriptor (Frame frame) {
+    ExternalResourceDescriptor extractExternalResourceDescriptor (Frame frame, ColorManager	colorManager) {
         Operation   op=(frame == null) ? null : frame.getOperation();
         OperationMap requestDetails = (op == null) ? null : op.get("request", OperationMap.class);
         String uriValue = (requestDetails == null) ? null : requestDetails.get(OperationFields.URI, String.class);
@@ -80,7 +81,7 @@ public class HttpExternalResourceAnalyzer implements ExternalResourceAnalyzer {
             URI uri=new URI(uriValue);
             String host = uri.getHost();
             String server = resolveServerType(op);
-            String color = ColorManager.getInstance().getColor(op);
+            String color = colorManager.getColor(op);
             String app = null;
             String ser = null;
             String ep  = null;
@@ -97,15 +98,15 @@ public class HttpExternalResourceAnalyzer implements ExternalResourceAnalyzer {
                         String headerName = map.get(OperationUtils.NAME_KEY, String.class);
                         String headerValue = map.get(OperationUtils.VALUE_KEY, String.class);
                         
-                        if (app == null && EndPointAnalyzersRegistry.APP_TOKEN_NAME.equals(headerName)) {
+                        if ((app == null) && EndPointAnalyzersRegistry.APP_TOKEN_NAME.equals(headerName)) {
                             app = headerValue;
-                        } else if (ser == null && EndPointAnalyzersRegistry.SERVER_TOKEN_NAME.equals(headerName)) {
+                        } else if ((ser == null) && EndPointAnalyzersRegistry.SERVER_TOKEN_NAME.equals(headerName)) {
                             ser = headerValue;
-                        } else if (ep == null && EndPointAnalyzersRegistry.TOKEN_NAME.equals(headerName)) {
+                        } else if ((ep == null) && EndPointAnalyzersRegistry.TOKEN_NAME.equals(headerName)) {
                             ep = headerValue;
                         } 
                         
-                        if (app != null && ser != null && ep != null) {
+                        if ((app != null) && (ser != null) && (ep != null)) {
                             break;
                         }
                     }
@@ -121,10 +122,9 @@ public class HttpExternalResourceAnalyzer implements ExternalResourceAnalyzer {
                     host,
                     resolvePort(uri),
                     color, false, app, ser, ep, null);    
-        }
-        catch(URISyntaxException e)
-        {
-            logger.warning("Failed to parse " + uriValue + ": " + e.getMessage());
+        } catch(URISyntaxException e) {
+        	Logger    logger=Logger.getLogger(getClass().getName());
+        	logger.warning("Failed to parse " + uriValue + ": " + e.getMessage());
             return null;
         }
     }

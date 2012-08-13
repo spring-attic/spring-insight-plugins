@@ -16,20 +16,11 @@
 
 package com.springsource.insight.plugin.ehcache;
 
-import java.util.List;
-
 import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
-import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.Trace;
 
 public class EhcacheMetricsGenerator extends AbstractMetricsGenerator {
 
 	public EhcacheMetricsGenerator() {
 		super(EhcacheDefinitions.CACHE_OPERATION);
-	}
-	
-	@Override
-	protected List<Frame> getExternalFramesForMetricGeneration(Trace trace) {
-		return trace.getLastFramesOfType(opType);
 	}
 }

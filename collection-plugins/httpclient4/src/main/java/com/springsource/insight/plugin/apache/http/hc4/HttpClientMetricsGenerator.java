@@ -15,11 +15,8 @@
  */
 package com.springsource.insight.plugin.apache.http.hc4;
 
-import java.util.Collection;
-
 import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
 import com.springsource.insight.intercept.metrics.MetricsBag;
-import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
 
 /**
@@ -27,14 +24,7 @@ import com.springsource.insight.intercept.trace.Trace;
  * endpoint within a {@link Trace}
  */
 public class HttpClientMetricsGenerator extends AbstractMetricsGenerator {
-
 	public HttpClientMetricsGenerator() {
 		super(HttpClientDefinitions.TYPE);
 	}
-
-	@Override
-	protected Collection<Frame> getExternalFramesForMetricGeneration(Trace trace) {
-		return trace.getAllFramesOfType(opType);
-	}
-
 }

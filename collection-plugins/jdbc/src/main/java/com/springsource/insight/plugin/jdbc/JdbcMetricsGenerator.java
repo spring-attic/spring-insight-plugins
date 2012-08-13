@@ -16,25 +16,15 @@
 
 package com.springsource.insight.plugin.jdbc;
 
-import java.util.List;
-
 import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
 import com.springsource.insight.intercept.operation.OperationType;
-import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.Trace;
 
 /**
  * Generates commands to create
  * jdbcExecutionTime and queryCount metrics.
  */
 public abstract class JdbcMetricsGenerator extends AbstractMetricsGenerator {
-
 	protected JdbcMetricsGenerator(OperationType type) {
 		super(type);
-	}
-	
-	@Override
-	protected List<Frame> getExternalFramesForMetricGeneration(Trace trace) {
-		return trace.getLastFramesOfType(getOperationType());
 	}
 }

@@ -38,7 +38,6 @@ public aspect StartOperationCollectionAspect extends AbstractOperationCollection
     	: execution(void org.springframework.webflow.engine.impl.FlowExecutionImpl.start(Flow, MutableAttributeMap, RequestControlContext));
 
     @Override
-    @SuppressWarnings("unchecked")
 	protected Operation createOperation(JoinPoint jp) {
     	Object[] args = jp.getArgs();
     	Flow flow = (Flow)args[0];

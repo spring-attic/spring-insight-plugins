@@ -17,10 +17,10 @@ package com.springsource.insight.plugin.ldap;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import com.springsource.insight.intercept.color.ColorManager;
@@ -32,27 +32,28 @@ import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
+import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.StringUtil;
 
 /**
  * 
  */
 public class LdapExternalResourceAnalyzer implements ExternalResourceAnalyzer {
-    private final Logger    logger=Logger.getLogger(getClass().getName());
     public LdapExternalResourceAnalyzer() {
         super();
     }
 
-    public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
-        Collection<Frame>   framesList=trace.getAllFramesOfType(LdapDefinitions.LDAP_OP);
-        if ((framesList == null) || framesList.isEmpty()) {
+    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
+        Collection<Frame>   framesList=trace.getLastFramesOfType(LdapDefinitions.LDAP_OP);
+        if (ListUtil.size(framesList) <= 0) {
             return Collections.emptyList();
         }
         
-        List<ExternalResourceDescriptor>    result=
-                new ArrayList<ExternalResourceDescriptor>(framesList.size());
+        Set<ExternalResourceDescriptor>    result=
+                new HashSet<ExternalResourceDescriptor>(framesList.size());
+        ColorManager	colorManager=ColorManager.getInstance();
         for (Frame frame : framesList) {
-            ExternalResourceDescriptor  res=extractExternalResourceDescriptor(frame);
+            ExternalResourceDescriptor  res=extractExternalResourceDescriptor(frame, colorManager);
             if (res == null) {  // can happen if failed to parse the URI somehow
                 continue;
             }
@@ -64,7 +65,7 @@ public class LdapExternalResourceAnalyzer implements ExternalResourceAnalyzer {
         return result;
     }
 
-    ExternalResourceDescriptor extractExternalResourceDescriptor (Frame frame) {
+    ExternalResourceDescriptor extractExternalResourceDescriptor (Frame frame, ColorManager	colorManager) {
         Operation   op=frame.getOperation();
         String      uriValue=op.get(OperationFields.CONNECTION_URL, String.class);
         if (StringUtil.getSafeLength(uriValue) <= 0) {
@@ -74,7 +75,7 @@ public class LdapExternalResourceAnalyzer implements ExternalResourceAnalyzer {
         try
         {
             URI uri=new URI(uriValue);
-            String color = ColorManager.getInstance().getColor(op);
+            String color = colorManager.getColor(op);
             
             return new ExternalResourceDescriptor(
                             frame,
@@ -85,10 +86,9 @@ public class LdapExternalResourceAnalyzer implements ExternalResourceAnalyzer {
                             uri.getHost(),
                             resolvePort(uri),
                             color, false);    
-        }
-        catch(URISyntaxException e)
-        {
-            logger.warning("Failed to parse " + uriValue + ": " + e.getMessage());
+        } catch(URISyntaxException e) {
+        	 Logger    logger=Logger.getLogger(getClass().getName());
+			 logger.warning("Failed to parse " + uriValue + ": " + e.getMessage());
             return null;
         }
     }

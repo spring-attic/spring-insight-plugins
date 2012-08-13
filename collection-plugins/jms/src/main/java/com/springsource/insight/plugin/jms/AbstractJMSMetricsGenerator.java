@@ -17,13 +17,13 @@ package com.springsource.insight.plugin.jms;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
 import com.springsource.insight.intercept.metrics.MetricsBag;
 import com.springsource.insight.intercept.resource.ResourceKey;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
+import com.springsource.insight.util.ListUtil;
 
 abstract class AbstractJMSMetricsGenerator extends AbstractMetricsGenerator {
 	private static final String JMS_COUNT_SUFFIX = ":type=counter";
@@ -36,7 +36,7 @@ abstract class AbstractJMSMetricsGenerator extends AbstractMetricsGenerator {
 
 	@Override
     protected Collection<MetricsBag> addExtraEndPointMetrics(Trace trace, ResourceKey resourceKey, Collection<Frame> externalFrames) {
-		if ((externalFrames == null) || externalFrames.isEmpty()) {
+		if (ListUtil.size(externalFrames) <= 0) {
 		    return Collections.emptyList();
 		}
 
@@ -48,11 +48,6 @@ abstract class AbstractJMSMetricsGenerator extends AbstractMetricsGenerator {
 	@Override
 	protected void addExtraExternalResourceMetrics(Trace trace, Frame opTypeFrame, MetricsBag mb) {
 		addCounterMetricToBag(trace, mb, createMetricKey(), 1);
-	}
-
-	@Override
-	protected List<Frame> getExternalFramesForMetricGeneration(Trace trace) {
-		return trace.getLastFramesOfType(opType);
 	}
 	
 	final String createMetricKey () {

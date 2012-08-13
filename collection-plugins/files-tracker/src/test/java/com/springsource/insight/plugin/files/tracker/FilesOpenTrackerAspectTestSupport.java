@@ -23,7 +23,6 @@ import java.io.IOException;
 import org.junit.Assert;
 
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.util.ClassUtil;
 import com.springsource.insight.util.FileUtil;
 
 /**

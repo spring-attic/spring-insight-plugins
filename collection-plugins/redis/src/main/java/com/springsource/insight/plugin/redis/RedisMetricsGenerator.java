@@ -16,20 +16,10 @@
 
 package com.springsource.insight.plugin.redis;
 
-import java.util.List;
-
 import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
-import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.Trace;
 
 public class RedisMetricsGenerator extends AbstractMetricsGenerator {
-
 	public RedisMetricsGenerator() {
 		super(RedisDBAnalyzer.TYPE);
-	}
-	
-	@Override
-	protected List<Frame> getExternalFramesForMetricGeneration(Trace trace) {
-		return trace.getLastFramesOfType(opType);
 	}
 }

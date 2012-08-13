@@ -29,6 +29,7 @@ import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
+import com.springsource.insight.util.ListUtil;
 
 /**
  * Extracts {@link SocketDefinitions#CONNECT_ACTION} target addresses as
@@ -41,14 +42,15 @@ public class SocketExternalResourceAnalyzer implements ExternalResourceAnalyzer 
     }
 
     public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
-        Collection<Frame>   framesList=trace.getAllFramesOfType(SocketDefinitions.TYPE);
-        if ((framesList == null) || framesList.isEmpty()) {
+        Collection<Frame>   framesList=trace.getLastFramesOfType(SocketDefinitions.TYPE);
+        if (ListUtil.size(framesList) <= 0) {
             return Collections.emptyList();
         }
 
         Set<ExternalResourceDescriptor> resSet=new HashSet<ExternalResourceDescriptor>(framesList.size());
+        ColorManager	colorManager=ColorManager.getInstance();
         for (Frame frame : framesList) {
-            ExternalResourceDescriptor  res=extractExternalResourceDescriptor(frame);
+            ExternalResourceDescriptor  res=extractExternalResourceDescriptor(frame, colorManager);
             if (res == null) {  // can happen if failed to parse the URI somehow
                 continue;
             }
@@ -60,7 +62,7 @@ public class SocketExternalResourceAnalyzer implements ExternalResourceAnalyzer 
         return resSet;
     }
 
-    ExternalResourceDescriptor extractExternalResourceDescriptor (Frame frame) {
+    ExternalResourceDescriptor extractExternalResourceDescriptor (Frame frame, ColorManager	colorManager) {
         Operation   op=(frame == null) ? null : frame.getOperation();
         String      action=(op == null) ? null : op.get(SocketDefinitions.ACTION_ATTR, String.class);
         if (!SocketDefinitions.CONNECT_ACTION.equals(action)) {
@@ -68,10 +70,10 @@ public class SocketExternalResourceAnalyzer implements ExternalResourceAnalyzer 
         }
 
         String  addr=op.get(SocketDefinitions.ADDRESS_ATTR, String.class);
-        int     port=op.get(SocketDefinitions.PORT_ATTR, Integer.class).intValue();
+        int     port=op.get(SocketDefinitions.PORT_ATTR, Number.class).intValue();
         String  uri=op.get(OperationFields.URI,String.class);
         ExternalResourceType    type=(uri == null) ? ExternalResourceType.SERVER : ExternalResourceType.WEB_SERVER;
-        String color = ColorManager.getInstance().getColor(op);
+        String color = colorManager.getColor(op);
         
         return new ExternalResourceDescriptor(frame,
         									  MD5NameGenerator.getName(addr + ":" + port),

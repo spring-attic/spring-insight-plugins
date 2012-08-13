@@ -16,12 +16,8 @@
 
 package com.springsource.insight.plugin.jta;
 
-import java.util.Collection;
-
 import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
 import com.springsource.insight.intercept.operation.OperationType;
-import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.Trace;
 
 /**
  * 
@@ -30,10 +26,4 @@ public class JtaMetricsGenerator extends AbstractMetricsGenerator {
     public JtaMetricsGenerator(OperationType type) {
         super(type);
     }
-
-    @Override
-    protected Collection<Frame> getExternalFramesForMetricGeneration(Trace trace) {
-        return trace.getLastFramesOfType(opType);
-    }
-
 }

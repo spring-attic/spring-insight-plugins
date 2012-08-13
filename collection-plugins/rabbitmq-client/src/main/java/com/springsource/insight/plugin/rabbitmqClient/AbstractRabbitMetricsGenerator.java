@@ -16,15 +16,15 @@
 
 package com.springsource.insight.plugin.rabbitmqClient;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Collection;
+import java.util.Collections;
 
 import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
 import com.springsource.insight.intercept.metrics.MetricsBag;
 import com.springsource.insight.intercept.resource.ResourceKey;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
+import com.springsource.insight.util.ListUtil;
 
 abstract class AbstractRabbitMetricsGenerator extends AbstractMetricsGenerator {
 	public static final String RABBIT_COUNT_SUFFIX = ":type=counter";
@@ -38,7 +38,7 @@ abstract class AbstractRabbitMetricsGenerator extends AbstractMetricsGenerator {
 
 	@Override
     protected Collection<MetricsBag> addExtraEndPointMetrics(Trace trace, ResourceKey resourceKey, Collection<Frame> externalFrames) {
-        if ((externalFrames == null) || externalFrames.isEmpty()) {
+        if (ListUtil.size(externalFrames) <= 0) {
             return Collections.emptyList();
         }
 
@@ -50,11 +50,6 @@ abstract class AbstractRabbitMetricsGenerator extends AbstractMetricsGenerator {
 	@Override
 	protected void addExtraExternalResourceMetrics(Trace trace,  Frame opTypeFrame, MetricsBag mb) {
 		addCounterMetricToBag(trace, mb, createMetricKey(), 1);
-	}
-
-	@Override
-	protected List<Frame> getExternalFramesForMetricGeneration(Trace trace) {
-		return trace.getLastFramesOfType(opType);
 	}
 
 	final String createMetricKey() {

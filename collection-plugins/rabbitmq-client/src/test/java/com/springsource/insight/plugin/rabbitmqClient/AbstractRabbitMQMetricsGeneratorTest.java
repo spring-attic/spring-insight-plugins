@@ -16,9 +16,6 @@
 
 package com.springsource.insight.plugin.rabbitmqClient;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
 
 import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
@@ -32,7 +29,7 @@ public abstract class AbstractRabbitMQMetricsGeneratorTest extends AbstractMetri
 
 	private RabbitPluginOperationType operationType;
 
-	public AbstractRabbitMQMetricsGeneratorTest(RabbitPluginOperationType type) {
+	protected AbstractRabbitMQMetricsGeneratorTest(RabbitPluginOperationType type) {
 		this.operationType = type;
 	}    
 

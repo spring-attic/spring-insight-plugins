@@ -36,19 +36,22 @@ import com.springsource.insight.util.time.TimeUtil;
  * endpoint within a {@link Trace}
  */
 public class RequestResponseSizeMetricsGenerator extends AbstractMetricsGenerator {
+	// TODO the "type" value should be using the same MetricDataType(s) literals (which should be exposed)
+	public static final String ENDPOINT_RESPONSE_SIZE = "endPointResponseSize:type=bytes";
+	public static final String ENDPOINT_REQUEST_SIZE = "endPointRequestSize:type=bytes";    
 
 	public RequestResponseSizeMetricsGenerator() {
 		super(OperationType.HTTP);
 	}
 
-	// TODO the "type" value should be using the same MetricDataType(s) literals (which should be exposed)
-	public static final String ENDPOINT_RESPONSE_SIZE = "endPointResponseSize:type=bytes";
-	public static final String ENDPOINT_REQUEST_SIZE = "endPointRequestSize:type=bytes";    
-
+	@Override
+	protected Collection<Frame> getExternalFramesForMetricGeneration(Trace trace) {
+		return Collections.emptyList();
+	}
 
 	@Override
     protected Collection<MetricsBag> addExtraEndPointMetrics(Trace trace, ResourceKey defaultKey, Collection<Frame> externalFrames) {
-		Frame frame = trace.getFirstFrameOfType(opType);
+		Frame frame = trace.getFirstFrameOfType(getOperationType());
 		if (frame == null) {
 		    return Collections.emptyList();
 		}
@@ -58,21 +61,25 @@ public class RequestResponseSizeMetricsGenerator extends AbstractMetricsGenerato
         Operation   op = frame.getOperation();
         ResourceKey resourceKey = getResourceKey(op, defaultKey);
 		MetricsBag  mb = MetricsBag.create(resourceKey, range);
-		mb.add(ENDPOINT_RESPONSE_SIZE, PointType.GAUGE);
-		mb.add(ENDPOINT_REQUEST_SIZE, PointType.GAUGE);
 		
-
 		// Add the response size data point
 		OperationMap response = op.get("response", OperationMap.class);
-		Number contentSize = response.get("contentSize", Number.class);
-		DataPoint responseSizePoint = new DataPoint(time, contentSize.doubleValue());
-		mb.add(responseSizePoint, ENDPOINT_RESPONSE_SIZE);
+		Number contentSize = (response == null) ? null : response.get("contentSize", Number.class);
+		if (contentSize != null) {	// OK if missing since collected only if extra information
+			DataPoint responseSizePoint = new DataPoint(time, contentSize.doubleValue());
+			mb.add(ENDPOINT_RESPONSE_SIZE, PointType.GAUGE);
+			mb.add(responseSizePoint, ENDPOINT_RESPONSE_SIZE);
+		}
 
 		// Add the request size data point
 		OperationMap request = op.get("request", OperationMap.class);
-		Number contentLength = request.get("contentLength", Number.class);
-		DataPoint requestSizePoint = new DataPoint(time, contentLength.doubleValue());
-		mb.add(requestSizePoint, ENDPOINT_REQUEST_SIZE);
+		Number contentLength = (request == null) ? null : request.get("contentLength", Number.class);
+		if (contentLength != null) {	// OK if missing since collected only if extra information
+			DataPoint requestSizePoint = new DataPoint(time, contentLength.doubleValue());
+			mb.add(ENDPOINT_REQUEST_SIZE, PointType.GAUGE);
+			mb.add(requestSizePoint, ENDPOINT_REQUEST_SIZE);
+		}
+
 		return Collections.singletonList(mb);
 	}
 

@@ -15,8 +15,6 @@
  */
 package com.springsource.insight.plugin.apache.http.hc4;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -24,12 +22,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
 import com.springsource.insight.intercept.metrics.MetricsBag;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.resource.ResourceKey;
+import com.springsource.insight.intercept.resource.ResourceNames;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.FrameId;
 import com.springsource.insight.intercept.trace.SimpleFrame;
@@ -38,22 +38,24 @@ import com.springsource.insight.util.IDataPoint;
 import com.springsource.insight.util.time.TimeRange;
 
 
-public class HttpMetricsGeneratorTest {
+public class HttpMetricsGeneratorTest extends Assert {
+    private final TimeRange timeRange = new TimeRange(1304387418963003000L, 1304387419123224000L);
 
-    private TimeRange timeRange = new TimeRange(1304387418963003000l, 1304387419123224000l);
-
+    public HttpMetricsGeneratorTest () {
+    	super();
+    }
 
     @Test
     public void generateMetrics() {
         Trace trace = mock(Trace.class);
-        when(trace.getAllFramesOfType(HttpClientDefinitions.TYPE)).thenReturn(makeHttpClientFrames());
+        when(trace.getLastFramesOfType(HttpClientDefinitions.TYPE)).thenReturn(makeHttpClientFrames());
         when(trace.getRange()).thenReturn(timeRange);
         
         ResourceKey endPointName = ResourceKey.valueOf("EndPoint", "epName");
 
         HttpClientMetricsGenerator gen = new HttpClientMetricsGenerator();
         List<MetricsBag> mbs = gen.generateMetrics(trace, endPointName);
-        assertTrue(mbs.size() == 1);
+        assertEquals(1, mbs.size());
         
         MetricsBag mb = mbs.get(0);
 
@@ -84,7 +86,7 @@ public class HttpMetricsGeneratorTest {
     
     private List<Frame> makeHttpClientFrames() {
         Operation op = new Operation().type(HttpClientDefinitions.TYPE);
-        op.put(ResourceKey.OPERATION_KEY, "insight:name=\"opExtKey\",type=EndPoint");
+        op.put(ResourceKey.OPERATION_KEY, "insight:name=\"opExtKey\",type=" + ResourceNames.ApplicationServerExternalResource);
         List<Frame> res = new ArrayList<Frame>();
         res.add(new SimpleFrame(FrameId.valueOf(1), null, op, timeRange, Collections.<Frame>emptyList()));
         return res;

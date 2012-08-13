@@ -15,9 +15,6 @@
  */
 package com.springsource.insight.plugin.jms;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
 
 import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
@@ -31,7 +28,7 @@ public abstract class AbstractJMSMetricsGeneratorTest extends AbstractMetricsGen
 
 	private JMSPluginOperationType operationType;
 
-	public AbstractJMSMetricsGeneratorTest(JMSPluginOperationType opType) {
+	protected AbstractJMSMetricsGeneratorTest(JMSPluginOperationType opType) {
 		this.operationType = opType;
 	}    
 
