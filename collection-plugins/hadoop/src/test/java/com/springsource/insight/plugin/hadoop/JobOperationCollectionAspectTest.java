@@ -16,6 +16,7 @@
 package com.springsource.insight.plugin.hadoop;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
@@ -24,13 +25,18 @@ import com.springsource.insight.intercept.operation.Operation;
 
 
 public class JobOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
+	public JobOperationCollectionAspectTest () {
+		super();
+	}
+
 	@Override
 	public OperationCollectionAspectSupport getAspect() {
 		return JobOperationCollectionAspect.aspectOf();
 	}
 	
 	@Test
-	public void test1() throws Exception {
+    @Ignore("Fails on Windows with: Failed to set permissions of path: \\tmp\\hadoop-XXX\\mapred\\stagin\\XXX-327756435\\.staging to 0700")
+	public void testRun() throws Exception {
 		// Step 1: Execute test
 		new WordCount().run(null);
 	
@@ -39,7 +45,6 @@ public class JobOperationCollectionAspectTest extends OperationCollectionAspectT
 		Assert.assertNotNull("No Hadoop-Reduce operation data is intercepted",op);
 
 		// Step 3:  Validate
-		Assert.assertTrue("Invalid operation type: "+op.getType().getName()+", expected: "+OperationCollectionTypes.JOB_TYPE.type,
-							op.getType().equals(OperationCollectionTypes.JOB_TYPE.type));
+		Assert.assertEquals("Invalid operation type", OperationCollectionTypes.JOB_TYPE.type, op.getType());
 	}
 }
