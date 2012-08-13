@@ -22,6 +22,9 @@ import java.util.Random;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
+import com.springsource.insight.util.test.MicroBenchmark;
 
 
 public class WeakKeyHashMapTest {
@@ -42,6 +45,7 @@ public class WeakKeyHashMapTest {
     }
 
     @Test
+    @Category(MicroBenchmark.class)
     public void weakEntriesRemovedOnGC() throws Exception {
         final int NUM_ITEMS = 100;
         for (int i=0; i< NUM_ITEMS; i++) {

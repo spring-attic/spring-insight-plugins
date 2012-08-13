@@ -35,6 +35,6 @@ public abstract class JdbcMetricsGenerator extends AbstractMetricsGenerator {
 	
 	@Override
 	protected List<Frame> getExternalFramesForMetricGeneration(Trace trace) {
-		return trace.getLastFramesOfType(opType);
+		return trace.getLastFramesOfType(getOperationType());
 	}
 }
