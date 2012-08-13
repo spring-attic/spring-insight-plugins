@@ -94,9 +94,8 @@ public privileged aspect JobClientOperationCollectionAspect extends AbstractOper
 		Iterator<Map.Entry<String,String>> params=config.iterator();
 		if (params.hasNext()) {
 			OperationMap confMap=operation.createMap("config");
-			Map.Entry<String,String> prop;
 			while(params.hasNext()) {
-				prop=params.next();
+				Map.Entry<String,String> prop=params.next();
 				confMap.put(prop.getKey(), prop.getValue());
 			}
 		}
@@ -105,9 +104,10 @@ public privileged aspect JobClientOperationCollectionAspect extends AbstractOper
     }
     
     private String getClassName(Class<?> claz) {
-    	if (claz==null)
+    	if (claz==null) {
     		return null;
-    	
+    	}
+
     	return claz.getName();
     }
     

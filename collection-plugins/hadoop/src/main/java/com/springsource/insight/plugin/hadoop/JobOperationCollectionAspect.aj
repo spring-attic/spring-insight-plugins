@@ -29,6 +29,7 @@ import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
 import com.springsource.insight.intercept.operation.OperationMap;
+import com.springsource.insight.util.ArrayUtil;
 
 /**
  * Collection operation for Hadoop job start 
@@ -62,12 +63,13 @@ public privileged aspect JobOperationCollectionAspect extends AbstractOperationC
 		}
 		
 		Path[] inPaths=FileInputFormat.getInputPaths(job);
-		if (inPaths!=null && inPaths.length>0) {
+		if (ArrayUtil.length(inPaths) > 0) {
 			OperationList list=operation.createList("inputPath");
 			for (Path path: inPaths) {
 				list.add(path.getName());
 			}
 		}
+
 		Path outPath=FileOutputFormat.getOutputPath(job);
 		if (outPath!=null) {
 			operation.put("outputPath", outPath.getName());
@@ -83,9 +85,8 @@ public privileged aspect JobOperationCollectionAspect extends AbstractOperationC
 		Iterator<Map.Entry<String,String>> params=job.getConfiguration().iterator();
 		if (params.hasNext()) {
 			OperationMap confMap=operation.createMap("config");
-			Map.Entry<String,String> prop;
 			while(params.hasNext()) {
-				prop=params.next();
+				Map.Entry<String,String> prop=params.next();
 				confMap.put(prop.getKey(), prop.getValue());
 			}
 		}
@@ -94,9 +95,10 @@ public privileged aspect JobOperationCollectionAspect extends AbstractOperationC
     }
     
     private String getClassName(Class<?> claz) {
-    	if (claz==null)
+    	if (claz==null) {
     		return null;
-    	
+    	}
+
     	return claz.getName();
     }
     
