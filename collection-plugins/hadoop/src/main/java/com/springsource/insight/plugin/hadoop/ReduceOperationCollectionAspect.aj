@@ -17,13 +17,10 @@
 package com.springsource.insight.plugin.hadoop;
 
 
-import java.util.Iterator;
-
 import org.aspectj.lang.JoinPoint;
 
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.operation.OperationList;
 
 /**
  * Collection operation for Hadoop Reducer 
