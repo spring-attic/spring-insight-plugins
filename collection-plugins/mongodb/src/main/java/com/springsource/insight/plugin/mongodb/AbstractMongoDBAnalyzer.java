@@ -21,34 +21,32 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import com.springsource.insight.intercept.color.ColorManager;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
-import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
+import com.springsource.insight.intercept.topology.AbstractExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
+import com.springsource.insight.util.ListUtil;
 
 /**
  * 
  */
-public abstract class AbstractMongoDBAnalyzer implements ExternalResourceAnalyzer {
+public abstract class AbstractMongoDBAnalyzer extends AbstractExternalResourceAnalyzer {
+	public static final String	MONGODB_VENDOR="MongoDB";
 
-	private final OperationType operationType;
-
-	AbstractMongoDBAnalyzer(OperationType type) {
-		this.operationType = type;
+	protected AbstractMongoDBAnalyzer(OperationType type) {
+		super(type);
 	}
 	
-	public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
-		Collection<Frame> dbFrames = trace.getLastFramesOfType(operationType);
-		if ((dbFrames == null) || dbFrames.isEmpty()) {
+	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> dbFrames) {
+		if (ListUtil.size(dbFrames) <= 0) {
 		    return Collections.emptyList();
 		}
 
-		List<ExternalResourceDescriptor> dbDescriptors = new ArrayList<ExternalResourceDescriptor>(dbFrames.size());
+		List<ExternalResourceDescriptor>	dbDescriptors = new ArrayList<ExternalResourceDescriptor>(dbFrames.size());
 		for (Frame dbFrame : dbFrames) {
 			Operation op = dbFrame.getOperation();
 			String host = op.get("host", String.class);           
@@ -58,12 +56,12 @@ public abstract class AbstractMongoDBAnalyzer implements ExternalResourceAnalyze
 			String dbName = op.get("dbName", String.class);
 			
 			String mongoHash = MD5NameGenerator.getName(dbName+host+port);
-			String color = ColorManager.getInstance().getColor(op);
+			String color = colorManager.getColor(op);
 			dbDescriptors.add(new ExternalResourceDescriptor(dbFrame,
 					"mongo:" + mongoHash,
 					dbName,
 					ExternalResourceType.DATABASE.name(),
-					"MongoDB",
+					MONGODB_VENDOR,
 					host,
 					port,
                     color, false) );			

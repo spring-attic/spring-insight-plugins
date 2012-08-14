@@ -65,7 +65,8 @@ public class DatabaseJDBCURIAnalyzerTest extends Assert {
 				TraceId.valueOf("fake-id"),
 				frame);
 
-		List<ExternalResourceDescriptor>	descList=dbAnalyzer.locateExternalResourceName(trace);
+		List<ExternalResourceDescriptor>	descList=
+				(List<ExternalResourceDescriptor>) dbAnalyzer.locateExternalResourceName(trace);
 		assertEquals("Mismatched num of descriptors", 1, descList.size());
 		ExternalResourceDescriptor externalResourceDescriptor = descList.get(0);
 

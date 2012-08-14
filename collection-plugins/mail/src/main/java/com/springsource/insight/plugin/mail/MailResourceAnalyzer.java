@@ -16,23 +16,28 @@
 package com.springsource.insight.plugin.mail;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import com.springsource.insight.intercept.color.ColorManager;
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
+import com.springsource.insight.intercept.topology.AbstractExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
+import com.springsource.insight.util.ListUtil;
 
-public class MailResourceAnalyzer implements ExternalResourceAnalyzer {
+public class MailResourceAnalyzer extends AbstractExternalResourceAnalyzer {
 	public static final String RESOURCE_TYPE=ExternalResourceType.EMAIL.name();
-	public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
-		List<Frame> mailFrames = trace.getLastFramesOfType(MailDefinitions.SEND_OPERATION);
-		if ((mailFrames == null) || mailFrames.isEmpty()) {
+	
+	public MailResourceAnalyzer () {
+		super(MailDefinitions.SEND_OPERATION);
+	}
+
+	public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> mailFrames) {
+		if (ListUtil.size(mailFrames) <= 0) {
             return Collections.emptyList();
 		}
 
@@ -41,12 +46,12 @@ public class MailResourceAnalyzer implements ExternalResourceAnalyzer {
 			Operation op = mailFrame.getOperation();
 
 			String host = op.get(MailDefinitions.SEND_HOST, String.class);            
-			Integer portProperty = op.get(MailDefinitions.SEND_PORT, Integer.class);
+			Number portProperty = op.get(MailDefinitions.SEND_PORT, Number.class);
 			int port = portProperty == null ? -1 : portProperty.intValue();
 			String protocol = op.get(MailDefinitions.SEND_PROTOCOL, String.class); 
 			String label = protocol.toUpperCase() + ":" + host + ((port > 0) ? (":" + port) : "");
 			String hashString = MD5NameGenerator.getName(label);
-            String color = ColorManager.getInstance().getColor(op);
+            String color = colorManager.getColor(op);
 
 			ExternalResourceDescriptor descriptor = new ExternalResourceDescriptor(
 					mailFrame, protocol + ":" + hashString, label, RESOURCE_TYPE, protocol, host, port, color, false);

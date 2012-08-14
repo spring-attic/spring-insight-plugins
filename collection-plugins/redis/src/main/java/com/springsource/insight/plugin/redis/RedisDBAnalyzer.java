@@ -21,37 +21,38 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import com.springsource.insight.intercept.color.ColorManager;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
-import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
+import com.springsource.insight.intercept.topology.AbstractExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
+import com.springsource.insight.util.ListUtil;
 
 /**
  * 
  */
-public class RedisDBAnalyzer implements ExternalResourceAnalyzer {
-
+public class RedisDBAnalyzer extends AbstractExternalResourceAnalyzer {
 	public static final OperationType TYPE =  OperationType.valueOf("redis-client-method");
-	
-	public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
-		Collection<Frame> dbFrames = trace.getLastFramesOfType(TYPE);
-		if ((dbFrames == null) || dbFrames.isEmpty()) {
+
+	public RedisDBAnalyzer () {
+		super(TYPE);
+	}
+
+	public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> dbFrames) {
+		if (ListUtil.size(dbFrames) <= 0) {
 		    return Collections.emptyList();
 		}
 
 		List<ExternalResourceDescriptor> dbDescriptors = new ArrayList<ExternalResourceDescriptor>(dbFrames.size());
-		
 		for (Frame dbFrame : dbFrames) {
 			Operation op = dbFrame.getOperation();
 			String host = op.get("host", String.class);           
 			Integer portProperty = op.get("port", Integer.class);
 			int port = portProperty == null ? -1 : portProperty.intValue();
-			String color = ColorManager.getInstance().getColor(op);
+			String color = colorManager.getColor(op);
 			String dbName = op.get("dbName", String.class);
 			
 			String redisHash = MD5NameGenerator.getName(dbName+host+port);

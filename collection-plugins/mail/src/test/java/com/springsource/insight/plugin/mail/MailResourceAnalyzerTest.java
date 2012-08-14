@@ -42,7 +42,8 @@ public class MailResourceAnalyzerTest {
 	public void testLocateExternalResourceName() {
         final String HOST="test.example.com";
 		Trace trace = createValidTrace(HOST);
-		List<ExternalResourceDescriptor> externalResourceDescriptors = analyzer.locateExternalResourceName(trace);
+		List<ExternalResourceDescriptor> externalResourceDescriptors =
+				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
 
 		assertEquals("Mismatched number of descriptors", 1, externalResourceDescriptors.size());        
 		ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);
@@ -68,7 +69,8 @@ public class MailResourceAnalyzerTest {
 		Frame frame = builder.exit();
 		Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
 
-		List<ExternalResourceDescriptor> externalResourceDescriptors = analyzer.locateExternalResourceName(trace);
+		List<ExternalResourceDescriptor> externalResourceDescriptors =
+				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
 		assertEquals("Mismatched number of descriptors", 2, externalResourceDescriptors.size());        
 
 		ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);  

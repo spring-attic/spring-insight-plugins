@@ -23,14 +23,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import com.springsource.insight.intercept.color.ColorManager;
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzersRegistry;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationList;
 import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationUtils;
-import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
+import com.springsource.insight.intercept.topology.AbstractExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
@@ -42,21 +41,19 @@ import com.springsource.insight.util.StringUtil;
 /**
  * 
  */
-public class HttpExternalResourceAnalyzer implements ExternalResourceAnalyzer {
+public class HttpExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
     public HttpExternalResourceAnalyzer() {
-        super();
+        super(HttpClientDefinitions.TYPE);
     }
 
-    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
-        Collection<Frame>   framesList=trace.getLastFramesOfType(HttpClientDefinitions.TYPE);
+    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> framesList) {
         if (ListUtil.size(framesList) <= 0) {
             return Collections.emptyList();
         }
 
         Set<ExternalResourceDescriptor> resSet=new HashSet<ExternalResourceDescriptor>(framesList.size());
-        ColorManager					colorManager=ColorManager.getInstance();
         for (Frame frame : framesList) {
-            ExternalResourceDescriptor  res=extractExternalResourceDescriptor(frame, colorManager);
+            ExternalResourceDescriptor  res=extractExternalResourceDescriptor(frame);
             if (res == null) {  // can happen if failed to parse the URI somehow
                 continue;
             }
@@ -68,7 +65,7 @@ public class HttpExternalResourceAnalyzer implements ExternalResourceAnalyzer {
         return resSet;
     }
 
-    ExternalResourceDescriptor extractExternalResourceDescriptor (Frame frame, ColorManager colorManager) {
+    ExternalResourceDescriptor extractExternalResourceDescriptor (Frame frame) {
     	Operation   op=(frame == null) ? null : frame.getOperation();
         OperationMap requestDetails = (op == null) ? null : op.get("request", OperationMap.class);
         String uriValue = (requestDetails == null) ? null : requestDetails.get(OperationFields.URI, String.class);
@@ -117,12 +114,13 @@ public class HttpExternalResourceAnalyzer implements ExternalResourceAnalyzer {
             String name = createName(uri, app, ser, ep);
             
             return new ExternalResourceDescriptor(frame, name,
-                    ((server == null) ? "" : server + ": ") + host,    // label
-                    ExternalResourceType.WEB_SERVER.name(),
-                    server,     // vendor
-                    host,
-                    resolvePort(uri),
-                    color, false, app, ser, ep, null);    
+							                    ((server == null) ? "" : server + ": ") + host,    // label
+							                    ExternalResourceType.WEB_SERVER.name(),
+							                    server,     // vendor
+							                    host,
+							                    resolvePort(uri),
+							                    color, false,
+							                    app, ser, ep, null);    
         } catch(URISyntaxException e) {
         	Logger	logger=Logger.getLogger(getClass().getName());
         	logger.warning("Failed to parse " + uriValue + ": " + e.getMessage());

@@ -117,7 +117,8 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 		Frame frame = builder.exit();
 		Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
 
-		List<ExternalResourceDescriptor> externalResourceDescriptors = analyzer.locateExternalResourceName(trace);
+		List<ExternalResourceDescriptor> externalResourceDescriptors =
+				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
 		assertEquals("Mismatched number of resources", 4, externalResourceDescriptors.size());        
 		
 		assertParentChildExternalResourceDescriptors(trace, op2, props2, externalResourceDescriptors.subList(0, 2), OTHER_HOST, OTHER_PORT);
@@ -174,7 +175,8 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 	}
 	
 	List<ExternalResourceDescriptor> assertOneExternalResourceDescriptor(Trace trace, Operation op, KeyValPair<String,String> props, boolean useRoutingKey) {
-		List<ExternalResourceDescriptor> externalResourceDescriptors=analyzer.locateExternalResourceName(trace);
+		List<ExternalResourceDescriptor> externalResourceDescriptors=
+				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
 
 		assertEquals("Mismatched num. of resources", 1, externalResourceDescriptors.size());
 
@@ -185,7 +187,8 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 	}
 	
 	void assertTwoExternalResourceDescriptors(Trace trace, KeyValPair<String,String> props, Operation op) {
-		List<ExternalResourceDescriptor> externalResourceDescriptors=analyzer.locateExternalResourceName(trace);
+		List<ExternalResourceDescriptor> externalResourceDescriptors=
+				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
 		assertEquals("Mismatched num. of resources", 2, externalResourceDescriptors.size());  
 		
 		assertParentChildExternalResourceDescriptors(trace, op, props, externalResourceDescriptors, TEST_HOST, TEST_PORT);

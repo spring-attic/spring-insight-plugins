@@ -25,15 +25,18 @@ import com.springsource.insight.intercept.endpoint.AbstractSingleTypeEndpointAna
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.OperationType;
+import com.springsource.insight.intercept.topology.AbstractExternalFramesLocator;
 import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
+import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.StringUtil;
 
-abstract class AbstractJMSResourceAnalyzer extends AbstractSingleTypeEndpointAnalyzer implements ExternalResourceAnalyzer {
+public abstract class AbstractJMSResourceAnalyzer extends AbstractSingleTypeEndpointAnalyzer implements ExternalResourceAnalyzer {
 	public static final String JMS = "JMS";
     /**
      * The <U>static</U> score value assigned to endpoints - <B>Note:</B>
@@ -45,10 +48,14 @@ abstract class AbstractJMSResourceAnalyzer extends AbstractSingleTypeEndpointAna
     protected final JMSPluginOperationType operationType;
     protected final boolean isIncoming;
     
-    AbstractJMSResourceAnalyzer(JMSPluginOperationType type, boolean incoming) {
+    protected AbstractJMSResourceAnalyzer(JMSPluginOperationType type, boolean incoming) {
     	super(type.getOperationType());
         this.operationType = type;
         this.isIncoming = incoming;
+    }
+
+    public final OperationType getOperationType() {
+    	return getSingleOperationType();
     }
 
     @Override
@@ -66,10 +73,13 @@ abstract class AbstractJMSResourceAnalyzer extends AbstractSingleTypeEndpointAna
             
         return new EndPointAnalysis(endPointName, endPointLabel, example, getOperationScore(op, depth), op);
     }
-    
-   public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
-		Collection<Frame> queueFrames = trace.getLastFramesOfType(operationType.getOperationType());
-		if ((queueFrames == null) || queueFrames.isEmpty()) {
+
+	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
+		return locateExternalResourceName(trace,  AbstractExternalFramesLocator.locateDefaultExternalFrames(trace, getSingleOperationType()));
+	}
+
+	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> queueFrames) {
+		if (ListUtil.size(queueFrames) <= 0) {
 		    return Collections.emptyList();
 		}
 
@@ -83,7 +93,7 @@ abstract class AbstractJMSResourceAnalyzer extends AbstractSingleTypeEndpointAna
 		return queueDescriptors;
 	}
 
-    ExternalResourceDescriptor createExternalResourceDescriptor (ColorManager colorManager, Frame queueFrame) {
+	ExternalResourceDescriptor createExternalResourceDescriptor (ColorManager colorManager, Frame queueFrame) {
 		Operation op = queueFrame.getOperation();
 		String label = buildLabel(op);
 		String host = op.get("host", String.class);            

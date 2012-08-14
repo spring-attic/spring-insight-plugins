@@ -16,39 +16,42 @@
 
 package com.springsource.insight.plugin.jaxrs;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
-import com.springsource.insight.intercept.color.ColorManager;
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
+import com.springsource.insight.intercept.topology.AbstractExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
+import com.springsource.insight.util.ListUtil;
+import com.springsource.insight.util.StringUtil;
 
-public class JaxrsExternalResourceAnalyzer implements ExternalResourceAnalyzer {
+public class JaxrsExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
+	public JaxrsExternalResourceAnalyzer () {
+		super(JaxrsDefinitions.TYPE);
+	}
 
-	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
-		Collection<Frame> frames = trace.getLastFramesOfType(JaxrsDefinitions.TYPE);		
-		if ((frames == null) || frames.isEmpty()) {
+	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> frames) {
+		if (ListUtil.size(frames) <= 0) {
 		    return Collections.emptyList();
 		}
 
-		List<ExternalResourceDescriptor> descriptors = new LinkedList<ExternalResourceDescriptor>();
+		List<ExternalResourceDescriptor> descriptors = new ArrayList<ExternalResourceDescriptor>(frames.size());
 		for (Frame frame : frames) {			
             Operation op = frame.getOperation();
             
 			String path = op.get(JaxrsDefinitions.REQ_TEMPLATE, String.class);
-			if (path == null) {
+			if (StringUtil.isEmpty(path)) {
 				continue;
 			}
 			
 			String hashString = MD5NameGenerator.getName(path);
-			String color = ColorManager.getInstance().getColor(op);
+			String color = colorManager.getColor(op);
 			ExternalResourceDescriptor desc = new ExternalResourceDescriptor(frame,
 																			 JaxrsDefinitions.TYPE.getName() + ":" + hashString,
 																			 path,

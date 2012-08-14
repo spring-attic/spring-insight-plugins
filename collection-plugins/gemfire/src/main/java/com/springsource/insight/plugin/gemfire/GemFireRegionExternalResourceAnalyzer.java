@@ -16,47 +16,57 @@
 
 package com.springsource.insight.plugin.gemfire;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
-import com.springsource.insight.intercept.color.ColorManager;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
-import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
+import com.springsource.insight.intercept.topology.AbstractExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
+import com.springsource.insight.util.ListUtil;
+import com.springsource.insight.util.StringUtil;
 
-public class GemFireRegionExternalResourceAnalyzer implements ExternalResourceAnalyzer {
+public class GemFireRegionExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
 	public GemFireRegionExternalResourceAnalyzer () {
-		super();
+		super(GemFireDefenitions.TYPE_REGION.getType());
 	}
 
-	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
-		Collection<Frame> frames = trace.getLastFramesOfType(GemFireDefenitions.TYPE_REGION.getType());		
-		if ((frames == null) || frames.isEmpty()) {
+	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> frames) {
+		if (ListUtil.size(frames) <= 0) {
 		    return Collections.emptyList();
 		}
 
-		List<ExternalResourceDescriptor> descriptors = new LinkedList<ExternalResourceDescriptor>();
+		List<ExternalResourceDescriptor> descriptors = new ArrayList<ExternalResourceDescriptor>(frames.size());
 		for (Frame frame : frames) {			
             Operation       op = frame.getOperation();
-			Object          regionFullPathObj = op.get(GemFireDefenitions.FIELD_PATH);
-			String          regionFullPath = (regionFullPathObj == null) ? null : regionFullPathObj.toString();
 			OperationList   servers = op.get(GemFireDefenitions.FIELD_SERVERS, OperationList.class);
-            String color = ColorManager.getInstance().getColor(op);
 			if ((servers == null) || (servers.size() <= 0)) {
 				continue;
 			}
+
+			Object regionFullPathObj = op.get(GemFireDefenitions.FIELD_PATH);
+			String regionFullPath = StringUtil.safeToString(regionFullPathObj);
+            String color = colorManager.getColor(op);
 			
 			for (int i = 0; i < servers.size(); i++) {
 				String server = servers.get(i).toString();
 				String name = MD5NameGenerator.getName(server+regionFullPath);
-				ExternalResourceDescriptor desc = new ExternalResourceDescriptor(frame, GemFireDefenitions.GEMFIRE + ":" + name, regionFullPath, ExternalResourceType.KVSTORE.name(), GemFireDefenitions.GEMFIRE, server, -1, color, false);
+				ExternalResourceDescriptor desc =
+						new ExternalResourceDescriptor(frame,
+													   GemFireDefenitions.GEMFIRE + ":" + name,
+													   regionFullPath,
+													   ExternalResourceType.KVSTORE.name(),
+													   GemFireDefenitions.GEMFIRE,
+													   server,
+													   -1,
+													   color,
+													   false);
 				descriptors.add(desc);
 			}			
 		}

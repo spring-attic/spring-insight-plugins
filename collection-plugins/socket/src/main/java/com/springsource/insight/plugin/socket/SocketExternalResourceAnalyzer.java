@@ -20,10 +20,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.springsource.insight.intercept.color.ColorManager;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
-import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
+import com.springsource.insight.intercept.topology.AbstractExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
@@ -35,22 +34,20 @@ import com.springsource.insight.util.ListUtil;
  * Extracts {@link SocketDefinitions#CONNECT_ACTION} target addresses as
  *  {@link ExternalResourceType#SERVER} {@link ExternalResourceDescriptor}-s
  */
-public class SocketExternalResourceAnalyzer implements ExternalResourceAnalyzer {
+public class SocketExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
 	
     public SocketExternalResourceAnalyzer() {
-       super();
+       super(SocketDefinitions.TYPE);
     }
 
-    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
-        Collection<Frame>   framesList=trace.getLastFramesOfType(SocketDefinitions.TYPE);
+    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame>   framesList) {
         if (ListUtil.size(framesList) <= 0) {
             return Collections.emptyList();
         }
 
         Set<ExternalResourceDescriptor> resSet=new HashSet<ExternalResourceDescriptor>(framesList.size());
-        ColorManager	colorManager=ColorManager.getInstance();
         for (Frame frame : framesList) {
-            ExternalResourceDescriptor  res=extractExternalResourceDescriptor(frame, colorManager);
+            ExternalResourceDescriptor  res=extractExternalResourceDescriptor(frame);
             if (res == null) {  // can happen if failed to parse the URI somehow
                 continue;
             }
@@ -62,7 +59,7 @@ public class SocketExternalResourceAnalyzer implements ExternalResourceAnalyzer 
         return resSet;
     }
 
-    ExternalResourceDescriptor extractExternalResourceDescriptor (Frame frame, ColorManager	colorManager) {
+    ExternalResourceDescriptor extractExternalResourceDescriptor (Frame frame) {
         Operation   op=(frame == null) ? null : frame.getOperation();
         String      action=(op == null) ? null : op.get(SocketDefinitions.ACTION_ATTR, String.class);
         if (!SocketDefinitions.CONNECT_ACTION.equals(action)) {

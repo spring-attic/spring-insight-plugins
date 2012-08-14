@@ -23,10 +23,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import com.springsource.insight.intercept.color.ColorManager;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
-import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
+import com.springsource.insight.intercept.topology.AbstractExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
@@ -38,22 +37,20 @@ import com.springsource.insight.util.StringUtil;
 /**
  * 
  */
-public class LdapExternalResourceAnalyzer implements ExternalResourceAnalyzer {
+public class LdapExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
     public LdapExternalResourceAnalyzer() {
-        super();
+        super(LdapDefinitions.LDAP_OP);
     }
 
-    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
-        Collection<Frame>   framesList=trace.getLastFramesOfType(LdapDefinitions.LDAP_OP);
+    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame>   framesList) {
         if (ListUtil.size(framesList) <= 0) {
             return Collections.emptyList();
         }
         
         Set<ExternalResourceDescriptor>    result=
                 new HashSet<ExternalResourceDescriptor>(framesList.size());
-        ColorManager	colorManager=ColorManager.getInstance();
         for (Frame frame : framesList) {
-            ExternalResourceDescriptor  res=extractExternalResourceDescriptor(frame, colorManager);
+            ExternalResourceDescriptor  res=extractExternalResourceDescriptor(frame);
             if (res == null) {  // can happen if failed to parse the URI somehow
                 continue;
             }
@@ -65,7 +62,7 @@ public class LdapExternalResourceAnalyzer implements ExternalResourceAnalyzer {
         return result;
     }
 
-    ExternalResourceDescriptor extractExternalResourceDescriptor (Frame frame, ColorManager	colorManager) {
+    ExternalResourceDescriptor extractExternalResourceDescriptor (Frame frame) {
         Operation   op=frame.getOperation();
         String      uriValue=op.get(OperationFields.CONNECTION_URL, String.class);
         if (StringUtil.getSafeLength(uriValue) <= 0) {

@@ -92,7 +92,8 @@ public abstract class AbstractJMSResourceAnalyzerTest extends Assert {
     @Test
 	public void testLocateExternalResourceName() {
 		Trace trace = createValidTrace();
-		List<ExternalResourceDescriptor> externalResourceDescriptors = analyzer.locateExternalResourceName(trace);
+		List<ExternalResourceDescriptor> externalResourceDescriptors =
+				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
 
 		assertEquals(1, externalResourceDescriptors.size());        
 		ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);
@@ -127,7 +128,8 @@ public abstract class AbstractJMSResourceAnalyzerTest extends Assert {
 		Frame frame = builder.exit();
 		Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
 
-		List<ExternalResourceDescriptor> externalResourceDescriptors = analyzer.locateExternalResourceName(trace);
+		List<ExternalResourceDescriptor> externalResourceDescriptors =
+				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
 
 		assertEquals(2, externalResourceDescriptors.size());        
 

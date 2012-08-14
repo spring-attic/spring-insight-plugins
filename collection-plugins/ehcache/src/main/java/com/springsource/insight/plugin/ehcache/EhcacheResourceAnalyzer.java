@@ -21,27 +21,26 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import com.springsource.insight.intercept.color.ColorManager;
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
+import com.springsource.insight.intercept.topology.AbstractExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
+import com.springsource.insight.util.ListUtil;
 
-public class EhcacheResourceAnalyzer implements ExternalResourceAnalyzer {
+public class EhcacheResourceAnalyzer extends AbstractExternalResourceAnalyzer {
 	public EhcacheResourceAnalyzer () {
-	    super();
+	    super(EhcacheDefinitions.CACHE_OPERATION);
 	}
 
-	public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
-		Collection<Frame> cacheFrames = trace.getLastFramesOfType(EhcacheDefinitions.CACHE_OPERATION);
-		if ((cacheFrames == null) || cacheFrames.isEmpty()) {
+	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> cacheFrames) {
+		if (ListUtil.size(cacheFrames) <= 0) {
 		    return Collections.emptyList();
 		}
 
-		List<ExternalResourceDescriptor> queueDescriptors =
+		List<ExternalResourceDescriptor>	queueDescriptors =
 		        new ArrayList<ExternalResourceDescriptor>(cacheFrames.size());
 		for (Frame cacheFrame : cacheFrames) {
 			Operation op = cacheFrame.getOperation();
@@ -49,7 +48,7 @@ public class EhcacheResourceAnalyzer implements ExternalResourceAnalyzer {
 			String label = buildLabel(op);
 
 			String hashString = MD5NameGenerator.getName(label);
-            String color = ColorManager.getInstance().getColor(op);
+            String color = colorManager.getColor(op);
             
 			ExternalResourceDescriptor descriptor =
 			        new ExternalResourceDescriptor(cacheFrame,

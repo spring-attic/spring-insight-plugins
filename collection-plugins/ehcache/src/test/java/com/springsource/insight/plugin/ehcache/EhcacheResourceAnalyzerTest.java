@@ -43,7 +43,8 @@ public class EhcacheResourceAnalyzerTest {
         final String    NAME="testLocateExternalResourceName";
 		Trace trace = createValidTrace(NAME);
 
-		List<ExternalResourceDescriptor> externalResourceDescriptors = analyzer.locateExternalResourceName(trace);
+		List<ExternalResourceDescriptor> externalResourceDescriptors=
+				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
 		assertNotNull("No descriptors extracted", externalResourceDescriptors);
 		assertEquals("Mismatched number of descriptors", 1, externalResourceDescriptors.size());        
 
@@ -68,7 +69,8 @@ public class EhcacheResourceAnalyzerTest {
 		Frame frame = builder.exit();
 		Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
 
-		List<ExternalResourceDescriptor> externalResourceDescriptors = analyzer.locateExternalResourceName(trace);
+		List<ExternalResourceDescriptor> externalResourceDescriptors=
+				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
         assertNotNull("No descriptors extracted", externalResourceDescriptors);
         assertEquals("Mismatched number of descriptors", 2, externalResourceDescriptors.size());        
 

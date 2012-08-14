@@ -62,7 +62,9 @@ public class RedisDBAnalyzerTest {
 				TraceId.valueOf("fake-id"),
 				frame);
 
-		ExternalResourceDescriptor externalResourceDescriptor = new RedisDBAnalyzer().locateExternalResourceName(trace).get(0);
+		List<ExternalResourceDescriptor> externalResourceDescriptors =
+				(List<ExternalResourceDescriptor>) new RedisDBAnalyzer().locateExternalResourceName(trace);
+		ExternalResourceDescriptor externalResourceDescriptor = externalResourceDescriptors.get(0);
 
 		assertEquals(frame, externalResourceDescriptor.getFrame());
 		assertEquals(ExternalResourceType.DATABASE.name(), externalResourceDescriptor.getType());
@@ -101,7 +103,8 @@ public class RedisDBAnalyzerTest {
 		Frame frame = builder.exit();
 		Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
 
-		List<ExternalResourceDescriptor> externalResourceDescriptors = new RedisDBAnalyzer().locateExternalResourceName(trace);
+		List<ExternalResourceDescriptor> externalResourceDescriptors =
+				(List<ExternalResourceDescriptor>) new RedisDBAnalyzer().locateExternalResourceName(trace);
 
 		assertEquals(2, externalResourceDescriptors.size());        
 

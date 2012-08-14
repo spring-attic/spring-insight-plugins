@@ -66,12 +66,16 @@ public abstract class AbstractMongoDBAnalyzerTest {
 				TraceId.valueOf("fake-id"),
 				frame);
 
-		ExternalResourceDescriptor externalResourceDescriptor = createMongoAnalyzer().locateExternalResourceName(trace).get(0);
+		AbstractMongoDBAnalyzer	analyzer=createMongoAnalyzer();
+		List<ExternalResourceDescriptor>	results=
+				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
+		assertEquals(1, results.size());
 
+		ExternalResourceDescriptor externalResourceDescriptor = results.get(0);
 		assertEquals(frame, externalResourceDescriptor.getFrame());
 		assertEquals(ExternalResourceType.DATABASE.name(), externalResourceDescriptor.getType());
 		assertEquals("mongo:" + MD5NameGenerator.getName("dbNamelocalhost"+6379), externalResourceDescriptor.getName());
-		assertEquals("MongoDB", externalResourceDescriptor.getVendor());
+		assertEquals(AbstractMongoDBAnalyzer.MONGODB_VENDOR, externalResourceDescriptor.getVendor());
 		assertEquals("dbName", externalResourceDescriptor.getLabel());
 		assertEquals("localhost", externalResourceDescriptor.getHost());
 		assertEquals(6379, externalResourceDescriptor.getPort());
@@ -105,8 +109,9 @@ public abstract class AbstractMongoDBAnalyzerTest {
 		Frame frame = builder.exit();
 		Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
 
-		List<ExternalResourceDescriptor> externalResourceDescriptors = createMongoAnalyzer().locateExternalResourceName(trace);
-
+		AbstractMongoDBAnalyzer				analyzer=createMongoAnalyzer();
+		List<ExternalResourceDescriptor>	externalResourceDescriptors=
+				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
 		assertEquals(2, externalResourceDescriptors.size());        
 
 		ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);        

@@ -26,7 +26,7 @@ import com.springsource.insight.intercept.color.ColorManager;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationType;
-import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
+import com.springsource.insight.intercept.topology.AbstractExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
@@ -49,22 +49,20 @@ import com.springsource.insight.util.StringUtil;
  * <p/>
  * Additional parsers are very welcome.
  */
-public abstract class DatabaseJDBCURIAnalyzer implements ExternalResourceAnalyzer {
-    protected final OperationType   opType;
+public abstract class DatabaseJDBCURIAnalyzer extends AbstractExternalResourceAnalyzer {
 	protected DatabaseJDBCURIAnalyzer(OperationType type) {
-	    this.opType = type;
+	    super(type);
 	}
 	
-	public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
-	    Collection<Frame> dbFrames = trace.getLastFramesOfType(opType);
+	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> dbFrames) {
 		if (ListUtil.size(dbFrames) <= 0) {
 		    return Collections.emptyList();
 		}
 
-		List<ExternalResourceDescriptor> dbDescriptors = new ArrayList<ExternalResourceDescriptor>(dbFrames.size());
+		List<ExternalResourceDescriptor> dbDescriptors=new ArrayList<ExternalResourceDescriptor>(dbFrames.size());
 		for (Frame dbFrame : dbFrames) {
-		    Operation op = dbFrame.getOperation();
-			String    uri = op.get(OperationFields.CONNECTION_URL, String.class);
+		    Operation op=dbFrame.getOperation();
+			String    uri=op.get(OperationFields.CONNECTION_URL, String.class);
 			if (StringUtil.isEmpty(uri)) {
 				continue;
 			}
