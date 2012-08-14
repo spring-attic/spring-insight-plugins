@@ -34,7 +34,12 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
+import com.springsource.insight.util.FileUtil;
+
 public class WordCount extends Configured implements Tool {
+	public WordCount () {
+		super();
+	}
 
    static public class WordCountMapper extends Mapper<LongWritable, Text, Text, LongWritable> {
       final private static LongWritable ONE = new LongWritable(1);
@@ -69,7 +74,13 @@ public class WordCount extends Configured implements Tool {
 	   String OUTPUT="target/out";
 	   
 	   Configuration conf = new Configuration();
-	   
+	   File			 targetFolder = FileUtil.detectTargetFolder(getClass());
+	   if (targetFolder == null) {
+		   throw new IllegalStateException("Cannot detect target folder");
+	   }
+	   File	tempFolder = new File(targetFolder, "temp");
+	   conf.set("hadoop.tmp.dir", tempFolder.getAbsolutePath());
+
 	   Job job = new Job(conf, "wordcount");
       job.setJarByClass(WordCount.class);
 
