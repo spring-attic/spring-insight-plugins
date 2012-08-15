@@ -54,6 +54,10 @@ public aspect JndiBindOperationCollectionAspect extends JndiOperationCollectionS
 	@Override
 	protected Operation createOperation(JoinPoint jp) {
 		Operation	op=super.createOperation(jp);
+		if (op == null) {
+			return null;
+		}
+
 		Object[]	args=jp.getArgs();
 		if (ArrayUtil.length(args) > 1) {
 			Object	value=args[1];

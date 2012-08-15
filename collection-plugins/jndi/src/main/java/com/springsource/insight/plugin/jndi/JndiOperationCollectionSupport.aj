@@ -25,7 +25,7 @@ import javax.naming.NamingException;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 
-import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
+import com.springsource.insight.collection.TrailingAbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.InterceptConfiguration;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
@@ -37,30 +37,44 @@ import com.springsource.insight.util.StringUtil;
 /**
  * 
  */
-public abstract aspect JndiOperationCollectionSupport extends MethodOperationCollectionAspect {
+public abstract aspect JndiOperationCollectionSupport extends TrailingAbstractOperationCollectionAspect {
     protected static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
     protected static final String UNKNOWN_NAME="<unknown>";
     protected final OperationType	type;
+    protected final JndiResourceCollectionFilter filter;
     
 	protected JndiOperationCollectionSupport (OperationType opType) {
+		this(opType, JndiResourceCollectionFilter.getIntance());
+	}
+
+	protected JndiOperationCollectionSupport (OperationType opType, JndiResourceCollectionFilter resourceFilter) {
 		if ((type=opType) == null) {
 			throw new IllegalStateException("No operation type specified");
 		}
+
+		if ((filter=resourceFilter) == null) {
+			throw new IllegalStateException("No resource filter specified");
+		}
 	}
 
-    @Override
+	@Override
 	protected Operation createOperation(JoinPoint jp) {
+		String		name=getName(jp);
+		if (StringUtil.isEmpty(name) || (!filter.accept(name))) {
+			return null;
+		}
+
 		Signature	sig=jp.getSignature();
 		String		action=sig.getName();
-		String		name=getName(jp);
-		Operation	op=super.createOperation(jp)
+		Operation	op=new Operation()
 							.type(type)
+							.sourceCodeLocation(getSourceCodeLocation(jp))
 							.label(StringUtil.capitalize(action) + " " + (StringUtil.isEmpty(name) ? UNKNOWN_NAME : name))
 							.put("action", action)
 							.putAnyNonEmpty("name", name)
 							;
 		if (collectExtraInformation()) {
-			Context			ctx=(Context) jp.getTarget();
+			Context	ctx=(Context) jp.getTarget();
 			try {
 				Map<?,?>		env=ctx.getEnvironment();
 				OperationMap	map=op.createMap("environment");

@@ -39,9 +39,14 @@ import com.springsource.insight.util.StringUtil;
 public class JndiTestContext implements Context {
 	private final Map<String, Object>	bindings=new TreeMap<String, Object>();
 	private final Hashtable<String,Object> env=new Hashtable<String, Object>();
+	private final boolean ignoreBindings;
 
 	public JndiTestContext() {
-		super();
+		this(false);
+	}
+
+	JndiTestContext(boolean bindingsIgnored) {
+		ignoreBindings = bindingsIgnored;
 	}
 
 	Map<String, Object> getBindings () {
@@ -76,11 +81,10 @@ public class JndiTestContext implements Context {
 
 	public void rebind(Name name, Object obj) throws NamingException {
 		rebind(StringUtil.safeToString(name), obj);
-
 	}
 
 	public void rebind(String name, Object obj) throws NamingException {
-		if (!bindings.containsKey(name)) {
+		if ((!bindings.containsKey(name)) && (!ignoreBindings)) {
 			throw new NameNotFoundException("rebind(" + name + ")[" + obj + "]");
 		}
 
@@ -92,7 +96,7 @@ public class JndiTestContext implements Context {
 	}
 
 	public void bind(String name, Object obj) throws NamingException {
-		if (bindings.containsKey(name)) {
+		if (bindings.containsKey(name) && (!ignoreBindings)) {
 			throw new NameAlreadyBoundException("bind(" + name + ")[" + obj + "]");
 		}
 		bindings.put(name, obj);
@@ -104,7 +108,7 @@ public class JndiTestContext implements Context {
 
 	public void unbind(String name) throws NamingException {
 		Object	prev=bindings.remove(name);
-		if (prev == null) {
+		if ((prev == null) && (!ignoreBindings)) {
 			throw new NameNotFoundException("unbind(" + name + ")");
 		}
 	}

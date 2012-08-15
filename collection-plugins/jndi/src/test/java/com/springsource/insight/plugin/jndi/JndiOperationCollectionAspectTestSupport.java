@@ -17,23 +17,26 @@
 package com.springsource.insight.plugin.jndi;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.mockito.Mockito;
 
+import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.collection.OperationCollector;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.trace.Frame;
+import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.MapUtil;
 
 /**
@@ -64,19 +67,19 @@ public abstract class JndiOperationCollectionAspectTestSupport
 		Mockito.when(frame.getOperation()).thenReturn(op);
 
 		EndPointAnalysis	analysis=analyzer.locateEndPoint(frame, 0);
-		Assert.assertSame("Mismatched source operation for " + op.getLabel(), op, analysis.getSourceOperation());
-		Assert.assertEquals("Mismatched endpoint for " + op.getLabel(), EndPointName.valueOf(op), analysis.getEndPointName());
-		Assert.assertNotNull("No analysis for " + op.getLabel(), analysis);
-		Assert.assertEquals("Mismatched score for " + op.getLabel(), JndiEndpointAnalyzer.DEFAULT_SCORE, analysis.getScore());
+		assertSame("Mismatched source operation for " + op.getLabel(), op, analysis.getSourceOperation());
+		assertEquals("Mismatched endpoint for " + op.getLabel(), EndPointName.valueOf(op), analysis.getEndPointName());
+		assertNotNull("No analysis for " + op.getLabel(), analysis);
+		assertEquals("Mismatched score for " + op.getLabel(), JndiEndpointAnalyzer.DEFAULT_SCORE, analysis.getScore());
 		return analysis;
 	}
 
 	protected Operation assertCollectedOperation (String action, String name) {
 		Operation	op=getLastEntered();
-		Assert.assertNotNull("No operation created", op);
-		Assert.assertEquals("Mismatched type", type, op.getType());
-		Assert.assertEquals("Mismatched action", action, op.get("action", String.class));
-		Assert.assertEquals("Mismatched name", name, op.get("name", String.class));
+		assertNotNull("No operation created", op);
+		assertEquals("Mismatched type", type, op.getType());
+		assertEquals("Mismatched action", action, op.get("action", String.class));
+		assertEquals("Mismatched name", name, op.get("name", String.class));
 		return op;
 	}
 
@@ -86,19 +89,19 @@ public abstract class JndiOperationCollectionAspectTestSupport
 
 	protected OperationMap assertCollectedEnvironment (Operation op, Map<?,?> env) {
 		OperationMap	envMap=op.get("environment", OperationMap.class);
-		Assert.assertNotNull("Missing environment in " + op.getLabel(), envMap);
-		Assert.assertEquals("Mismatched environment size in " + op.getLabel(), MapUtil.size(env), envMap.size());
+		assertNotNull("Missing environment in " + op.getLabel(), envMap);
+		assertEquals("Mismatched environment size in " + op.getLabel(), MapUtil.size(env), envMap.size());
 
 		Collection<? extends Map.Entry<String,?>>	envEntries=envMap.entrySet();
 		Collection<Object>							expKeys=new HashSet<Object>(env.keySet());
 		for (Map.Entry<String,?> ee : envEntries) {
 			String	key=ee.getKey();
 			Object	expected=env.get(key), actual=ee.getValue();
-			Assert.assertEquals(op.getLabel() + ": Mismatched values for key=" + key, expected, actual);
-			Assert.assertTrue(op.getLabel() + ": Unmatched key: " + key, expKeys.remove(key));
+			assertEquals(op.getLabel() + ": Mismatched values for key=" + key, expected, actual);
+			assertTrue(op.getLabel() + ": Unmatched key: " + key, expKeys.remove(key));
 		}
 
-		Assert.assertTrue("Not all keys exhaused for " + op.getLabel() + ": " + expKeys, expKeys.isEmpty());
+		assertTrue("Not all keys exhaused for " + op.getLabel() + ": " + expKeys, expKeys.isEmpty());
 		return envMap;
 	}
 
@@ -106,5 +109,34 @@ public abstract class JndiOperationCollectionAspectTestSupport
 		testContext.setBindings(bindings);
 		testContext.setEnvironment(env);
 		return testContext;
+	}
+
+	protected void runFilteredResourcesTest (String baseName, ContextOperationExecutor executor) throws Exception {
+		runFilteredResourcesTest(baseName, setUpContext(Collections.<String,Object>emptyMap(), Collections.<String,Object>emptyMap()), executor);
+	}
+
+	protected void runFilteredResourcesTest (
+			String baseName, JndiTestContext context, ContextOperationExecutor executor)
+				throws Exception {
+		OperationCollectionAspectSupport	aspectInstance=getAspect();
+		OperationCollector					collector=aspectInstance.getCollector();
+		try {
+			OperationListCollector	testCollector=new OperationListCollector();
+			aspectInstance.setCollector(testCollector);
+
+			for (String suffix : JndiResourceCollectionFilter.DEFAULT_EXCLUSION_PATTERNS) {
+				String	name=baseName + "." + suffix;
+				executor.executeContextOperation(context, name, suffix);
+
+				Collection<Operation>	opsList=testCollector.getCollectedOperations();
+				assertEquals(baseName + "[" + suffix + "] unexpected operations: " + opsList, 0, ListUtil.size(opsList));
+			}
+		} finally {
+			aspectInstance.setCollector(collector);
+		}
+	}
+
+	protected static interface ContextOperationExecutor {
+		Object executeContextOperation (JndiTestContext context, String name, Object value) throws Exception;
 	}
 }

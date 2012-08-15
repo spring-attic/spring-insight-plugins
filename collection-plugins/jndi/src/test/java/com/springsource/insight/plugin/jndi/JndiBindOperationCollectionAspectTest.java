@@ -20,7 +20,6 @@ import java.util.Collections;
 
 import javax.naming.NamingException;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.springsource.insight.intercept.operation.Operation;
@@ -65,12 +64,50 @@ public class JndiBindOperationCollectionAspectTest extends JndiOperationCollecti
 		assertBindOperation(context, "unbind", NAME, null);
 	}
 
+	@Test
+	public void testIgnoredResourcesBind () throws Exception {
+		runFilteredResourcesTest("testIgnoredResourcesBind",
+				new ContextOperationExecutor() {
+					public Object executeContextOperation(JndiTestContext context, String name, Object value) throws Exception {
+						context.bind(name, value);
+						return null;
+					}
+				});
+	}
+
+	@Test
+	public void testIgnoredResourcesRebind () throws Exception {
+		runFilteredResourcesTest("testIgnoredResourcesRebind",
+				new ContextOperationExecutor() {
+					public Object executeContextOperation(JndiTestContext context, String name, Object value) throws Exception {
+						context.rebind(name, value);
+						return null;
+					}
+				});
+	}
+
+	@Test
+	public void testIgnoredResourcesUnbind () throws Exception {
+		runFilteredResourcesTest("testIgnoredResourcesUnbind",
+				new ContextOperationExecutor() {
+					public Object executeContextOperation(JndiTestContext context, String name, Object value) throws Exception {
+						context.unbind(name);
+						return null;
+					}
+				});
+	}
+
+	@Override
+	protected void runFilteredResourcesTest(String baseName, ContextOperationExecutor executor) throws Exception {
+		runFilteredResourcesTest(baseName, new JndiTestContext(true), executor);
+	}
+
 	protected Operation assertBindOperation (JndiTestContext context, String action, String name, Object value) throws NamingException {
 		Operation	op=assertCollectedOperation(action, name);
 		if (value != null) {
 			String	expected=StringUtil.trimWithEllipsis(StringUtil.safeToString(value), StringFormatterUtils.MAX_PARAM_LENGTH);
 			String	actual=op.get("value", String.class);
-			Assert.assertEquals(action + "[" + name + "] mismatched value", expected, actual);
+			assertEquals(action + "[" + name + "] mismatched value", expected, actual);
 		}
 		assertCollectedEnvironment(op, context);
 		assertEndPointAnalysis(op);

@@ -21,7 +21,6 @@ import java.util.Map;
 
 import javax.naming.NamingException;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.springsource.insight.intercept.operation.Operation;
@@ -52,11 +51,31 @@ public class JndiLookupOperationCollectionAspectTest extends JndiOperationCollec
 		assertLookupOperation(context, "lookupLink", NAME, value);
 	}
 
+	@Test
+	public void testIgnoredResourcesLookup () throws Exception {
+		runFilteredResourcesTest("testIgnoredResourcesLookup",
+				new ContextOperationExecutor() {
+					public Object executeContextOperation(JndiTestContext context, String name, Object value) throws Exception {
+						return context.lookup(name);
+					}
+				});
+	}
+
+	@Test
+	public void testIgnoredResourcesLookupLink () throws Exception {
+		runFilteredResourcesTest("testIgnoredResourcesLookup",
+				new ContextOperationExecutor() {
+					public Object executeContextOperation(JndiTestContext context, String name, Object value) throws Exception {
+						return context.lookupLink(name);
+					}
+				});
+	}
+
 	protected Operation assertLookupOperation (JndiTestContext context, String action, String name, Object actual) throws NamingException {
 		Operation		op=assertCollectedOperation(action, name);
 		Map<String,?>	values=context.getBindings();
 		Object			expected=values.get(name);
-		Assert.assertEquals("Mismatched value for " + action + "[" + name + "]", expected, actual);
+		assertEquals("Mismatched value for " + action + "[" + name + "]", expected, actual);
 		assertCollectedEnvironment(op, context);
 		assertEndPointAnalysis(op);
 		return op;
