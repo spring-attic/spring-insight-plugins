@@ -16,33 +16,29 @@
 
 package com.springsource.insight.plugin.mongodb;
 
-import com.mongodb.*;
-import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
-import com.springsource.insight.intercept.operation.Operation;
+import static org.mockito.Mockito.mock;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCollectionDummy;
+import com.mongodb.DBObject;
+import com.mongodb.Mongo;
+import com.mongodb.WriteConcern;
+import com.springsource.insight.collection.OperationCollectionAspectSupport;
+import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.intercept.operation.Operation;
 
 /**
  */
 public class MongoCollectionOperationCollectionAspectTest
         extends OperationCollectionAspectTestSupport {
-
-    public void standardAsserts(Operation op) {
-        assertEquals(MongoDBCollectionExternalResourceAnalyzer.TYPE, op.getType());
-        assertEquals("my_super_collection.hello", op.get("collection"));
-    }
-
-    private DBCollection getMeACollection() {
-        Mongo mongo = mock(Mongo.class);
-        DB db = new DBDummy(mongo, "my_super_collection");
-
-        DBCollection col = new DBCollectionDummy(db, "hello");
-        return col;
-    }
+	public MongoCollectionOperationCollectionAspectTest () {
+		super();
+	}
 
 //	execution(WriteResult DBCollection.insert(DBObject[], WriteConcern));
     @Test
@@ -131,5 +127,18 @@ public class MongoCollectionOperationCollectionAspectTest
     @Override
     public OperationCollectionAspectSupport getAspect() {
         return MongoCollectionOperationCollectionAspect.aspectOf();
+    }
+
+    public void standardAsserts(Operation op) {
+        assertEquals(MongoDBCollectionExternalResourceAnalyzer.TYPE, op.getType());
+        assertEquals("my_super_collection.hello", op.get("collection"));
+    }
+
+    private DBCollection getMeACollection() {
+        Mongo mongo = mock(Mongo.class);
+        DB db = new DBDummy(mongo, "my_super_collection");
+
+        DBCollection col = new DBCollectionDummy(db, "hello");
+        return col;
     }
 }

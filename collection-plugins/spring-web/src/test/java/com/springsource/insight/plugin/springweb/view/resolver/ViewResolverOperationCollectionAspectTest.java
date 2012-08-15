@@ -16,9 +16,6 @@
 
 package com.springsource.insight.plugin.springweb.view.resolver;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import java.util.Locale;
 
 import org.junit.Test;
@@ -31,8 +28,12 @@ import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class ViewResolverOperationCollectionAspectTest
-    extends OperationCollectionAspectTestSupport
-{
+    	extends OperationCollectionAspectTestSupport {
+	
+	public ViewResolverOperationCollectionAspectTest () {
+		super();
+	}
+
     @Test
     public void viewResolverMonitored() throws Exception {
         ExampleViewResolver testResolver = new ExampleViewResolver();

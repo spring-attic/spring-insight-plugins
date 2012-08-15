@@ -15,8 +15,6 @@
  */
 package com.springsource.insight.plugin.redis;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +34,10 @@ public class RedisMapOperationCollectionAspectTest extends OperationCollectionAs
     private static final String kw_key = "key";
     private static final String kw_value = "value";
     private static final String kw_size = "size";
+
+    public RedisMapOperationCollectionAspectTest () {
+    	super();
+    }
 
     @Test
     public void putAndCollect() {

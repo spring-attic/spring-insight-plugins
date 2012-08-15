@@ -16,8 +16,6 @@
 
 package com.springsource.insight.plugin.springweb.controller;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +25,10 @@ import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class ControllerOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
+	public ControllerOperationCollectionAspectTest () {
+		super();
+	}
+
     @Test
     public void controllerMonitored() {
         ExampleController testController = new ExampleController();

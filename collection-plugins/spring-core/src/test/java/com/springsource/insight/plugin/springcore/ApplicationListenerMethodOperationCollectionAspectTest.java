@@ -16,13 +16,10 @@
 
 package com.springsource.insight.plugin.springcore;
 
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import org.junit.Assert;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.context.ApplicationEvent;
@@ -38,6 +35,10 @@ import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationList;
 
 public class ApplicationListenerMethodOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
+	public ApplicationListenerMethodOperationCollectionAspectTest () {
+		super();
+	}
+
     /**
      * Verifies that if a regular listener and a @Repository annotated listener are called, that
      * only the regular listener generates a MethodOperation.  The @Repository

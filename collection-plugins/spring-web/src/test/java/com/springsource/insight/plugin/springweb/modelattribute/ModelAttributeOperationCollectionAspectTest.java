@@ -16,8 +16,6 @@
 
 package com.springsource.insight.plugin.springweb.modelattribute;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +28,10 @@ import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class ModelAttributeOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
+	public ModelAttributeOperationCollectionAspectTest () {
+		super();
+	}
+
     @Test
     public void modelAttributeMethodWithComplexReturnTypeMonitored() {
         ExampleController testController = new ExampleController();

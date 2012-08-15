@@ -17,9 +17,6 @@
 package com.springsource.insight.plugin.grails;
 
 import static com.springsource.insight.intercept.operation.OperationFields.EXCEPTION;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import groovy.lang.Closure;
@@ -54,12 +51,14 @@ import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.SourceCodeLocation;
 
 @SuppressWarnings("unchecked")
-public class GrailsControllerOperationCollectionAspectTest
-    extends OperationCollectionAspectTestSupport
-{
+public class GrailsControllerOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
     private GrailsWebRequest mockRequest;
+
+    public GrailsControllerOperationCollectionAspectTest () {
+    	super();
+    }
 
     @Override
 	@Before

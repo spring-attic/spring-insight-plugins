@@ -16,8 +16,6 @@
 
 package com.springsource.insight.plugin.gemfire;
 
-import static org.junit.Assert.assertEquals;
-
 import java.sql.SQLException;
 
 import org.junit.Test;
@@ -27,10 +25,12 @@ import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class GemFireQueryCollectionAspectTest extends GemFireAspectTestSupport {
-    
+    public GemFireQueryCollectionAspectTest () {
+    	super();
+    }
 	
     @Test
-    public void putOperationCollection() throws SQLException {
+    public void putOperationCollection() throws Exception {
     	testInGemfire(new GemFireCallback() {			
 			public void doInGemfire(Region r) {
 				try {

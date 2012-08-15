@@ -16,9 +16,6 @@
 package com.springsource.insight.plugin.jdbc;
 
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Date;
@@ -42,8 +39,12 @@ import com.springsource.insight.intercept.operation.Operation;
 @ContextConfiguration("classpath:jdbc-test-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class JdbcPreparedStatementOperationCollectionAspectTest
-    extends OperationCollectionAspectTestSupport {
+    		extends OperationCollectionAspectTestSupport {
     @Autowired DataSource dataSource;
+
+    public JdbcPreparedStatementOperationCollectionAspectTest () {
+    	super();
+    }
 
     @Test
     public void operationCollectionForPreparedStatement() throws SQLException {

@@ -16,8 +16,6 @@
 
 package com.springsource.insight.plugin.redis;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +34,10 @@ public class RedisCollectionOperationAspectTest extends OperationCollectionAspec
 
     private static final String kw_value = "value";
     private static final String kw_size = "size";
+
+    public RedisCollectionOperationAspectTest () {
+    	super();
+    }
 
     @Test
     public void addAndCollect() {

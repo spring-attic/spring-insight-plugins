@@ -15,8 +15,6 @@
  */
 package com.springsource.insight.plugin.hibernate;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
@@ -25,17 +23,11 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 
 public class HibernateSessionOperationCollectionAspectTest 
-   extends OperationCollectionAspectTestSupport {
-
-	private void standardAsserts(String method) {
-        Operation op = getLastEntered();
-        assertEquals("Hibernate Session." + method, op.getLabel());
-        assertEquals(OperationType.valueOf("hibernate"), op.getType());
-        assertEquals(Integer.valueOf(DummySessionImpl.DUMMY_COLLECTION_COUNT), op.get("collectionCount"));
-        assertEquals(Integer.valueOf(DummySessionImpl.DUMMY_ENTITY_COUNT), op.get("entityCount"));
-        assertEquals(DummySessionImpl.DUMMY_FLUSH_MODE.toString(), op.get("flushMode"));
+   		extends OperationCollectionAspectTestSupport {
+	public HibernateSessionOperationCollectionAspectTest () {
+		super();
 	}
-	
+
     @Test
     public void flushAndCollect() {
         new DummySessionImpl().flush();
@@ -83,4 +75,12 @@ public class HibernateSessionOperationCollectionAspectTest
         return HibernateSessionOperationCollectionAspect.aspectOf();
     }
 
+	private void standardAsserts(String method) {
+        Operation op = getLastEntered();
+        assertEquals("Hibernate Session." + method, op.getLabel());
+        assertEquals(OperationType.valueOf("hibernate"), op.getType());
+        assertEquals(Integer.valueOf(DummySessionImpl.DUMMY_COLLECTION_COUNT), op.get("collectionCount"));
+        assertEquals(Integer.valueOf(DummySessionImpl.DUMMY_ENTITY_COUNT), op.get("entityCount"));
+        assertEquals(DummySessionImpl.DUMMY_FLUSH_MODE.toString(), op.get("flushMode"));
+	}
 }

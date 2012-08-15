@@ -16,8 +16,6 @@
 
 package com.springsource.insight.plugin.gemfire;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 
 import com.gemstone.bp.edu.emory.mathcs.backport.java.util.Collections;
@@ -27,11 +25,15 @@ import com.springsource.insight.intercept.operation.Operation;
 
 public class GemFireRegionCollectionAspectTest extends GemFireAspectTestSupport {
     	
-	private TestCallback test = new TestCallback() {			
-		public void doTest(Operation operation) {
-			assertEquals("/test", operation.get(GemFireDefenitions.FIELD_PATH));
-		}
-	};
+	private final TestCallback test = new TestCallback() {			
+			public void doTest(Operation operation) {
+				assertEquals("/test", operation.get(GemFireDefenitions.FIELD_PATH));
+			}
+		};
+
+	public GemFireRegionCollectionAspectTest () {
+		super();
+	}
 
     @Test
     public void getOperationCollection() {

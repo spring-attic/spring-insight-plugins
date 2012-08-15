@@ -16,8 +16,6 @@
 package com.springsource.insight.plugin.jdbc;
 
 
-import static org.junit.Assert.assertEquals;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -44,10 +42,13 @@ import com.springsource.insight.intercept.operation.OperationList;
 @ContextConfiguration("classpath:jdbc-test-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ParamLoggingPreparedStatementTest
-    extends OperationCollectionAspectTestSupport 
-{
+    	extends OperationCollectionAspectTestSupport {
     @Autowired DataSource dataSource;
-    
+
+    public ParamLoggingPreparedStatementTest () {
+    	super();
+    }
+
     @Test
     public void operationCollectionForPreparedStatement() throws SQLException {
         Connection c = dataSource.getConnection();

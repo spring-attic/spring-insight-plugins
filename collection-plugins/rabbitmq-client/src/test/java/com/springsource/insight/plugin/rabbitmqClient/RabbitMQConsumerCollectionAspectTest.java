@@ -16,10 +16,6 @@
 
 package com.springsource.insight.plugin.rabbitmqClient;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -58,7 +54,10 @@ import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationType;
 
 public class RabbitMQConsumerCollectionAspectTest extends OperationCollectionAspectTestSupport {
-    
+    public RabbitMQConsumerCollectionAspectTest () {
+    	super();
+    }
+
     @Test
     public void testHandleDelivery() throws IOException {
         MockConsumer consumer = new MockConsumer();

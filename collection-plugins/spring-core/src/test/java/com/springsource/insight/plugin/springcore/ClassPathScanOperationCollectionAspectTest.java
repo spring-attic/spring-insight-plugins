@@ -16,20 +16,19 @@
 
 package com.springsource.insight.plugin.springcore;
 
-import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
-import com.springsource.insight.intercept.operation.Operation;
+import static com.springsource.insight.util.ListUtil.asSet;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
+
+import java.util.Set;
+
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.util.Set;
-
-import static com.springsource.insight.util.ListUtil.asSet;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.verify;
+import com.springsource.insight.collection.OperationCollectionAspectSupport;
+import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.intercept.operation.Operation;
 
 public class ClassPathScanOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
     public ClassPathScanOperationCollectionAspectTest () {

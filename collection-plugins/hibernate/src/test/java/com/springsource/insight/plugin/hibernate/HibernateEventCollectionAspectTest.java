@@ -15,9 +15,6 @@
  */
 package com.springsource.insight.plugin.hibernate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import org.hibernate.event.DirtyCheckEvent;
 import org.hibernate.event.FlushEvent;
 import org.junit.Test;
@@ -28,13 +25,10 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 
 public class HibernateEventCollectionAspectTest 
-   extends OperationCollectionAspectTestSupport {
+			extends OperationCollectionAspectTestSupport {
 
-	private void standardAsserts(String method) {
-        Operation op = getLastEntered();
-        assertNotNull(op);
-        assertEquals("Hibernate " + method, op.getLabel());
-        assertEquals(OperationType.METHOD, op.getType());
+	public HibernateEventCollectionAspectTest () {
+		super();
 	}
 	
     @Test
@@ -56,4 +50,10 @@ public class HibernateEventCollectionAspectTest
         return HibernateEventCollectionAspect.aspectOf();
     }
 
+	private void standardAsserts(String method) {
+        Operation op = getLastEntered();
+        assertNotNull(op);
+        assertEquals("Hibernate " + method, op.getLabel());
+        assertEquals(OperationType.METHOD, op.getType());
+	}
 }

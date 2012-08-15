@@ -16,8 +16,6 @@
 
 package com.springsource.insight.plugin.springcore;
 
-import static org.junit.Assert.assertEquals;
-
 import javax.annotation.PostConstruct;
 
 import org.junit.Test;

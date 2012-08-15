@@ -16,6 +16,11 @@
 
 package com.springsource.insight.plugin.mongodb;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import org.junit.Test;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -24,35 +29,17 @@ import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.*;
 
 
 /**
  */
 public class MongoCursorOperationCollectionAspectTest
         extends OperationCollectionAspectTestSupport {
-    String collectionName = "test";
+    final String collectionName = "test";
 
-    DBCursor testCursor() {
-        DBCollection collection = mock(DBCollection.class);
-        when(collection.getFullName()).thenReturn(collectionName);
-        DBObject keysObject = new BasicDBObject("key", "value");
-        DBObject queryObject = new BasicDBObject("query", "value");
-
-        DBCursor cursor = new DBCursorDummy(collection, queryObject, keysObject);
-
-        return cursor;
+    public MongoCursorOperationCollectionAspectTest () {
+    	super();
     }
-    public void standardAsserts(Operation op) {
-        assertEquals(MongoCursorOperationCollectionAspect.TYPE, op.getType());
-        assertEquals("{ \"key\" : \"value\"}", op.get("keysWanted"));
-        assertEquals("{ \"query\" : \"value\"}", op.get("query"));
-    }
-
 
     //execution(* DBCursor.next());
     @Test
@@ -131,5 +118,21 @@ public class MongoCursorOperationCollectionAspectTest
     @Override
     public OperationCollectionAspectSupport getAspect() {
         return MongoCursorOperationCollectionAspect.aspectOf();
+    }
+
+    DBCursor testCursor() {
+        DBCollection collection = mock(DBCollection.class);
+        when(collection.getFullName()).thenReturn(collectionName);
+        DBObject keysObject = new BasicDBObject("key", "value");
+        DBObject queryObject = new BasicDBObject("query", "value");
+
+        DBCursor cursor = new DBCursorDummy(collection, queryObject, keysObject);
+
+        return cursor;
+    }
+    public void standardAsserts(Operation op) {
+        assertEquals(MongoCursorOperationCollectionAspect.TYPE, op.getType());
+        assertEquals("{ \"key\" : \"value\"}", op.get("keysWanted"));
+        assertEquals("{ \"query\" : \"value\"}", op.get("query"));
     }
 }

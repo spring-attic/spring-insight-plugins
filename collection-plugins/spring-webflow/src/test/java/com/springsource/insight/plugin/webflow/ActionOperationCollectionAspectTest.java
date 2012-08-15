@@ -16,8 +16,6 @@
 
 package com.springsource.insight.plugin.webflow;
 
-import static org.junit.Assert.assertNotNull;
-
 import org.junit.Test;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
@@ -26,6 +24,10 @@ import com.springsource.insight.intercept.operation.Operation;
 
 
 public class ActionOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
+	public ActionOperationCollectionAspectTest () {
+		super();
+	}
+
 	@Test
 	public void test1() {
 		// Step 1: Execute test

@@ -16,8 +16,6 @@
 
 package com.springsource.insight.plugin.webflow;
 
-import static org.junit.Assert.assertNotNull;
-
 import org.junit.Test;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
@@ -28,8 +26,12 @@ import com.springsource.insight.intercept.operation.OperationMap;
 
 
 public class TransitionOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
+	public TransitionOperationCollectionAspectTest () {
+		super();
+	}
+
 	@Test
-	public void test1() {
+	public void testTransition() {
 		// Step 1: Execute test
 		WebFlowExecutionTest webFlow=new WebFlowExecutionTest();
 		webFlow.testTransition();

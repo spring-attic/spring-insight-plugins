@@ -15,8 +15,6 @@
  */
 package com.springsource.insight.plugin.jdbc;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -47,10 +45,13 @@ import com.springsource.insight.intercept.operation.Operation;
 @ContextConfiguration("classpath:jdbc-test-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class PoolingConnectionTest
-    extends OperationCollectionAspectTestSupport 
-{
+    	extends OperationCollectionAspectTestSupport {
     @Autowired
     DataSource dataSource;
+
+    public PoolingConnectionTest () {
+    	super();
+    }
 
     @Test
     public void operationCollection() throws SQLException {

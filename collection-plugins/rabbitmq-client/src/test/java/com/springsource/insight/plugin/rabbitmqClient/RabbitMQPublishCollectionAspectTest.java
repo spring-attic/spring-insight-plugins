@@ -16,9 +16,6 @@
 
 package com.springsource.insight.plugin.rabbitmqClient;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
@@ -53,7 +50,10 @@ import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationType;
 
 public class RabbitMQPublishCollectionAspectTest extends OperationCollectionAspectTestSupport {
-    
+    public RabbitMQPublishCollectionAspectTest () {
+    	super();
+    }
+
     @Test
     public void testPublish() throws IOException {
         

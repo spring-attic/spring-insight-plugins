@@ -15,7 +15,6 @@
  */
 package com.springsource.insight.plugin.jms;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -34,6 +33,9 @@ import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class JMSMessageListenerCollectionAspectTest extends OperationCollectionAspectTestSupport {
+	public JMSMessageListenerCollectionAspectTest () {
+		super();
+	}
 
     @Test
     public void testMessageListener() throws JMSException {

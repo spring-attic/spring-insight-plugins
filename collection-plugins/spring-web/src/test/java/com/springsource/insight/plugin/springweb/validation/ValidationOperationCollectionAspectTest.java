@@ -16,8 +16,6 @@
 
 package com.springsource.insight.plugin.springweb.validation;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -27,7 +25,10 @@ import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class ValidationOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-    
+    public ValidationOperationCollectionAspectTest () {
+    	super();
+    }
+
     @Test
     public void validationCollected() {
         ExampleValidator validator = new ExampleValidator();

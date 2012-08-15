@@ -15,10 +15,6 @@
  */
 package com.springsource.insight.plugin.jaxrs;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-
 import java.util.Date;
 import java.util.List;
 

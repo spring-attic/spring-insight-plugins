@@ -15,8 +15,6 @@
  */
 package com.springsource.insight.plugin.servlet;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.reset;
 
 import java.util.Arrays;
@@ -35,24 +33,9 @@ import com.springsource.insight.intercept.operation.Operation;
 /**
  */
 public class FilterOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-
-    public static class DummyFilterConfig implements FilterConfig {
-
-        public String getFilterName() { return "DummyFilter"; }
-
-        public ServletContext getServletContext() { return null;}
-
-        public String getInitParameter(String name) {
-            if (name.equals("punk")) return "seattle's";
-            if (name.equals("rock")) return "watering";
-            if (name.equals("beer")) return "hole";
-            return null;
-        }
-
-        public Enumeration<String> getInitParameterNames() {
-            return Collections.enumeration(Arrays.asList("punk", "rock", "beer"));
-        }
-    }
+	public FilterOperationCollectionAspectTest () {
+		super();
+	}
 
     @Test
     public void testCached() throws Exception {
@@ -73,5 +56,23 @@ public class FilterOperationCollectionAspectTest extends OperationCollectionAspe
     @Override
     public OperationCollectionAspectSupport getAspect() {
         return FilterOperationCollectionAspect.aspectOf();
+    }
+
+    public static class DummyFilterConfig implements FilterConfig {
+
+        public String getFilterName() { return "DummyFilter"; }
+
+        public ServletContext getServletContext() { return null;}
+
+        public String getInitParameter(String name) {
+            if (name.equals("punk")) return "seattle's";
+            if (name.equals("rock")) return "watering";
+            if (name.equals("beer")) return "hole";
+            return null;
+        }
+
+        public Enumeration<String> getInitParameterNames() {
+            return Collections.enumeration(Arrays.asList("punk", "rock", "beer"));
+        }
     }
 }

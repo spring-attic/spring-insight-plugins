@@ -16,6 +16,11 @@
 
 package com.springsource.insight.plugin.mongodb;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import org.junit.Test;
+
 import com.mongodb.DB;
 import com.mongodb.Mongo;
 import com.mongodb.ServerAddress;
@@ -23,11 +28,6 @@ import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
-import org.junit.Test;
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 /**
  */

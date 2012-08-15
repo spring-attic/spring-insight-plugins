@@ -17,10 +17,6 @@
 package com.springsource.insight.plugin.springweb.request;
 
 import static com.springsource.insight.intercept.operation.OperationFields.EXCEPTION;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,12 +39,15 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 
 public class WebRequestOperationCollectionAspectTest
-    extends OperationCollectionAspectTestSupport
-{
+    	extends OperationCollectionAspectTestSupport {
     private DispatcherServlet servlet;
     private MockServletConfig config;
     private MockHttpServletResponse response;
-    
+
+    public WebRequestOperationCollectionAspectTest () {
+    	super();
+    }
+
     @Override
 	@Before
     public void setUp() {

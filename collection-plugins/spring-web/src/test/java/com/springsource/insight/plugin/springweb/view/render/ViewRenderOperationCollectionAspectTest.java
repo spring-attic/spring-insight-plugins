@@ -16,8 +16,6 @@
 
 package com.springsource.insight.plugin.springweb.view.render;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +33,10 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
 
 public class ViewRenderOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
+	public ViewRenderOperationCollectionAspectTest () {
+		super();
+	}
+
     @Test
     public void viewRenderMonitored() throws Exception {
         JstlView testUrlBasedView = new JstlView("myjsp.jsp");
