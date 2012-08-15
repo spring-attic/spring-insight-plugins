@@ -16,6 +16,8 @@
 
 package com.springsource.insight.plugin.portlet;
 
+import java.io.File;
+
 import javax.portlet.PortletMode;
 
 import net.sf.portletunit2.PortletUnitTestCase;
@@ -25,6 +27,8 @@ import org.apache.pluto.core.PortletServlet;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.jetty.webapp.WebAppContext;
+
+import com.springsource.insight.util.FileUtil;
 
 /**
  * Portlet1 test case
@@ -47,12 +51,22 @@ public class ExamplePortletTester extends PortletUnitTestCase {
     		tester = new WebTester();
     	}
 
+    	File	tmpDir=FileUtil.getTmpDir();
+    	if (!tmpDir.exists()) {
+    		if (!tmpDir.mkdirs()) {
+    			System.err.println("Failed to ensure existence of " + tmpDir.getAbsolutePath());
+    		} else {
+    			System.out.println("Created " + tmpDir.getAbsolutePath());
+    		}
+    	}
+
     	System.setProperty("org.apache.pluto.embedded.portletId", ExamplePortlet.NAME);
         server = new Server(TEST_PORT);
         WebAppContext webapp = new WebAppContext("src/test/webapp", "/" + CONTEXT_NAME);
         webapp.setDefaultsDescriptor("/WEB-INF/jetty-pluto-web-default.xml");
         ServletHolder portletServlet = new ServletHolder(new PortletServlet());
         portletServlet.setInitParameter("portlet-name", ExamplePortlet.NAME);
+        portletServlet.setInitParameter("scratchdir", tmpDir.getAbsolutePath());
         portletServlet.setInitOrder(1);
         webapp.addServlet(portletServlet, "/PlutoInvoker/" + ExamplePortlet.NAME);
         server.addHandler(webapp);

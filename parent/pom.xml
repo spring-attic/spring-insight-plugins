@@ -583,12 +583,10 @@
 					</includes>
 					<excludedGroups>${excluded.tests.group}</excludedGroups>
                   <forkMode>once</forkMode><!-- at least once -->
-                  <systemProperties>
-                     <property>
-                        <name>java.awt.headless</name>
-                        <value>true</value>
-                    </property>
-                  </systemProperties>
+				  <systemPropertyVariables>
+						<java.io.tmpdir>${project.build.directory}${file.separator}temp</java.io.tmpdir>
+						<java.awt.headless>true</java.awt.headless>
+				  </systemPropertyVariables>
               </configuration>
 					<!-- need to include it to ensure grouping detection -->
 			  <dependencies>
