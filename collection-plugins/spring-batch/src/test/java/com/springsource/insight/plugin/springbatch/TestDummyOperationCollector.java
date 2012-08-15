@@ -56,8 +56,6 @@ public class TestDummyOperationCollector implements OperationCollector {
     }
 
     public void exitAndDiscard(Object returnValue) {
-        // TODO Auto-generated method stub
-
+    	// ignored
     }
-
 }

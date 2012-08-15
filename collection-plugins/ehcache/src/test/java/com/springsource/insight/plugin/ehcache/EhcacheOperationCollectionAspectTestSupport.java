@@ -33,6 +33,7 @@ import net.sf.ehcache.writer.CacheWriter;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 
+import com.springsource.insight.collection.IgnoringOperationCollector;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.collection.OperationCollector;

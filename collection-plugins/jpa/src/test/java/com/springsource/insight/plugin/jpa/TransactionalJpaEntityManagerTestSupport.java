@@ -16,8 +16,6 @@
 
 package com.springsource.insight.plugin.jpa;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -31,6 +29,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.OperationCollector;
+import com.springsource.insight.collection.OperationListCollector;
 import com.springsource.insight.intercept.operation.Operation;
 
 @TransactionConfiguration
@@ -74,52 +73,5 @@ public abstract class TransactionalJpaEntityManagerTestSupport
         }
         
         return opsList.get(numOps - 1);
-    }
-
-    static class OperationListCollector implements OperationCollector {
-        private final List<Operation>   _ops=Collections.synchronizedList(new ArrayList<Operation>());
-        public OperationListCollector() {
-            super();
-        }
-
-        public List<Operation> getCollectedOperations () {
-            return _ops;
-        }
-
-        public void clearCollectedOperations () {
-            _ops.clear();
-        }
-
-        public void enter(Operation operation) {
-            _ops.add(operation);
-        }
-
-        public void exitNormal() {
-            exitNormal(Void.class);
-        }
-
-        public void exitNormal(Object returnValue) {
-            exitAbnormal(null);
-        }
-
-        public void exitAbnormal(Throwable throwable) {
-            if (_ops.isEmpty()) {
-                throw new IllegalStateException("Imbalanced stack frame");
-            }
-        }
-
-        public void exitAndDiscard() {
-            exitAndDiscard(Void.class);
-        }
-
-        public void exitAndDiscard(Object returnValue) {
-            exitNormal(returnValue);
-
-            if (_ops.isEmpty()) {
-                throw new IllegalStateException("Imbalanced stack frame");
-            }
-
-            _ops.remove(_ops.size() - 1);
-        }
     }
 }

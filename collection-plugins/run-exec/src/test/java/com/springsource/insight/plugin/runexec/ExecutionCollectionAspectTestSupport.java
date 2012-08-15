@@ -25,6 +25,7 @@ import org.junit.Assert;
 import org.junit.Before;
 
 import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.collection.OperationListCollector;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.operation.SourceCodeLocation;
