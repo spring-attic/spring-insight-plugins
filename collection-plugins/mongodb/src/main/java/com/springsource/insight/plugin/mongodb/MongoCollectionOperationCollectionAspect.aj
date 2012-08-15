@@ -21,20 +21,16 @@ import java.util.List;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 
-import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MapReduceOutput;
-import com.mongodb.Mongo;
-import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
 import com.mongodb.WriteResult;
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
 
-public aspect MongoCollectionOperationCollectionAspect extends
-        AbstractOperationCollectionAspect {
+public aspect MongoCollectionOperationCollectionAspect extends AbstractOperationCollectionAspect {
 	public MongoCollectionOperationCollectionAspect () {
 		super();
 	}
@@ -92,7 +88,7 @@ public aspect MongoCollectionOperationCollectionAspect extends
         final DBCollection collection = (DBCollection) joinPoint.getThis();
         Operation op = new Operation()
                 .label("MongoDB: " + collection + "." + signature.getName())
-                .type(MongoDBCollectionOperationAnalyzer.TYPE)
+                .type(MongoDBCollectionExternalResourceAnalyzer.TYPE)
                 .put("collection", collection.getFullName());
         OperationList opList = op.createList("args");
         List<String> args = MongoArgumentUtils.toString(joinPoint.getArgs());
@@ -100,14 +96,8 @@ public aspect MongoCollectionOperationCollectionAspect extends
             opList.add(arg);
         }
         
-        DB db = collection.getDB();
         try {
-        	op.put("dbName", db.getName());
-        	
-        	Mongo			mongo=db.getMongo();
-        	ServerAddress	address=mongo.getAddress();
-			op.put("host", address.getHost());
-			op.put("port", address.getPort());
+        	MongoArgumentUtils.putDatabaseDetails(op, collection.getDB());
 		} catch (Exception e) {
 			// ignored
 		}

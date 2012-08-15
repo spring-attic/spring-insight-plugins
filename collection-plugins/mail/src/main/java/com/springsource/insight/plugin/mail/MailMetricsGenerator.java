@@ -15,7 +15,7 @@
  */
 package com.springsource.insight.plugin.mail;
 
-import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
+import com.springsource.insight.intercept.metrics.AbstractExternalResourceMetricsGenerator;
 import com.springsource.insight.intercept.metrics.MetricsBag;
 import com.springsource.insight.intercept.metrics.MetricsBag.PointType;
 import com.springsource.insight.intercept.operation.Operation;
@@ -24,7 +24,7 @@ import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.DataPoint;
 import com.springsource.insight.util.time.TimeUtil;
 
-public class MailMetricsGenerator extends AbstractMetricsGenerator {
+public class MailMetricsGenerator extends AbstractExternalResourceMetricsGenerator {
 	public static final String  MAIL_SIZE_METRIC = "mailSize:type=bytes";
 	
 	public MailMetricsGenerator() {
@@ -32,10 +32,10 @@ public class MailMetricsGenerator extends AbstractMetricsGenerator {
 	}
 
 	@Override
-	protected void addExtraExternalResourceMetrics(Trace trace, Frame opTypeFrame, MetricsBag mb) {
+	protected void addExtraFrameMetrics(Trace trace, Frame opTypeFrame, MetricsBag mb) {
 		// Add the message size data point
 		Operation	op=opTypeFrame.getOperation();
-		Number 		contentSize = op.get("size", Number.class);
+		Number 		contentSize=op.get("size", Number.class);
 		// OK if missing - the size is collected only if extra information is enabled
 		if (contentSize == null) {
 		    return;

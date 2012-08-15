@@ -22,8 +22,6 @@ import org.aspectj.lang.JoinPoint;
 
 import com.mongodb.CommandResult;
 import com.mongodb.DB;
-import com.mongodb.Mongo;
-import com.mongodb.ServerAddress;
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
@@ -37,7 +35,9 @@ public aspect MongoDbOperationCollectionAspect extends AbstractOperationCollecti
 
     @Override
     protected Operation createOperation(final JoinPoint jp) {
-        Operation op = new Operation().label("MongoDB: DB." + jp.getSignature().getName() + "()").type(MongoDBOperationAnalyzer.TYPE);
+        Operation op = new Operation()
+        					.label("MongoDB: DB." + jp.getSignature().getName() + "()")
+        					.type(MongoDBOperationExternalResourceAnalyzer.TYPE);
         OperationList opList = op.createList("args");
 
         List<String> args = MongoArgumentUtils.toString(jp.getArgs());
@@ -45,14 +45,8 @@ public aspect MongoDbOperationCollectionAspect extends AbstractOperationCollecti
             opList.add(arg);
         }
         
-        DB db = (DB) jp.getTarget();
         try {
-        	op.put("dbName", db.getName());
-
-        	Mongo			mongo=db.getMongo();
-        	ServerAddress	address=mongo.getAddress();
-			op.put("host", address.getHost());
-			op.put("port", address.getPort());
+        	MongoArgumentUtils.putDatabaseDetails(op, (DB) jp.getTarget());
 		} catch (Exception e) {
 			// ignored
 		}

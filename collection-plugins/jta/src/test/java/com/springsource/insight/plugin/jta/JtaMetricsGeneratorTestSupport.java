@@ -22,23 +22,8 @@ import com.springsource.insight.intercept.operation.OperationType;
 /**
  * 
  */
-public abstract class JtaMetricsGeneratorTestSupport
-        extends AbstractMetricsGeneratorTest {
-    protected final OperationType   opType;
+public abstract class JtaMetricsGeneratorTestSupport extends AbstractMetricsGeneratorTest {
     protected JtaMetricsGeneratorTestSupport(final OperationType type) {
-        if ((opType=type) == null) {
-            throw new IllegalStateException("No operation type provided");
-        }
+    	super(new JtaMetricsGenerator(type) { /* nothing extra */ });
     }
-
-    @Override
-    protected final JtaMetricsGenerator getMetricsGenerator() {
-        return new JtaMetricsGenerator(opType);
-    }
-
-    @Override
-    protected final OperationType getOperationType() {
-        return opType;
-    }
-
 }

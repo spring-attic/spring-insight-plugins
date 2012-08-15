@@ -34,10 +34,10 @@ import com.springsource.insight.util.ListUtil;
 /**
  * 
  */
-public class RedisDBAnalyzer extends AbstractExternalResourceAnalyzer {
+public class RedisExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
 	public static final OperationType TYPE =  OperationType.valueOf("redis-client-method");
 
-	public RedisDBAnalyzer () {
+	public RedisExternalResourceAnalyzer () {
 		super(TYPE);
 	}
 

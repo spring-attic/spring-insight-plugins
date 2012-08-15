@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package com.springsource.insight.plugin.jdbc;
+package com.springsource.insight.plugin.mongodb;
 
-import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
 import com.springsource.insight.intercept.operation.OperationType;
 
-/**
- * Generates commands to create
- * jdbcExecutionTime and queryCount metrics.
- */
-public abstract class JdbcMetricsGenerator extends AbstractMetricsGenerator {
-	protected JdbcMetricsGenerator(OperationType type) {
-		super(type);
+
+public class MongoDBCollectionExternalResourceAnalyzer extends AbstractMongoDBExternalResourceAnalyzer {
+
+	public static final OperationType TYPE = OperationType.valueOf("mongo_collection_operation");
+	
+	public MongoDBCollectionExternalResourceAnalyzer() {
+		super(TYPE);
 	}
+
 }

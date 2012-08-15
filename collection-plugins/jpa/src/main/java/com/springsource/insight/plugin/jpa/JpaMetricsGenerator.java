@@ -22,7 +22,7 @@ import com.springsource.insight.intercept.operation.OperationType;
 /**
  * 
  */
-public class JpaMetricsGenerator extends AbstractMetricsGenerator {
+public abstract class JpaMetricsGenerator extends AbstractMetricsGenerator {
     protected JpaMetricsGenerator (OperationType type) {
         super(type);
     }

@@ -18,35 +18,41 @@ package com.springsource.insight.plugin.jms;
 import java.util.Collection;
 import java.util.Collections;
 
-import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
+import com.springsource.insight.intercept.metrics.AbstractExternalResourceMetricsGenerator;
 import com.springsource.insight.intercept.metrics.MetricsBag;
 import com.springsource.insight.intercept.resource.ResourceKey;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.ListUtil;
 
-abstract class AbstractJMSMetricsGenerator extends AbstractMetricsGenerator {
+public abstract class AbstractJMSMetricsGenerator extends AbstractExternalResourceMetricsGenerator {
 	private static final String JMS_COUNT_SUFFIX = ":type=counter";
 	private final String   jmsMetricKey;
+	private final JMSPluginOperationType	jmsType;
 
-	AbstractJMSMetricsGenerator(JMSPluginOperationType type) {
+	protected AbstractJMSMetricsGenerator(JMSPluginOperationType type) {
 		super(type.getOperationType());
+		jmsType = type;
 		jmsMetricKey = type.getOperationType().getName() + JMS_COUNT_SUFFIX;
 	}
 
+	public final JMSPluginOperationType getJMSPluginOperationType () {
+		return jmsType;
+	}
+
 	@Override
-    protected Collection<MetricsBag> addExtraEndPointMetrics(Trace trace, ResourceKey resourceKey, Collection<Frame> externalFrames) {
+    protected Collection<MetricsBag> addExtraEndPointMetrics(Trace trace, ResourceKey endpointResourceKey, Collection<Frame> externalFrames) {
 		if (ListUtil.size(externalFrames) <= 0) {
 		    return Collections.emptyList();
 		}
 
-		MetricsBag    mb=MetricsBag.create(resourceKey, trace.getRange());
+		MetricsBag    mb=MetricsBag.create(endpointResourceKey, trace.getRange());
 		addCounterMetricToBag(trace, mb, createMetricKey(), externalFrames.size());
 		return Collections.singletonList(mb);
 	}
 
 	@Override
-	protected void addExtraExternalResourceMetrics(Trace trace, Frame opTypeFrame, MetricsBag mb) {
+	protected void addExtraFrameMetrics(Trace trace, Frame opTypeFrame, MetricsBag mb) {
 		addCounterMetricToBag(trace, mb, createMetricKey(), 1);
 	}
 	

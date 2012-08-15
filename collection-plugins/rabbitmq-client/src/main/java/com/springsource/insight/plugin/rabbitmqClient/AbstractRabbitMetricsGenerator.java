@@ -19,19 +19,19 @@ package com.springsource.insight.plugin.rabbitmqClient;
 import java.util.Collection;
 import java.util.Collections;
 
-import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
+import com.springsource.insight.intercept.metrics.AbstractExternalResourceMetricsGenerator;
 import com.springsource.insight.intercept.metrics.MetricsBag;
 import com.springsource.insight.intercept.resource.ResourceKey;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.ListUtil;
 
-abstract class AbstractRabbitMetricsGenerator extends AbstractMetricsGenerator {
+public abstract class AbstractRabbitMetricsGenerator extends AbstractExternalResourceMetricsGenerator {
 	public static final String RABBIT_COUNT_SUFFIX = ":type=counter";
 
 	private final String   rabbitMetricKey;
 
-	AbstractRabbitMetricsGenerator(RabbitPluginOperationType rabbitOpType) {
+	protected AbstractRabbitMetricsGenerator(RabbitPluginOperationType rabbitOpType) {
 		super(rabbitOpType.getOperationType());
 		rabbitMetricKey = rabbitOpType.getOperationType().getName() + RABBIT_COUNT_SUFFIX;
 	}
@@ -48,7 +48,7 @@ abstract class AbstractRabbitMetricsGenerator extends AbstractMetricsGenerator {
 	}
 
 	@Override
-	protected void addExtraExternalResourceMetrics(Trace trace,  Frame opTypeFrame, MetricsBag mb) {
+	protected void addExtraFrameMetrics(Trace trace,  Frame opTypeFrame, MetricsBag mb) {
 		addCounterMetricToBag(trace, mb, createMetricKey(), 1);
 	}
 

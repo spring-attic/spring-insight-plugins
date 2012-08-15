@@ -51,7 +51,7 @@ public class MongoDbOperationCollectionAspectTest
         Operation op = getLastEntered();
         assertNotNull(op);
         assertEquals("MongoDB: DB.command()", op.getLabel());
-        assertEquals(MongoDBOperationAnalyzer.TYPE, op.getType());
+        assertEquals(MongoDBOperationExternalResourceAnalyzer.TYPE, op.getType());
         assertEquals("Hello there", ((OperationList)op.get("args")).get(0));
 
         assertEquals("local", op.get("host", String.class));
@@ -67,7 +67,7 @@ public class MongoDbOperationCollectionAspectTest
         Operation op = getLastEntered();
         assertNotNull(op);
         assertEquals("MongoDB: DB.command()", op.getLabel());
-        assertEquals(MongoDBOperationAnalyzer.TYPE, op.getType());
+        assertEquals(MongoDBOperationExternalResourceAnalyzer.TYPE, op.getType());
         assertEquals("Hello there", ((OperationList)op.get("args")).get(0));
 
         assertEquals("my thing",  op.get("dbName", String.class));

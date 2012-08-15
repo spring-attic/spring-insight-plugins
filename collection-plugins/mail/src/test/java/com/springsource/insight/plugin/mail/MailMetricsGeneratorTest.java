@@ -17,32 +17,21 @@ package com.springsource.insight.plugin.mail;
 
 import java.util.List;
 
+import com.springsource.insight.intercept.metrics.AbstractExternalResourceMetricsGenerator;
 import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
 import com.springsource.insight.intercept.metrics.AbstractMetricsGeneratorTest;
 import com.springsource.insight.intercept.metrics.MetricsBag;
-import com.springsource.insight.intercept.metrics.MetricsGenerator;
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.util.IDataPoint;
 
 public class MailMetricsGeneratorTest extends AbstractMetricsGeneratorTest {
 	public MailMetricsGeneratorTest () {
-		super();
-	}
-
-	@Override
-	protected MetricsGenerator getMetricsGenerator() {
-		return new MailMetricsGenerator();
-	}
-
-	@Override
-	protected OperationType getOperationType(){
-		return MailDefinitions.SEND_OPERATION;
+		super(new MailMetricsGenerator());
 	}
     
 	@Override
-	protected void validateMetricsBags(List<MetricsBag> mbs, MetricsGenerator gen) {
+	protected void validateMetricsBags(List<MetricsBag> mbs) {
 		assertEquals(2, mbs.size());
         
         MetricsBag mb = mbs.get(0);

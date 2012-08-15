@@ -18,11 +18,6 @@ package com.springsource.insight.plugin.jms;
 public class JMSSendMetricsGeneratorTest extends AbstractJMSMetricsGeneratorTest {
 
 	public JMSSendMetricsGeneratorTest() {
-		super(JMSPluginOperationType.SEND);
+		super(new JMSSendMetricsGenerator());
 	}
-
-	@Override
-    protected AbstractJMSMetricsGenerator getMetricsGenerator() {
-        return new JMSSendMetricsGenerator();
-    }
 }

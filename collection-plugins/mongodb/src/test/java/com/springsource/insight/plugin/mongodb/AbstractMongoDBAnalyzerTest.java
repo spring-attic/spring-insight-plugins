@@ -45,7 +45,7 @@ public abstract class AbstractMongoDBAnalyzerTest {
 	
 	protected abstract OperationType getType();
 
-    protected abstract AbstractMongoDBAnalyzer createMongoAnalyzer();
+    protected abstract AbstractMongoDBExternalResourceAnalyzer createMongoAnalyzer();
 
 	@Test
 	public void testLocateDatabaseURI() throws Exception {
@@ -66,7 +66,7 @@ public abstract class AbstractMongoDBAnalyzerTest {
 				TraceId.valueOf("fake-id"),
 				frame);
 
-		AbstractMongoDBAnalyzer	analyzer=createMongoAnalyzer();
+		AbstractMongoDBExternalResourceAnalyzer	analyzer=createMongoAnalyzer();
 		List<ExternalResourceDescriptor>	results=
 				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
 		assertEquals(1, results.size());
@@ -75,7 +75,7 @@ public abstract class AbstractMongoDBAnalyzerTest {
 		assertEquals(frame, externalResourceDescriptor.getFrame());
 		assertEquals(ExternalResourceType.DATABASE.name(), externalResourceDescriptor.getType());
 		assertEquals("mongo:" + MD5NameGenerator.getName("dbNamelocalhost"+6379), externalResourceDescriptor.getName());
-		assertEquals(AbstractMongoDBAnalyzer.MONGODB_VENDOR, externalResourceDescriptor.getVendor());
+		assertEquals(AbstractMongoDBExternalResourceAnalyzer.MONGODB_VENDOR, externalResourceDescriptor.getVendor());
 		assertEquals("dbName", externalResourceDescriptor.getLabel());
 		assertEquals("localhost", externalResourceDescriptor.getHost());
 		assertEquals(6379, externalResourceDescriptor.getPort());
@@ -109,7 +109,7 @@ public abstract class AbstractMongoDBAnalyzerTest {
 		Frame frame = builder.exit();
 		Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
 
-		AbstractMongoDBAnalyzer				analyzer=createMongoAnalyzer();
+		AbstractMongoDBExternalResourceAnalyzer				analyzer=createMongoAnalyzer();
 		List<ExternalResourceDescriptor>	externalResourceDescriptors=
 				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
 		assertEquals(2, externalResourceDescriptors.size());        

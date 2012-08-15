@@ -16,34 +16,13 @@
 
 package com.springsource.insight.plugin.eclipse.persistence;
 
-import org.junit.Assert;
-
 import com.springsource.insight.intercept.metrics.AbstractMetricsGeneratorTest;
-import com.springsource.insight.intercept.metrics.MetricsGenerator;
-import com.springsource.insight.intercept.operation.OperationType;
 
 /**
  * 
  */
-public abstract class EclipsePersistenceMetricsGeneratorTestSupport
-        extends AbstractMetricsGeneratorTest {
-    protected final OperationType   opType;
-    protected EclipsePersistenceMetricsGeneratorTestSupport(OperationType type) {
-        Assert.assertNotNull("No operation type specified", type);
-        this.opType = type;
+public abstract class EclipsePersistenceMetricsGeneratorTestSupport extends AbstractMetricsGeneratorTest {
+    protected EclipsePersistenceMetricsGeneratorTestSupport(EclipsePersistenceMetricsGenerator generator) {
+    	super(generator);
     }
-
-    @Override
-    protected final MetricsGenerator getMetricsGenerator() {
-        EclipsePersistenceMetricsGenerator  generator=createEclipsePersistenceMetricsGenerator();
-        Assert.assertEquals("Mismatched generator operation", getOperationType(), generator.getOperationType());
-        return generator;
-    }
-
-    @Override
-    protected final OperationType getOperationType() {
-        return opType;
-    }
-
-    protected abstract EclipsePersistenceMetricsGenerator createEclipsePersistenceMetricsGenerator ();
 }

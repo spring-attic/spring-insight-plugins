@@ -34,10 +34,10 @@ import com.springsource.insight.util.ListUtil;
 /**
  * 
  */
-public abstract class AbstractMongoDBAnalyzer extends AbstractExternalResourceAnalyzer {
+public abstract class AbstractMongoDBExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
 	public static final String	MONGODB_VENDOR="MongoDB";
 
-	protected AbstractMongoDBAnalyzer(OperationType type) {
+	protected AbstractMongoDBExternalResourceAnalyzer(OperationType type) {
 		super(type);
 	}
 	

@@ -24,9 +24,9 @@ import com.springsource.insight.intercept.color.ColorManager;
 import com.springsource.insight.intercept.endpoint.AbstractSingleTypeEndpointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.endpoint.EndPointName;
+import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
-import com.springsource.insight.intercept.topology.AbstractExternalFramesLocator;
 import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
@@ -75,7 +75,11 @@ public abstract class AbstractJMSResourceAnalyzer extends AbstractSingleTypeEndp
     }
 
 	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
-		return locateExternalResourceName(trace,  AbstractExternalFramesLocator.locateDefaultExternalFrames(trace, getSingleOperationType()));
+		return locateExternalResourceName(trace,  locateFrames(trace));
+	}
+
+	public Collection<Frame> locateFrames(Trace trace) {
+		return AbstractMetricsGenerator.locateDefaultMetricsFrames(trace, getSingleOperationType());
 	}
 
 	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> queueFrames) {

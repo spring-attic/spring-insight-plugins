@@ -20,13 +20,13 @@ import com.springsource.insight.intercept.operation.OperationType;
 
 public class MongoDBCollectionOperationAnalyzerTest extends AbstractMongoDBAnalyzerTest {
     @Override
-    protected AbstractMongoDBAnalyzer createMongoAnalyzer() {
-        return new MongoDBCollectionOperationAnalyzer();
+    protected AbstractMongoDBExternalResourceAnalyzer createMongoAnalyzer() {
+        return new MongoDBCollectionExternalResourceAnalyzer();
     }
     
     @Override
     protected OperationType getType() {
-        return MongoDBCollectionOperationAnalyzer.TYPE;
+        return MongoDBCollectionExternalResourceAnalyzer.TYPE;
     }
 
 }

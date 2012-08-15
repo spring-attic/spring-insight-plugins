@@ -10,6 +10,5 @@
     <insight:operation-view operation="ehcache-operation" template="com/springsource/insight/plugin/ehcache/ehcache.ftl"/>
     <insight:operation-group group="Ehcahce" operation="ehcache-operation" />
     
-    <bean class="com.springsource.insight.plugin.ehcache.EhcacheResourceAnalyzer" />
-    <bean class="com.springsource.insight.plugin.ehcache.EhcacheMetricsGenerator" />
+    <bean class="com.springsource.insight.plugin.ehcache.EhcacheExternalResourceAnalyzer" />
 </beans>

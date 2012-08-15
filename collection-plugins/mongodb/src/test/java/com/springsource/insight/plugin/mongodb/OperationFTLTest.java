@@ -46,7 +46,7 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class OperationFTLTest extends AbstractOperationViewTest {
     public OperationFTLTest() {
-        super(MongoDBOperationAnalyzer.TYPE);
+        super(MongoDBOperationExternalResourceAnalyzer.TYPE);
     }
 
     @SuppressWarnings("boxing")

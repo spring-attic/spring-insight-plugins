@@ -18,9 +18,6 @@
 	<bean name="sqlToHtml" class="com.springsource.insight.plugin.jdbc.SqlToHtml" />
     
     <bean class="com.springsource.insight.plugin.jdbc.JdbcOperationExternalResourceAnalyzer" />
-    <bean class="com.springsource.insight.plugin.jdbc.JdbcOperationMetricsGenerator" />
-    
     <bean class="com.springsource.insight.plugin.jdbc.JdbcDriverExternalResourceAnalyzer" />
-    <bean class="com.springsource.insight.plugin.jdbc.JdbcDriverMetricsGenerator" />
     
 </beans>

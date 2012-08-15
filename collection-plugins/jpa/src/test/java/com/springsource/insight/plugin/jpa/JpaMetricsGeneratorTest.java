@@ -23,18 +23,7 @@ import com.springsource.insight.intercept.operation.OperationType;
  * 
  */
 public abstract class JpaMetricsGeneratorTest extends AbstractMetricsGeneratorTest {
-    private final OperationType opType;
     protected JpaMetricsGeneratorTest(OperationType type) {
-        opType = type;
-    }
-
-    @Override
-    protected final JpaMetricsGenerator getMetricsGenerator() {
-        return new JpaMetricsGenerator(opType);
-    }
-
-    @Override
-    protected final OperationType getOperationType() {
-        return opType;
+        super(new JpaMetricsGenerator(type) { /* nothing extra */ });
     }
 }

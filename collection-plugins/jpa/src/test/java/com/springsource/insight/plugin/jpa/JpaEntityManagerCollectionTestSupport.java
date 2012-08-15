@@ -135,7 +135,8 @@ public abstract class JpaEntityManagerCollectionTestSupport
             return null;
         }
 
-        public Query createNativeQuery(String sqlString, Class resultClass) {
+        @SuppressWarnings("rawtypes")
+		public Query createNativeQuery(String sqlString, Class resultClass) {
             return null;
         }
 

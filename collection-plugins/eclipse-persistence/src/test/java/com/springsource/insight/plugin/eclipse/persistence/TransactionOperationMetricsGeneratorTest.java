@@ -22,12 +22,6 @@ package com.springsource.insight.plugin.eclipse.persistence;
 public class TransactionOperationMetricsGeneratorTest
         extends EclipsePersistenceMetricsGeneratorTestSupport {
     public TransactionOperationMetricsGeneratorTest () {
-        super(EclipsePersistenceDefinitions.TX);
+        super(new TransactionOperationMetricsGenerator());
     }
-
-    @Override
-    protected TransactionOperationMetricsGenerator createEclipsePersistenceMetricsGenerator() {
-        return new TransactionOperationMetricsGenerator();
-    }
-
 }

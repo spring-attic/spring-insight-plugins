@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package com.springsource.insight.plugin.ehcache;
+package com.springsource.insight.plugin.mongodb;
 
-import com.springsource.insight.intercept.metrics.AbstractMetricsGeneratorTest;
-import com.springsource.insight.intercept.metrics.MetricsGenerator;
 import com.springsource.insight.intercept.operation.OperationType;
 
 
-public class EhcacheMetricsGeneratorTest extends AbstractMetricsGeneratorTest {
+public class MongoDBOperationExternalResourceAnalyzer extends AbstractMongoDBExternalResourceAnalyzer {
 
-	@Override
-	protected MetricsGenerator getMetricsGenerator() {
-		return new EhcacheMetricsGenerator();
-	}
-
-	@Override
-	protected OperationType getOperationType() {
-		return EhcacheDefinitions.CACHE_OPERATION;
+	public static final OperationType TYPE = OperationType.valueOf("mongo_db_operation");
+	
+	public MongoDBOperationExternalResourceAnalyzer() {
+		super(TYPE);
 	}
 
 }

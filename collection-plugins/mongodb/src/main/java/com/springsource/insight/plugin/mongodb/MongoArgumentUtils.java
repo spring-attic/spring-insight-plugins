@@ -23,22 +23,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.springsource.insight.util.StringUtil;
 import org.bson.types.ObjectId;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.CommandResult;
+import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
+import com.mongodb.Mongo;
+import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
 import com.mongodb.WriteResult;
+import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.util.StringUtil;
 
 /**
  * Utilities for converting method arguments for MongoDB-related operations
  */
-public class MongoArgumentUtils {
+public final class MongoArgumentUtils {
+	private MongoArgumentUtils () {
+		throw new UnsupportedOperationException("No instance");
+	}
     /**
      * The maximum length of a string we generate
      */
@@ -137,10 +144,6 @@ public class MongoArgumentUtils {
         }
     };
 
-    private MongoArgumentUtils() {
-        // empty OK
-    }
-
     public static List<String> toString(final Object[] array) {
         return toString(array, MAX_STRING_LENGTH);
     }
@@ -156,8 +159,7 @@ public class MongoArgumentUtils {
      * @param maxLength
      * @return
      */
-    public static List<String> toString(final Object[] array,
-                                        final int maxLength) {
+    public static List<String> toString(final Object[] array, final int maxLength) {
         return new ArrayList<String>() {
 			private static final long serialVersionUID = 1L;
 
@@ -165,8 +167,7 @@ public class MongoArgumentUtils {
                 int soFar = 0;
 
                 for (final Object arg : array) {
-                    final String result
-                            = MongoArgumentUtils.toString(arg, maxLength - soFar);
+                    final String result=MongoArgumentUtils.toString(arg, maxLength - soFar);
 
                     soFar += result.length();
 
@@ -214,5 +215,15 @@ public class MongoArgumentUtils {
 
     public static String trimWithEllipsis(final String string) {
         return StringUtil.trimWithEllipsis(string, MAX_STRING_LENGTH);
+    }
+
+    public static Operation putDatabaseDetails (Operation op, DB db) {
+    	op.put("dbName", db.getName());
+    	
+    	Mongo			mongo=db.getMongo();
+    	ServerAddress	address=mongo.getAddress();
+		op.put("host", address.getHost());
+		op.put("port", address.getPort());
+		return op;
     }
 }

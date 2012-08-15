@@ -13,6 +13,5 @@
 
     <bean class="com.springsource.insight.plugin.apache.http.hc3.HttpStatusTraceErrorAnalyzer" />
     <bean class="com.springsource.insight.plugin.apache.http.hc3.HttpExternalResourceAnalyzer" />
-    <bean class="com.springsource.insight.plugin.apache.http.hc3.HttpClientMetricsGenerator" />
 
 </beans>

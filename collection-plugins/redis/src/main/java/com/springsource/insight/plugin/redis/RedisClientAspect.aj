@@ -52,7 +52,7 @@ public aspect RedisClientAspect extends AbstractOperationCollectionAspect {
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Operation op = new Operation().type(RedisDBAnalyzer.TYPE);
+        Operation op = new Operation().type(RedisExternalResourceAnalyzer.TYPE);
         JoinPointFinalizer.register(op, jp);
 
         String methodName = jp.getSignature().getName();

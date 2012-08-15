@@ -22,8 +22,8 @@ import com.springsource.insight.intercept.operation.OperationType;
 /**
  * 
  */
-public class JtaMetricsGenerator extends AbstractMetricsGenerator {
-    public JtaMetricsGenerator(OperationType type) {
+public abstract class JtaMetricsGenerator extends AbstractMetricsGenerator {
+    protected JtaMetricsGenerator(OperationType type) {
         super(type);
     }
 }

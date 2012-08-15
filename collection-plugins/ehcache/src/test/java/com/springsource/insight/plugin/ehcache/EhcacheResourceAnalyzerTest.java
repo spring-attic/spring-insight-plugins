@@ -36,7 +36,7 @@ import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
 
 public class EhcacheResourceAnalyzerTest {
-    private final EhcacheResourceAnalyzer analyzer = new EhcacheResourceAnalyzer();
+    private final EhcacheExternalResourceAnalyzer analyzer = new EhcacheExternalResourceAnalyzer();
 
     @Test
 	public void testLocateExternalResourceName() {

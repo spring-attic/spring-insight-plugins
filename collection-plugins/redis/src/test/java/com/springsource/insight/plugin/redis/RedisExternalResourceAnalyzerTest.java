@@ -16,12 +16,11 @@
 
 package com.springsource.insight.plugin.redis;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.springsource.insight.intercept.application.ApplicationName;
@@ -41,12 +40,15 @@ import com.springsource.insight.util.time.TimeRange;
 
 /**
  */
-public class RedisDBAnalyzerTest {
+public class RedisExternalResourceAnalyzerTest extends Assert {
+	public RedisExternalResourceAnalyzerTest () {
+		super();
+	}
 
 	@Test
 	public void testLocateDatabaseURI() throws Exception {
 		Operation op = new Operation();
-		op.type(RedisDBAnalyzer.TYPE);		
+		op.type(RedisExternalResourceAnalyzer.TYPE);		
 		op.put("host", "localhost");
 		op.put("port", 6379);
 		op.put("dbName", "dbName");
@@ -63,7 +65,7 @@ public class RedisDBAnalyzerTest {
 				frame);
 
 		List<ExternalResourceDescriptor> externalResourceDescriptors =
-				(List<ExternalResourceDescriptor>) new RedisDBAnalyzer().locateExternalResourceName(trace);
+				(List<ExternalResourceDescriptor>) new RedisExternalResourceAnalyzer().locateExternalResourceName(trace);
 		ExternalResourceDescriptor externalResourceDescriptor = externalResourceDescriptors.get(0);
 
 		assertEquals(frame, externalResourceDescriptor.getFrame());
@@ -79,13 +81,13 @@ public class RedisDBAnalyzerTest {
 	@Test
 	public void testExactlyTwoDifferentExternalResourceNames() {   	
 		Operation op1 = new Operation();
-		op1.type(RedisDBAnalyzer.TYPE);		
+		op1.type(RedisExternalResourceAnalyzer.TYPE);		
 		op1.putAnyNonEmpty("host", "127.0.0.1");
 		op1.put("port", 6379);
 		op1.put("dbName", "dbName");
 		
 		Operation op2 = new Operation();
-		op2.type(RedisDBAnalyzer.TYPE);	
+		op2.type(RedisExternalResourceAnalyzer.TYPE);	
 		
 		op2.put("port", 6379);
 		op2.put("dbName", "dbName2");
@@ -104,7 +106,7 @@ public class RedisDBAnalyzerTest {
 		Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
 
 		List<ExternalResourceDescriptor> externalResourceDescriptors =
-				(List<ExternalResourceDescriptor>) new RedisDBAnalyzer().locateExternalResourceName(trace);
+				(List<ExternalResourceDescriptor>) new RedisExternalResourceAnalyzer().locateExternalResourceName(trace);
 
 		assertEquals(2, externalResourceDescriptors.size());        
 

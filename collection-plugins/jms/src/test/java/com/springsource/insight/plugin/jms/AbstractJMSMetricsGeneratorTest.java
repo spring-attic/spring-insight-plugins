@@ -20,29 +20,18 @@ import java.util.List;
 import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
 import com.springsource.insight.intercept.metrics.AbstractMetricsGeneratorTest;
 import com.springsource.insight.intercept.metrics.MetricsBag;
-import com.springsource.insight.intercept.metrics.MetricsGenerator;
-import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.util.IDataPoint;
 
 public abstract class AbstractJMSMetricsGeneratorTest extends AbstractMetricsGeneratorTest {
-
-	private JMSPluginOperationType operationType;
-
-	protected AbstractJMSMetricsGeneratorTest(JMSPluginOperationType opType) {
-		this.operationType = opType;
+	protected AbstractJMSMetricsGeneratorTest(AbstractJMSMetricsGenerator generator) {
+		super(generator);
 	}    
-
-	@Override
-	protected OperationType getOperationType(){
-		return operationType.getOperationType();
-	}
     
 	@Override
-	protected void validateMetricsBags(List<MetricsBag> mbs, MetricsGenerator gen) {
-		AbstractJMSMetricsGenerator gen1 = (AbstractJMSMetricsGenerator)gen;
+	protected void validateMetricsBags(List<MetricsBag> mbs) {
 		assertEquals(3, mbs.size());
-		assertExternalResourceMetricBag(gen1, mbs.get(0));
-		assertExternalResourceMetricBag(gen1, mbs.get(1));
+		assertExternalResourceMetricBag(mbs.get(0));
+		assertExternalResourceMetricBag(mbs.get(1));
 
 		List<String> keys;
 		List<IDataPoint> points;
@@ -51,14 +40,14 @@ public abstract class AbstractJMSMetricsGeneratorTest extends AbstractMetricsGen
 		keys = mb.getMetricKeys();
 		assertEquals(1, keys.size());
 
-		assertTrue(keys.get(0).equals(gen1.createMetricKey()));        
-		points = mb.getPoints(gen1.createMetricKey());
+		AbstractJMSMetricsGenerator	jmsGenerator=(AbstractJMSMetricsGenerator) gen;
+		assertTrue(keys.get(0).equals(jmsGenerator.createMetricKey()));        
+		points = mb.getPoints(jmsGenerator.createMetricKey());
 		assertEquals(1, points.size());
 		assertEquals(2d , points.get(0).getValue(), 0);
 	}
 
-	private void assertExternalResourceMetricBag(
-			AbstractJMSMetricsGenerator gen, MetricsBag mb) {
+	private void assertExternalResourceMetricBag(MetricsBag mb) {
 		assertEquals("opExtKey", mb.getResourceKey().getName());
         List<String> keys = mb.getMetricKeys();
         assertEquals(3, keys.size());
@@ -73,8 +62,9 @@ public abstract class AbstractJMSMetricsGeneratorTest extends AbstractMetricsGen
         assertEquals(1, points.size());
         assertEquals(1.0 , points.get(0).getValue(), 0.01);
         
-        assertTrue(keys.get(2).equals(gen.createMetricKey()));        
-        points = mb.getPoints(gen.createMetricKey());
+		AbstractJMSMetricsGenerator	jmsGenerator=(AbstractJMSMetricsGenerator) gen;
+        assertTrue(keys.get(2).equals(jmsGenerator.createMetricKey()));        
+        points = mb.getPoints(jmsGenerator.createMetricKey());
         assertEquals(1, points.size());
         assertEquals(1d, points.get(0).getValue(), 0);
 	}

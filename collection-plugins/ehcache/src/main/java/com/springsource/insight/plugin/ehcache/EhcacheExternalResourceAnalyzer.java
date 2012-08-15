@@ -30,8 +30,8 @@ import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.ListUtil;
 
-public class EhcacheResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-	public EhcacheResourceAnalyzer () {
+public class EhcacheExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
+	public EhcacheExternalResourceAnalyzer () {
 	    super(EhcacheDefinitions.CACHE_OPERATION);
 	}
 

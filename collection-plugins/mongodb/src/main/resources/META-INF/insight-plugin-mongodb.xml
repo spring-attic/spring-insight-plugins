@@ -7,24 +7,18 @@
 	<insight:plugin name="mongodb" version="${project.version}"
 		publisher="Stephen Harrison (stephen@harrison.org) and the Insight Team" />
 
+    <insight:operation-group operation="mongo_collection_operation" group="MongoDB" />
 	<insight:operation-view operation="mongo_collection_operation"
 		template="com/springsource/insight/plugin/mongodb/mongo_collection_operation.ftl" />
-	<insight:operation-group operation="mongo_collection_operation"
-		group="MongoDB" />
 
+    <insight:operation-group operation="mongo_cursor_operation" group="MongoDB" />
 	<insight:operation-view operation="mongo_cursor_operation"
 		template="com/springsource/insight/plugin/mongodb/mongo_cursor_operation.ftl" />
-	<insight:operation-group operation="mongo_cursor_operation"
-		group="MongoDB" />
 
+    <insight:operation-group operation="mongo_db_operation" group="MongoDB" />
 	<insight:operation-view operation="mongo_db_operation"
 		template="com/springsource/insight/plugin/mongodb/mongo_db_operation.ftl" />
-	<insight:operation-group operation="mongo_db_operation"
-		group="MongoDB" />
 
-	<bean class="com.springsource.insight.plugin.mongodb.MongoDBCollectionOperationAnalyzer" />
-	<bean class="com.springsource.insight.plugin.mongodb.MongoDBOperationAnalyzer" />
-
-	<bean class="com.springsource.insight.plugin.mongodb.MongoDBCollectionOperationMetricsGenerator" />
-	<bean class="com.springsource.insight.plugin.mongodb.MongoDBOperationMetricsGenerator" />
+	<bean class="com.springsource.insight.plugin.mongodb.MongoDBCollectionExternalResourceAnalyzer" />
+	<bean class="com.springsource.insight.plugin.mongodb.MongoDBOperationExternalResourceAnalyzer" />
 </beans>

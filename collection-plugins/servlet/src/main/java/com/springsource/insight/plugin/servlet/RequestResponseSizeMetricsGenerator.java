@@ -17,6 +17,7 @@ package com.springsource.insight.plugin.servlet;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
 import com.springsource.insight.intercept.metrics.MetricsBag;
@@ -28,6 +29,7 @@ import com.springsource.insight.intercept.resource.ResourceKey;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.DataPoint;
+import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.time.TimeRange;
 import com.springsource.insight.util.time.TimeUtil;
 
@@ -45,23 +47,28 @@ public class RequestResponseSizeMetricsGenerator extends AbstractMetricsGenerato
 	}
 
 	@Override
-	protected Collection<Frame> getExternalFramesForMetricGeneration(Trace trace) {
-		return Collections.emptyList();
-	}
-
-	@Override
-    protected Collection<MetricsBag> addExtraEndPointMetrics(Trace trace, ResourceKey defaultKey, Collection<Frame> externalFrames) {
+	public Collection<Frame> locateFrames(Trace trace) {
 		Frame frame = trace.getFirstFrameOfType(getOperationType());
 		if (frame == null) {
 		    return Collections.emptyList();
+		} else {
+			return Collections.singletonList(frame);
+		}
+	}
+
+	@Override
+	public List<MetricsBag> generateMetrics(Trace trace, ResourceKey endpointResourceKey, Collection<Frame> frames) {
+		if (ListUtil.size(frames) != 1) {
+		    return Collections.emptyList();
 		}
 
+        Frame		frame = ListUtil.getFirstMember(frames);
+        Operation   op = frame.getOperation();
+        ResourceKey resourceKey = getResourceKey(op, endpointResourceKey);
 		TimeRange   range = trace.getRange();
         int         time = TimeUtil.nanosToSeconds(range.getStart());
-        Operation   op = frame.getOperation();
-        ResourceKey resourceKey = getResourceKey(op, defaultKey);
 		MetricsBag  mb = MetricsBag.create(resourceKey, range);
-		
+
 		// Add the response size data point
 		OperationMap response = op.get("response", OperationMap.class);
 		Number contentSize = (response == null) ? null : response.get("contentSize", Number.class);
@@ -80,7 +87,10 @@ public class RequestResponseSizeMetricsGenerator extends AbstractMetricsGenerato
 			mb.add(requestSizePoint, ENDPOINT_REQUEST_SIZE);
 		}
 
-		return Collections.singletonList(mb);
+		if (mb.isEmpty()) {
+			return Collections.emptyList();
+		} else {
+			return Collections.singletonList(mb);
+		}
 	}
-
 }

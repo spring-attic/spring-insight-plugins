@@ -27,35 +27,26 @@ import com.mongodb.DBCursor;
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
 
-public aspect MongoCursorOperationCollectionAspect extends
-        AbstractOperationCollectionAspect {
+public aspect MongoCursorOperationCollectionAspect extends AbstractOperationCollectionAspect {
     public static final OperationType TYPE = OperationType.valueOf("mongo_cursor_operation");
+    public MongoCursorOperationCollectionAspect () {
+    	super();
+    }
 
-    private pointcut nextExecution():
-	execution(* DBCursor.next());
-
-    private pointcut skipExecution(): 
-	execution(* DBCursor.skip(int));
-
-    private pointcut limitExecution(): 
-	execution(* DBCursor.limit(int));
-
-    private pointcut toArrayExecution(): 
-	execution(* DBCursor.toArray(..));
-
-    private pointcut sortExecution(): 
-	execution(* DBCursor.sort(..));
-
-    private pointcut batchSizeExecution(): 
-	execution(* DBCursor.batchSize(int));
+    private pointcut nextExecution(): execution(* DBCursor.next());
+    private pointcut skipExecution(): execution(* DBCursor.skip(int));
+    private pointcut limitExecution(): execution(* DBCursor.limit(int));
+    private pointcut toArrayExecution(): execution(* DBCursor.toArray(..));
+    private pointcut sortExecution(): execution(* DBCursor.sort(..));
+    private pointcut batchSizeExecution(): execution(* DBCursor.batchSize(int));
 
     public pointcut collectionPoint(): 
-	(nextExecution() && !cflowbelow(nextExecution())) ||
-	(skipExecution() && !cflowbelow(skipExecution())) ||
-	(limitExecution() && !cflowbelow(limitExecution())) ||
-	(toArrayExecution() && !cflowbelow(toArrayExecution())) ||
-	(sortExecution() && !cflowbelow(sortExecution())) ||
-	(batchSizeExecution() && !cflowbelow(batchSizeExecution()));
+    	(nextExecution() && !cflowbelow(nextExecution())) ||
+    	(skipExecution() && !cflowbelow(skipExecution())) ||
+    	(limitExecution() && !cflowbelow(limitExecution())) ||
+    	(toArrayExecution() && !cflowbelow(toArrayExecution())) ||
+    	(sortExecution() && !cflowbelow(sortExecution())) ||
+    	(batchSizeExecution() && !cflowbelow(batchSizeExecution()));
 
     @Override
     protected Operation createOperation(final JoinPoint joinPoint) {
