@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:insight="http://www.springframework.org/schema/insight-idk"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
+
+	<insight:plugin name="gemfire-light" version="${project.version}" publisher="SpringSource" />
+
+	<insight:operation-view operation="gemfire_query_operation" template="com/springsource/insight/plugin/gemfire/gemfire_query_operation.ftl" />
+	<insight:operation-group operation="gemfire_query_operation" group="GemFire" />
+
+	<insight:operation-view operation="gemfire_cquery_operation" template="com/springsource/insight/plugin/gemfire/gemfire_cquery_operation.ftl" />
+	<insight:operation-group operation="gemfire_cquery_operation" group="GemFire" />
+
+	<insight:operation-view operation="gemfire_execution_operation" template="com/springsource/insight/plugin/gemfire/gemfire_execution_operation.ftl" />
+	<insight:operation-group operation="gemfire_execution_operation" group="GemFire" />
+	
+</beans>

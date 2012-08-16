@@ -1,0 +1,48 @@
+h1. GemFire-light plugin for Spring Insight
+
+Spring Insight runs in the SpringSource tc Server. See http://www.springsource.org/insight for details. This plugin adds instrumentation to for web applications that use GemFire (http://www.vmware.com/products/application-platform/vfabric-gemfire/overview.html) through the GemFire Java driver, which typically works outside the normal ORM flow. 
+
+Note: The GemFire-light intends to provide faster performance over the GemFire plugin. Using both plugins in conjunction might cause duplicate trace frames.    
+
+h2. What does it do?
+
+The GemFire-light plugin monitor GemFire queries only to provide faster and lighter monitoring of GemFire.
+
+h2. Installing the plugin
+
+Get the code: <code>git clone https://github.com/SpringSource/spring-insight-plugins</code>
+
+Now build it:
+
+<pre>
+<code>
+cd spring-insight-plugins/collection-plugins/gemfire-light
+mvn clean package
+</code>
+</pre>
+
+You'll need to have tc Server Developer Edition installed. Let's call the location of that <code>tcServer</code>.
+
+Now copy the plugin jar to the right place under <code>tcServer</code>.
+
+<pre>
+<code>
+cp target/insight-plugin-gemfire-light-x.x.jar tcServer/spring-insight-instance/insight/collection-plugins
+</code>
+</pre>
+
+h2. Running the plugin
+
+# Start up Spring Insight Server as usual (see the Spring tc Server Developer Edition documentation) and make sure your WAR file is loaded. Start your application and make sure it's running.
+# Browse to http://localhost:8080/insight to see the Spring Insight dashboard. Click on the Administration button and then _Collection Plug-ins_ under _Reports and Statistics_.
+# If you can see the gemfire-light plugin it's installed and running.
+# Run through your application in a way you're sure exercises GemFire. Then go back to the Spring Insight dashboard to see the traces.
+
+Have fun! And let me know what doesn't work well.
+
+h2. Contact
+
+Maintained by the Insight Team insight [at] vmware [dot] com
+
+
+
