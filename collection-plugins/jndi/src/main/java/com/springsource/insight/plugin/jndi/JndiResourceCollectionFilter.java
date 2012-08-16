@@ -43,7 +43,10 @@ public class JndiResourceCollectionFilter extends PatternedResourceCollectionFil
 	 */
 	public static final List<String>	DEFAULT_EXCLUSION_PATTERNS=
 			Collections.unmodifiableList(
-					Arrays.asList("class", "jpg", "jpeg", "gif", "png", "ico", "bmp", "css", "js", "jsp", "htm", "html", "asp", "aspx"));
+					Arrays.asList(".class", ".jpg", ".jpeg", ".gif", ".png", ".ico", ".bmp",
+								  ".css", ".js", ".jsp", ".htm", ".html", ".asp", ".aspx",
+								  ".xml", ".xsd", ".xslt", ".dtd", ".sql", ".jar", ".properties",
+								  "MANIFEST.MF", "index.list"));
 
 	private static final JndiResourceCollectionFilter	FILTER=new JndiResourceCollectionFilter();
 
@@ -92,7 +95,11 @@ public class JndiResourceCollectionFilter extends PatternedResourceCollectionFil
 				sb.append('|');
 			}
 
-			sb.append(".*\\.").append(p).append('$');
+			sb.append(".*");
+			if (p.charAt(0) == '.') {
+				sb.append('\\');
+			}
+			sb.append(p).append('$');
 		}
 
 		return sb.toString();

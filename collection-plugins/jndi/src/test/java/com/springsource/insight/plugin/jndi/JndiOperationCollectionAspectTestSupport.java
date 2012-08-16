@@ -126,7 +126,10 @@ public abstract class JndiOperationCollectionAspectTestSupport
 			aspectInstance.setCollector(testCollector);
 
 			for (String suffix : JndiResourceCollectionFilter.DEFAULT_EXCLUSION_PATTERNS) {
-				String	name=baseName + "." + suffix;
+				String	name=getClass().getSimpleName()
+						+ "/"
+						+ ((suffix.charAt(0) == '.') ? (baseName + suffix) : suffix)
+						;
 				executor.executeContextOperation(context, name, suffix);
 
 				Collection<Operation>	opsList=testCollector.getCollectedOperations();

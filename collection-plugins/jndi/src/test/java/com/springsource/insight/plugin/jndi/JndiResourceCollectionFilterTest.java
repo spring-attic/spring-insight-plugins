@@ -31,8 +31,12 @@ public class JndiResourceCollectionFilterTest extends Assert {
 	public void testDefaultExclusion () {
 		JndiResourceCollectionFilter	filter=new JndiResourceCollectionFilter(null);
 		for (String suffix : JndiResourceCollectionFilter.DEFAULT_EXCLUSION_PATTERNS) {
-			boolean	result=filter.accept("testDefaultExclusion." + suffix);
-			assertFalse("Default excluded suffix passed: " + suffix, result);
+			String	path=getClass().getSimpleName()
+						+ "/"
+						+ ((suffix.charAt(0) == '.') ? ("testDefaultExclusion." + suffix) : suffix)
+						;
+			boolean	result=filter.accept(path);
+			assertFalse("Default excluded pattern passed: " + suffix, result);
 		}
 
 		for (String resourcePath : new String[] { getClass().getName(), "testDefaultExclusion", "foo.txt", "bar.doc" }) {
