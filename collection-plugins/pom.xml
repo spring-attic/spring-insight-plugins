@@ -77,7 +77,6 @@
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
-
         
         <!-- Test dependencies -->
         <dependency>
@@ -118,7 +117,7 @@
 				<groupId>com.atlassian.maven.plugins</groupId>
 				<artifactId>maven-clover2-plugin</artifactId>
 			</plugin>
-           <plugin>
+			<plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-surefire-plugin</artifactId>
                <configuration>
@@ -132,27 +131,7 @@
                         -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
                     </argLine>
                </configuration>
-           </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-            </plugin>
-            <!-- Avoid the automatic attempt to download the sources on every build
-                since some of the are never available -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>ignore</id>
-                        <phase>none</phase>
-                    </execution>
-                </executions>
-            </plugin>           
+			</plugin>
 		</plugins>
 	</build>
 </project>
