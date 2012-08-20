@@ -17,7 +17,7 @@
    <profiles>
        <profile>
            <activation>
-				<jdk>1.6</jdk>
+				<jdk>[1.6,)</jdk>
            </activation>
            <modules>
 				<module>hadoop</module>
