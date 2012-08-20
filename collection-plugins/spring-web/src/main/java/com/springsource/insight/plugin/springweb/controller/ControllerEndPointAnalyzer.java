@@ -24,7 +24,6 @@ import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.FrameUtil;
 
 /**
  * This trace analyzer simply looks at a Trace and returns a
@@ -56,8 +55,7 @@ public class ControllerEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyz
 	@Override
 	protected EndPointAnalysis makeEndPoint(Frame controllerFrame, int depth) {
         Operation controllerOp = controllerFrame.getOperation();
-        Frame httpFrame = FrameUtil.getFirstParentOfType(controllerFrame, OperationType.HTTP);
-        String examplePath = getExampleRequest(httpFrame, controllerOp);
+        String examplePath = EndPointAnalysis.getHttpExampleRequest(controllerFrame);
         EndPointName endPointName = EndPointName.valueOf(controllerOp);
         String endPointLabel = controllerOp.getLabel();
 

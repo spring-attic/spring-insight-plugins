@@ -23,7 +23,6 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.operation.SourceCodeLocation;
 import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.FrameUtil;
 
 public class GrailsControllerMethodEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
     public static final OperationType TYPE = OperationType.valueOf("grails_controller_method");
@@ -37,10 +36,7 @@ public class GrailsControllerMethodEndPointAnalyzer extends AbstractSingleTypeEn
         Operation operation = grailsFrame.getOperation();
         String resourceKey = makeResourceKey(operation.getSourceCodeLocation());
         String resourceLabel = operation.getLabel();
-        
-        Frame 		httpFrame = FrameUtil.getFirstParentOfType(grailsFrame, OperationType.HTTP);
-        Operation	httpOperation = (httpFrame == null) ? operation : httpFrame.getOperation();
-        String 		exampleRequest = httpOperation.getLabel();
+        String exampleRequest = EndPointAnalysis.getHttpExampleRequest(grailsFrame);
         return new EndPointAnalysis(EndPointName.valueOf(resourceKey),
                                     resourceLabel,
                                     exampleRequest,

@@ -19,11 +19,7 @@ import com.springsource.insight.intercept.endpoint.AbstractSingleTypeEndpointAna
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.operation.OperationFields;
-import com.springsource.insight.intercept.operation.OperationMap;
-import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.FrameUtil;
 
 /**
  */
@@ -36,21 +32,7 @@ public class JaxrsEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
 	protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
 		Operation	  op=frame.getOperation();
         EndPointName  endPointName=EndPointName.valueOf(op);
-        Frame 		  rootFrame=FrameUtil.getRoot(frame);
-        Operation     rootOperation=rootFrame.getOperation();
-        Frame         httpFrame=FrameUtil.getFirstParentOfType(frame, OperationType.HTTP);
-        String        example=getExampleRequest(httpFrame, frame, rootOperation);
+        String        example=EndPointAnalysis.getHttpExampleRequest(frame);
         return new EndPointAnalysis(endPointName, op.getLabel(), example, getOperationScore(op, depth), op);
-    }
-
-    public String getExampleRequest(Frame httpFrame, Frame frame, Operation rootOperation) {
-        if (httpFrame == null) {
-            return rootOperation.getLabel();
-        }
-
-        Operation operation = httpFrame.getOperation();
-        OperationMap details = operation.get("request", OperationMap.class);
-        return ((details == null) ? "???" : String.valueOf(details.get("method")))
-             + " " + ((details == null) ? "<UNKNOWN>" : details.get(OperationFields.URI));
     }
 }
