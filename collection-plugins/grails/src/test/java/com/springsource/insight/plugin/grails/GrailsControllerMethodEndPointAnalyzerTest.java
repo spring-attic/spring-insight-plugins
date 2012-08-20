@@ -118,8 +118,8 @@ public class GrailsControllerMethodEndPointAnalyzerTest extends Assert {
     	if (httpFrame == null) {
     		assertEquals("Mismatched grails example", operation.getLabel(), ep.getExample());
     	} else {
-    		Operation	httpOperation=httpFrame.getOperation();
-    		assertEquals("Mismatched http example", httpOperation.getLabel(), ep.getExample());
+    		String	expected=EndPointAnalysis.createHttpExampleRequest(httpFrame);
+    		assertEquals("Mismatched http example", expected, ep.getExample());
     	}
 
     	return ep;

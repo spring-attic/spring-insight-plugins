@@ -146,10 +146,6 @@ public class GrailsControllerOperationCollectionAspectTest extends OperationColl
         private String whenToBlowUp;
         private Map<String,String> actionParams;
 
-        public ExampleHelper() {
-            this("", Collections.<String,String>emptyMap());
-        }
-
         ExampleHelper(String blowUp, Map<String,String> params) {
             this.whenToBlowUp = blowUp;
             this.actionParams = params;
