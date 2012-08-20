@@ -18,7 +18,6 @@ package com.springsource.insight.plugin.jdbc.parser.parsers;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,13 +62,7 @@ public class OracleRACParser extends AbstractSqlParser {
         	String portValue = resolveAttributeValue(PORT_ATTRIBUTE, ORACLE_RAC_PORT_PATTERN, part, DEFAULT_CONNECTION_PORT_STRING);
         	int    port = getDefaultPort();
             if (portValue != DEFAULT_CONNECTION_PORT_STRING) {
-            	try {
-            		port = Integer.parseInt(portValue);
-            	} catch(NumberFormatException e) {
-            		Logger	LOG=Logger.getLogger(getClass().getName());
-            		LOG.warning("parse(" + connectionUrl + ") failed to extract port value=" + portValue + ": " + e.getMessage());
-            		port = (-1);
-            	}
+            	port = parsePort(connectionUrl, portValue);
             }
 
             parsedUrls.add(new SimpleJdbcUrlMetaData(host, port, dbName, connectionUrl, vendorName));
@@ -85,7 +78,11 @@ public class OracleRACParser extends AbstractSqlParser {
 
     	Matcher	attrMat=pattern.matcher(part);
     	if (attrMat.find()) {
-    		String	attrValue=attrMat.group(1).trim();
+    		String	attrValue=attrMat.group(1);
+    		if (attrValue != null) {
+    			attrValue = attrValue.trim();
+    		}
+
     		if (StringUtil.isEmpty(attrValue)) {
     			return defaultValue;
     		} else {

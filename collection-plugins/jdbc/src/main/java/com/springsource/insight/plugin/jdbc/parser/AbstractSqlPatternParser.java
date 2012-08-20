@@ -57,7 +57,6 @@ public abstract class AbstractSqlPatternParser extends AbstractSqlParser {
         for (final SqlParserPattern sqlParserPattern : patterns) {
             final Pattern urlPattern = sqlParserPattern.getCompiledPattern();
             final Matcher urlMatcher = urlPattern.matcher(connectionUrl);
-
             if (!urlMatcher.matches()) {
                 continue;
             }
@@ -65,17 +64,9 @@ public abstract class AbstractSqlPatternParser extends AbstractSqlParser {
             final String host = getHost(urlMatcher, sqlParserPattern);
             final String port = getPort(urlMatcher, sqlParserPattern);
             final String databaseName = getDBName(urlMatcher, sqlParserPattern);
+            final int finalPort=parsePort(connectionUrl, port);
 
-            int finalPort;
-
-            try {
-                finalPort = Integer.parseInt(port);
-            } catch (final NumberFormatException exception) {
-                return null;
-            }
-
-            JdbcUrlMetaData simpleJdbcUrlMetaData=new SimpleJdbcUrlMetaData(host, finalPort, databaseName, connectionUrl, vendorName);
-            return Collections.singletonList(simpleJdbcUrlMetaData);
+            return Collections.<JdbcUrlMetaData>singletonList(new SimpleJdbcUrlMetaData(host, finalPort, databaseName, connectionUrl, vendorName));
         }
         
         return null;
@@ -99,13 +90,16 @@ public abstract class AbstractSqlPatternParser extends AbstractSqlParser {
     }
 
     private String getGroupValue(Matcher matcher, int index) {
-        String toReturn = null;
-        
         if (index > -1) {
-            toReturn = matcher.group(index);
+        	String	attrValue=matcher.group(index);
+    		if (attrValue != null) {
+    			attrValue = attrValue.trim();
+    		}
+
+            return attrValue;
+        } else {
+        	return null;
         }
-        
-        return toReturn;
     }
     
     protected static SqlParserPattern create(final String pattern, final int hostIndex, final int portIndex, final int databaseNameIndex) {

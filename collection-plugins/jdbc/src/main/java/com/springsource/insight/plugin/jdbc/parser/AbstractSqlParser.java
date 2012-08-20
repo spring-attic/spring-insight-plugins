@@ -15,6 +15,10 @@
  */
 package com.springsource.insight.plugin.jdbc.parser;
 
+import java.util.logging.Logger;
+
+import com.springsource.insight.util.StringUtil;
+
 public abstract class AbstractSqlParser implements JdbcUrlParser {
     private final String defaultDBName;
     private final String defaultHost;
@@ -53,5 +57,18 @@ public abstract class AbstractSqlParser implements JdbcUrlParser {
     public int getDefaultPort() {
         return defaultPort;
     }
-    
+
+    protected int parsePort (String connectionUrl, String portValue) {
+    	if (StringUtil.isEmpty(portValue)) {
+    		return getDefaultPort();
+    	}
+
+    	try {
+    		return Integer.parseInt(portValue);
+    	} catch(NumberFormatException e) {
+    		Logger	LOG=Logger.getLogger(getClass().getName());
+    		LOG.warning("parsePort(" + connectionUrl + ") failed to extract port value=" + portValue + ": " + e.getMessage());
+    		return (-1);
+    	}
+    }
 }

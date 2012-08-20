@@ -71,7 +71,7 @@ public class PostgresSqlParser extends AbstractSqlParser {
 		}
 	}
 	
-	static JdbcUrlMetaData parseWithHostAndPort (String connectionUrl, String url, String vendorName) {
+	JdbcUrlMetaData parseWithHostAndPort (String connectionUrl, String url, String vendorName) {
 		if (StringUtil.isEmpty(url)) {
 			return null;
 		}
@@ -87,11 +87,7 @@ public class PostgresSqlParser extends AbstractSqlParser {
 		int	port=DEFAULT_CONNECTION_PORT;
 		if ((portSep >= 0) && (portSep < (hostAndPort.length() - 1))) {
 			String	portValue=hostAndPort.substring(portSep + 1);
-			try {
-				port = Integer.parseInt(portValue);
-			} catch(NumberFormatException e) {
-				// ignored
-			}
+			port = parsePort(connectionUrl, portValue);
 		}
 
 		if ((dbNamePos <= 0) || (dbNamePos >= (url.length() - 1))) {

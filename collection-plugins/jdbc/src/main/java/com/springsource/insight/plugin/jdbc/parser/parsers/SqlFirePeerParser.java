@@ -56,9 +56,9 @@ public class SqlFirePeerParser extends AbstractSqlParser {
                         for(String locator : locators) {
                             Matcher m = LOCATOR.matcher(locator);
                             if (m.matches()) {
-                                JdbcUrlMetaData simpleJdbcUrlMetaData = new SimpleJdbcUrlMetaData(m.group(1), Integer.parseInt(m.group(2)), 
-                                        null, connectionUrl, vendorName);
-                                parsedUrls.add(simpleJdbcUrlMetaData);
+                            	String	host=m.group(1).trim();
+                            	int		port=parsePort(connectionUrl, m.group(2).trim());
+                                parsedUrls.add(new SimpleJdbcUrlMetaData(host, port, null, connectionUrl, vendorName));
                             }
                         }
                     }
@@ -66,7 +66,7 @@ public class SqlFirePeerParser extends AbstractSqlParser {
                 }
             }
         } else if (multiMatcher.find() && multiMatcher.groupCount() == 1) {
-            int port = Integer.parseInt(multiMatcher.group(1));
+            int port = parsePort(connectionUrl, multiMatcher.group(1).trim());
             if (port != 0) {
                 JdbcUrlMetaData simpleJdbcUrlMetaData = new SimpleJdbcUrlMetaData("", port, null, connectionUrl, vendorName);
                 parsedUrls.add(simpleJdbcUrlMetaData);
