@@ -26,17 +26,20 @@ import com.springsource.insight.plugin.jdbc.parser.AbstractSqlParser;
 import com.springsource.insight.plugin.jdbc.parser.JdbcUrlMetaData;
 import com.springsource.insight.plugin.jdbc.parser.SimpleJdbcUrlMetaData;
 import com.springsource.insight.util.ArrayUtil;
+import com.springsource.insight.util.StringUtil;
 
 public class OracleRACParser extends AbstractSqlParser {
 	public static final int	DEFAULT_CONNECTION_PORT=1521;
+	public static final String DEFAULT_CONNECTION_PORT_STRING=String.valueOf(DEFAULT_CONNECTION_PORT);
 
-    public OracleRACParser() {
+	public OracleRACParser() {
         super(DEFAULT_CONNECTION_PORT);
     }
 
-    public static final Pattern ORACLE_RAC_HOST_PATTERN = Pattern.compile("HOST\\s*=\\s*([^)]+)");
-    public static final Pattern ORACLE_RAC_PORT_PATTERN = Pattern.compile("PORT\\s*=\\s*([0-9]+)");
-    public static final Pattern ORACLE_RAC_SERVICE_PATTERN = Pattern.compile("SERVICE_NAME\\s*=\\s*([^)]+)");
+    public static final String	HOST_ATTRIBUTE="HOST", PORT_ATTRIBUTE="PORT", SERVICE_ATTRIBUTE="SERVICE_NAME";
+    public static final Pattern ORACLE_RAC_HOST_PATTERN = createDefaultAttributePattern(HOST_ATTRIBUTE);
+    public static final Pattern ORACLE_RAC_PORT_PATTERN = createDefaultAttributePattern(PORT_ATTRIBUTE);
+    public static final Pattern ORACLE_RAC_SERVICE_PATTERN = createDefaultAttributePattern(SERVICE_ATTRIBUTE);
 
     /**
      * Extract an Oracle RAC URL of the form: (DESCRIPTION... (ADDRESS = ...
@@ -44,35 +47,28 @@ public class OracleRACParser extends AbstractSqlParser {
      */
     public List<JdbcUrlMetaData> parse(String connectionUrl, String vendorName) {
         String[] addressParts = connectionUrl.split("ADDRESS");
-        if (ArrayUtil.length(addressParts) <= 0) {
+        /*
+         * NOTE: the 1st address "part" is actually everything BEFORE the 1st
+         * address and as such contains no useful information
+         */
+        if (ArrayUtil.length(addressParts) <= 1) {
         	return Collections.emptyList();
         }
 
-        String	dbName = null;
-        Matcher	serviceMat = ORACLE_RAC_SERVICE_PATTERN.matcher(connectionUrl);
-        if (serviceMat.find()) {
-        	dbName = serviceMat.group(1);
-        }
-
-        List<JdbcUrlMetaData> parsedUrls = new ArrayList<JdbcUrlMetaData>(addressParts.length);
-        for (String part : addressParts) {
-            Matcher hostMat = ORACLE_RAC_HOST_PATTERN.matcher(part);
-            if (!hostMat.find()) {
-                // if there isn't a host available we can't do a thing
-                continue;
-            }
-
-            String host = hostMat.group(1);
-
-            int port = -1;
-            Matcher portMat = ORACLE_RAC_PORT_PATTERN.matcher(part);
-            if (portMat.find()) {
-            	String	portValue=portMat.group(1);
+        String	dbName = resolveAttributeValue(SERVICE_ATTRIBUTE, ORACLE_RAC_SERVICE_PATTERN, connectionUrl, null);
+        List<JdbcUrlMetaData> parsedUrls = new ArrayList<JdbcUrlMetaData>(addressParts.length - 1);
+        for (int	index=1; index < addressParts.length; index++) {
+        	String part = addressParts[index];
+        	String host = resolveAttributeValue(HOST_ATTRIBUTE, ORACLE_RAC_HOST_PATTERN, part, getDefaultHost());
+        	String portValue = resolveAttributeValue(PORT_ATTRIBUTE, ORACLE_RAC_PORT_PATTERN, part, DEFAULT_CONNECTION_PORT_STRING);
+        	int    port = getDefaultPort();
+            if (portValue != DEFAULT_CONNECTION_PORT_STRING) {
             	try {
             		port = Integer.parseInt(portValue);
             	} catch(NumberFormatException e) {
             		Logger	LOG=Logger.getLogger(getClass().getName());
             		LOG.warning("parse(" + connectionUrl + ") failed to extract port value=" + portValue + ": " + e.getMessage());
+            		port = (-1);
             	}
             }
 
@@ -80,5 +76,22 @@ public class OracleRACParser extends AbstractSqlParser {
         }
 
         return parsedUrls;
+    }
+
+    static String resolveAttributeValue (String attrName, Pattern pattern, String part, String defaultValue) {
+    	if (StringUtil.isEmpty(part) || (!part.contains(attrName))) {
+    		return defaultValue;
+    	}
+
+    	Matcher	attrMat=pattern.matcher(part);
+    	if (attrMat.find()) {
+    		return attrMat.group(1);
+    	} else {
+    		return defaultValue;
+    	}
+    }
+
+    static final Pattern createDefaultAttributePattern (String attrName) {
+    	return Pattern.compile(attrName +  "\\s*=\\s*([^)]+)");	
     }
 }
