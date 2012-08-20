@@ -91,6 +91,16 @@ public class OracleRACParserTest extends SqlParserTestImpl<OracleRACParser> {
 	}
 
 	@Test
+	public void testUnspecifiedHostAndPortOnlyServiceName () {
+		String connectionUrl = "jdbc:oracle:thin:@(DESCRIPTION=(LOAD_BALANCE=yes)"
+	  				+ "(ADDRESS = (PROTOCOL = TCP)(HOST = )(PORT = ))"
+	  				+ "(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME = ONLY.SERVICE.NAME)))";		
+		Map<String, Integer> hostToPortHash = new HashMap<String, Integer>(); 
+		hostToPortHash.put(parser.getDefaultHost(), Integer.valueOf(parser.getDefaultPort()));
+		testMultipleHostsOrPorts(connectionUrl, hostToPortHash, "ONLY.SERVICE.NAME");
+	}
+
+	@Test
 	public void testAllDefaultsOnlyServiceName () {
 		String connectionUrl = "jdbc:oracle:thin:@(DESCRIPTION=(LOAD_BALANCE=yes)"
 	  				+ "(ADDRESS = (PROTOCOL = TCP))"

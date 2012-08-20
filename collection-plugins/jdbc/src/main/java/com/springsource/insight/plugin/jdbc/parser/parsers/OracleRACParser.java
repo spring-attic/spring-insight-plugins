@@ -85,7 +85,12 @@ public class OracleRACParser extends AbstractSqlParser {
 
     	Matcher	attrMat=pattern.matcher(part);
     	if (attrMat.find()) {
-    		return attrMat.group(1);
+    		String	attrValue=attrMat.group(1).trim();
+    		if (StringUtil.isEmpty(attrValue)) {
+    			return defaultValue;
+    		} else {
+    			return attrValue;
+    		}
     	} else {
     		return defaultValue;
     	}
