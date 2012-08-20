@@ -61,7 +61,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 		Operation op = createOperation();   	
 		KeyValPair<String,String> props = addOperationProps(op, false, true, Boolean.FALSE);
 		Trace trace = createValidTrace(op);
-		assertOneExternalResourceDescriptor(trace, op, props, false);
+		assertTwoExternalResourceDescriptors(trace, props, op, true);		
 	}
 
 	@Test
@@ -77,7 +77,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 		Operation op = createOperation();   	
 		KeyValPair<String,String> props = addOperationProps(op, true, false, Boolean.FALSE);
 		Trace trace = createValidTrace(op);
-		assertTwoExternalResourceDescriptors(trace, props, op);
+		assertTwoExternalResourceDescriptors(trace, props, op, false);
 	}
 
 	@Test
@@ -93,7 +93,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 		Operation op = createOperation();
 		KeyValPair<String,String> props = addOperationProps(op, true, true, Boolean.FALSE);
 		Trace trace = createValidTrace(op);
-		assertTwoExternalResourceDescriptors(trace, props, op);
+		assertTwoExternalResourceDescriptors(trace, props, op, false);
 	}
 
 	@Test
@@ -121,8 +121,8 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
 		assertEquals("Mismatched number of resources", 4, externalResourceDescriptors.size());        
 		
-		assertParentChildExternalResourceDescriptors(trace, op2, props2, externalResourceDescriptors.subList(0, 2), OTHER_HOST, OTHER_PORT);
-		assertParentChildExternalResourceDescriptors(trace, op1, props1, externalResourceDescriptors.subList(2, 4), TEST_HOST, TEST_PORT);
+		assertParentChildExternalResourceDescriptors(trace, op2, props2, externalResourceDescriptors.subList(0, 2), OTHER_HOST, OTHER_PORT, false);
+		assertParentChildExternalResourceDescriptors(trace, op1, props1, externalResourceDescriptors.subList(2, 4), TEST_HOST, TEST_PORT, false);
 	}
 	
 	@Test
@@ -174,45 +174,34 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 		assertEquals("Mismatched score", AbstractRabbitMQResourceAnalyzer.DEFAULT_SCORE, analysis.getScore());
 	}
 	
-	List<ExternalResourceDescriptor> assertOneExternalResourceDescriptor(Trace trace, Operation op, KeyValPair<String,String> props, boolean useRoutingKey) {
-		List<ExternalResourceDescriptor> externalResourceDescriptors=
-				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
-
-		assertEquals("Mismatched num. of resources", 1, externalResourceDescriptors.size());
-
-		ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);
-		assertExternalResourceDescriptorContent(descriptor, props, op, useRoutingKey, TEST_HOST, TEST_PORT, trace);
-
-		return externalResourceDescriptors;
-	}
-	
-	void assertTwoExternalResourceDescriptors(Trace trace, KeyValPair<String,String> props, Operation op) {
+	void assertTwoExternalResourceDescriptors(Trace trace, KeyValPair<String,String> props, Operation op, boolean isChildDummyResource) {
 		List<ExternalResourceDescriptor> externalResourceDescriptors=
 				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
 		assertEquals("Mismatched num. of resources", 2, externalResourceDescriptors.size());  
 		
-		assertParentChildExternalResourceDescriptors(trace, op, props, externalResourceDescriptors, TEST_HOST, TEST_PORT);
+		assertParentChildExternalResourceDescriptors(trace, op, props, externalResourceDescriptors, TEST_HOST, TEST_PORT, isChildDummyResource);
 	}
 
-	void assertParentChildExternalResourceDescriptors(Trace trace, Operation op, KeyValPair<String,String> props, List<ExternalResourceDescriptor> descriptors, String host, int port) {
+	void assertParentChildExternalResourceDescriptors(Trace trace, Operation op, KeyValPair<String,String> props, List<ExternalResourceDescriptor> descriptors, String host, int port, boolean isChildDummyResource) {
 
 		ExternalResourceDescriptor descriptorParent = descriptors.get(0);
-		assertExternalResourceDescriptorContent(descriptorParent, props, op, false, host, port, trace);
+		assertExternalResourceDescriptorContent(descriptorParent, props, op, false, host, port, trace, false);
 
 		ExternalResourceDescriptor descriptorChild = descriptors.get(1);
-		assertExternalResourceDescriptorContent(descriptorChild, props, op, true, host, port, trace);
+		assertExternalResourceDescriptorContent(descriptorChild, props, op, true, host, port, trace, isChildDummyResource);
 
 		assertEquals("Mismatched parent", descriptorParent.getName(), descriptorChild.getParent());
 	}
 
 	ExternalResourceDescriptor assertExternalResourceDescriptorContent (ExternalResourceDescriptor descriptor,
 			KeyValPair<String,String> props, Operation op, boolean useRoutingKey, 
-			String host, int port, Trace trace) {
+			String host, int port, Trace trace, boolean isDummyResource) {
 		if (trace != null) {
 			assertEquals("Mismatched opeartion frame", op, descriptor.getFrame().getOperation());
 		}
 
-		String label = AbstractRabbitMQResourceAnalyzer.buildLabel(props.getKey(), props.getValue(), useRoutingKey);
+		String finalRoutingKey = isDummyResource ? AbstractRabbitMQResourceAnalyzer.NO_ROUTING_KEY : props.getValue();
+		String label = AbstractRabbitMQResourceAnalyzer.buildLabel(props.getKey(), finalRoutingKey, useRoutingKey);
 
 		assertEquals("Mismatched label", AbstractRabbitMQResourceAnalyzer.buildExternalResourceLabel(label), descriptor.getLabel());
 		assertEquals("Mismatched type", ExternalResourceType.QUEUE.name(), descriptor.getType());
@@ -221,7 +210,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends Assert {
 		assertEquals("Mismatched port", port, descriptor.getPort());
 
 		assertEquals("Mismatched hash value", AbstractRabbitMQResourceAnalyzer.buildExternalResourceName(
-				props.getKey(),props.getValue(), useRoutingKey, host, port), descriptor.getName());
+				props.getKey(),finalRoutingKey, useRoutingKey, host, port), descriptor.getName());
 		assertEquals("Mismatched direction", Boolean.valueOf(isIncoming), Boolean.valueOf(descriptor.isIncoming()));
 		return descriptor;
 	}

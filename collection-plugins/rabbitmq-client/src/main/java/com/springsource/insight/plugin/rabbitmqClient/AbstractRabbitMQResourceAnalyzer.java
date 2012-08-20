@@ -43,6 +43,7 @@ public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTyp
 	 * Placeholder string used if no exchange name specified
 	 */
 	public static final String NO_EXCHANGE = "AMQP default";
+	public static final String NO_ROUTING_KEY = "no routing key";
 
 	/**
 	 * The <U>static</U> score value assigned to endpoints - <B>Note:</B>
@@ -65,9 +66,9 @@ public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTyp
 		this.isIncoming = incoming;
 	}
 
-    public final OperationType getOperationType() {
-    	return getSingleOperationType();
-    }
+	public final OperationType getOperationType() {
+		return getSingleOperationType();
+	}
 
 	public final boolean isIncomingResource () {
 		return isIncoming;
@@ -78,7 +79,7 @@ public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTyp
 	}
 
 	protected abstract String getExchange(Operation op);
-	
+
 	protected abstract String getRoutingKey(Operation op);
 
 	@Override
@@ -122,7 +123,7 @@ public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTyp
 			String finalExchange = getFinalExchangeName(getExchange(op));
 			String finalRoutingKey = getFinalRoutingKey(getRoutingKey(op));
 			String exchangeResourceName = buildExternalResourceName(finalExchange, finalRoutingKey, false, host, port);
-			
+
 			ExternalResourceDescriptor externalResourceExchangeDescriptor =
 					new ExternalResourceDescriptor(queueFrame,
 							exchangeResourceName,
@@ -131,27 +132,32 @@ public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTyp
 							RABBIT,
 							host,
 							port,
-							color, isIncoming);
+							color, isIncoming, true);
 			queueDescriptors.add(externalResourceExchangeDescriptor);            
 
-			if (!isTrimEmpty(getRoutingKey(op))){ 
-				ExternalResourceDescriptor externalResourceRoutingKeyDescriptor =
-						new ExternalResourceDescriptor(queueFrame,
-								buildExternalResourceName(finalExchange, finalRoutingKey, true, host, port),
-								buildExternalResourceLabel(buildLabel(finalExchange, finalRoutingKey, true)),
-								ExternalResourceType.QUEUE.name(),
-								RABBIT,
-								host,
-								port,
-								color, isIncoming, exchangeResourceName);
-				queueDescriptors.add(externalResourceRoutingKeyDescriptor);            
+			// even if there is no routing key, i.e in the Insight world there is no child resource,
+			// we still report a dummy one so that AppInsight has a consistent API
+			String childRoutingKey = finalRoutingKey;
+			if (isTrimEmpty(getRoutingKey(op))){
+				childRoutingKey = NO_ROUTING_KEY;
 			}
+
+			ExternalResourceDescriptor externalResourceRoutingKeyDescriptor =
+					new ExternalResourceDescriptor(queueFrame,
+							buildExternalResourceName(finalExchange, childRoutingKey, true, host, port),
+							buildExternalResourceLabel(buildLabel(finalExchange, childRoutingKey, true)),
+							ExternalResourceType.QUEUE.name(),
+							RABBIT,
+							host,
+							port,
+							color, isIncoming, exchangeResourceName);
+			queueDescriptors.add(externalResourceRoutingKeyDescriptor);           
 
 		}
 
 		return queueDescriptors;
 	}
-	
+
 
 	public static String getFinalExchangeName(String exchange){		
 		boolean hasExchange = !isTrimEmpty(exchange);
@@ -177,14 +183,14 @@ public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTyp
 	public static String buildEndPointLabel(String label){
 		return RABBIT + "-" + label; 
 	}
-	
+
 	public String buildExample(String label) {
 		return operationType.getEndPointPrefix() + label;
 	}
-	
-	
+
+
 	public static String buildExternalResourceName (String finalExchange, String finalRoutingKey, boolean useRoutingKey, String host, int port) {
-		
+
 		return RABBIT + ":" + MD5NameGenerator.getName(finalExchange + (useRoutingKey ? finalRoutingKey : "") + host + port);
 	}
 
