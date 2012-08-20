@@ -49,16 +49,20 @@ public class ServletEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer 
         Operation op = httpFrame.getOperation();
         OperationMap request = op.get("request", OperationMap.class);
         
-        String servletName = (request == null) ? null : request.get("servletName", String.class);
-        String endPointKey = sanitizeEndPointKey(servletName);
-        String endPointLabel = "Servlet: " + servletName;
+        String 	servletName=(request == null) ? null : request.get("servletName", String.class);
+        String 	endPointKey=sanitizeEndPointKey(servletName);
+        String 	endPointLabel = "Servlet: " + servletName;
+        String	example=EndPointAnalysis.createHttpExampleRequest(request);
+        if (StringUtil.isEmpty(example)) {
+        	example = op.getLabel();
+        }
 
-        return new EndPointAnalysis(EndPointName.valueOf(endPointKey), endPointLabel, getExampleRequest(op), getOperationScore(op, depth), op);
+        return new EndPointAnalysis(EndPointName.valueOf(endPointKey), endPointLabel, example, getOperationScore(op, depth), op);
     }
 
     static String sanitizeEndPointKey(String endPointKey) {
     	if (StringUtil.isEmpty(endPointKey)) {
-    		return "unnonw-servlet-name";
+    		return "unknonwn-servlet-name";
     	} else {
     		return endPointKey.replace('/', '_');
     	}
