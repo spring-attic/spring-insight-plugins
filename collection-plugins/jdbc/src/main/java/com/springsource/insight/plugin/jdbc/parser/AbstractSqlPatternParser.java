@@ -77,7 +77,7 @@ public abstract class AbstractSqlPatternParser extends AbstractSqlParser {
     }
     
     private String getPort(Matcher matcher, SqlParserPattern pattern) {
-        return getValue(matcher, pattern.getPortIndex(), String.valueOf(getDefaultPort()));
+        return getValue(matcher, pattern.getPortIndex(), getDefaultPortString());
     }
     
     private String getDBName(Matcher matcher, SqlParserPattern pattern) {

@@ -21,6 +21,7 @@ public abstract class AbstractSqlParser implements JdbcUrlParser {
     private final String defaultDBName;
     private final String defaultHost;
     private final int defaultPort;
+    private final String defaultPortString;
     private final String vendorName;
     private final String urlPrefix;
 
@@ -50,6 +51,7 @@ public abstract class AbstractSqlParser implements JdbcUrlParser {
         defaultDBName = dbName;
         defaultHost = host;
         defaultPort = port;
+        defaultPortString = String.valueOf(port);
     }
 
 	/**
@@ -73,6 +75,10 @@ public abstract class AbstractSqlParser implements JdbcUrlParser {
 
     public int getDefaultPort() {
         return defaultPort;
+    }
+
+    public String getDefaultPortString () {
+    	return defaultPortString;
     }
 
     protected String createUrlPrefix (String vendor) {
