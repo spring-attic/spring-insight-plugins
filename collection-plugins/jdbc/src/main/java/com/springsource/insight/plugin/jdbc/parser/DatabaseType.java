@@ -28,34 +28,50 @@ import com.springsource.insight.plugin.jdbc.parser.parsers.PostgresSqlParser;
 import com.springsource.insight.plugin.jdbc.parser.parsers.SqlFireParser;
 import com.springsource.insight.plugin.jdbc.parser.parsers.SqlFirePeerParser;
 import com.springsource.insight.util.ArrayUtil;
+import com.springsource.insight.util.ObjectUtil;
 import com.springsource.insight.util.StringUtil;
 
 public enum DatabaseType {
-    MYSQL("mysql", new MySqlParser()), 
-    ORACLE("oracle", new OracleParser(), new OracleRACParser()), 
-    HSQLDB("hsqldb", new HsqlParser()), 
-    MSSQL("microsoft", new MssqlParser()),
-    SQLFIRE("sqlfire", new SqlFireParser(), new SqlFirePeerParser()),
-    POSTGRESQL("postgresql", new PostgresSqlParser());
+    MYSQL(new MySqlParser()), 
+    ORACLE(new OracleParser(), new OracleRACParser()), 
+    HSQLDB(new HsqlParser()), 
+    MSSQL(new MssqlParser()),
+    SQLFIRE(new SqlFireParser(), new SqlFirePeerParser()),
+    POSTGRESQL(new PostgresSqlParser());
 
     private static final Map<String, DatabaseType> map=new TreeMap<String, DatabaseType>(String.CASE_INSENSITIVE_ORDER);
 
     static {
         for (DatabaseType type : DatabaseType.values()) {
-            map.put(type.vendorName, type);
+            map.put(type.getVendorName(), type);
         }
     }
 
     private final String vendorName;
     private final JdbcUrlParser[] parsers;
 
-    private DatabaseType(String vendor, JdbcUrlParser... urlParsers) {
+    private DatabaseType(JdbcUrlParser... urlParsers) {
     	if (ArrayUtil.length(urlParsers) <= 0) {
     		throw new IllegalStateException("No parsers provided");
     	}
 
-        this.vendorName = vendor;
-        this.parsers = urlParsers;
+        vendorName = urlParsers[0].getVendorName();
+        if (StringUtil.isEmpty(vendorName)) {
+        	throw new IllegalStateException("No vendor name");
+        }
+
+        // ensure all parsers belong to the same vendor
+        if (urlParsers.length > 0) {
+        	for (JdbcUrlParser parser : urlParsers) {
+        		String	parserVendor=parser.getVendorName();
+        		if (!ObjectUtil.typedEquals(vendorName, parserVendor)) {
+        			throw new IllegalStateException("Mismatched vendors for " + parser.getClass().getSimpleName()
+        										  + ": expected=" + vendorName + ", actual=" + parserVendor);
+        		}
+        	}
+        }
+
+        parsers = urlParsers;
     }
 
     public String getVendorName() {
