@@ -16,6 +16,7 @@
 package com.springsource.insight.plugin.jdbc.parsers;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,9 +33,13 @@ import com.springsource.insight.util.ArrayUtil;
 public abstract class SqlParserTestImpl<P extends JdbcUrlParser> extends Assert {
 	protected final P parser;
 	protected final DatabaseType	databaseType;
-	private final List<SqlTestEntry> testCases;
+	private final Collection<SqlTestEntry> testCases;
 
 	protected SqlParserTestImpl(DatabaseType dbType, P parserInstance, SqlTestEntry ... testEntries) {
+		this(dbType, parserInstance, (ArrayUtil.length(testEntries) <= 0) ? Collections.<SqlTestEntry>emptyList() : Arrays.asList(testEntries));
+	}
+
+	protected SqlParserTestImpl(DatabaseType dbType, P parserInstance, Collection<SqlTestEntry> testEntries) {
 		if ((databaseType=dbType) == null) {
 			throw new IllegalStateException("No database type specified");
 		}
@@ -43,10 +48,8 @@ public abstract class SqlParserTestImpl<P extends JdbcUrlParser> extends Assert 
 			throw new IllegalStateException("No parser instance provided");
 		}
 
-		testCases = (ArrayUtil.length(testEntries) <= 0)
-				? Collections.<SqlTestEntry>emptyList()
-				: Arrays.asList(testEntries)
-				;
+		assertEquals("Mismatched vendor name for " + dbType, dbType.getVendorName(), parserInstance.getVendorName());
+		testCases = (testEntries == null) ? Collections.<SqlTestEntry>emptyList() : testEntries;
 	}
 
 	@Test

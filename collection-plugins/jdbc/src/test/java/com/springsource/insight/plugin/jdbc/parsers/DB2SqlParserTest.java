@@ -17,13 +17,13 @@
 package com.springsource.insight.plugin.jdbc.parsers;
 
 import com.springsource.insight.plugin.jdbc.parser.DatabaseType;
-import com.springsource.insight.plugin.jdbc.parser.parsers.PostgresSqlParser;
+import com.springsource.insight.plugin.jdbc.parser.parsers.DB2SqlParser;
 
 /**
  * 
  */
-public class PostgresSqlParserTest extends SimpleSqlUrlParserTestSupport<PostgresSqlParser> {
-	public PostgresSqlParserTest () {
-		super(DatabaseType.POSTGRESQL, new PostgresSqlParser());
+public class DB2SqlParserTest extends SimpleSqlUrlParserTestSupport<DB2SqlParser> {
+	public DB2SqlParserTest () {
+		super(DatabaseType.DB2, new DB2SqlParser());
 	}
 }

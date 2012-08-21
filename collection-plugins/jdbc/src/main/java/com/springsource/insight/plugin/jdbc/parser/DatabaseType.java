@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.springsource.insight.plugin.jdbc.parser.parsers.DB2SqlParser;
 import com.springsource.insight.plugin.jdbc.parser.parsers.HsqlParser;
 import com.springsource.insight.plugin.jdbc.parser.parsers.MssqlParser;
 import com.springsource.insight.plugin.jdbc.parser.parsers.MySqlParser;
@@ -37,7 +38,8 @@ public enum DatabaseType {
     HSQLDB(new HsqlParser()), 
     MSSQL(new MssqlParser()),
     SQLFIRE(new SqlFireParser(), new SqlFirePeerParser()),
-    POSTGRESQL(new PostgresSqlParser());
+    POSTGRESQL(new PostgresSqlParser()),
+    DB2(new DB2SqlParser());
 
     private static final Map<String, DatabaseType> map=new TreeMap<String, DatabaseType>(String.CASE_INSENSITIVE_ORDER);
 

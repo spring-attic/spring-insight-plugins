@@ -16,13 +16,7 @@
 
 package com.springsource.insight.plugin.jdbc.parser.parsers;
 
-import java.util.Collections;
-import java.util.List;
-
-import com.springsource.insight.plugin.jdbc.parser.AbstractSqlParser;
-import com.springsource.insight.plugin.jdbc.parser.JdbcUrlMetaData;
-import com.springsource.insight.plugin.jdbc.parser.SimpleJdbcUrlMetaData;
-import com.springsource.insight.util.StringUtil;
+import com.springsource.insight.plugin.jdbc.parser.SimpleSqlUrlParser;
 
 /**
  * <P>The following formats are supported:</P></BR>
@@ -41,70 +35,11 @@ import com.springsource.insight.util.StringUtil;
  *		jdbc:postgresql://neptune.acme.com:5432/test 
  *		jdbc:postgresql:test - equivalent to jdbc:postgresql://localhost:5432/test
  */
-public class PostgresSqlParser extends AbstractSqlParser {
+public class PostgresSqlParser extends SimpleSqlUrlParser {
 	public static final int	DEFAULT_CONNECTION_PORT=5432;
 	public static final String	VENDOR="postgresql";
-	private static final String	URL_PREFIX=JDBC_PREFIX + ":" + VENDOR + ":";
-	private static final String	HOST_DATA_PREFIX="//";
 
 	public PostgresSqlParser () {
 		super(VENDOR, DEFAULT_CONNECTION_PORT);
-	}
-
-	public List<JdbcUrlMetaData> parse(String connectionUrl, String vendorName) {
-		if (StringUtil.isEmpty(connectionUrl) || (!connectionUrl.startsWith(URL_PREFIX))) {
-			return null;
-		}
-
-		String	url=connectionUrl.substring(URL_PREFIX.length());	// strip the fixed prefix
-		if (StringUtil.isEmpty(url)) {
-			return null;
-		}
-
-		JdbcUrlMetaData	metaData=url.startsWith(HOST_DATA_PREFIX)
-				? parseWithHostAndPort(connectionUrl, url.substring(HOST_DATA_PREFIX.length()), vendorName)
-				: parseDatabaseName(connectionUrl, DEFAULT_HOST, DEFAULT_CONNECTION_PORT, vendorName, url)
-				;
-		if (metaData == null) {
-			return null;
-		} else {
-			return Collections.singletonList(metaData);
-		}
-	}
-	
-	JdbcUrlMetaData parseWithHostAndPort (String connectionUrl, String url, String vendorName) {
-		if (StringUtil.isEmpty(url)) {
-			return null;
-		}
-
-		int		dbNamePos=url.indexOf('/');
-		String	hostAndPort=(dbNamePos > 0) ? url.substring(0, dbNamePos) : url;
-		int		portSep=hostAndPort.indexOf(':');
-		String	host=(portSep >= 0) ? hostAndPort.substring(0, portSep) : hostAndPort;
-		if (StringUtil.isEmpty(host)) {
-			host = DEFAULT_HOST;
-		}
-
-		int	port=DEFAULT_CONNECTION_PORT;
-		if ((portSep >= 0) && (portSep < (hostAndPort.length() - 1))) {
-			String	portValue=hostAndPort.substring(portSep + 1);
-			port = parsePort(connectionUrl, portValue);
-		}
-
-		if ((dbNamePos <= 0) || (dbNamePos >= (url.length() - 1))) {
-			return new SimpleJdbcUrlMetaData(host, port, DEFAULT_DB_NAME, connectionUrl, vendorName);
-		} else {
-			return parseDatabaseName(connectionUrl, host, port, vendorName, url.substring(dbNamePos + 1));
-		}
-	}
-
-	static JdbcUrlMetaData parseDatabaseName (String connectionUrl, String host, int port, String vendorName, String url) {
-		if (StringUtil.isEmpty(url)) {
-			return null;
-		}
-
-		int		paramsPos=url.indexOf('?');
-		String	dbName=(paramsPos > 0) ? url.substring(0, paramsPos) : url;
-		return new SimpleJdbcUrlMetaData(host, port, dbName, connectionUrl, vendorName);
 	}
 }
