@@ -101,8 +101,16 @@ public abstract class AbstractSqlPatternParser extends AbstractSqlParser {
         	return null;
         }
     }
-    
-    protected static SqlParserPattern create(final String pattern, final int hostIndex, final int portIndex, final int databaseNameIndex) {
+
+    protected static final SqlParserPattern create(String vendor, String subType, String extra, int hostIndex, int portIndex, int databaseNameIndex) {
+    	return create(vendor, subType + ":" + extra, hostIndex, portIndex, databaseNameIndex);
+    }
+
+    protected static final SqlParserPattern create(String vendor, String extra, int hostIndex, int portIndex, int databaseNameIndex) {
+    	return create(JDBC_PREFIX + ":" + vendor + ":" + extra, hostIndex, portIndex, databaseNameIndex);
+    }
+
+    protected static final SqlParserPattern create(String pattern, int hostIndex, int portIndex, int databaseNameIndex) {
         return new SqlParserPattern(pattern, hostIndex, portIndex, databaseNameIndex);
     }
 }

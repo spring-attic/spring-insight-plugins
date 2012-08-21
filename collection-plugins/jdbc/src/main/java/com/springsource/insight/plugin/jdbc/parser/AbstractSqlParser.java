@@ -46,7 +46,7 @@ public abstract class AbstractSqlParser implements JdbcUrlParser {
     	}
 
     	vendorName = vendor;
-		urlPrefix = JDBC_PREFIX + ":" + vendor + ":";
+		urlPrefix = createUrlPrefix(vendor);
         defaultDBName = dbName;
         defaultHost = host;
         defaultPort = port;
@@ -75,6 +75,9 @@ public abstract class AbstractSqlParser implements JdbcUrlParser {
         return defaultPort;
     }
 
+    protected String createUrlPrefix (String vendor) {
+    	return JDBC_PREFIX + ":" + vendor + ":";
+    }
     /**
      * @param connectionUrl The original connection URL
      * @return The rest of the URL with the <code>jdbc</code> and vendor

@@ -19,9 +19,9 @@ import com.springsource.insight.plugin.jdbc.parser.AbstractSqlPatternParser;
 
 public class MssqlParser extends AbstractSqlPatternParser {
 	public static final int	DEFAULT_CONNECTION_PORT=1433;
-	public static final String	VENDOR="microsoft";
+	public static final String	VENDOR="microsoft", SUB_TYPE="sqlserver";
 
     public MssqlParser() {
-        super(VENDOR, DEFAULT_CONNECTION_PORT, create("jdbc:microsoft:sqlserver://(.*?):(.*)?;DatabaseName=(.*)?", 1, 2, 3));
+        super(VENDOR, DEFAULT_CONNECTION_PORT, create(VENDOR, SUB_TYPE, "//(.*?):(.*)?;DatabaseName=(.*)?", 1, 2, 3));
     }
 }

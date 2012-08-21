@@ -31,6 +31,6 @@ public class MySqlParser extends AbstractSqlPatternParser {
 	public static final String	VENDOR="mysql";
 
     public MySqlParser() {
-        super(VENDOR, DEFAULT_CONNECTION_PORT, create("jdbc:mysql://(.*?)(:(.*))?/(.*?)(\\?.*)??", 1, 3, 4));
+        super(VENDOR, DEFAULT_CONNECTION_PORT, create(VENDOR, "//(.*?)(:(.*))?/(.*?)(\\?.*)??", 1, 3, 4));
     }
 }

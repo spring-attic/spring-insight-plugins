@@ -21,6 +21,6 @@ public class SqlFireParser extends AbstractSqlPatternParser {
     public static final String	VENDOR="sqlfire";
 
     public SqlFireParser() {
-        super(VENDOR, create("jdbc:sqlfire://([^:]+):([^/]+)/?.*", 1, 2, -1));
+        super(VENDOR, create(VENDOR, "//([^:]+):([^/]+)/?.*", 1, 2, -1));
     }
 }
