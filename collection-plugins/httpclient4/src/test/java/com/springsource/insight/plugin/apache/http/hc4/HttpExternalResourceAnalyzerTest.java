@@ -40,6 +40,8 @@ import com.springsource.insight.intercept.trace.FrameId;
 import com.springsource.insight.intercept.trace.SimpleFrame;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
+import com.springsource.insight.util.ListUtil;
+import com.springsource.insight.util.StringUtil;
 import com.springsource.insight.util.time.TimeRange;
 
 /**
@@ -59,8 +61,8 @@ public class HttpExternalResourceAnalyzerTest extends Assert {
         Collection<ExternalResourceDescriptor>  resList=analyzer.locateExternalResourceName(trace);
         assertEquals("Mismatched resources size", 1, resList.size());
 
-        ExternalResourceDescriptor  res=resList.iterator().next();
-        assertResourceContents(res, TEST_URI);
+        ExternalResourceDescriptor  res=ListUtil.getFirstMember(resList);
+        assertResourceContents(res, TEST_URI, null);
         assertSame("Mismatched frame instance", trace.getRootFrame(), res.getFrame());
     }
 
@@ -70,14 +72,14 @@ public class HttpExternalResourceAnalyzerTest extends Assert {
         Trace                                   trace=createTrace(createFrame(createFrame(null, TEST_URI), TEST_URI));
         Collection<ExternalResourceDescriptor>  resList=analyzer.locateExternalResourceName(trace);
         assertEquals("Mismatched resources size", 1, resList.size());
-        assertResourceContents(resList.iterator().next(), TEST_URI);
+        assertResourceContents(ListUtil.getFirstMember(resList), TEST_URI, null);
     }
 
     @Test
     public void testMalformedURI () {
         Trace   trace=createTrace(createFrame(null, "^^^this:is|a$bad(uri)"));
         Collection<ExternalResourceDescriptor>    resList=analyzer.locateExternalResourceName(trace);
-        assertTrue("Mismatched resources size", (resList == null) || resList.isEmpty());
+        assertEquals("Mismatched resources size", 0, ListUtil.size(resList));
     }
 
     @Test
@@ -93,7 +95,7 @@ public class HttpExternalResourceAnalyzerTest extends Assert {
         Collection<ExternalResourceDescriptor>    resList=analyzer.locateExternalResourceName(trace);
         assertEquals("Mismatched resources size", 1, resList.size());
 
-        ExternalResourceDescriptor  res=resList.iterator().next();
+        ExternalResourceDescriptor  res=ListUtil.getFirstMember(resList);
         assertEquals("Mismatched vendor value", SERVER_VALUE, res.getVendor());
     }
 
@@ -103,12 +105,13 @@ public class HttpExternalResourceAnalyzerTest extends Assert {
         Collection<ExternalResourceDescriptor>  resList=analyzer.locateExternalResourceName(trace);
         assertEquals("Mismatched resources size", 1, resList.size());
 
-        ExternalResourceDescriptor  res=resList.iterator().next();
-        assertNull("Unexpected vendor value", res.getVendor());
+        ExternalResourceDescriptor  res=ListUtil.getFirstMember(resList);
+        assertEquals("Unexpected vendor value", res.getHost(), res.getVendor());
     }
 
-    static void assertResourceContents (ExternalResourceDescriptor res, URI uri) {
+    static void assertResourceContents (ExternalResourceDescriptor res, URI uri, String label) {
         assertEquals("Mismatched name", MD5NameGenerator.getName(uri), res.getName());
+        assertEquals("Mismatched label", res.getLabel(), StringUtil.isEmpty(label) ? res.getHost() : label);
         assertEquals("Mismatched type", ExternalResourceType.WEB_SERVER.name(), res.getType());
         assertEquals("Mismatched host", uri.getHost(), res.getHost());
         assertEquals("Mismatched port", HttpExternalResourceAnalyzer.resolvePort(uri), res.getPort());
