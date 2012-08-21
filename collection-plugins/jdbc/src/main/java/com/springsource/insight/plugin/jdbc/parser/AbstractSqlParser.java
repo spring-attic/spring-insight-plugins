@@ -15,38 +15,46 @@
  */
 package com.springsource.insight.plugin.jdbc.parser;
 
-import java.util.logging.Logger;
-
 import com.springsource.insight.util.StringUtil;
 
 public abstract class AbstractSqlParser implements JdbcUrlParser {
     private final String defaultDBName;
     private final String defaultHost;
     private final int defaultPort;
+    private final String vendorName;
     
-    protected AbstractSqlParser() {
-        this(DEFAULT_DB_NAME, DEFAULT_HOST, DEFAULT_PORT);
-    }
-    
-    protected AbstractSqlParser(String dbName) {
-        this(dbName, DEFAULT_HOST, DEFAULT_PORT);
-    }
-
-    protected AbstractSqlParser(int port) {
-        this(DEFAULT_HOST, port);
-    }
-
-    protected AbstractSqlParser(String host, int port) {
-    	this(DEFAULT_DB_NAME, host, port);
+    protected AbstractSqlParser(String vendor) {
+        this(vendor, DEFAULT_DB_NAME);
     }
     
-    protected AbstractSqlParser(String dbName, String host, int port) {
-        this.defaultDBName = dbName;
-        this.defaultHost = host;
-        this.defaultPort = port;
+    protected AbstractSqlParser(String vendor, String dbName) {
+        this(vendor, dbName, DEFAULT_HOST, DEFAULT_PORT);
     }
 
-    public String getDefaultDatbaseName() {
+    protected AbstractSqlParser(String vendor, int port) {
+        this(vendor, DEFAULT_HOST, port);
+    }
+
+    protected AbstractSqlParser(String vendor, String host, int port) {
+    	this(vendor, DEFAULT_DB_NAME, host, port);
+    }
+    
+    protected AbstractSqlParser(String vendor, String dbName, String host, int port) {
+    	if (StringUtil.isEmpty(vendor)) {
+    		throw new IllegalStateException("No vendor name specified");
+    	}
+
+    	vendorName = vendor;
+        defaultDBName = dbName;
+        defaultHost = host;
+        defaultPort = port;
+    }
+
+    public String getVendorName() {
+		return vendorName;
+	}
+
+	public String getDefaultDatbaseName() {
         return defaultDBName;
     }
 
@@ -66,9 +74,7 @@ public abstract class AbstractSqlParser implements JdbcUrlParser {
     	try {
     		return Integer.parseInt(portValue);
     	} catch(NumberFormatException e) {
-    		Logger	LOG=Logger.getLogger(getClass().getName());
-    		LOG.warning("parsePort(" + connectionUrl + ") failed to extract port value=" + portValue + ": " + e.getMessage());
-    		return (-1);
+    		return (-1);	// signal the error
     	}
     }
 }

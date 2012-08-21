@@ -27,24 +27,24 @@ public abstract class AbstractSqlPatternParser extends AbstractSqlParser {
     
     private final SqlParserPattern[] patterns;
     
-    protected AbstractSqlPatternParser(SqlParserPattern... patternValues) {
-        this(DEFAULT_DB_NAME, patternValues);
+    protected AbstractSqlPatternParser(String vendor, SqlParserPattern... patternValues) {
+        this(vendor, DEFAULT_DB_NAME, patternValues);
     }
     
-    protected AbstractSqlPatternParser(String dbName, SqlParserPattern... patternValues) {
-        this(dbName, DEFAULT_HOST, DEFAULT_PORT, patternValues);
+    protected AbstractSqlPatternParser(String vendor, String dbName, SqlParserPattern... patternValues) {
+        this(vendor, dbName, DEFAULT_HOST, DEFAULT_PORT, patternValues);
     }
     
-    protected AbstractSqlPatternParser(int port, SqlParserPattern... patternValues) {
-        this(DEFAULT_HOST, port, patternValues);
+    protected AbstractSqlPatternParser(String vendor, int port, SqlParserPattern... patternValues) {
+        this(vendor, DEFAULT_HOST, port, patternValues);
     }
 
-    protected AbstractSqlPatternParser(String host, int port, SqlParserPattern... patternValues) {
-    	this(DEFAULT_DB_NAME, host, port, patternValues);
+    protected AbstractSqlPatternParser(String vendor, String host, int port, SqlParserPattern... patternValues) {
+    	this(vendor, DEFAULT_DB_NAME, host, port, patternValues);
  	}
 
-    protected AbstractSqlPatternParser(String dbName, String host, int port,SqlParserPattern... patternValues) {
-        super(dbName, host, port);
+    protected AbstractSqlPatternParser(String vendor, String dbName, String host, int port,SqlParserPattern... patternValues) {
+        super(vendor, dbName, host, port);
 
 		if (ArrayUtil.length(patternValues) <= 0) {
 			throw new IllegalStateException("No patterns specified");

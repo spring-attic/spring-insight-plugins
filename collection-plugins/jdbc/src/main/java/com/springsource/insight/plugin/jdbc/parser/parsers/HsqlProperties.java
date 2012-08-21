@@ -115,18 +115,16 @@ public class HsqlProperties {
 	}
 
 	public int getIntegerProperty(String key, int defaultValue) {
-
 		String prop = getProperty(key);
-
 		try {
 			if (prop != null) {
 				return Integer.parseInt(prop);
+			} else {
+				return defaultValue;
 			}
 		} catch (NumberFormatException e) {
-		    // ignored
+			return (-1);	// signal the error
 		}
-
-		return defaultValue;
 	}
 
 

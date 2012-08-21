@@ -43,11 +43,12 @@ import com.springsource.insight.util.StringUtil;
  */
 public class PostgresSqlParser extends AbstractSqlParser {
 	public static final int	DEFAULT_CONNECTION_PORT=5432;
-	private static final String	URL_PREFIX="jdbc:postgresql:";
+	public static final String	VENDOR="postgresql";
+	private static final String	URL_PREFIX=JDBC_PREFIX + ":" + VENDOR + ":";
 	private static final String	HOST_DATA_PREFIX="//";
 
 	public PostgresSqlParser () {
-		super(DEFAULT_CONNECTION_PORT);
+		super(VENDOR, DEFAULT_CONNECTION_PORT);
 	}
 
 	public List<JdbcUrlMetaData> parse(String connectionUrl, String vendorName) {

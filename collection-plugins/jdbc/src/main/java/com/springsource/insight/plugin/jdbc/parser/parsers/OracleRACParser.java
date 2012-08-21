@@ -30,9 +30,10 @@ import com.springsource.insight.util.StringUtil;
 public class OracleRACParser extends AbstractSqlParser {
 	public static final int	DEFAULT_CONNECTION_PORT=1521;
 	public static final String DEFAULT_CONNECTION_PORT_STRING=String.valueOf(DEFAULT_CONNECTION_PORT);
+	public static final String	VENDOR="oracle";
 
 	public OracleRACParser() {
-        super(DEFAULT_CONNECTION_PORT);
+        super(VENDOR, DEFAULT_CONNECTION_PORT);
     }
 
     public static final String	HOST_ATTRIBUTE="HOST", PORT_ATTRIBUTE="PORT", SERVICE_ATTRIBUTE="SERVICE_NAME";

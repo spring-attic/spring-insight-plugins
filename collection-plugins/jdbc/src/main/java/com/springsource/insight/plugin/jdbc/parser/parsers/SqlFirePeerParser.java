@@ -25,13 +25,13 @@ import com.springsource.insight.plugin.jdbc.parser.JdbcUrlMetaData;
 import com.springsource.insight.plugin.jdbc.parser.SimpleJdbcUrlMetaData;
 
 public class SqlFirePeerParser extends AbstractSqlParser {
-    
+    public static final String	VENDOR="sqlfire";
     private static final Pattern LOCATORS = Pattern.compile(".*locators=.*", Pattern.CASE_INSENSITIVE);
     private static final Pattern LOCATOR = Pattern.compile("([^\\[]+)\\[(\\d+)\\]", Pattern.CASE_INSENSITIVE);
     private static final Pattern MULTICAST = Pattern.compile(".*mcast-port=(\\d+).*", Pattern.CASE_INSENSITIVE);
     
     public SqlFirePeerParser() {
-        super(DEFAULT_DB_NAME, "", DEFAULT_PORT);
+        super(VENDOR);
     }
 
     /**

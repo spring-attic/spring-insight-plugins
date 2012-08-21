@@ -18,10 +18,19 @@ package com.springsource.insight.plugin.jdbc.parser;
 
 import java.util.List;
 
+/**
+ * Parses JDBC connection URL(s)
+ */
 public interface JdbcUrlParser {
+	static final String	JDBC_PREFIX="jdbc";
     static final String DEFAULT_HOST = "localhost";
     static final String DEFAULT_DB_NAME = "", UNKNOWN_DATABASE="<unknown>";
     static final int DEFAULT_PORT = -1;
+
+    /**
+     * @return The immediate vendor name after the <code>jdbc</code> prefix
+     */
+    String getVendorName ();
 
     List<JdbcUrlMetaData> parse(String connectionUrl, String vendorName);
 }
