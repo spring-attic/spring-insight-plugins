@@ -100,6 +100,9 @@ public abstract class SimpleSqlUrlParser extends AbstractSqlParser {
 		}
 
 		int		paramsPos=url.indexOf('?');
+		if (paramsPos < 0) {	// some URL(s) use ';' for extra attributes instead of '?'
+			paramsPos=url.indexOf(';');
+		}
 		String	dbName=(paramsPos > 0) ? url.substring(0, paramsPos) : url;
 		return new SimpleJdbcUrlMetaData(host, port, dbName, connectionUrl, vendorName);
 	}
