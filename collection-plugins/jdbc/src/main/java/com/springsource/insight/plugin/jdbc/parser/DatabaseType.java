@@ -28,6 +28,7 @@ import com.springsource.insight.plugin.jdbc.parser.parsers.OracleRACParser;
 import com.springsource.insight.plugin.jdbc.parser.parsers.PostgresSqlParser;
 import com.springsource.insight.plugin.jdbc.parser.parsers.SqlFireParser;
 import com.springsource.insight.plugin.jdbc.parser.parsers.SqlFirePeerParser;
+import com.springsource.insight.plugin.jdbc.parser.parsers.SybaseSqlParser;
 import com.springsource.insight.util.ArrayUtil;
 import com.springsource.insight.util.ObjectUtil;
 import com.springsource.insight.util.StringUtil;
@@ -39,7 +40,8 @@ public enum DatabaseType {
     MSSQL(new MssqlParser()),
     SQLFIRE(new SqlFireParser(), new SqlFirePeerParser()),
     POSTGRESQL(new PostgresSqlParser()),
-    DB2(new DB2SqlParser());
+    DB2(new DB2SqlParser()),
+    SYBASE(new SybaseSqlParser());
 
     private static final Map<String, DatabaseType> map=new TreeMap<String, DatabaseType>(String.CASE_INSENSITIVE_ORDER);
 

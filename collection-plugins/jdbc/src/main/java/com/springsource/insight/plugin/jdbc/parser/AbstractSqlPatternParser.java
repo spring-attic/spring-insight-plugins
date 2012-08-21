@@ -53,7 +53,7 @@ public abstract class AbstractSqlPatternParser extends AbstractSqlParser {
         this.patterns = patternValues;
     }
 
-    public List<JdbcUrlMetaData> parse(final String connectionUrl, final String vendorName) {
+    public List<JdbcUrlMetaData> parse(String connectionUrl, String vendorName) {
         for (final SqlParserPattern sqlParserPattern : patterns) {
             final Pattern urlPattern = sqlParserPattern.getCompiledPattern();
             final Matcher urlMatcher = urlPattern.matcher(connectionUrl);
@@ -61,9 +61,9 @@ public abstract class AbstractSqlPatternParser extends AbstractSqlParser {
                 continue;
             }
 
-            final String host = getHost(urlMatcher, sqlParserPattern);
-            final String port = getPort(urlMatcher, sqlParserPattern);
-            final String databaseName = getDBName(urlMatcher, sqlParserPattern);
+            final String host = getHost(connectionUrl, urlMatcher, sqlParserPattern);
+            final String port = getPort(connectionUrl, urlMatcher, sqlParserPattern);
+            final String databaseName = getDBName(connectionUrl, urlMatcher, sqlParserPattern);
             final int finalPort=parsePort(connectionUrl, port);
 
             return Collections.<JdbcUrlMetaData>singletonList(new SimpleJdbcUrlMetaData(host, finalPort, databaseName, connectionUrl, vendorName));
@@ -72,24 +72,24 @@ public abstract class AbstractSqlPatternParser extends AbstractSqlParser {
         return null;
     }
     
-    private String getHost(Matcher matcher, SqlParserPattern pattern) {
-        return getValue(matcher, pattern.getHostIndex(), getDefaultHost());
+    protected String getHost(String connectionUrl, Matcher matcher, SqlParserPattern pattern) {
+        return getValue(connectionUrl, matcher, pattern.getHostIndex(), getDefaultHost());
     }
     
-    private String getPort(Matcher matcher, SqlParserPattern pattern) {
-        return getValue(matcher, pattern.getPortIndex(), getDefaultPortString());
+    protected String getPort(String connectionUrl, Matcher matcher, SqlParserPattern pattern) {
+        return getValue(connectionUrl, matcher, pattern.getPortIndex(), getDefaultPortString());
+    }
+
+    protected String getDBName(String connectionUrl, Matcher matcher, SqlParserPattern pattern) {
+        return getValue(connectionUrl, matcher, pattern.getDatabaseNameIndex(), getDefaultDatbaseName());
     }
     
-    private String getDBName(Matcher matcher, SqlParserPattern pattern) {
-        return getValue(matcher, pattern.getDatabaseNameIndex(), getDefaultDatbaseName());
-    }
-    
-    private String getValue(Matcher matcher, int index, String defaultValue) {
-        String res = getGroupValue(matcher, index);
+    protected String getValue(String connectionUrl, Matcher matcher, int index, String defaultValue) {
+        String res = getGroupValue(connectionUrl, matcher, index);
         return StringUtil.isEmpty(res) ? defaultValue : res;
     }
 
-    private String getGroupValue(Matcher matcher, int index) {
+    protected String getGroupValue(String connectionUrl, Matcher matcher, int index) {
         if (index > -1) {
         	String	attrValue=matcher.group(index);
     		if (attrValue != null) {
