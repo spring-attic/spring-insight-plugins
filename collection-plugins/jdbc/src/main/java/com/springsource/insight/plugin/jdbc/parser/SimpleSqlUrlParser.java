@@ -52,12 +52,7 @@ public abstract class SimpleSqlUrlParser extends AbstractSqlParser {
 	}
 
 	public List<JdbcUrlMetaData> parse(String connectionUrl, String vendorName) {
-		String	urlPrefix=getUrlPrefix();
-		if (StringUtil.isEmpty(connectionUrl) || (!connectionUrl.startsWith(urlPrefix))) {
-			return null;
-		}
-
-		String	url=connectionUrl.substring(urlPrefix.length());	// strip the fixed prefix
+		String	url=stripUrlPrefix(connectionUrl);
 		if (StringUtil.isEmpty(url)) {
 			return null;
 		}
@@ -72,7 +67,7 @@ public abstract class SimpleSqlUrlParser extends AbstractSqlParser {
 			return Collections.singletonList(metaData);
 		}
 	}
-	
+
 	protected JdbcUrlMetaData parseWithHostAndPort (String connectionUrl, String url, String vendorName) {
 		if (StringUtil.isEmpty(url)) {
 			return null;

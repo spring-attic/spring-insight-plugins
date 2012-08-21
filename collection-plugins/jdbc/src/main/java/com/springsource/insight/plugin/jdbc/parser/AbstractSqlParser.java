@@ -52,6 +52,9 @@ public abstract class AbstractSqlParser implements JdbcUrlParser {
         defaultPort = port;
     }
 
+	/**
+	 * @return <code>jdbc:{@link #getVendorName()}:</code>
+	 */
 	public String getUrlPrefix () {
 		return urlPrefix;
 	}
@@ -70,6 +73,22 @@ public abstract class AbstractSqlParser implements JdbcUrlParser {
 
     public int getDefaultPort() {
         return defaultPort;
+    }
+
+    /**
+     * @param connectionUrl The original connection URL
+     * @return The rest of the URL with the <code>jdbc</code> and vendor
+     * part(s) stripped - <code>null</code>/empty if empty URL or
+     * not starts with the required prefix
+     * @see #getUrlPrefix()
+     */
+    protected String stripUrlPrefix (String connectionUrl) {
+		String	prefix=getUrlPrefix();
+		if (StringUtil.isEmpty(connectionUrl) || (!connectionUrl.startsWith(prefix))) {
+			return null;
+		}
+
+		return connectionUrl.substring(prefix.length());
     }
 
     protected int parsePort (String connectionUrl, String portValue) {
