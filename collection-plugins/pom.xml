@@ -27,6 +27,7 @@
     </profiles>
 
 	<modules>
+		<module>cassandra</module>
 		<module>eclipse-persistence</module>
 		<module>ehcache</module>
 		<module>ejb3</module>

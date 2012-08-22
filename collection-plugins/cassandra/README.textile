@@ -1,0 +1,19 @@
+h1. Cassandra DB Plugin for Spring Insight
+
+Intercepts low level call from client to Cassandra DB over Thrift.
+Cover all high-level API such as Hector, Astyanax, etc. 
+
+h2. Compatibility
+
+This plugin is compatible with the 1.9+ versions of insight.
+
+h2. Installation
+
+This is a core plugin of Insight 1.9+ but earlier users may
+install this plugin by copying the plugin jar to
+<code>
+  insight/collection-plugins
+</code>
+
+For both the Dashboard and Insight Agent. You should see the
+plugin listed under the administration panel.
