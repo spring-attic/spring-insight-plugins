@@ -23,7 +23,6 @@ import java.util.Set;
 import org.apache.cassandra.config.DatabaseDescriptor;
 import org.apache.cassandra.io.util.FileUtils;
 import org.apache.cassandra.thrift.CassandraDaemon;
-import org.apache.thrift.transport.TTransportException;
 
 /**
  * An in-memory Cassandra storage service that listens to the thrift interface.
@@ -33,7 +32,7 @@ public class EmbeddedCassandraService implements Runnable
 {	
     CassandraDaemon cassandraDaemon;
  
-    public void init() throws TTransportException, IOException, ClassNotFoundException
+    public void init() throws Exception
     {
     	prepare();
     	

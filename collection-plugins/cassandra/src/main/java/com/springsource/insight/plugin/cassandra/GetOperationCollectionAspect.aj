@@ -17,7 +17,10 @@
 package com.springsource.insight.plugin.cassandra;
 
 
-import org.aspectj.lang.JoinPoint;
+import java.nio.ByteBuffer;
+import java.util.Collection;
+import java.util.List;
+
 import org.apache.cassandra.thrift.Cassandra;
 import org.apache.cassandra.thrift.ColumnParent;
 import org.apache.cassandra.thrift.ColumnPath;
@@ -27,14 +30,12 @@ import org.apache.cassandra.thrift.IndexExpression;
 import org.apache.cassandra.thrift.KeyRange;
 import org.apache.cassandra.thrift.SlicePredicate;
 import org.apache.cassandra.thrift.SliceRange;
+import org.aspectj.lang.JoinPoint;
 
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
 import com.springsource.insight.intercept.operation.OperationMap;
-
-import java.nio.ByteBuffer;
-import java.util.List;
 
 /**
  * Collection operation for CassandraDB CQL queries
@@ -58,34 +59,29 @@ public privileged aspect GetOperationCollectionAspect extends AbstractOperationC
 
 		operation.putAnyNonEmpty("consistLevel", (args[args.length-1]!=null)?((ConsistencyLevel)args[args.length-1]).name():null);
 		for (int i=0; i<args.length-1; i++) {
-			if (args[i] instanceof ByteBuffer) {
+			Object	argVal=args[i];
+			if (argVal instanceof ByteBuffer) {
 				if (i==0) {
-					operation.put("key", OperationUtils.getText((ByteBuffer)args[i]));
+					operation.put("key", OperationUtils.getText((ByteBuffer)argVal));
 				}
 				else {
-					operation.putAnyNonEmpty("startColumn", OperationUtils.getString((ByteBuffer)args[i]));
+					operation.putAnyNonEmpty("startColumn", OperationUtils.getString((ByteBuffer)argVal));
 				}
-			}
-			else
-			if (args[i] instanceof List) {
-				if (args[i]!=null) {
-					OperationList keys=operation.createList("keys");
-					for(ByteBuffer key: (List<ByteBuffer>)args[i]) {
-						keys.add(OperationUtils.getString(key));
-					}
+			} else if (argVal instanceof Collection<?>) {
+				OperationList keys=operation.createList("keys");
+				@SuppressWarnings("unchecked")
+				Collection<ByteBuffer>	bbList=(Collection<ByteBuffer>) argVal;
+				for(ByteBuffer key: bbList) {
+					keys.add(OperationUtils.getString(key));
 				}
-			}
-			else
-			if (args[i] instanceof ColumnParent) {
-				ColumnParent colParent=(ColumnParent)args[i];
+			} else if (argVal instanceof ColumnParent) {
+				ColumnParent colParent=(ColumnParent)argVal;
 				if (colParent!=null) {
 					operation.put("columnFamily", OperationUtils.getText(colParent.getColumn_family()));
 					operation.putAnyNonEmpty("superColumn", OperationUtils.getString(colParent.getSuper_column()));
 				}
-			}
-			else
-			if (args[i] instanceof SlicePredicate) {
-				SlicePredicate pred=(SlicePredicate)args[i];
+			} else if (argVal instanceof SlicePredicate) {
+				SlicePredicate pred=(SlicePredicate)argVal;
 				if (pred!=null) {
 					if (pred.getColumn_names()!=null) {
 						OperationList cols=operation.createList("columns");
@@ -103,10 +99,8 @@ public privileged aspect GetOperationCollectionAspect extends AbstractOperationC
 						rangeMap.put("reversed", range.isReversed());
 					}
 				}
-			}
-			else
-			if (args[i] instanceof KeyRange) {
-				KeyRange range=(KeyRange)args[i];
+			} else if (argVal instanceof KeyRange) {
+				KeyRange range=(KeyRange)argVal;
 				if (range!=null) {
 					OperationMap rangeMap=operation.createMap("range");
 					rangeMap.put("count", range.getCount());
@@ -122,19 +116,15 @@ public privileged aspect GetOperationCollectionAspect extends AbstractOperationC
 						}
 					}
 				}
-			}
-			else
-			if (args[i] instanceof  ColumnPath) {
-				ColumnPath colPath=(ColumnPath)args[i];
+			} else if (argVal instanceof  ColumnPath) {
+				ColumnPath colPath=(ColumnPath)argVal;
 				if (colPath!=null) {
 					operation.put("columnFamily", OperationUtils.getText(colPath.getColumn_family()));
 					operation.putAnyNonEmpty("superColumn", OperationUtils.getString(colPath.getSuper_column()));
 					operation.putAnyNonEmpty("colName", OperationUtils.getString(colPath.getColumn()));
 				}
-			}
-			else
-			if (args[i] instanceof IndexClause) {
-				IndexClause indCls=(IndexClause)args[i];
+			} else if (argVal instanceof IndexClause) {
+				IndexClause indCls=(IndexClause)argVal;
 				if (indCls!=null) {
 					operation.put("startKey", OperationUtils.getText(indCls.getStart_key()));
 					operation.put("count", indCls.getCount());
@@ -146,10 +136,8 @@ public privileged aspect GetOperationCollectionAspect extends AbstractOperationC
 						}
 					}
 				}
-			}
-			else
-			if (args[i] instanceof String) {
-				operation.put("columnFamily", OperationUtils.getText((String)args[i]));
+			} else if (argVal instanceof String) {
+				operation.put("columnFamily", OperationUtils.getText((String)argVal));
 			}
 		}
 		

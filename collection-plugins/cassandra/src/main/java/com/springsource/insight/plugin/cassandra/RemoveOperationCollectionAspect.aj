@@ -61,7 +61,7 @@ public privileged aspect RemoveOperationCollectionAspect extends AbstractOperati
 			operation.putAnyNonEmpty("consistLevel", (args[args.length-1]!=null)?((ConsistencyLevel)args[args.length-1]).name():null);
 			
 			if (method.equals("remove")) {
-				operation.put("timestamp", (Long)args[2]);
+				operation.put("timestamp", ((Number)args[2]).longValue());
 			}
 		}
 		else {

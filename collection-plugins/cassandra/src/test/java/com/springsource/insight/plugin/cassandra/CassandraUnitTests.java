@@ -15,7 +15,6 @@
  */
 package com.springsource.insight.plugin.cassandra;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -28,14 +27,9 @@ import org.apache.cassandra.thrift.Column;
 import org.apache.cassandra.thrift.ColumnOrSuperColumn;
 import org.apache.cassandra.thrift.ColumnParent;
 import org.apache.cassandra.thrift.ConsistencyLevel;
-import org.apache.cassandra.thrift.InvalidRequestException;
 import org.apache.cassandra.thrift.KsDef;
-import org.apache.cassandra.thrift.SchemaDisagreementException;
 import org.apache.cassandra.thrift.SlicePredicate;
 import org.apache.cassandra.thrift.SliceRange;
-import org.apache.cassandra.thrift.TimedOutException;
-import org.apache.cassandra.thrift.UnavailableException;
-import org.apache.thrift.TException;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.transport.TFramedTransport;
 import org.apache.thrift.transport.TSocket;
@@ -49,7 +43,7 @@ public class CassandraUnitTests {
 	private static CassandraUnitTests instance;
 	private static Cassandra.Client lastClient;
 	
-    public static CassandraUnitTests getInstance() throws TTransportException, IOException, InterruptedException, ClassNotFoundException {
+    public static CassandraUnitTests getInstance() throws Exception {
 		if (instance==null) {
 			instance=new CassandraUnitTests();
 			
@@ -81,7 +75,7 @@ public class CassandraUnitTests {
         
         String keyspace = "Keyspace1";
         // create keyspace
-        KsDef ksdef = new KsDef(keyspace, SimpleStrategy.class.getName(), new ArrayList());
+        KsDef ksdef = new KsDef(keyspace, SimpleStrategy.class.getName(), new ArrayList<CfDef>());
         //Set replication factor
         if (ksdef.strategy_options == null) {
             ksdef.strategy_options = new LinkedHashMap<String, String>();
@@ -93,10 +87,11 @@ public class CassandraUnitTests {
 	    	client.system_add_keyspace(ksdef);
 		}
 		catch(Exception e) {
+			System.err.println("testSystemAddKeyspace: " + e.getClass().getSimpleName() + ": " + e.getMessage());
 		}
 	}
 	
-	public void testSetKeyspace() throws InvalidRequestException, TException, SchemaDisagreementException {
+	public void testSetKeyspace() throws Exception {
 		Cassandra.Client client = getClient();
         
         String keyspace = "Keyspace1";
@@ -112,12 +107,12 @@ public class CassandraUnitTests {
         // create columnfamily
         try {
         	client.system_add_column_family(new CfDef(keyspace, columnFamily));
-		}
-		catch(Exception e) {
+		} catch(Exception e) {
+			System.err.println("testSystemAddColumnFamily: " + e.getClass().getSimpleName() + ": " + e.getMessage());
 		}
 	}
 	
-	public void testInsert() throws InvalidRequestException, UnavailableException, TimedOutException, TException, SchemaDisagreementException {
+	public void testInsert() throws Exception {
     	// prepare keyspace
     	testSystemAddKeyspace();
 
@@ -141,10 +136,11 @@ public class CassandraUnitTests {
         	client.insert(ByteBuffer.wrap(key_user_id.getBytes()), columnParent,nameColumn,ConsistencyLevel.ALL);
 		}
 		catch(Exception e) {
+			System.err.println("testInsert: " + e.getClass().getSimpleName() + ": " + e.getMessage());
 		}
 	}
 	
-    public void testGetSlice() throws InvalidRequestException, TException, SchemaDisagreementException, UnavailableException, TimedOutException {
+    public void testGetSlice() throws Exception {
     	testInsert();
     	
     	Cassandra.Client client = getClient();

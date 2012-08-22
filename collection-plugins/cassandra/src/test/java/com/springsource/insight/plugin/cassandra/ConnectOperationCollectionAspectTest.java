@@ -20,6 +20,7 @@ import org.junit.Test;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 
 public class ConnectOperationCollectionAspectTest extends AbstractOperationCollectionAspectTest{
+	@Override
 	public OperationCollectionAspectSupport getAspect() {
 		return ConnectOperationCollectionAspect.aspectOf();
 	}
