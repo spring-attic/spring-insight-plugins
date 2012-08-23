@@ -18,7 +18,7 @@ package com.springsource.insight.plugin.rmi;
 
 import org.junit.Before;
 
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 
 /**
  */

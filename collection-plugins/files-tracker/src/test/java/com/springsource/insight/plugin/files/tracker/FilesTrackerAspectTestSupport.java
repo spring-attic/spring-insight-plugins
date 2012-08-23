@@ -26,7 +26,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.InterceptConfiguration;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.plugin.files.tracker.AbstractFilesTrackerAspectSupport.CacheKey;

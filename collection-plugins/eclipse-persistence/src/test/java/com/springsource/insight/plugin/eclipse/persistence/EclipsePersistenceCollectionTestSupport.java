@@ -18,7 +18,7 @@ package com.springsource.insight.plugin.eclipse.persistence;
 
 import org.eclipse.persistence.sessions.DatabaseSession;
 
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 

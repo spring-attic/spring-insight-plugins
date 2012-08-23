@@ -17,8 +17,8 @@
 package com.springsource.insight.plugin.springcore;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.collection.method.AnnotationDrivenMethodOperationCollectionAspect;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**

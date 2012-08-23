@@ -21,7 +21,7 @@ import java.util.Map;
 import org.junit.Test;
 import org.springframework.transaction.TransactionDefinition;
 
-import com.springsource.insight.collection.AbstractCollectionTestSupport;
+import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 

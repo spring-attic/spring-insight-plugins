@@ -18,7 +18,7 @@ package com.springsource.insight.plugin.jta;
 
 import org.mockito.Mockito;
 
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.SourceCodeLocation;

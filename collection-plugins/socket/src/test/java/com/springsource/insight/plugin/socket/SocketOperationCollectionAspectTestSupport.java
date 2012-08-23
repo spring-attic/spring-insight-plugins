@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.plugin.CollectionSettingName;

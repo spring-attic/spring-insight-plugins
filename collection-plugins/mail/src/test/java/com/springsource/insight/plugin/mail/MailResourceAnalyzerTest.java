@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.springsource.insight.collection.AbstractCollectionTestSupport;
+import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;

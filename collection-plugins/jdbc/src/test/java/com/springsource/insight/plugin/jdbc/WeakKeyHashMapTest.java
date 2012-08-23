@@ -21,7 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import com.springsource.insight.collection.AbstractCollectionTestSupport;
+import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 import com.springsource.insight.util.test.MicroBenchmark;
 
 

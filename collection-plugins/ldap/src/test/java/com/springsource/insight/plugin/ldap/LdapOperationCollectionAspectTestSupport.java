@@ -42,7 +42,7 @@ import org.junit.BeforeClass;
 import org.springframework.security.ldap.server.ApacheDSContainer;
 import org.springframework.util.FileSystemUtils;
 
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;

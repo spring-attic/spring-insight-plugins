@@ -19,7 +19,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.springsource.insight.collection.AbstractCollectionTestSupport;
+import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 import com.springsource.insight.plugin.jdbc.parser.JdbcUrlMetaData;
 import com.springsource.insight.plugin.jdbc.parser.parsers.SqlFirePeerParser;
 

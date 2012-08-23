@@ -19,7 +19,7 @@ package com.springsource.insight.plugin.portlet;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 

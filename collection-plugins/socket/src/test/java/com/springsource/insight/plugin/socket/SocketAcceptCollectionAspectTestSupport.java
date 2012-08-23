@@ -21,7 +21,7 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.concurrent.TimeUnit;
 
-import com.springsource.insight.collection.AbstractCollectionTestSupport;
+import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 

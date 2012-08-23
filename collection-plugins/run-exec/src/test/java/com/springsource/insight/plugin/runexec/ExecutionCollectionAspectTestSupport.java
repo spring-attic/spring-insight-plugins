@@ -23,8 +23,8 @@ import org.aspectj.lang.JoinPoint.StaticPart;
 import org.junit.After;
 import org.junit.Before;
 
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.collection.OperationListCollector;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.operation.SourceCodeLocation;

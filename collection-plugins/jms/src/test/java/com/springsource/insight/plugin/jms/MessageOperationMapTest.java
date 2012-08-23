@@ -21,7 +21,7 @@ import javax.jms.Message;
 
 import org.junit.Test;
 
-import com.springsource.insight.collection.AbstractCollectionTestSupport;
+import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class MessageOperationMapTest extends AbstractCollectionTestSupport  {
