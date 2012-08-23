@@ -15,14 +15,11 @@
  */
 package com.springsource.insight.plugin.files.tracker;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-
 import java.util.List;
 
 import org.junit.Test;
 
+import com.springsource.insight.collection.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
@@ -34,7 +31,7 @@ import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
 
 
-public class FilesTrackerExternalResourceAnalyzerTest {
+public class FilesTrackerExternalResourceAnalyzerTest extends AbstractCollectionTestSupport  {
 	private final FilesTrackerExternalResourceAnalyzer analyzer = new FilesTrackerExternalResourceAnalyzer();
 	
 	@Test

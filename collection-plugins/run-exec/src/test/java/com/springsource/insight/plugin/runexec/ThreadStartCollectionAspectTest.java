@@ -15,7 +15,6 @@
  */
 package com.springsource.insight.plugin.runexec;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -39,7 +38,7 @@ public class ThreadStartCollectionAspectTest
         thread.start();
         
         Thread  sigThread=runner.waitForThread(true);
-        Assert.assertSame("Mismatched runner threads", thread, sigThread);
+        assertSame("Mismatched runner threads", thread, sigThread);
         assertLastExecutionOperation(sigThread);
     }
 
@@ -71,10 +70,10 @@ public class ThreadStartCollectionAspectTest
     private void assertRunnableReplacement (Thread thread, Runnable runner) {
         ThreadStartCollectionAspect aspectInstance=getAspect();
         Runnable                    threadTarget=aspectInstance.extractThreadTarget(thread);
-        Assert.assertTrue("Thread target not replaced", threadTarget instanceof RunnableWrapper);
+        assertTrue("Thread target not replaced", threadTarget instanceof RunnableWrapper);
 
         Runnable    command=((RunnableWrapper) threadTarget).getRunner();
-        Assert.assertSame("Mismatched command instance", runner, command);
+        assertSame("Mismatched command instance", runner, command);
     }
 
     @Override

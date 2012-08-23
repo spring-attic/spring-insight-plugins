@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mortbay.jetty.Handler;
@@ -75,16 +74,16 @@ public class HttpURLConnectionOperationCollectionAspectTest
         conn.connect();
         try {
             int responseCode=conn.getResponseCode();
-            Assert.assertEquals("Bad response code", HttpServletResponse.SC_OK, responseCode);
+            assertEquals("Bad response code", HttpServletResponse.SC_OK, responseCode);
         } finally {
             conn.disconnect();
         }
 
         Operation   op=assertSocketOperation(SocketDefinitions.CONNECT_ACTION, TEST_HOST, TEST_PORT);
-        Assert.assertEquals("Mismatched method", "GET", op.get("method", String.class));
+        assertEquals("Mismatched method", "GET", op.get("method", String.class));
 
         URL url=conn.getURL();
-        Assert.assertEquals("Mismatched URL", url.toExternalForm(), op.get(OperationFields.URI, String.class));
+        assertEquals("Mismatched URL", url.toExternalForm(), op.get(OperationFields.URI, String.class));
         
         runExternalResourceAnalyzer(op, ExternalResourceType.WEB_SERVER, TEST_HOST, TEST_PORT);
     }
@@ -99,7 +98,7 @@ public class HttpURLConnectionOperationCollectionAspectTest
                                   HttpURLConnectionOperationCollectionAspect.DEFAULT_OBFUSCATED_HEADERS_LIST);
         HttpURLConnection   conn=createConnection("testDefaultObscuredHeaders");
         for (String hdrName : defaultObscuredHeaders) {
-            Assert.assertTrue("Default header not marked in set: " + hdrName,
+            assertTrue("Default header not marked in set: " + hdrName,
                               HttpURLConnectionOperationCollectionAspect.OBFUSCATED_HEADERS.contains(hdrName));
             conn.setRequestProperty(hdrName, hdrName);
         }
@@ -107,7 +106,7 @@ public class HttpURLConnectionOperationCollectionAspectTest
         conn.connect();
         try {
             int responseCode=conn.getResponseCode();
-            Assert.assertEquals("Bad response code", HttpServletResponse.SC_OK, responseCode);
+            assertEquals("Bad response code", HttpServletResponse.SC_OK, responseCode);
         } finally {
             conn.disconnect();
         }
@@ -128,7 +127,7 @@ public class HttpURLConnectionOperationCollectionAspectTest
         conn.connect();
         try {
             int responseCode=conn.getResponseCode();
-            Assert.assertEquals("Bad response code", HttpServletResponse.SC_OK, responseCode);
+            assertEquals("Bad response code", HttpServletResponse.SC_OK, responseCode);
         } finally {
             conn.disconnect();
         }

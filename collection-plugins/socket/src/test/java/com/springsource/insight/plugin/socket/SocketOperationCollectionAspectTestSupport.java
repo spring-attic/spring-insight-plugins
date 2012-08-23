@@ -23,8 +23,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Assert;
-
 import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.operation.Operation;
@@ -54,14 +52,14 @@ public abstract class SocketOperationCollectionAspectTestSupport
     protected SocketOperationCollectionAspectTestSupport() {
         super();
     }
-    
+
     protected Operation assertSocketOperation (String action, String addr, int port) {
         Operation   op=getLastEntered();
-        Assert.assertNotNull("No operation extracted", op);
-        Assert.assertEquals("Mismatched operation type", SocketDefinitions.TYPE, op.getType());
-        Assert.assertEquals("Mismatched action", action, op.get(SocketDefinitions.ACTION_ATTR, String.class));
-        Assert.assertEquals("Mismatched address", addr, op.get(SocketDefinitions.ADDRESS_ATTR, String.class));
-        Assert.assertEquals("Mismatched port", Integer.valueOf(port), op.get(SocketDefinitions.PORT_ATTR, Integer.class));
+        assertNotNull("No operation extracted", op);
+        assertEquals("Mismatched operation type", SocketDefinitions.TYPE, op.getType());
+        assertEquals("Mismatched action", action, op.get(SocketDefinitions.ACTION_ATTR, String.class));
+        assertEquals("Mismatched address", addr, op.get(SocketDefinitions.ADDRESS_ATTR, String.class));
+        assertEquals("Mismatched port", Integer.valueOf(port), op.get(SocketDefinitions.PORT_ATTR, Integer.class));
         return op;
     }
 
@@ -76,18 +74,18 @@ public abstract class SocketOperationCollectionAspectTestSupport
                                     frame);
         ExternalResourceAnalyzer                analyzer=new SocketExternalResourceAnalyzer();
         Collection<ExternalResourceDescriptor>  results=analyzer.locateExternalResourceName(trace);
-        Assert.assertFalse("No results returned", (results == null) || results.isEmpty());
-        Assert.assertEquals("Too many results returned", 1, results.size());
+        assertFalse("No results returned", (results == null) || results.isEmpty());
+        assertEquals("Too many results returned", 1, results.size());
 
         ExternalResourceDescriptor  desc=results.iterator().next();
         String                      expectedName=MD5NameGenerator.getName(expAddress + ":" + expPort);
-        Assert.assertSame("Mismatched frame", frame, desc.getFrame());
-        Assert.assertEquals("Mismatched name", expectedName, desc.getName());
-        Assert.assertEquals("Mismatched type", expType.name(), desc.getType());
-        Assert.assertNull("Unexpected vendor", desc.getVendor());
-        Assert.assertEquals("Mismatched host", expAddress, desc.getHost());
-        Assert.assertEquals("Mismatched port", TEST_PORT, desc.getPort());
-        Assert.assertEquals("Mismatched direction", Boolean.FALSE, Boolean.valueOf(desc.isIncoming()));
+        assertSame("Mismatched frame", frame, desc.getFrame());
+        assertEquals("Mismatched name", expectedName, desc.getName());
+        assertEquals("Mismatched type", expType.name(), desc.getType());
+        assertNull("Unexpected vendor", desc.getVendor());
+        assertEquals("Mismatched host", expAddress, desc.getHost());
+        assertEquals("Mismatched port", TEST_PORT, desc.getPort());
+        assertEquals("Mismatched direction", Boolean.FALSE, Boolean.valueOf(desc.isIncoming()));
         
         return op;
     }
@@ -111,10 +109,10 @@ public abstract class SocketOperationCollectionAspectTestSupport
                                              boolean                    shouldObscure) {
         Set<?>  markedValues=marker.getValues();
         if (shouldObscure) {
-            Assert.assertTrue("assertObscureTestResults(" + pattern + ") Address not obscured: " + testAddress,
+            assertTrue("assertObscureTestResults(" + pattern + ") Address not obscured: " + testAddress,
                               markedValues.contains(testAddress));
         } else {
-            Assert.assertFalse("assertObscureTestResults(" + pattern + ") Address un-necessarily obscured",
+            assertFalse("assertObscureTestResults(" + pattern + ") Address un-necessarily obscured",
                                markedValues.contains(testAddress));
         }
     }

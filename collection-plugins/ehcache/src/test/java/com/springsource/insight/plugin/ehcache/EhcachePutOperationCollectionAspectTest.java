@@ -17,9 +17,7 @@ package com.springsource.insight.plugin.ehcache;
 
 import net.sf.ehcache.Element;
 
-import org.junit.Assert;
 import org.junit.Test;
-
 
 /**
  * 
@@ -54,7 +52,7 @@ public class EhcachePutOperationCollectionAspectTest
     @Test
     public void testPutIfAbsent () {
         Object  key="testPutIfAbsent", value=Long.valueOf(System.nanoTime());
-        Assert.assertNull("Unexpected previous mapping", cache.putIfAbsent(new Element(key, value)));
+        assertNull("Unexpected previous mapping", cache.putIfAbsent(new Element(key, value)));
         assertEhcacheOperationContents(EhcacheDefinitions.PUT_METHOD, key, value);
     }
 

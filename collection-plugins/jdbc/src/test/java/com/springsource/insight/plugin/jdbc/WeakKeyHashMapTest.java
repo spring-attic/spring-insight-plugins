@@ -15,24 +15,24 @@
  */
 package com.springsource.insight.plugin.jdbc;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Random;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import com.springsource.insight.collection.AbstractCollectionTestSupport;
 import com.springsource.insight.util.test.MicroBenchmark;
 
 
-public class WeakKeyHashMapTest {
+public class WeakKeyHashMapTest extends AbstractCollectionTestSupport  {
     WeakKeyHashMap<FatObj, String> storage;
     final Random r = new Random(System.nanoTime());
     
     @Before
+    @Override
     public void setUp() {
+    	super.setUp();
         storage = new WeakKeyHashMap<FatObj, String>();
     }
     

@@ -50,7 +50,6 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -176,7 +175,7 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
             String  excValue=null;
             try {
                 HttpResponse    rsp=runner.execute(httpClient);
-                Assert.fail("Unexpected sucess of " + runner + ": " + rsp);
+                fail("Unexpected sucess of " + runner + ": " + rsp);
             } catch(IllegalArgumentException e) {
                 // expected - thrown by HttpClient when null request supplied
                 excValue = StringFormatterUtils.formatStackTrace(e);
@@ -185,7 +184,7 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
             Operation   op=assertExecutionResult(HttpClientDefinitions.PLACEHOLDER_URI_VALUE,
                                                  HttpPlaceholderRequest.PLACEHOLDER,
                                                  null, true);
-            Assert.assertEquals("Mismatched exception value for " + runner,
+            assertEquals("Mismatched exception value for " + runner,
                     excValue,
                     op.get(OperationFields.EXCEPTION, String.class));
             Mockito.reset(spiedOperationCollector); // prepare for next iteration
@@ -241,8 +240,8 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
         Set<Object>         obscuredValues=marker.getValues();
         for (String name : headerSet) {
             String  value=hdrsMap.get(name);
-            Assert.assertNotNull("Missing header=" + name, value);
-            Assert.assertTrue("Unobscured value of " + name, obscuredValues.contains(value));
+            assertNotNull("Missing header=" + name, value);
+            assertTrue("Unobscured value of " + name, obscuredValues.contains(value));
         }
         
         return hdrsMap;
@@ -266,7 +265,7 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
                 public HttpResponse handleResponse(HttpResponse response)
                         throws ClientProtocolException, IOException {
                     HttpResponse    prevValue=rspRef.getAndSet(response);
-                    Assert.assertNull("Duplicate response handling", prevValue);
+                    assertNull("Duplicate response handling", prevValue);
                     return response;
                 }
             };
@@ -284,7 +283,7 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
                      ;
          }
 
-         Assert.assertSame("Mismatched reference and return value", response, rspRef.get());
+         assertSame("Mismatched reference and return value", response, rspRef.get());
          handleResponse(testName, uri, request, response, true);
     }
 
@@ -338,20 +337,20 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
                                              boolean       checkHeaders)
     {
         Operation op=getLastEntered();
-        Assert.assertNotNull("No operation extracted", op);
-        Assert.assertEquals("Mismatched operation type for " + uri, HttpClientDefinitions.TYPE, op.getType());
+        assertNotNull("No operation extracted", op);
+        assertEquals("Mismatched operation type for " + uri, HttpClientDefinitions.TYPE, op.getType());
         assertRequestDetails(uri, op.get("request", OperationMap.class), request, checkHeaders);
         assertResponseDetails(uri, op.get("response", OperationMap.class), response, checkHeaders);
         return op;
     }
 
     private OperationMap assertRequestDetails (String uri, OperationMap details, HttpRequest request, boolean checkHeaders) {
-        Assert.assertNotNull("No request details for " + uri, details);
+        assertNotNull("No request details for " + uri, details);
 
         RequestLine     reqLine=request.getRequestLine();
-        Assert.assertEquals("Mismatched method", reqLine.getMethod(), details.get("method"));
-        Assert.assertEquals("Mismatched URI", reqLine.getUri(), details.get(OperationFields.URI));
-        Assert.assertEquals("Mismatched protocol",
+        assertEquals("Mismatched method", reqLine.getMethod(), details.get("method"));
+        assertEquals("Mismatched URI", reqLine.getUri(), details.get(OperationFields.URI));
+        assertEquals("Mismatched protocol",
                             HttpClientExecutionCollectionAspect.createVersionValue(reqLine.getProtocolVersion()),
                             details.get("protocol"));
         if (checkHeaders) {
@@ -367,10 +366,10 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
         }
 
         StatusLine statusLine = response.getStatusLine();
-        Assert.assertEquals("Mismatched status code",
+        assertEquals("Mismatched status code",
                             Integer.valueOf(statusLine.getStatusCode()),
                             details.get("statusCode"));
-        Assert.assertEquals("Mismatched reason phrase", statusLine.getReasonPhrase(), details.get("reasonPhrase"));
+        assertEquals("Mismatched reason phrase", statusLine.getReasonPhrase(), details.get("reasonPhrase"));
         if (checkHeaders) {
             assertHeadersContents(uri, "response", details, response);
         }
@@ -380,22 +379,22 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
 
     private void assertHeadersContents (String uri, String type, OperationMap details, HttpMessage message) {
         OperationList headers=details.get("headers", OperationList.class);
-        Assert.assertNotNull("No " + type + " headers for " + uri, headers);
+        assertNotNull("No " + type + " headers for " + uri, headers);
 
         Header[]    hdrArray=message.getAllHeaders();
         int         numHdrs=(hdrArray == null) ? 0 : hdrArray.length;
-        Assert.assertEquals("Mismatched " + type + " number of headers", numHdrs, headers.size());
+        assertEquals("Mismatched " + type + " number of headers", numHdrs, headers.size());
         if (numHdrs <= 0) {
             return;
         }
 
         Map<String,String>  opHdrs=toHeadersMap(headers);
         Map<String,String>  msgHdrs=toHeadersMap(hdrArray);
-        Assert.assertEquals("Mismatched " + type + " headers map size", msgHdrs.size(), opHdrs.size());
+        assertEquals("Mismatched " + type + " headers map size", msgHdrs.size(), opHdrs.size());
         
         for (Map.Entry<String,String> hdrValue : msgHdrs.entrySet()) {
             String  name=hdrValue.getKey();
-            Assert.assertEquals("Mismatched " + type + " value for " + name + " header",
+            assertEquals("Mismatched " + type + " value for " + name + " header",
                                 hdrValue.getValue(), opHdrs.get(name));
         }
     }

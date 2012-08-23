@@ -17,7 +17,6 @@
 package com.springsource.insight.plugin.eclipse.persistence;
 
 import org.eclipse.persistence.sessions.DatabaseSession;
-import org.junit.Assert;
 
 import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
@@ -35,9 +34,9 @@ public abstract class EclipsePersistenceCollectionTestSupport
 
     protected Operation assertPersistenceOperation (String testName, OperationType opType, String action) {
         Operation   op=getLastEntered();
-        Assert.assertNotNull(testName + ": No operation extracted", op);
-        Assert.assertEquals(testName + ": Mismatched operation type", opType, op.getType());
-        Assert.assertEquals(testName + ": Mismatched action value", action, op.get(EclipsePersistenceDefinitions.ACTION_ATTR,String.class));
+        assertNotNull(testName + ": No operation extracted", op);
+        assertEquals(testName + ": Mismatched operation type", opType, op.getType());
+        assertEquals(testName + ": Mismatched action value", action, op.get(EclipsePersistenceDefinitions.ACTION_ATTR,String.class));
         return op;
     }
 }

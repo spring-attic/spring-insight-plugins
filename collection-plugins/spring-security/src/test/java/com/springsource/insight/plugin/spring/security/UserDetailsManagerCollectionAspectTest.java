@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.UUID;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -77,7 +76,7 @@ public class UserDetailsManagerCollectionAspectTest
         manager.addUser(createUser(USERNAME));
 
         UserDetails result=manager.loadUserByUsername(USERNAME);
-        Assert.assertNotNull("Mismatched loaded user instances", result);
+        assertNotNull("Mismatched loaded user instances", result);
 
         // the result is created by the UserDetailsOperationCollector
         Operation   op=assertOperationResult("loadUserByUsername", result, UserDetailsOperationCollector.RESULT_MAP_NAME);
@@ -124,10 +123,10 @@ public class UserDetailsManagerCollectionAspectTest
         manager.changePassword(oldPassword, newPassword);
 
         Operation   op=assertOperationAction("changePassword");
-        Assert.assertEquals("Mismatched old password", oldPassword, op.get("oldPassword", String.class));
+        assertEquals("Mismatched old password", oldPassword, op.get("oldPassword", String.class));
         assertObscuredString("oldPassword", oldPassword);
 
-        Assert.assertEquals("Mismatched new password", newPassword, op.get("newPassword", String.class));
+        assertEquals("Mismatched new password", newPassword, op.get("newPassword", String.class));
         assertObscuredString("newPassword", newPassword);
     }
 
@@ -136,16 +135,16 @@ public class UserDetailsManagerCollectionAspectTest
     }
 
     protected Operation assertExtractedUsername (Operation op, String username) {
-        Assert.assertNotNull("No operation extracted", op);
-        Assert.assertEquals("Mismatched operation type", SpringSecurityDefinitions.USER_OP, op.getType());
-        Assert.assertEquals("Mismatched username value", username, op.get("username", String.class));
+        assertNotNull("No operation extracted", op);
+        assertEquals("Mismatched operation type", SpringSecurityDefinitions.USER_OP, op.getType());
+        assertEquals("Mismatched username value", username, op.get("username", String.class));
         assertObscuredString("username", username);
         return op;
     }
 
     protected void assertObscuredString (String type, String value) {
         Collection<?> obscuredValues=marker.getValues();
-        Assert.assertTrue("Not obscured - " + type, obscuredValues.contains(value));
+        assertTrue("Not obscured - " + type, obscuredValues.contains(value));
     }
 
     protected Operation assertOperationResult (String actionName, UserDetails details, String mapName) {
@@ -156,15 +155,15 @@ public class UserDetailsManagerCollectionAspectTest
     }
 
     protected void assertObscuredDetails (UserDetails details, Collection<?> obscuredValues) {
-        Assert.assertTrue("Username not obscured", obscuredValues.contains(details.getUsername()));
-        Assert.assertTrue("Password not obscured", obscuredValues.contains(details.getPassword()));
+        assertTrue("Username not obscured", obscuredValues.contains(details.getUsername()));
+        assertTrue("Password not obscured", obscuredValues.contains(details.getPassword()));
     }
 
     protected Operation assertOperationAction (String actionName) {
         Operation op=getLastEntered();
-        Assert.assertNotNull("No operation extracted", op);
-        Assert.assertEquals("Mismatched operation type", SpringSecurityDefinitions.USER_OP, op.getType());
-        Assert.assertEquals("Mismatched action name", actionName, op.get("action", String.class));
+        assertNotNull("No operation extracted", op);
+        assertEquals("Mismatched operation type", SpringSecurityDefinitions.USER_OP, op.getType());
+        assertEquals("Mismatched action name", actionName, op.get("action", String.class));
         return op;
     }
 
@@ -173,17 +172,17 @@ public class UserDetailsManagerCollectionAspectTest
             return null;
         }
 
-        Assert.assertEquals("Mismatched username",
+        assertEquals("Mismatched username",
                 details.getUsername(), mapValue.get("username", String.class));
-        Assert.assertEquals("Mismatched password",
+        assertEquals("Mismatched password",
                 details.getPassword(), mapValue.get("password", String.class));
-        Assert.assertEquals("Mismatched accountNonExpired",
+        assertEquals("Mismatched accountNonExpired",
                 Boolean.valueOf(details.isAccountNonExpired()), mapValue.get("accountNonExpired", Boolean.class));
-        Assert.assertEquals("Mismatched accountNonLocked",
+        assertEquals("Mismatched accountNonLocked",
                 Boolean.valueOf(details.isAccountNonLocked()), mapValue.get("accountNonLocked", Boolean.class));
-        Assert.assertEquals("Mismatched credentialsNonExpired",
+        assertEquals("Mismatched credentialsNonExpired",
                 Boolean.valueOf(details.isCredentialsNonExpired()), mapValue.get("credentialsNonExpired", Boolean.class));
-        Assert.assertEquals("Mismatched enabled",
+        assertEquals("Mismatched enabled",
                 Boolean.valueOf(details.isEnabled()), mapValue.get("enabled", Boolean.class));
         assertGrantedAuthoritiesInstances(mapValue.get(ObscuringOperationCollector.GRANTED_AUTHS_LIST_NAME, OperationList.class),
                                           details.getAuthorities());

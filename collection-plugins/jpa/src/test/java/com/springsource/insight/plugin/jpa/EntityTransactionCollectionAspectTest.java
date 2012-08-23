@@ -20,7 +20,6 @@ import java.util.logging.Logger;
 
 import javax.persistence.EntityTransaction;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -44,9 +43,9 @@ public class EntityTransactionCollectionAspectTest
 
             String      actionName=action.name().toLowerCase();
             Operation   op=getLastEntered();
-            Assert.assertNotNull(actionName + ": No operation extracted", op);
-            Assert.assertEquals(actionName + ": Mismatched operation type", JpaDefinitions.TX_ENTITY, op.getType());
-            Assert.assertEquals(actionName + ": Mismatched action name", actionName, op.get(OperationFields.METHOD_NAME,String.class));
+            assertNotNull(actionName + ": No operation extracted", op);
+            assertEquals(actionName + ": Mismatched operation type", JpaDefinitions.TX_ENTITY, op.getType());
+            assertEquals(actionName + ": Mismatched action name", actionName, op.get(OperationFields.METHOD_NAME,String.class));
             Mockito.reset(spiedOperationCollector); // prepare for next iteration
         }
     }

@@ -15,13 +15,11 @@
  */
 package com.springsource.insight.plugin.logging;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.springsource.insight.intercept.operation.Operation;
-
 
 /**
  * 
@@ -74,18 +72,15 @@ public class Slf4jLoggingOperationCollectionAspectTest
        logger.error(msg, args);
        assertLoggingOperation(logger, "ERROR", msg, null);
     }
-    /*
-     * @see com.springsource.insight.collection.OperationCollectionAspectTestSupport#getAspect()
-     */
+
     @Override
     public Slf4jLoggingOperationCollectionAspect getAspect() {
         return Slf4jLoggingOperationCollectionAspect.aspectOf();
     }
 
-    private Operation assertLoggingOperation (Logger logger, String level, String msg, Throwable t)
-    {
+    private Operation assertLoggingOperation (Logger logger, String level, String msg, Throwable t) {
         Operation   op=assertLoggingOperation(Logger.class, level, msg, t);
-        Assert.assertEquals("Mismatched logger name", logger.getName(), op.get(LoggingDefinitions.NAME_ATTR));
+        assertEquals("Mismatched logger name", logger.getName(), op.get(LoggingDefinitions.NAME_ATTR));
         return op;
     }
 

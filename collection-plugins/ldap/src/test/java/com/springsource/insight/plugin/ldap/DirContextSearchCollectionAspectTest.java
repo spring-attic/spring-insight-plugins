@@ -37,7 +37,6 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.util.ReflectionUtils;
@@ -65,14 +64,14 @@ public class DirContextSearchCollectionAspectTest
                  && Modifier.isFinal(mod)) {
                     String  name=field.getName();
                     if (name.endsWith("_SCOPE")) {
-                        Assert.assertNull("Multiple mappings for field=" + name,
+                        assertNull("Multiple mappings for field=" + name,
                                           knownScopes.put(name, Integer.valueOf(field.getInt(null))));
                     }
                 }
             }
         });
         
-        Assert.assertEquals("Mismatched supported num of scopes",
+        assertEquals("Mismatched supported num of scopes",
                             knownScopes.size(),
                             DirContextSearchCollectionAspect.scopes.size());
         for (Map.Entry<String,Integer> se : knownScopes.entrySet()) {
@@ -81,7 +80,7 @@ public class DirContextSearchCollectionAspectTest
             SearchControls  sc=createSearchControls(value.intValue(), 0L, false, false, 1);
             String  expScope=DirContextSearchCollectionAspect.scopes.get(value),
                     actScope=DirContextSearchCollectionAspect.resolveScope(sc);
-            Assert.assertEquals("Mismatched scope names for " + name, expScope, actScope);
+            assertEquals("Mismatched scope names for " + name, expScope, actScope);
         }
     }
 
@@ -133,34 +132,34 @@ public class DirContextSearchCollectionAspectTest
         for (final SearchControlsActions action : SearchControlsActions.values()) {
             aspectInstance.setCollector(new OperationCollector() {
                     public void enter(Operation operation) {
-                        Assert.fail(action + ": Unexpected enter call");
+                        fail(action + ": Unexpected enter call");
                     }
     
                     public void exitNormal() {
-                        Assert.fail(action + ": Unexpected exitNormal call");
+                        fail(action + ": Unexpected exitNormal call");
                     }
     
                     public void exitNormal(Object returnValue) {
-                        Assert.fail(action + ": Unexpected exitNormal call with value");
+                        fail(action + ": Unexpected exitNormal call with value");
                     }
     
                     public void exitAbnormal(Throwable throwable) {
-                        Assert.fail(action + ": Unexpected exitAbnormal call");
+                        fail(action + ": Unexpected exitAbnormal call");
                     }
     
                     public void exitAndDiscard() {
-                        Assert.fail(action + ": Unexpected exitAndDiscard call");
+                        fail(action + ": Unexpected exitAndDiscard call");
                     }
     
                     public void exitAndDiscard(Object returnValue) {
-                        Assert.fail(action + ": Unexpected exitAndDiscard call with value");
+                        fail(action + ": Unexpected exitAndDiscard call with value");
                     }
                 });
             NamingEnumeration<SearchResult> result=
                     action.search(context, "type=test", "blah blah", action);
             try {
-                Assert.assertNotNull(action + ": no result", result);
-                Assert.assertFalse(action + ": unexpected result", result.hasMore());
+                assertNotNull(action + ": no result", result);
+                assertFalse(action + ": unexpected result", result.hasMore());
             } finally {
                 result.close();
             }
@@ -179,8 +178,8 @@ public class DirContextSearchCollectionAspectTest
                 continue;
             }
             Set<String> values=ldifEntry.get("cn");
-            Assert.assertNotNull("No CN for " + ldifEntry, values);
-            Assert.assertEquals("Multiple CB(s) for " + ldifEntry, 1, values.size());
+            assertNotNull("No CN for " + ldifEntry, values);
+            assertEquals("Multiple CB(s) for " + ldifEntry, 1, values.size());
 
             /*
              * The LDIF is set up in such a way that for person(s), the
@@ -212,10 +211,10 @@ public class DirContextSearchCollectionAspectTest
 
                     NamingEnumeration<SearchResult> result=
                             action.search(context, BASE_DN, TEST_FILTER, SEARCH_ARGS);
-                    Assert.assertNotNull(TEST_NAME + ": No result", result);
+                    assertNotNull(TEST_NAME + ": No result", result);
                     try {
                         if (!checkMatchingSearchResult(result, "cn", cnValue)) {
-                            Assert.fail(TEST_NAME + ": No match found");
+                            fail(TEST_NAME + ": No match found");
                         }
                     } finally {
                         result.close();
@@ -230,7 +229,7 @@ public class DirContextSearchCollectionAspectTest
                 }
 
                 Operation   op=assertContextOperation(TEST_NAME, BASE_DN, environment);
-                Assert.assertEquals(TEST_NAME + ": Mismatched filter",
+                assertEquals(TEST_NAME + ": Mismatched filter",
                                     TEST_FILTER, op.get(LdapDefinitions.LOOKUP_FILTER_ATTR, String.class));
                 assertExternalResourceAnalysis(TEST_NAME, op, (String) environment.get(Context.PROVIDER_URL));
                 Mockito.reset(spiedOperationCollector); // prepare for next iteration

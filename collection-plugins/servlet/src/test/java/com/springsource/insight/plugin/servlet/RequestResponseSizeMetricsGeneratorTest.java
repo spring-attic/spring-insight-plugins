@@ -15,8 +15,6 @@
  */
 package com.springsource.insight.plugin.servlet;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -25,6 +23,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.springsource.insight.collection.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.metrics.MetricsBag;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
@@ -37,7 +36,7 @@ import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.IDataPoint;
 import com.springsource.insight.util.time.TimeRange;
 
-public class RequestResponseSizeMetricsGeneratorTest {
+public class RequestResponseSizeMetricsGeneratorTest extends AbstractCollectionTestSupport {
     
     private TimeRange timeRange = new TimeRange(1304387418963003000l, 1304387419123224000l);
     

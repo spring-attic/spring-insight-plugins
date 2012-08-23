@@ -16,14 +16,11 @@
 
 package com.springsource.insight.plugin.ehcache;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-
 import java.util.List;
 
 import org.junit.Test;
 
+import com.springsource.insight.collection.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
@@ -35,7 +32,7 @@ import com.springsource.insight.intercept.trace.SimpleFrameBuilder;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
 
-public class EhcacheResourceAnalyzerTest {
+public class EhcacheResourceAnalyzerTest extends AbstractCollectionTestSupport {
     private final EhcacheExternalResourceAnalyzer analyzer = new EhcacheExternalResourceAnalyzer();
 
     @Test

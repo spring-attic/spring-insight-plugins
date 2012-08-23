@@ -38,7 +38,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.directory.server.core.DefaultDirectoryService;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.springframework.security.ldap.server.ApacheDSContainer;
 import org.springframework.util.FileSystemUtils;
@@ -125,20 +124,20 @@ public abstract class LdapOperationCollectionAspectTestSupport
 
     protected Operation assertContextOperation (String testName, String lookupName, Map<?,?> environment) {
         Operation   op=getLastEntered();
-        Assert.assertNotNull(testName + ": No operation generated", op);
-        Assert.assertEquals(testName + ": Mismatched operation type", LdapDefinitions.LDAP_OP, op.getType());
-        Assert.assertEquals(testName + ": Mismatched lookup name",
+        assertNotNull(testName + ": No operation generated", op);
+        assertEquals(testName + ": Mismatched operation type", LdapDefinitions.LDAP_OP, op.getType());
+        assertEquals(testName + ": Mismatched lookup name",
                             lookupName, op.get(LdapDefinitions.LOOKUP_NAME_ATTR, String.class));
 
         LdapOperationCollectionAspectSupport    aspectInstance=
                 (LdapOperationCollectionAspectSupport) getAspect();
-        Assert.assertEquals(testName + ": Mismatched action",
+        assertEquals(testName + ": Mismatched action",
                             aspectInstance.action, op.get(OperationFields.METHOD_NAME, String.class));
 
         Class<?>    contextClass=aspectInstance.contextClass;
-        Assert.assertEquals(testName + ": Mismatched short class name",
+        assertEquals(testName + ": Mismatched short class name",
                             contextClass.getSimpleName(), op.get(OperationFields.SHORT_CLASS_NAME, String.class));
-        Assert.assertEquals(testName + ": Mismatched full class name",
+        assertEquals(testName + ": Mismatched full class name",
                 contextClass.getName(), op.get(OperationFields.CLASS_NAME, String.class));
         return op;
     }
@@ -153,21 +152,21 @@ public abstract class LdapOperationCollectionAspectTestSupport
                                 TraceId.valueOf("0"),
                                 frame);
         Collection<ExternalResourceDescriptor>    result=analyzer.locateExternalResourceName(trace);
-        Assert.assertNotNull(testName + ": No external resources recovered", result);
-        Assert.assertEquals(testName + ": Mismatched number of results", 1, result.size());
+        assertNotNull(testName + ": No external resources recovered", result);
+        assertEquals(testName + ": Mismatched number of results", 1, result.size());
 
         ExternalResourceDescriptor  desc=result.iterator().next();
-        Assert.assertSame(testName + ": Mismatched result frame", frame, desc.getFrame());
-        Assert.assertEquals(testName + ": Mismathed name",
+        assertSame(testName + ": Mismatched result frame", frame, desc.getFrame());
+        assertEquals(testName + ": Mismathed name",
                             MD5NameGenerator.getName(ldapUrl), desc.getName());
-        Assert.assertEquals(testName + ": Mismatched vendor", ldapUrl, desc.getVendor());
-        Assert.assertEquals(testName + ": Mismatched label", ldapUrl, desc.getLabel());
-        Assert.assertEquals(testName + ": Mismatched type",
+        assertEquals(testName + ": Mismatched vendor", ldapUrl, desc.getVendor());
+        assertEquals(testName + ": Mismatched label", ldapUrl, desc.getLabel());
+        assertEquals(testName + ": Mismatched type",
                             ExternalResourceType.LDAP.name(), desc.getType());
         
         URI uri=new URI(ldapUrl);
-        Assert.assertEquals(testName + ": Mismatched host", uri.getHost(), desc.getHost());
-        Assert.assertEquals(testName + ": Mismatched port",
+        assertEquals(testName + ": Mismatched host", uri.getHost(), desc.getHost());
+        assertEquals(testName + ": Mismatched port",
                             LdapExternalResourceAnalyzer.resolvePort(uri), desc.getPort());
         return result;
     }
@@ -194,7 +193,7 @@ public abstract class LdapOperationCollectionAspectTestSupport
             throws IOException {
         ClassLoader cl=ClassUtil.getDefaultClassLoader();
         InputStream in=cl.getResourceAsStream(location);
-        Assert.assertNotNull("No LDIF input at " + location, in);
+        assertNotNull("No LDIF input at " + location, in);
 
         BufferedReader  rdr=new BufferedReader(new InputStreamReader(in));
         try {
@@ -236,7 +235,7 @@ public abstract class LdapOperationCollectionAspectTestSupport
             }
 
             if ("dn".equalsIgnoreCase(name)) {
-                Assert.assertTrue("DN(" + value + ") not subset of root (" + ROOT_DN + ")",
+                assertTrue("DN(" + value + ") not subset of root (" + ROOT_DN + ")",
                                   value.toLowerCase().endsWith(ROOT_DN.toLowerCase()));
             }
 

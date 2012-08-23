@@ -15,23 +15,21 @@
  */
 package com.springsource.insight.plugin.servlet;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-import com.springsource.insight.intercept.operation.OperationFields;
 import org.junit.Test;
 
+import com.springsource.insight.collection.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.SimpleFrameBuilder;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
 
-public class ServletEndPointAnalyzerTest {
+public class ServletEndPointAnalyzerTest extends AbstractCollectionTestSupport {
     private ApplicationName appKey = ApplicationName.valueOf("app");
     
     @Test

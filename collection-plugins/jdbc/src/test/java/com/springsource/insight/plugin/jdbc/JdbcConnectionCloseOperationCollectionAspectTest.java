@@ -22,7 +22,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
@@ -71,9 +70,9 @@ public class JdbcConnectionCloseOperationCollectionAspectTest
         tracker.startTracking(conn, URL);
         try {
             conn.close();
-            Assert.fail("Unexpected closure success");
+            fail("Unexpected closure success");
         } catch(SQLException e) {
-            Assert.assertSame("Mismatched thrown exception", toThrow, e);
+            assertSame("Mismatched thrown exception", toThrow, e);
         }
         
         assertCloseDetails(URL);
@@ -86,7 +85,7 @@ public class JdbcConnectionCloseOperationCollectionAspectTest
         aspectInstance.setCollector(new OperationCollector() {
                 public void enter(Operation operation) {
                     Operation prev=opRef.getAndSet(operation);
-                    Assert.assertNull("Multiple enter calls", prev);
+                    assertNull("Multiple enter calls", prev);
                 }
     
                 public void exitNormal() {

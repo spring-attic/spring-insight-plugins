@@ -21,8 +21,7 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Assert;
-
+import com.springsource.insight.collection.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 
@@ -30,7 +29,7 @@ import com.springsource.insight.intercept.operation.Operation;
  * Note: we do not inherit from OperationCollectionAspectTestSupport due
  * to connect/accept aspects conflicts
  */
-public abstract class SocketAcceptCollectionAspectTestSupport extends Assert {
+public abstract class SocketAcceptCollectionAspectTestSupport extends AbstractCollectionTestSupport {
 
     protected SocketAcceptCollectionAspectTestSupport() {
         super();
@@ -51,14 +50,14 @@ public abstract class SocketAcceptCollectionAspectTestSupport extends Assert {
             socket.close(); // just in case it somehow succeeded
 
 	        t.join(TimeUnit.SECONDS.toMillis(5L));
-	        Assert.assertFalse(testName + ": Accepting thread still alive", t.isAlive());
+	        assertFalse(testName + ": Accepting thread still alive", t.isAlive());
 	        
 	        Operation   opCollected=collector.getCollectedOperation();
-	        Assert.assertNotNull(testName + ": No operation collected", opCollected);
-	        Assert.assertEquals(testName + ": Mismatched types", SocketDefinitions.TYPE, opCollected.getType());
+	        assertNotNull(testName + ": No operation collected", opCollected);
+	        assertEquals(testName + ": Mismatched types", SocketDefinitions.TYPE, opCollected.getType());
 	
 	        Operation opAccepted=acceptor.getOperation();
-	        Assert.assertNotNull(testName + ": No operation accepted", opAccepted);
+	        assertNotNull(testName + ": No operation accepted", opAccepted);
 	        
 	        for (String attrName : new String[] {
 	                SocketDefinitions.ACTION_ATTR,
@@ -67,14 +66,12 @@ public abstract class SocketAcceptCollectionAspectTestSupport extends Assert {
 	            }) {
 	            Object  valCollected=opCollected.get(attrName),
 	                    valAccepted=opAccepted.get(attrName);
-	            Assert.assertEquals(testName + ": Mismatched values for " + attrName, valCollected, valAccepted);
+	            assertEquals(testName + ": Mismatched values for " + attrName, valCollected, valAccepted);
 	        }
         
         } finally {
             acceptor.close();
         }
-        
-                
     }
 
     public abstract SocketOperationCollectionAspectSupport getAspect();

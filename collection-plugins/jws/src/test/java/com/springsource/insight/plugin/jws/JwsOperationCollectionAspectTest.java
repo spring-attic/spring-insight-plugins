@@ -19,7 +19,6 @@ import java.util.Date;
 
 import javax.jws.WebParam;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -73,7 +72,7 @@ public class JwsOperationCollectionAspectTest extends OperationCollectionAspectT
             expDate = testService.getTomorrowDate(now, false);
             actDate = new Date(now + 86400000L);
         } else {
-            Assert.fail("Unknown call type: " + callType);
+            fail("Unknown call type: " + callType);
             return;
         }
 
@@ -81,15 +80,15 @@ public class JwsOperationCollectionAspectTest extends OperationCollectionAspectT
         Mockito.verify(spiedOperationCollector).enter(operationCaptor.capture());
 
         final Operation op=operationCaptor.getValue();
-        Assert.assertNotNull("No operation extracted", op);
-        Assert.assertEquals("Mismatched operation type(s)", JwsDefinitions.TYPE, op.getType());
+        assertNotNull("No operation extracted", op);
+        assertEquals("Mismatched operation type(s)", JwsDefinitions.TYPE, op.getType());
 
         if (op.isFinalizable()) {
             op.finalizeConstruction();
         }
 
         final long  valsDiff=Math.abs(expDate.getTime() - actDate.getTime());
-        Assert.assertTrue("Mismatched call return values", valsDiff < 5000L);
+        assertTrue("Mismatched call return values", valsDiff < 5000L);
 
         assertServiceInformation(callType, op);
 
@@ -115,8 +114,8 @@ public class JwsOperationCollectionAspectTest extends OperationCollectionAspectT
         assertOperationValue(callType, op, "op. exclude", "exclude", Boolean.valueOf(JwsServiceDefinitions.EXCLUDE_METHOD), Boolean.class);
 
         final OperationList opList=op.get("webParams", OperationList.class);
-        Assert.assertNotNull(callType + "[Missing path parameters list]", opList);
-        Assert.assertEquals(callType + "[Unexpected number of path parameters]", 1, opList.size());
+        assertNotNull(callType + "[Missing path parameters list]", opList);
+        assertEquals(callType + "[Unexpected number of path parameters]", 1, opList.size());
         assertWebParams(callType, opList.get(0, OperationMap.class));
     }
 
@@ -128,11 +127,11 @@ public class JwsOperationCollectionAspectTest extends OperationCollectionAspectT
     private <T> void assertOperationValue (
             final String callType, final Operation op, final String valueType,
             final String key, final T expValue, final Class<T> expType) {
-        Assert.assertEquals(callType + "[Mismatched " + valueType + "]", expValue, op.get(key, expType));
+        assertEquals(callType + "[Mismatched " + valueType + "]", expValue, op.get(key, expType));
     }
 
     private void assertWebParams (final String callType, final OperationMap map) {
-        Assert.assertNotNull(callType + "[No web parameters map]", map);
+        assertNotNull(callType + "[No web parameters map]", map);
 
         assertMapOperationValue(callType, map, "param name", "name", callType + JwsServiceDefinitions.PARAM_SUFFIX);
         assertMapOperationValue(callType, map, "param part", "partName", callType + JwsServiceDefinitions.PARAM_SUFFIX);
@@ -150,6 +149,6 @@ public class JwsOperationCollectionAspectTest extends OperationCollectionAspectT
     private  <T> void assertMapOperationValue (
             final String callType, final OperationMap map, final String valueType,
             final String key, final T expValue, final Class<T> expType) {
-        Assert.assertEquals(callType + "[Mismatched " + valueType + "]", expValue, map.get(key, expType));
+        assertEquals(callType + "[Mismatched " + valueType + "]", expValue, map.get(key, expType));
     }
 }

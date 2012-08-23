@@ -15,7 +15,6 @@
  */
 package com.springsource.insight.plugin.hadoop;
 
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -39,12 +38,12 @@ public class JobOperationCollectionAspectTest extends OperationCollectionAspectT
 	public void testRun() throws Exception {
 		// Step 1: Execute test
 		new WordCount().run(null);
-	
+
 		// Step 2:  Get the Operation that was just created by our aspect
 		Operation op = getLastEntered();
-		Assert.assertNotNull("No Hadoop-Reduce operation data is intercepted",op);
+		assertNotNull("No Hadoop-Reduce operation data is intercepted",op);
 
 		// Step 3:  Validate
-		Assert.assertEquals("Invalid operation type", OperationCollectionTypes.JOB_TYPE.type, op.getType());
+		assertEquals("Invalid operation type", OperationCollectionTypes.JOB_TYPE.type, op.getType());
 	}
 }

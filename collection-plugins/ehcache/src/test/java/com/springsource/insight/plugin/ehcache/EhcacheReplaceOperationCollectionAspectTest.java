@@ -17,7 +17,6 @@ package com.springsource.insight.plugin.ehcache;
 
 import net.sf.ehcache.Element;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 
@@ -38,7 +37,7 @@ public class EhcacheReplaceOperationCollectionAspectTest
         Object  newValue=Long.valueOf(System.currentTimeMillis() + System.nanoTime());
         Element newElem=new Element(key, newValue);
 
-        Assert.assertTrue("Failed to replace", cache.replace(oldElem, newElem));
+        assertTrue("Failed to replace", cache.replace(oldElem, newElem));
         assertEhcacheOperationContents(EhcacheDefinitions.RPL_METHOD, key, newValue);
     }
 
@@ -49,13 +48,11 @@ public class EhcacheReplaceOperationCollectionAspectTest
         Object  newValue=Long.valueOf(System.currentTimeMillis() + System.nanoTime());
         Element prevElem=cache.replace(new Element(key, newValue));
 
-        Assert.assertSame("Mismatched replaced element", oldElem, prevElem);
-        Assert.assertNotNull("Failed to replace", prevElem);
+        assertSame("Mismatched replaced element", oldElem, prevElem);
+        assertNotNull("Failed to replace", prevElem);
         assertEhcacheOperationContents(EhcacheDefinitions.RPL_METHOD, key, newValue);
     }
-    /*
-     * @see com.springsource.insight.collection.OperationCollectionAspectTestSupport#getAspect()
-     */
+
     @Override
     public EhcacheReplaceOperationCollectionAspect getAspect() {
         return EhcacheReplaceOperationCollectionAspect.aspectOf();

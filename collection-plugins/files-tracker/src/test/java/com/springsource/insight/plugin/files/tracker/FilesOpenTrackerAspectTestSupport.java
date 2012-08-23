@@ -19,8 +19,6 @@ package com.springsource.insight.plugin.files.tracker;
 import java.io.Closeable;
 import java.io.IOException;
 
-import org.junit.Assert;
-
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
@@ -35,7 +33,7 @@ public abstract class FilesOpenTrackerAspectTestSupport extends FilesTrackerAspe
     protected Operation assertFileTrackingOperation (Closeable instance, String filePath, String opcode, String mode) throws IOException {
         Operation   op=super.assertFileTrackingOperation(instance, filePath, opcode, mode);
         String      expected=FileOpenTrackerAspectSupport.createOperationLabel(opcode, mode, filePath);
-        Assert.assertEquals("Mismatched operation label", expected, op.getLabel());
+        assertEquals("Mismatched operation label", expected, op.getLabel());
         return op;
     }
 }

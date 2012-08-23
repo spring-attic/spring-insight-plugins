@@ -18,7 +18,6 @@ package com.springsource.insight.plugin.springbatch;
 
 import java.util.List;
 
-import org.junit.Assert;
 import org.mockito.Mockito;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
@@ -53,35 +52,35 @@ public abstract class SpringBatchOperationCollectionAspectTestSupport
 
     @Override
     protected Operation getLastEnteredOperation(OperationCollector spiedCollector) {
-        Assert.assertTrue("Spied collector type mismatch", spiedCollector instanceof TestDummyOperationCollector);
+        assertTrue("Spied collector type mismatch", spiedCollector instanceof TestDummyOperationCollector);
 
         List<Operation> opsList=((TestDummyOperationCollector) spiedCollector).getCapturedOperations();
-        Assert.assertNotNull("No operations list data", opsList);
-        Assert.assertTrue("No operations collected", opsList.size() > 0);
+        assertNotNull("No operations list data", opsList);
+        assertTrue("No operations collected", opsList.size() > 0);
         return opsList.get(opsList.size() - 1);
     }
 
     protected Operation getFirstEntered() {
         OperationCollectionAspectSupport    aspectInstance=getAspect();
         OperationCollector                  spiedCollector=aspectInstance.getCollector();
-        Assert.assertTrue("Spied collector type mismatch", spiedCollector instanceof TestDummyOperationCollector);
+        assertTrue("Spied collector type mismatch", spiedCollector instanceof TestDummyOperationCollector);
 
         List<Operation> opsList=((TestDummyOperationCollector) spiedCollector).getCapturedOperations();
-        Assert.assertNotNull("No operations list data", opsList);
-        Assert.assertTrue("No operations collected", opsList.size() > 0);
+        assertNotNull("No operations list data", opsList);
+        assertTrue("No operations collected", opsList.size() > 0);
         return opsList.get(0);
     }
 
     protected Operation assertOperationDetails (Operation op, String action, String name) {
-        Assert.assertNotNull("No operation extracted", op);
-        Assert.assertEquals("Mismatched type value", SpringBatchDefinitions.BATCH_TYPE, op.getType());
-        Assert.assertEquals("Mismatched action", action, op.get(SpringBatchDefinitions.ACTION_ATTR, String.class));
-        Assert.assertEquals("Mismatched name", name, op.get(SpringBatchDefinitions.NAME_ATTR, String.class));
+        assertNotNull("No operation extracted", op);
+        assertEquals("Mismatched type value", SpringBatchDefinitions.BATCH_TYPE, op.getType());
+        assertEquals("Mismatched action", action, op.get(SpringBatchDefinitions.ACTION_ATTR, String.class));
+        assertEquals("Mismatched name", name, op.get(SpringBatchDefinitions.NAME_ATTR, String.class));
         
         SpringBatchOperationCollectionAspect    aspectInstance=
                 (SpringBatchOperationCollectionAspect) getAspect();
         Class<?>    batchType=aspectInstance.getBatchType();
-        Assert.assertEquals("Mismatched batch type", batchType.getSimpleName(), op.get(SpringBatchDefinitions.TYPE_ATTR, String.class));
+        assertEquals("Mismatched batch type", batchType.getSimpleName(), op.get(SpringBatchDefinitions.TYPE_ATTR, String.class));
         return op;
     }
 
@@ -96,14 +95,14 @@ public abstract class SpringBatchOperationCollectionAspectTestSupport
     }
 
     protected Operation assertOperationPath (Operation op, String jobName, String stepName) {
-        Assert.assertNotNull("No operation extracted", op);
+        assertNotNull("No operation extracted", op);
 
         if (StringUtils.hasText(jobName)) {
-            Assert.assertEquals("Mismatched job name", jobName, op.get(SpringBatchDefinitions.JOBNAME_ATTR, String.class));
+            assertEquals("Mismatched job name", jobName, op.get(SpringBatchDefinitions.JOBNAME_ATTR, String.class));
         }
 
         if (StringUtils.hasText(stepName)) {
-            Assert.assertEquals("Mismatched step name", stepName, op.get(SpringBatchDefinitions.STEPNAME_ATTR, String.class));
+            assertEquals("Mismatched step name", stepName, op.get(SpringBatchDefinitions.STEPNAME_ATTR, String.class));
         }
 
         return op;

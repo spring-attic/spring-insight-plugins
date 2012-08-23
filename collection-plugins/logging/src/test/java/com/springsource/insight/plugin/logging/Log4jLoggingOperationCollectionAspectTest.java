@@ -17,7 +17,6 @@ package com.springsource.insight.plugin.logging;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.springsource.insight.intercept.operation.Operation;
@@ -100,18 +99,15 @@ public class Log4jLoggingOperationCollectionAspectTest
         logger.log(Level.FATAL, msg, t);
         assertLoggingOperation(logger, "FATAL", msg, t);
     }
-    /*
-     * @see com.springsource.insight.collection.OperationCollectionAspectTestSupport#getAspect()
-     */
+
     @Override
     public Log4jLoggingOperationCollectionAspect getAspect() {
         return Log4jLoggingOperationCollectionAspect.aspectOf();
     }
 
-    private Operation assertLoggingOperation (Logger logger, String level, String msg, Throwable t)
-    {
+    private Operation assertLoggingOperation (Logger logger, String level, String msg, Throwable t) {
         Operation   op=assertLoggingOperation(Logger.class, level, msg, t);
-        Assert.assertEquals("Mismatched logger name", logger.getName(), op.get(LoggingDefinitions.NAME_ATTR));
+        assertEquals("Mismatched logger name", logger.getName(), op.get(LoggingDefinitions.NAME_ATTR));
         return op;
     }
 }

@@ -17,8 +17,6 @@
 
 package com.springsource.insight.plugin.gemfire;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -26,6 +24,7 @@ import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.springsource.insight.collection.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
@@ -40,12 +39,14 @@ import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
 import com.springsource.insight.util.time.TimeRange;
 
-public class GemFireRegionExternalResourceAnalyzerTest {
+public class GemFireRegionExternalResourceAnalyzerTest extends AbstractCollectionTestSupport  {
 
 	GemFireRegionExternalResourceAnalyzer analyzer;
 	
 	@Before
-	public void setup() {
+	@Override
+	public void setUp() {
+		super.setUp();
 		analyzer = new GemFireRegionExternalResourceAnalyzer();
 	}
 

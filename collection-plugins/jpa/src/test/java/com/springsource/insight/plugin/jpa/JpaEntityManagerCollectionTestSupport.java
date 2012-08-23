@@ -33,8 +33,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.metamodel.Metamodel;
 
-import org.junit.Assert;
-
 import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
@@ -54,10 +52,10 @@ public abstract class JpaEntityManagerCollectionTestSupport
     }
 
     static Operation assertManagerOperation (Operation op, String testName, String action, String opGroup) {
-        Assert.assertNotNull(testName + ": No operation extracted", op);
-        Assert.assertEquals(testName + ": Mismatched operation type", JpaDefinitions.ENTITY_MGR, op.getType());
-        Assert.assertEquals(testName + ": Mismatched group", opGroup, op.get(JpaDefinitions.GROUP_ATTR, String.class));
-        Assert.assertEquals(testName + ": Mismatched action", action, op.get(JpaDefinitions.ACTION_ATTR, String.class));
+        assertNotNull(testName + ": No operation extracted", op);
+        assertEquals(testName + ": Mismatched operation type", JpaDefinitions.ENTITY_MGR, op.getType());
+        assertEquals(testName + ": Mismatched group", opGroup, op.get(JpaDefinitions.GROUP_ATTR, String.class));
+        assertEquals(testName + ": Mismatched action", action, op.get(JpaDefinitions.ACTION_ATTR, String.class));
         return op;
     }
 

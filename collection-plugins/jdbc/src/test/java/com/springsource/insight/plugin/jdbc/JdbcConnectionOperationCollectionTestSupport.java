@@ -24,7 +24,6 @@ import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import org.junit.Assert;
 import org.junit.BeforeClass;
 
 import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
@@ -52,7 +51,7 @@ public abstract class JdbcConnectionOperationCollectionTestSupport
         ClassLoader loader=curThread.getContextClassLoader();
         Properties  props=new Properties();
         InputStream in=loader.getResourceAsStream("jdbc.properties");
-        Assert.assertNotNull("Cannot find driver propreties file", in);
+        assertNotNull("Cannot find driver propreties file", in);
         try {
             props.load(in);
         } finally {
@@ -68,7 +67,7 @@ public abstract class JdbcConnectionOperationCollectionTestSupport
         }
 
         connectUrl = props.getProperty("jdbc.url");
-        Assert.assertTrue("Missing jdbc connect url", (connectUrl != null) && (connectUrl.length() > 0));
+        assertTrue("Missing jdbc connect url", (connectUrl != null) && (connectUrl.length() > 0));
 
         String  username = props.getProperty("jdbc.username");
         if (username != null) {
@@ -85,27 +84,27 @@ public abstract class JdbcConnectionOperationCollectionTestSupport
     }
 
     protected static Operation assertConnectDetails (Operation op, String url, String action) {
-        Assert.assertNotNull("No operation extracted", op);
-        Assert.assertEquals("Mismatched operation type", JdbcDriverExternalResourceAnalyzer.TYPE, op.getType());
-        Assert.assertEquals("Mismatched connect URL", url, op.get(OperationFields.CONNECTION_URL, String.class));
-        Assert.assertEquals("Mismatched action", action, op.get(OperationFields.METHOD_NAME, String.class));
+        assertNotNull("No operation extracted", op);
+        assertEquals("Mismatched operation type", JdbcDriverExternalResourceAnalyzer.TYPE, op.getType());
+        assertEquals("Mismatched connect URL", url, op.get(OperationFields.CONNECTION_URL, String.class));
+        assertEquals("Mismatched action", action, op.get(OperationFields.METHOD_NAME, String.class));
         return op;
     }
 
     protected String assertTrackedConnection (Connection conn, String url) {
         String result=tracker.checkTrackingState(conn);
-        Assert.assertEquals("Mismatched tracked value", url, result);
+        assertEquals("Mismatched tracked value", url, result);
         return url;
     }
 
     protected Connection assertConnectionNotTracked (Connection conn) {
         String result=tracker.checkTrackingState(conn);
-        Assert.assertNull("Connection marked as tracking " + result, result);
+        assertNull("Connection marked as tracking " + result, result);
         return conn;
     }
 
     private static Driver findDriverInstance (String driverClassName) {
-        Assert.assertTrue("Missing driver class name", (driverClassName != null) && (driverClassName.length() > 0));
+        assertTrue("Missing driver class name", (driverClassName != null) && (driverClassName.length() > 0));
         for (Enumeration<Driver>    drivers=DriverManager.getDrivers();
                (drivers != null) && drivers.hasMoreElements(); ) {
            Driver  driver=drivers.nextElement();

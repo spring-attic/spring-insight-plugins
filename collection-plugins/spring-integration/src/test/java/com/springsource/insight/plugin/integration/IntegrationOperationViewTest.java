@@ -35,8 +35,6 @@ import com.springsource.insight.intercept.operation.SourceCodeLocation;
 
 /**
  * This tests the view-rendering portion of the Spring Integration plugin. 
- * 
- * @author Gary Russell
  */
 @ContextConfiguration(locations = { "classpath:META-INF/insight-plugin-integration-plugin.xml", 
                                     "classpath:META-INF/test-app-context.xml" },

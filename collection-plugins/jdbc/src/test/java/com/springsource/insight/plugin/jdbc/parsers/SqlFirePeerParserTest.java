@@ -15,19 +15,16 @@
  */
 package com.springsource.insight.plugin.jdbc.parsers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.util.List;
 
 import org.junit.Test;
 
+import com.springsource.insight.collection.AbstractCollectionTestSupport;
 import com.springsource.insight.plugin.jdbc.parser.JdbcUrlMetaData;
 import com.springsource.insight.plugin.jdbc.parser.parsers.SqlFirePeerParser;
 
 
-public class SqlFirePeerParserTest {
+public class SqlFirePeerParserTest extends AbstractCollectionTestSupport  {
     
     @Test
     public void testSingleLocator() {

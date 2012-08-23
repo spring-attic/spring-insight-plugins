@@ -19,7 +19,6 @@ package com.springsource.insight.plugin.springcore;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.context.ApplicationEvent;
@@ -55,8 +54,8 @@ public class ApplicationListenerMethodOperationCollectionAspectTest extends Oper
         
         MyEvent event = new MyEvent("fubar");
         ctx.publishEvent(event);
-        Assert.assertSame(event, listener.getLastEvent());
-        Assert.assertSame(event, listenerAndRepo.getLastEvent());
+        assertSame(event, listener.getLastEvent());
+        assertSame(event, listenerAndRepo.getLastEvent());
         
         ArgumentCaptor<Operation> operationCaptor = ArgumentCaptor.forClass(Operation.class);
         verify(spiedOperationCollector, times(1)).enter(operationCaptor.capture());

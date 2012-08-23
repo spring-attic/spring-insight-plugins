@@ -21,7 +21,6 @@ import java.util.Collections;
 import org.eclipse.persistence.internal.jpa.JPAQuery;
 import org.eclipse.persistence.queries.DatabaseQuery;
 import org.eclipse.persistence.sessions.Session;
-import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -162,11 +161,11 @@ public class SessionQueryOperationCollectionAspectTest
         // returns name of query in the arguments list
         public String assertQueryArguments (Operation op) {
             OperationList   argsList=op.get(OperationFields.ARGUMENTS, OperationList.class);
-            Assert.assertNotNull(name() + ": No arguments extracted", argsList);
-            Assert.assertEquals(name() + ": Mismatched number of arguments", numArgs, argsList.size());
+            assertNotNull(name() + ": No arguments extracted", argsList);
+            assertEquals(name() + ": Mismatched number of arguments", numArgs, argsList.size());
             
             String  name=extractQueryNameArgument(argsList.get(0));
-            Assert.assertEquals(name() + ": Mismatched query name argument value", name(), name);
+            assertEquals(name() + ": Mismatched query name argument value", name(), name);
             return name;
         }
         

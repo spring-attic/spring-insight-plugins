@@ -18,7 +18,6 @@ package com.springsource.insight.plugin.runexec;
 import java.util.Date;
 import java.util.Timer;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 
@@ -35,14 +34,14 @@ public class TimerTaskScheduleCollectionAspectTest
     
     @Override
     public void setUp() {
-        Assert.assertNull("Previous timer not cleared", TEST_TIMER);
+        assertNull("Previous timer not cleared", TEST_TIMER);
         TEST_TIMER = new Timer(getClass().getSimpleName());
         super.setUp();
     }
 
     @Override
     public void restore() {
-        Assert.assertNotNull("No current timer", TEST_TIMER);
+        assertNotNull("No current timer", TEST_TIMER);
         TEST_TIMER.cancel();
         TEST_TIMER = null;
         super.restore();
