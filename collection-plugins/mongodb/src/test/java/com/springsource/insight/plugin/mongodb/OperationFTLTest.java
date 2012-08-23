@@ -16,26 +16,25 @@
 
 package com.springsource.insight.plugin.mongodb;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.springsource.insight.idk.AbstractOperationViewTest;
-import com.springsource.insight.idk.WebApplicationContextLoader;
-import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.operation.OperationFields;
-import com.springsource.insight.plugin.mongodb.MongoCollectionOperationCollectionAspect;
-import com.springsource.insight.plugin.mongodb.MongoCursorOperationCollectionAspect;
-import com.springsource.insight.plugin.mongodb.MongoDbOperationCollectionAspect;
-import org.aspectj.lang.Signature;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.aspectj.lang.reflect.SourceLocation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.assertNotNull;
+
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.springsource.insight.idk.WebApplicationContextLoader;
+import com.springsource.insight.idk.test.AbstractOperationViewTestSupport;
+import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.OperationFields;
 
 
 /**
@@ -44,7 +43,7 @@ import static org.junit.Assert.assertNotNull;
                                     "classpath:META-INF/test-app-context.xml" },
                       loader = WebApplicationContextLoader.class)
 @RunWith(SpringJUnit4ClassRunner.class)
-public class OperationFTLTest extends AbstractOperationViewTest {
+public class OperationFTLTest extends AbstractOperationViewTestSupport {
     public OperationFTLTest() {
         super(MongoDBOperationExternalResourceAnalyzer.TYPE);
     }

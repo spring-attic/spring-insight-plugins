@@ -17,9 +17,6 @@
 package com.springsource.insight.plugin.integration;
 
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.integration.Message;
@@ -27,8 +24,8 @@ import org.springframework.integration.message.GenericMessage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.springsource.insight.idk.AbstractOperationViewTest;
 import com.springsource.insight.idk.WebApplicationContextLoader;
+import com.springsource.insight.idk.test.AbstractOperationViewTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.operation.SourceCodeLocation;
@@ -40,9 +37,7 @@ import com.springsource.insight.intercept.operation.SourceCodeLocation;
                                     "classpath:META-INF/test-app-context.xml" },
                       loader = WebApplicationContextLoader.class)
 @RunWith(SpringJUnit4ClassRunner.class)
-public class IntegrationOperationViewTest 
-    extends AbstractOperationViewTest
-{    
+public class IntegrationOperationViewTest extends AbstractOperationViewTestSupport {    
     public IntegrationOperationViewTest() {
         super(OperationType.valueOf("integration_operation"));
     }
