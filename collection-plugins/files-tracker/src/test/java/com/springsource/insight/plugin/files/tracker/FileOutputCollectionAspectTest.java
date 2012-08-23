@@ -23,8 +23,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -34,15 +33,20 @@ import com.springsource.insight.util.test.MicroBenchmark;
  * 
  */
 public class FileOutputCollectionAspectTest extends FilesOpenTrackerAspectTestSupport {
-    protected static File TEST_FILE;
+    private File TEST_FILE;
     public FileOutputCollectionAspectTest() {
         super();
     }
 
-    @BeforeClass
-    public static void setupInputTestFile () throws Exception {
-        Assert.assertNull("Test file already initialized", TEST_FILE);
-        TEST_FILE = new File(resolveTestDirRoot(FileOutputCollectionAspectTest.class), "output-test-file.txt");
+    @Before
+    @Override
+    public void setUp () {
+    	super.setUp();
+
+    	TEST_FILE = new File(ensureTempFolderExists(), "output-test-file.txt");
+    	if (TEST_FILE.exists() && (!TEST_FILE.delete())) {
+    		fail("Failed to delete test file=" + TEST_FILE.getAbsolutePath());
+    	}
     }
 
     @Test
@@ -148,7 +152,8 @@ public class FileOutputCollectionAspectTest extends FilesOpenTrackerAspectTestSu
     @Category(MicroBenchmark.class)
     public void testSynchronizedAspectPerformance () {
         runSynchronizedAspectPerformance(new FileAccessor() {
-            public Closeable createInstance() throws IOException {
+            @SuppressWarnings("synthetic-access")
+			public Closeable createInstance() throws IOException {
                 return new FileOutputStream(TEST_FILE);
             }
         });

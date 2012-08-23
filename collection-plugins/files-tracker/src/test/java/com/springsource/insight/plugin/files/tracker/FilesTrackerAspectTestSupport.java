@@ -26,8 +26,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.junit.Assert;
-
 import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.InterceptConfiguration;
 import com.springsource.insight.intercept.operation.Operation;
@@ -50,17 +48,17 @@ public abstract class FilesTrackerAspectTestSupport extends OperationCollectionA
     protected Operation assertFileTrackingOperation (Closeable instance, String filePath, String opcode, String mode) throws IOException {
         try {
             Operation op=getLastEntered();
-            Assert.assertNotNull("No operation extracted", op);
-            Assert.assertEquals("Mismatched operation type", FilesTrackerDefinitions.TYPE, op.getType());
-            Assert.assertEquals("Mismatched path", filePath, op.get(FilesTrackerDefinitions.PATH_ATTR, String.class));
-            Assert.assertEquals("Mismatched opcode", opcode, op.get(FilesTrackerDefinitions.OPTYPE_ATTR, String.class));
+            assertNotNull("No operation extracted", op);
+            assertEquals("Mismatched operation type", FilesTrackerDefinitions.TYPE, op.getType());
+            assertEquals("Mismatched path", filePath, op.get(FilesTrackerDefinitions.PATH_ATTR, String.class));
+            assertEquals("Mismatched opcode", opcode, op.get(FilesTrackerDefinitions.OPTYPE_ATTR, String.class));
             // we expect only the file path to be tracked
-            Assert.assertEquals("Tracking map too big", 1, AbstractFilesTrackerAspectSupport.trackedFilesMap.size());
-            Assert.assertTrue("Tracking map does not contain input path",
+            assertEquals("Tracking map too big", 1, AbstractFilesTrackerAspectSupport.trackedFilesMap.size());
+            assertTrue("Tracking map does not contain input path",
                               AbstractFilesTrackerAspectSupport.trackedFilesMap.containsValue(filePath));
             
             if (!StringUtil.isEmpty(mode)) {
-                Assert.assertEquals("Mismatched mode", mode, op.get(FilesTrackerDefinitions.MODE_ATTR, String.class));
+                assertEquals("Mismatched mode", mode, op.get(FilesTrackerDefinitions.MODE_ATTR, String.class));
             }
             
             return op;
@@ -68,7 +66,7 @@ public abstract class FilesTrackerAspectTestSupport extends OperationCollectionA
             instance.close();
 
             // after close the tracked files map must be empty - this indirectly tests the closing aspect
-            Assert.assertTrue("Tracking map not empty", AbstractFilesTrackerAspectSupport.trackedFilesMap.isEmpty());
+            assertTrue("Tracking map not empty", AbstractFilesTrackerAspectSupport.trackedFilesMap.isEmpty());
         }
     }
 
@@ -80,7 +78,7 @@ public abstract class FilesTrackerAspectTestSupport extends OperationCollectionA
                 AbstractFilesTrackerAspectSupport.trackedFilesMap =
                         (threads > 1) ? Collections.synchronizedMap(cache) : cache;
                 runSynchronizedAspectPerformance(accessor, threads);
-                Assert.assertTrue("Tracking map not empty for threads=" + threads, cache.isEmpty());
+                assertTrue("Tracking map not empty for threads=" + threads, cache.isEmpty());
             } finally {
                 AbstractFilesTrackerAspectSupport.trackedFilesMap = orgCache;
             }
@@ -101,7 +99,7 @@ public abstract class FilesTrackerAspectTestSupport extends OperationCollectionA
                             Closeable   instance=accessor.createInstance();
                             instance.close();
                         } catch (Exception e) {
-                            Assert.fail("Error running multi-threaded test" + e.getMessage());
+                            fail("Error running multi-threaded test" + e.getMessage());
                         }
                     }
                     InterceptConfiguration.getInstance().getFrameBuilder().dump();
@@ -117,9 +115,9 @@ public abstract class FilesTrackerAspectTestSupport extends OperationCollectionA
             for (Future<?> f: futureList) {
                 try {
                     // see javadoc for ExecutorService#submit...
-                    Assert.assertNull("Unexpected Future termination value", f.get());
+                    assertNull("Unexpected Future termination value", f.get());
                 } catch (Exception e) {
-                    Assert.fail("Error running multi-threaded test" + e.getMessage());
+                    fail("Error running multi-threaded test" + e.getMessage());
                 }
             }
             long    endTime=System.nanoTime(), endFree=RUNTIME.freeMemory();
