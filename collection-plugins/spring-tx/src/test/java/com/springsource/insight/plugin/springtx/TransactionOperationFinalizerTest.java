@@ -16,18 +16,16 @@
 
 package com.springsource.insight.plugin.springtx;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import java.util.Map;
 
 import org.junit.Test;
 import org.springframework.transaction.TransactionDefinition;
 
+import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 
-public class TransactionOperationFinalizerTest {
+public class TransactionOperationFinalizerTest extends AbstractCollectionTestSupport {
     @Test
     public void getVariousStrings() {
         Operation testTO1 = new Operation()

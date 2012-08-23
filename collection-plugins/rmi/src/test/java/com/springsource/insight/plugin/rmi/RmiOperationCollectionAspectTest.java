@@ -18,7 +18,6 @@ package com.springsource.insight.plugin.rmi;
 
 import java.rmi.Remote;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -38,7 +37,7 @@ public class RmiOperationCollectionAspectTest extends RmiOperationCollectionAspe
 		Remote rem = Mockito.mock(Remote.class);
 		registry.put(name, rem);
 		Remote res = registry.lookup(name);
-		Assert.assertSame("Mismatched results", rem , res);
+		assertSame("Mismatched results", rem , res);
 		assertRmiOperation("lookup", name);
 	}
 	
@@ -72,9 +71,9 @@ public class RmiOperationCollectionAspectTest extends RmiOperationCollectionAspe
 	
 	private Operation assertRmiOperation (String action, String name) {
 		Operation	op=getLastEntered();
-		Assert.assertNotNull("No operation extracted", op);
-		Assert.assertEquals("Mismatched action", action, op.get(RmiDefinitions.ACTION_ATTR, String.class));
-		Assert.assertEquals("Mismatched name", name, op.get(RmiDefinitions.NAME_ATTR, String.class));
+		assertNotNull("No operation extracted", op);
+		assertEquals("Mismatched action", action, op.get(RmiDefinitions.ACTION_ATTR, String.class));
+		assertEquals("Mismatched name", name, op.get(RmiDefinitions.NAME_ATTR, String.class));
 		return op;
 	}
 

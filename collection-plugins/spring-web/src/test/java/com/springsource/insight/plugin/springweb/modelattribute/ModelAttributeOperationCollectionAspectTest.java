@@ -24,7 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class ModelAttributeOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {

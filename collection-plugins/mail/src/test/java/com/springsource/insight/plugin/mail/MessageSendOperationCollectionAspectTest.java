@@ -22,7 +22,6 @@ import java.util.Date;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.NullOutputStream;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.mail.SimpleMailMessage;
@@ -32,7 +31,7 @@ import org.subethamail.smtp.helper.SimpleMessageListener;
 import org.subethamail.smtp.helper.SimpleMessageListenerAdapter;
 import org.subethamail.smtp.server.SMTPServer;
 
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
 import com.springsource.insight.intercept.operation.OperationMap;
@@ -50,7 +49,7 @@ public class MessageSendOperationCollectionAspectTest extends OperationCollectio
 
 	@BeforeClass
 	public static void startEmbeddedServer () {
-		Assert.assertNull("Server already initialized", SERVER);
+		assertNull("Server already initialized", SERVER);
 		SERVER = new SMTPServer(new SimpleMessageListenerAdapter(SmtpServerListener.INSTANCE));
 		SERVER.setHostName("localhost");
 		SERVER.setPort(TEST_PORT);
@@ -97,15 +96,15 @@ public class MessageSendOperationCollectionAspectTest extends OperationCollectio
 		sender.send(message);
 
 		Operation op = getLastEntered();
-		Assert.assertNotNull("No operation extracted", op);
-		Assert.assertEquals("Mismatched operation type", MailDefinitions.SEND_OPERATION, op.getType());
-		Assert.assertEquals("Mismatched protocol", sender.getProtocol(), op.get(MailDefinitions.SEND_PROTOCOL, String.class));
-		Assert.assertEquals("Mismatched host", sender.getHost(), op.get(MailDefinitions.SEND_HOST, String.class));
+		assertNotNull("No operation extracted", op);
+		assertEquals("Mismatched operation type", MailDefinitions.SEND_OPERATION, op.getType());
+		assertEquals("Mismatched protocol", sender.getProtocol(), op.get(MailDefinitions.SEND_PROTOCOL, String.class));
+		assertEquals("Mismatched host", sender.getHost(), op.get(MailDefinitions.SEND_HOST, String.class));
 		if (port == -1) {
-			Assert.assertEquals("Mismatched port", 25, op.get(MailDefinitions.SEND_PORT, Number.class).intValue());
+			assertEquals("Mismatched port", 25, op.get(MailDefinitions.SEND_PORT, Number.class).intValue());
 		}
 		else {
-			Assert.assertEquals("Mismatched port", sender.getPort(), op.get(MailDefinitions.SEND_PORT, Number.class).intValue());
+			assertEquals("Mismatched port", sender.getPort(), op.get(MailDefinitions.SEND_PORT, Number.class).intValue());
 		}
 
 		if (getAspect().collectExtraInformation()) {
@@ -113,28 +112,28 @@ public class MessageSendOperationCollectionAspectTest extends OperationCollectio
 			assertAddresses(op, MailDefinitions.SEND_RECIPS, 3);
 
 			OperationMap    details=op.get(MailDefinitions.SEND_DETAILS, OperationMap.class);
-			Assert.assertNotNull("No details extracted", details);
-			Assert.assertEquals("Mismatched subject", message.getSubject(), details.get(MailDefinitions.SEND_SUBJECT, String.class));
+			assertNotNull("No details extracted", details);
+			assertEquals("Mismatched subject", message.getSubject(), details.get(MailDefinitions.SEND_SUBJECT, String.class));
 		}
 	}
 
 	private void assertAddresses (Operation op, String type, int expectedSize) {
 		OperationList   list=op.get(type, OperationList.class);
-		Assert.assertNotNull("No addresses of type=" + type, list);
-		Assert.assertEquals("Mismatched number of " + type + " addresses", expectedSize, list.size());
+		assertNotNull("No addresses of type=" + type, list);
+		assertEquals("Mismatched number of " + type + " addresses", expectedSize, list.size());
 
 		for (int    index=0; index < list.size(); index++) {
 			OperationMap    addrEntry=list.get(index, OperationMap.class);
-			Assert.assertNotNull("Missing " + type + " entry #" + index, addrEntry);
+			assertNotNull("Missing " + type + " entry #" + index, addrEntry);
 
 			String  typeValue=addrEntry.get("type", String.class),
 			addrValue=addrEntry.get("value", String.class);
-			Assert.assertEquals("Mismatched " + type + " type for entry #" + index, "rfc822", typeValue);
-			Assert.assertNotNull("No " + type + " value for entry #" + index, addrValue);
+			assertEquals("Mismatched " + type + " type for entry #" + index, "rfc822", typeValue);
+			assertNotNull("No " + type + " value for entry #" + index, addrValue);
 
 			int     domainIndex=addrValue.lastIndexOf('@');
 			String  domain=addrValue.substring(domainIndex);
-			Assert.assertEquals("Mismatched " + type + "domain for entry #" + index,
+			assertEquals("Mismatched " + type + "domain for entry #" + index,
 					"@com.springsource.insight.plugin.mail", domain);
 		}
 	}
@@ -158,7 +157,7 @@ public class MessageSendOperationCollectionAspectTest extends OperationCollectio
 
 		public void deliver(String from, String recipient, InputStream data)
 		throws TooMuchDataException, IOException {
-			Assert.assertTrue("Bad data copied", IOUtils.copy(data, NullOutputStream.NULL_OUTPUT_STREAM) > 0);
+			assertTrue("Bad data copied", IOUtils.copy(data, NullOutputStream.NULL_OUTPUT_STREAM) > 0);
 		}
 	}
 }

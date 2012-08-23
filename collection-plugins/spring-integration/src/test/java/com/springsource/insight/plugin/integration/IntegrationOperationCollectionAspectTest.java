@@ -30,7 +30,7 @@ import org.springframework.integration.message.GenericMessage;
 import org.springframework.integration.transformer.Transformer;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**

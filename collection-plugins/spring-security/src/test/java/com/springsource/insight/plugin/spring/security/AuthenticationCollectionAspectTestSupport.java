@@ -19,7 +19,6 @@ package com.springsource.insight.plugin.spring.security;
 
 import java.util.Collection;
 
-import org.junit.Assert;
 import org.springframework.security.core.Authentication;
 
 import com.springsource.insight.intercept.operation.Operation;
@@ -35,19 +34,19 @@ public abstract class AuthenticationCollectionAspectTestSupport
     }
 
     protected void assertObscuredAuthValues (Authentication token, Authentication result, Collection<?> obscuredValues) {
-        Assert.assertTrue("Original principal not obscured", obscuredValues.contains(token.getPrincipal()));
-        Assert.assertTrue("Original credentials not obscured", obscuredValues.contains(token.getCredentials()));
-        Assert.assertTrue("Result principal not obscured", obscuredValues.contains(result.getPrincipal()));
-        Assert.assertTrue("Result credentials not obscured", obscuredValues.contains(result.getCredentials()));
+        assertTrue("Original principal not obscured", obscuredValues.contains(token.getPrincipal()));
+        assertTrue("Original credentials not obscured", obscuredValues.contains(token.getCredentials()));
+        assertTrue("Result principal not obscured", obscuredValues.contains(result.getPrincipal()));
+        assertTrue("Result credentials not obscured", obscuredValues.contains(result.getCredentials()));
     }
 
     protected Operation assertOperationResult (Authentication auth, Collection<String> grants) {
         Operation op=getLastEntered();
-        Assert.assertNotNull("No operation extracted", op);
+        assertNotNull("No operation extracted", op);
 
-        Assert.assertEquals("Mismatched operation type", SpringSecurityDefinitions.AUTH_OP, op.getType());
-        Assert.assertSame("Mismatched principal", auth.getPrincipal(), op.get("principal"));
-        Assert.assertSame("Mismatched credentials", auth.getCredentials(), op.get("credentials"));
+        assertEquals("Mismatched operation type", SpringSecurityDefinitions.AUTH_OP, op.getType());
+        assertSame("Mismatched principal", auth.getPrincipal(), op.get("principal"));
+        assertSame("Mismatched credentials", auth.getCredentials(), op.get("credentials"));
 
         assertGrantedAuthorities(op.get(ObscuringOperationCollector.GRANTED_AUTHS_LIST_NAME, OperationList.class), grants);
         return op;

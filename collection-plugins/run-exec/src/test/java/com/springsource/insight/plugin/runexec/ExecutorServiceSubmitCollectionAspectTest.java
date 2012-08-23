@@ -23,7 +23,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -55,13 +54,13 @@ public class ExecutorServiceSubmitCollectionAspectTest
         ExecutorService     executor=new ThreadPoolExecutor(5, 5, 5L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(5));
         SignallingRunnable  runner=new SignallingRunnable("runSubmitTest(result=" + result + ")");
         Future<?>           future=(result == null) ? executor.submit(runner) : executor.submit(runner, result);
-        Assert.assertNotNull("No future instance returned", future);
+        assertNotNull("No future instance returned", future);
         assertLastExecutionOperation(runner);
         assertCurrentThreadExecution();
 
         if (result != null) {
             Object  actual=future.get(5L, TimeUnit.SECONDS);
-            Assert.assertEquals("Mismatched future result", result, actual);
+            assertEquals("Mismatched future result", result, actual);
         }
     }
 }

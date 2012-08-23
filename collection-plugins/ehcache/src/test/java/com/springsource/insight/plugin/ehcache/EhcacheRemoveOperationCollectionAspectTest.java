@@ -19,7 +19,6 @@ import java.io.Serializable;
 
 import net.sf.ehcache.Element;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 
@@ -37,7 +36,7 @@ public class EhcacheRemoveOperationCollectionAspectTest
     public void testRemoveObject () {
         Object  key="testRemoveObject", value=Long.valueOf(System.nanoTime());
         putUncaptured(key, value);
-        Assert.assertTrue("Failed to remove element", cache.remove(key));
+        assertTrue("Failed to remove element", cache.remove(key));
         assertEhcacheOperationContents(EhcacheDefinitions.REM_METHOD, key, null);
     }
 
@@ -45,7 +44,7 @@ public class EhcacheRemoveOperationCollectionAspectTest
     public void testRemoveSerializable () {
         Serializable  key="testRemoveSerializable", value=Long.valueOf(System.nanoTime());
         putUncaptured(key, value);
-        Assert.assertTrue("Failed to remove element", cache.remove(key));
+        assertTrue("Failed to remove element", cache.remove(key));
         assertEhcacheOperationContents(EhcacheDefinitions.REM_METHOD, key, null);
     }
 
@@ -53,7 +52,7 @@ public class EhcacheRemoveOperationCollectionAspectTest
     public void testRemoveQuietObject () {
         Object  key="testRemoveQuietObject", value=Long.valueOf(System.nanoTime());
         putUncaptured(key, value);
-        Assert.assertTrue("Failed to remove element", cache.removeQuiet(key));
+        assertTrue("Failed to remove element", cache.removeQuiet(key));
         assertEhcacheOperationContents(EhcacheDefinitions.REM_METHOD, key, null);
     }
 
@@ -61,7 +60,7 @@ public class EhcacheRemoveOperationCollectionAspectTest
     public void testRemoveQuietSerializable () {
         Serializable  key="testRemoveQuietSerializable", value=Long.valueOf(System.nanoTime());
         putUncaptured(key, value);
-        Assert.assertTrue("Failed to remove element", cache.removeQuiet(key));
+        assertTrue("Failed to remove element", cache.removeQuiet(key));
         assertEhcacheOperationContents(EhcacheDefinitions.REM_METHOD, key, null);
     }
 
@@ -69,7 +68,7 @@ public class EhcacheRemoveOperationCollectionAspectTest
     public void testRemoveObjectNotNotifyCacheReplicators () {
         Object  key="testRemoveObjectNotNotifyCacheReplicators", value=Long.valueOf(System.nanoTime());
         putUncaptured(key, value);
-        Assert.assertTrue("Failed to remove element", cache.remove(key, true));
+        assertTrue("Failed to remove element", cache.remove(key, true));
         assertEhcacheOperationContents(EhcacheDefinitions.REM_METHOD, key, null);
     }
 
@@ -77,7 +76,7 @@ public class EhcacheRemoveOperationCollectionAspectTest
     public void testRemoveSerializableNotNotifyCacheReplicators () {
         Serializable  key="testRemoveSerializableNotNotifyCacheReplicators", value=Long.valueOf(System.nanoTime());
         putUncaptured(key, value);
-        Assert.assertTrue("Failed to remove element", cache.remove(key, true));
+        assertTrue("Failed to remove element", cache.remove(key, true));
         assertEhcacheOperationContents(EhcacheDefinitions.REM_METHOD, key, null);
     }
 
@@ -85,7 +84,7 @@ public class EhcacheRemoveOperationCollectionAspectTest
     public void testRemoveWithWriter () {
         Object  key="testRemoveWithWriter", value=Long.valueOf(System.nanoTime());
         putUncaptured(key, value);
-        Assert.assertTrue("Failed to remove element", cache.removeWithWriter(key));
+        assertTrue("Failed to remove element", cache.removeWithWriter(key));
         assertEhcacheOperationContents(EhcacheDefinitions.REM_METHOD, key, null);
     }
 
@@ -93,19 +92,17 @@ public class EhcacheRemoveOperationCollectionAspectTest
     public void testRemoveElement () {
         Object  key="testRemoveElement", value=Long.valueOf(System.nanoTime());
         Element elem=putUncaptured(key, value);
-        Assert.assertTrue("Failed to remove element", cache.removeElement(elem));
+        assertTrue("Failed to remove element", cache.removeElement(elem));
         assertEhcacheOperationContents(EhcacheDefinitions.REM_METHOD, key, null);
     }
 
     @Test
     public void testRemoveNonExistingElement () {
         Object  key="testRemoveNonExistingElement";
-        Assert.assertFalse("Unexpected removal success", cache.remove(key));
+        assertFalse("Unexpected removal success", cache.remove(key));
         assertEhcacheOperationContents(EhcacheDefinitions.REM_METHOD, key, null);
     }
-    /*
-     * @see com.springsource.insight.collection.OperationCollectionAspectTestSupport#getAspect()
-     */
+
     @Override
     public EhcacheRemoveOperationCollectionAspect getAspect() {
         return EhcacheRemoveOperationCollectionAspect.aspectOf();

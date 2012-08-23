@@ -19,7 +19,6 @@ package com.springsource.insight.plugin.springtx;
 import java.sql.Connection;
 import java.util.logging.Logger;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -28,7 +27,7 @@ import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.TransactionSystemException;
 
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
@@ -97,7 +96,7 @@ public class TransactionOperationCollectionAspectTest
                                 manager.rollback(txStatus);
                                 break;
                             default :
-                                Assert.fail("Unknown status action: " + opStatus);
+                                fail("Unknown status action: " + opStatus);
                         }
 
                         assertTransactionOperation(txDefinition.getName(), opStatus, txDefinition);
@@ -117,22 +116,22 @@ public class TransactionOperationCollectionAspectTest
                                                     TransactionOperationStatus opStatus,
                                                     TransactionDefinition txDefinition) {
         Operation   op=getLastEntered();
-        Assert.assertNotNull(testName + ": No operation extracted", op);
-        Assert.assertEquals(testName + ": Mismatched operation type", TransactionOperationCollectionAspect.TYPE, op.getType());
-        Assert.assertEquals(testName + ": Mismatched name", txDefinition.getName(), op.get("name", String.class));
-        Assert.assertEquals(testName + ": Mismatched read only value",
+        assertNotNull(testName + ": No operation extracted", op);
+        assertEquals(testName + ": Mismatched operation type", TransactionOperationCollectionAspect.TYPE, op.getType());
+        assertEquals(testName + ": Mismatched name", txDefinition.getName(), op.get("name", String.class));
+        assertEquals(testName + ": Mismatched read only value",
                             Boolean.valueOf(txDefinition.isReadOnly()), op.get("readOnly", Boolean.class));
-        Assert.assertEquals(testName + ": Mismatched timeout value",
+        assertEquals(testName + ": Mismatched timeout value",
                             Integer.valueOf(txDefinition.getTimeout()), op.get("timeout", Integer.class));
 
         Operation   dummyOp=new Operation()
                         .put("propagation", txDefinition.getPropagationBehavior())
                         .put("isolation", txDefinition.getIsolationLevel())
                         ;
-        Assert.assertEquals(testName + ": Mismatched propagation value",
+        assertEquals(testName + ": Mismatched propagation value",
                             TransactionOperationFinalizer.normalizePropagation(dummyOp),
                             op.get("propagation", String.class));
-        Assert.assertEquals(testName + ": Mismatched isolation value",
+        assertEquals(testName + ": Mismatched isolation value",
                             TransactionOperationFinalizer.normalizeIsolation(dummyOp),
                             op.get("isolation", String.class));
         return op;

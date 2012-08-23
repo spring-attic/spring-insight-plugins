@@ -27,7 +27,6 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -103,7 +102,7 @@ public class JdbcDriverConnectOperationCollectionAspectTest
              * NOTE: this is not a test failure since this is not where we expect to
              * get our data, but let's leave it here in case we detect something strange
              */
-             Assert.assertEquals("Mismatched meta-data URL(s)", connectUrl, connURL);
+             assertEquals("Mismatched meta-data URL(s)", connectUrl, connURL);
              assertTrackedConnection(conn, connURL);
         } finally {
             conn.close();   // don't need it for anything
@@ -115,15 +114,15 @@ public class JdbcDriverConnectOperationCollectionAspectTest
 
     private Operation assertConnectDetails (Driver driver, String url, Properties props) {
         Operation   op=assertConnectDetails(url, "create");
-        Assert.assertEquals("Mismatched driver class", driver.getClass().getName(), op.get("driverClass", String.class));
+        assertEquals("Mismatched driver class", driver.getClass().getName(), op.get("driverClass", String.class));
         
         OperationMap    actualParams=op.get("params", OperationMap.class);
         if (actualParams != null) {   // OK if missing - means 'collectExtraInformation' is FALSE
             OperationMap    expectedParams=JdbcDriverConnectOperationCollectionAspect.addConnectionProperties(new Operation(), props);
-            Assert.assertEquals("Mismatched parameters size", expectedParams.size(), actualParams.size());
+            assertEquals("Mismatched parameters size", expectedParams.size(), actualParams.size());
             for (String key : expectedParams.keySet()) {
                 Object  expValue=expectedParams.get(key), actValue=actualParams.get(key);
-                Assert.assertEquals("Mismatched value for parameter=" + key, expValue, actValue);
+                assertEquals("Mismatched value for parameter=" + key, expValue, actValue);
             }
         }
         
@@ -144,7 +143,7 @@ public class JdbcDriverConnectOperationCollectionAspectTest
                 continue;
             }
             
-            Assert.assertEquals("Key=" + key + " obscured state mismatch",
+            assertEquals("Key=" + key + " obscured state mismatch",
                                 Boolean.valueOf(expectedState),
                                 Boolean.valueOf(obscuredValue.contains(value)));
         }

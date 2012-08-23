@@ -16,7 +16,6 @@
 
 package com.springsource.insight.plugin.springbatch;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -44,7 +43,7 @@ public class JobLauncherCollectionAspectTest
         
         Job             job=new TestDummyJob("testRunJob");
         JobExecution    execution=launcher.run(job, new JobParameters());
-        Assert.assertNotNull("No job exectuion instance", execution);
+        assertNotNull("No job exectuion instance", execution);
 
         String      jobName=job.getName();
         Operation   op=assertOperationDetails(getFirstEntered(), "run", job.getName());

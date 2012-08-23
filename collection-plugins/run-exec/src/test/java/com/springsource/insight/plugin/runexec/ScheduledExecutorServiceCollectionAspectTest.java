@@ -22,7 +22,6 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -44,8 +43,8 @@ public class ScheduledExecutorServiceCollectionAspectTest
         assertCurrentThreadExecution();
 
         Object   result=future.get(5L, TimeUnit.SECONDS);
-        Assert.assertNull("Unexpected future execution result", result);
-        Assert.assertTrue("Future not marked as done", future.isDone());
+        assertNull("Unexpected future execution result", result);
+        assertTrue("Future not marked as done", future.isDone());
     }
 
     @Test

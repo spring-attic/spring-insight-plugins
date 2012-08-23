@@ -21,8 +21,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Assert;
-
 import org.junit.Test;
 
 import com.springsource.insight.intercept.operation.Operation;
@@ -47,8 +45,8 @@ public class ExecutorExecuteCollectionAspectTest
         assertFirstExecutionOperation(RunExecDefinitions.EXEC_OP, executor.waitForThread());
         
         final Runnable  command=executor.getLastRunCommand();
-        Assert.assertNotSame("Run command not wrapped", runner, command);
-        Assert.assertTrue("Run command not a wrapper", command instanceof RunnableWrapper);
+        assertNotSame("Run command not wrapped", runner, command);
+        assertTrue("Run command not a wrapper", command instanceof RunnableWrapper);
     }
 
     @Test
@@ -70,18 +68,18 @@ public class ExecutorExecuteCollectionAspectTest
         {
             Operation       op=assertLastExecutionOperation(runner);
             List<Operation> opsList=TEST_COLLECTOR.getCollectedOperations();
-            Assert.assertEquals("Mismatched number of operations generated", 2, opsList.size());
+            assertEquals("Mismatched number of operations generated", 2, opsList.size());
     
             SourceCodeLocation  scl=op.getSourceCodeLocation();
-            Assert.assertEquals("Mismatched class name", SignallingRunnable.class.getName(), scl.getClassName());
-            Assert.assertEquals("Mismatched method name", "run", scl.getMethodName());
+            assertEquals("Mismatched class name", SignallingRunnable.class.getName(), scl.getClassName());
+            assertEquals("Mismatched method name", "run", scl.getMethodName());
         }
         
         {
             Operation           op=assertCurrentThreadExecution();
             SourceCodeLocation  scl=op.getSourceCodeLocation();
-            Assert.assertEquals("Mismatched class name", getClass().getName(), scl.getClassName());
-            Assert.assertEquals("Mismatched method name", "execute", scl.getMethodName());
+            assertEquals("Mismatched class name", getClass().getName(), scl.getClassName());
+            assertEquals("Mismatched method name", "execute", scl.getMethodName());
         }
     }
 
@@ -95,11 +93,11 @@ public class ExecutorExecuteCollectionAspectTest
          */
         Operation       op=assertLastExecutionOperation(executor.waitForThread());
         List<Operation> opsList=TEST_COLLECTOR.getCollectedOperations();
-        Assert.assertEquals("Mismatched number of operations generated", 2, opsList.size());
+        assertEquals("Mismatched number of operations generated", 2, opsList.size());
 
         SourceCodeLocation  scl=op.getSourceCodeLocation();
-        Assert.assertEquals("Mismatched class name", TestRunnable.class.getName(), scl.getClassName());
-        Assert.assertEquals("Mismatched method name", "run", scl.getMethodName());
+        assertEquals("Mismatched class name", TestRunnable.class.getName(), scl.getClassName());
+        assertEquals("Mismatched method name", "run", scl.getMethodName());
     }
 
     @Override

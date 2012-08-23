@@ -15,18 +15,16 @@
  */
 package com.springsource.insight.plugin.jms;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import javax.jms.Message;
 
 import org.junit.Test;
 
+import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
-public class MessageOperationMapTest {
+public class MessageOperationMapTest extends AbstractCollectionTestSupport  {
 
     @Test
     public void basic() {

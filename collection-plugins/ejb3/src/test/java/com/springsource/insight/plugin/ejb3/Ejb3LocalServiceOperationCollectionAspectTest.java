@@ -22,10 +22,9 @@ import javax.ejb.SessionSynchronization;
 import javax.ejb.Stateful;
 import javax.ejb.Stateless;
 
-import org.junit.Assert;
 import org.junit.Test;
 
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationList;
@@ -52,7 +51,7 @@ public class Ejb3LocalServiceOperationCollectionAspectTest extends OperationColl
             final C testedService, final Class<? extends Annotation> annClass)
                 throws Exception {
         final Class<?>  testedServiceClass=testedService.getClass();
-        Assert.assertNotNull("Missing " + annClass.getSimpleName() + " annotation", testedServiceClass.getAnnotation(annClass));
+        assertNotNull("Missing " + annClass.getSimpleName() + " annotation", testedServiceClass.getAnnotation(annClass));
 
         testedService.afterBegin();
 
@@ -62,22 +61,22 @@ public class Ejb3LocalServiceOperationCollectionAspectTest extends OperationColl
         testedService.afterCompletion(true);
 
         final Operation op=getLastEntered();
-        Assert.assertNotNull("No operation extracted", op);
-        Assert.assertEquals("Mismatched " + annClass.getSimpleName() + " EJB operation type(s)", Ejb3LocalServiceDefinitions.TYPE, op.getType());
+        assertNotNull("No operation extracted", op);
+        assertEquals("Mismatched " + annClass.getSimpleName() + " EJB operation type(s)", Ejb3LocalServiceDefinitions.TYPE, op.getType());
 
         // see JoinPointBreakDownSourceCodeLocationFinalizer#populateOperation
-        Assert.assertEquals("Mismatched " + annClass.getSimpleName() + " class name", testedServiceClass.getName(), op.get(OperationFields.CLASS_NAME, String.class));
-        Assert.assertEquals("Mismatched " + annClass.getSimpleName() + " invocation method", "invokeMe", op.get("methodName", String.class));
+        assertEquals("Mismatched " + annClass.getSimpleName() + " class name", testedServiceClass.getName(), op.get(OperationFields.CLASS_NAME, String.class));
+        assertEquals("Mismatched " + annClass.getSimpleName() + " invocation method", "invokeMe", op.get("methodName", String.class));
         
         final OperationList argsList=op.get(OperationFields.ARGUMENTS, OperationList.class);
-        Assert.assertNotNull("Missing " + annClass.getSimpleName() + " invocation arguments", argsList);
-        Assert.assertEquals("Mismatched " + annClass.getSimpleName() + " num. of invocation arguments", invocationArgs.length, argsList.size());
+        assertNotNull("Missing " + annClass.getSimpleName() + " invocation arguments", argsList);
+        assertEquals("Mismatched " + annClass.getSimpleName() + " num. of invocation arguments", invocationArgs.length, argsList.size());
 
         for (int    aIndex=0; aIndex < invocationArgs.length; aIndex++) {
             final Object    expArg=invocationArgs[aIndex], actArg=argsList.get(aIndex);
             final String    expStr=StringFormatterUtils.formatObject(expArg),
                             actStr=StringFormatterUtils.formatObject(actArg);
-            Assert.assertEquals("Mismatched " + annClass.getSimpleName() + " invocation arguments #" + aIndex, expStr, actStr);
+            assertEquals("Mismatched " + annClass.getSimpleName() + " invocation arguments #" + aIndex, expStr, actStr);
         }
     }
 

@@ -20,7 +20,6 @@ import java.rmi.Remote;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -47,19 +46,19 @@ public class RmiListOperationCollectionAspectTest extends RmiOperationCollection
 		
 		List<String> res = Arrays.asList(registry.list());
 		if (! ListUtil.compareCollections(names, res)) {
-			Assert.fail("Mismatched resutls in array - expected: " + names + ", actual: " + res);
+			fail("Mismatched resutls in array - expected: " + names + ", actual: " + res);
 		}
 		
 		Operation op = getLastEntered();
-		Assert.assertNotNull("No operation", op);
-		Assert.assertEquals("Mismatched type", RmiDefinitions.RMI_LIST, op.getType());
+		assertNotNull("No operation", op);
+		assertEquals("Mismatched type", RmiDefinitions.RMI_LIST, op.getType());
 		
 		OperationList list = op.get(RmiDefinitions.LIST_ATTR, OperationList.class);
-		Assert.assertNotNull("Missing names list", list);
-		Assert.assertEquals("Mismatched names list size", res.size(), list.size());
+		assertNotNull("Missing names list", list);
+		assertEquals("Mismatched names list size", res.size(), list.size());
 		for (int index = 0; index < list.size(); index++) {
 			String expected = res.get(index), actual = list.get(index, String.class);
-			Assert.assertEquals("Mismatched value @ index " + index, expected, actual);
+			assertEquals("Mismatched value @ index " + index, expected, actual);
 		}
 	}
 

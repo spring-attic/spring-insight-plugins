@@ -16,12 +16,10 @@
 
 package org.myorg.insight.myplugin;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**

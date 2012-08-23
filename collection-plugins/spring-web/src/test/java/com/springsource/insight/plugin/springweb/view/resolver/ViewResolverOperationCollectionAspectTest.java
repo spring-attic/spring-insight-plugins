@@ -24,7 +24,7 @@ import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class ViewResolverOperationCollectionAspectTest

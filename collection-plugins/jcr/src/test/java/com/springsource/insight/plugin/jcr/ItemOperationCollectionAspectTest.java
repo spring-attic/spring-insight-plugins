@@ -15,11 +15,10 @@
  */
 package com.springsource.insight.plugin.jcr;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class ItemOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
@@ -36,17 +35,17 @@ public class ItemOperationCollectionAspectTest extends OperationCollectionAspect
 	
 		// Step 2:  Get the Operation that was just created by our aspect
 		Operation op = getLastEntered();
-		Assert.assertNotNull("No operation data is intercepted",op);
+		assertNotNull("No operation data is intercepted",op);
 
 		// Step 3:  Validate
-		Assert.assertTrue("Invalid operation type: "+op.getType().getName()+", expected: "+OperationCollectionTypes.ITEM_TYPE.type,
+		assertTrue("Invalid operation type: "+op.getType().getName()+", expected: "+OperationCollectionTypes.ITEM_TYPE.type,
 							op.getType().equals(OperationCollectionTypes.ITEM_TYPE.type));
 		
 		String path=(String)op.get("path");
-		Assert.assertTrue("Invalid path: "+path+", expected: /", path.equals("/"));
+		assertTrue("Invalid path: "+path+", expected: /", path.equals("/"));
 		
 		String relPath=(String)op.get("relPath");
-		Assert.assertTrue("Invalid relative path: "+relPath+", expected: hello", relPath.equals("hello"));
+		assertTrue("Invalid relative path: "+relPath+", expected: hello", relPath.equals("hello"));
 		
 		System.out.println("Completed add data test.\n");
 	}

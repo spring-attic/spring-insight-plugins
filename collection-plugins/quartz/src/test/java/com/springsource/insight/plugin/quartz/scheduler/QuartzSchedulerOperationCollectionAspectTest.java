@@ -18,7 +18,6 @@ package com.springsource.insight.plugin.quartz.scheduler;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
@@ -30,7 +29,7 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
 
@@ -60,12 +59,12 @@ public class QuartzSchedulerOperationCollectionAspectTest extends OperationColle
         sched.scheduleJob(jobDetail, trigger);
         sched.start();
         // let the program have an opportunity to run the job
-        Assert.assertTrue("No signal from job", SIGNALLER.tryAcquire(5L, TimeUnit.SECONDS));
+        assertTrue("No signal from job", SIGNALLER.tryAcquire(5L, TimeUnit.SECONDS));
         sched.shutdown(true);
 
         Operation   op=getLastEntered();
-        Assert.assertNotNull("No operation extracted", op);
-        Assert.assertEquals("Mismatched type", QuartzSchedulerDefinitions.TYPE, op.getType());
+        assertNotNull("No operation extracted", op);
+        assertEquals("Mismatched type", QuartzSchedulerDefinitions.TYPE, op.getType());
 
         assertJobDetails(op, jobDetail);
         assertTriggerDetails(op, trigger);
@@ -81,9 +80,9 @@ public class QuartzSchedulerOperationCollectionAspectTest extends OperationColle
     }
 
     private static OperationMap assertTriggerDetails (OperationMap map, Trigger trigger) {
-    	Assert.assertNotNull("No trigger details", map);
+    	assertNotNull("No trigger details", map);
     	assertKeyValue(map, trigger.getKey());
-    	Assert.assertEquals("Mismatched priority value", Integer.valueOf(trigger.getPriority()), map.get("priority", Integer.class));
+    	assertEquals("Mismatched priority value", Integer.valueOf(trigger.getPriority()), map.get("priority", Integer.class));
     	assertOperationStringValue(map, "description", trigger.getDescription());
     	assertOperationStringValue(map, "calendarName", trigger.getCalendarName());
     	return map;
@@ -96,11 +95,11 @@ public class QuartzSchedulerOperationCollectionAspectTest extends OperationColle
     }
 
     private static void assertOperationStringValue (OperationMap op, String key, String expected) {
-        Assert.assertEquals("Mismatched map=" + key + " value", expected, op.get(key, String.class));
+        assertEquals("Mismatched map=" + key + " value", expected, op.get(key, String.class));
     }
 
     private static Operation assertJobDetails (Operation op, JobDetail detail) {
-        Assert.assertNotNull("No operation extracted", op);
+        assertNotNull("No operation extracted", op);
 
         assertKeyValue(op, detail.getKey());
         assertOperationStringValue(op, "description", detail.getDescription());
@@ -115,6 +114,6 @@ public class QuartzSchedulerOperationCollectionAspectTest extends OperationColle
     }
 
     private static void assertOperationStringValue (Operation op, String key, String expected) {
-        Assert.assertEquals("Mismatched op=" + key + " value", expected, op.get(key, String.class));
+        assertEquals("Mismatched op=" + key + " value", expected, op.get(key, String.class));
     }
 }

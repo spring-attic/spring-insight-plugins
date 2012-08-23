@@ -15,14 +15,12 @@
  */
 package com.springsource.insight.plugin.jws;
 
-import org.junit.Assert;
-
 import org.junit.Test;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.collection.method.AnnotationDrivenMethodOperationCollectionAspect;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 
@@ -41,9 +39,9 @@ public class EndpointMethodOperationCollectionAspectTest
         endpoint.perform();
         
         Operation op=getLastEntered();
-        Assert.assertNotNull("No operation captured", op);
-        Assert.assertEquals("Mismatched operation type", OperationType.METHOD, op.getType());
-        Assert.assertEquals("Mismatched captured lable", "ExampleEndpoint#perform", op.getLabel());
+        assertNotNull("No operation captured", op);
+        assertEquals("Mismatched operation type", OperationType.METHOD, op.getType());
+        assertEquals("Mismatched captured lable", "ExampleEndpoint#perform", op.getLabel());
     }
 
     @Override

@@ -26,7 +26,6 @@ import org.eclipse.persistence.exceptions.DatabaseException;
 import org.eclipse.persistence.sessions.DatabaseSession;
 import org.eclipse.persistence.sessions.Login;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -132,11 +131,11 @@ public class DatabaseSessionOperationCollectionAspectTest
 
         public OperationList assertExecutionResult (Operation op, Login login, Collection<?> markedValues) {
             OperationList   argsList=op.get(OperationFields.ARGUMENTS, OperationList.class);
-            Assert.assertNotNull(name() + ": No arguments extracted", argsList);
-            Assert.assertEquals(name() + ": Mismatched number of arguments", numArgs, argsList.size());
+            assertNotNull(name() + ": No arguments extracted", argsList);
+            assertEquals(name() + ": Mismatched number of arguments", numArgs, argsList.size());
             if (obscured) {
-                Assert.assertTrue(name() + ": username not obscured", markedValues.contains(login.getUserName()));
-                Assert.assertTrue(name() + ": password not obscured", markedValues.contains(login.getUserName()));
+                assertTrue(name() + ": username not obscured", markedValues.contains(login.getUserName()));
+                assertTrue(name() + ": password not obscured", markedValues.contains(login.getUserName()));
             }
 
             return argsList;

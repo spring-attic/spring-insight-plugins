@@ -16,8 +16,6 @@
 
 package com.springsource.insight.plugin.grails;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.HashMap;
 
 import org.junit.Before;
@@ -31,6 +29,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.servlet.View;
 
+import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 import com.springsource.insight.idk.WebApplicationContextLoader;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
@@ -39,7 +38,7 @@ import com.springsource.insight.intercept.operation.OperationList;
                                     "classpath:META-INF/test-app-context.xml" }, 
                       loader = WebApplicationContextLoader.class)
 @RunWith(SpringJUnit4ClassRunner.class)
-public class GrailsControllerMethodViewTest {
+public class GrailsControllerMethodViewTest extends AbstractCollectionTestSupport  {
 
     protected MockHttpServletRequest request;
     protected MockHttpServletResponse response;
@@ -51,7 +50,9 @@ public class GrailsControllerMethodViewTest {
     private View local;
 
     @Before
+    @Override
     public void setUp() {
+    	super.setUp();
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
     }

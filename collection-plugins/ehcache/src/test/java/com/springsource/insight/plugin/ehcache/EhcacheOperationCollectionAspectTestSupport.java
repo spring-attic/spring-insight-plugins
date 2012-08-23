@@ -35,8 +35,8 @@ import org.junit.BeforeClass;
 
 import com.springsource.insight.collection.IgnoringOperationCollector;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.collection.OperationCollector;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.util.FileUtil;
 
@@ -55,8 +55,8 @@ public abstract class EhcacheOperationCollectionAspectTestSupport
 
     // neutralizes the argument captor
     protected Element putUncaptured (Object key, Object value) {
-        Assert.assertNotNull("Null key", key);
-        Assert.assertNotNull("Null value", value);
+        assertNotNull("Null key", key);
+        assertNotNull("Null value", value);
 
         Element                             elem=new Element(key, value);
         OperationCollectionAspectSupport    collAspect=getAspect();
@@ -73,14 +73,14 @@ public abstract class EhcacheOperationCollectionAspectTestSupport
 
     protected Operation assertEhcacheOperationContents (String method, Object key, Object value) {
         Operation op=getLastEntered();
-        Assert.assertNotNull("No operation extracted", op);
-        Assert.assertEquals("Mismatched operation type", EhcacheDefinitions.CACHE_OPERATION, op.getType());
-        Assert.assertEquals("Mismatched cache name", TEST_CACHE_NAME,op.get(EhcacheDefinitions.NAME_ATTRIBUTE, String.class));
-        Assert.assertEquals("Mismatched method", method, op.get(EhcacheDefinitions.METHOD_ATTRIBUTE, String.class));
-        Assert.assertEquals("Mismatched key", key.toString(), op.get(EhcacheDefinitions.KEY_ATTRIBUTE));
+        assertNotNull("No operation extracted", op);
+        assertEquals("Mismatched operation type", EhcacheDefinitions.CACHE_OPERATION, op.getType());
+        assertEquals("Mismatched cache name", TEST_CACHE_NAME,op.get(EhcacheDefinitions.NAME_ATTRIBUTE, String.class));
+        assertEquals("Mismatched method", method, op.get(EhcacheDefinitions.METHOD_ATTRIBUTE, String.class));
+        assertEquals("Mismatched key", key.toString(), op.get(EhcacheDefinitions.KEY_ATTRIBUTE));
 
         if (value != null) {
-            Assert.assertEquals("Mismatched value", value.toString(), op.get(EhcacheDefinitions.VALUE_ATTRIBUTE));
+            assertEquals("Mismatched value", value.toString(), op.get(EhcacheDefinitions.VALUE_ATTRIBUTE));
         }
         return op;
     }
@@ -93,26 +93,17 @@ public abstract class EhcacheOperationCollectionAspectTestSupport
 
         final Class<?>	anchorClass=EhcacheOperationCollectionAspectTestSupport.class;
         URL				configURL=anchorClass.getResource("/ehcache.xml");
-        Assert.assertNotNull("Cannot find configuration file URL");
+        assertNotNull("Cannot find configuration file URL");
 
-        File					testDir=resolveTestDirRoot(anchorClass), testStore=new File(testDir, "ehcache-store");
+        File					testDir=FileUtil.detectTargetFolder(anchorClass), testStore=new File(testDir, "ehcache-store");
         Configuration			config=ConfigurationFactory.parseConfiguration(configURL);
         DiskStoreConfiguration	diskStore=config.getDiskStoreConfiguration();
         diskStore.setPath(testStore.getAbsolutePath());
 
         manager = CacheManager.create(config);
         cache = manager.getCache(TEST_CACHE_NAME);
-        Assert.assertNotNull("Test cache not found", cache);
+        assertNotNull("Test cache not found", cache);
         cache.registerCacheWriter(new TestCacheWriter(cache));
-    }
-
-    protected static final File resolveTestDirRoot (Class<?> anchorClass) {
-		File	targetDir=FileUtil.detectTargetFolder(anchorClass);
-		if (targetDir == null) {
-			throw new IllegalStateException("No target folder for " + anchorClass.getSimpleName());
-		}
-
-		return targetDir;
     }
 
     @SuppressWarnings("hiding")

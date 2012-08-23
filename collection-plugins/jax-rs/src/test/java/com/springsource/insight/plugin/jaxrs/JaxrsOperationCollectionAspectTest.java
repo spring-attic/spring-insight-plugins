@@ -21,10 +21,9 @@ import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.PathParam;
 
-import org.junit.Assert;
 import org.junit.Test;
 
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
@@ -78,50 +77,50 @@ public class JaxrsOperationCollectionAspectTest extends OperationCollectionAspec
                 expDate = testService.getTomorrowDate(now, false);
                 actDate = new Date(now + 86400000L);
             } else {
-                Assert.fail("Unknown path definition: " + pathDefinition);
+                fail("Unknown path definition: " + pathDefinition);
                 return null;
             }
 
             final Operation op = getLastEntered();
-            Assert.assertNotNull("No operation extracted", op);
-            Assert.assertEquals("Mismatched operation type(s)", JaxrsDefinitions.TYPE, op.getType());
-            Assert.assertEquals("Mismatched retrieval method", GET.class.getSimpleName(), op.get("method", String.class));
+            assertNotNull("No operation extracted", op);
+            assertEquals("Mismatched operation type(s)", JaxrsDefinitions.TYPE, op.getType());
+            assertEquals("Mismatched retrieval method", GET.class.getSimpleName(), op.get("method", String.class));
 
             if (op.isFinalizable()) {
                 op.finalizeConstruction();
             }
 
             final long  valsDiff=Math.abs(expDate.getTime() - actDate.getTime());
-            Assert.assertTrue("Mismatched call return values", valsDiff < 5000L);
+            assertTrue("Mismatched call return values", valsDiff < 5000L);
 
             final String    expTemplate=RestServiceDefinitions.ROOT_PATH.equals(pathDefinition)
                                 ? RestServiceDefinitions.ROOT_PATH
                                 : RestServiceDefinitions.ROOT_PATH + "/" + pathDefinition
                                 ;
             final String    actTemplate=op.get("requestTemplate", String.class);
-            Assert.assertEquals("Mismatched request template", expTemplate, actTemplate);
+            assertEquals("Mismatched request template", expTemplate, actTemplate);
             
             if (!RestServiceDefinitions.ROOT_PATH.equals(pathDefinition)) {
                 final OperationList opList=op.get("pathParams", OperationList.class);
-                Assert.assertNotNull("Missing path parameters list", opList);
-                Assert.assertEquals("Unexpected number of path parameters", 1, opList.size());
+                assertNotNull("Missing path parameters list", opList);
+                assertEquals("Unexpected number of path parameters", 1, opList.size());
                 
                 final OperationMap  opMap=opList.get(0, OperationMap.class);
-                Assert.assertNotNull("Missing path parameters map", opMap);
-                Assert.assertEquals("Unexpected number of mapped path parameters", 3, opMap.size());
+                assertNotNull("Missing path parameters map", opMap);
+                assertEquals("Unexpected number of mapped path parameters", 3, opMap.size());
 
                 final String    paramName=opMap.get("name", String.class);
-                Assert.assertEquals("Mismatched path param name", RestServiceDefinitions.NOW_PARAM_NAME, paramName);
+                assertEquals("Mismatched path param name", RestServiceDefinitions.NOW_PARAM_NAME, paramName);
 
                 final Long  paramValue=opMap.get("value", Long.class);
-                Assert.assertNotNull("Missing path parameter value", paramValue);
-                Assert.assertEquals("Mismatched path parameter value", now, paramValue.longValue());
+                assertNotNull("Missing path parameter value", paramValue);
+                assertEquals("Mismatched path parameter value", now, paramValue.longValue());
 
                 final String    paramType=opMap.get("type", String.class);
-                Assert.assertEquals("Mismatched path param type", PathParam.class.getSimpleName(), paramType);
+                assertEquals("Mismatched path param type", PathParam.class.getSimpleName(), paramType);
 
                 final JaxrsParamType    enumType=JaxrsParamType.fromTypeName(paramType);
-                Assert.assertEquals("Mismatched path param enum", JaxrsParamType.PATH, enumType);
+                assertEquals("Mismatched path param enum", JaxrsParamType.PATH, enumType);
             }
             
             //test external resources

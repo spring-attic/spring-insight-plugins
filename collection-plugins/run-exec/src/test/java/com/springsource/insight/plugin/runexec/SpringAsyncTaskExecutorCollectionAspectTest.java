@@ -20,7 +20,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
@@ -55,8 +54,8 @@ public class SpringAsyncTaskExecutorCollectionAspectTest
         assertLastExecutionOperation(runner);
         assertCurrentThreadExecution();
         
-        Assert.assertNull("Unexpected future result", result);
-        Assert.assertTrue("Future not done", future.isDone());
+        assertNull("Unexpected future result", result);
+        assertTrue("Future not done", future.isDone());
     }
 
     @Override

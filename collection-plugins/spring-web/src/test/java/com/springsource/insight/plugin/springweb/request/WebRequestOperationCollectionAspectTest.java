@@ -34,7 +34,7 @@ import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.util.NestedServletException;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 

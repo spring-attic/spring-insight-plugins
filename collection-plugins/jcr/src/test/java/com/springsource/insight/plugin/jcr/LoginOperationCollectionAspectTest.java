@@ -15,11 +15,10 @@
  */
 package com.springsource.insight.plugin.jcr;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class LoginOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
@@ -37,17 +36,17 @@ public class LoginOperationCollectionAspectTest extends OperationCollectionAspec
 	
 		// Step 2:  Get the Operation that was just created by our aspect
 		Operation op = getLastEntered();
-		Assert.assertNotNull("No operation data is intercepted",op);
+		assertNotNull("No operation data is intercepted",op);
 
 		// Step 3:  Validate
-		Assert.assertTrue("Invalid operation type: "+op.getType().getName()+", expected: "+OperationCollectionTypes.LOGIN_TYPE.type,
+		assertTrue("Invalid operation type: "+op.getType().getName()+", expected: "+OperationCollectionTypes.LOGIN_TYPE.type,
 							op.getType().equals(OperationCollectionTypes.LOGIN_TYPE.type));
 		
 		String repoName=(String)op.get("workspace");
-		Assert.assertNull("Invalid workspace name: "+repoName, repoName);
+		assertNull("Invalid workspace name: "+repoName, repoName);
 		
 		String username=(String)op.get("user");
-		Assert.assertTrue("Invalid user name: "+username+", expected: admin", username.equals("admin"));
+		assertTrue("Invalid user name: "+username+", expected: admin", username.equals("admin"));
 		
 		System.out.println("Completed login test.\n");
 	}

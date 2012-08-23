@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.net.URL;
 
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -42,10 +41,10 @@ public class FileInputCollectionAspectTest extends FilesOpenTrackerAspectTestSup
 
     @BeforeClass
     public static void setupInputTestFile () throws Exception {
-        Assert.assertNull("Test file already initialized", TEST_FILE);
+        assertNull("Test file already initialized", TEST_FILE);
         ClassLoader cl=ClassUtil.getDefaultClassLoader(FileInputCollectionAspectTest.class);
         URL         url=cl.getResource("input-test-file.txt");
-        Assert.assertNotNull("Cannot resolve input test file location", url);
+        assertNotNull("Cannot resolve input test file location", url);
         TEST_FILE = new File(url.toURI());
     }
 

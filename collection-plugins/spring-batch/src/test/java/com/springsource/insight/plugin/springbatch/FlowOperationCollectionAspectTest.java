@@ -19,7 +19,6 @@ package com.springsource.insight.plugin.springbatch;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.batch.core.job.flow.Flow;
 import org.springframework.batch.core.job.flow.FlowExecution;
@@ -100,7 +99,7 @@ public class FlowOperationCollectionAspectTest
         flow.resume("test", flowExecutor);
 
         Operation   op=assertOperationDetails(getLastEntered(), "resume", flow.getName());
-        Assert.assertEquals("Mismatched state value", "test", op.get("flowState", String.class));
+        assertEquals("Mismatched state value", "test", op.get("flowState", String.class));
         assertOperationPath(op, flowExecutor);
     }
 

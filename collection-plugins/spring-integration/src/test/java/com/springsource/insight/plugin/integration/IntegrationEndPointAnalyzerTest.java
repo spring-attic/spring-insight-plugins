@@ -16,11 +16,10 @@
 
 package com.springsource.insight.plugin.integration;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Before;
 import org.junit.Test;
 
+import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.endpoint.EndPointName;
@@ -33,17 +32,15 @@ import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
 
 /**
- * 
- * @author Gary Russell
- *
  */
-public class IntegrationEndPointAnalyzerTest {
+public class IntegrationEndPointAnalyzerTest extends AbstractCollectionTestSupport{
     private ApplicationName app = ApplicationName.valueOf("app");    
     private IntegrationEndPointAnalyzer endPointAnalyzer;
 	private OperationType operationType = OperationType.valueOf("integration_operation");
     
     @Before
     public void setUp() {
+    	super.setUp();
         endPointAnalyzer = new IntegrationEndPointAnalyzer();
     }
     

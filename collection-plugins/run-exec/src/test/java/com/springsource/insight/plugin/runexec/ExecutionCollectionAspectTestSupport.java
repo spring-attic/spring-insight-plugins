@@ -21,11 +21,10 @@ import java.util.TimerTask;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.JoinPoint.StaticPart;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
 import com.springsource.insight.collection.OperationListCollector;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.operation.SourceCodeLocation;
@@ -64,26 +63,26 @@ public abstract class ExecutionCollectionAspectTestSupport
     @Before
     public void setUp () {
         // make sure we start with a clean slate
-        Assert.assertNull("Original collector not cleared", originalOperationCollector);
+        assertNull("Original collector not cleared", originalOperationCollector);
         List<Operation> ops=TEST_COLLECTOR.getCollectedOperations();
-        Assert.assertTrue("Test collector not empty", ops.isEmpty());
-        Assert.assertNull("Original resolver not cleared", originalResolver);
+        assertTrue("Test collector not empty", ops.isEmpty());
+        assertNull("Original resolver not cleared", originalResolver);
 
         ExecuteMethodCollectionAspect    aspectInstance=(ExecuteMethodCollectionAspect) getAspect();
         originalOperationCollector = aspectInstance.getCollector();
-        Assert.assertNotNull("No original collector", originalOperationCollector);
+        assertNotNull("No original collector", originalOperationCollector);
         aspectInstance.setCollector(TEST_COLLECTOR);
 
         originalResolver = aspectInstance.getRunnableResolver();
-        Assert.assertNotNull("No original resolver", originalResolver);
+        assertNotNull("No original resolver", originalResolver);
         aspectInstance.setRunnableResolver(TEST_RESOLVER);
     }
 
     @Override
     @After
     public void restore () {
-        Assert.assertNotNull("Original collector not saved", originalOperationCollector);
-        Assert.assertNotNull("Original resolver not saved", originalResolver);
+        assertNotNull("Original collector not saved", originalOperationCollector);
+        assertNotNull("Original resolver not saved", originalResolver);
 
         ExecuteMethodCollectionAspect    aspectInstance=(ExecuteMethodCollectionAspect) getAspect();
         aspectInstance.setCollector(originalOperationCollector);
@@ -125,14 +124,14 @@ public abstract class ExecutionCollectionAspectTestSupport
     }
 
     protected Operation assertExecutionOperation (List<? extends Operation> opsList, int index, OperationType expType, Thread thread) {
-        Assert.assertNotNull("No operations list", opsList);
-        Assert.assertTrue("Negative index", index >= 0);
-        Assert.assertTrue("Insufficient operations list", index < opsList.size());
+        assertNotNull("No operations list", opsList);
+        assertTrue("Negative index", index >= 0);
+        assertTrue("Insufficient operations list", index < opsList.size());
         return assertExecutionOperation(opsList.get(index), expType, thread);
     }
 
     protected Operation assertExecutionOperation (Operation op, OperationType expType, Thread thread) {
-        Assert.assertNotNull("No thread specified", thread);
+        assertNotNull("No thread specified", thread);
         return assertExecutionOperation(op, expType, thread.getName()); 
     }
 
@@ -141,9 +140,9 @@ public abstract class ExecutionCollectionAspectTestSupport
             op.finalizeConstruction();
         }
 
-        Assert.assertNotNull("No operation", op);
-        Assert.assertEquals("Mismatched operation type", expType, op.getType());
-        Assert.assertEquals("Mismatched runner thread", threadName, op.get(RunExecDefinitions.THREADNAME_ATTR, String.class));
+        assertNotNull("No operation", op);
+        assertEquals("Mismatched operation type", expType, op.getType());
+        assertEquals("Mismatched runner thread", threadName, op.get(RunExecDefinitions.THREADNAME_ATTR, String.class));
         return op;
     }
     

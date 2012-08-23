@@ -19,9 +19,7 @@ import java.io.Serializable;
 
 import net.sf.ehcache.Element;
 
-import org.junit.Assert;
 import org.junit.Test;
-
 
 /**
  * 
@@ -36,7 +34,7 @@ public class EhcacheGetOperationCollectionAspectTest
     public void testGetSerializable ()
     {
         Serializable    key=Long.valueOf(System.nanoTime());
-        Assert.assertNull("Unexpected cache content", cache.get(key));
+        assertNull("Unexpected cache content", cache.get(key));
         assertEhcacheOperationContents(EhcacheDefinitions.GET_METHOD, key, null);
     }
 
@@ -44,7 +42,7 @@ public class EhcacheGetOperationCollectionAspectTest
     public void testGetObject ()
     {
         Object    key=Long.valueOf(System.nanoTime());
-        Assert.assertNull("Unexpected cache content", cache.get(key));
+        assertNull("Unexpected cache content", cache.get(key));
         assertEhcacheOperationContents(EhcacheDefinitions.GET_METHOD, key, null);
     }
 
@@ -52,7 +50,7 @@ public class EhcacheGetOperationCollectionAspectTest
     public void testGetQuietSerializable ()
     {
         Serializable    key=Long.valueOf(System.nanoTime());
-        Assert.assertNull("Unexpected cache content", cache.getQuiet(key));
+        assertNull("Unexpected cache content", cache.getQuiet(key));
         assertEhcacheOperationContents(EhcacheDefinitions.GET_METHOD, key, null);
     }
 
@@ -60,7 +58,7 @@ public class EhcacheGetOperationCollectionAspectTest
     public void testGetQuietObject ()
     {
         Object    key=Long.valueOf(System.nanoTime());
-        Assert.assertNull("Unexpected cache content", cache.getQuiet(key));
+        assertNull("Unexpected cache content", cache.getQuiet(key));
         assertEhcacheOperationContents(EhcacheDefinitions.GET_METHOD, key, null);
     }
 
@@ -69,15 +67,13 @@ public class EhcacheGetOperationCollectionAspectTest
         Object  key="testGetExistingValue", value=Long.valueOf(System.nanoTime());
         Element putElem=putUncaptured(key, value), getElem=cache.get(key);
 
-        Assert.assertNotNull("Missing uncaptured put", putElem);
-        Assert.assertNotNull("Cached value not found", getElem);
-        Assert.assertEquals("Mismatched cache content", value, getElem.getObjectValue());
+        assertNotNull("Missing uncaptured put", putElem);
+        assertNotNull("Cached value not found", getElem);
+        assertEquals("Mismatched cache content", value, getElem.getObjectValue());
 
         assertEhcacheOperationContents(EhcacheDefinitions.GET_METHOD, key, value);
     }
-    /*
-     * @see com.springsource.insight.collection.OperationCollectionAspectTestSupport#getAspect()
-     */
+
     @Override
     public EhcacheGetOperationCollectionAspect getAspect() {
         return EhcacheGetOperationCollectionAspect.aspectOf();

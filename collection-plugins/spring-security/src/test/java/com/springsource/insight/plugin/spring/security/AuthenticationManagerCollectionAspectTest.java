@@ -18,7 +18,6 @@ package com.springsource.insight.plugin.spring.security;
 
 import java.util.Arrays;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.TestingAuthenticationToken;
@@ -40,8 +39,8 @@ public class AuthenticationManagerCollectionAspectTest
         Authentication          token=new TestingAuthenticationToken("testSuccessfulAuthentication", "shir", grants);
         AuthenticationManager   testManager=new AuthenticationTestManager(false);
         Authentication          result=testManager.authenticate(token);
-        Assert.assertNotNull("No authentication result", result);
-        Assert.assertSame("Mismatched authentication instances equality", token, result);
+        assertNotNull("No authentication result", result);
+        assertSame("Mismatched authentication instances equality", token, result);
         assertOperationResult(result, Arrays.asList(grants));
     }
 
@@ -54,7 +53,7 @@ public class AuthenticationManagerCollectionAspectTest
         Authentication          token=new TestingAuthenticationToken("testObscuredCredentials", "omer", grants);
         AuthenticationManager   testManager=new AuthenticationTestManager(true);
         Authentication          result=testManager.authenticate(token);
-        Assert.assertNotSame("Authentication token not cloned", token, result);
+        assertNotSame("Authentication token not cloned", token, result);
         assertObscuredAuthValues(token, result, marker.getValues());
     }
 

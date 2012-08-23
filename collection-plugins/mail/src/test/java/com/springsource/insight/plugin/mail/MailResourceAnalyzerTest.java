@@ -15,14 +15,11 @@
  */
 package com.springsource.insight.plugin.mail;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-
 import java.util.List;
 
 import org.junit.Test;
 
+import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
@@ -33,7 +30,7 @@ import com.springsource.insight.intercept.trace.SimpleFrameBuilder;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
 
-public class MailResourceAnalyzerTest {
+public class MailResourceAnalyzerTest extends AbstractCollectionTestSupport  {
     private static final String PROTOCOL="POP3";
     private static final Integer    PORT=MailDefinitions.protocolToPortMap.get(PROTOCOL);
     private final MailResourceAnalyzer analyzer = new MailResourceAnalyzer();

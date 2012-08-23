@@ -18,9 +18,7 @@ package com.springsource.insight.plugin.jta;
 
 import org.mockito.Mockito;
 
-import org.junit.Assert;
-
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.SourceCodeLocation;
@@ -48,20 +46,20 @@ public abstract class JtaOperationCollectionAspectTestSupport
 
     protected Operation assertTransactionOperation (String testName, String action, Class<?>[] argTypes) {
         Operation   op=getLastEntered();
-        Assert.assertNotNull(testName + ": No operation", op);
+        assertNotNull(testName + ": No operation", op);
 
         JtaOperationCollectionAspect    aspectInstance=getJtaOperationCollectionAspect();
-        Assert.assertEquals(testName + ": Mismatched operation type", aspectInstance.getOperationType(), op.getType());
+        assertEquals(testName + ": Mismatched operation type", aspectInstance.getOperationType(), op.getType());
 
         Class<?>    txClass=aspectInstance.getTransactionClass();
-        Assert.assertEquals(testName + ": Mismatched full class name", txClass.getName(), op.get(OperationFields.CLASS_NAME, String.class));
-        Assert.assertEquals(testName + ": Mismatched short class name", txClass.getSimpleName(), op.get(OperationFields.SHORT_CLASS_NAME, String.class));
-        Assert.assertEquals(testName + ": Mismatched action", action, op.get(JtaDefinitions.ACTION_ATTR, String.class));
+        assertEquals(testName + ": Mismatched full class name", txClass.getName(), op.get(OperationFields.CLASS_NAME, String.class));
+        assertEquals(testName + ": Mismatched short class name", txClass.getSimpleName(), op.get(OperationFields.SHORT_CLASS_NAME, String.class));
+        assertEquals(testName + ": Mismatched action", action, op.get(JtaDefinitions.ACTION_ATTR, String.class));
 
         SourceCodeLocation  scl=new SourceCodeLocation(op.get(OperationFields.CLASS_NAME, String.class),
                                                        op.get(OperationFields.METHOD_NAME, String.class),
                                                        (-1));
-        Assert.assertEquals(testName + ": Mismatched method signature",
+        assertEquals(testName + ": Mismatched method signature",
                             JoinPointBreakDown.getMethodStringFromArgs(scl, argTypes),
                             op.get(OperationFields.METHOD_SIGNATURE, String.class));
         return op;

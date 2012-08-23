@@ -16,15 +16,12 @@
 
 package org.myorg.insight.myplugin;
 
-
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.springsource.insight.idk.AbstractOperationViewTest;
+import com.springsource.insight.idk.test.AbstractOperationViewTestSupport;
 import com.springsource.insight.idk.WebApplicationContextLoader;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
@@ -41,7 +38,7 @@ import com.springsource.insight.intercept.operation.SourceCodeLocation;
                                     "classpath:META-INF/test-app-context.xml" },
                       loader = WebApplicationContextLoader.class)
 @RunWith(SpringJUnit4ClassRunner.class)
-public class CashMoneyOperationViewTest extends AbstractOperationViewTest {
+public class CashMoneyOperationViewTest extends AbstractOperationViewTestSupport {
     
     private static final OperationType TYPE = OperationType.valueOf("cash_money_operation");
     

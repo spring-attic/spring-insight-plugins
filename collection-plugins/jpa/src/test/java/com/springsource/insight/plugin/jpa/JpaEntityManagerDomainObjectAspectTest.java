@@ -19,7 +19,6 @@ package com.springsource.insight.plugin.jpa;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -37,20 +36,20 @@ public class JpaEntityManagerDomainObjectAspectTest
 
     @Test
     public void testResolveDomainClassOnNoArgs () {
-        Assert.assertEquals("Mismatched null result",
+        assertEquals("Mismatched null result",
                             void.class,
                             JpaEntityManagerDomainObjectAspect.resolveDomainClass((Object[]) null));
-        Assert.assertEquals("Mismatched empty result",
+        assertEquals("Mismatched empty result",
                             void.class,
                             JpaEntityManagerDomainObjectAspect.resolveDomainClass(new Object[] { }));
     }
 
     @Test
     public void testResolveDomainClassOnArguments () {
-        Assert.assertSame("Mismatched result on one argument",
+        assertSame("Mismatched result on one argument",
                           String.class,
                           JpaEntityManagerDomainObjectAspect.resolveDomainClass("123456"));
-        Assert.assertSame("Mismatched result on multiple arguments",
+        assertSame("Mismatched result on multiple arguments",
                           Long.class,
                           JpaEntityManagerDomainObjectAspect.resolveDomainClass(
                                   Long.valueOf(System.currentTimeMillis()), "123456", Runtime.getRuntime()));
@@ -64,7 +63,7 @@ public class JpaEntityManagerDomainObjectAspectTest
             action.executeAction(entityManager, entity);
 
             Operation   op=assertManagerOperation(testName, action.getActionName());
-            Assert.assertEquals(testName + ": Mismatched domain class",
+            assertEquals(testName + ": Mismatched domain class",
                                 entity.getClass().getName(),
                                 op.get(JpaDefinitions.DOMAIN_CLASS_ATTR, String.class));
             Mockito.reset(spiedOperationCollector); // prepare for next iteration

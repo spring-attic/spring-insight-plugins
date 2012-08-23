@@ -15,11 +15,10 @@
  */
 package com.springsource.insight.plugin.jcr;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.OperationCollectionAspectTestSupport;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class SaveOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
@@ -37,14 +36,14 @@ public class SaveOperationCollectionAspectTest extends OperationCollectionAspect
 	
 		// Step 2:  Get the Operation that was just created by our aspect
 		Operation op = getLastEntered();
-		Assert.assertNotNull("No operation data is intercepted",op);
+		assertNotNull("No operation data is intercepted",op);
 
 		// Step 3:  Validate
-		Assert.assertTrue("Invalid operation type: "+op.getType().getName()+", expected: "+OperationCollectionTypes.WORKSPACE_TYPE.type,
+		assertTrue("Invalid operation type: "+op.getType().getName()+", expected: "+OperationCollectionTypes.WORKSPACE_TYPE.type,
 							op.getType().equals(OperationCollectionTypes.WORKSPACE_TYPE.type));
 		
 		String path=(String)op.get("path");
-		Assert.assertTrue("Invalid save path: "+path+", expected: /", path.equals("/"));
+		assertTrue("Invalid save path: "+path+", expected: /", path.equals("/"));
 		
 		System.out.println("Completed save data test.\n");
 	}

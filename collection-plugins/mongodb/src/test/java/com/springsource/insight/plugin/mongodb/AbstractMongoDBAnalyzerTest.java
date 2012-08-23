@@ -16,14 +16,13 @@
 
 package com.springsource.insight.plugin.mongodb;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
 
+import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
@@ -41,7 +40,7 @@ import com.springsource.insight.util.time.TimeRange;
 
 /**
  */
-public abstract class AbstractMongoDBAnalyzerTest {
+public abstract class AbstractMongoDBAnalyzerTest extends AbstractCollectionTestSupport {
 	
 	protected abstract OperationType getType();
 
