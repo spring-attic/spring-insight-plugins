@@ -21,5 +21,10 @@
 	<insight:operation-group group="DB" operation="cassandra_cql" />
 	<insight:operation-group group="DB" operation="cassandra_system" />
     
-    <bean class="com.springsource.insight.plugin.cassandra.CassandraExternalResourceAnalyzer" />
+    <bean class="com.springsource.insight.plugin.cassandra.CassandraConnectExternalResourceAnalyzer" />
+    <bean class="com.springsource.insight.plugin.cassandra.CassandraCQLExternalResourceAnalyzer" />
+    <bean class="com.springsource.insight.plugin.cassandra.CassandraGetExternalResourceAnalyzer" />
+    <bean class="com.springsource.insight.plugin.cassandra.CassandraSystemExternalResourceAnalyzer" />
+    <bean class="com.springsource.insight.plugin.cassandra.CassandraUpdateExternalResourceAnalyzer" />
+    <bean class="com.springsource.insight.plugin.cassandra.CassandraRemoveExternalResourceAnalyzer" />
 </beans>

@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.topology.AbstractExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
@@ -29,9 +30,9 @@ import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.ListUtil;
 
-public class CassandraExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-	public CassandraExternalResourceAnalyzer () {
-	    super(OperationCollectionTypes.CONNECT_TYPE.type);
+public abstract class AbsCassandraExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
+	public AbsCassandraExternalResourceAnalyzer(OperationType type) {
+	    super(type);
 	}
 
 	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> frames) {
@@ -42,15 +43,28 @@ public class CassandraExternalResourceAnalyzer extends AbstractExternalResourceA
 		List<ExternalResourceDescriptor> queueDescriptors = new ArrayList<ExternalResourceDescriptor>(frames.size());
 		for (Frame cacheFrame : frames) {
 			Operation op = cacheFrame.getOperation();
-			String label = op.get("server", String.class, "");
+			String server = op.get("server", String.class, "");
+			
+			int port=0;
+			String host=server;
+			int indx=server.lastIndexOf(":");
+			if (indx>0) {
+				host=server.substring(0,indx);
+				try {
+					port=Integer.parseInt(server.substring(indx+1));
+				}
+				catch(Exception e) {
+					// invalid port
+				}
+			}
 
-			String hashString = MD5NameGenerator.getName(label);
+			String hashString = MD5NameGenerator.getName(server);
             String color = colorManager.getColor(op);
             
 			ExternalResourceDescriptor descriptor =
-			        new ExternalResourceDescriptor(cacheFrame, "server:" + hashString, label,
+			        new ExternalResourceDescriptor(cacheFrame, "server:" + hashString, server,
                        			                   ExternalResourceType.DATABASE.name(), "Cassandra",
-                       			                   color, false);
+                       			                   host, port, color, false);
 			queueDescriptors.add(descriptor);            
 		}
 
