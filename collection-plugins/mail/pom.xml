@@ -27,25 +27,16 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>${spring.framework.version}</version>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>${spring.framework.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>    <!-- We use its JavaMailSender -->
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
-            <version>${spring.framework.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>    <!-- embedded SMTP server for tests -->
@@ -57,26 +48,22 @@
         <dependency> <!-- commons-logging replacement -->
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
-            <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency> <!-- Required by subethasmtp -->
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency> <!-- Required by subethasmtp -->
             <groupId>org.slf4j</groupId>
             <!-- artifactId>slf4j-nop</artifactId -->
             <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-			 <version>${commons.io.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

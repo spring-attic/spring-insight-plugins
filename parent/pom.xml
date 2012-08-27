@@ -24,7 +24,7 @@
         <clover2.version>2.6.3</clover2.version>
         <slf4j.version>1.6.1</slf4j.version>
         <servlet-api.version>2.5</servlet-api.version>
-		 <jetty-api.version>6.1.25</jetty-api.version>
+		<jetty-api.version>6.1.25</jetty-api.version>
         <freemarker.version>2.3.15</freemarker.version>
         <jstl.version>1.2</jstl.version>
         <cglib.version>2.2</cglib.version>
@@ -250,6 +250,379 @@
         </pluginRepository>
     </pluginRepositories>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-all</artifactId>
+				<version>${mockito.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.hsqldb</groupId>
+				<artifactId>hsqldb</artifactId>
+				<version>${hsqldb.version}</version>
+			</dependency>
+
+	        <dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>${commons.io.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-dbcp</groupId>
+				<artifactId>commons-dbcp</artifactId>
+				<version>${commons.dbcp.version}</version>
+			</dependency>       
+			<dependency>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging</artifactId>
+				<version>${commons.logging.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>servlet-api</artifactId>
+				<version>${servlet-api.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.jms</groupId>
+				<artifactId>jms</artifactId>
+				<version>${javax.jms.version}</version>
+			</dependency>
+			<dependency> <!-- used by Spring -->
+				<groupId>javax.inject</groupId>
+				<artifactId>javax.inject</artifactId>
+				<version>${javax.inject.version}</version>
+			</dependency>
+
+	        <dependency>
+				<groupId>org.aspectj</groupId>
+				<artifactId>aspectjweaver</artifactId>
+				<version>${aspectj.version}</version>
+			</dependency>
+	        <dependency>
+				<groupId>org.aspectj</groupId>
+				<artifactId>aspectjrt</artifactId>
+				<version>${aspectj.version}</version>
+			</dependency>
+	        <dependency>
+				<groupId>org.aspectj</groupId>
+				<artifactId>aspectjtools</artifactId>
+				<version>${aspectj.version}</version>
+			</dependency>
+
+	        <dependency>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty</artifactId>
+				<version>${jetty-api.version}</version>
+				<exclusions>
+				    <exclusion>	<!-- we provide our own -->
+						<groupId>org.mortbay.jetty</groupId>
+						<artifactId>servlet-api</artifactId>
+				    </exclusion>
+				</exclusions>
+			</dependency>
+	        <dependency>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty-util</artifactId>
+				<version>${jetty-api.version}</version>
+				<exclusions>
+				    <exclusion>	<!-- we provide our own -->
+						<groupId>org.mortbay.jetty</groupId>
+						<artifactId>servlet-api</artifactId>
+				    </exclusion>
+				</exclusions>
+			</dependency>
+
+			<dependency> <!-- Required also by various frameworks (e.g., Spring) -->
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+				<!-- Replacement of commons-logging with a native slf4j 
+					 - Required by Spring framework (and others) -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency> <!-- Required also by various frameworks (e.g., Spring) -->
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-simple</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jul-to-slf4j</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-nop</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>log4j-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>${log4j.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>javax.jms</groupId>
+						<artifactId>jms</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>com.sun.jmx</groupId>
+						<artifactId>jmxri</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>com.sun.jdmk</groupId>
+						<artifactId>jmxtools</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>ant</groupId>
+						<artifactId>ant-nodeps</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>ant</groupId>
+						<artifactId>ant-junit</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>ant-contrib</groupId>
+						<artifactId>ant-contrib</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+			<dependency>
+				<groupId>org.codehaus.jackson</groupId>
+				<artifactId>jackson-core-asl</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.codehaus.jackson</groupId>
+				<artifactId>jackson-mapper-asl</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.freemarker</groupId>
+				<artifactId>freemarker</artifactId>
+				<version>${freemarker.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-entitymanager</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-core</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>        
+
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-core</artifactId>
+				<version>${spring.framework.version}</version>
+				<exclusions>
+					<exclusion> <!-- Provided by the J2SE -->
+						<groupId>xml-apis</groupId>
+						<artifactId>xml-apis</artifactId>
+					</exclusion>
+						<!-- excluded since we provide our
+							own dependencies versions for them - 
+							usually jcl-over-slf4j	-->
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-aop</artifactId>
+				<version>${spring.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-asm</artifactId>
+				<version>${spring.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-aspects</artifactId>
+				<version>${spring.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-beans</artifactId>
+				<version>${spring.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${spring.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context-support</artifactId>
+				<version>${spring.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-expression</artifactId>
+				<version>${spring.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-instrument</artifactId>
+				<version>${spring.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-jdbc</artifactId>
+				<version>${spring.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-jms</artifactId>
+				<version>${spring.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-orm</artifactId>
+				<version>${spring.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-oxm</artifactId>
+				<version>${spring.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-tx</artifactId>
+				<version>${spring.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>${spring.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-webmvc</artifactId>
+				<version>${spring.framework.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-test</artifactId>
+				<version>${spring.framework.version}</version>
+			</dependency>
+
+	        <dependency>
+	            <groupId>org.springframework.webflow</groupId>
+	            <artifactId>spring-webflow</artifactId>
+	            <version>${spring.webflow.version}</version>
+	            <exclusions>
+	                <exclusion> <!-- we use jcl-over-slf4j in the tests -->
+	                    <groupId>commons-logging</groupId>
+	                    <artifactId>commons-logging</artifactId>
+	                </exclusion>
+	            </exclusions>
+	        </dependency>
+            <dependency>
+                <groupId>org.springframework.webflow</groupId>
+                <artifactId>spring-binding</artifactId>
+                <version>${spring.webflow.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.webflow</groupId>
+                <artifactId>spring-js</artifactId>
+                <version>${spring.webflow.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.webflow</groupId>
+                <artifactId>spring-js-resources</artifactId>
+                <version>${spring.webflow.version}</version>
+            </dependency>
+
+	        <dependency>
+	            <groupId>org.springframework.integration</groupId>
+	            <artifactId>spring-integration-core</artifactId>
+	            <version>${spring.integration.version}</version>
+	        </dependency>
+
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-core</artifactId>
+				<version>${spring.security.version}</version>
+				<exclusions>
+						<!-- we use our own versions for these -->
+					<exclusion>
+						<groupId>org.aspectj</groupId>
+						<artifactId>aspectjrt</artifactId>
+					</exclusion>
+						<!-- excluded since we provide our
+							own dependencies versions for them - 
+							usually jcl-over-slf4j	-->
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-config</artifactId>
+				<version>${spring.security.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-web</artifactId>
+				<version>${spring.security.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-ldap</artifactId>
+				<version>${spring.security.version}</version>
+					<!-- we use our own versions for these -->
+				<exclusions>
+					<exclusion>
+						<groupId>org.aspectj</groupId>
+						<artifactId>aspectjrt</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.aspectj</groupId>
+						<artifactId>aspectjtools</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.aspectj</groupId>
+						<artifactId>aspectjweaver</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+		
     <build>
         <extensions>
             <extension>

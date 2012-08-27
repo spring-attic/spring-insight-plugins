@@ -19,7 +19,6 @@
 		<dependency>
 			<groupId>javax.jms</groupId>
 			<artifactId>jms</artifactId>
-			<version>${javax.jms.version}</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

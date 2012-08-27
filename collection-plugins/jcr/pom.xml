@@ -39,18 +39,35 @@
                       <groupId>org.slf4j</groupId>
                       <artifactId>slf4j-api</artifactId>
                 </exclusion>
+                <exclusion>
+                      <groupId>commons-io</groupId>
+                      <artifactId>commons-io</artifactId>
+                </exclusion>
+                <exclusion>
+				      <groupId>commons-dbcp</groupId>
+				      <artifactId>commons-dbcp</artifactId>
+                </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
-            <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
