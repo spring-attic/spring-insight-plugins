@@ -48,14 +48,13 @@ import com.rabbitmq.client.ReturnListener;
 import com.rabbitmq.client.ShutdownListener;
 import com.rabbitmq.client.ShutdownSignalException;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationType;
 
-public class RabbitMQConsumerCollectionAspectTest extends OperationCollectionAspectTestSupport {
+public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollectionAspectTestSupport {
     public RabbitMQConsumerCollectionAspectTest () {
-    	super();
+    	super(RabbitPluginOperationType.CONSUME);
     }
 
     @Test
@@ -87,30 +86,13 @@ public class RabbitMQConsumerCollectionAspectTest extends OperationCollectionAsp
     }
 
     void assertOperation(Envelope envelope, BasicProperties props, byte[] body) {
-        Operation op = getLastEntered();
-        
-        assertEquals(OperationType.valueOf("rabbitmq-client-consumer"), op.getType());
-        assertEquals("Consume", op.getLabel());
-        assertEquals(Integer.valueOf(body.length), op.get("bytes", Integer.class));
+        Operation op = assertBasicOperation(props, body);
         
         OperationMap envMap = op.get("envelope", OperationMap.class);
-        
-        assertNotNull(envMap);
-        assertEquals(Long.valueOf(envelope.getDeliveryTag()), envMap.get("deliveryTag", Long.class));
-        assertEquals(envelope.getExchange() , envMap.get("exchange", String.class));
-        assertEquals(envelope.getRoutingKey() , envMap.get("routingKey", String.class));
-        
-        assertNull(op.get("connectionUrl"));
-        assertNull(op.get("serverVersion"));
-        assertNull(op.get("clientVersion"));
-        
-        OperationMap propsMap = op.get("props", OperationMap.class);
-        
-        assertEquals(props.getAppId(), propsMap.get("App Id"));
-        assertEquals(props.getContentEncoding(), propsMap.get("Content Encoding"));
-        assertEquals(props.getContentType(), propsMap.get("Content Type"));
-        assertEquals(props.getDeliveryMode(), propsMap.get("Delivery Mode"));
-        assertEquals(props.getExpiration(), propsMap.get("Expiration"));
+        assertNotNull("No envelope", envMap);
+        assertEquals("Mismatched delivery tag", Long.valueOf(envelope.getDeliveryTag()), envMap.get("deliveryTag", Long.class));
+        assertEquals("Mismatched exchange", envelope.getExchange() , envMap.get("exchange", String.class));
+        assertEquals("Mismatched routing key", envelope.getRoutingKey() , envMap.get("routingKey", String.class));
     }
     
     private BasicProperties create() {

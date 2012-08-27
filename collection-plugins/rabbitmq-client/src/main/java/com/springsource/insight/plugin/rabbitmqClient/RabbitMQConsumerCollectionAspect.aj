@@ -35,7 +35,7 @@ import com.springsource.insight.intercept.operation.OperationMap;
 public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectionAspect {
 
     public RabbitMQConsumerCollectionAspect () {
-        super();
+        super(RabbitPluginOperationType.CONSUME);
     }
 
     // Holds Operations in progress for a given Channel
@@ -70,8 +70,7 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
         // get the originating operation
         Channel channel = (Channel) thisJoinPoint.getThis();
         Connection conn = channel.getConnection();
-        Operation op = opHolder.get(channel);
-        opHolder.remove(channel);
+        Operation op = opHolder.remove(channel);
         if (conn != null) {
             applyConnectionData(op, conn);
         }
@@ -153,13 +152,6 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
         getCollector().exitAbnormal(t);
     }
 
-    private Operation createOperation() {
-        return new Operation()
-                    .type(RabbitPluginOperationType.CONSUME.getOperationType())
-                    .label(RabbitPluginOperationType.CONSUME.getLabel())
-                    ;
-    }
-
     private Operation applyMessageData(Operation op, Envelope envelope, byte[] body) {
         if (body != null) {
             op.put("bytes", body.length);
@@ -177,9 +169,4 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
 	public boolean isEndpoint() {
     	return true;
    	}
-
-    @Override
-	public String getPluginName() {
-    	return RabbitMQPluginRuntimeDescriptor.PLUGIN_NAME;
-    }
 }

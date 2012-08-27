@@ -44,14 +44,11 @@ import com.rabbitmq.client.ReturnListener;
 import com.rabbitmq.client.ShutdownListener;
 import com.rabbitmq.client.ShutdownSignalException;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.operation.OperationMap;
-import com.springsource.insight.intercept.operation.OperationType;
 
-public class RabbitMQPublishCollectionAspectTest extends OperationCollectionAspectTestSupport {
+public class RabbitMQPublishCollectionAspectTest extends AbstractRabbitMQCollectionAspectTestSupport {
     public RabbitMQPublishCollectionAspectTest () {
-    	super();
+    	super(RabbitPluginOperationType.PUBLISH);
     }
 
     @Test
@@ -68,33 +65,11 @@ public class RabbitMQPublishCollectionAspectTest extends OperationCollectionAspe
         
         channel.basicPublish(exchange, routingKey, mandatory, immediate, props, body);
         
-        Operation op = getLastEntered();
-        
-        assertEquals(exchange, op.get("exchange"));
-        assertEquals(routingKey, op.get("routingKey"));
-        assertEquals(Boolean.valueOf(mandatory), op.get("mandatory"));
-        assertEquals(Boolean.valueOf(immediate), op.get("immediate"));
-        
-        assertOperation(op, props, body);
-    }
-
-    void assertOperation(Operation op, BasicProperties props, byte[] body) {
-        
-        assertEquals(OperationType.valueOf("rabbitmq-client-publish"), op.getType());
-        assertEquals("Publish", op.getLabel());
-        assertEquals(Integer.valueOf(body.length), op.get("bytes", Integer.class));
-        
-        assertNull(op.get("connectionUrl"));
-        assertNull(op.get("serverVersion"));
-        assertNull(op.get("clientVersion"));
-        
-        OperationMap propsMap = op.get("props", OperationMap.class);
-        
-        assertEquals(props.getAppId(), propsMap.get("App Id"));
-        assertEquals(props.getContentEncoding(), propsMap.get("Content Encoding"));
-        assertEquals(props.getContentType(), propsMap.get("Content Type"));
-        assertEquals(props.getDeliveryMode(), propsMap.get("Delivery Mode"));
-        assertEquals(props.getExpiration(), propsMap.get("Expiration"));
+        Operation op = assertBasicOperation(props, body);
+        assertEquals("Mismatched exchange", exchange, op.get("exchange", String.class));
+        assertEquals("Mismatched routing key", routingKey, op.get("routingKey", String.class));
+        assertEquals("Mismatched mandatory value", Boolean.valueOf(mandatory), op.get("mandatory", Boolean.class));
+        assertEquals("Mismatched immediate value", Boolean.valueOf(immediate), op.get("immediate", Boolean.class));
     }
     
     private BasicProperties create() {
