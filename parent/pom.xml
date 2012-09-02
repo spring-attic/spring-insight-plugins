@@ -944,17 +944,17 @@
                 <version>2.3.1</version>
                 <configuration>
                     <archive>
-                        <addMavenDescriptor>false</addMavenDescriptor>
-							<!-- Generate index file for quicker access -->
-							<index>true</index>
-							<!-- Extra attributes added to the MANIFEST.MF file -->
-							<manifestEntries>
-								<!-- see Package constructor using Manifest -->
-								<Implementation-Title>${project.artifactId}</Implementation-Title>
-								<Implementation-Version>${project.version}</Implementation-Version>
-								<Implementation-Vendor>Insight</Implementation-Vendor>
-								<Release-Timestamp>${buildtimestamp}</Release-Timestamp>
-							</manifestEntries>
+                        <addMavenDescriptor>true</addMavenDescriptor>
+						<!-- Generate index file for quicker access -->
+						<index>true</index>
+						<!-- Extra attributes added to the MANIFEST.MF file -->
+						<manifestEntries>
+							<!-- see Package constructor using Manifest -->
+							<Implementation-Title>${project.artifactId}</Implementation-Title>
+							<Implementation-Version>${project.version}</Implementation-Version>
+							<Implementation-Vendor>Insight</Implementation-Vendor>
+							<Release-Timestamp>${buildtimestamp}</Release-Timestamp>
+						</manifestEntries>
                     </archive>
                     <excludes>
                         <exclude>**/.gitignore</exclude>
