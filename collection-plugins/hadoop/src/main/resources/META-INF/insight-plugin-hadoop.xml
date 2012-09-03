@@ -14,4 +14,6 @@
 	<insight:operation-group group="Bigdata" operation="hdp-job" />
 	<insight:operation-group group="Bigdata" operation="hdp-mapper" />
 	<insight:operation-group group="Bigdata" operation="hdp-reducer" />
+    
+    <bean class="com.springsource.insight.plugin.hadoop.HadoopExternalResourceAnalyzer" />
 </beans>

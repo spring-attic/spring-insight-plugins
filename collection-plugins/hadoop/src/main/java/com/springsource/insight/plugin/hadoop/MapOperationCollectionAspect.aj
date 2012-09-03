@@ -17,6 +17,7 @@
 package com.springsource.insight.plugin.hadoop;
 
 
+import org.apache.hadoop.mapreduce.Mapper.Context;
 import org.aspectj.lang.JoinPoint;
 
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
@@ -43,6 +44,10 @@ public privileged aspect MapOperationCollectionAspect extends AbstractOperationC
 
 		operation.putAnyNonEmpty("key", args[0].toString());
 		operation.putAnyNonEmpty("value", args[1].toString());
+		
+		if (args[2] instanceof Context) {
+			operation.putAnyNonEmpty("host",((Context)args[2]).getConfiguration().get("mapreduce.job.submithostaddress"));
+		}
 
 		return operation;
     }
