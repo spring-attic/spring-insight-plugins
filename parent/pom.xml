@@ -47,7 +47,7 @@
         <aspectj.maven.version>1.2</aspectj.maven.version>
         <rabbitmq.version>2.5.1</rabbitmq.version>
         <shade.plugin.version>1.3.3</shade.plugin.version>
-        <jackson.version>1.8.2</jackson.version>
+        <jackson.version>1.9.9</jackson.version>
         <org.springframework.amqp.version>1.0.0.RELEASE</org.springframework.amqp.version>
         <commons.codec.version>1.5</commons.codec.version>
         <json-lib.version>2.2.3</json-lib.version>
@@ -941,20 +941,20 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.3.1</version>
+                <version>2.4</version>
                 <configuration>
                     <archive>
-                        <addMavenDescriptor>false</addMavenDescriptor>
-							<!-- Generate index file for quicker access -->
-							<index>true</index>
-							<!-- Extra attributes added to the MANIFEST.MF file -->
-							<manifestEntries>
-								<!-- see Package constructor using Manifest -->
-								<Implementation-Title>${project.artifactId}</Implementation-Title>
-								<Implementation-Version>${project.version}</Implementation-Version>
-								<Implementation-Vendor>Insight</Implementation-Vendor>
-								<Release-Timestamp>${buildtimestamp}</Release-Timestamp>
-							</manifestEntries>
+                        <addMavenDescriptor>true</addMavenDescriptor>
+						<!-- Generate index file for quicker access -->
+						<index>true</index>
+						<!-- Extra attributes added to the MANIFEST.MF file -->
+						<manifestEntries>
+							<!-- see Package constructor using Manifest -->
+							<Implementation-Title>${project.artifactId}</Implementation-Title>
+							<Implementation-Version>${project.version}</Implementation-Version>
+							<Implementation-Vendor>Insight</Implementation-Vendor>
+							<Release-Timestamp>${buildtimestamp}</Release-Timestamp>
+						</manifestEntries>
                     </archive>
                     <excludes>
                         <exclude>**/.gitignore</exclude>
