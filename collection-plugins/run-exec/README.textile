@@ -2,16 +2,11 @@ h1. TaskExecutor Plugin for Spring Insight
 
 h2. Compatibility
 
-This plugin is compatible with the 1.9+ versions of insight. It may
-be compatible with 1.5+ (not tested).
-
+This plugin is compatible with the 1.9+ versions of insight.
 h2. Installation
 
-This is a core plugin of Insight 1.9+ but earlier users may
-install this plugin by copying the plugin jar to
-<code>
-  insight/collection-plugins
-</code>
+This is a core plugin of Insight 1.9+.
+The plugin is disabled by default. See Spring Insight documentation on how to enable the plugin.
 
 For both the Dashboard and Insight Agent. You should see the
 plugin listed under the administration panel.

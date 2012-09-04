@@ -1,10 +1,10 @@
-h1. Hibernate Plugin for Spring Insight
+h1. Grails plugin for Spring Insight
 
 h2. Compatibility
 
 This plugin is compatible with the 1.9+ versions of insight. 
 
-h2. Installation
+h2. Installing the plugin
 
 This is a core plugin of Insight 1.9+.
 

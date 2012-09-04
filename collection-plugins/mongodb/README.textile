@@ -10,41 +10,13 @@ The DBCursor.next() call is traced but the information for each call is limited.
 
 Some attempt is made to decode parameters and return values for common and MongoDB types we know about.
 
-h2. Installing the plugin
+h2. Compatibility
 
-Get the code: <code>git clone https://github.com/SpringSource/spring-insight-plugins</code>
+This plugin is compatible with the 1.9+ versions of insight.
 
-Now build it:
+h2. Installation
 
-<pre>
-<code>
-cd spring-insight-plugins/collection-plugins/mongodb
-mvn clean package
-</code>
-</pre>
-
-You'll need to have tc Server Developer Edition installed. Let's call the location of that <code>tcServer</code>.
-
-Now copy the plugin jar to the right place under <code>tcServer</code>.
-
-<pre>
-<code>
-cp target/insight-plugin-mongodb-x.x.jar tcServer/spring-insight-instance/insight/collection-plugins
-</code>
-</pre>
-
-h2. Running the plugin
-
-# Start up Spring Insight Server as usual (see the Spring tc Server Developer Edition documentation) and make sure your WAR file is loaded. Start your application and make sure it's running.
-# Browse to http://localhost:8080/insight to see the Spring Insight dashboard. Click on the Administration button and then _Collection Plug-ins_ under _Reports and Statistics_.
-# If you can see the mongodb plugin it's installed and running.
-# Run through your application in a way you're sure exercises MongoDB. Then go back to the Spring Insight dashboard to see the traces.
-
-Have fun! And let me know what doesn't work well.
-
-h2. Known issues
-
-# The collection name is not available from DBCursor, so we can't see which collection we're calling next() on. This is going to be simply a matter of coercing DBCursor to give up a private instance field for which there is not accessor. (I'm sure I read somewhere how to do that.)
+This is a core plugin of Insight 1.9+.
 
 h2. Rejected enhancements
 

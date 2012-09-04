@@ -5,16 +5,11 @@ It provides a new endpoint for analysis.
 
 h2. Compatibility
 
-This plugin is compatible with the 1.7+ versions of insight. 
+This plugin is compatible with the 1.9+ versions of insight. 
 
 h2. Installation
 
-This is a core plugin of Insight 1.7+ but if you are building this yourself
-place the plugin in the following directory:
-
-<code>
-  insight/collection-plugins
-</code>
+This is a core plugin of Insight 1.9+.
 
 For both the Dashboard and Insight Agent. You should see the
 plugin listed under the administration panel.
