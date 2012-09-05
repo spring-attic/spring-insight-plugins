@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>com.springsource.insight</groupId>
 		<artifactId>community-plugins</artifactId>
-		<version>1.9.0-CI-SNAPSHOT</version>
+		<version>1.9.0.RC1</version>
 		<relativePath>..</relativePath>
 	</parent>
 
