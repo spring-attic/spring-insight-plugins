@@ -16,55 +16,38 @@
 
 package com.springsource.insight.plugin.springcore;
 
-import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
+
+import com.foo.example.ExampleComponent;
+import com.foo.example.ExampleRepository;
+import com.foo.example.ExampleService;
 
 import com.springsource.insight.collection.method.MethodOperationsCollected;
+import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
+import com.springsource.insight.plugin.springcore.beans.InsightComponent;
+import com.springsource.insight.plugin.springcore.beans.InsightRepository;
+import com.springsource.insight.plugin.springcore.beans.InsightService;
 
-public class AnnotationDrivenMethodOperationCollectionAspectTest extends Assert {
+public class AnnotationDrivenMethodOperationCollectionAspectTest extends AbstractCollectionTestSupport {
 	public AnnotationDrivenMethodOperationCollectionAspectTest () {
 		super();
 	}
 
     @Test
-    public void methodOperationsCollectedAnnotationAppliedCorrectly() {
-    	for (Class<?> testClass : new Class[] {
-    					ExampleComponent.class,
-		    			ExampleService.class,
-		    			ExampleRepository.class }) {
-    		assertIsMethodOperationsCollected(testClass);
+    public void testMethodOperationsCollectedAnnotationAppliedCorrectly() {
+    	assertIsMethodOperationsCollected(true, ExampleComponent.class, ExampleService.class, ExampleRepository.class);
+    	// should not be annotated since inside the Insight packages
+    	assertIsMethodOperationsCollected(false, InsightComponent.class, InsightService.class, InsightRepository.class);
+    }
+
+    private static void assertIsMethodOperationsCollected (boolean expected, Class<?> ... classes) {
+    	for (Class<?> clazz : classes) {
+    		assertIsMethodOperationsCollected(clazz, expected);	
     	}
     }
 
-    private static void assertIsMethodOperationsCollected (Class<?> clazz) {
-    	assertTrue(clazz.getSimpleName() + " not annotated", clazz.isAnnotationPresent(MethodOperationsCollected.class));
-    }
-
-    private static class BaseBean implements Runnable {
-    	public BaseBean () {
-    		super();
-    	}
-
-    	public void run () {
-    		// ignored
-    	}
-    }
-
-    @Component
-    private static class ExampleComponent extends BaseBean {
-    	// do nothing
-    }
-
-    @Service
-    private static class ExampleService extends BaseBean {
-    	// do nothing
-    }
-
-    @Repository
-    private static class ExampleRepository extends BaseBean {
-    	// do nothing
+    private static void assertIsMethodOperationsCollected (Class<?> clazz, boolean expected) {
+    	assertEquals(clazz.getSimpleName() + " annotation mismatch",
+    				 Boolean.valueOf(expected), Boolean.valueOf(clazz.isAnnotationPresent(MethodOperationsCollected.class)));
     }
 }

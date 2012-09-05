@@ -17,29 +17,16 @@
 package com.springsource.insight.plugin.springcore;
 
 import org.junit.Test;
-import org.springframework.stereotype.Repository;
+
+import com.foo.example.ExampleRepository;
 
 public class RepositoryMethodOperationCollectionAspectTest extends StereotypeOperationCollectionAspectTestSupport {
-    // This test focuses only on selection, since all that 
-    // RepositoryMethodOperationCollectionAspect contains is a pointcut. 
-    // Tests for return value, exceptions etc. reside in MethodOperationCollectionAspectTest
-    
+	public RepositoryMethodOperationCollectionAspectTest () {
+		super();
+	}
+
     @Test
-    public void repositoryCollected() {
-        ExampleRepository repository = new ExampleRepository();
-        repository.perform();
-        
-        assertStereotypeOperation(ExampleRepository.class, "perform");
-    }
-
-    @Repository
-    private static class ExampleRepository {
-    	public ExampleRepository () {
-    		super();
-    	}
-
-        public void perform() {
-            System.out.println("test");
-        }
+    public void testNonInsightComponentCollected() {
+        assertStereotypeOperation(new ExampleRepository());
     }
 }

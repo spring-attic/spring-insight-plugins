@@ -18,14 +18,15 @@ package com.springsource.insight.plugin.springcore;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import il.co.springsource.insight.MyApplicationListener;
+import il.co.springsource.insight.MyApplicationListenerAndRepository;
+import il.co.springsource.insight.MyEvent;
+import il.co.springsource.insight.MyEventSource;
 
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.SourceFilteringListener;
 import org.springframework.context.support.StaticApplicationContext;
-import org.springframework.stereotype.Repository;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
@@ -94,48 +95,5 @@ public class ApplicationListenerMethodOperationCollectionAspectTest extends Oper
     @Override
     public OperationCollectionAspectSupport getAspect() {
         return ApplicationListenerMethodOperationCollectionAspect.aspectOf();
-    }
-
-    public static class MyEventSource {
-    	public MyEventSource () {
-    		super();
-    	}
-    }
-    
-    public static class MyEvent extends ApplicationEvent {
-		private static final long serialVersionUID = 1L;
-
-		public MyEvent(MyEventSource src) {
-            super(src);
-        }
-        
-        public MyEvent(String src) {
-            super(src);
-        }
-    }
-    
-    public static class MyApplicationListener implements ApplicationListener<MyEvent> {
-        private MyEvent lastEvent ;
-
-        public ApplicationEvent getLastEvent() {
-            return lastEvent;
-        }
-        
-        public void onApplicationEvent(MyEvent event) {
-            lastEvent = event;
-        }
-    }
-    
-    @Repository
-    public static class MyApplicationListenerAndRepository implements ApplicationListener<MyEvent> {
-        private MyEvent lastEvent = null;
-
-        public ApplicationEvent getLastEvent() {
-            return lastEvent;
-        }
-        
-        public void onApplicationEvent(MyEvent event) {
-            lastEvent = event;
-        }
     }
 }

@@ -17,7 +17,8 @@
 package com.springsource.insight.plugin.springcore;
 
 import org.junit.Test;
-import org.springframework.stereotype.Component;
+
+import com.foo.example.ExampleComponent;
 
 
 /**
@@ -29,20 +30,7 @@ public class ComponentMethodOperationCollectionAspectTest extends StereotypeOper
 	}
 
 	@Test
-	public void testComponentCollected () {
-		ExampleComponent	component=new ExampleComponent();
-		component.perform();
-		assertStereotypeOperation(ExampleComponent.class, "perform");	
-	}
-
-	@Component
-	private static class ExampleComponent {
-		public ExampleComponent () {
-			super();
-		}
-
-		public void perform () {
-			// do nothing
-		}
+	public void testNonInsightComponentCollected () {
+		assertStereotypeOperation(new ExampleComponent());
 	}
 }

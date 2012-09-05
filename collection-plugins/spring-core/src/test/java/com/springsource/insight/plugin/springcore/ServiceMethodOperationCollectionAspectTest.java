@@ -17,29 +17,16 @@
 package com.springsource.insight.plugin.springcore;
 
 import org.junit.Test;
-import org.springframework.stereotype.Service;
+
+import com.foo.example.ExampleService;
 
 public class ServiceMethodOperationCollectionAspectTest extends StereotypeOperationCollectionAspectTestSupport {
+	public ServiceMethodOperationCollectionAspectTest () {
+		super();
+	}
 
-    // This test focuses only on selection, since all that 
-    // ServiceMethodOperationCollectionAspect contains is a pointcut. 
-    // Tests for return value, exceptions etc. reside in MethodOperationCollectionAspectTest
-    
     @Test
-    public void serviceCollectedNormalReturn() {
-        ExampleService service = new ExampleService();
-        service.perform();
-        assertStereotypeOperation(ExampleService.class, "perform");
-    }
-    
-    @Service
-    private static class ExampleService {
-    	public ExampleService () {
-    		super();
-    	}
-
-        public void perform() {
-        	// do nothing
-        }
+    public void testNonInsightComponentCollected() {
+        assertStereotypeOperation(new ExampleService());
     }
 }

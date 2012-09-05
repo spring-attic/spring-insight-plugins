@@ -14,13 +14,23 @@
  * limitations under the License.
  */
 
-package com.springsource.insight.plugin.springcore;
+package il.co.springsource.insight;
 
-import org.springframework.stereotype.Component;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
 
-@Component
-public class Fubar {
-    public Fubar () {
-        super();
+public class MyApplicationListener implements ApplicationListener<MyEvent> {
+    private MyEvent lastEvent ;
+
+    public MyApplicationListener () {
+    	super();
+    }
+
+    public ApplicationEvent getLastEvent() {
+        return lastEvent;
+    }
+    
+    public void onApplicationEvent(MyEvent event) {
+        lastEvent = event;
     }
 }

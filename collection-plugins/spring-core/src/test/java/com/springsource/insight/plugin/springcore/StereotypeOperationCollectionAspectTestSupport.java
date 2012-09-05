@@ -18,6 +18,7 @@ package com.springsource.insight.plugin.springcore;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.method.AnnotationDrivenMethodOperationCollectionAspect;
+import com.springsource.insight.collection.method.MethodOperationsCollected;
 import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
@@ -31,7 +32,15 @@ public abstract class StereotypeOperationCollectionAspectTestSupport
 		super();
 	}
 
+	protected Operation assertStereotypeOperation (Runnable beanInstance) {
+		beanInstance.run();
+		return assertStereotypeOperation(beanInstance.getClass(), "run");
+	}
+
 	protected Operation assertStereotypeOperation (Class<?> beanClass, String beanMethod) {
+		MethodOperationsCollected	ann=beanClass.getAnnotation(MethodOperationsCollected.class);
+		assertNotNull(beanClass.getSimpleName() + " not annotated as @" + MethodOperationsCollected.class.getSimpleName(), ann);
+
         Operation   operation=getLastEntered();
         assertEquals("Mismatched label", beanClass.getSimpleName() + "#" + beanMethod, operation.getLabel());
         return operation;

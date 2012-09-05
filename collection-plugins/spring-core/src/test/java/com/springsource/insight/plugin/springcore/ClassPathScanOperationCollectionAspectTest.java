@@ -29,6 +29,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.plugin.springcore.beans.Fubar;
 
 public class ClassPathScanOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
     public ClassPathScanOperationCollectionAspectTest () {
@@ -38,7 +39,7 @@ public class ClassPathScanOperationCollectionAspectTest extends OperationCollect
     @Test
     public void methodsIntercepted() {
         ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("com/springsource/insight/plugin/springcore/test-class-path-scan-operation.xml");
-        assertNotNull(ctx.getBean(Fubar.class));
+        assertNotNull("Cannot find " + Fubar.class.getSimpleName(), ctx.getBean(Fubar.class));
 
         ArgumentCaptor<Operation> opCaptor = ArgumentCaptor.forClass(Operation.class);
         verify(spiedOperationCollector, atLeastOnce()).enter(opCaptor.capture());

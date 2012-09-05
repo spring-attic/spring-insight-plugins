@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-package com.springsource.insight.plugin.springcore;
+package com.foo.example;
 
-import com.springsource.insight.collection.method.MethodOperationsCollected;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
- *  Causes all {@link org.springframework.stereotype.Component} annotated classes to be instrumented
+ * 
  */
-public aspect ComponentMethodOperationCollectionAspect {
-	/*
-	 * We exclude all Insight beans since if we want insight-on-insight we
-	 * cannot use this aspect as it may cause infinite recursion
-	 */
-	 declare @type: (@org.springframework.stereotype.Component *) && !(com.springsource.insight..*) : @MethodOperationsCollected;
+public abstract class AbstractBean implements Runnable {
+	protected final Log	logger=LogFactory.getLog(getClass());
+
+	protected AbstractBean() {
+		super();
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName();
+	}
 }

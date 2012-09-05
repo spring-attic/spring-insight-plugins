@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package com.springsource.insight.plugin.springcore;
+package il.co.springsource.insight;
 
-import com.springsource.insight.collection.method.MethodOperationsCollected;
+import org.springframework.context.ApplicationEvent;
 
-/**
- *  Causes all {@link org.springframework.stereotype.Component} annotated classes to be instrumented
- */
-public aspect ComponentMethodOperationCollectionAspect {
-	/*
-	 * We exclude all Insight beans since if we want insight-on-insight we
-	 * cannot use this aspect as it may cause infinite recursion
-	 */
-	 declare @type: (@org.springframework.stereotype.Component *) && !(com.springsource.insight..*) : @MethodOperationsCollected;
+public class MyEvent extends ApplicationEvent {
+	private static final long serialVersionUID = 1L;
+
+	public MyEvent(MyEventSource src) {
+        super(src);
+    }
+    
+    public MyEvent(String src) {
+        super(src);
+    }
 }

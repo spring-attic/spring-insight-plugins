@@ -18,11 +18,13 @@ package com.springsource.insight.plugin.springcore;
 
 import com.springsource.insight.collection.method.MethodOperationsCollected;
 
-import org.springframework.stereotype.Repository;
-
 /**
- * Causes all {@link Repository} annotated classes to be instrumented
+ * Causes all {@link org.springframework.stereotype.Repository} annotated classes to be instrumented
  */
 public aspect RepositoryMethodOperationCollectionAspect {
-    declare @type: @Repository * : @MethodOperationsCollected;
+	/*
+	 * We exclude all Insight beans since if we want insight-on-insight we
+	 * cannot use this aspect as it may cause infinite recursion
+	 */
+    declare @type: (@org.springframework.stereotype.Repository *) && !(com.springsource.insight..*) : @MethodOperationsCollected;
 }

@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package com.springsource.insight.plugin.springcore;
+package com.foo.example;
 
-import com.springsource.insight.collection.method.MethodOperationsCollected;
+import org.springframework.stereotype.Service;
 
 /**
- *  Causes all {@link org.springframework.stereotype.Component} annotated classes to be instrumented
+ * 
  */
-public aspect ComponentMethodOperationCollectionAspect {
-	/*
-	 * We exclude all Insight beans since if we want insight-on-insight we
-	 * cannot use this aspect as it may cause infinite recursion
-	 */
-	 declare @type: (@org.springframework.stereotype.Component *) && !(com.springsource.insight..*) : @MethodOperationsCollected;
+@Service
+public class ExampleService extends AbstractBean {
+	public ExampleService() {
+		super();
+	}
+
+	public void run () {
+		logger.info("run(" + getClass().getSimpleName() + ")");
+	}
 }
