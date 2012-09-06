@@ -115,6 +115,42 @@
 		        </repository>
             </repositories>
         </profile>
+
+        <profile>
+            <id>mark-scm-revision</id>
+            <build>
+                <plugins>
+		            <plugin>
+		                <groupId>org.codehaus.mojo</groupId>
+		                <artifactId>buildnumber-maven-plugin</artifactId>
+		                <executions>
+		                    <execution>
+		                        <phase>validate</phase>
+		                        <goals>
+		                            <goal>create</goal>
+		                        </goals>
+		                        <configuration>
+		                             <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+		                             <revisionOnScmFailure>NO-SHA-1</revisionOnScmFailure>
+		                        </configuration>
+		                    </execution>
+		                </executions>
+		            </plugin>
+		            <plugin>
+		                <groupId>org.apache.maven.plugins</groupId>
+		                <artifactId>maven-jar-plugin</artifactId>
+		                <configuration>
+		                    <archive>
+		                        <!-- Extra attributes added to the MANIFEST.MF file -->
+		                        <manifestEntries>
+		                            <SCM-Revision-Id>${buildNumber}</SCM-Revision-Id>
+		                        </manifestEntries>
+		                    </archive>
+		                </configuration>
+		            </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <organization>
@@ -875,6 +911,16 @@
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>2.5</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-scm-plugin</artifactId>
+                    <version>1.7</version>
+                </plugin>
+	            <plugin>
+	                <groupId>org.codehaus.mojo</groupId>
+	                <artifactId>buildnumber-maven-plugin</artifactId>
+	                <version>1.1</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -1015,6 +1061,12 @@
             </plugin>
         </plugins>
     </reporting>
+
+    <scm>
+        <connection>scm:git:ssh://git@github.com/SpringSource/spring-insight-plugins.git</connection>
+        <url>scm:git:ssh://git@github.com/SpringSource/spring-insight-plugins.git</url>
+        <developerConnection>scm:git:ssh://git@github.com/SpringSource/spring-insight-plugins.git</developerConnection>
+    </scm>
 
     <distributionManagement>
         <repository>
