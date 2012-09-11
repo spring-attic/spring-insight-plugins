@@ -182,19 +182,15 @@ public abstract class AbstractRabbitMQCollectionAspect extends OperationCollecti
         }
     }
     
-    protected Map<String, Object> colorForward(BasicProperties props, final Operation op) {
-    	if (props == null) {
-    		return Collections.emptyMap();
-    	}
-
+    protected BasicProperties colorForward(BasicProperties props, final Operation op) {
     	Field	headersField=getMessageHeadersField();
     	if (headersField == null) {
-    		return Collections.emptyMap();
+    		return props;
     	}
 
         try {
             final Map<String, Object> map = new HashMap<String, Object>();
-            Map<String, Object> old = props.getHeaders();
+            Map<String, Object> old = props != null ? props.getHeaders() : null;
             if (MapUtil.size(old) > 0) {
             	map.putAll(old);
             }
@@ -208,10 +204,15 @@ public abstract class AbstractRabbitMQCollectionAspect extends OperationCollecti
                         return op;
                     }
                 });
-
+            
+            if (props == null) {
+                BasicProperties.Builder builder = new BasicProperties.Builder();
+                props = builder.build();
+            }
+            
             Map<String, Object>	hdrsMap=Collections.unmodifiableMap(map);
             ReflectionUtils.setField(headersField, props, hdrsMap);
-            return hdrsMap;
+            return props;
         } catch (Exception e) {
             if (_logger.isLoggable(Level.FINE)) {
             	_logger.fine("colorForward(" + op + ")"
@@ -219,7 +220,7 @@ public abstract class AbstractRabbitMQCollectionAspect extends OperationCollecti
 	            		   + " to append color: " + e.getMessage());
             }
 
-    		return Collections.emptyMap();
+    		return props;
         }
     }
 
