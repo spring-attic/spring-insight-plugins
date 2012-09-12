@@ -15,6 +15,9 @@
  */
 package com.springsource.insight.plugin.jms;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -48,7 +51,7 @@ public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAs
         try {
             return applyDestinationData(message.getJMSDestination(), op);
         } catch (JMSException e) {
-            CollectionErrors.markCollectionError(this.getClass(), e);
+            markException("applyDestinationData[getDest]", e);
             return op;
         }
     }
@@ -59,7 +62,7 @@ public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAs
             String destinationName = JMSPluginUtils.getDestinationName(dest, destinationType);
             return applyDestinationData(op, destinationType, destinationName);
         } catch (JMSException e) {
-            CollectionErrors.markCollectionError(this.getClass(), e);
+            markException("applyDestinationData[fillOp]", e);
             return op;
         }
     }
@@ -67,10 +70,20 @@ public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAs
     Operation applyMessageData(Message message, Operation op) {
         try {
             JMSPluginUtils.extractMessageTypeAttributes(op, message);
+        } catch(JMSException e) {
+        	markException("extractMessageTypeAttributes", e);
+        }
+        
+        try {
             JMSPluginUtils.extractMessageHeaders(op, message);
+        } catch(JMSException e) {
+        	markException("extractMessageHeaders", e);
+        }
+        
+        try {
             JMSPluginUtils.extractMessageProperties(op, message);
         } catch (JMSException e) {
-            CollectionErrors.markCollectionError(this.getClass(), e);
+        	markException("extractMessageProperties", e);
         }
 
         return op;

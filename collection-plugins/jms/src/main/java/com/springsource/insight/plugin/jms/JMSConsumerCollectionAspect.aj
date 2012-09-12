@@ -47,7 +47,7 @@ public aspect JMSConsumerCollectionAspect extends AbstractJMSCollectionAspect {
                 applyDestinationData(message, op);
                 applyMessageData(message, op);
              } catch (Throwable t) {
-                 CollectionErrors.markCollectionError(this.getClass(), t);
+            	 markException("afterReturning", t);
              }
             //we enter and exit cause we want to ignore null messages
             //for now there is no way to discard a frame once it was entered
@@ -79,7 +79,7 @@ public aspect JMSConsumerCollectionAspect extends AbstractJMSCollectionAspect {
             String selector = consumer.getMessageSelector();
             op.put("selector", selector);
         } catch (JMSException e) {
-            // ignored - TODO consider logging
+       	 	markException("applyAdditionalData", e);
         }
 
         return op;

@@ -75,7 +75,7 @@ public aspect JMSProducerCollectionAspect extends AbstractJMSCollectionAspect {
                 }
             }
         } catch (Throwable t) {
-            CollectionErrors.markCollectionError(this.getClass(), t);
+            markException("beforeProduce", t);
         }
     }
     
@@ -99,7 +99,7 @@ public aspect JMSProducerCollectionAspect extends AbstractJMSCollectionAspect {
                 }
             }
         } catch (Throwable t) {
-            CollectionErrors.markCollectionError(this.getClass(), t);
+            markException("afterProduce", t);
         }
     }
 
@@ -115,7 +115,7 @@ public aspect JMSProducerCollectionAspect extends AbstractJMSCollectionAspect {
         
             getCollector().exitAbnormal(exception);
         } catch (Throwable t) {
-            CollectionErrors.markCollectionError(this.getClass(), t);
+            markException("afterProduce[throwing]", t);
         }
     }
     
@@ -124,7 +124,7 @@ public aspect JMSProducerCollectionAspect extends AbstractJMSCollectionAspect {
             Destination dest = ((MessageProducer) jp.getThis()).getDestination();
             applyDestinationData(dest, op);
         } catch (JMSException e) {
-            // ignored - TODO consider logging
+            markException("applyDestinationData", e);
         }
 
         return op;

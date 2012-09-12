@@ -45,11 +45,11 @@ public aspect JMSMessageListenerCollectionAspect extends AbstractJMSCollectionAs
                 applyDestinationData(message, op);
                 applyMessageData(message, op);
             } catch (Throwable t) {
-                CollectionErrors.markCollectionError(this.getClass(), t);
+                markException("beforeListen", t);
             }
 
             getCollector().enter(op);
-            
+
             //Set the color for this frame
             extractColor(new ExtractColorParams() {				
                 public String getColor(String key) {

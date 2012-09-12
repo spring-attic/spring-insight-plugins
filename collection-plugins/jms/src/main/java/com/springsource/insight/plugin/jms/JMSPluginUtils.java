@@ -55,7 +55,7 @@ final class JMSPluginUtils {
     static final String UNKNOWN = "UNKNOWN";
     
     private JMSPluginUtils() {
-        // no instance
+        throw new UnsupportedOperationException("No instance");
     }
     
     /**
@@ -79,37 +79,38 @@ final class JMSPluginUtils {
     }
     
     /**
-     * Creates an operation map ({@link JMSPluginUtils#MESSAGE_PROPERTIES}) and populates the map with {@code message} properties
+     * Creates an operation map named {@link #MESSAGE_PROPERTIES} and populates the map with {@code message} properties
      * 
-     * @param op insight operation
-     * @param message jms message
-     * 
+     * @param op insight {@link Operation}
+     * @param message jms {@link Message}
+     * @return Generated attributes {@link OperationMap}
      * @throws JMSException if any occurs by accessing {@code message} properties
      */
-    @SuppressWarnings("unchecked")
-    static void extractMessageProperties(Operation op, Message message) throws JMSException {
+    static OperationMap extractMessageProperties(Operation op, Message message) throws JMSException {
         OperationMap attributesMap = op.createMap(MESSAGE_PROPERTIES);
         
-        Enumeration<String> propertyNames = message.getPropertyNames();
+        Enumeration<?> propertyNames = message.getPropertyNames();
         if (propertyNames != null) {
-            for (Enumeration<String> propertyNameEnum = propertyNames; propertyNameEnum.hasMoreElements();) {
-                String propertyName = propertyNameEnum.nextElement();
+            for (Enumeration<?> propertyNameEnum = propertyNames; propertyNameEnum.hasMoreElements();) {
+                String propertyName = (String) propertyNameEnum.nextElement();
                 Object propertyValue = message.getObjectProperty(propertyName);
                 attributesMap.putAny(propertyName, propertyValue);
             }
         }
+        
+        return attributesMap;
     }
     
     /**
-     * Creates an operation map ({@link JMSPluginUtils#MESSAGE_HEADERS}) and populates the map 
+     * Creates an operation map name {@link #MESSAGE_HEADERS} and populates the map 
      * with {@code message} headers values
      * 
-     * @param op insight operation
-     * @param message jms message
-     * 
+     * @param op insight {@link Operation}
+     * @param message jms {@link Message}
+     * @return The {@link OperationMap} containing the relevant extracted headers
      * @throws JMSException if any occurs by accessing {@code message} properties
      */
-    static void extractMessageHeaders(Operation op, Message message) throws JMSException {
+    static OperationMap extractMessageHeaders(Operation op, Message message) throws JMSException {
         OperationMap headersMap = op.createMap(MESSAGE_HEADERS);
         
         addDestinationDetailsToMapIfNeeded(message.getJMSDestination(), headersMap, MESSAGE_DESTINATION);
@@ -123,6 +124,7 @@ final class JMSPluginUtils {
         long timestamp = message.getJMSTimestamp();
         headersMap.putAnyNonEmpty(TIMESTAMP, timestamp > 0 ? new Date(timestamp) : null);
         headersMap.put(JMS_TYPE, message.getJMSType());
+        return headersMap;
     }
     
     /**
