@@ -117,9 +117,9 @@
         <profile>
             <id>enable-private-snapshots</id>
             <repositories>
-		        <repository>
+		        <repository>	<!-- NOTE: these values must match the properties -->
 		            <id>spring-public-snapshot</id>
-		            <name>Spring Release Repository</name>
+		            <name>Spring Public Snapshot Repository</name>
 		            <url>http://maven.springframework.org/snapshot</url>
 		            <snapshots>
 		                <enabled>true</enabled>
@@ -174,10 +174,10 @@
     </organization>
 
     <repositories>
-        <repository>
-            <id>${release.repo.id}</id>
-            <name>${release.repo.name}</name>
-            <url>${release.repo.url}</url>
+        <repository>	<!-- NOTE: these values must match the properties -->
+            <id>spring-release</id>
+            <name>Spring Release Repository</name>
+            <url>http://maven.springframework.org/release</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -185,10 +185,10 @@
                 <updatePolicy>never</updatePolicy>
             </releases>
         </repository>
-        <repository>
-            <id>${milestone.repo.id}</id>
-            <name>${milestone.repo.name}</name>
-            <url>${milestone.repo.url}</url>
+        <repository>	<!-- NOTE: these values must match the properties -->
+            <id>spring-milestone</id>
+            <name>Spring Milestone Repository</name>
+            <url>http://maven.springframework.org/milestone</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -256,10 +256,10 @@
     </repositories>
 
     <pluginRepositories>
-        <pluginRepository>
-            <id>${release.repo.id}</id>
-            <name>${release.repo.name}</name>
-            <url>${release.repo.url}</url>
+        <pluginRepository>	<!-- NOTE: these values must match the properties -->
+            <id>spring-release</id>
+            <name>Spring Release Repository</name>
+            <url>http://maven.springframework.org/release</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -268,10 +268,10 @@
             </releases>
         </pluginRepository>
         <!-- Milestone repository for the aspectj milestone release -->
-        <pluginRepository>
-            <id>${milestone.repo.id}</id>
-            <name>${milestone.repo.name}</name>
-            <url>${milestone.repo.url}</url>
+        <pluginRepository>	<!-- NOTE: these values must match the properties -->
+            <id>spring-milestone</id>
+            <name>Spring Milestone Repository</name>
+            <url>http://maven.springframework.org/milestone</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
