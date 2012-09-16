@@ -30,20 +30,38 @@ import javax.jms.TextMessage;
 import org.junit.Test;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
-public class JMSConsumerCollectionAspectTest extends OperationCollectionAspectTestSupport {
+public class JMSConsumerCollectionAspectTest extends AbstractJMSCollectionAspectTestSupport {
 	public JMSConsumerCollectionAspectTest () {
 		super();
 	}
 
     @Test
-    public void testConsumer() throws JMSException {
+    public void testUnobscuredConsumerAttributes() throws JMSException {
+    	runConsumerTest(false);
+    }
+
+    @Test
+    public void testObscuredConsumerAttributes() throws JMSException {
+    	runConsumerTest(true);
+    }
+
+    @Override
+    public OperationCollectionAspectSupport getAspect() {
+        return JMSConsumerCollectionAspect.aspectOf();
+    }
+
+    private void runConsumerTest (boolean obscureAttrs) throws JMSException {
         Queue queue = mock(Queue.class);
         when(queue.getQueueName()).thenReturn("test.queue");
         
         MockConsumer consumer = new MockConsumer(queue);
+        Map<String, Object> msgAttributesMap = consumer.msgAttributesMap;
+        if (obscureAttrs) {
+        	AbstractJMSCollectionAspect.OBFUSCATED_PROPERTIES.addAll(msgAttributesMap.keySet());
+        }
+
         Message message = consumer.receive();
         
         Operation op = getLastEntered();
@@ -53,13 +71,10 @@ public class JMSConsumerCollectionAspectTest extends OperationCollectionAspectTe
         
         JMSPluginUtilsTest.assertHeaders(message, op);
         JMSPluginUtilsTest.assertAttributes(consumer.msgAttributesMap, op);
+
+        assertObfuscatedValuesState(msgAttributesMap, obscureAttrs);
     }
 
-    @Override
-    public OperationCollectionAspectSupport getAspect() {
-        return JMSConsumerCollectionAspect.aspectOf();
-    }
-    
     private static class MockConsumer implements MessageConsumer {
         MessageConsumer _mock;
         TextMessage _mockMessage;

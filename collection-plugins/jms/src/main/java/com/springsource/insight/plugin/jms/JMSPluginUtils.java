@@ -15,6 +15,7 @@
  */
 package com.springsource.insight.plugin.jms;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 
@@ -29,6 +30,7 @@ import javax.jms.Topic;
 
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
+import com.springsource.insight.intercept.trace.ObscuredValueMarker;
 
 /**
  * Utility class for all JMS plugin operations
@@ -63,19 +65,24 @@ final class JMSPluginUtils {
      * is not {@code null}
      * 
      * @param dest jms destination
-     * @param map operation map
+     * @param map The {@link OperationMap} to update
+     * @param marker The {@link ObscuredValueMarker} to use if a property is marked as sensitive
+     * @param nameSet The {@link Collection} of properties names marked as sensitive
      * @param prefix destination type and name prefix
-     * 
+     * @return Same as input map
      * @throws JMSException if any occurs by accessing {@code dest} attributes
      */
-    static void addDestinationDetailsToMapIfNeeded(Destination dest, OperationMap map, String prefix) throws JMSException {
-        if (dest != null) {
-            DestinationType destinationType = getDestinationType(dest);
-            String destinationName = getDestinationName(dest, destinationType);
-            
-            map.put(prefix+TYPE, destinationType.name());
-            map.put(prefix+NAME, destinationName);
+    static OperationMap addDestinationDetailsToMapIfNeeded(Destination dest, OperationMap map, ObscuredValueMarker marker, Collection<String> nameSet, String prefix)
+    		throws JMSException {
+        if (dest == null) {
+        	return map;
         }
+         
+        DestinationType destinationType = getDestinationType(dest);
+        String destinationName = getDestinationName(dest, destinationType);
+        updateAny(map, prefix+TYPE, destinationType.name(), marker, nameSet);
+        updateAny(map, prefix+NAME, destinationName, marker, nameSet);
+        return map;
     }
     
     /**
@@ -83,10 +90,13 @@ final class JMSPluginUtils {
      * 
      * @param op insight {@link Operation}
      * @param message jms {@link Message}
+     * @param marker The {@link ObscuredValueMarker} to use if a property is marked as sensitive
+     * @param nameSet The {@link Collection} of properties names marked as sensitive
      * @return Generated attributes {@link OperationMap}
      * @throws JMSException if any occurs by accessing {@code message} properties
      */
-    static OperationMap extractMessageProperties(Operation op, Message message) throws JMSException {
+    static OperationMap extractMessageProperties(Operation op, Message message, ObscuredValueMarker marker, Collection<String> nameSet)
+    		throws JMSException {
         OperationMap attributesMap = op.createMap(MESSAGE_PROPERTIES);
         
         Enumeration<?> propertyNames = message.getPropertyNames();
@@ -94,7 +104,7 @@ final class JMSPluginUtils {
             for (Enumeration<?> propertyNameEnum = propertyNames; propertyNameEnum.hasMoreElements();) {
                 String propertyName = (String) propertyNameEnum.nextElement();
                 Object propertyValue = message.getObjectProperty(propertyName);
-                attributesMap.putAny(propertyName, propertyValue);
+                updateAny(attributesMap, propertyName, propertyValue, marker, nameSet);
             }
         }
         
@@ -107,24 +117,46 @@ final class JMSPluginUtils {
      * 
      * @param op insight {@link Operation}
      * @param message jms {@link Message}
+     * @param marker The {@link ObscuredValueMarker} to use if a property is marked as sensitive
+     * @param nameSet The {@link Collection} of properties names marked as sensitive
      * @return The {@link OperationMap} containing the relevant extracted headers
      * @throws JMSException if any occurs by accessing {@code message} properties
      */
-    static OperationMap extractMessageHeaders(Operation op, Message message) throws JMSException {
+    static OperationMap extractMessageHeaders(Operation op, Message message, ObscuredValueMarker marker, Collection<String> nameSet)
+    		throws JMSException {
         OperationMap headersMap = op.createMap(MESSAGE_HEADERS);
         
-        addDestinationDetailsToMapIfNeeded(message.getJMSDestination(), headersMap, MESSAGE_DESTINATION);
-        addDestinationDetailsToMapIfNeeded(message.getJMSReplyTo(), headersMap, REPLY_TO);
-        headersMap.put(CORRELATION_ID, message.getJMSCorrelationID());
-        headersMap.put(DELIVERY_MODE, getDeliveryMode(message.getJMSDeliveryMode()).getLabel());
-        headersMap.put(EXPIRATION, message.getJMSExpiration());
-        headersMap.put(MESSAGE_ID, message.getJMSMessageID());
-        headersMap.put(PRIORITY, message.getJMSPriority());
-        headersMap.put(REDELIVERED, message.getJMSRedelivered());
+        addDestinationDetailsToMapIfNeeded(message.getJMSDestination(), headersMap, marker, nameSet, MESSAGE_DESTINATION);
+        addDestinationDetailsToMapIfNeeded(message.getJMSReplyTo(), headersMap, marker, nameSet, REPLY_TO);
+        updateAny(headersMap, CORRELATION_ID, message.getJMSCorrelationID(), marker, nameSet);
+        updateAny(headersMap, DELIVERY_MODE, getDeliveryMode(message.getJMSDeliveryMode()).getLabel(), marker, nameSet);
+        updateAny(headersMap, EXPIRATION, Long.valueOf(message.getJMSExpiration()), marker, nameSet);
+        updateAny(headersMap, MESSAGE_ID, message.getJMSMessageID(), marker, nameSet);
+        updateAny(headersMap, PRIORITY, Integer.valueOf(message.getJMSPriority()), marker, nameSet);
+        updateAny(headersMap, REDELIVERED, Boolean.valueOf(message.getJMSRedelivered()), marker, nameSet);
+
         long timestamp = message.getJMSTimestamp();
-        headersMap.putAnyNonEmpty(TIMESTAMP, timestamp > 0 ? new Date(timestamp) : null);
-        headersMap.put(JMS_TYPE, message.getJMSType());
+        if (timestamp > 0L) {
+        	updateAny(headersMap, TIMESTAMP, new Date(timestamp), marker, nameSet);
+        }
+
+        updateAny(headersMap, JMS_TYPE, message.getJMSType(), marker, nameSet);
         return headersMap;
+    }
+
+    private static OperationMap updateAny (OperationMap map, String name, Object value, ObscuredValueMarker marker, Collection<String> nameSet) {
+    	map.putAny(name, value);
+    	updateSensitiveValues(name, value, marker, nameSet);
+    	return map;
+    }
+
+    private static boolean updateSensitiveValues (String name, Object value, ObscuredValueMarker marker, Collection<String> nameSet) {
+        if (nameSet.contains(name) && (value != null)) {
+        	marker.markObscured(value);
+        	return true;
+        }
+
+        return false;
     }
     
     /**

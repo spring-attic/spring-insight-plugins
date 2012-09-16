@@ -20,12 +20,11 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageProducer;
 
-import com.springsource.insight.collection.errorhandling.CollectionErrors;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 
-import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.color.ColorManager.ColorParams;
+import com.springsource.insight.intercept.operation.Operation;
 
 public aspect JMSProducerCollectionAspect extends AbstractJMSCollectionAspect {
     private static final MessageOperationMap map = new MessageOperationMap();

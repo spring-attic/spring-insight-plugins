@@ -15,12 +15,30 @@
  */
 package com.springsource.insight.plugin.jms;
 
-import static com.springsource.insight.plugin.jms.JMSPluginUtils.*;
-import static org.junit.Assert.*;
+import static com.springsource.insight.plugin.jms.JMSPluginUtils.CORRELATION_ID;
+import static com.springsource.insight.plugin.jms.JMSPluginUtils.DELIVERY_MODE;
+import static com.springsource.insight.plugin.jms.JMSPluginUtils.EXPIRATION;
+import static com.springsource.insight.plugin.jms.JMSPluginUtils.MESSAGE_CONTENT;
+import static com.springsource.insight.plugin.jms.JMSPluginUtils.MESSAGE_CONTENT_MAP;
+import static com.springsource.insight.plugin.jms.JMSPluginUtils.MESSAGE_HEADERS;
+import static com.springsource.insight.plugin.jms.JMSPluginUtils.MESSAGE_ID;
+import static com.springsource.insight.plugin.jms.JMSPluginUtils.MESSAGE_PROPERTIES;
+import static com.springsource.insight.plugin.jms.JMSPluginUtils.MESSAGE_TYPE;
+import static com.springsource.insight.plugin.jms.JMSPluginUtils.NAME;
+import static com.springsource.insight.plugin.jms.JMSPluginUtils.PRIORITY;
+import static com.springsource.insight.plugin.jms.JMSPluginUtils.REDELIVERED;
+import static com.springsource.insight.plugin.jms.JMSPluginUtils.TYPE;
+import static com.springsource.insight.plugin.jms.JMSPluginUtils.addDestinationDetailsToMapIfNeeded;
+import static com.springsource.insight.plugin.jms.JMSPluginUtils.extractMessageHeaders;
+import static com.springsource.insight.plugin.jms.JMSPluginUtils.extractMessageProperties;
+import static com.springsource.insight.plugin.jms.JMSPluginUtils.extractMessageTypeAttributes;
+import static com.springsource.insight.plugin.jms.JMSPluginUtils.getDeliveryMode;
+import static com.springsource.insight.plugin.jms.JMSPluginUtils.getMessage;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -40,10 +58,14 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.junit.Test;
 
+import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
 
-public class JMSPluginUtilsTest {
+public class JMSPluginUtilsTest extends AbstractCollectionTestSupport {
+	public JMSPluginUtilsTest () {
+		super();
+	}
 
     @Test
     public void testAddDestinationDetailsToMapIfNeeded() throws JMSException{
@@ -53,7 +75,7 @@ public class JMSPluginUtilsTest {
         Operation op = new Operation();
         OperationMap map = op.createMap("test-map");
         
-        addDestinationDetailsToMapIfNeeded(queue, map, "test");
+        addDestinationDetailsToMapIfNeeded(queue, map, null, Collections.<String>emptyList(), "test");
         
         String type = map.get("test"+TYPE, String.class);
         String name = map.get("test"+NAME, String.class);
@@ -68,7 +90,7 @@ public class JMSPluginUtilsTest {
         op = new Operation();
         map = op.createMap("test-map");
         
-        addDestinationDetailsToMapIfNeeded(queue, map, "test");
+        addDestinationDetailsToMapIfNeeded(queue, map, null, Collections.<String>emptyList(), "test");
         type = map.get("test"+TYPE, String.class);
         name = map.get("test"+NAME, String.class);
         
@@ -83,21 +105,19 @@ public class JMSPluginUtilsTest {
         final Map<String, Object> mockMap = mockAttributes(message);
         
         Operation op = new Operation();
-        extractMessageProperties(op, message);
+        extractMessageProperties(op, message, null, Collections.<String>emptyList());
         assertAttributes(mockMap, op);
     }
 
-    static void assertAttributes(final Map<String, Object> mockMap, Operation op) {
-        Object map = op.get(MESSAGE_PROPERTIES);
-        
-        assertNotNull(map);
-        assertTrue(map instanceof OperationMap);
-        
-        OperationMap opMap = (OperationMap) map;
-        
+    static OperationMap assertAttributes(final Map<String,?> mockMap, Operation op) {
+    	OperationMap opMap = op.get(MESSAGE_PROPERTIES, OperationMap.class);
+        assertNotNull("Missing " + MESSAGE_PROPERTIES + " map", opMap);
+
         for(String key : mockMap.keySet()) {
-            assertEquals(mockMap.get(key), opMap.get(key));
+            assertEquals("Mismatched value for key=" + key, mockMap.get(key), opMap.get(key));
         }
+        
+        return opMap;
     }
 
     static Map<String, Object> mockAttributes(Message message) throws JMSException {
@@ -146,24 +166,22 @@ public class JMSPluginUtilsTest {
         
         Operation op = new Operation();
         
-        extractMessageHeaders(op, message);
+        extractMessageHeaders(op, message, null, Collections.<String>emptyList());
         assertHeaders(message, op);
     }
 
-    static void assertHeaders(Message message, Operation op) throws JMSException {
-        Object map = op.get(MESSAGE_HEADERS);
+    static OperationMap assertHeaders(Message message, Operation op) throws JMSException {
+    	OperationMap opMap = op.get(MESSAGE_HEADERS, OperationMap.class);
         
-        assertNotNull(map);
-        assertTrue(map instanceof OperationMap);
-        
-        OperationMap opMap = (OperationMap) map;
-        
+        assertNotNull("Missing " + MESSAGE_HEADERS + " map", opMap);
         assertEquals(CORRELATION_ID, message.getJMSCorrelationID(), opMap.get(CORRELATION_ID));
         assertEquals(DELIVERY_MODE, getDeliveryMode(message.getJMSDeliveryMode()).getLabel(), opMap.get(DELIVERY_MODE));
         assertEquals(EXPIRATION, Long.valueOf(message.getJMSExpiration()), opMap.get(EXPIRATION));
         assertEquals(MESSAGE_ID, message.getJMSMessageID(), opMap.get(MESSAGE_ID));
         assertEquals(PRIORITY, Integer.valueOf(message.getJMSPriority()), opMap.get(PRIORITY));
         assertEquals(REDELIVERED, Boolean.valueOf(message.getJMSRedelivered()), opMap.get(REDELIVERED));
+        
+        return opMap;
     }
 
     @SuppressWarnings("boxing")

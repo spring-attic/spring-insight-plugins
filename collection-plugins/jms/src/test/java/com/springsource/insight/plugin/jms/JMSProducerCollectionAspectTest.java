@@ -30,22 +30,40 @@ import javax.jms.TextMessage;
 import org.junit.Test;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
-public class JMSProducerCollectionAspectTest extends OperationCollectionAspectTestSupport {
+public class JMSProducerCollectionAspectTest extends AbstractJMSCollectionAspectTestSupport {
 	public JMSProducerCollectionAspectTest () {
 		super();
 	}
 
     @Test
-    public void testProducer() throws JMSException {
+    public void testUnobscuredProducerAttributes() throws JMSException {
+    	runProducerTest(false);
+    }
+
+    @Test
+    public void testObscuredProducerAtttributes () throws JMSException {
+    	runProducerTest(true);
+    }
+
+    @Override
+    public OperationCollectionAspectSupport getAspect() {
+        return JMSProducerCollectionAspect.aspectOf();
+    }
+
+    private void runProducerTest (boolean obscureAttrs) throws JMSException {
         Queue queue = mock(Queue.class);
         when(queue.getQueueName()).thenReturn("test.queue");
         
         Message _mockMessage = mock(TextMessage.class);
-        
-        MockProducer producer = new MockProducer(queue);
+        Map<String, Object> msgAttributesMap = JMSPluginUtilsTest.mockAttributes(_mockMessage);
+        JMSPluginUtilsTest.mockHeaders(_mockMessage);
+
+        MockProducer 	producer = new MockProducer(queue);
+        if (obscureAttrs) {
+        	AbstractJMSCollectionAspect.OBFUSCATED_PROPERTIES.addAll(msgAttributesMap.keySet());
+        }
         producer.send(_mockMessage);
         
         Operation op = getLastEntered();
@@ -54,16 +72,12 @@ public class JMSProducerCollectionAspectTest extends OperationCollectionAspectTe
         assertEquals(JMSPluginOperationType.SEND.getLabel(), op.getLabel());
         
         JMSPluginUtilsTest.assertHeaders(_mockMessage, op);
-        JMSPluginUtilsTest.assertAttributes(producer.msgAttributesMap, op);
+        JMSPluginUtilsTest.assertAttributes(msgAttributesMap, op);
+
+        assertObfuscatedValuesState(msgAttributesMap, obscureAttrs);
     }
 
-    @Override
-    public OperationCollectionAspectSupport getAspect() {
-        return JMSProducerCollectionAspect.aspectOf();
-    }
-    
     private static class MockProducer implements MessageProducer {
-        Map<String, Object> msgAttributesMap;
         final Queue queue;
         
         public MockProducer(Queue q) throws JMSException {
@@ -102,30 +116,18 @@ public class JMSProducerCollectionAspectTest extends OperationCollectionAspectTe
 
         public void send(Message msg) throws JMSException {
             when(msg.getJMSDestination()).thenReturn(queue);
-            
-            msgAttributesMap = JMSPluginUtilsTest.mockAttributes(msg);
-            JMSPluginUtilsTest.mockHeaders(msg);
         }
 
         public void send(Destination arg0, Message msg) throws JMSException {
             when(msg.getJMSDestination()).thenReturn(queue);
-            
-            msgAttributesMap = JMSPluginUtilsTest.mockAttributes(msg);
-            JMSPluginUtilsTest.mockHeaders(msg);
         }
 
         public void send(Message msg, int arg1, int arg2, long arg3) throws JMSException {
             when(msg.getJMSDestination()).thenReturn(queue);
-            
-            msgAttributesMap = JMSPluginUtilsTest.mockAttributes(msg);
-            JMSPluginUtilsTest.mockHeaders(msg);
         }
 
         public void send(Destination arg0, Message msg, int arg2, int arg3, long arg4) throws JMSException {
             when(msg.getJMSDestination()).thenReturn(queue);
-            
-            msgAttributesMap = JMSPluginUtilsTest.mockAttributes(msg);
-            JMSPluginUtilsTest.mockHeaders(msg);
         }
 
         public void setDeliveryMode(int arg0) throws JMSException {

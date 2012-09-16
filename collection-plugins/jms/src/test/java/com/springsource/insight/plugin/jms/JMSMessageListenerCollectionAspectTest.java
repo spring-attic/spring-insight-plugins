@@ -29,16 +29,29 @@ import javax.jms.TextMessage;
 import org.junit.Test;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
-public class JMSMessageListenerCollectionAspectTest extends OperationCollectionAspectTestSupport {
+public class JMSMessageListenerCollectionAspectTest extends AbstractJMSCollectionAspectTestSupport {
 	public JMSMessageListenerCollectionAspectTest () {
 		super();
 	}
 
     @Test
-    public void testMessageListener() throws JMSException {
+    public void testUnobscuredMessageListenerValues() throws JMSException {
+    	runListenerTest(false);
+    }
+
+    @Test
+    public void testObscuredMessageListenerValues() throws JMSException {
+    	runListenerTest(true);
+    }
+
+    @Override
+    public OperationCollectionAspectSupport getAspect() {
+        return JMSMessageListenerCollectionAspect.aspectOf();
+    }
+
+    private void runListenerTest (boolean obscureAttrs) throws JMSException {
         Queue queue = mock(Queue.class);
         when(queue.getQueueName()).thenReturn("test.queue");
         
@@ -46,6 +59,9 @@ public class JMSMessageListenerCollectionAspectTest extends OperationCollectionA
         when(_mockMessage.getJMSDestination()).thenReturn(queue);
         
         Map<String, Object> msgAttributesMap = JMSPluginUtilsTest.mockAttributes(_mockMessage);
+        if (obscureAttrs) {
+        	AbstractJMSCollectionAspect.OBFUSCATED_PROPERTIES.addAll(msgAttributesMap.keySet());
+        }
         JMSPluginUtilsTest.mockHeaders(_mockMessage);
         
         MockMessageListener listener = new MockMessageListener();
@@ -58,11 +74,8 @@ public class JMSMessageListenerCollectionAspectTest extends OperationCollectionA
         
         JMSPluginUtilsTest.assertHeaders(_mockMessage, op);
         JMSPluginUtilsTest.assertAttributes(msgAttributesMap, op);
-    }
 
-    @Override
-    public OperationCollectionAspectSupport getAspect() {
-        return JMSMessageListenerCollectionAspect.aspectOf();
+        assertObfuscatedValuesState(msgAttributesMap, obscureAttrs);
     }
 
     private static class MockMessageListener implements MessageListener {
