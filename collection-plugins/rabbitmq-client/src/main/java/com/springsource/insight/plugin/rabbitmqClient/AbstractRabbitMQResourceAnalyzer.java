@@ -37,7 +37,9 @@ import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.StringUtil;
 
-public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTypeEndpointAnalyzer implements ExternalResourceAnalyzer {
+public abstract class AbstractRabbitMQResourceAnalyzer
+			extends AbstractSingleTypeEndpointAnalyzer
+			implements ExternalResourceAnalyzer {
 	public static final String RABBIT = "RabbitMQ";	
 	/**
 	 * Placeholder string used if no exchange name specified
@@ -132,7 +134,7 @@ public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTyp
 							RABBIT,
 							host,
 							port,
-							color, isIncoming, true);
+							color, isIncoming);
 			queueDescriptors.add(externalResourceExchangeDescriptor);            
 
 			// even if there is no routing key, i.e in the Insight world there is no child resource,
@@ -150,9 +152,8 @@ public abstract class AbstractRabbitMQResourceAnalyzer extends AbstractSingleTyp
 							RABBIT,
 							host,
 							port,
-							color, isIncoming, exchangeResourceName);
-			queueDescriptors.add(externalResourceRoutingKeyDescriptor);           
-
+							color, isIncoming, externalResourceExchangeDescriptor);
+			externalResourceExchangeDescriptor.setChildren(Collections.singletonList(externalResourceRoutingKeyDescriptor));           
 		}
 
 		return queueDescriptors;

@@ -182,15 +182,16 @@ public abstract class AbstractRabbitMQCollectionAspect extends OperationCollecti
         }
     }
     
-    protected BasicProperties colorForward(BasicProperties props, final Operation op) {
+    protected BasicProperties colorForward(BasicProperties orgProps, final Operation op) {
     	Field	headersField=getMessageHeadersField();
+    	BasicProperties	props=orgProps;
     	if (headersField == null) {
     		return props;
     	}
 
         try {
             final Map<String, Object> map = new HashMap<String, Object>();
-            Map<String, Object> old = props != null ? props.getHeaders() : null;
+            Map<String, Object> old = (props != null) ? props.getHeaders() : null;
             if (MapUtil.size(old) > 0) {
             	map.putAll(old);
             }

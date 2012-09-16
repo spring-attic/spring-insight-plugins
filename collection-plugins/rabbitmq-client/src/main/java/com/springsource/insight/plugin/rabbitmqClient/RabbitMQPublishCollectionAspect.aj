@@ -63,10 +63,10 @@ public aspect RabbitMQPublishCollectionAspect extends AbstractRabbitMQCollection
 
         OperationCollector	collector=getCollector();
         collector.enter(op);
-        props = colorForward(props, op);
+        BasicProperties	proceedProps = colorForward(props, op);
         
         try {
-            proceed(exchange,routingKey,mandatory,immediate,props,body);
+            proceed(exchange,routingKey,mandatory,immediate,proceedProps,body);
             collector.exitNormal();
         } catch (Exception e) {
         	collector.exitAbnormal(e);
