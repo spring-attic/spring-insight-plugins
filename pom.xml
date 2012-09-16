@@ -11,7 +11,7 @@
 		<groupId>com.springsource.insight</groupId>
 		<artifactId>community</artifactId>
 		<version>1.9.1-CI-SNAPSHOT</version>
-		<relativePath>parent</relativePath>
+		<relativePath>./parent</relativePath>
 	</parent>
 
 	<modules>

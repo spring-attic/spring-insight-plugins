@@ -39,7 +39,7 @@
         <gemfire.version>6.5.1</gemfire.version>
         <spring.gemfire.version>1.0.0.RELEASE</spring.gemfire.version>
         <ehcache.version>2.3.0</ehcache.version>
-        <groovy.version>1.7.0</groovy.version>
+        <groovy.version>1.7.3</groovy.version>
         <gmaven.plugin.version>1.0</gmaven.plugin.version>
 		<surefire.plugin.version>2.12.2</surefire.plugin.version>
         <injection.plugin.version>1.0.2</injection.plugin.version>
@@ -63,6 +63,21 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<excluded.tests.group>com.springsource.insight.util.test.MicroBenchmark</excluded.tests.group>
+		
+		<snapshot.repo.id>spring-snapshot</snapshot.repo.id>
+        <snapshot.repo.name>Spring Snapshot Repository</snapshot.repo.name>
+		<snapshot.repo.url>http://maven.springframework.org/snapshot</snapshot.repo.url>
+        <snapshot.dist.url>s3://maven.springframework.org/snapshot</snapshot.dist.url>
+
+        <milestone.repo.id>spring-milestone</milestone.repo.id>
+        <milestone.repo.name>Spring Milestone Repository</milestone.repo.name>
+        <milestone.repo.url>http://maven.springframework.org/milestone</milestone.repo.url>
+        <milestone.dist.url>s3://maven.springframework.org/milestone</milestone.dist.url>
+
+		<release.repo.id>spring-release</release.repo.id>
+        <release.repo.name>Spring Release Repository</release.repo.name>
+        <release.repo.url>http://maven.springframework.org/release</release.repo.url>
+        <release.dist.url>s3://maven.springframework.org/release</release.dist.url>
     </properties>
 
     <profiles>
@@ -160,9 +175,9 @@
 
     <repositories>
         <repository>
-            <id>spring-release</id>
-            <name>Spring Release Repository</name>
-            <url>http://maven.springframework.org/release</url>
+            <id>${release.repo.id}</id>
+            <name>${release.repo.name}</name>
+            <url>${release.repo.url}</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -171,8 +186,9 @@
             </releases>
         </repository>
         <repository>
-            <id>spring-milestone</id>
-            <url>http://maven.springframework.org/milestone</url>
+            <id>${milestone.repo.id}</id>
+            <name>${milestone.repo.name}</name>
+            <url>${milestone.repo.url}</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -241,9 +257,9 @@
 
     <pluginRepositories>
         <pluginRepository>
-            <id>spring-release</id>
-            <name>Spring Release Repository</name>
-            <url>http://maven.springframework.org/release</url>
+            <id>${release.repo.id}</id>
+            <name>${release.repo.name}</name>
+            <url>${release.repo.url}</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -253,8 +269,9 @@
         </pluginRepository>
         <!-- Milestone repository for the aspectj milestone release -->
         <pluginRepository>
-            <id>spring-milestone</id>
-            <url>http://maven.springframework.org/milestone</url>
+            <id>${milestone.repo.id}</id>
+            <name>${milestone.repo.name}</name>
+            <url>${milestone.repo.url}</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -937,8 +954,48 @@
                         </goals>
                         <configuration>
                             <source>
-                                project.properties['buildtimestamp'] =
-                                java.text.MessageFormat.format("{0,date,yyyyMMddHHmmss}", new Date())
+                                project.properties['buildtimestamp'] = java.text.MessageFormat.format("{0,date,yyyyMMddHHmmss}", new Date())
+                            </source>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>resolve-distribution-details</id>
+                        <phase>install</phase>	<!-- A pre-deploy phase - had it existed - would have been better -->
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+								<!-- see http://maven.apache.org/ref/3.0.4/maven-core/apidocs/org/apache/maven/execution/MavenSession.html -->
+                            <source>
+								if (!session.goals.contains("deploy")) {
+									return;
+								}
+
+                                if ('${project.version}'.contains("SNAPSHOT")) {
+                                    session.currentProject.distributionManagement.snapshotRepository.id = project.properties['snapshot.repo.id']
+                                    session.currentProject.distributionManagement.snapshotRepository.name = project.properties['snapshot.repo.name']
+                                    session.currentProject.distributionManagement.snapshotRepository.url = project.properties['snapshot.dist.url']
+
+									project.properties['deploy.repo.id'] = project.properties['snapshot.repo.id']
+									project.properties['deploy.repo.name'] = project.properties['snapshot.repo.name']
+									project.properties['deploy.repo.url'] = project.properties['snapshot.dist.url']
+                                } else if ('${project.version}'.contains("RELEASE")) {
+                                    session.currentProject.distributionManagement.repository.id = project.properties['release.repo.id']
+                                    session.currentProject.distributionManagement.repository.name = project.properties['release.repo.name']
+                                    session.currentProject.distributionManagement.repository.url = project.properties['release.dist.url']
+
+									project.properties['deploy.repo.id'] = project.properties['release.repo.id']
+									project.properties['deploy.repo.name'] = project.properties['release.repo.name']
+									project.properties['deploy.repo.url'] = project.properties['release.dist.url']
+                                } else {
+                                    session.currentProject.distributionManagement.repository.id = project.properties['milestone.repo.id']
+                                    session.currentProject.distributionManagement.repository.name = project.properties['milestone.repo.name']
+                                    session.currentProject.distributionManagement.repository.url = project.properties['milestone.dist.url']
+
+									project.properties['deploy.repo.id'] = project.properties['milestone.repo.id']
+									project.properties['deploy.repo.name'] = project.properties['milestone.repo.name']
+									project.properties['deploy.repo.url'] = project.properties['milestone.dist.url']
+                                }
                             </source>
                         </configuration>
                     </execution>
@@ -1070,15 +1127,14 @@
 
     <distributionManagement>
         <repository>
-            <id>spring-release</id>
-            <name>Spring Release Repository</name>
-            <url>s3://maven.springframework.org/release</url>
-        </repository>	    
+            <id>${deploy.repo.id}</id>
+            <name>${deploy.repo.name}</name>
+            <url>${deploy.repo.url}</url>
+        </repository>    
         <snapshotRepository>
-            <id>spring-snapshot</id>
-            <name>Spring Snapshot Repository</name>
-            <url>s3://maven.springframework.org/snapshot</url>
+            <id>${snapshot.repo.id}</id>
+            <name>${snapshot.repo.name}</name>
+            <url>${snapshot.dist.url}</url>
         </snapshotRepository>
     </distributionManagement>
-
 </project>
