@@ -1125,16 +1125,21 @@
         <developerConnection>scm:git:ssh://git@github.com/SpringSource/spring-insight-plugins.git</developerConnection>
     </scm>
 
+
+        <!-- Note: these values are placeholders - the real values are
+            set by a gmaven-plugin execution bound to the 'install' phase
+            provided a 'deploy' goal has been specified in the Maven
+            invocation commmand -->
     <distributionManagement>
         <repository>
-            <id>${deploy.repo.id}</id>
-            <name>${deploy.repo.name}</name>
-            <url>${deploy.repo.url}</url>
+            <id>insight-releases</id>
+            <name>Spring Insight Releases Repository</name>
+            <url>http://localhost:8081/artifactory/libs-releases-local</url>
         </repository>    
         <snapshotRepository>
-            <id>${snapshot.repo.id}</id>
-            <name>${snapshot.repo.name}</name>
-            <url>${snapshot.dist.url}</url>
+            <id>insight-snapshots</id>
+            <name>Spring Insight Snapshots Repository</name>
+            <url>http://localhost:8081/artifactory/libs-snapshots-local</url>
         </snapshotRepository>
     </distributionManagement>
 </project>
