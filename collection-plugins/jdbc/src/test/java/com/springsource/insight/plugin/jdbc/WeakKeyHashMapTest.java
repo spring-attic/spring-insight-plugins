@@ -79,11 +79,4 @@ public class WeakKeyHashMapTest extends AbstractCollectionTestSupport  {
             r.nextBytes(bytes);
         }
     }
-
-    private void encourageGC() {
-    	System.runFinalization();
-    	for (int i= 0 ; i < 20; i++) {
-    		System.gc();
-        }
-    }
 }

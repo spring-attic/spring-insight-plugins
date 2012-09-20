@@ -129,13 +129,6 @@ public abstract class FilesTrackerAspectTestSupport extends OperationCollectionA
         }
     }
 
-    private void encourageGC() {
-        System.runFinalization();
-        for (int i= 0 ; i < 20; i++) {
-            System.gc();
-        }
-    }
-
     protected static interface FileAccessor {
         Closeable createInstance () throws IOException;
     }
