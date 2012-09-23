@@ -13,29 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.springsource.insight.plugin.gemfire;
 
-import org.aspectj.lang.JoinPoint;
-
 import com.gemstone.gemfire.cache.query.Query;
-import com.springsource.insight.intercept.operation.Operation;
+import com.gemstone.gemfire.cache.client.internal.AbstractOp;
+import com.gemstone.gemfire.cache.client.internal.Connection;
 
-public aspect GemFireQueryCollectionAspect extends AbstractGemFireCollectionAspect {
-
-    public GemFireQueryCollectionAspect() {
-		super(GemFireDefenitions.TYPE_QUERY);
-	}
-
-    public pointcut collectionPoint(): GemFireLightPointcuts.queryCollectionPoint();
+public aspect GemFireLightPointcuts {
+    /**
+     * Query point cut
+     */
+    public pointcut queryCollectionPoint(): execution(* Query.execute*(..));
     
-    @Override
-    protected Operation createOperation(final JoinPoint jp) {
-    	Operation op = createBasicOperation(jp);
-   
-    	Query query = (Query) jp.getThis();
-        op.put(GemFireDefenitions.FIELD_QUERY, query.getQueryString());
-        return op;
-    }
-
+    /**
+     * Remote point cut
+     */
+    public pointcut remoteCollectionPoint () : execution(void AbstractOp.sendMessage(Connection));
+    
 }

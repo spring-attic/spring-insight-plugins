@@ -26,6 +26,7 @@ import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.plugin.gemfire.GemFireDefenitions.GemFireType;
 import com.springsource.insight.util.StringFormatterUtils;
 
+
 public abstract aspect AbstractGemFireCollectionAspect extends AbstractOperationCollectionAspect {
 
 	private OperationType type;
@@ -33,28 +34,51 @@ public abstract aspect AbstractGemFireCollectionAspect extends AbstractOperation
 
 	public AbstractGemFireCollectionAspect(GemFireType gemFireType) {
 		this.type = gemFireType.getType();
-		labelPrefix = new StringBuilder(GemFireDefenitions.GEMFIRE).append(": ").append(gemFireType.getLabel()).append('.').toString();
+		labelPrefix = new StringBuilder(GemFireDefenitions.GEMFIRE.length() + gemFireType.getLabel().length() + 3)
+		                .append(GemFireDefenitions.GEMFIRE)
+		                .append(": ")
+		                .append(gemFireType.getLabel())
+		                .append('.')
+		                .toString();
 	}
 	
     protected Operation createBasicOperation(final JoinPoint jp) {
         Signature sig=jp.getSignature();
         Object[] args=jp.getArgs();    
     
-        String label = new StringBuilder(labelPrefix).append(sig.getName()).append("()").toString();
-        Operation op = new Operation().label(label).type(type).sourceCodeLocation(getSourceCodeLocation(jp));
+        String label = createLabel(sig);
+        Operation op = new Operation().label(label)
+                                      .type(type)
+                                      .sourceCodeLocation(getSourceCodeLocation(jp));
         	
-        OperationList opList = op.createList("args");
-
-        for (Object arg : args) {
-       		opList.add(StringFormatterUtils.formatObjectAndTrim(arg));
+        if (addArgs()) {
+            OperationList opList = op.createList("args");
+            
+            for (Object arg : args) {
+                opList.add(StringFormatterUtils.formatObjectAndTrim(arg));
+            }
         }
         
         return op;
     }
+    
+    protected String createLabel(final Signature sig) {
+        String sigName = sig.getName();
+        return new StringBuilder(labelPrefix.length() + sigName.length() + 2)
+                         .append(labelPrefix)
+                         .append(sig.getName())
+                         .append("()")
+                         .toString();
+    }
+    
+    protected boolean addArgs() {
+        return true;
+    }
 
     @Override
     public String getPluginName() {
-        return GemFirePluginRuntimeDescriptor.PLUGIN_NAME;
+        return GemFireLightPluginRuntimeDescriptor.PLUGIN_NAME;
     }
+
 
 }
