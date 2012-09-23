@@ -18,6 +18,7 @@
 				but this plugin works only with 1.6 so deploy it anyway -->
 	<profiles>
 		<profile>
+			<id>force-deploy-artifacts</id>
 			<activation>
 				<jdk>[1.6,)</jdk>
 			</activation>

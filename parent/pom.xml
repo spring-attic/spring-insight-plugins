@@ -82,6 +82,7 @@
 
     <profiles>
 		<profile>
+			<id>force-deploy-artifacts</id>
 			<activation>
 				<jdk>1.5</jdk>
 			</activation>
