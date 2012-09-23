@@ -14,5 +14,9 @@
 
 	<insight:operation-view operation="gemfire_execution_operation" template="com/springsource/insight/plugin/gemfire/gemfire_execution_operation.ftl" />
 	<insight:operation-group operation="gemfire_execution_operation" group="GemFire" />
+
+	<insight:operation-view operation="gemfire_remote_operation" template="com/springsource/insight/plugin/gemfire/gemfire_remote_operation.ftl" />
+	<insight:operation-group operation="gemfire_remote_operation" group="GemFire" />
 	
+	<bean class="com.springsource.insight.plugin.gemfire.GemFireRemoteExternalResourceAnalyzer" />
 </beans>

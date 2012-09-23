@@ -19,7 +19,7 @@ package com.springsource.insight.plugin.gemfire;
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
-public class GemFirePluginRuntimeDescriptor extends PluginRuntimeDescriptor {
+public class GemFireLightPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
 
     public static final String PLUGIN_NAME = "gemfire-light";
     
