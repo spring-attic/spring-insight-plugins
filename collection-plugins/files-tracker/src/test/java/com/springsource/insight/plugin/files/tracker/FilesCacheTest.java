@@ -69,28 +69,30 @@ public class FilesCacheTest extends Assert {
         assertEquals("Mismatched capacity after update", newCapacity, cache.getMaxCapacity());
     }
 
-    @Test(expected=NumberFormatException.class)
+    @Test
     public void testFilesCacheCapacityUpdateWithBadString () {
+        FilesCache  cache=AbstractFilesTrackerAspectSupport.filesCache;
+        int	capacity=cache.getMaxCapacity();
         CollectionSettingsRegistry registry = CollectionSettingsRegistry.getInstance();
         registry.set(AbstractFilesTrackerAspectSupport.MAX_TRACKED_FILES_SETTING, "lyor");
-        fail("Unexpected capacity update success");
+        assertEquals("Unexpected capacity update success", capacity, cache.getMaxCapacity());
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testFilesCacheCapacityUpdateFailOnNegativeNumber () {
         FilesCache  cache=AbstractFilesTrackerAspectSupport.filesCache;
         int         oldCapacity=cache.getMaxCapacity(), newCapacity=0 - oldCapacity;
         CollectionSettingsRegistry registry = CollectionSettingsRegistry.getInstance();
         registry.set(AbstractFilesTrackerAspectSupport.MAX_TRACKED_FILES_SETTING, Integer.valueOf(newCapacity));
-        fail("Unexpected capacity update success");
+        assertEquals("Unexpected capacity update success", oldCapacity, cache.getMaxCapacity());
     }
 
-    @Test(expected=UnsupportedOperationException.class)
+    @Test
     public void testFilesCacheCapacityUpdateFailOnBadValueType () {
         FilesCache  cache=AbstractFilesTrackerAspectSupport.filesCache;
         int         oldCapacity=cache.getMaxCapacity(), newCapacity=oldCapacity + 3777;
         CollectionSettingsRegistry registry = CollectionSettingsRegistry.getInstance();
         registry.set(AbstractFilesTrackerAspectSupport.MAX_TRACKED_FILES_SETTING, new StringBuilder().append(newCapacity));
-        fail("Unexpected capacity update success");
+        assertEquals("Unexpected capacity update success", oldCapacity, cache.getMaxCapacity());
     }
 }
