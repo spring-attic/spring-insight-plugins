@@ -19,4 +19,5 @@
 	<insight:operation-group operation="gemfire_remote_operation" group="GemFire" />
 	
 	<bean class="com.springsource.insight.plugin.gemfire.GemFireRemoteExternalResourceAnalyzer" />
+	<bean class="com.springsource.insight.plugin.gemfire.GemFireQueryExternalResourceAnalyzer" />
 </beans>
