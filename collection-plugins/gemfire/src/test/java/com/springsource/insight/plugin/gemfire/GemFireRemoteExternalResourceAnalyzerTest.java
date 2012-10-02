@@ -38,7 +38,7 @@ import com.springsource.insight.util.time.TimeRange;
 
 public class GemFireRemoteExternalResourceAnalyzerTest extends AbstractCollectionTestSupport  {
 
-    final GemFireRemoteExternalResourceAnalyzer analyzer = new GemFireRemoteExternalResourceAnalyzer();
+    final AbstractGemFireExternalResourceAnalyzer analyzer = new GemFireRemoteExternalResourceAnalyzer();
 
 	@Test
 	public void testValidData() throws Exception {
