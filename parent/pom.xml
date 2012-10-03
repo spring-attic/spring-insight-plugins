@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
 
     <properties>
+        <insight.root.dir>${project.parent.basedir}/..</insight.root.dir>
         <spring.framework.version>3.1.2.RELEASE</spring.framework.version>
         <spring.security.version>3.1.2.RELEASE</spring.security.version>
 		<spring.webflow.version>2.3.1.RELEASE</spring.webflow.version>
@@ -956,6 +957,31 @@
                 <artifactId>gmaven-plugin</artifactId>
                 <version>${gmaven.plugin.version}</version>
                 <executions>
+                    <!-- Works only for Maven 3.x -->
+					<execution>
+                        <id>detect-insight-root-dir</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <source>
+                                for (java.io.File file=new java.io.File(new java.net.URI('${project.baseUri}')); file != null; file = file.getParentFile()) {
+                                    if (!file.isDirectory()) {
+                                        continue
+                                    }
+
+                                    java.io.File    testFile=new java.io.File(file, '.gitmodules')
+                                    if (testFile.canRead()) {
+                                        project.properties['insight.root.dir'] = file.getAbsolutePath()
+										return
+                                    }
+                                }
+                                
+                                System.err.println("Failed to detected Insight root dir")
+                            </source>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>generate-timestamp-property</id>
                         <phase>validate</phase>
