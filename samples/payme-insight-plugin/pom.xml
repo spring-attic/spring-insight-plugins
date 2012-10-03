@@ -105,26 +105,6 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>aspectj-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>compile</goal>
-							<goal>test-compile</goal>
-						</goals>
-						<configuration>
-							<source>1.5</source>
-							<target>1.5</target>
-							<outxml>true</outxml>
-						</configuration>
-					</execution>
-				</executions>
-                <dependencies>
-                <dependency>
-				    <groupId>org.aspectj</groupId>
-				    <artifactId>aspectjtools</artifactId>
-				    <version>${aspectj.version}</version>
-				  </dependency>
-				</dependencies>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
