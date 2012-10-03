@@ -44,7 +44,7 @@ public abstract class JtaOperationCollectionAspectTestSupport
         }
     }
 
-    protected Operation assertTransactionOperation (String testName, String action, Class<?>[] argTypes) {
+    protected Operation assertTransactionOperation (String testName, String action, Class<?> ... argTypes) {
         Operation   op=getLastEntered();
         assertNotNull(testName + ": No operation", op);
 

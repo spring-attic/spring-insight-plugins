@@ -23,6 +23,7 @@ import org.aspectj.lang.JoinPoint;
 
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
+import com.springsource.insight.intercept.operation.method.JoinPointBreakDown;
 
 /**
  * 
@@ -44,9 +45,8 @@ public aspect TransactionManagerOperationCollectionAspect extends JtaOperationCo
     protected Operation createOperation(JoinPoint jp) {
         Operation   op=super.createOperation(jp);
         String      methodName=op.get(OperationFields.METHOD_NAME, String.class);
-        // same as JoinPointBreakDown#getMethodStringFromArgs
         if ("resume".equals(methodName)) {
-            op.put(OperationFields.METHOD_SIGNATURE, "resume(Transaction)");
+            op.put(OperationFields.METHOD_SIGNATURE, JoinPointBreakDown.getMethodStringFromArgs(methodName,Transaction.class));
         }
         return op;
     }
