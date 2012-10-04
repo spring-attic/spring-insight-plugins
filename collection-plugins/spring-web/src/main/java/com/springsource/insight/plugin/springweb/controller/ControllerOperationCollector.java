@@ -22,6 +22,7 @@ import java.util.Map;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
 
 import com.springsource.insight.collection.DefaultOperationCollector;
 import com.springsource.insight.intercept.InterceptConfiguration;
@@ -34,7 +35,8 @@ import com.springsource.insight.util.StringFormatterUtils;
 import com.springsource.insight.util.StringUtil;
 
 /**
- * Renders any {@link Map}, {@link Model}, {@link ModelMap} and/or {@link ModelAndView} attributes
+ * Renders any {@link Map}, {@link Model}, {@link View}, {@link ModelMap}
+ * and/or {@link ModelAndView} attributes
  * @see <A HREF="http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/mvc.html#mvc-ann-arguments">Supported method argument types</A>
  * @see <A HREF="http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/mvc.html#mvc-ann-return-types">Supported method return types</A>
  */
@@ -45,6 +47,11 @@ public class ControllerOperationCollector extends DefaultOperationCollector {
      * if it is a  {@link Model}, {@link ModelMap}, {@link Map} and/or {@link ModelAndView}
      */
     public static final String	RETURN_VALUE_MODEL_MAP="returnModel";
+    /**
+     * The name of the (optional) property holding the returned view name
+     * if it is a {@link String}, {@link View} or {@link ModelAndView}
+     */
+    public static final String	RETURN_VALUE_VIEW_NAME="returnView";
 
     public ControllerOperationCollector() {
 		super();
@@ -52,11 +59,30 @@ public class ControllerOperationCollector extends DefaultOperationCollector {
 
 	@Override
 	protected void processNormalExit(Operation op, Object returnValue) {
+		op.putAnyNonEmpty(RETURN_VALUE_VIEW_NAME, resolveViewName(returnValue));
 		if (collectExtraInformation()) {
 			collectModelInformation(op, RETURN_VALUE_MODEL_MAP, returnValue);
 		}
 	}
 
+	/**
+	 * Checks if the value is a {@link String}, {@link View} or {@link ModelAndView}
+	 * and resolves the view's name. <B>Note:</B> for a {@link View} the simple
+	 * class name is returned as its name
+	 * @param value The value to be checked
+	 * @return The resolved view name - <code>null</code> if none
+	 */
+	static final String resolveViewName (Object value) {
+		if (value instanceof String) {
+			return (String) value;
+		} else if (value instanceof View) {
+			return value.getClass().getSimpleName();
+		} else if (value instanceof ModelAndView) {
+			return ((ModelAndView) value).getViewName();
+		} else {
+			return null;
+		}
+	}
 	/**
 	 * Goes over all the arguments until it encounters a {@link Model},
 	 * {@link ModelMap}, {@link Map} and/or {@link ModelAndView}. If such an argument

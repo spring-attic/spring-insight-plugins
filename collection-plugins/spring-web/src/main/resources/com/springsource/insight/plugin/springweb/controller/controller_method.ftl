@@ -3,6 +3,7 @@
 
 <@insight.group label="Spring Web Controller">
     <@insight.entry name="Label" value=operation.label />
+    <@insight.entry name="View" value=operation.returnView if=operation.returnView?? />
     <@insight.entry name="Model argument" if=operation.modelArgument??>
         <@insight.group collection=operation.modelArgument?keys ; key>
             <@insight.entry name=key value=operation.modelArgument[key] />
