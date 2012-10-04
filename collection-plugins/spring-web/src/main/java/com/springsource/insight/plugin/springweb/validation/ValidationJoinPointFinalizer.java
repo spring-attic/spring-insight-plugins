@@ -56,7 +56,8 @@ public class ValidationJoinPointFinalizer extends JoinPointFinalizer {
 	 */
 	public static final String	ERRORS_LIST="validationErrorsList";
 	/**
-	 * Maximum stored error text length 
+	 * Maximum error text length saved in the extracted operation information
+	 * @see #populateOperation(OperationList, Errors)
 	 */
 	public static final int	MAX_ERROR_TEXT_LENGTH=96;
 
