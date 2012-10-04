@@ -16,12 +16,32 @@
 
 package com.springsource.insight.plugin.springweb.controller;
 
+import org.aspectj.lang.JoinPoint;
+
+import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.plugin.springweb.ControllerPointcuts;
 
 public aspect ControllerOperationCollectionAspect extends AbstractControllerOperationCollectionAspect {
+	/**
+	 * Name of the {@link OperationMap} used to hold any model argument found
+	 * in the invocation
+	 */
+	public static final String	MODEL_ARGUMENT_NAME="modelArgument";
+
     public ControllerOperationCollectionAspect () {
-    	super(false);
+    	super(new ControllerOperationCollector(), false);
     }
     
 	public pointcut collectionPoint() : ControllerPointcuts.controllerHandlerMethod();
+
+	@Override
+	public Operation createOperation(JoinPoint jp) {
+		Operation	op=super.createOperation(jp);
+		if (ControllerOperationCollector.collectExtraInformation()) {
+			ControllerOperationCollector.collectModelInformation(op, MODEL_ARGUMENT_NAME, jp.getArgs());
+		}
+
+		return op;
+	}
+
 }

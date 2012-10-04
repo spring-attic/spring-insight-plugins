@@ -16,7 +16,6 @@
 
 package com.springsource.insight.plugin.springweb.binder;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;

@@ -12,6 +12,7 @@
 	<insight:operation-view operation="view_render" template="com/springsource/insight/plugin/springweb/view/render/view_render.ftl"/>
 	<insight:operation-view operation="view_resolver" template="com/springsource/insight/plugin/springweb/view/resolver/view_resolver.ftl"/>
 	<insight:operation-view operation="web_request" template="com/springsource/insight/plugin/springweb/request/web_request.ftl"/>
+    <insight:operation-view operation="controller_method" template="com/springsource/insight/plugin/springweb/controller/controller_method.ftl"/>
 	
 	<insight:operation-group group="Web" operation="init_binder" />
 	<insight:operation-group group="Web" operation="controller_method" />
