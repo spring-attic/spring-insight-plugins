@@ -23,13 +23,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 
 public aspect ControllerPointcuts {
     public pointcut controllerMethod() 
@@ -48,9 +46,6 @@ public aspect ControllerPointcuts {
     
     public pointcut modelAttributeRetrieval()
         : execution(@ModelAttribute !@RequestMapping !void *(..));
-
-    public pointcut validation()
-        : execution(void Validator.validate(Object, Errors));
     
     public pointcut controllerHandlerMethod()
         : execution(@RequestMapping * *(..));

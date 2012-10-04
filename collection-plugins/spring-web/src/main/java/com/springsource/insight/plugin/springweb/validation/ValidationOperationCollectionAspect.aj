@@ -17,25 +17,31 @@
 package com.springsource.insight.plugin.springweb.validation;
 
 import org.aspectj.lang.JoinPoint;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
 
-import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
+import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.plugin.springweb.ControllerPointcuts;
 import com.springsource.insight.plugin.springweb.SpringWebPluginRuntimeDescriptor;
 
-public aspect ValidationOperationCollectionAspect extends MethodOperationCollectionAspect {
+public aspect ValidationOperationCollectionAspect extends AbstractOperationCollectionAspect {
 	public ValidationOperationCollectionAspect () {
 		super();
 	}
 
-    public pointcut collectionPoint() : ControllerPointcuts.validation();
+    public pointcut collectionPoint() : execution(* Validator+.validate(Object, Errors));
 
     @Override
 	protected Operation createOperation(JoinPoint jp) {
-		return super.createOperation(jp)
-					.put(EndPointAnalysis.SCORE_FIELD, EndPointAnalysis.CEILING_LAYER_SCORE)
-					;
+        Operation op = new Operation()
+        				.type(ValidationErrorsMetricsGenerator.TYPE)
+        				.sourceCodeLocation(getSourceCodeLocation(jp))
+        				.put(EndPointAnalysis.SCORE_FIELD, EndPointAnalysis.CEILING_LAYER_SCORE)
+        				;
+        ValidationJoinPointFinalizer	finalizer=ValidationJoinPointFinalizer.getInstance();
+        finalizer.registerValidationOperation(op, jp);
+        return op;
 	}
 
 	@Override
