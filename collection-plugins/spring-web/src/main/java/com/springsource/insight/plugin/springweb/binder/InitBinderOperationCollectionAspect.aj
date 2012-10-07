@@ -16,17 +16,12 @@
 
 package com.springsource.insight.plugin.springweb.binder;
 
-import java.util.Map;
-
 import org.aspectj.lang.JoinPoint;
-import org.springframework.validation.DataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.operation.OperationFinalizer;
-import com.springsource.insight.intercept.operation.OperationList;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
-import com.springsource.insight.plugin.springweb.ControllerPointcuts;
 
 public aspect InitBinderOperationCollectionAspect extends AbstractSpringWebAspectSupport {
     static final OperationType TYPE = OperationType.valueOf("init_binder");
@@ -35,69 +30,17 @@ public aspect InitBinderOperationCollectionAspect extends AbstractSpringWebAspec
     	super();
     }
     
-    public pointcut collectionPoint() : ControllerPointcuts.initBinder();
+    public pointcut collectionPoint() : execution(@InitBinder * *(..));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
         Operation operation = new Operation()
             .type(TYPE)
-            .sourceCodeLocation(getSourceCodeLocation(jp));
-        InitBinderOperationFinalizer.register(operation, jp);
+            .sourceCodeLocation(getSourceCodeLocation(jp))
+            ;
+
+        InitBinderOperationFinalizer	finalizer=InitBinderOperationFinalizer.getInstance();
+        finalizer.registerBinderOperation(operation, jp);
         return operation;
     }
-
-    private static class InitBinderOperationFinalizer implements OperationFinalizer {
-        private static final InitBinderOperationFinalizer INSTANCE = new InitBinderOperationFinalizer();
-        private static final String JOINPOINT_KEY = InitBinderOperationFinalizer.class.getName() + "#JOINPOINT_KEY";
-
-        InitBinderOperationFinalizer () {
-        	super();
-        }
-
-        public static void register(Operation operation, JoinPoint jp) {
-            operation.addFinalizer(INSTANCE)
-                .addFinalizerObject(JOINPOINT_KEY, jp);
-        }
-        
-        public void finalize(Operation operation, Map<String, Object> richObjects) {
-            JoinPoint jp = (JoinPoint) richObjects.get(JOINPOINT_KEY);
-            DataBinder binder = extractDataBinderArg(jp);
-            if (binder != null) {
-                String objectName = binder.getObjectName();
-                operation.label("Init Binder " + objectName)
-                    .put("objectName", objectName);
-                Object target = binder.getTarget();
-                if (target == null) {
-                    // Target object may be null according to WebDataBinder docs
-                    operation.put("targetType", "unknown");
-                } else {
-                    operation.put("targetType", target.getClass().getName());
-                }
-                fromArray(operation.createList("allowedFields"), binder.getAllowedFields());
-                fromArray(operation.createList("disallowedFields"), binder.getDisallowedFields());
-                fromArray(operation.createList("requiredFields"), binder.getRequiredFields());
-            }
-        }
-        
-        private void fromArray(OperationList operationList, String[] array) {
-            if (array == null) {
-                return;
-            }
-            for (String item : array) {
-                operationList.add(item);
-            }
-        }
-        
-        private DataBinder extractDataBinderArg(JoinPoint jp) {
-            Object[] args = jp.getArgs();
-            for (Object arg : args) {
-                if (arg instanceof DataBinder) {
-                    return (DataBinder)arg;
-                }
-            }
-            return null;
-        }
-        
-    }
-    
 }

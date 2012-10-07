@@ -20,12 +20,11 @@ import org.aspectj.lang.JoinPoint;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.plugin.springweb.SpringWebPluginRuntimeDescriptor;
+import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
 
-public aspect ValidationOperationCollectionAspect extends AbstractOperationCollectionAspect {
+public aspect ValidationOperationCollectionAspect extends AbstractSpringWebAspectSupport {
 	public ValidationOperationCollectionAspect () {
 		super();
 	}
@@ -43,9 +42,4 @@ public aspect ValidationOperationCollectionAspect extends AbstractOperationColle
         finalizer.registerValidationOperation(op, jp);
         return op;
 	}
-
-	@Override
-    public String getPluginName() {
-        return SpringWebPluginRuntimeDescriptor.PLUGIN_NAME;
-    }
 }
