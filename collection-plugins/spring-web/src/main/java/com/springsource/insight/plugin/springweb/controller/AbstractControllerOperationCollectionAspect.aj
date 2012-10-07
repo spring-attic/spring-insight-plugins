@@ -18,8 +18,6 @@ package com.springsource.insight.plugin.springweb.controller;
 
 import org.aspectj.lang.JoinPoint;
 
-import com.springsource.insight.collection.DefaultOperationCollector;
-import com.springsource.insight.collection.OperationCollector;
 import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.plugin.springweb.SpringWebPluginRuntimeDescriptor;
@@ -31,11 +29,7 @@ public abstract aspect AbstractControllerOperationCollectionAspect extends Metho
 	private final boolean	legacy;
 
 	protected AbstractControllerOperationCollectionAspect (boolean isLegacyAPI) {
-		this(new DefaultOperationCollector(), isLegacyAPI);
-	}
-
-	protected AbstractControllerOperationCollectionAspect (OperationCollector collector, boolean isLegacyAPI) {
-		super(collector);
+		super(new ControllerOperationCollector());
 		legacy = isLegacyAPI;
 	}
 
@@ -56,5 +50,4 @@ public abstract aspect AbstractControllerOperationCollectionAspect extends Metho
     public String getPluginName() {
         return SpringWebPluginRuntimeDescriptor.PLUGIN_NAME;
     }
-
 }

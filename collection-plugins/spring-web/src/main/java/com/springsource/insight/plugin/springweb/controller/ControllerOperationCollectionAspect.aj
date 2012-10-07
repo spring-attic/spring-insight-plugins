@@ -17,9 +17,10 @@
 package com.springsource.insight.plugin.springweb.controller;
 
 import org.aspectj.lang.JoinPoint;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.plugin.springweb.ControllerPointcuts;
+import com.springsource.insight.intercept.operation.OperationMap;
 
 public aspect ControllerOperationCollectionAspect extends AbstractControllerOperationCollectionAspect {
 	/**
@@ -29,10 +30,10 @@ public aspect ControllerOperationCollectionAspect extends AbstractControllerOper
 	public static final String	MODEL_ARGUMENT_NAME="modelArgument";
 
     public ControllerOperationCollectionAspect () {
-    	super(new ControllerOperationCollector(), false);
+    	super(false);
     }
     
-	public pointcut collectionPoint() : ControllerPointcuts.controllerHandlerMethod();
+	public pointcut collectionPoint() : execution(@RequestMapping * *(..));
 
 	@Override
 	public Operation createOperation(JoinPoint jp) {
@@ -43,5 +44,4 @@ public aspect ControllerOperationCollectionAspect extends AbstractControllerOper
 
 		return op;
 	}
-
 }

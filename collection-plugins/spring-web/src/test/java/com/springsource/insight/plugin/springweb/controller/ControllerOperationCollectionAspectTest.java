@@ -17,9 +17,7 @@
 package com.springsource.insight.plugin.springweb.controller;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,14 +31,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 
-import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
-import com.springsource.insight.util.MapUtil;
 
-public class ControllerOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
+public class ControllerOperationCollectionAspectTest extends AbstractControllerOperationCollectionAspectTestSupport {
 	public ControllerOperationCollectionAspectTest () {
-		super();
+		super(false);
 	}
 
     @Test
@@ -57,14 +53,14 @@ public class ControllerOperationCollectionAspectTest extends OperationCollection
     public void testReturnModelValue () {
     	ExampleController controller=createTestExampleController("testReturnModelValue");
     	controller.returnModelValue();
-    	assertEncodeModelValues(controller);
+    	assertEncodeReturnModelValues(controller);
     }
 
     @Test
     public void testReturnModelMapValue () {
     	ExampleController controller=createTestExampleController("testReturnModelMapValue");
     	controller.returnModelMapValue();
-    	assertEncodeModelValues(controller);
+    	assertEncodeReturnModelValues(controller);
     }
 
     @Test
@@ -72,7 +68,7 @@ public class ControllerOperationCollectionAspectTest extends OperationCollection
     	ExampleController controller=createTestExampleController("testReturnModelAndViewValue");
     	controller.returnModelAndViewValue();
 
-    	Operation	op=assertEncodeModelValues(controller);
+    	Operation	op=assertEncodeReturnModelValues(controller);
     	assertControllerView(op, controller);
     }
 
@@ -80,7 +76,7 @@ public class ControllerOperationCollectionAspectTest extends OperationCollection
     public void testReturnMapValue () {
     	ExampleController controller=createTestExampleController("testReturnMapValue");
     	controller.returnMapValue();
-    	assertEncodeModelValues(controller);
+    	assertEncodeReturnModelValues(controller);
     }
 
     @Test
@@ -113,7 +109,7 @@ public class ControllerOperationCollectionAspectTest extends OperationCollection
     	Map<String,?>		argModel=createTestArgumentModelMap("testReturnModelAndViewValue");
     	controller.returnModelAndViewValueWithModelArgument(new ExtendedModelMap().addAllAttributes(argModel));
 
-    	Operation	op=assertEncodeModelValues(controller);
+    	Operation	op=assertEncodeReturnModelValues(controller);
     	assertEncodeModelArgValues(op, argModel);
     	assertControllerView(op, controller);
     }
@@ -143,34 +139,10 @@ public class ControllerOperationCollectionAspectTest extends OperationCollection
     	return createTestModelMap(testName + "[" + ControllerOperationCollector.RETURN_VALUE_MODEL_MAP + "]");
     }
 
-    private Map<String,Object> createTestModelMap (final String testName) {
-    	return new TreeMap<String, Object>() {
-			private static final long serialVersionUID = 1L;
-
-			{
-				put("curDate", new Date());
-				put("nanoTime", Long.valueOf(System.nanoTime()));
-				put("testName", testName);
-				put("boolValue", Boolean.valueOf((System.currentTimeMillis() & 0x01L) == 0L));
-    		}
-    	};
-    }
-
-    private Operation assertControllerView (String expected) {
-    	Operation	op=assertControllerOperation();
-    	assertControllerView(op, expected);
-    	return op;
-    }
-
 	private static String assertControllerView(Operation op, ExampleController controller) {
 		return assertControllerView(op, controller.returnView);
 	}
 
-	private static String assertControllerView(Operation op, String expected) {
-		String	viewName=op.get(ControllerOperationCollector.RETURN_VALUE_VIEW_NAME, String.class);
-		assertEquals("Mismatched view name", expected, viewName);
-		return viewName;
-	}
     private Operation assertEncodeModelArgValues (Map<String,?> argModel) {
     	Operation op=getLastEntered();
     	assertNotNull("No operation entered", op);
@@ -182,47 +154,8 @@ public class ControllerOperationCollectionAspectTest extends OperationCollection
     	return assertEncodeModelValues(op, ControllerOperationCollectionAspect.MODEL_ARGUMENT_NAME, argModel);
     }
 
-    private Operation assertEncodeModelValues (ExampleController controller) {
-    	return assertEncodeModelValues(ControllerOperationCollector.RETURN_VALUE_MODEL_MAP, controller.returnModel);
-    }
-
-    private Operation assertEncodeModelValues (String mapName, Map<String,?> expected) {
-    	Operation	op=assertControllerOperation();
-    	assertEncodeModelValues(op, mapName , expected);
-    	return op;
-    }
-
-    private Operation assertControllerOperation () {
-    	Operation   op=getLastEntered();
-    	assertNotNull("No operation entered", op);
-    	assertEquals("Mismatched operation type", ControllerEndPointAnalyzer.CONTROLLER_METHOD_TYPE, op.getType());
-    	return op;
-    }
-
-    static OperationMap assertEncodeModelValues (Operation op, String mapName, Map<String,?> expected) {
-    	OperationMap	map=op.get(mapName, OperationMap.class);
-    	assertNotNull(mapName + ": missing encoding", map);
-    	return assertEncodeModelValues(map, mapName, expected);
-    }
-
-    static OperationMap assertEncodeModelValues (OperationMap map, String mapName, Map<String,?> expected) {
-    	assertEquals(mapName + ": Mismatched size", MapUtil.size(expected), map.size());
-    	
-    	for (Map.Entry<String,?> me : map.entrySet()) {
-    		String	key=me.getKey();
-    		Object	actualValue=me.getValue();
-    		Object	expectedValue=expected.get(key);
-    		assertEquals(mapName + ": Mismatched value for " + key, expectedValue, actualValue);
-    	}
-
-    	return map;
-    }
-
     @Controller
-    static class ExampleController {
-    	final Map<String,?>	returnModel;
-    	final String returnView;
-
+    static class ExampleController extends TestSupportController {
     	ExampleController () {
     		this(Collections.<String,Object>emptyMap());
     	}
@@ -232,8 +165,7 @@ public class ControllerOperationCollectionAspectTest extends OperationCollection
     	}
 
     	ExampleController (Map<String,?> outgoingModel, String outgoingView) {
-    		returnModel = outgoingModel;
-    		returnView = outgoingView;
+    		super(outgoingModel, outgoingView);
     	}
 
         @RequestMapping(value="/example")

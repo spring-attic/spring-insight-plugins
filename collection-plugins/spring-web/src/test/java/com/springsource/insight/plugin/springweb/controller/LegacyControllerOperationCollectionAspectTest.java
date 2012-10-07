@@ -16,6 +16,8 @@
 
 package com.springsource.insight.plugin.springweb.controller;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,44 +25,45 @@ import org.junit.Test;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
-import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.SourceCodeLocation;
 
-public class LegacyControllerOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
+public class LegacyControllerOperationCollectionAspectTest extends AbstractControllerOperationCollectionAspectTestSupport {
 	public LegacyControllerOperationCollectionAspectTest () {
-		super();
+		super(true);
 	}
 
     @Test
-    public void controllerMonitored() {
-        ExampleController testController = new ExampleController();
+    public void testControllerMonitored() {
+    	ExampleController	testController=new ExampleController(createTestModelMap("testControllerMonitored"), "testControllerMonitored");
         testController.handleRequest(null, null);
 
-        Operation   op=getLastEntered();
-        assertNotNull("No operation extracted", op);
-        assertEquals("Mismatched type", ControllerEndPointAnalyzer.CONTROLLER_METHOD_TYPE, op.getType());
+        Operation	op=assertEncodeReturnModelValues(testController);
+        assertControllerView(op, testController.returnView);
 
-        SourceCodeLocation source = op.getSourceCodeLocation();
+        SourceCodeLocation	source=op.getSourceCodeLocation();
         assertEquals("Mismatched source class", ExampleController.class.getName(), source.getClassName());
         assertEquals("Mismatched method name", "handleRequest", source.getMethodName());
     }
     
-    static class ExampleControllerBase implements Controller {
-        public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) {
-            return null;
+    static class ExampleControllerBase extends TestSupportController implements Controller {
+        public ExampleControllerBase(Map<String, ?> outgoingModel, String outgoingView) {
+			super(outgoingModel, outgoingView);
+		}
+
+		public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) {
+        	return new ModelAndView(returnView, returnModel);
         }
     }
     
     static class ExampleController extends ExampleControllerBase {
-    	public ExampleController () {
-    		super();
+    	public ExampleController (Map<String, ?> outgoingModel, String outgoingView) {
+    		super(outgoingModel, outgoingView);
     	}
     }
     
     @Override
-    public OperationCollectionAspectSupport getAspect() {
+    public LegacyControllerOperationCollectionAspect getAspect() {
         return LegacyControllerOperationCollectionAspect.aspectOf();
     }
 }

@@ -19,11 +19,11 @@ package com.springsource.insight.plugin.springweb.controller;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.aspectj.lang.reflect.SourceLocation;
+import org.springframework.web.servlet.mvc.Controller;
 
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.SourceCodeLocation;
-import com.springsource.insight.plugin.springweb.LegacyControllerPointcuts;
 
 /**
  * Creates an operation for implementors of the Spring MVC Controller
@@ -43,7 +43,7 @@ public aspect LegacyControllerOperationCollectionAspect extends AbstractControll
 		super(true);
 	}
 
-    public pointcut collectionPoint() : LegacyControllerPointcuts.controllerHandlerMethod();
+    public pointcut collectionPoint() : execution(* Controller+.handleRequest(..));
 
     @Override
 	public Operation createOperation(JoinPoint jp) {
