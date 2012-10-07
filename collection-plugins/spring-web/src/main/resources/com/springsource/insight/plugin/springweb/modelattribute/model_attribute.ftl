@@ -3,5 +3,5 @@
 
 <@insight.group label="Model Attribute">
     <@insight.entry name="Attribute Name" value=operation.modelAttributeName />
-    <@insight.entry name="Value" value=operation.value />
+    <@insight.entry name="Value" value=operation.modelAttributeValue />
 </@insight.group>

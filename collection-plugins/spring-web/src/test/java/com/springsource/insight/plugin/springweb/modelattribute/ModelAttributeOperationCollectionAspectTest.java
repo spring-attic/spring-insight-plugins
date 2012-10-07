@@ -23,59 +23,53 @@ import org.junit.Test;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class ModelAttributeOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
+    private static final ExampleController testController = new ExampleController();
+
 	public ModelAttributeOperationCollectionAspectTest () {
 		super();
 	}
 
     @Test
-    public void modelAttributeMethodWithComplexReturnTypeMonitored() {
-        ExampleController testController = new ExampleController();
-        testController.namedAccount_specialAccount();
-        
-        Operation   operation=getLastEntered();
-        assertEquals(Account.class.getName(), operation.get("value"));
-        assertEquals("specialAccount", operation.get("modelAttributeName"));
+    public void testModelAttributeMethodWithComplexReturnTypeMonitored() {
+        testController.namedAccountSpecialAccount();
+        assertModelAttributeOperation("specialAccount", Account.class.getName());
     }
     
     @Test
-    public void modelAttributeMethodWithSimpleReturnTypeMonitored() {
-        ExampleController testController = new ExampleController();
-        testController.namedString_specialString();
-        
-        Operation   operation=getLastEntered();
-        assertEquals("testString", operation.get("value"));
-        assertEquals("specialString", operation.get("modelAttributeName"));
+    public void testModelAttributeMethodWithSimpleReturnTypeMonitored() {
+        testController.namedStringSpecialString();
+        assertModelAttributeOperation("specialString", "testString");
     }
 
     @Test
-    public void modelAttributeMethodUnnamedScalarAttributeMonitored() {
-        ExampleController testController = new ExampleController();
+    public void testModelAttributeMethodUnnamedScalarAttributeMonitored() {
         testController.unnamedAttributeAccount();
-        
-        Operation   operation=getLastEntered();
-        assertEquals(Account.class.getName(),
-                     operation.get("value"));
-        assertEquals("account", operation.get("modelAttributeName"));
+        assertModelAttributeOperation("account", Account.class.getName());
     }
 
     @Test
-    public void modelAttributeMethodWithUnnamedListAttributeMonitored() {
-        ExampleController testController = new ExampleController();
+    public void testModelAttributeMethodWithUnnamedListAttributeMonitored() {
         testController.unnamedAttributeListAccount();
-        
-        Operation   operation=getLastEntered();
-        assertEquals("java.util.ArrayList", operation.get("value"));
-        assertEquals("accountList", operation.get("modelAttributeName"));
+        assertModelAttributeOperation("accountList", ArrayList.class.getName());
     }
 
     @Override
-    public OperationCollectionAspectSupport getAspect() {
+    public ModelAttributeOperationCollectionAspect getAspect() {
         return ModelAttributeOperationCollectionAspect.aspectOf();
+    }
+
+    private Operation assertModelAttributeOperation (String name, String value) {
+    	Operation	op=getLastEntered();
+    	assertNotNull("No extracted operation", op);
+    	assertEquals("Mismatched operation type", ModelAttributeOperationCollector.TYPE, op.getType());
+    	assertEquals("Mismatched attribute name", name, op.get(ModelAttributeOperationCollector.MODEL_ATTR_NAME, String.class));
+    	assertEquals("Mismatched attribute value", value, op.get(ModelAttributeOperationCollector.MODEL_ATTR_VALUE, String.class));
+
+    	return op;
     }
 
     @Controller
@@ -85,12 +79,12 @@ public class ModelAttributeOperationCollectionAspectTest extends OperationCollec
     	}
 
         @ModelAttribute("specialAccount")
-        public Account namedAccount_specialAccount() {
+        public Account namedAccountSpecialAccount() {
             return new Account();
         }
 
         @ModelAttribute("specialString")
-        public String namedString_specialString() {
+        public String namedStringSpecialString() {
             return "testString";
         }
         

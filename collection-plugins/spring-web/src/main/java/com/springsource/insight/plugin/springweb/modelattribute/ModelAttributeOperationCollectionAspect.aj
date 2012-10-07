@@ -16,30 +16,20 @@
 
 package com.springsource.insight.plugin.springweb.modelattribute;
 
-import java.lang.reflect.Method;
-
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.core.Conventions;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.springsource.insight.collection.DefaultOperationCollector;
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
-import com.springsource.insight.plugin.springweb.ControllerPointcuts;
-import com.springsource.insight.util.StringFormatterUtils;
-import com.springsource.insight.util.StringUtil;
 
 public aspect ModelAttributeOperationCollectionAspect extends AbstractSpringWebAspectSupport {
-    
-    private static final OperationType TYPE = OperationType.valueOf("model_attribute");
-    
-    public pointcut collectionPoint() : ControllerPointcuts.modelAttributeRetrieval();
-    
     public ModelAttributeOperationCollectionAspect() {
         super(new ModelAttributeOperationCollector());
     }
+    
+    public pointcut collectionPoint() : execution(@ModelAttribute !@RequestMapping !void *(..));
     
     @Override
     protected Operation createOperation(JoinPoint jp) {
@@ -47,31 +37,9 @@ public aspect ModelAttributeOperationCollectionAspect extends AbstractSpringWebA
         String methodString = sig.getDeclaringType().getSimpleName() + "#" + sig.getName();
         return new Operation()
             .label("@ModelAttribute " + methodString)
-            .type(TYPE)
+            .type(ModelAttributeOperationCollector.TYPE)
             .sourceCodeLocation(getSourceCodeLocation(jp))
-            .put("modelAttributeName", extractModelAttributeName(jp));
-    }
-
-    private String extractModelAttributeName(JoinPoint jp) {
-        Method method = ((MethodSignature)jp.getSignature()).getMethod();
-        ModelAttribute ma = method.getAnnotation(ModelAttribute.class);
-        String modelAttrName = (ma == null) ? null : ma.value();
-        if(!StringUtil.isEmpty(modelAttrName)) {
-            return modelAttrName;
-        }
-
-        return Conventions.getVariableNameForReturnType(((MethodSignature)jp.getSignature()).getMethod());
-    }
-    
-    static class ModelAttributeOperationCollector extends DefaultOperationCollector {
-    	ModelAttributeOperationCollector  () {
-    		super();
-    	}
-
-        @Override
-        protected void processNormalExit(Operation op, Object returnValue) {
-            op.put("value", StringFormatterUtils.formatObject(returnValue));
-        }
-        
+            .put(ModelAttributeOperationCollector.MODEL_ATTR_NAME, ModelAttributeOperationCollector.extractModelAttributeName(jp))
+            ;
     }
 }
