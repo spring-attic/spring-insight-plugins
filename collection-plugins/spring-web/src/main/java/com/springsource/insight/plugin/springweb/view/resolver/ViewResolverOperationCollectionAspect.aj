@@ -20,12 +20,12 @@ import java.util.Locale;
 
 import org.aspectj.lang.JoinPoint;
 import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.ViewResolver;
 
 import com.springsource.insight.collection.DefaultOperationCollector;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
-import com.springsource.insight.plugin.springweb.ControllerPointcuts;
 import com.springsource.insight.plugin.springweb.view.ViewUtils;
 
 public aspect ViewResolverOperationCollectionAspect extends AbstractSpringWebAspectSupport {
@@ -35,7 +35,7 @@ public aspect ViewResolverOperationCollectionAspect extends AbstractSpringWebAsp
         super(new ViewResolverMetricCollector());
     }
 
-    public pointcut collectionPoint() : ControllerPointcuts.resolveView();
+    public pointcut collectionPoint() :  execution(View ViewResolver+.resolveViewName(String, Locale));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
@@ -50,20 +50,5 @@ public aspect ViewResolverOperationCollectionAspect extends AbstractSpringWebAsp
             .put("viewName", viewName)
             .put("locale", locale.toString())
             ;
-    }
-
-    static class ViewResolverMetricCollector extends DefaultOperationCollector {
-    	ViewResolverMetricCollector () {
-    		super();
-    	}
-
-        @Override
-        public void processNormalExit(Operation op, Object returnValue) {
-            if (returnValue instanceof View) {
-                View view = (View) returnValue;
-                op.put("resolvedView", ViewUtils.getViewDescription(view))
-                    .put("contentType", view.getContentType());
-            }
-        }
     }
 }

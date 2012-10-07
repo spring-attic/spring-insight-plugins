@@ -101,14 +101,14 @@ public class InitBinderOperationCollectionAspectTest extends OperationCollection
 
         @InitBinder
         public void initBinderFirstParam(WebDataBinder dataBinder) {
-            dataBinder.setAllowedFields(new String[]{"allowed1", "allowed2"});
-            dataBinder.setRequiredFields(new String[]{"required1", "required2"});
-            dataBinder.setDisallowedFields(new String[]{"disAllowed1", "disAllowed2"});
+            dataBinder.setAllowedFields("allowed1", "allowed2");
+            dataBinder.setRequiredFields("required1", "required2");
+            dataBinder.setDisallowedFields("disAllowed1", "disAllowed2");
         }
 
         @InitBinder
         public void initBinderSecondParam(WebRequest wr, WebDataBinder dataBinder) {
-            dataBinder.setAllowedFields(new String[]{"allowed1", "allowed2"});
+            dataBinder.setAllowedFields("allowed1", "allowed2");
         }
     }
 }

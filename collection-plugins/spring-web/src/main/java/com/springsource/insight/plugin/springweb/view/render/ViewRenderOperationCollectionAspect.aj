@@ -18,6 +18,9 @@ package com.springsource.insight.plugin.springweb.view.render;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.aspectj.lang.JoinPoint;
 import org.springframework.web.servlet.View;
 
@@ -25,7 +28,6 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
-import com.springsource.insight.plugin.springweb.ControllerPointcuts;
 import com.springsource.insight.plugin.springweb.view.ViewUtils;
 import com.springsource.insight.util.StringFormatterUtils;
 
@@ -36,7 +38,9 @@ public aspect ViewRenderOperationCollectionAspect extends AbstractSpringWebAspec
     	super();
     }
     
-    public pointcut collectionPoint() : ControllerPointcuts.renderView();
+    // Specifying generic parameters causes a mismatch for Spring 2.5 applications
+    public pointcut collectionPoint() 
+        : execution(void View.render(Map/*<String, ?>*/, HttpServletRequest, HttpServletResponse));
     
     @Override
 	protected Operation createOperation(JoinPoint jp) {
