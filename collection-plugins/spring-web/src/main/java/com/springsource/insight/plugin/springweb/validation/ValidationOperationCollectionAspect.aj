@@ -32,6 +32,11 @@ public aspect ValidationOperationCollectionAspect extends AbstractSpringWebAspec
     public pointcut collectionPoint() : execution(* Validator+.validate(Object, Errors));
 
     @Override
+    public boolean isEndpoint() {
+        return true;
+    }
+
+    @Override
 	protected Operation createOperation(JoinPoint jp) {
         Operation op = new Operation()
         				.type(ValidationErrorsMetricsGenerator.TYPE)

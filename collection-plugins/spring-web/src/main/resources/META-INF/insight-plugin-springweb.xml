@@ -24,6 +24,7 @@
     <insight:operation-group group="Web" operation="controller_validator" />
 
     <bean class="com.springsource.insight.plugin.springweb.controller.ControllerEndPointAnalyzer"/>
+    <bean class="com.springsource.insight.plugin.springweb.validation.ValidationEndPointAnalyzer"/>
     <bean class="com.springsource.insight.plugin.springweb.validation.ValidationErrorsMetricsGenerator"/>
 
 </beans>
