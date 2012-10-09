@@ -368,6 +368,16 @@
 				<artifactId>javax.inject</artifactId>
 				<version>${javax.inject.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>jstl</artifactId>
+				<version>${jstl.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.servlet.jsp</groupId>
+				<artifactId>jsp-api</artifactId>
+				<version>2.2</version>
+			</dependency>
 
 	        <dependency>
 				<groupId>org.aspectj</groupId>
