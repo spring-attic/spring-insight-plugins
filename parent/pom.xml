@@ -177,9 +177,40 @@
                             </archive>
                         </configuration>
                     </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <archive>
+                                <!-- Extra attributes added to the MANIFEST.MF file -->
+                                <manifestEntries>
+                                    <SCM-Revision-Id>${buildNumber}</SCM-Revision-Id>
+                                </manifestEntries>
+                            </archive>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
+
+		<profile>
+			<id>with-javadoc</id>
+            <build>
+                <plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+                    </plugin>
+                </plugins>
+            </build>
+		</profile>
     </profiles>
 
     <organization>
@@ -986,6 +1017,29 @@
 	                <artifactId>buildnumber-maven-plugin</artifactId>
 	                <version>1.1</version>
                 </plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.9</version>
+					<configuration>
+	                    <archive>
+	                        <!-- Extra attributes added to the MANIFEST.MF file -->
+	                        <manifestEntries>
+	                            <!-- see Package constructor using Manifest -->
+	                            <Implementation-Title>${project.artifactId}</Implementation-Title>
+	                            <Implementation-Version>${project.version}</Implementation-Version>
+	                            <Implementation-Vendor>Insight</Implementation-Vendor>
+	                               <!-- NOTE: this name must match the one used in InsightVersion class -->
+	                            <Release-Timestamp>${buildtimestamp}</Release-Timestamp>
+	                        </manifestEntries>
+	                    </archive>
+						<quiet>true</quiet>
+						<links>
+							<link>http://docs.mockito.googlecode.com/hg/${mockito.version}</link>
+							<link>http://kentbeck.github.com/junit/javadoc/${junit.version}</link>
+						</links>
+					</configuration>
+				</plugin>
             </plugins>
         </pluginManagement>
         <plugins>
