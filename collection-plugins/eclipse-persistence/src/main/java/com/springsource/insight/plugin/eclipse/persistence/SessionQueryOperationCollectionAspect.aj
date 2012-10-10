@@ -21,6 +21,7 @@ import org.eclipse.persistence.queries.DatabaseQuery;
 import org.eclipse.persistence.sessions.Session;
 
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.util.ArrayUtil;
 
 /**
  * 
@@ -41,8 +42,8 @@ public aspect SessionQueryOperationCollectionAspect extends EclipsePersistenceCo
     }
 
     static String resolveQueryName (Object ... args) {
-        if ((args == null) || (args.length <= 0)) {
-            return "unknown";
+        if (ArrayUtil.length(args) <= 0) {
+            return EclipsePersistenceDefinitions.UNKNOWN_ACTION;
         }
         
         Object  arg0=args[0];
