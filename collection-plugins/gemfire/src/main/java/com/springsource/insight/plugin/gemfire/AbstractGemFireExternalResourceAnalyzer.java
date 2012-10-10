@@ -29,10 +29,12 @@ import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.ListUtil;
+import com.springsource.insight.util.StringUtil;
 
 public abstract class AbstractGemFireExternalResourceAnalyzer extends
         AbstractExternalResourceAnalyzer {
 
+    protected static final String GEMFIRE_EMBEDDED = "Gemfire Embedded";
     protected static final int EMPTY_PORT = -1;
 
     public AbstractGemFireExternalResourceAnalyzer(OperationType type) {
@@ -52,9 +54,13 @@ public abstract class AbstractGemFireExternalResourceAnalyzer extends
     public static final String createLabel(String hostname, int port) {
         StringBuilder builder = new StringBuilder((hostname != null ? hostname.length() : 4) + 6);
         
-        builder.append(hostname);
-        builder.append(':');
-        builder.append(port);
+        if (StringUtil.isEmpty(hostname) && port == EMPTY_PORT) {
+            builder.append(GEMFIRE_EMBEDDED);
+        } else {
+            builder.append(hostname);
+            builder.append(':');
+            builder.append(port);
+        }
         
         return builder.toString();
     }
