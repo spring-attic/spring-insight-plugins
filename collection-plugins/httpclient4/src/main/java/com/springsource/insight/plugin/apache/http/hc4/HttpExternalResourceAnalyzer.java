@@ -112,13 +112,14 @@ public class HttpExternalResourceAnalyzer extends AbstractExternalResourceAnalyz
             
             String name = createName(uri, app, ser, ep);
             
+            int port = resolvePort(uri);
             return new ExternalResourceDescriptor(frame, name,
-                                                  host,    // label
+                                                  host + ":" + port,    // label
                                                   ExternalResourceType.WEB_SERVER.name(),
                                                   StringUtil.isEmpty(server) ? host : server,     // vendor
-                                                     host,
-                                                     resolvePort(uri),
-                                                     color, false, app, ser, ep, null);    
+                                                  host,
+                                                  port,
+                                                  color, false, app, ser, ep, null);    
         } catch(URISyntaxException e) {
             Logger    logger=Logger.getLogger(getClass().getName());
             logger.warning("Failed to parse " + uriValue + ": " + e.getMessage());

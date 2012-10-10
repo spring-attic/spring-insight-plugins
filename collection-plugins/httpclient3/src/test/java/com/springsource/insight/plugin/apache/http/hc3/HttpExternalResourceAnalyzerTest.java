@@ -111,7 +111,7 @@ public class HttpExternalResourceAnalyzerTest extends Assert {
 
     static void assertResourceContents (ExternalResourceDescriptor res, URI uri, String label) {
         assertEquals("Mismatched name", MD5NameGenerator.getName(uri), res.getName());
-        assertEquals("Mismatched label", res.getLabel(), StringUtil.isEmpty(label) ? res.getHost() : label);
+        assertEquals("Mismatched label", res.getLabel(), (StringUtil.isEmpty(label) ? res.getHost() : label) + ":" + res.getPort());
         assertEquals("Mismatched type", ExternalResourceType.WEB_SERVER.name(), res.getType());
         assertEquals("Mismatched host", uri.getHost(), res.getHost());
         assertEquals("Mismatched port", HttpExternalResourceAnalyzer.resolvePort(uri), res.getPort());
