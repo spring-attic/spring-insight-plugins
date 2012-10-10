@@ -56,7 +56,6 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
-			<version>1.2</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

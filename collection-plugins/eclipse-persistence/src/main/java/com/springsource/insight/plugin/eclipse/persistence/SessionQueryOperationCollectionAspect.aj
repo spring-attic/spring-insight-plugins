@@ -20,20 +20,15 @@ import org.aspectj.lang.JoinPoint;
 import org.eclipse.persistence.queries.DatabaseQuery;
 import org.eclipse.persistence.sessions.Session;
 
-import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.util.ArrayUtil;
 
 /**
  * 
  */
-public aspect SessionQueryOperationCollectionAspect extends MethodOperationCollectionAspect {
+public aspect SessionQueryOperationCollectionAspect extends EclipsePersistenceCollectionAspect {
     public SessionQueryOperationCollectionAspect () {
-        super();
-    }
-
-    @Override
-    public String getPluginName() {
-        return EclipsePersistenceDefinitions.PLUGIN_NAME;
+        super(EclipsePersistenceDefinitions.QUERY, "Execute query");
     }
 
     public pointcut executeQuery () : execution(* Session+.executeQuery(..));
@@ -43,17 +38,12 @@ public aspect SessionQueryOperationCollectionAspect extends MethodOperationColle
     @Override
     protected Operation createOperation(JoinPoint jp) {
         String  queryName=resolveQueryName(jp.getArgs());
-        return super.createOperation(jp)
-                    .type(EclipsePersistenceDefinitions.QUERY)
-                    .label("Execute query " + queryName)
-                    // we use the 'action' attribute for the query name
-                    .put(EclipsePersistenceDefinitions.ACTION_ATTR, queryName)
-                    ;
+        return createOperation(jp, queryName);
     }
 
     static String resolveQueryName (Object ... args) {
-        if ((args == null) || (args.length <= 0)) {
-            return "unknown";
+        if (ArrayUtil.length(args) <= 0) {
+            return EclipsePersistenceDefinitions.UNKNOWN_ACTION;
         }
         
         Object  arg0=args[0];

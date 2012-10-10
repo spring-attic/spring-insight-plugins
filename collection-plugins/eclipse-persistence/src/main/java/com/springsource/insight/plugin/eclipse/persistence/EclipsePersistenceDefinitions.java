@@ -29,5 +29,5 @@ public final class EclipsePersistenceDefinitions {
     public static final OperationType TX=OperationType.valueOf(PLUGIN_NAME + "-tx"),
                                       DB=OperationType.valueOf(PLUGIN_NAME + "-db"),
                                       QUERY=OperationType.valueOf(PLUGIN_NAME + "-query");
-    public static final String  ACTION_ATTR="action";
+    public static final String  ACTION_ATTR="action", UNKNOWN_ACTION="unknown";
 }

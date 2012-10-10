@@ -22,7 +22,6 @@ import org.eclipse.persistence.sessions.DatabaseSession;
 import org.eclipse.persistence.sessions.Login;
 
 import com.springsource.insight.collection.FrameBuilderHintObscuredValueMarker;
-import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
 import com.springsource.insight.intercept.InterceptConfiguration;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.trace.ObscuredValueMarker;
@@ -30,18 +29,13 @@ import com.springsource.insight.intercept.trace.ObscuredValueMarker;
 /**
  * 
  */
-public aspect DatabaseSessionOperationCollectionAspect extends MethodOperationCollectionAspect {
+public aspect DatabaseSessionOperationCollectionAspect extends EclipsePersistenceCollectionAspect {
     private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
     private ObscuredValueMarker obscuredMarker =
             new FrameBuilderHintObscuredValueMarker(configuration.getFrameBuilder());
 
     public DatabaseSessionOperationCollectionAspect () {
-        super();
-    }
-
-    @Override
-    public String getPluginName() {
-        return EclipsePersistenceDefinitions.PLUGIN_NAME;
+        super(EclipsePersistenceDefinitions.DB, "Session");
     }
 
     ObscuredValueMarker getSensitiveValueMarker () {
@@ -85,11 +79,6 @@ public aspect DatabaseSessionOperationCollectionAspect extends MethodOperationCo
             }
         }
 
-        return super.createOperation(jp)
-                    .type(EclipsePersistenceDefinitions.DB)
-                    .label("Session " + methodName)
-                    .put(EclipsePersistenceDefinitions.ACTION_ATTR, methodName)
-                    ;
+        return createOperation(jp, methodName);
     }
-
 }
