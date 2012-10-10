@@ -18,23 +18,17 @@ package com.springsource.insight.plugin.eclipse.persistence;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
-
 import org.eclipse.persistence.sessions.DatabaseSession;
 
-import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.util.StringUtil;
 
 /**
  * 
  */
-public aspect TransactionOperationCollectionAspect extends MethodOperationCollectionAspect {
+public aspect TransactionOperationCollectionAspect extends EclipsePersistenceCollectionAspect {
     public TransactionOperationCollectionAspect () {
-        super();
-    }
-
-    @Override
-    public String getPluginName() {
-        return EclipsePersistenceDefinitions.PLUGIN_NAME;
+        super(EclipsePersistenceDefinitions.TX, "Transaction");
     }
 
     public pointcut collectionPoint()
@@ -47,16 +41,12 @@ public aspect TransactionOperationCollectionAspect extends MethodOperationCollec
     protected Operation createOperation(JoinPoint jp) {
         Signature   sig=jp.getSignature();
         String      methodName=sig.getName(), actionName=getTransactionAction(methodName);
-        return super.createOperation(jp)
-                    .type(EclipsePersistenceDefinitions.TX)
-                    .label("Transaction " + actionName)
-                    .put(EclipsePersistenceDefinitions.ACTION_ATTR, actionName)
-                    ;
+        return createOperation(jp, actionName);
     }
 
     static String getTransactionAction (String methodName) {
-        if ((methodName == null) || (methodName.length() <= 0)) {
-            return "unknown";
+        if (StringUtil.isEmpty(methodName)) {
+            return EclipsePersistenceDefinitions.UNKNOWN_ACTION;
         }
         
         int tPos=methodName.indexOf('T');
