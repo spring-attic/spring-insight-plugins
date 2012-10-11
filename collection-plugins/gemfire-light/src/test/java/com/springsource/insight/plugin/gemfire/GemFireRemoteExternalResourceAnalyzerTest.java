@@ -37,8 +37,11 @@ import com.springsource.insight.intercept.trace.TraceId;
 import com.springsource.insight.util.time.TimeRange;
 
 public class GemFireRemoteExternalResourceAnalyzerTest extends AbstractCollectionTestSupport  {
+	private final GemFireRemoteExternalResourceAnalyzer analyzer=GemFireRemoteExternalResourceAnalyzer.getInstance();
 
-	final GemFireRemoteExternalResourceAnalyzer analyzer = new GemFireRemoteExternalResourceAnalyzer();
+	public GemFireRemoteExternalResourceAnalyzerTest () {
+		super();
+	}
 
 	@Test
 	public void testValidData() throws Exception {
@@ -70,9 +73,9 @@ public class GemFireRemoteExternalResourceAnalyzerTest extends AbstractCollectio
 		assertEquals("Gemfire external resource port", port, externalResourceDescriptor.getPort());
 		assertEquals("Gemfire external resource type", ExternalResourceType.KVSTORE.name(), externalResourceDescriptor.getType());
 		assertEquals("Gemfire external resource type", ExternalResourceType.KVSTORE.name(), externalResourceDescriptor.getType());
-		assertEquals("Gemfire external resource name", GemFireRemoteExternalResourceAnalyzer.createName(host, port), externalResourceDescriptor.getName());
+		assertEquals("Gemfire external resource name", AbstractGemFireExternalResourceAnalyzer.createName(host, port), externalResourceDescriptor.getName());
 		assertEquals("Gemfire external resource vendor", GemFireDefenitions.GEMFIRE, externalResourceDescriptor.getVendor());
-		assertEquals("Gemfire external resource label", GemFireRemoteExternalResourceAnalyzer.createLabel(host, port), externalResourceDescriptor.getLabel());
+		assertEquals("Gemfire external resource label", AbstractGemFireExternalResourceAnalyzer.createLabel(host, port), externalResourceDescriptor.getLabel());
 		assertEquals("Gemfire external incoming", Boolean.FALSE, Boolean.valueOf(externalResourceDescriptor.isIncoming()));
 	}
 
@@ -104,9 +107,9 @@ public class GemFireRemoteExternalResourceAnalyzerTest extends AbstractCollectio
         assertEquals("Gemfire external resource port", -1, externalResourceDescriptor.getPort());
         assertEquals("Gemfire external resource type", ExternalResourceType.KVSTORE.name(), externalResourceDescriptor.getType());
         assertEquals("Gemfire external resource type", ExternalResourceType.KVSTORE.name(), externalResourceDescriptor.getType());
-        assertEquals("Gemfire external resource name", GemFireRemoteExternalResourceAnalyzer.createName(host, -1), externalResourceDescriptor.getName());
+        assertEquals("Gemfire external resource name", AbstractGemFireExternalResourceAnalyzer.createName(host, -1), externalResourceDescriptor.getName());
         assertEquals("Gemfire external resource vendor", GemFireDefenitions.GEMFIRE, externalResourceDescriptor.getVendor());
-        assertEquals("Gemfire external resource label", GemFireRemoteExternalResourceAnalyzer.createLabel(host, -1), externalResourceDescriptor.getLabel());
+        assertEquals("Gemfire external resource label", AbstractGemFireExternalResourceAnalyzer.createLabel(host, -1), externalResourceDescriptor.getLabel());
         assertEquals("Gemfire external incoming", Boolean.FALSE, Boolean.valueOf(externalResourceDescriptor.isIncoming()));
 	}
 

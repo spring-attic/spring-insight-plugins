@@ -38,11 +38,10 @@ import com.springsource.insight.intercept.trace.TraceId;
 import com.springsource.insight.util.time.TimeRange;
 
 public abstract class AbstractGemFireExternalResourceAnalyzerTestSupport extends AbstractCollectionTestSupport  {
-
-    final AbstractGemFireExternalResourceAnalyzer analyzer;
+    protected final AbstractGemFireExternalResourceAnalyzer analyzer;
     
-    protected AbstractGemFireExternalResourceAnalyzerTestSupport(AbstractGemFireExternalResourceAnalyzer analyzer) {
-        this.analyzer = analyzer;
+    protected AbstractGemFireExternalResourceAnalyzerTestSupport(AbstractGemFireExternalResourceAnalyzer analyzerInstance) {
+        this.analyzer = analyzerInstance;
     }
     
 	@Test
@@ -71,9 +70,9 @@ public abstract class AbstractGemFireExternalResourceAnalyzerTestSupport extends
 		assertEquals("Gemfire external resource port", -1, externalResourceDescriptor.getPort());
 		assertEquals("Gemfire external resource type", ExternalResourceType.KVSTORE.name(), externalResourceDescriptor.getType());
 		assertEquals("Gemfire external resource type", ExternalResourceType.KVSTORE.name(), externalResourceDescriptor.getType());
-		assertEquals("Gemfire external resource name", GemFireRemoteExternalResourceAnalyzer.createName(null, -1), externalResourceDescriptor.getName());
+		assertEquals("Gemfire external resource name", AbstractGemFireExternalResourceAnalyzer.createName(null, -1), externalResourceDescriptor.getName());
 		assertEquals("Gemfire external resource vendor", GemFireDefenitions.GEMFIRE, externalResourceDescriptor.getVendor());
-		assertEquals("Gemfire external resource label", GemFireRemoteExternalResourceAnalyzer.createLabel(null, -1), externalResourceDescriptor.getLabel());
+		assertEquals("Gemfire external resource label", AbstractGemFireExternalResourceAnalyzer.createLabel(null, -1), externalResourceDescriptor.getLabel());
 		assertEquals("Gemfire external incoming", Boolean.FALSE, Boolean.valueOf(externalResourceDescriptor.isIncoming()));
 	}
     

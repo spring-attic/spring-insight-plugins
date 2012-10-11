@@ -18,6 +18,19 @@
 	<insight:operation-view operation="gemfire_remote_operation" template="com/springsource/insight/plugin/gemfire/gemfire_remote_operation.ftl" />
 	<insight:operation-group operation="gemfire_remote_operation" group="GemFire" />
 	
-	<bean class="com.springsource.insight.plugin.gemfire.GemFireRemoteExternalResourceAnalyzer" />
-	<bean class="com.springsource.insight.plugin.gemfire.GemFireQueryExternalResourceAnalyzer" />
+    <bean id="gemfireLightPluginRemoteExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.gemfire.GemFireRemoteExternalResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="gemfireLightPluginQueryExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.gemfire.GemFireQueryExternalResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="gemfireLightPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.gemfire.GemFireLightPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 </beans>

@@ -20,9 +20,17 @@ import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class GemFireLightPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
-
     public static final String PLUGIN_NAME = "gemfire-light";
+    private static final GemFireLightPluginRuntimeDescriptor	INSTANCE=new GemFireLightPluginRuntimeDescriptor();
     
+    private GemFireLightPluginRuntimeDescriptor () {
+    	super();
+    }
+
+    public static final GemFireLightPluginRuntimeDescriptor getInstance() {
+    	return INSTANCE;
+    }
+
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
         return null;
