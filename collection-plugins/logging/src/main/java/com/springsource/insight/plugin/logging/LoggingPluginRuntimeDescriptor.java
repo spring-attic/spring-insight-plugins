@@ -20,7 +20,16 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class LoggingPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "logging";
-    
+    private static final LoggingPluginRuntimeDescriptor	INSTANCE=new LoggingPluginRuntimeDescriptor();
+
+    private LoggingPluginRuntimeDescriptor () {
+    	super();
+    }
+
+    public static final LoggingPluginRuntimeDescriptor getInstance() {
+    	return INSTANCE;
+    }
+
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
         return null;

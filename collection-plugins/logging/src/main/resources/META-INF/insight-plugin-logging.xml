@@ -8,6 +8,15 @@
     <insight:plugin name="logging" version="${project.version}" publisher="SpringSource" />
     <insight:operation-view operation="logging" template="com/springsource/insight/plugin/logging/logging.ftl"/>
 
-    <bean class="com.springsource.insight.plugin.logging.LoggingTraceErrorAnalyzer" />
+    <bean id="loggingPluginTraceErrorAnalyzer"
+          class="com.springsource.insight.plugin.logging.LoggingTraceErrorAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="loggingPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.logging.LoggingPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
 </beans>

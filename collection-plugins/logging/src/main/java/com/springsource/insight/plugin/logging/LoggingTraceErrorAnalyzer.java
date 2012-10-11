@@ -28,8 +28,14 @@ import com.springsource.insight.intercept.trace.TraceErrorAnalyzer;
  * 
  */
 public class LoggingTraceErrorAnalyzer implements TraceErrorAnalyzer {
-    public LoggingTraceErrorAnalyzer() {
+	private static final LoggingTraceErrorAnalyzer	INSTANCE=new LoggingTraceErrorAnalyzer();
+
+    private LoggingTraceErrorAnalyzer() {
         super();
+    }
+
+    public static final LoggingTraceErrorAnalyzer getInstance() {
+    	return INSTANCE;
     }
 
     public List<TraceError> locateErrors(Trace trace) {
@@ -41,5 +47,4 @@ public class LoggingTraceErrorAnalyzer implements TraceErrorAnalyzer {
         Operation op = logFrame.getOperation();
         return Collections.singletonList(new TraceError(op.getLabel()));
     }
-
 }
