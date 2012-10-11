@@ -21,14 +21,19 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class JCRPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
 	public static final String PLUGIN_NAME = "jcr";
-	
-	public JCRPluginRuntimeDescriptor () {
+	private static final JCRPluginRuntimeDescriptor	INSTANCE=new JCRPluginRuntimeDescriptor();
+
+	private JCRPluginRuntimeDescriptor () {
 		super();
+	}
+
+	public static final JCRPluginRuntimeDescriptor getInstance() {
+		return INSTANCE;
 	}
 
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return toArray(new JCREndPointAnalyzer());
+        return toArray(JCREndPointAnalyzer.getInstance());
     }
 
     @Override

@@ -19,5 +19,14 @@
     <insight:operation-group group="JCR" operation="jcr-query" />
     <insight:operation-group group="JCR" operation="jcr-get" />
     
-    <bean class="com.springsource.insight.plugin.jcr.JCREndPointAnalyzer"/>
+    <bean id="jcrPluginEndPointAnalyzer"
+          class="com.springsource.insight.plugin.jcr.JCREndPointAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="jcrPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.jcr.JCRPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 </beans>

@@ -49,15 +49,16 @@ public class SimpleTests {
 	}
 	
 	private SimpleTests() {
+		super();
 	}
 	
-	private static void init() {
+	static void init() {
 		deleteRepoData();
 		
 		repository = new TransientRepository(REPOSITORY_CONFIG_PATH, REPOSITORY_DIRECTORY_PATH);
 	}
 	
-	private static void close() {
+	static void close() {
 		try {
 			JackrabbitRepository jackrabbit = (JackrabbitRepository)repository;
 			jackrabbit.shutdown();

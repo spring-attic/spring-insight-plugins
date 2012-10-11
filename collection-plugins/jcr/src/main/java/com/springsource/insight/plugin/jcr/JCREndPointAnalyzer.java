@@ -22,8 +22,14 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.trace.Frame;
 
 public class JCREndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
-    public JCREndPointAnalyzer() {
+	private static final JCREndPointAnalyzer	INSTANCE=new JCREndPointAnalyzer();
+
+    private JCREndPointAnalyzer() {
         super(OperationCollectionTypes.LOGIN_TYPE.type);
+    }
+
+    public static final JCREndPointAnalyzer getInstance() {
+    	return INSTANCE;
     }
 
     @Override
