@@ -7,6 +7,15 @@
 
 	<insight:plugin name="spring-data" version="${project.version}" publisher="SpringSource" />
 
-    <bean class="com.springsource.insight.plugin.springdata.RepositoryMethodEndPointAnalyzer"/>
+    <bean id="springDataPluginRepositoryMethodEndPointAnalyzer"
+          class="com.springsource.insight.plugin.springdata.RepositoryMethodEndPointAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="springDataPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.springdata.SpringDataPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
 </beans>

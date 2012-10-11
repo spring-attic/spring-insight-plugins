@@ -21,18 +21,23 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class SpringDataPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "spring-data";
-    public SpringDataPluginRuntimeDescriptor () {
+    private static final SpringDataPluginRuntimeDescriptor	INSTANCE=new SpringDataPluginRuntimeDescriptor();
+
+    private SpringDataPluginRuntimeDescriptor () {
         super();
+    }
+
+    public static final SpringDataPluginRuntimeDescriptor getInstance() {
+    	return INSTANCE;
     }
 
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return null;
+        return toArray(RepositoryMethodEndPointAnalyzer.getInstance());
     }
 
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;
     }
-
 }
