@@ -20,21 +20,25 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class JmsPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "jms";
-    
+    private static final JmsPluginRuntimeDescriptor	INSTANCE=new JmsPluginRuntimeDescriptor();
+
+    private JmsPluginRuntimeDescriptor () {
+    	super();
+    }
+
+    public static final JmsPluginRuntimeDescriptor getInstance() {
+    	return INSTANCE;
+    }
+
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
-        EndPointAnalyzer[] toReturn = new EndPointAnalyzer[] {
-                new JMSConsumerResourceAnalyzer(),
-                new JMSMessageListenerResourceAnalyzer(),
-                new JMSProducerResourceAnalyzer()
-        };
-        
-        return toReturn;
+        return toArray(JMSConsumerResourceAnalyzer.getInstance(),
+                	   JMSMessageListenerResourceAnalyzer.getInstance(),
+                	   JMSProducerResourceAnalyzer.getInstance());
     }
 
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;
     }
-
 }

@@ -17,6 +17,6 @@ package com.springsource.insight.plugin.jms;
 
 public class JMSMessageListenerResourceAnalyzerTest extends AbstractJMSResourceAnalyzerTest {
 	public JMSMessageListenerResourceAnalyzerTest() {
-		super(new JMSMessageListenerResourceAnalyzer());
+		super(JMSMessageListenerResourceAnalyzer.getInstance());
 	}
 }

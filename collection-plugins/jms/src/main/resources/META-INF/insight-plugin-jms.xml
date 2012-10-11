@@ -14,13 +14,42 @@
 	<insight:operation-group group="JMS" operation="jms-receive" />
 	<insight:operation-group group="JMS" operation="jms-listener-receive" />
 	
-	<bean class="com.springsource.insight.plugin.jms.JMSConsumerResourceAnalyzer"/>
-	<bean class="com.springsource.insight.plugin.jms.JMSProducerResourceAnalyzer"/>
-	<bean class="com.springsource.insight.plugin.jms.JMSMessageListenerResourceAnalyzer"/>
+	<bean id="jmsPluginConsumerResourceAnalyzer"
+	      class="com.springsource.insight.plugin.jms.JMSConsumerResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+	<bean id="jmsPluginProducerResourceAnalyzer"
+	      class="com.springsource.insight.plugin.jms.JMSProducerResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+	<bean id="jmsPluginMessageListenerResourceAnalyzer"
+	      class="com.springsource.insight.plugin.jms.JMSMessageListenerResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
     
-     <bean class="com.springsource.insight.plugin.jms.JMSReceiveMetricsGenerator" />
-     <bean class="com.springsource.insight.plugin.jms.JMSSendMetricsGenerator" />
-     <bean class="com.springsource.insight.plugin.jms.JMSListenerReceiveMetricsGenerator" />
+    <bean id="jmsPluginReceiveMetricsGenerator"
+          class="com.springsource.insight.plugin.jms.JMSReceiveMetricsGenerator"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="jmsPluginSendMetricsGenerator"
+          class="com.springsource.insight.plugin.jms.JMSSendMetricsGenerator"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="jmsPluginListenerReceiveMetricsGenerator"
+          class="com.springsource.insight.plugin.jms.JMSListenerReceiveMetricsGenerator"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="jmsPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.jms.JmsPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
 </beans>
 

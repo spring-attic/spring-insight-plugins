@@ -18,8 +18,13 @@ package com.springsource.insight.plugin.jms;
 
 
 public class JMSReceiveMetricsGenerator extends AbstractJMSMetricsGenerator {
+	private static final JMSReceiveMetricsGenerator	INSTANCE=new JMSReceiveMetricsGenerator();
 
-	public JMSReceiveMetricsGenerator() {
+	private JMSReceiveMetricsGenerator() {
         super(JMSPluginOperationType.RECEIVE);
     }
+
+	public static final JMSReceiveMetricsGenerator getInstance() {
+		return INSTANCE;
+	}
 }

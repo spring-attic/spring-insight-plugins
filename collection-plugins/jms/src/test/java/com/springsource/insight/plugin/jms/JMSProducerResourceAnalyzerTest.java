@@ -17,6 +17,6 @@ package com.springsource.insight.plugin.jms;
 
 public class JMSProducerResourceAnalyzerTest extends AbstractJMSResourceAnalyzerTest {
 	public JMSProducerResourceAnalyzerTest() {
-		super(new JMSProducerResourceAnalyzer());
+		super(JMSProducerResourceAnalyzer.getInstance());
 	}
 }
