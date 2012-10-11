@@ -29,9 +29,14 @@ public class SpringBatchEndPointAnalyzer extends AbstractSingleTypeEndpointAnaly
      * to let other endpoints &quot;beat&quot; this one
      */
 	public static final int	DEFAULT_SCORE=EndPointAnalysis.CEILING_LAYER_SCORE;
+	private static final SpringBatchEndPointAnalyzer	INSTANCE=new SpringBatchEndPointAnalyzer();
 
-    public SpringBatchEndPointAnalyzer() {
+    private SpringBatchEndPointAnalyzer() {
         super(SpringBatchDefinitions.BATCH_TYPE);
+    }
+
+    public static final SpringBatchEndPointAnalyzer getInstance() {
+    	return INSTANCE;
     }
 
     @Override
