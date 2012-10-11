@@ -20,7 +20,16 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class WebflowPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "webflow";
-    
+    private static final WebflowPluginRuntimeDescriptor	INSTANCE=new WebflowPluginRuntimeDescriptor();
+
+    private WebflowPluginRuntimeDescriptor () {
+    	super();
+    }
+
+    public static final WebflowPluginRuntimeDescriptor getInstance() {
+    	return INSTANCE;
+    }
+
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
         return null;
@@ -30,5 +39,4 @@ public class WebflowPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public String getPluginName() {
         return PLUGIN_NAME;
     }
-
 }

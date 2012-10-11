@@ -16,4 +16,10 @@
 	<insight:operation-group group="WebFramework" operation="wf-state" />
 	<insight:operation-group group="WebFramework" operation="wf-action" />
 	<insight:operation-group group="WebFramework" operation="wf-transition" />
+
+    <bean id="springWebflowPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.webflow.WebflowPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 </beans>
