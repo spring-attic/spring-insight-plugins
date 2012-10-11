@@ -30,9 +30,14 @@ public class RequestDispatchEndPointAnalyzer extends AbstractSingleTypeEndpointA
      * to let other endpoints &quot;beat&quot; this one
      */
 	public static final int	DEFAULT_SCORE=EndPointAnalysis.TOP_LAYER_SCORE;
+	private static final RequestDispatchEndPointAnalyzer	INSTANCE=new RequestDispatchEndPointAnalyzer();
 
-	public RequestDispatchEndPointAnalyzer () {
+	private RequestDispatchEndPointAnalyzer () {
 		super(OperationType.REQUEST_DISPATCH);
+	}
+
+	public static final RequestDispatchEndPointAnalyzer getInstance() {
+		return INSTANCE;
 	}
 
 	@Override

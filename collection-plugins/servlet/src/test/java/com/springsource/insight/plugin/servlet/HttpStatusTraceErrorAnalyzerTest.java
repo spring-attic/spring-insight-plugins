@@ -31,6 +31,12 @@ import com.springsource.insight.intercept.trace.TraceError;
 import com.springsource.insight.intercept.trace.TraceId;
 
 public class HttpStatusTraceErrorAnalyzerTest extends AbstractCollectionTestSupport {
+    private final HttpStatusTraceErrorAnalyzer analyzer=HttpStatusTraceErrorAnalyzer.getInstance();
+
+    public HttpStatusTraceErrorAnalyzerTest () {
+    	super();
+    }
+
     @Test
     public void findErrors_noHttpFrame() {
         SimpleFrameBuilder builder = new SimpleFrameBuilder();
@@ -38,21 +44,18 @@ public class HttpStatusTraceErrorAnalyzerTest extends AbstractCollectionTestSupp
         builder.enter(op);
         Frame frame = builder.exit();
         Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
-        HttpStatusTraceErrorAnalyzer analyzer = new HttpStatusTraceErrorAnalyzer();
         assertTrue(analyzer.locateErrors(trace).isEmpty());
     }
     
     @Test
     public void findErrors_noErrors() {
         Trace trace = createHttpTrace(200, true);
-        HttpStatusTraceErrorAnalyzer analyzer = new HttpStatusTraceErrorAnalyzer();
         assertTrue(analyzer.locateErrors(trace).isEmpty());
     }
     
     @Test
     public void findErrors() {
         Trace trace = createHttpTrace(503, true);
-        HttpStatusTraceErrorAnalyzer analyzer = new HttpStatusTraceErrorAnalyzer();
         List<TraceError> errors = analyzer.locateErrors(trace);
         assertEquals(1, errors.size());
         TraceError error = errors.get(0);
@@ -62,7 +65,6 @@ public class HttpStatusTraceErrorAnalyzerTest extends AbstractCollectionTestSupp
     @Test
     public void findContextNotAvailableErrors() {
         Trace trace = createHttpTrace(200, false);
-        HttpStatusTraceErrorAnalyzer analyzer = new HttpStatusTraceErrorAnalyzer();
         List<TraceError> errors = analyzer.locateErrors(trace);
         assertEquals(1, errors.size());
         TraceError error = errors.get(0);
@@ -87,8 +89,6 @@ public class HttpStatusTraceErrorAnalyzerTest extends AbstractCollectionTestSupp
 
     @Test
     public void httpStatusIsError() throws Exception {
-        HttpStatusTraceErrorAnalyzer analyzer = new HttpStatusTraceErrorAnalyzer();
-        
         for (int status=0; status<800; status++) {
             boolean error = analyzer.httpStatusIsError(status);
             

@@ -34,9 +34,14 @@ import com.springsource.insight.util.StringUtil;
  */
 public class ServletEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
     public static final int ANALYSIS_SCORE = EndPointAnalysis.TOP_LAYER_SCORE;
+    private static final ServletEndPointAnalyzer	INSTANCE=new ServletEndPointAnalyzer();
 
-    public ServletEndPointAnalyzer () {
+    private ServletEndPointAnalyzer () {
     	super(OperationType.HTTP);
+    }
+
+    public static final ServletEndPointAnalyzer getInstance() {
+    	return INSTANCE;
     }
 
     @Override

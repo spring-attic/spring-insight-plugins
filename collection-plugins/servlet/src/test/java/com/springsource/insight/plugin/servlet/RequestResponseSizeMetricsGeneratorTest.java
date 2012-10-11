@@ -37,16 +37,19 @@ import com.springsource.insight.util.IDataPoint;
 import com.springsource.insight.util.time.TimeRange;
 
 public class RequestResponseSizeMetricsGeneratorTest extends AbstractCollectionTestSupport {
+    private final TimeRange timeRange = new TimeRange(1304387418963003000l, 1304387419123224000l);
+    private final RequestResponseSizeMetricsGenerator gen = RequestResponseSizeMetricsGenerator.getInstance();
     
-    private TimeRange timeRange = new TimeRange(1304387418963003000l, 1304387419123224000l);
-    
+    public RequestResponseSizeMetricsGeneratorTest() {
+    	super();
+    }
+
     @Test
     public void generateMetrics() {
         Trace trace = mock(Trace.class);        
         when(trace.getFirstFrameOfType(OperationType.HTTP)).thenReturn(makeHttpFrame());
         when(trace.getRange()).thenReturn(timeRange);
         
-        RequestResponseSizeMetricsGenerator gen = new RequestResponseSizeMetricsGenerator();
         List<MetricsBag> mbs = gen.generateMetrics(trace, ResourceKey.valueOf("EndPoint", "epName"));
        assertEquals(1, mbs.size());
        
@@ -80,10 +83,8 @@ public class RequestResponseSizeMetricsGeneratorTest extends AbstractCollectionT
         Trace trace = mock(Trace.class);        
         when(trace.getFirstFrameOfType(OperationType.HTTP)).thenReturn(null);
         
-        RequestResponseSizeMetricsGenerator gen = new RequestResponseSizeMetricsGenerator();
         assertEquals(0, gen.generateMetrics(trace, ResourceKey.valueOf("EndPoint", "epName")).size());
     }
-    
     
     private Frame makeHttpFrame() {
         Operation op = new Operation().type(OperationType.HTTP);        

@@ -28,7 +28,7 @@ import com.springsource.insight.intercept.trace.TraceId;
 
 public class LifecycleEndPointAnalyzerTest extends Assert {
     private static final ApplicationName app = ApplicationName.valueOf("app");
-    private static final LifecycleEndPointAnalyzer analyzer = new LifecycleEndPointAnalyzer();
+    private static final LifecycleEndPointAnalyzer analyzer = LifecycleEndPointAnalyzer.getInstance();
 
     public LifecycleEndPointAnalyzerTest () {
     	super();

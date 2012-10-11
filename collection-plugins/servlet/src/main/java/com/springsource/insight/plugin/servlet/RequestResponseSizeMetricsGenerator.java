@@ -41,9 +41,14 @@ public class RequestResponseSizeMetricsGenerator extends AbstractMetricsGenerato
 	// TODO the "type" value should be using the same MetricDataType(s) literals (which should be exposed)
 	public static final String ENDPOINT_RESPONSE_SIZE = "endPointResponseSize:type=bytes";
 	public static final String ENDPOINT_REQUEST_SIZE = "endPointRequestSize:type=bytes";    
+	private static final RequestResponseSizeMetricsGenerator	INSTANCE=new RequestResponseSizeMetricsGenerator();
 
-	public RequestResponseSizeMetricsGenerator() {
+	private RequestResponseSizeMetricsGenerator() {
 		super(OperationType.HTTP);
+	}
+
+	public static final RequestResponseSizeMetricsGenerator getInstance() {
+		return INSTANCE;
 	}
 
 	@Override

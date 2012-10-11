@@ -20,19 +20,25 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class ServletPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "servlet";
-    
+    private static final ServletPluginRuntimeDescriptor	INSTANCE=new ServletPluginRuntimeDescriptor();
+
+    private ServletPluginRuntimeDescriptor () {
+    	super();
+    }
+
+    public static final ServletPluginRuntimeDescriptor getInstance() {
+    	return INSTANCE;
+    }
+
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return toArray(
-                new LifecycleEndPointAnalyzer(),
-                new RequestDispatchEndPointAnalyzer(),
-                new ServletEndPointAnalyzer()
-        );
+        return toArray(LifecycleEndPointAnalyzer.getInstance(),
+                	   RequestDispatchEndPointAnalyzer.getInstance(),
+                	   ServletEndPointAnalyzer.getInstance());
     }
 
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;
     }
-
 }

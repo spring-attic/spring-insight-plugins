@@ -30,23 +30,27 @@ import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
 
 public class ServletEndPointAnalyzerTest extends AbstractCollectionTestSupport {
-    private ApplicationName appKey = ApplicationName.valueOf("app");
+    private final ApplicationName appKey = ApplicationName.valueOf("app");
+    private final ServletEndPointAnalyzer analyzer = ServletEndPointAnalyzer.getInstance();
     
+    public ServletEndPointAnalyzerTest () {
+    	super();
+    }
+
     @Test
-    public void locateEndPoint() {
-        ServletEndPointAnalyzer analyzer = new ServletEndPointAnalyzer();
+    public void testLocateEndPoint() {
         Trace trace = createServletEndPointTrace();
         EndPointAnalysis analysis = analyzer.locateEndPoint(trace);
-        assertEquals("Servlet: My stuff / servlet", analysis.getResourceLabel());
-        assertEquals(EndPointName.valueOf("My stuff _ servlet"), analysis.getEndPointName());
-        assertEquals("GET /path?fuu=bar", analysis.getExample());
+        assertEquals("Mismatched label", "Servlet: My stuff / servlet", analysis.getResourceLabel());
+        assertEquals("Mismatched end point", EndPointName.valueOf("My stuff _ servlet"), analysis.getEndPointName());
+        assertEquals("Mismatched example", "GET /path?fuu=bar", analysis.getExample());
     }
     
     @Test
-    public void locateEndPoint_noHttp() {
-        ServletEndPointAnalyzer analyzer = new ServletEndPointAnalyzer();
+    public void testLocateEndPointNoHttp() {
         Trace trace = createNonHttpTrace();
-        assertNull(analyzer.locateEndPoint(trace));
+        EndPointAnalysis analysis = analyzer.locateEndPoint(trace);
+        assertNull("Unexpected success: " + analysis, analysis);
     }
     
     private Trace createNonHttpTrace() {
@@ -56,7 +60,6 @@ public class ServletEndPointAnalyzerTest extends AbstractCollectionTestSupport {
         return Trace.newInstance(appKey, TraceId.valueOf("0"), topLevelFrame);
         
     }
-    
     private Trace createServletEndPointTrace() {
         SimpleFrameBuilder builder = new SimpleFrameBuilder();
         Operation httpOp = new Operation().type(OperationType.HTTP);

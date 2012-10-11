@@ -17,13 +17,36 @@
 	<insight:operation-group group="Web" operation="servlet-filter" />
 	<insight:operation-group group="Servlet Filters" operation="servlet-filter" />
 	
-    <bean class="com.springsource.insight.plugin.servlet.ServletEndPointAnalyzer" />
-    <bean class="com.springsource.insight.plugin.servlet.RequestDispatchEndPointAnalyzer" />
+    <bean id="servletPluginEndPointAnalyzer"
+          class="com.springsource.insight.plugin.servlet.ServletEndPointAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="servletPluginRequestDispatchEndPointAnalyzer"
+          class="com.springsource.insight.plugin.servlet.RequestDispatchEndPointAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="servletPluginLifecycleEndPointAnalyzer"
+          class="com.springsource.insight.plugin.servlet.LifecycleEndPointAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="servletPluginHttpStatusTraceErrorAnalyzer"
+          class="com.springsource.insight.plugin.servlet.HttpStatusTraceErrorAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="servletPluginRequestResponseSizeMetricsGenerator"
+          class="com.springsource.insight.plugin.servlet.RequestResponseSizeMetricsGenerator"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
-    <bean class="com.springsource.insight.plugin.servlet.LifecycleEndPointAnalyzer" />
-
-    <bean class="com.springsource.insight.plugin.servlet.HttpStatusTraceErrorAnalyzer" />
-
-    <bean class="com.springsource.insight.plugin.servlet.RequestResponseSizeMetricsGenerator" />
+    <bean id="servletPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.servlet.ServletPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
 </beans>

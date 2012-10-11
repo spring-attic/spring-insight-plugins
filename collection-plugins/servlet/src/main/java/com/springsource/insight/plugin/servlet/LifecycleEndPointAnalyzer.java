@@ -53,9 +53,14 @@ public class LifecycleEndPointAnalyzer extends AbstractEndPointAnalyzer {
 	 * The {@link List} of {@link OperationType}-s that mark a lifecycle frame
 	 */
     public static final List<OperationType>	OPS=Collections.unmodifiableList(Arrays.asList(SERVLET_LISTENER_TYPE, LIFECYCLE_TYPE_TYPE));
+    private static final LifecycleEndPointAnalyzer	INSTANCE=new LifecycleEndPointAnalyzer();
 
-    public LifecycleEndPointAnalyzer () {
+    private LifecycleEndPointAnalyzer () {
     	super(OPS);
+    }
+
+    public static final LifecycleEndPointAnalyzer getInstance() {
+    	return INSTANCE;
     }
 
     @Override

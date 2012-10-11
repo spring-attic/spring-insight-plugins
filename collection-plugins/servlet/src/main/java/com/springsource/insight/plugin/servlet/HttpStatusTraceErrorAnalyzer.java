@@ -28,9 +28,17 @@ import com.springsource.insight.intercept.trace.TraceError;
 import com.springsource.insight.intercept.trace.TraceErrorAnalyzer;
 
 public class HttpStatusTraceErrorAnalyzer implements TraceErrorAnalyzer {
-
     private static final List<TraceError> contextNotAvailable
             = Collections.singletonList(new TraceError("Context not available"));
+    private static final HttpStatusTraceErrorAnalyzer	INSTANCE=new HttpStatusTraceErrorAnalyzer();
+
+    private HttpStatusTraceErrorAnalyzer () {
+    	super();
+    }
+
+    public static final HttpStatusTraceErrorAnalyzer getInstance() {
+    	return INSTANCE;
+    }
 
     public List<TraceError> locateErrors(Trace trace) {
         Frame httpFrame = trace.getFirstFrameOfType(OperationType.HTTP);
