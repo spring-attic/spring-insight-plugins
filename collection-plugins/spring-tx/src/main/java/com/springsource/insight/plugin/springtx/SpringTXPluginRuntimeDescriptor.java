@@ -21,8 +21,14 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class SpringTXPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "spring-tx";
-    public SpringTXPluginRuntimeDescriptor () {
+    private static final SpringTXPluginRuntimeDescriptor	INSTANCE=new SpringTXPluginRuntimeDescriptor();
+
+    private SpringTXPluginRuntimeDescriptor () {
         super();
+    }
+
+    public static final SpringTXPluginRuntimeDescriptor getInstance() {
+    	return INSTANCE;
     }
 
     @Override
@@ -34,5 +40,4 @@ public class SpringTXPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public String getPluginName() {
         return PLUGIN_NAME;
     }
-
 }

@@ -10,4 +10,9 @@
 	<insight:operation-view operation="transaction" template="com/springsource/insight/plugin/springtx/transaction.ftl"/>
 	<insight:operation-group group="Database" operation="transaction" />
 
+    <bean id="springTxPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.springtx.SpringTXPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 </beans>
