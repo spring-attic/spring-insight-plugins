@@ -20,7 +20,13 @@ package com.springsource.insight.plugin.jpa;
  * 
  */
 public class EntityManagerMetricsGenerator extends JpaMetricsGenerator {
-    public EntityManagerMetricsGenerator () {
+	private static final EntityManagerMetricsGenerator	INSTANCE=new EntityManagerMetricsGenerator();
+
+    private EntityManagerMetricsGenerator () {
         super(JpaDefinitions.ENTITY_MGR);
+    }
+
+    public static final EntityManagerMetricsGenerator getInstance() {
+    	return INSTANCE;
     }
 }

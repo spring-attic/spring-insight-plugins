@@ -6,13 +6,26 @@
 		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
 	<insight:plugin name="jpa" version="${project.version}" publisher="SpringSource" />
+    <bean id="kpaPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.jpa.JpaPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
     <insight:operation-group group="Database" operation="jpa-entity-manager" />
     <insight:operation-view operation="jpa-entity-manager" template="com/springsource/insight/plugin/jpa/entity-manager.ftl"/>
-    <bean class="com.springsource.insight.plugin.jpa.EntityManagerMetricsGenerator" />
+    <bean id="jpaPluginEntityManagerMetricsGenerator"
+          class="com.springsource.insight.plugin.jpa.EntityManagerMetricsGenerator"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
     <insight:operation-group group="Database" operation="jpa-tx-entity" />
     <insight:operation-view operation="jpa-tx-entity" template="com/springsource/insight/plugin/jpa/tx-entity.ftl"/>
-    <bean class="com.springsource.insight.plugin.jpa.EntityTransactionMetricsGenerator" />
+    <bean id="jpaPluginEntityTransactionMetricsGenerator"
+          class="com.springsource.insight.plugin.jpa.EntityTransactionMetricsGenerator"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
 </beans>

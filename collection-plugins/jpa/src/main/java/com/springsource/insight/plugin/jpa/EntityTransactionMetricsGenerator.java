@@ -20,7 +20,13 @@ package com.springsource.insight.plugin.jpa;
  * 
  */
 public class EntityTransactionMetricsGenerator extends JpaMetricsGenerator {
-    public EntityTransactionMetricsGenerator () {
+	private static final EntityTransactionMetricsGenerator	INSTANCE=new EntityTransactionMetricsGenerator();
+
+    private EntityTransactionMetricsGenerator () {
         super(JpaDefinitions.TX_ENTITY);
+    }
+
+    public static final EntityTransactionMetricsGenerator getInstance() {
+    	return INSTANCE;
     }
 }
