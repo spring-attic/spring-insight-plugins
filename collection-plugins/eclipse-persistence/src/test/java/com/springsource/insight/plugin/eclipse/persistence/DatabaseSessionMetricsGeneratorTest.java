@@ -22,6 +22,6 @@ package com.springsource.insight.plugin.eclipse.persistence;
 public class DatabaseSessionMetricsGeneratorTest
         extends EclipsePersistenceMetricsGeneratorTestSupport {
     public DatabaseSessionMetricsGeneratorTest () {
-        super(new DatabaseSessionMetricsGenerator());
+        super(DatabaseSessionMetricsGenerator.getInstance());
     }
 }

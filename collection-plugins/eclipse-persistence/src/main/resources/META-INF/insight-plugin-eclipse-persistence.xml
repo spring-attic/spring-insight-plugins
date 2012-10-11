@@ -9,14 +9,31 @@
 
 	<insight:operation-group group="Database" operation="eclipse-persistence-tx" />
     <insight:operation-view operation="eclipse-persistence-tx" template="com/springsource/insight/plugin/eclipse/persistence/tx.ftl"/>
-    <bean class="com.springsource.insight.plugin.eclipse.persistence.TransactionOperationMetricsGenerator" />
+    <bean id="eclipsePersistenceTransactionOperationMetricsGenerator"
+          class="com.springsource.insight.plugin.eclipse.persistence.TransactionOperationMetricsGenerator"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
     <insight:operation-group group="Database" operation="eclipse-persistence-db" />
     <insight:operation-view operation="eclipse-persistence-db" template="com/springsource/insight/plugin/eclipse/persistence/db.ftl"/>
-    <bean class="com.springsource.insight.plugin.eclipse.persistence.DatabaseSessionMetricsGenerator" />
+    <bean id="eclipsePersistenceDatabaseSessionMetricsGenerator"
+          class="com.springsource.insight.plugin.eclipse.persistence.DatabaseSessionMetricsGenerator"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
     <insight:operation-group group="Database" operation="eclipse-persistence-query" />
     <insight:operation-view operation="eclipse-persistence-query" template="com/springsource/insight/plugin/eclipse/persistence/query.ftl"/>
-    <bean class="com.springsource.insight.plugin.eclipse.persistence.SessionQueryMetricsGenerator" />
+    <bean id="eclipsePersistenceSessionQueryMetricsGenerator"
+          class="com.springsource.insight.plugin.eclipse.persistence.SessionQueryMetricsGenerator"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
+    <bean id="eclipsePersistencePluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.eclipse.persistence.EclipsePersistencePluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 </beans>

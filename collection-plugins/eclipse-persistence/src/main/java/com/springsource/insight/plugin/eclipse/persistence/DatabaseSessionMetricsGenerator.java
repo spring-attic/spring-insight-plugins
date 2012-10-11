@@ -20,7 +20,13 @@ package com.springsource.insight.plugin.eclipse.persistence;
  * 
  */
 public class DatabaseSessionMetricsGenerator extends EclipsePersistenceMetricsGenerator {
-    public DatabaseSessionMetricsGenerator () {
+	private static final DatabaseSessionMetricsGenerator	INSTANCE=new DatabaseSessionMetricsGenerator();
+
+    private DatabaseSessionMetricsGenerator () {
         super(EclipsePersistenceDefinitions.DB);
+    }
+
+    public static final DatabaseSessionMetricsGenerator getInstance() {
+    	return INSTANCE;
     }
 }

@@ -22,6 +22,6 @@ package com.springsource.insight.plugin.eclipse.persistence;
 public class SessionQueryMetricsGeneratorTest
         extends EclipsePersistenceMetricsGeneratorTestSupport {
     public SessionQueryMetricsGeneratorTest () {
-        super(new SessionQueryMetricsGenerator());
+        super(SessionQueryMetricsGenerator.getInstance());
     }
 }

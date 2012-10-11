@@ -20,6 +20,15 @@ import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class EclipsePersistencePluginRuntimeDescriptor extends PluginRuntimeDescriptor {
+	private static final EclipsePersistencePluginRuntimeDescriptor	INSTANCE=new EclipsePersistencePluginRuntimeDescriptor();
+	
+	private EclipsePersistencePluginRuntimeDescriptor () {
+		super();
+	}
+
+	public static final EclipsePersistencePluginRuntimeDescriptor getInstance() {
+		return INSTANCE;
+	}
 
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
@@ -30,5 +39,4 @@ public class EclipsePersistencePluginRuntimeDescriptor extends PluginRuntimeDesc
     public String getPluginName() {
         return EclipsePersistenceDefinitions.PLUGIN_NAME;
     }
-
 }
