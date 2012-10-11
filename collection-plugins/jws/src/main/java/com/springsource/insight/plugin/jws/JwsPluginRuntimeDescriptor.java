@@ -20,10 +20,19 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class JwsPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "jws";
-    
+    private static final JwsPluginRuntimeDescriptor	INSTANCE=new JwsPluginRuntimeDescriptor();
+
+    private JwsPluginRuntimeDescriptor () {
+    	super();
+    }
+
+    public static final JwsPluginRuntimeDescriptor getInstance() {
+    	return INSTANCE;
+    }
+
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return toArray(new JwsEndPointAnalyzer());
+        return toArray(JwsEndPointAnalyzer.getInstance());
     }
 
     @Override

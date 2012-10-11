@@ -25,8 +25,14 @@ import com.springsource.insight.intercept.trace.Frame;
  *
  */
 public class JwsEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
-    public JwsEndPointAnalyzer() {
+	private static final JwsEndPointAnalyzer	INSTANCE=new JwsEndPointAnalyzer();
+
+    private JwsEndPointAnalyzer() {
         super(JwsDefinitions.TYPE);
+    }
+
+    public static final JwsEndPointAnalyzer getInstance() {
+    	return INSTANCE;
     }
 
     @Override
