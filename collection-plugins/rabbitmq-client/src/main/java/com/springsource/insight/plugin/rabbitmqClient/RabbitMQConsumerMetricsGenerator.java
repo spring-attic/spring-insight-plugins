@@ -19,8 +19,13 @@ package com.springsource.insight.plugin.rabbitmqClient;
 
 
 public class RabbitMQConsumerMetricsGenerator extends AbstractRabbitMetricsGenerator {
+	private static final RabbitMQConsumerMetricsGenerator	INSTANCE=new RabbitMQConsumerMetricsGenerator();
 
 	public RabbitMQConsumerMetricsGenerator() {
         super(RabbitPluginOperationType.CONSUME);
     }
+
+	public static final RabbitMQConsumerMetricsGenerator getInstance() {
+		return INSTANCE;
+	}
 }

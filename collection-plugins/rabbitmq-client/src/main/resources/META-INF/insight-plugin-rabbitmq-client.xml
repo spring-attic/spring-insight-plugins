@@ -12,11 +12,32 @@
 	<insight:operation-group group="AMQP" operation="rabbitmq-client-consumer" />
 	<insight:operation-group group="AMQP" operation="rabbitmq-client-publish" />
 	
-	<bean class="com.springsource.insight.plugin.rabbitmqClient.RabbitMQConsumerResourceAnalyzer"/>
-	<bean class="com.springsource.insight.plugin.rabbitmqClient.RabbitMQPublishResourceAnalyzer"/>
+	<bean id=rabbitmqPluginConsumerResourceAnalyzer"
+	      class="com.springsource.insight.plugin.rabbitmqClient.RabbitMQConsumerResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+	<bean id="rabbitmqPluginPublishResourceAnalyzer"
+	      class="com.springsource.insight.plugin.rabbitmqClient.RabbitMQPublishResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 	
-	<bean class="com.springsource.insight.plugin.rabbitmqClient.RabbitMQPublishMetricsGenerator" />
-	<bean class="com.springsource.insight.plugin.rabbitmqClient.RabbitMQConsumerMetricsGenerator" />
+	<bean id="rabbitmqPluginPublishMetricsGenerator"
+	      class="com.springsource.insight.plugin.rabbitmqClient.RabbitMQPublishMetricsGenerator"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+	<bean id="rabbitmqPluginConsumerMetricsGenerator"
+	      class="com.springsource.insight.plugin.rabbitmqClient.RabbitMQConsumerMetricsGenerator"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
      
+    <bean id="rabbitmqPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.rabbitmqClient.RabbitMQPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 </beans>
 

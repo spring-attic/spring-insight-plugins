@@ -23,7 +23,7 @@ import com.springsource.insight.util.KeyValPair;
 
 public class RabbitMQConsumerResourceAnalyzerTest extends AbstractRabbitMQResourceAnalyzerTest {
 	public RabbitMQConsumerResourceAnalyzerTest() {
-		super(new RabbitMQConsumerResourceAnalyzer());
+		super(RabbitMQConsumerResourceAnalyzer.getInstance());
 	}
 
 	@Override

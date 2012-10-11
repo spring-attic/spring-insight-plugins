@@ -19,9 +19,14 @@ package com.springsource.insight.plugin.rabbitmqClient;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class RabbitMQPublishResourceAnalyzer extends AbstractRabbitMQResourceAnalyzer {
-    
-	public RabbitMQPublishResourceAnalyzer() {
+    private static final RabbitMQPublishResourceAnalyzer	INSTANCE=new RabbitMQPublishResourceAnalyzer();
+
+	private RabbitMQPublishResourceAnalyzer() {
 		super(RabbitPluginOperationType.PUBLISH, false);
+	}
+
+	public static final RabbitMQPublishResourceAnalyzer getInstance() {
+		return INSTANCE;
 	}
 
 	@Override

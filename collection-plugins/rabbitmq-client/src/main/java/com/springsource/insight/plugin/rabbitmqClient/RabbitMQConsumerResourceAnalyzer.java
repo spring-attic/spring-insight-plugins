@@ -20,10 +20,16 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
 
 public class RabbitMQConsumerResourceAnalyzer extends AbstractRabbitMQResourceAnalyzer {
-	public RabbitMQConsumerResourceAnalyzer() {
+	private static final RabbitMQConsumerResourceAnalyzer	INSTANCE=new RabbitMQConsumerResourceAnalyzer();
+
+	private RabbitMQConsumerResourceAnalyzer() {
         super(RabbitPluginOperationType.CONSUME, true);
     }
-    
+
+	public static final RabbitMQConsumerResourceAnalyzer getInstance() {
+		return INSTANCE;
+	}
+
     @Override
     protected String getRoutingKey(Operation op) {
         OperationMap envelopeMap = op.get("envelope", OperationMap.class);

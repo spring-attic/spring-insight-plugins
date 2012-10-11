@@ -18,6 +18,6 @@ package com.springsource.insight.plugin.rabbitmqClient;
 public class RabbitMQPublishMetricsGeneratorTest extends AbstractRabbitMQMetricsGeneratorTest {
     
 	public RabbitMQPublishMetricsGeneratorTest() {
-		super(new RabbitMQPublishMetricsGenerator());
+		super(RabbitMQPublishMetricsGenerator.getInstance());
 	}
 }
