@@ -16,8 +16,6 @@
 
 package com.springsource.insight.plugin.gemfire;
 
-import java.sql.SQLException;
-
 import org.junit.Test;
 
 import com.gemstone.gemfire.cache.Region;

@@ -21,6 +21,6 @@ package com.springsource.insight.plugin.gemfire;
 public class GemFireRegionExternalResourceAnalyzerTest extends AbstractGemFireExternalResourceAnalyzerTestSupport  {
 
     public GemFireRegionExternalResourceAnalyzerTest() {
-        super(new GemFireRegionExternalResourceAnalyzer());
+        super(GemFireRegionExternalResourceAnalyzer.getInstance());
     }
 }

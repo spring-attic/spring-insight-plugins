@@ -22,8 +22,14 @@ import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.util.StringUtil;
 
 public class GemFireRemoteExternalResourceAnalyzer extends AbstractGemFireExternalResourceAnalyzer {
-	public GemFireRemoteExternalResourceAnalyzer () {
+	private static final GemFireRemoteExternalResourceAnalyzer	INSTANCE=new GemFireRemoteExternalResourceAnalyzer();
+
+	private GemFireRemoteExternalResourceAnalyzer () {
 		super(GemFireDefenitions.TYPE_REMOTE.getType());
+	}
+
+	public static final GemFireRemoteExternalResourceAnalyzer getInstance() {
+		return INSTANCE;
 	}
 
 	@Override

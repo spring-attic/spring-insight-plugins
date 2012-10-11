@@ -22,10 +22,16 @@ import com.springsource.insight.intercept.trace.FrameUtil;
 
 
 public class GemFireQueryExternalResourceAnalyzer extends AbstractGemFireExternalResourceAnalyzer {
-	public GemFireQueryExternalResourceAnalyzer () {
+	private static final GemFireQueryExternalResourceAnalyzer	INSTANCE=new GemFireQueryExternalResourceAnalyzer();
+
+	private GemFireQueryExternalResourceAnalyzer () {
 		super(GemFireDefenitions.TYPE_QUERY.getType());
 	}
-	
+
+	public static final GemFireQueryExternalResourceAnalyzer getInstance() {
+		return INSTANCE;
+	}
+
 	@Override
 	protected boolean shouldCreateExteranlResource(Frame frame) {
 	    return !FrameUtil.hasFrameOfType(frame, GemFireDefenitions.TYPE_REMOTE.getType());

@@ -40,14 +40,13 @@ public class GemFireRemoteCollectionAspectTest extends GemFireAspectTestSupport 
     private static final String TEST_ADDRESS = "10.10.10.10";
     private static final int    TEST_PORT    = 6677;
     
-    @Mock Connection con;
-    @Mock Socket sock;
-    @Mock ServerLocation location;
-    @Mock LogWriterI18n logWriter;
+    @Mock private Connection con;
+    @Mock private Socket sock;
+    @Mock private ServerLocation location;
+    @Mock private LogWriterI18n logWriter;
     
-    public GemFireRemoteCollectionAspectTest () {
-    	super();
-    	
+    @SuppressWarnings("boxing")
+	public GemFireRemoteCollectionAspectTest () {
     	MockitoAnnotations.initMocks(this);
     	
     	InetSocketAddress address = new InetSocketAddress(TEST_ADDRESS, TEST_PORT);
@@ -92,13 +91,15 @@ public class GemFireRemoteCollectionAspectTest extends GemFireAspectTestSupport 
         
 	private void assertOperation(Operation lastOperation, int msgType) {
 	    String hostname    = lastOperation.get(GemFireDefenitions.FIELD_HOST, String.class);
-	    Integer port       = lastOperation.get(GemFireDefenitions.FIELD_PORT, Integer.class);
+	    Number port       = lastOperation.get(GemFireDefenitions.FIELD_PORT, Number.class);
+	    assertNotNull("No port value", port);
+
 	    String messageType = lastOperation.get(GemFireDefenitions.FIELD_MESSAGE_TYPE, String.class);
 	    String messageLbl  = lastOperation.getLabel();
 	    OperationType type = lastOperation.getType();
 	    
 	    assertEquals("GemFire remote operation host", TEST_ADDRESS, hostname);
-	    assertEquals("GemFire remote operation port", TEST_PORT, port, 0d);
+	    assertEquals("GemFire remote operation port", TEST_PORT, port.intValue(), 0);
 	    assertEquals("GemFire remote operation messageType", MessageType.getString(msgType), messageType);
 	    assertEquals("GemFire remote operation label", GemFireRemoteOperationCollectionAspect.LABEL, messageLbl);
 	    assertEquals("GemFire remote operation type", GemFireDefenitions.TYPE_REMOTE.getType(), type);
@@ -122,10 +123,12 @@ public class GemFireRemoteCollectionAspectTest extends GemFireAspectTestSupport 
 
         @Override
         protected void endAttempt(ConnectionStats arg0, long arg1) {
+        	// ignored
         }
 
         @Override
         protected void endSendAttempt(ConnectionStats arg0, long arg1) {
+        	// ignored
         }
 
         @Override
@@ -140,7 +143,7 @@ public class GemFireRemoteCollectionAspectTest extends GemFireAspectTestSupport 
 
         @Override
         protected long startAttempt(ConnectionStats arg0) {
-            return 0;
+            return 0L;
         }
 	}
 }
