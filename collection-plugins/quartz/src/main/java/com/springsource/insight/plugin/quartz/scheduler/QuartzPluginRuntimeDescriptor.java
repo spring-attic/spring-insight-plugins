@@ -20,10 +20,19 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class QuartzPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "quartz-scheduler";
-    
+    private static final QuartzPluginRuntimeDescriptor	INSTANCE=new QuartzPluginRuntimeDescriptor();
+
+    private QuartzPluginRuntimeDescriptor () {
+    	super();
+    }
+
+    public static final QuartzPluginRuntimeDescriptor getInstance() {
+    	return INSTANCE;
+    }
+
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return toArray(new QuartzSchedulerEndPointAnalyzer());
+        return toArray(QuartzSchedulerEndPointAnalyzer.getInstance());
     }
 
     @Override

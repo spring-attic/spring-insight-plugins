@@ -31,9 +31,14 @@ public class QuartzSchedulerEndPointAnalyzer extends AbstractSingleTypeEndpointA
      * to let other endpoints &quot;beat&quot; this one
      */
 	public static final int	DEFAULT_SCORE=EndPointAnalysis.CEILING_LAYER_SCORE;
+	private static final QuartzSchedulerEndPointAnalyzer	INSTANCE=new QuartzSchedulerEndPointAnalyzer();
 
-    public QuartzSchedulerEndPointAnalyzer() {
+    private QuartzSchedulerEndPointAnalyzer() {
         super(QuartzSchedulerDefinitions.TYPE);
+    }
+
+    public static final QuartzSchedulerEndPointAnalyzer getInstance() {
+    	return INSTANCE;
     }
 
     @Override

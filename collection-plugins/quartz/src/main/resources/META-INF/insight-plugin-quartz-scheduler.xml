@@ -8,6 +8,15 @@
     <insight:plugin name="quartz-scheduler" version="${project.version}" publisher="SpringSource" />
     <insight:operation-view operation="quartz-scheduler" template="com/springsource/insight/plugin/quartz/scheduler/quartz-scheduler.ftl"/>
 
-    <bean class="com.springsource.insight.plugin.quartz.scheduler.QuartzSchedulerEndPointAnalyzer"/>
+    <bean id="quartzPluginEndPointAnalyzer"
+          class="com.springsource.insight.plugin.quartz.scheduler.QuartzSchedulerEndPointAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="quartzPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.quartz.scheduler.QuartzPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
 </beans>
