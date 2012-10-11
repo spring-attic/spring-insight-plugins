@@ -11,7 +11,22 @@
 	
 	<insight:operation-group group="Web" operation="apache-hc3" />
 
-    <bean class="com.springsource.insight.plugin.apache.http.hc3.HttpStatusTraceErrorAnalyzer" />
-    <bean class="com.springsource.insight.plugin.apache.http.hc3.HttpExternalResourceAnalyzer" />
+    <bean id="hc3HttpStatusTraceErrorAnalyzer"
+          class="com.springsource.insight.plugin.apache.http.hc3.HttpStatusTraceErrorAnalyzer" 
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    
+    <bean id="hc3HttpExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.apache.http.hc3.HttpExternalResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+
+    <bean id="hc3PluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.apache.http.hc3.HC3PluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
 </beans>

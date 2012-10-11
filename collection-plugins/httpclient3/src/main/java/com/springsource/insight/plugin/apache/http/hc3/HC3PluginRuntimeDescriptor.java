@@ -20,6 +20,15 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class HC3PluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "apache-httpclient3";
+    private static final HC3PluginRuntimeDescriptor	INSTANCE=new HC3PluginRuntimeDescriptor();
+
+    private HC3PluginRuntimeDescriptor () {
+    	super();
+    }
+
+    public static final HC3PluginRuntimeDescriptor getInstance () {
+    	return INSTANCE;
+    }
 
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {

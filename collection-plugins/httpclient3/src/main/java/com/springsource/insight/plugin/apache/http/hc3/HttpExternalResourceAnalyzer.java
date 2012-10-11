@@ -42,8 +42,14 @@ import com.springsource.insight.util.StringUtil;
  * 
  */
 public class HttpExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-    public HttpExternalResourceAnalyzer() {
+	private static final HttpExternalResourceAnalyzer	INSTANCE=new HttpExternalResourceAnalyzer();
+
+    private HttpExternalResourceAnalyzer() {
         super(HttpClientDefinitions.TYPE);
+    }
+
+    public static final HttpExternalResourceAnalyzer getInstance () {
+    	return INSTANCE;
     }
 
     public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> framesList) {

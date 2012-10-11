@@ -22,9 +22,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.junit.Assert;
 import org.junit.Test;
 
+import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
@@ -47,9 +47,10 @@ import com.springsource.insight.util.time.TimeRange;
 /**
  * 
  */
-public class HttpExternalResourceAnalyzerTest extends Assert {
-    private final HttpExternalResourceAnalyzer  analyzer=new HttpExternalResourceAnalyzer();
-    private static final AtomicLong frameIdGenerator=new AtomicLong(0L); 
+public class HttpExternalResourceAnalyzerTest extends AbstractCollectionTestSupport {
+    private final HttpExternalResourceAnalyzer  analyzer=HttpExternalResourceAnalyzer.getInstance();
+    private static final AtomicLong frameIdGenerator=new AtomicLong(0L);
+
     public HttpExternalResourceAnalyzerTest() {
         super();
     }
