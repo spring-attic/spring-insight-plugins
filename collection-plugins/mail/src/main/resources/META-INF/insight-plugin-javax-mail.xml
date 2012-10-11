@@ -9,4 +9,19 @@
 
 	<insight:operation-view operation="javax.mail.send" template="com/springsource/insight/plugin/mail/mail.ftl"/>
 
+    <bean id="mailPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.mail.MailPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="mailPluginSendExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.mail.MailSendExternalResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="mailPluginSendMetricsGenerator"
+          class="com.springsource.insight.plugin.mail.MailSendMetricsGenerator"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 </beans>

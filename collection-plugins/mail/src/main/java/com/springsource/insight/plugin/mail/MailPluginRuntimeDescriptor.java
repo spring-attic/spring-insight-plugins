@@ -20,7 +20,16 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class MailPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "javax-mail";
+    private static final MailPluginRuntimeDescriptor	INSTANCE=new MailPluginRuntimeDescriptor();
     
+    private MailPluginRuntimeDescriptor () {
+    	super();
+    }
+
+    public static final MailPluginRuntimeDescriptor getInstance() {
+    	return INSTANCE;
+    }
+
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
         return null;

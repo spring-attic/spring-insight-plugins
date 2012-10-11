@@ -33,7 +33,11 @@ import com.springsource.insight.intercept.trace.TraceId;
 public class MailResourceAnalyzerTest extends AbstractCollectionTestSupport  {
     private static final String PROTOCOL="POP3";
     private static final Integer    PORT=MailDefinitions.protocolToPortMap.get(PROTOCOL);
-    private final MailResourceAnalyzer analyzer = new MailResourceAnalyzer();
+    private final MailSendExternalResourceAnalyzer analyzer=MailSendExternalResourceAnalyzer.getInstance();
+
+    public MailResourceAnalyzerTest () {
+    	super();
+    }
 
     @Test
 	public void testLocateExternalResourceName() {
@@ -84,7 +88,7 @@ public class MailResourceAnalyzerTest extends AbstractCollectionTestSupport  {
         String  label=PROTOCOL + ":" + host + ":" + PORT;
         assertNotNull(testName + ": No descriptor", descriptor);
         assertEquals(testName + ": Mismatched label", label, descriptor.getLabel());
-        assertEquals(testName + ": Mismatched type", MailResourceAnalyzer.RESOURCE_TYPE, descriptor.getType());
+        assertEquals(testName + ": Mismatched type", MailSendExternalResourceAnalyzer.RESOURCE_TYPE, descriptor.getType());
         assertEquals(testName + ": Mismatched vendor", PROTOCOL, descriptor.getVendor());
         assertEquals(testName + ": Mismatched host", host, descriptor.getHost());
         assertEquals(testName + ": Mismatched port", PORT.intValue(), descriptor.getPort());

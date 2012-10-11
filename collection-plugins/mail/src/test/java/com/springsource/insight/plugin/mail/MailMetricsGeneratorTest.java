@@ -17,7 +17,6 @@ package com.springsource.insight.plugin.mail;
 
 import java.util.List;
 
-import com.springsource.insight.intercept.metrics.AbstractExternalResourceMetricsGenerator;
 import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
 import com.springsource.insight.intercept.metrics.AbstractMetricsGeneratorTest;
 import com.springsource.insight.intercept.metrics.MetricsBag;
@@ -27,7 +26,7 @@ import com.springsource.insight.util.IDataPoint;
 
 public class MailMetricsGeneratorTest extends AbstractMetricsGeneratorTest {
 	public MailMetricsGeneratorTest () {
-		super(new MailMetricsGenerator());
+		super(MailSendMetricsGenerator.getInstance());
 	}
     
 	@Override
@@ -49,7 +48,7 @@ public class MailMetricsGeneratorTest extends AbstractMetricsGeneratorTest {
         assertEquals(1, points.size());
         assertEquals(1.0, points.get(0).getValue(), .0001);
 
-        points = mb.getPoints(MailMetricsGenerator.MAIL_SIZE_METRIC);
+        points = mb.getPoints(MailSendMetricsGenerator.MAIL_SIZE_METRIC);
         assertEquals(1, points.size());
         assertEquals(256.0, points.get(0).getValue(), 0.01);
 	}

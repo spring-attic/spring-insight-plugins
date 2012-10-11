@@ -29,11 +29,16 @@ import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.ListUtil;
 
-public class MailResourceAnalyzer extends AbstractExternalResourceAnalyzer {
+public class MailSendExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
 	public static final String RESOURCE_TYPE=ExternalResourceType.EMAIL.name();
-	
-	public MailResourceAnalyzer () {
+	private static final MailSendExternalResourceAnalyzer	INSTANCE=new MailSendExternalResourceAnalyzer();
+
+	private MailSendExternalResourceAnalyzer () {
 		super(MailDefinitions.SEND_OPERATION);
+	}
+
+	public static final MailSendExternalResourceAnalyzer getInstance() {
+		return INSTANCE;
 	}
 
 	public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> mailFrames) {

@@ -24,11 +24,16 @@ import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.DataPoint;
 import com.springsource.insight.util.time.TimeUtil;
 
-public class MailMetricsGenerator extends AbstractExternalResourceMetricsGenerator {
+public class MailSendMetricsGenerator extends AbstractExternalResourceMetricsGenerator {
 	public static final String  MAIL_SIZE_METRIC = "mailSize:type=bytes";
-	
-	public MailMetricsGenerator() {
+	private static final MailSendMetricsGenerator	INSTANCE=new MailSendMetricsGenerator();
+
+	private MailSendMetricsGenerator() {
 		super(MailDefinitions.SEND_OPERATION);
+	}
+
+	public static final MailSendMetricsGenerator getInstance() {
+		return INSTANCE;
 	}
 
 	@Override
