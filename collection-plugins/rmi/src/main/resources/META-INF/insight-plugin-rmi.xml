@@ -9,4 +9,10 @@
     <insight:operation-view operation="rmi-action" template="com/springsource/insight/plugin/rmi/rmi-action.ftl"/>
     <insight:operation-view operation="rmi-list" template="com/springsource/insight/plugin/rmi/rmi-list.ftl"/>
 
+    <bean id="rmiPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.rmi.RmiPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+
 </beans>
