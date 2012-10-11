@@ -19,8 +19,16 @@ import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class Struts2PluginRuntimeDescriptor extends PluginRuntimeDescriptor {
-
     public static final String PLUGIN_NAME = "struts2";
+    private static final Struts2PluginRuntimeDescriptor	INSTANCE=new Struts2PluginRuntimeDescriptor();
+
+    private Struts2PluginRuntimeDescriptor () {
+    	super();
+    }
+
+    public static final Struts2PluginRuntimeDescriptor getInstance() {
+    	return INSTANCE;
+    }
 
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {

@@ -16,4 +16,10 @@
 	<insight:operation-group group="WebFramework" operation="str2-intercept" />
 	<insight:operation-group group="WebFramework" operation="str2-action" />
 	<insight:operation-group group="WebFramework" operation="str2-result" />
+
+    <bean id="struts2PluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.struts2.Struts2PluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 </beans>
