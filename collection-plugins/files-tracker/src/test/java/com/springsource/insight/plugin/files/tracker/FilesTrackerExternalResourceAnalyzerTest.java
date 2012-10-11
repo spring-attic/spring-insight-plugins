@@ -32,8 +32,12 @@ import com.springsource.insight.intercept.trace.TraceId;
 
 
 public class FilesTrackerExternalResourceAnalyzerTest extends AbstractCollectionTestSupport  {
-	private final FilesTrackerExternalResourceAnalyzer analyzer = new FilesTrackerExternalResourceAnalyzer();
+	private final FilesTrackerExternalResourceAnalyzer analyzer=FilesTrackerExternalResourceAnalyzer.getInstance();
 	
+	public FilesTrackerExternalResourceAnalyzerTest () {
+		super();
+	}
+
 	@Test
 	public void testLocateExternalResourceName() {
         final String PATH="/dummy/path/123";

@@ -20,8 +20,14 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class FilesTrackerPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "files-tracker";
-    public FilesTrackerPluginRuntimeDescriptor () {
+    private static final FilesTrackerPluginRuntimeDescriptor	INSTANCE=new FilesTrackerPluginRuntimeDescriptor();
+
+    private FilesTrackerPluginRuntimeDescriptor () {
         super();
+    }
+
+    public static final FilesTrackerPluginRuntimeDescriptor getInstance() {
+    	return INSTANCE;
     }
 
     @Override

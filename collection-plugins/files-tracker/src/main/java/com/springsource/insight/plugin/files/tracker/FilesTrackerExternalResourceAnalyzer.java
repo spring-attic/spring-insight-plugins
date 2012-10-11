@@ -32,8 +32,14 @@ import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.StringUtil;
 
 public class FilesTrackerExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-    public FilesTrackerExternalResourceAnalyzer () {
+	private static final FilesTrackerExternalResourceAnalyzer	INSTANCE=new FilesTrackerExternalResourceAnalyzer();
+
+    private FilesTrackerExternalResourceAnalyzer () {
         super(FilesTrackerDefinitions.TYPE);
+    }
+
+    public static final FilesTrackerExternalResourceAnalyzer getInstance() {
+    	return INSTANCE;
     }
 
 	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> frames) {
