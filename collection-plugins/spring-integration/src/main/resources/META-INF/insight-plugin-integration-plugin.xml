@@ -10,6 +10,15 @@
 	<insight:operation-view operation="integration_operation" 
 				template="com/springsource/insight/plugin/integration/integration_operation.ftl"/>
 
-    <bean class="com.springsource.insight.plugin.integration.IntegrationEndPointAnalyzer"/>
+    <bean id="springIntegrationPluginEndPointAnalyzer"
+          class="com.springsource.insight.plugin.integration.IntegrationEndPointAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="springIntegrationPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.integration.IntegrationPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
 </beans>

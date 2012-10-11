@@ -16,7 +16,6 @@
 
 package com.springsource.insight.plugin.integration;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
@@ -34,16 +33,14 @@ import com.springsource.insight.intercept.trace.TraceId;
 /**
  */
 public class IntegrationEndPointAnalyzerTest extends AbstractCollectionTestSupport{
-    private ApplicationName app = ApplicationName.valueOf("app");    
-    private IntegrationEndPointAnalyzer endPointAnalyzer;
-	private OperationType operationType = OperationType.valueOf("integration_operation");
+    private final ApplicationName app = ApplicationName.valueOf("app");    
+    private final IntegrationEndPointAnalyzer endPointAnalyzer=IntegrationEndPointAnalyzer.getInstance();
+	private final OperationType operationType = IntegrationEndPointAnalyzer.integrationType;
     
-    @Before
-    public void setUp() {
-    	super.setUp();
-        endPointAnalyzer = new IntegrationEndPointAnalyzer();
-    }
-    
+	public IntegrationEndPointAnalyzerTest () {
+		super();
+	}
+
     @Test
     public void locateChannelEndPoint() throws Exception {
         String beanName="test";

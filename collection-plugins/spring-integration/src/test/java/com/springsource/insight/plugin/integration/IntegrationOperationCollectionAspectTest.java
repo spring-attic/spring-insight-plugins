@@ -16,7 +16,6 @@
 
 package com.springsource.insight.plugin.integration;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.junit.Before;

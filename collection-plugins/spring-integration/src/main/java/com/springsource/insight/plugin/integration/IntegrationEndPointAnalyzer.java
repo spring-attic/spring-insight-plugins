@@ -31,9 +31,14 @@ import com.springsource.insight.intercept.trace.Trace;
  */
 public class IntegrationEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
     public static final OperationType integrationType = OperationType.valueOf("integration_operation");
-    
-    public IntegrationEndPointAnalyzer () {
+    private static final IntegrationEndPointAnalyzer	INSTANCE=new IntegrationEndPointAnalyzer();
+
+    private IntegrationEndPointAnalyzer () {
     	super(integrationType);
+    }
+
+    public static final IntegrationEndPointAnalyzer getInstance() {
+    	return INSTANCE;
     }
 
     @Override

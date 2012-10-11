@@ -21,19 +21,23 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class IntegrationPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "spring-integration";
+    private static final IntegrationPluginRuntimeDescriptor	INSTANCE=new IntegrationPluginRuntimeDescriptor();
 
-    public IntegrationPluginRuntimeDescriptor () {
+    private IntegrationPluginRuntimeDescriptor () {
         super();
+    }
+
+    public static final IntegrationPluginRuntimeDescriptor getInstance() {
+    	return INSTANCE;
     }
 
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return toArray(new IntegrationEndPointAnalyzer());
+        return toArray(IntegrationEndPointAnalyzer.getInstance());
     }
 
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;
     }
-
 }
