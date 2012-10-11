@@ -7,4 +7,10 @@
 
 	<insight:plugin name="spring-core" version="${project.version}" publisher="SpringSource" />
 
+    <bean id="springCorePluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.springcore.SpringCorePluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+
 </beans>
