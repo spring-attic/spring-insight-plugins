@@ -8,6 +8,15 @@
     <insight:plugin name="ejb3" version="${project.version}" publisher="SpringSource" />
     <insight:operation-view operation="ejb3" template="com/springsource/insight/plugin/ejb3/ejb3.ftl"/>
 
-    <bean class="com.springsource.insight.plugin.ejb3.Ejb3LocalServiceEndPointAnalyzer"/>
+    <bean id="ejb3LocalServiceEndPointAnalyzer"
+          class="com.springsource.insight.plugin.ejb3.Ejb3LocalServiceEndPointAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="ejb3PluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.ejb3.Ejb3PluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
 </beans>

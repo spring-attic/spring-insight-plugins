@@ -228,8 +228,12 @@ public aspect Ejb3LocalServiceOperationCollectionAspect
     }
     
     @Override
-    public boolean isEndpoint() { return true; }
+    public boolean isEndpoint() {
+    	return true;
+    }
     
     @Override
-    public String getPluginName() { return Ejb3PluginRuntimeDescriptor.PLUGIN_NAME; }
+    public String getPluginName() {
+    	return Ejb3PluginRuntimeDescriptor.PLUGIN_NAME;
+    }
 }

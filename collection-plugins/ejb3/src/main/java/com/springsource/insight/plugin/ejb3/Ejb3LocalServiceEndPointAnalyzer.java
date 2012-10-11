@@ -24,8 +24,14 @@ import com.springsource.insight.intercept.trace.Frame;
 /**
  */
 public class Ejb3LocalServiceEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
-    public Ejb3LocalServiceEndPointAnalyzer() {
+	private static final Ejb3LocalServiceEndPointAnalyzer	INSTANCE=new Ejb3LocalServiceEndPointAnalyzer();
+
+    private Ejb3LocalServiceEndPointAnalyzer() {
         super(Ejb3LocalServiceDefinitions.TYPE);
+    }
+
+    public static final Ejb3LocalServiceEndPointAnalyzer getInstance() {
+    	return INSTANCE;
     }
 
     @Override

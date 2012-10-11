@@ -84,5 +84,4 @@ public class Ejb3LocalServiceOperationCollectionAspectTest extends OperationColl
     public Ejb3LocalServiceOperationCollectionAspect getAspect() {
         return Ejb3LocalServiceOperationCollectionAspect.aspectOf();
     }
-
 }

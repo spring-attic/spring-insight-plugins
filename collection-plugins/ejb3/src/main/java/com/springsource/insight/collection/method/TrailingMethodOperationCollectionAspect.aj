@@ -42,9 +42,4 @@ public abstract aspect TrailingMethodOperationCollectionAspect
         JoinPointFinalizer.register(op,  jp);
         return op;
     }
-
-    @Override
-    public String getPluginName() {
-        return "ebj3";
-    }
 }

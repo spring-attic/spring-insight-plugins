@@ -20,15 +20,23 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class Ejb3PluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "ejb3";
+    private static final Ejb3PluginRuntimeDescriptor	INSTANCE=new Ejb3PluginRuntimeDescriptor();
     
+    private Ejb3PluginRuntimeDescriptor () {
+    	super();
+    }
+
+    public static final Ejb3PluginRuntimeDescriptor getInstance() {
+    	return INSTANCE;
+    }
+
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return toArray(new Ejb3LocalServiceEndPointAnalyzer());
+        return toArray(Ejb3LocalServiceEndPointAnalyzer.getInstance());
     }
 
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;
     }
-
 }
