@@ -42,9 +42,14 @@ public class RunExecEndPointAnalyzer extends AbstractEndPointAnalyzer {
      * to let other endpoints &quot;beat&quot; this one
      */
 	public static final int	DEFAULT_SCORE=EndPointAnalysis.TOP_LAYER_SCORE;
+	private static final RunExecEndPointAnalyzer	INSTANCE=new RunExecEndPointAnalyzer();
 
-    public RunExecEndPointAnalyzer() {
+    private RunExecEndPointAnalyzer() {
         super(OPS);
+    }
+
+    public static final RunExecEndPointAnalyzer getInstance() {
+    	return INSTANCE;
     }
 
     @Override

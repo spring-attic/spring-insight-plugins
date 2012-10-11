@@ -10,6 +10,15 @@
     <insight:operation-view operation="run-runnable" template="com/springsource/insight/plugin/runexec/run-runnable.ftl"/>
     <insight:operation-view operation="exec-runnable" template="com/springsource/insight/plugin/runexec/exec-runnable.ftl"/>
 
-    <bean class="com.springsource.insight.plugin.runexec.RunExecEndPointAnalyzer" />
+    <bean id="runExecPluginEndPointAnalyzer"
+          class="com.springsource.insight.plugin.runexec.RunExecEndPointAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="runExecPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.runexec.RunExecPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
 </beans>

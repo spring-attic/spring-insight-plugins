@@ -19,9 +19,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.junit.Assert;
 import org.junit.Test;
 
+import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.endpoint.EndPointName;
@@ -39,9 +39,9 @@ import com.springsource.insight.util.time.TimeRange;
 /**
  * 
  */
-public class RunExecEndPointAnalyzerTest extends Assert {
+public class RunExecEndPointAnalyzerTest extends AbstractCollectionTestSupport {
     private static final AtomicLong frameIdGenerator=new AtomicLong(0L);
-    private static final RunExecEndPointAnalyzer	analyzer=new RunExecEndPointAnalyzer();
+    private static final RunExecEndPointAnalyzer	analyzer=RunExecEndPointAnalyzer.getInstance();
 
     public RunExecEndPointAnalyzerTest() {
         super();
