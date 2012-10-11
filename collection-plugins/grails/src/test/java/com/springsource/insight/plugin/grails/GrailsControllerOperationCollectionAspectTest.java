@@ -182,7 +182,7 @@ public class GrailsControllerOperationCollectionAspectTest extends OperationColl
                                    Closure action,
                                    HttpServletRequest request,
                                    HttpServletResponse response,
-                                   Map params)
+                                   @SuppressWarnings("rawtypes") Map params)
 
         {
             return null;
@@ -200,7 +200,7 @@ public class GrailsControllerOperationCollectionAspectTest extends OperationColl
          * This method is constructed very similarly to SimpleGrailsControllerHelper, since
          * we are interested at snooping in various parts of that method.
          */
-        public ModelAndView handleURI(String uri, GrailsWebRequest webRequest, Map parms) {
+        public ModelAndView handleURI(String uri, GrailsWebRequest webRequest, @SuppressWarnings("rawtypes") Map parms) {
             if (whenToBlowUp.equals("blowUpBeforeController")) {
                 throw new RuntimeException("Kaboom");
             }

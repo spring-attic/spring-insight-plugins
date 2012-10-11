@@ -35,7 +35,7 @@ import com.springsource.insight.intercept.trace.TraceId;
 
 public class GrailsControllerMethodEndPointAnalyzerTest extends Assert {
     private static final ApplicationName app = ApplicationName.valueOf("app");    
-    private static final GrailsControllerMethodEndPointAnalyzer endPointAnalyzer=new GrailsControllerMethodEndPointAnalyzer();
+    private static final GrailsControllerMethodEndPointAnalyzer endPointAnalyzer=GrailsControllerMethodEndPointAnalyzer.getInstance();
     private Operation grailsOp;
     
     public GrailsControllerMethodEndPointAnalyzerTest () {

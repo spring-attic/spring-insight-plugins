@@ -26,9 +26,14 @@ import com.springsource.insight.intercept.trace.Frame;
 
 public class GrailsControllerMethodEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
     public static final OperationType TYPE = OperationType.valueOf("grails_controller_method");
+    private static final GrailsControllerMethodEndPointAnalyzer	INSTANCE=new GrailsControllerMethodEndPointAnalyzer();
 
-    public GrailsControllerMethodEndPointAnalyzer () {
+    private GrailsControllerMethodEndPointAnalyzer () {
     	super(TYPE);
+    }
+
+    public static final GrailsControllerMethodEndPointAnalyzer getInstance() {
+    	return INSTANCE;
     }
 
 	@Override

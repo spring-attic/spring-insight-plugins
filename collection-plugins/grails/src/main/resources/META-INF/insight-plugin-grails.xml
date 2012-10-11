@@ -10,7 +10,15 @@
 	<insight:operation-view operation="grails_controller_method" template="com/springsource/insight/plugin/grails/grails_controller_method.ftl"/>
 	<insight:operation-group group="Web" operation="grails_controller_method" />
 
-    <!-- Commented out for now, until we can get the classloader issues worked out --> 
-    <bean class="com.springsource.insight.plugin.grails.GrailsControllerMethodEndPointAnalyzer"/>
+    <bean id="grailsPluginControllerMethodEndPointAnalyzer"
+          class="com.springsource.insight.plugin.grails.GrailsControllerMethodEndPointAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="grailsPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.grails.GrailsPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
 </beans>
