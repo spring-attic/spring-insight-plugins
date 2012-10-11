@@ -32,9 +32,14 @@ public class JndiEndpointAnalyzer extends AbstractEndPointAnalyzer {
 	public static final OperationType	LOOKUP=OperationType.valueOf("javax-naming-lookup");
 	public static final OperationType	BIND=OperationType.valueOf("javax-naming-bind");
 	public static final int	DEFAULT_SCORE=EndPointAnalysis.TOP_LAYER_SCORE;
+	private static final JndiEndpointAnalyzer	INSTANCE=new JndiEndpointAnalyzer();
 
-	public JndiEndpointAnalyzer () {
+	private JndiEndpointAnalyzer () {
 		super(Arrays.asList(LOOKUP,BIND));
+	}
+
+	public static final JndiEndpointAnalyzer getInstance() {
+		return INSTANCE;
 	}
 
 	@Override

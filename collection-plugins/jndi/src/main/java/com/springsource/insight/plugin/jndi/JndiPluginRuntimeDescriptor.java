@@ -24,14 +24,19 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
  */
 public class JndiPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "javax-naming-jndi";
+    private static final JndiPluginRuntimeDescriptor	INSTANCE=new JndiPluginRuntimeDescriptor();
 
-	public JndiPluginRuntimeDescriptor () {
+	private JndiPluginRuntimeDescriptor () {
 		super();
+	}
+
+	public static final JndiPluginRuntimeDescriptor getInstance() {
+		return INSTANCE;
 	}
 
 	@Override
 	public EndPointAnalyzer[] getEndPointAnalyzers() {
-		return toArray(new JndiEndpointAnalyzer());
+		return toArray(JndiEndpointAnalyzer.getInstance());
 	}
 
 	@Override

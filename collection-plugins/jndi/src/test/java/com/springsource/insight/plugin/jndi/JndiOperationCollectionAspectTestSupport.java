@@ -47,7 +47,7 @@ public abstract class JndiOperationCollectionAspectTestSupport
 			extends OperationCollectionAspectTestSupport {
 
     protected final OperationType	type;
-    protected final JndiEndpointAnalyzer	analyzer=new JndiEndpointAnalyzer();
+    protected final JndiEndpointAnalyzer	analyzer=JndiEndpointAnalyzer.getInstance();
     private final JndiTestContext	testContext=new JndiTestContext();
 
 	protected JndiOperationCollectionAspectTestSupport(OperationType opType) {
