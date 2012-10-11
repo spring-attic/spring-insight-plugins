@@ -29,12 +29,16 @@ import com.springsource.insight.intercept.trace.TraceErrorAnalyzer;
  * See servlet plugin  HttpStatusTraceErrorAnalyzer for similar logic
  */
 public class HttpStatusTraceErrorAnalyzer implements TraceErrorAnalyzer {
-    public HttpStatusTraceErrorAnalyzer () {
+	private static final HttpStatusTraceErrorAnalyzer	INSTANCE=new HttpStatusTraceErrorAnalyzer();
+
+    private HttpStatusTraceErrorAnalyzer () {
         super();
     }
-    /*
-     * @see com.springsource.insight.intercept.trace.TraceErrorAnalyzer#locateErrors(com.springsource.insight.intercept.trace.Trace)
-     */
+
+    public static final HttpStatusTraceErrorAnalyzer getInstance() {
+    	return INSTANCE;
+    }
+
     public List<TraceError> locateErrors (Trace trace) {
         Frame httpFrame = trace.getFirstFrameOfType(HttpClientDefinitions.TYPE);
         Operation op = (httpFrame == null) ? null : httpFrame.getOperation();

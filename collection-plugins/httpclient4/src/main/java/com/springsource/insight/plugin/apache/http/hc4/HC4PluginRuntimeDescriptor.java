@@ -20,7 +20,16 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class HC4PluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "apache-httpclient4";
-    
+    private static final HC4PluginRuntimeDescriptor	INSTANCE=new HC4PluginRuntimeDescriptor();
+
+    private HC4PluginRuntimeDescriptor () {
+    	super();
+    }
+
+    public static final HC4PluginRuntimeDescriptor getInstance () {
+    	return INSTANCE;
+    }
+
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
         return null;
@@ -30,5 +39,4 @@ public class HC4PluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public String getPluginName() {
         return PLUGIN_NAME;
     }
-
 }
