@@ -29,11 +29,15 @@ public class PortletEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer 
      * to let other endpoints &quot;beat&quot; this one
      */
 	public static final int	ANALYSIS_SCORE=EndPointAnalysis.CEILING_LAYER_SCORE;
-
     public static final OperationType opType=OperationCollectionTypes.RENDER_TYPE.type;
+    private static final PortletEndPointAnalyzer	INSTANCE=new PortletEndPointAnalyzer();
 
-    public PortletEndPointAnalyzer () {
+    private PortletEndPointAnalyzer () {
     	super(opType);
+    }
+
+    public static final PortletEndPointAnalyzer getInstance() {
+    	return INSTANCE;
     }
 
     @Override
@@ -49,5 +53,4 @@ public class PortletEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer 
         String	example=portletName+"."+op.get("mode", String.class);
         return new EndPointAnalysis(EndPointName.valueOf(portletName), endPointLabel, example, getOperationScore(op, depth), op);
     }
-
 }

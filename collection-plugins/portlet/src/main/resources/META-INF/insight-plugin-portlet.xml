@@ -17,5 +17,14 @@
     <insight:operation-group group="Web" operation="portlet-render" />
     <insight:operation-group group="Web" operation="portlet-resource" />
     
-    <bean class="com.springsource.insight.plugin.portlet.PortletEndPointAnalyzer"/>
+    <bean id="portletPluginEndPointAnalyzer"
+          class="com.springsource.insight.plugin.portlet.PortletEndPointAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="portletPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.portlet.PortletPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 </beans>

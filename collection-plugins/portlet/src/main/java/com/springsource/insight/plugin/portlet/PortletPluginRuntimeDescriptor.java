@@ -24,14 +24,19 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
  */
 public class PortletPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
 	public static final String	NAME="portlet";
+	private static final PortletPluginRuntimeDescriptor	INSTANCE=new PortletPluginRuntimeDescriptor();
 
-	public PortletPluginRuntimeDescriptor() {
+	private PortletPluginRuntimeDescriptor() {
 		super();
+	}
+
+	public static final PortletPluginRuntimeDescriptor getInstance() {
+		return INSTANCE;
 	}
 
 	@Override
 	public EndPointAnalyzer[] getEndPointAnalyzers() {
-		return toArray(new PortletEndPointAnalyzer());
+		return toArray(PortletEndPointAnalyzer.getInstance());
 	}
 
 	@Override
