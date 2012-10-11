@@ -35,9 +35,14 @@ import com.springsource.insight.util.ListUtil;
 public class ValidationErrorsMetricsGenerator extends AbstractMetricsGenerator {
 	public static final OperationType	TYPE=OperationType.valueOf("controller_validator");
 	public static final String	METRIC_KEY=ValidationJoinPointFinalizer.ERRORS_COUNT + ":type=counter";
+	private static final ValidationErrorsMetricsGenerator	INSTANCE=new ValidationErrorsMetricsGenerator();
 
-	public ValidationErrorsMetricsGenerator () {
+	private ValidationErrorsMetricsGenerator () {
 		super(TYPE);
+	}
+
+	public static final ValidationErrorsMetricsGenerator getInstance() {
+		return INSTANCE;
 	}
 
 	@Override

@@ -23,8 +23,25 @@
 	<insight:operation-group group="Web" operation="view_resolver" />
     <insight:operation-group group="Web" operation="controller_validator" />
 
-    <bean class="com.springsource.insight.plugin.springweb.controller.ControllerEndPointAnalyzer"/>
-    <bean class="com.springsource.insight.plugin.springweb.validation.ValidationEndPointAnalyzer"/>
-    <bean class="com.springsource.insight.plugin.springweb.validation.ValidationErrorsMetricsGenerator"/>
+    <bean id="springWebPluginControllerEndPointAnalyzer"
+          class="com.springsource.insight.plugin.springweb.controller.ControllerEndPointAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="springWebPluginValidationEndPointAnalyzer"
+          class="com.springsource.insight.plugin.springweb.validation.ValidationEndPointAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="springWebPluginValidationErrorsMetricsGenerato"
+          class="com.springsource.insight.plugin.springweb.validation.ValidationErrorsMetricsGenerator"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="springWebPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.springweb.SpringWebPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
 </beans>

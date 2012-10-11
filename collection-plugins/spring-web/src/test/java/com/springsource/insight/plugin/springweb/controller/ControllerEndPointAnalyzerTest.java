@@ -40,7 +40,7 @@ import com.springsource.insight.intercept.trace.TraceId;
 import com.springsource.insight.util.time.TimeRange;
 
 public class ControllerEndPointAnalyzerTest extends Assert {
-    private static final ControllerEndPointAnalyzer analyzer = new ControllerEndPointAnalyzer();
+    private static final ControllerEndPointAnalyzer analyzer = ControllerEndPointAnalyzer.getInstance();
     private static final String	TEST_VERB="GET", TEST_PATH="/path?fuu=bar";
     private static final String	TEST_CLASS_NAME="MyClass", TEST_METHOD_NAME="method";
     private static final String	TEST_CLASS_PATH="com.class." + TEST_CLASS_NAME, TEST_SIGNATURE=TEST_METHOD_NAME + "()";

@@ -45,7 +45,7 @@ import com.springsource.insight.util.time.TimeRange;
  * 
  */
 public class ValidationErrorsMetricsGeneratorTest extends AbstractCollectionTestSupport {
-	private static final ValidationErrorsMetricsGenerator	generator=new ValidationErrorsMetricsGenerator();
+	private static final ValidationErrorsMetricsGenerator	generator=ValidationErrorsMetricsGenerator.getInstance();
 	private static final TimeRange	range=new TimeRange(7365L, 3777347L);
 
 	public ValidationErrorsMetricsGeneratorTest() {

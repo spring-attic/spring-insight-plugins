@@ -24,8 +24,14 @@ import com.springsource.insight.plugin.springweb.AbstractSpringWebEndPointAnalyz
  * 
  */
 public class ValidationEndPointAnalyzer extends AbstractSpringWebEndPointAnalyzer {
-	public ValidationEndPointAnalyzer () {
+	private static final ValidationEndPointAnalyzer	INSTANCE=new ValidationEndPointAnalyzer();
+
+	private ValidationEndPointAnalyzer () {
 		super(ValidationErrorsMetricsGenerator.TYPE);
+	}
+
+	public static final ValidationEndPointAnalyzer getInstance() {
+		return INSTANCE;
 	}
 
 	@Override

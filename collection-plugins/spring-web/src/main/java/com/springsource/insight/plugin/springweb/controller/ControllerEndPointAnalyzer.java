@@ -43,9 +43,14 @@ public class ControllerEndPointAnalyzer extends AbstractSpringWebEndPointAnalyze
      * above that of a servlet and/or queue operation
      */
     public static final int	LEGACY_SCORE=EndPointAnalysis.CEILING_LAYER_SCORE + 1;
+    private static final ControllerEndPointAnalyzer	INSTANCE=new ControllerEndPointAnalyzer();
 
-    public ControllerEndPointAnalyzer () {
+    private ControllerEndPointAnalyzer () {
     	super(CONTROLLER_METHOD_TYPE);
+    }
+
+    public static final ControllerEndPointAnalyzer getInstance() {
+    	return INSTANCE;
     }
 
     @Override
