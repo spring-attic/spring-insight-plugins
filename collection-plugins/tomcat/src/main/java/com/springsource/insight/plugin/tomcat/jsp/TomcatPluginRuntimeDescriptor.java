@@ -21,10 +21,16 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class TomcatPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "tomcat";
-	public TomcatPluginRuntimeDescriptor () {
+    private static final TomcatPluginRuntimeDescriptor	INSTANCE=new TomcatPluginRuntimeDescriptor();
+
+	private TomcatPluginRuntimeDescriptor () {
 		super();
 	}
-    
+
+	public static final TomcatPluginRuntimeDescriptor getInstance() {
+		return INSTANCE;
+	}
+
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
         return null;
@@ -34,5 +40,4 @@ public class TomcatPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public String getPluginName() {
         return PLUGIN_NAME;
     }
-
 }

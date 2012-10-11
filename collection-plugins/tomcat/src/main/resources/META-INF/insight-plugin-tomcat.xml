@@ -10,4 +10,10 @@
 	<insight:operation-view operation="jsp-compiler" template="com/springsource/insight/plugin/tomcat/jsp/jsp-compiler.ftl"/>
 	<insight:operation-group group="Web" operation="jsp-compiler" />
 
+
+    <bean id="tomcatPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.tomcat.jsp.TomcatPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 </beans>
