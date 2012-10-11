@@ -12,7 +12,7 @@
 	<insight:operation-group group="AMQP" operation="rabbitmq-client-consumer" />
 	<insight:operation-group group="AMQP" operation="rabbitmq-client-publish" />
 	
-	<bean id=rabbitmqPluginConsumerResourceAnalyzer"
+	<bean id="rabbitmqPluginConsumerResourceAnalyzer"
 	      class="com.springsource.insight.plugin.rabbitmqClient.RabbitMQConsumerResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
