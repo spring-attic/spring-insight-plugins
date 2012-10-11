@@ -20,7 +20,13 @@ package com.springsource.insight.plugin.jta;
  * 
  */
 public class TransactionManagerMetricsGenerator extends JtaMetricsGenerator {
-    public TransactionManagerMetricsGenerator () {
+	private static final TransactionManagerMetricsGenerator	INSTANCE=new TransactionManagerMetricsGenerator();
+
+    private TransactionManagerMetricsGenerator () {
         super(JtaDefinitions.MGR_OP);
+    }
+
+    public static final TransactionManagerMetricsGenerator getInstance() {
+    	return INSTANCE;
     }
 }

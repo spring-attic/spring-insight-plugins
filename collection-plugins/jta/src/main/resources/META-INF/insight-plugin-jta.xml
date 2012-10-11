@@ -6,18 +6,35 @@
 		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
 	<insight:plugin name="jta" version="${project.version}" publisher="SpringSource" />
+    <bean id="jtaPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.jta.JtaPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
         <!-- NOTE: we use the same FTL file for all operations since they look the same -->
 	<insight:operation-view operation="jta-tx-op" template="com/springsource/insight/plugin/jta/jta.ftl"/>
 	<insight:operation-group group="Database" operation="jta-tx-op" />
-    <bean class="com.springsource.insight.plugin.jta.TransactionMetricsGenerator" />
+    <bean id="jtaPluginTransactionMetricsGenerator"
+          class="com.springsource.insight.plugin.jta.TransactionMetricsGenerator"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
     
     <insight:operation-view operation="jta-tx-mgr" template="com/springsource/insight/plugin/jta/jta.ftl"/>
     <insight:operation-group group="Database" operation="jta-tx-mgr" />
-    <bean class="com.springsource.insight.plugin.jta.TransactionManagerMetricsGenerator" />
+    <bean id="jtaPluginTransactionManagerMetricsGenerator"
+          class="com.springsource.insight.plugin.jta.TransactionManagerMetricsGenerator"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
     <insight:operation-view operation="jta-tx-user" template="com/springsource/insight/plugin/jta/jta.ftl"/>
     <insight:operation-group group="Database" operation="jta-tx-user" />
-    <bean class="com.springsource.insight.plugin.jta.UserTransactionMetricsGenerator" />
+    <bean id="jtaPLuginUserTransactionMetricsGenerator"
+          class="com.springsource.insight.plugin.jta.UserTransactionMetricsGenerator"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
     
 </beans>

@@ -21,7 +21,13 @@ package com.springsource.insight.plugin.jta;
  * 
  */
 public class UserTransactionMetricsGenerator extends JtaMetricsGenerator {
-    public UserTransactionMetricsGenerator() {
+	private static final UserTransactionMetricsGenerator	INSTANCE=new UserTransactionMetricsGenerator();
+
+    private UserTransactionMetricsGenerator() {
         super(JtaDefinitions.USER_OP);
+    }
+
+    public static final UserTransactionMetricsGenerator getInstance() {
+    	return INSTANCE;
     }
 }
