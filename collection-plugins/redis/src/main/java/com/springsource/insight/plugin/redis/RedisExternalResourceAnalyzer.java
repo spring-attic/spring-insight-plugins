@@ -36,9 +36,14 @@ import com.springsource.insight.util.ListUtil;
  */
 public class RedisExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
 	public static final OperationType TYPE =  OperationType.valueOf("redis-client-method");
+	private static final RedisExternalResourceAnalyzer	INSTANCE=new RedisExternalResourceAnalyzer();
 
-	public RedisExternalResourceAnalyzer () {
+	private RedisExternalResourceAnalyzer () {
 		super(TYPE);
+	}
+
+	public static final RedisExternalResourceAnalyzer getInstance() {
+		return INSTANCE;
 	}
 
 	public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> dbFrames) {

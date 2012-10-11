@@ -20,6 +20,15 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class RedisPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "redis";
+    private static final RedisPluginRuntimeDescriptor	INSTANCE=new RedisPluginRuntimeDescriptor();
+
+    private RedisPluginRuntimeDescriptor () {
+    	super();
+    }
+
+    public static final RedisPluginRuntimeDescriptor getInstance() {
+    	return INSTANCE;
+    }
 
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {

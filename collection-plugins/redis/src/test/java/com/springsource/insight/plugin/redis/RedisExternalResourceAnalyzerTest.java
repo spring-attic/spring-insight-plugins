@@ -20,9 +20,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
 
+import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
@@ -40,7 +40,9 @@ import com.springsource.insight.util.time.TimeRange;
 
 /**
  */
-public class RedisExternalResourceAnalyzerTest extends Assert {
+public class RedisExternalResourceAnalyzerTest extends AbstractCollectionTestSupport {
+	private final RedisExternalResourceAnalyzer	analyzer=RedisExternalResourceAnalyzer.getInstance();
+
 	public RedisExternalResourceAnalyzerTest () {
 		super();
 	}
@@ -65,7 +67,7 @@ public class RedisExternalResourceAnalyzerTest extends Assert {
 				frame);
 
 		List<ExternalResourceDescriptor> externalResourceDescriptors =
-				(List<ExternalResourceDescriptor>) new RedisExternalResourceAnalyzer().locateExternalResourceName(trace);
+				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
 		ExternalResourceDescriptor externalResourceDescriptor = externalResourceDescriptors.get(0);
 
 		assertEquals(frame, externalResourceDescriptor.getFrame());
@@ -106,7 +108,7 @@ public class RedisExternalResourceAnalyzerTest extends Assert {
 		Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
 
 		List<ExternalResourceDescriptor> externalResourceDescriptors =
-				(List<ExternalResourceDescriptor>) new RedisExternalResourceAnalyzer().locateExternalResourceName(trace);
+				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
 
 		assertEquals(2, externalResourceDescriptors.size());        
 

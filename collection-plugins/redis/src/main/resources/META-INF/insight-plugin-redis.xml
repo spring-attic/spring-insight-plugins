@@ -15,6 +15,15 @@
     <insight:operation-group group="Redis" operation="redis-map" />
 	<insight:operation-group group="Redis" operation="redis-client-method" />
 	
-	<bean class="com.springsource.insight.plugin.redis.RedisExternalResourceAnalyzer"/>
+	<bean id="redisPluginExternalResourceAnalyzer"
+	      class="com.springsource.insight.plugin.redis.RedisExternalResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="redisPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.redis.RedisPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
 </beans>
