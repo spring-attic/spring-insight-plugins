@@ -20,7 +20,16 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class HibernatePluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "hibernate";
-    
+    private static final HibernatePluginRuntimeDescriptor	INSTANCE=new HibernatePluginRuntimeDescriptor();
+
+    private HibernatePluginRuntimeDescriptor () {
+    	super();
+    }
+
+    public static final HibernatePluginRuntimeDescriptor getInstance() {
+    	return INSTANCE;
+    }
+
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
         return null;

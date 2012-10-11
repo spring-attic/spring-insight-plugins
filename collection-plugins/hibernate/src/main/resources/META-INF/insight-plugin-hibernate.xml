@@ -11,4 +11,9 @@
 
 	<insight:operation-group group="Database" operation="hibernate" />
     
+    <bean id="hibernatePluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.hibernate.HibernatePluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 </beans>
