@@ -20,7 +20,16 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class LdapPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "javax-naming-ldap";
-    
+    private static final LdapPluginRuntimeDescriptor	INSTANCE=new LdapPluginRuntimeDescriptor();
+
+    private LdapPluginRuntimeDescriptor () {
+    	super();
+    }
+
+    public static final LdapPluginRuntimeDescriptor getInstance() {
+    	return INSTANCE;
+    }
+
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
         return null;

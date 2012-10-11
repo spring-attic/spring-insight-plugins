@@ -81,7 +81,7 @@ public abstract class LdapOperationCollectionAspectTestSupport
     private static ApacheDSContainer   dsContainer;
 
     protected final Log logger=LogFactory.getLog(getClass());
-    protected static final LdapExternalResourceAnalyzer analyzer=new LdapExternalResourceAnalyzer();
+    protected static final LdapExternalResourceAnalyzer analyzer=LdapExternalResourceAnalyzer.getInstance();
 
     protected LdapOperationCollectionAspectTestSupport() {
         super();

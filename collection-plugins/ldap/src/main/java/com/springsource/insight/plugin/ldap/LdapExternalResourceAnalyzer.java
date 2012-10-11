@@ -38,11 +38,17 @@ import com.springsource.insight.util.StringUtil;
  * 
  */
 public class LdapExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-    public LdapExternalResourceAnalyzer() {
+	private static final LdapExternalResourceAnalyzer	INSTANCE=new LdapExternalResourceAnalyzer();
+
+    private LdapExternalResourceAnalyzer() {
         super(LdapDefinitions.LDAP_OP);
     }
 
-    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame>   framesList) {
+    public static final LdapExternalResourceAnalyzer getInstance() {
+    	return INSTANCE;
+    }
+
+    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> framesList) {
         if (ListUtil.size(framesList) <= 0) {
             return Collections.emptyList();
         }
