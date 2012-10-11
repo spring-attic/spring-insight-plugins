@@ -35,9 +35,14 @@ import com.springsource.insight.util.ListUtil;
  *  {@link ExternalResourceType#SERVER} {@link ExternalResourceDescriptor}-s
  */
 public class SocketExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-	
-    public SocketExternalResourceAnalyzer() {
+	private static final SocketExternalResourceAnalyzer	INSTANCE=new SocketExternalResourceAnalyzer();
+
+    private SocketExternalResourceAnalyzer() {
        super(SocketDefinitions.TYPE);
+    }
+
+    public static final SocketExternalResourceAnalyzer getInstance() {
+    	return INSTANCE;
     }
 
     public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame>   framesList) {

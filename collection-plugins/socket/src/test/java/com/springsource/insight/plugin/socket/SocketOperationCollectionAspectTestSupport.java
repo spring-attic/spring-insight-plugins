@@ -29,7 +29,6 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.plugin.CollectionSettingName;
 import com.springsource.insight.intercept.plugin.CollectionSettingsRegistry;
 import com.springsource.insight.intercept.server.ServerName;
-import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
@@ -39,6 +38,7 @@ import com.springsource.insight.intercept.trace.ObscuredValueMarker;
 import com.springsource.insight.intercept.trace.SimpleFrame;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
+import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.time.TimeRange;
 
 /**
@@ -72,12 +72,11 @@ public abstract class SocketOperationCollectionAspectTestSupport
                                     new Date(System.currentTimeMillis()),
                                     TraceId.valueOf("fake-id"),
                                     frame);
-        ExternalResourceAnalyzer                analyzer=new SocketExternalResourceAnalyzer();
+        SocketExternalResourceAnalyzer          analyzer=SocketExternalResourceAnalyzer.getInstance();
         Collection<ExternalResourceDescriptor>  results=analyzer.locateExternalResourceName(trace);
-        assertFalse("No results returned", (results == null) || results.isEmpty());
-        assertEquals("Too many results returned", 1, results.size());
+        assertEquals("Mismatched number of results: " + results, 1, ListUtil.size(results));
 
-        ExternalResourceDescriptor  desc=results.iterator().next();
+        ExternalResourceDescriptor  desc=ListUtil.getFirstMember(results);
         String                      expectedName=MD5NameGenerator.getName(expAddress + ":" + expPort);
         assertSame("Mismatched frame", frame, desc.getFrame());
         assertEquals("Mismatched name", expectedName, desc.getName());

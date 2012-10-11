@@ -11,6 +11,15 @@
 	
 	<insight:operation-group group="Network" operation="socket" />
 
-    <bean class="com.springsource.insight.plugin.socket.SocketExternalResourceAnalyzer" />
+    <bean id="socketPluginExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.socket.SocketExternalResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="socketPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.socket.SocketPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
 </beans>

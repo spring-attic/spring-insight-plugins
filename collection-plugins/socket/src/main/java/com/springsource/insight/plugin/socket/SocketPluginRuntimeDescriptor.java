@@ -20,7 +20,16 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class SocketPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "socket";
-    
+    private static final SocketPluginRuntimeDescriptor	INSTANCE=new SocketPluginRuntimeDescriptor();
+
+    private SocketPluginRuntimeDescriptor () {
+    	super();
+    }
+
+    public static final SocketPluginRuntimeDescriptor getInstance() {
+    	return INSTANCE;
+    }
+
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
         return null;
