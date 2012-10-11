@@ -20,11 +20,40 @@
 	<insight:operation-group group="DB" operation="cassandra_remove" />
 	<insight:operation-group group="DB" operation="cassandra_cql" />
 	<insight:operation-group group="DB" operation="cassandra_system" />
-    
-    <bean class="com.springsource.insight.plugin.cassandra.CassandraConnectExternalResourceAnalyzer" />
-    <bean class="com.springsource.insight.plugin.cassandra.CassandraCQLExternalResourceAnalyzer" />
-    <bean class="com.springsource.insight.plugin.cassandra.CassandraGetExternalResourceAnalyzer" />
-    <bean class="com.springsource.insight.plugin.cassandra.CassandraSystemExternalResourceAnalyzer" />
-    <bean class="com.springsource.insight.plugin.cassandra.CassandraUpdateExternalResourceAnalyzer" />
-    <bean class="com.springsource.insight.plugin.cassandra.CassandraRemoveExternalResourceAnalyzer" />
+
+    <bean id="cassandraConnectExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.cassandra.CassandraConnectExternalResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="cassandraCQLExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.cassandra.CassandraCQLExternalResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="cassandraGetExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.cassandra.CassandraGetExternalResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="cassandraSystemExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.cassandra.CassandraSystemExternalResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="cassandraUpdateExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.cassandra.CassandraUpdateExternalResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="cassandraRemoveExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.cassandra.CassandraRemoveExternalResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="cassandraPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.cassandra.CassandraPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 </beans>

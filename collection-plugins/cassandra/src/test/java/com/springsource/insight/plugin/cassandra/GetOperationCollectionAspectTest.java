@@ -20,13 +20,17 @@ import org.junit.Test;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 
 public class GetOperationCollectionAspectTest extends AbstractOperationCollectionAspectTest{
+	public GetOperationCollectionAspectTest () {
+		super();
+	}
+
 	@Override
 	public OperationCollectionAspectSupport getAspect() {
 		return GetOperationCollectionAspect.aspectOf();
 	}
 	
 	@Test
-	public void test1() throws Exception {
+	public void testGetSlice() throws Exception {
 		CassandraUnitTests.getInstance().testGetSlice();
 		validate(OperationCollectionTypes.GET_TYPE.type,
 				"columnFamily=Standard1", "key=1", "consistLevel",

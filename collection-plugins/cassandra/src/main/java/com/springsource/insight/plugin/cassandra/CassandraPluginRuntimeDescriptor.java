@@ -19,8 +19,16 @@ import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class CassandraPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
-
     public static final String PLUGIN_NAME = "cassandra";
+    private static final CassandraPluginRuntimeDescriptor	INSTANCE=new CassandraPluginRuntimeDescriptor();
+    
+    private CassandraPluginRuntimeDescriptor() {
+    	super();
+    }
+
+    public static final CassandraPluginRuntimeDescriptor getInstance() {
+    	return INSTANCE;
+    }
 
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
@@ -31,5 +39,4 @@ public class CassandraPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public String getPluginName() {
         return PLUGIN_NAME;
     }
-
 }

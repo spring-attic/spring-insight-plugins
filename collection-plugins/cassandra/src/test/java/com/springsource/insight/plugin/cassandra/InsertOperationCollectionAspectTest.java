@@ -20,13 +20,17 @@ import org.junit.Test;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 
 public class InsertOperationCollectionAspectTest extends AbstractOperationCollectionAspectTest{
+	public InsertOperationCollectionAspectTest () {
+		super();
+	}
+
 	@Override
 	public OperationCollectionAspectSupport getAspect() {
 		return UpdateOperationCollectionAspect.aspectOf();
 	}
 	
 	@Test
-	public void test1() throws Exception {
+	public void testInsert() throws Exception {
 		CassandraUnitTests.getInstance().testInsert();
 		validate(OperationCollectionTypes.UPDATE_TYPE.type,
 				"columnFamily=Standard1",

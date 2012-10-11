@@ -20,25 +20,29 @@ import org.junit.Test;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 
 public class SystemOperationCollectionAspectTest extends AbstractOperationCollectionAspectTest{
+	public SystemOperationCollectionAspectTest () {
+		super();
+	}
+
 	@Override
 	public OperationCollectionAspectSupport getAspect() {
 		return SystemOperationCollectionAspect.aspectOf();
 	}
 	
 	@Test
-	public void test1() throws Exception {
+	public void testSystemAddKeyspace() throws Exception {
 		CassandraUnitTests.getInstance().testSystemAddKeyspace();
 		validate(OperationCollectionTypes.SYSTEM_TYPE.type, 
 				"keyspace=Keyspace1", "class");
 	}
 	
 	@Test
-	public void test2_0() throws Exception {
+	public void testSetKeyspace() throws Exception {
 		CassandraUnitTests.getInstance().testSetKeyspace();
 	}
 	
 	@Test
-	public void test2_1() throws Exception {
+	public void testSystemAddColumnFamily() throws Exception {
 		CassandraUnitTests.getInstance().testSystemAddColumnFamily();
 		validate(OperationCollectionTypes.SYSTEM_TYPE.type, 
 				"keyspace=Keyspace1", "columnFamilyDef={name=Standard1, type}");
