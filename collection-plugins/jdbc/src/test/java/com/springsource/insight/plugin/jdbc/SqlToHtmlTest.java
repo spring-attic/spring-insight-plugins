@@ -17,21 +17,23 @@ package com.springsource.insight.plugin.jdbc;
 
 import org.junit.Test;
 
-import com.springsource.insight.plugin.jdbc.SqlToHtml;
+import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 
-import static org.junit.Assert.*;
+public class SqlToHtmlTest extends AbstractCollectionTestSupport {
+	private final SqlToHtml	formatter=new SqlToHtml();
+    public SqlToHtmlTest () {
+    	super();
+    }
 
-public class SqlToHtmlTest {
-    
     @Test
     public void testEncoding() {
-        assertEquals("encode &amp;please ", new SqlToHtml().toHtml("encode &please", "myClass"));
+        assertEquals("encode &amp;please ", formatter.toHtml("encode &please", "myClass"));
     }
 
     @Test
     public void testSexySelect() {
         assertEquals("<span class='myClass myClass-select'>SELECT </span>* \n    <span class='myClass myClass-from'>FROM </span>users ",
-                     new SqlToHtml().toHtml("select * from users", "myClass"));
+        			 formatter.toHtml("select * from users", "myClass"));
     }
 
 }

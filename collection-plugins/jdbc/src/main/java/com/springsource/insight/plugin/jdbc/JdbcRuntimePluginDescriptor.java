@@ -20,7 +20,16 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class JdbcRuntimePluginDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "jdbc";
+    private static final JdbcRuntimePluginDescriptor	INSTANCE=new JdbcRuntimePluginDescriptor();
     
+    private JdbcRuntimePluginDescriptor () {
+    	super();
+    }
+    
+    public static final JdbcRuntimePluginDescriptor getInstance() {
+    	return INSTANCE;
+    }
+
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
         return null;
@@ -30,5 +39,4 @@ public class JdbcRuntimePluginDescriptor extends PluginRuntimeDescriptor {
     public String getPluginName() {
         return PLUGIN_NAME;
     }
-
 }

@@ -31,6 +31,15 @@ import com.springsource.insight.intercept.trace.Trace;
 
 public class TopLevelJdbcOperationFilter implements OperationFilter {
     private static final OperationType TYPE = JdbcOperationExternalResourceAnalyzer.TYPE;
+    private static final TopLevelJdbcOperationFilter	INSTANCE=new TopLevelJdbcOperationFilter();
+
+    private TopLevelJdbcOperationFilter () {
+    	super();
+    }
+
+    public static final TopLevelJdbcOperationFilter getInstance() {
+    	return INSTANCE;
+    }
 
     public String getFilterLabel() {
         return "JDBC, Top-level";
