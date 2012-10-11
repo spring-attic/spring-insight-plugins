@@ -19,8 +19,14 @@ import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class EhcahePluginRuntimeDescriptor extends PluginRuntimeDescriptor {
-	public EhcahePluginRuntimeDescriptor () {
+	private static final EhcahePluginRuntimeDescriptor	INSTANCE=new EhcahePluginRuntimeDescriptor();
+
+	private EhcahePluginRuntimeDescriptor () {
 		super();
+	}
+
+	public static final EhcahePluginRuntimeDescriptor getInstance() {
+		return INSTANCE;
 	}
 
     @Override

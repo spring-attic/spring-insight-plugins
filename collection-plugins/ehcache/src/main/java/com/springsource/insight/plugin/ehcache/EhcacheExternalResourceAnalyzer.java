@@ -31,8 +31,14 @@ import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.ListUtil;
 
 public class EhcacheExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-	public EhcacheExternalResourceAnalyzer () {
+	private static final EhcacheExternalResourceAnalyzer	INSTANCE=new EhcacheExternalResourceAnalyzer();
+
+	private EhcacheExternalResourceAnalyzer () {
 	    super(EhcacheDefinitions.CACHE_OPERATION);
+	}
+
+	public static final EhcacheExternalResourceAnalyzer getInstance() {
+		return INSTANCE;
 	}
 
 	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> cacheFrames) {

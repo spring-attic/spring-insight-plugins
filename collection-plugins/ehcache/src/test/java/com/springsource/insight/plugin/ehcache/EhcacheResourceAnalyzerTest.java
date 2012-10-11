@@ -16,6 +16,7 @@
 
 package com.springsource.insight.plugin.ehcache;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.Test;
@@ -31,21 +32,25 @@ import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.SimpleFrameBuilder;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
+import com.springsource.insight.util.ListUtil;
 
 public class EhcacheResourceAnalyzerTest extends AbstractCollectionTestSupport {
-    private final EhcacheExternalResourceAnalyzer analyzer = new EhcacheExternalResourceAnalyzer();
+    private final EhcacheExternalResourceAnalyzer analyzer=EhcacheExternalResourceAnalyzer.getInstance();
+
+    public EhcacheResourceAnalyzerTest () {
+    	super();
+    }
 
     @Test
 	public void testLocateExternalResourceName() {
         final String    NAME="testLocateExternalResourceName";
 		Trace trace = createValidTrace(NAME);
 
-		List<ExternalResourceDescriptor> externalResourceDescriptors=
-				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
+		Collection<ExternalResourceDescriptor> externalResourceDescriptors=analyzer.locateExternalResourceName(trace);
 		assertNotNull("No descriptors extracted", externalResourceDescriptors);
 		assertEquals("Mismatched number of descriptors", 1, externalResourceDescriptors.size());        
 
-		ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);
+		ExternalResourceDescriptor descriptor = ListUtil.getFirstMember(externalResourceDescriptors);
 		assertSame("Mismatched descriptor frame", trace.getRootFrame(), descriptor.getFrame());
 		assertDescriptorContents("testLocateExternalResourceName", NAME, descriptor);
 	}
