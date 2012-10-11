@@ -8,6 +8,19 @@
     <insight:plugin name="jax-rs" version="${project.version}" publisher="SpringSource" />
     <insight:operation-view operation="jax-rs" template="com/springsource/insight/plugin/jaxrs/jax-rs.ftl"/>
 
-    <bean class="com.springsource.insight.plugin.jaxrs.JaxrsEndPointAnalyzer"/>
-    <bean class="com.springsource.insight.plugin.jaxrs.JaxrsExternalResourceAnalyzer" />
+    <bean id="jaxrsPluginEndPointAnalyzer"
+          class="com.springsource.insight.plugin.jaxrs.JaxrsEndPointAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="jaxrsPluginExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.jaxrs.JaxrsExternalResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="jaxrsPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.jaxrs.JaxrsPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 </beans>

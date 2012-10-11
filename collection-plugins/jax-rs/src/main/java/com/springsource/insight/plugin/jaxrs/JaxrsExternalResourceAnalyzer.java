@@ -32,8 +32,14 @@ import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.StringUtil;
 
 public class JaxrsExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-	public JaxrsExternalResourceAnalyzer () {
+	private static final JaxrsExternalResourceAnalyzer	INSTANCE=new JaxrsExternalResourceAnalyzer();
+
+	private JaxrsExternalResourceAnalyzer () {
 		super(JaxrsDefinitions.TYPE);
+	}
+
+	public static final JaxrsExternalResourceAnalyzer getInstance() {
+		return INSTANCE;
 	}
 
 	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> frames) {

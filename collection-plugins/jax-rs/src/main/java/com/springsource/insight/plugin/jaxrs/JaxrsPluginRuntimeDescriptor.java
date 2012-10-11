@@ -20,15 +20,23 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class JaxrsPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "jax-rs";
-    
+    private static final JaxrsPluginRuntimeDescriptor	INSTANCE=new JaxrsPluginRuntimeDescriptor();
+
+    private JaxrsPluginRuntimeDescriptor () {
+    	super();
+    }
+
+    public static final JaxrsPluginRuntimeDescriptor getInstance() {
+    	return INSTANCE;
+    }
+
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return toArray(new JaxrsEndPointAnalyzer());
+        return toArray(JaxrsEndPointAnalyzer.getInstance());
     }
 
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;
     }
-
 }

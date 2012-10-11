@@ -24,8 +24,14 @@ import com.springsource.insight.intercept.trace.Frame;
 /**
  */
 public class JaxrsEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
-    public JaxrsEndPointAnalyzer() {
+	private static final JaxrsEndPointAnalyzer	INSTANCE=new JaxrsEndPointAnalyzer();
+
+    private JaxrsEndPointAnalyzer() {
         super(JaxrsDefinitions.TYPE);
+    }
+
+    public static final JaxrsEndPointAnalyzer getInstance() {
+    	return INSTANCE;
     }
 
     @Override

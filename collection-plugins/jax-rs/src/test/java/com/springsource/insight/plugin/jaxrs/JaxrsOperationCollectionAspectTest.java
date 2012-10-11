@@ -40,7 +40,7 @@ import com.springsource.insight.intercept.trace.TraceId;
  */
 public class JaxrsOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
     private final RestServiceInstance   _testService;
-    private final JaxrsExternalResourceAnalyzer analyzer = new JaxrsExternalResourceAnalyzer();
+    private final JaxrsExternalResourceAnalyzer analyzer = JaxrsExternalResourceAnalyzer.getInstance();
     
     public JaxrsOperationCollectionAspectTest() {
         _testService = new RestServiceInstance();
