@@ -19,8 +19,16 @@ import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class MongoDBPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
-
     public static final String PLUGIN_NAME = "mongodb";
+    private static final MongoDBPluginRuntimeDescriptor	INSTANCE=new MongoDBPluginRuntimeDescriptor();
+
+    private MongoDBPluginRuntimeDescriptor () {
+    	super();
+    }
+
+    public static final MongoDBPluginRuntimeDescriptor getInstance() {
+    	return INSTANCE;
+    }
 
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {

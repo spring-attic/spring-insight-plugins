@@ -20,11 +20,14 @@ import com.springsource.insight.intercept.operation.OperationType;
 
 
 public class MongoDBOperationExternalResourceAnalyzer extends AbstractMongoDBExternalResourceAnalyzer {
-
 	public static final OperationType TYPE = OperationType.valueOf("mongo_db_operation");
+	private static final MongoDBOperationExternalResourceAnalyzer	INSTANCE=new MongoDBOperationExternalResourceAnalyzer();
 	
-	public MongoDBOperationExternalResourceAnalyzer() {
+	private MongoDBOperationExternalResourceAnalyzer() {
 		super(TYPE);
 	}
 
+	public static final MongoDBOperationExternalResourceAnalyzer getInstance() {
+		return INSTANCE;
+	}
 }

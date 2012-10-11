@@ -6,6 +6,11 @@
 
 	<insight:plugin name="mongodb" version="${project.version}"
 		publisher="Stephen Harrison (stephen@harrison.org) and the Insight Team" />
+    <bean id="mongoDbPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.mongodb.MongoDBPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
     <insight:operation-group operation="mongo_collection_operation" group="MongoDB" />
 	<insight:operation-view operation="mongo_collection_operation"
@@ -19,6 +24,14 @@
 	<insight:operation-view operation="mongo_db_operation"
 		template="com/springsource/insight/plugin/mongodb/mongo_db_operation.ftl" />
 
-	<bean class="com.springsource.insight.plugin.mongodb.MongoDBCollectionExternalResourceAnalyzer" />
-	<bean class="com.springsource.insight.plugin.mongodb.MongoDBOperationExternalResourceAnalyzer" />
+	<bean id="mongoDbPluginCollectionExternalResourceAnalyzer"
+	      class="com.springsource.insight.plugin.mongodb.MongoDBCollectionExternalResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+	<bean id="mongoDbPluginOperationExternalResourceAnalyzer"
+	      class="com.springsource.insight.plugin.mongodb.MongoDBOperationExternalResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 </beans>

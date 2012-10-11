@@ -48,7 +48,8 @@ public class DBCollectionDummy extends DBCollection {
     }
 
 //	execution(List DBCollection.distinct(String,DBObject));
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     public List distinct(String str, DBObject obj) {
         return null;
     }

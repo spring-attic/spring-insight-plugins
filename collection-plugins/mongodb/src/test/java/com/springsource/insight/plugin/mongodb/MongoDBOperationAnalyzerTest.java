@@ -19,14 +19,17 @@ package com.springsource.insight.plugin.mongodb;
 import com.springsource.insight.intercept.operation.OperationType;
 
 public class MongoDBOperationAnalyzerTest extends AbstractMongoDBAnalyzerTest {
+	public MongoDBOperationAnalyzerTest () {
+		super();
+	}
+
     @Override
     protected AbstractMongoDBExternalResourceAnalyzer createMongoAnalyzer() {
-        return new MongoDBOperationExternalResourceAnalyzer();
+        return MongoDBOperationExternalResourceAnalyzer.getInstance();
     }
     
     @Override
     protected OperationType getType() {
         return MongoDBOperationExternalResourceAnalyzer.TYPE;
     }
-
 }
