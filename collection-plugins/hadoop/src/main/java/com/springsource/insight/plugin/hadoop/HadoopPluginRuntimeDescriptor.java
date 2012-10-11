@@ -19,8 +19,16 @@ import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class HadoopPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
-
     public static final String PLUGIN_NAME = "hadoop";
+    private static final HadoopPluginRuntimeDescriptor	INSTANCE=new HadoopPluginRuntimeDescriptor();
+
+    private HadoopPluginRuntimeDescriptor () {
+    	super();
+    }
+
+    public static final HadoopPluginRuntimeDescriptor getInstance() {
+    	return INSTANCE;
+    }
 
     @Override
     public EndPointAnalyzer[] getEndPointAnalyzers() {

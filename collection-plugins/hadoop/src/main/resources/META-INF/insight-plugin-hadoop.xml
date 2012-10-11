@@ -15,5 +15,14 @@
 	<insight:operation-group group="Bigdata" operation="hdp-mapper" />
 	<insight:operation-group group="Bigdata" operation="hdp-reducer" />
     
-    <bean class="com.springsource.insight.plugin.hadoop.HadoopExternalResourceAnalyzer" />
+    <bean id="hadoopPluginExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.hadoop.HadoopExternalResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="hadoopPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.hadoop.HadoopPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 </beans>

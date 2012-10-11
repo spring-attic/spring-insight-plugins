@@ -29,9 +29,15 @@ import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.ListUtil;
 
-public abstract class HadoopExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-	public HadoopExternalResourceAnalyzer() {
+public class HadoopExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
+	private static final HadoopExternalResourceAnalyzer	INSTANCE=new HadoopExternalResourceAnalyzer();
+
+	private HadoopExternalResourceAnalyzer() {
 	    super(OperationCollectionTypes.MAP_TYPE.type);
+	}
+
+	public static final HadoopExternalResourceAnalyzer getInstance() {
+		return INSTANCE;
 	}
 
 	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> frames) {
