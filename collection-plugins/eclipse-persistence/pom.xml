@@ -3,14 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.springsource.insight.plugins</groupId>
 	<artifactId>insight-plugin-eclipse-persistence</artifactId>
-	<version>1.9.0.RC5</version>
+	<version>1.9.0.RELEASE</version>
 	<name>com.springsource.insight.plugins:eclipse-persistence</name>
 	<packaging>jar</packaging>
 	
 	<parent>
 		<groupId>com.springsource.insight</groupId>
 		<artifactId>community-plugins</artifactId>
-		<version>1.9.0.RC5</version>
+		<version>1.9.0.RELEASE</version>
 		<relativePath>..</relativePath>
 	</parent>
 
