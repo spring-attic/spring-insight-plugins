@@ -17,6 +17,8 @@
 package com.springsource.insight.plugin.springdata;
 
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.RepositoryDefinition;
 
@@ -80,8 +82,16 @@ public aspect RepositoryMethodOperationCollectionAspect extends MethodOperationC
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
+    	Query query=null;
+    	if (jp.getKind().equals(JoinPoint.METHOD_CALL) || jp.getKind().equals(JoinPoint.METHOD_EXECUTION)) {
+    		// get method @Query annotation
+    		MethodSignature signature=(MethodSignature)jp.getSignature();
+    		query=signature.getMethod().getAnnotation(Query.class);
+    	}
+    	
         return super.createOperation(jp)
                     .type(SpringDataDefinitions.REPO_TYPE)
+                    .putAnyNonEmpty("query", (query!=null)?query.value():null)
                     ;
     }
 
