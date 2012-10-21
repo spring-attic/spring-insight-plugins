@@ -6,6 +6,8 @@
 		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
 	<insight:plugin name="spring-data" version="${project.version}" publisher="SpringSource" />
+    <insight:operation-view operation="spring-data-repository" template="com/springsource/insight/plugin/springdata/spring-data-repository.ftl"/>
+    <insight:operation-group group="Database" operation="spring-data-repository" />
 
     <bean id="springDataPluginRepositoryMethodEndPointAnalyzer"
           class="com.springsource.insight.plugin.springdata.RepositoryMethodEndPointAnalyzer"

@@ -16,7 +16,10 @@
 
 package com.springsource.insight.plugin.springdata;
 
+import java.lang.reflect.Method;
+
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
@@ -45,23 +48,23 @@ import com.springsource.insight.intercept.trace.FrameBuilder;
  * <B>Note(s)</B>:</BR>
  * <UL>
  *      <LI><P>
- *      We must use call since the proxy-ing mechanism does not always implement
- *      the methods but rather directly converts them to executed queries
+ *      We must use <code>call</code> since the proxy-ing mechanism does not always
+ *      implement the methods but rather directly converts them to executed queries
  *      </P></LI></BR>
  * 
  *      <LI><P>
  *      We use the {@link RepositoryDefinition} annotation as well - even though
  *      the current implementation of spring-data-commons expects the annotated
  *      interface to be a {@link Repository} (which is intercepted anyway) - see
- *      {@link RepositoryFactoryBeanSupport#getObject()} automatic cast. We leave
- *      it in anyway in case this is fixed or some other factory bean is used that
- *      does not have this implicit assumption
+ *      {@link org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport#getObject()}
+ *      automatic cast. We leave it in anyway in case this is fixed or some other
+ *      factory bean is used that does not have this implicit assumption
  *      </P></LI></BR>
  *      
  *      <LI><P>
  *      We use <code>cflowbelow</code> since some implementations actually
- *      provide some generic implementation (e.g., SimpleJpaRepsitory), so the
- *      methods may also being invoked and we don't want double interception
+ *      provide some generic implementation (e.g., {@link org.springframework.data.jpa.repository.support.SimpleJpaRepsitory}),
+ *      so the methods may also being invoked and we don't want double interception
  *      </P></LI></BR>
  * </UL>
  */
@@ -82,16 +85,17 @@ public aspect RepositoryMethodOperationCollectionAspect extends MethodOperationC
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-    	Query query=null;
-    	if (jp.getKind().equals(JoinPoint.METHOD_CALL) || jp.getKind().equals(JoinPoint.METHOD_EXECUTION)) {
-    		// get method @Query annotation
-    		MethodSignature signature=(MethodSignature)jp.getSignature();
-    		query=signature.getMethod().getAnnotation(Query.class);
+    	Query 		query=null;
+    	Signature	sig=jp.getSignature();
+		// get method @Query annotation
+    	if (sig instanceof MethodSignature) {
+    		Method	method=((MethodSignature) sig).getMethod();
+    		query = method.getAnnotation(Query.class);
     	}
-    	
+
         return super.createOperation(jp)
                     .type(SpringDataDefinitions.REPO_TYPE)
-                    .putAnyNonEmpty("query", (query!=null)?query.value():null)
+                    .putAnyNonEmpty("query", (query!=null) ? query.value() : null)
                     ;
     }
 
