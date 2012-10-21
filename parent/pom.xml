@@ -67,18 +67,18 @@
 		
 		<snapshot.repo.id>spring-snapshot</snapshot.repo.id>
         <snapshot.repo.name>Spring Snapshot Repository</snapshot.repo.name>
-		<snapshot.repo.url>http://maven.springframework.org/snapshot</snapshot.repo.url>
-        <snapshot.dist.url>s3://maven.springframework.org/snapshot</snapshot.dist.url>
+		<snapshot.repo.url>http://private.maven.springsource.com/snapshot</snapshot.repo.url>
+        <snapshot.dist.url>s3://private.maven.springsource.com/snapshot</snapshot.dist.url>
 
         <milestone.repo.id>spring-milestone</milestone.repo.id>
         <milestone.repo.name>Spring Milestone Repository</milestone.repo.name>
-        <milestone.repo.url>http://maven.springframework.org/milestone</milestone.repo.url>
-        <milestone.dist.url>s3://maven.springframework.org/milestone</milestone.dist.url>
+        <milestone.repo.url>http://private.maven.springsource.com/milestone</milestone.repo.url>
+        <milestone.dist.url>s3://private.maven.springsource.com/milestone</milestone.dist.url>
 
 		<release.repo.id>spring-release</release.repo.id>
         <release.repo.name>Spring Release Repository</release.repo.name>
-        <release.repo.url>http://maven.springframework.org/release</release.repo.url>
-        <release.dist.url>s3://maven.springframework.org/release</release.dist.url>
+        <release.repo.url>http://private.maven.springsource.com/release</release.repo.url>
+        <release.dist.url>s3://private.maven.springsource.com/release</release.dist.url>
     </properties>
 
     <profiles>
@@ -122,7 +122,7 @@
 		        <repository>	<!-- NOTE: these values must match the properties -->
 		            <id>spring-public-snapshot</id>
 		            <name>Spring Public Snapshot Repository</name>
-		            <url>http://maven.springframework.org/snapshot</url>
+		            <url>http://private.maven.springsource.com/snapshot</url>
 		            <snapshots>
 		                <enabled>true</enabled>
 		            </snapshots>
