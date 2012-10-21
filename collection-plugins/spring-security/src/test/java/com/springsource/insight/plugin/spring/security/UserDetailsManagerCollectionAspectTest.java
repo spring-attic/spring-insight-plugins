@@ -27,6 +27,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
 import com.springsource.insight.intercept.operation.OperationMap;
@@ -81,6 +82,7 @@ public class UserDetailsManagerCollectionAspectTest
         // the result is created by the UserDetailsOperationCollector
         Operation   op=assertOperationResult("loadUserByUsername", result, UserDetailsOperationCollector.RESULT_MAP_NAME);
         assertExtractedUsername(op, USERNAME);
+        assertScoreValue(op, SpringSecurityDefinitions.SECURITY_OPERATION_ENDPOINT_SCORE);
     }
 
     @Test
@@ -110,7 +112,8 @@ public class UserDetailsManagerCollectionAspectTest
     public void testUserExists () {
         final String    USERNAME="testUserExists";
         manager.userExists(USERNAME);
-        assertExtractedUsername("userExists", USERNAME);
+        Operation	op=assertExtractedUsername("userExists", USERNAME);
+        assertScoreValue(op, SpringSecurityDefinitions.SECURITY_OPERATION_ENDPOINT_SCORE);
     }
 
     @Test
@@ -187,6 +190,15 @@ public class UserDetailsManagerCollectionAspectTest
         assertGrantedAuthoritiesInstances(mapValue.get(ObscuringOperationCollector.GRANTED_AUTHS_LIST_NAME, OperationList.class),
                                           details.getAuthorities());
         return mapValue;
+    }
+
+    protected Operation assertScoreValue(Operation op, int expected) {
+    	assertNotNull("No operation extracted", op);
+    	
+    	Number	actual=op.get(EndPointAnalysis.SCORE_FIELD, Number.class);
+    	assertNotNull("No score value set", actual);
+    	assertEquals("Mismatched score value", expected, actual.intValue());
+    	return op;
     }
 
     @Override

@@ -25,6 +25,7 @@ import com.springsource.insight.plugin.springweb.AbstractSpringWebEndPointAnalyz
  */
 public class ValidationEndPointAnalyzer extends AbstractSpringWebEndPointAnalyzer {
 	private static final ValidationEndPointAnalyzer	INSTANCE=new ValidationEndPointAnalyzer();
+	public static final int	VALIDATION_ENDPOINT_SCORE=EndPointAnalysis.CEILING_LAYER_SCORE;
 
 	private ValidationEndPointAnalyzer () {
 		super(ValidationErrorsMetricsGenerator.TYPE);
@@ -36,6 +37,6 @@ public class ValidationEndPointAnalyzer extends AbstractSpringWebEndPointAnalyze
 
 	@Override
     protected int getOperationScore(Operation op, int depth) {
-		return EndPointAnalysis.CEILING_LAYER_SCORE;
+		return VALIDATION_ENDPOINT_SCORE;
 	}
 }

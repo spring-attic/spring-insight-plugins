@@ -24,6 +24,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.UserDetailsManager;
 
 import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
+import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.trace.ObscuredValueMarker;
 
@@ -54,19 +55,26 @@ public aspect UserDetailsManagerCollectionAspect extends MethodOperationCollecti
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Operation   op=super.createOperation(jp)
-                            .type(SpringSecurityDefinitions.USER_OP);
         Signature   sig=jp.getSignature();
-        op.label(sig.getName())
-          .put("action", sig.getName());
-        encodeArguments(op, sig, jp.getArgs());
+        String      actionName=sig.getName();
+        Operation   op=super.createOperation(jp)
+                            .type(SpringSecurityDefinitions.USER_OP)
+        					.label(actionName)
+        					.put("action", actionName);
+        encodeArguments(op, actionName, sig, jp.getArgs());
+        /*
+         * These 2 methods should not obscure other better ones even if
+         * they are higher up the trace stack
+         */
+        if ("loadUserByUsername".equals(actionName) || "userExists".equals(actionName)) {
+        	op.put(EndPointAnalysis.SCORE_FIELD, SpringSecurityDefinitions.SECURITY_OPERATION_ENDPOINT_SCORE);
+        }
         return op;
     }
 
     // could have used separate aspects for each call, but for now this is good enough
-    Operation encodeArguments (Operation op, Signature sig, Object ... args) {
+    Operation encodeArguments (Operation op, String actionName, Signature sig, Object ... args) {
         UserDetailsOperationCollector    collector=(UserDetailsOperationCollector) getCollector();
-        String                           actionName=sig.getName();
         if ("loadUserByUsername".equals(actionName)
          || "deleteUser".equals(actionName)
          || "userExists".equals(actionName)) {
