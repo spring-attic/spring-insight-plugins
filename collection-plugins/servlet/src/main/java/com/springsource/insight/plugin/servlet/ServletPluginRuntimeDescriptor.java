@@ -15,12 +15,20 @@
  */
 package com.springsource.insight.plugin.servlet;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
+import com.springsource.insight.util.ArrayUtil;
 
 public class ServletPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "servlet";
     private static final ServletPluginRuntimeDescriptor	INSTANCE=new ServletPluginRuntimeDescriptor();
+    private static final List<? extends EndPointAnalyzer>	epAnalyzers=
+    		ArrayUtil.asUnmodifiableList(LifecycleEndPointAnalyzer.getInstance(),
+             	   						 RequestDispatchEndPointAnalyzer.getInstance(),
+             	   						 ServletEndPointAnalyzer.getInstance());
 
     private ServletPluginRuntimeDescriptor () {
     	super();
@@ -31,10 +39,8 @@ public class ServletPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     }
 
     @Override
-    public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return toArray(LifecycleEndPointAnalyzer.getInstance(),
-                	   RequestDispatchEndPointAnalyzer.getInstance(),
-                	   ServletEndPointAnalyzer.getInstance());
+    public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
+        return epAnalyzers;
     }
 
     @Override

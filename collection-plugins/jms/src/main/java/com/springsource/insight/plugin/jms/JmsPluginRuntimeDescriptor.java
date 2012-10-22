@@ -15,12 +15,20 @@
  */
 package com.springsource.insight.plugin.jms;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
+import com.springsource.insight.util.ArrayUtil;
 
 public class JmsPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "jms";
     private static final JmsPluginRuntimeDescriptor	INSTANCE=new JmsPluginRuntimeDescriptor();
+    private static final List<? extends EndPointAnalyzer>	epAnalyzers=
+    		ArrayUtil.asUnmodifiableList(JMSConsumerResourceAnalyzer.getInstance(),
+             	   						 JMSMessageListenerResourceAnalyzer.getInstance(),
+             	   						 JMSProducerResourceAnalyzer.getInstance());
 
     private JmsPluginRuntimeDescriptor () {
     	super();
@@ -31,10 +39,8 @@ public class JmsPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     }
 
     @Override
-    public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return toArray(JMSConsumerResourceAnalyzer.getInstance(),
-                	   JMSMessageListenerResourceAnalyzer.getInstance(),
-                	   JMSProducerResourceAnalyzer.getInstance());
+    public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
+        return epAnalyzers;
     }
 
     @Override

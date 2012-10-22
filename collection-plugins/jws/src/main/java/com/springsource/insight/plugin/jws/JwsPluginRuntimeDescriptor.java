@@ -15,12 +15,17 @@
  */
 package com.springsource.insight.plugin.jws;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
+import com.springsource.insight.util.ArrayUtil;
 
 public class JwsPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "jws";
     private static final JwsPluginRuntimeDescriptor	INSTANCE=new JwsPluginRuntimeDescriptor();
+    private static final List<? extends EndPointAnalyzer>	epAnalyzers=ArrayUtil.asUnmodifiableList(JwsEndPointAnalyzer.getInstance());
 
     private JwsPluginRuntimeDescriptor () {
     	super();
@@ -31,13 +36,12 @@ public class JwsPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     }
 
     @Override
-    public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return toArray(JwsEndPointAnalyzer.getInstance());
+    public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
+        return epAnalyzers;
     }
 
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;
     }
-
 }

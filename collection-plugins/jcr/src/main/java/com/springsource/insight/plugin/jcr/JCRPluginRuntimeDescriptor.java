@@ -15,13 +15,18 @@
  */
 package com.springsource.insight.plugin.jcr;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
+import com.springsource.insight.util.ArrayUtil;
 
 
 public class JCRPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
 	public static final String PLUGIN_NAME = "jcr";
 	private static final JCRPluginRuntimeDescriptor	INSTANCE=new JCRPluginRuntimeDescriptor();
+	private static final List<? extends EndPointAnalyzer>	epAnalyzers=ArrayUtil.asUnmodifiableList(JCREndPointAnalyzer.getInstance());
 
 	private JCRPluginRuntimeDescriptor () {
 		super();
@@ -32,8 +37,8 @@ public class JCRPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
 	}
 
     @Override
-    public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return toArray(JCREndPointAnalyzer.getInstance());
+    public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
+        return epAnalyzers;
     }
 
     @Override

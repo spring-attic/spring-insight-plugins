@@ -15,12 +15,17 @@
  */
 package com.springsource.insight.plugin.runexec;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
+import com.springsource.insight.util.ArrayUtil;
 
 public class RunExecPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "run-exec";
     private static final RunExecPluginRuntimeDescriptor	INSTANCE=new RunExecPluginRuntimeDescriptor();
+    private static final List<? extends EndPointAnalyzer>	epAnalyzers=ArrayUtil.asUnmodifiableList(RunExecEndPointAnalyzer.getInstance());
 
     private RunExecPluginRuntimeDescriptor () {
     	super();
@@ -31,13 +36,12 @@ public class RunExecPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     }
 
     @Override
-    public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return toArray(RunExecEndPointAnalyzer.getInstance());
+    public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
+        return epAnalyzers;
     }
 
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;
     }
-
 }

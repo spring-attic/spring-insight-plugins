@@ -16,8 +16,12 @@
 
 package com.springsource.insight.plugin.jndi;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
+import com.springsource.insight.util.ArrayUtil;
 
 /**
  * 
@@ -25,6 +29,7 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 public class JndiPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "javax-naming-jndi";
     private static final JndiPluginRuntimeDescriptor	INSTANCE=new JndiPluginRuntimeDescriptor();
+    private static final List<? extends EndPointAnalyzer>	epAnalyzers=ArrayUtil.asUnmodifiableList(JndiEndpointAnalyzer.getInstance());
 
 	private JndiPluginRuntimeDescriptor () {
 		super();
@@ -34,10 +39,10 @@ public class JndiPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
 		return INSTANCE;
 	}
 
-	@Override
-	public EndPointAnalyzer[] getEndPointAnalyzers() {
-		return toArray(JndiEndpointAnalyzer.getInstance());
-	}
+    @Override
+    public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
+        return epAnalyzers;
+    }
 
 	@Override
 	public String getPluginName() {

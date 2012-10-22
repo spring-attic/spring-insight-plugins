@@ -15,7 +15,6 @@
  */
 package com.springsource.insight.plugin.apache.http.hc4;
 
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class HC4PluginRuntimeDescriptor extends PluginRuntimeDescriptor {
@@ -28,11 +27,6 @@ public class HC4PluginRuntimeDescriptor extends PluginRuntimeDescriptor {
 
     public static final HC4PluginRuntimeDescriptor getInstance () {
     	return INSTANCE;
-    }
-
-    @Override
-    public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return null;
     }
 
     @Override

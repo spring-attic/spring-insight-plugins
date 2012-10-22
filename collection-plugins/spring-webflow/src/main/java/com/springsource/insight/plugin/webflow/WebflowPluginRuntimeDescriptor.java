@@ -15,7 +15,6 @@
  */
 package com.springsource.insight.plugin.webflow;
 
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class WebflowPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
@@ -28,11 +27,6 @@ public class WebflowPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
 
     public static final WebflowPluginRuntimeDescriptor getInstance() {
     	return INSTANCE;
-    }
-
-    @Override
-    public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return null;
     }
 
     @Override

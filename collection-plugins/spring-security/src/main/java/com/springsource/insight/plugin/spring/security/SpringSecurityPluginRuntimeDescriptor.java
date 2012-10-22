@@ -16,7 +16,6 @@
 
 package com.springsource.insight.plugin.spring.security;
 
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class SpringSecurityPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
@@ -29,11 +28,6 @@ public class SpringSecurityPluginRuntimeDescriptor extends PluginRuntimeDescript
 
     public static final SpringSecurityPluginRuntimeDescriptor getInstance() {
     	return INSTANCE;
-    }
-
-    @Override
-    public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return null;
     }
 
     @Override

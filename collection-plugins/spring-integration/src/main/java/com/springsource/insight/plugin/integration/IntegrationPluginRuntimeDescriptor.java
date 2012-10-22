@@ -16,12 +16,17 @@
 
 package com.springsource.insight.plugin.integration;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
+import com.springsource.insight.util.ArrayUtil;
 
 public class IntegrationPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "spring-integration";
     private static final IntegrationPluginRuntimeDescriptor	INSTANCE=new IntegrationPluginRuntimeDescriptor();
+    private static final List<? extends EndPointAnalyzer>	epAnalyzers=ArrayUtil.asUnmodifiableList(IntegrationEndPointAnalyzer.getInstance());
 
     private IntegrationPluginRuntimeDescriptor () {
         super();
@@ -32,8 +37,8 @@ public class IntegrationPluginRuntimeDescriptor extends PluginRuntimeDescriptor 
     }
 
     @Override
-    public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return toArray(IntegrationEndPointAnalyzer.getInstance());
+    public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
+        return epAnalyzers;
     }
 
     @Override

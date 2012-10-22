@@ -15,7 +15,6 @@
  */
 package com.springsource.insight.plugin.jdbc;
 
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class JdbcRuntimePluginDescriptor extends PluginRuntimeDescriptor {
@@ -28,11 +27,6 @@ public class JdbcRuntimePluginDescriptor extends PluginRuntimeDescriptor {
     
     public static final JdbcRuntimePluginDescriptor getInstance() {
     	return INSTANCE;
-    }
-
-    @Override
-    public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return null;
     }
 
     @Override

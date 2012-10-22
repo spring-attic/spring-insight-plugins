@@ -15,7 +15,6 @@
  */
 package com.springsource.insight.plugin.mongodb;
 
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class MongoDBPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
@@ -31,11 +30,6 @@ public class MongoDBPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     }
 
     @Override
-    public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return null;
-    }
-
-    @Override
     public String getPluginName() {
         return PLUGIN_NAME;
     }
@@ -44,5 +38,4 @@ public class MongoDBPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public String getPublisher() {
         return "Stephen Harrison (stephen@harrison.org) and the Insight Team";
     }
-
 }

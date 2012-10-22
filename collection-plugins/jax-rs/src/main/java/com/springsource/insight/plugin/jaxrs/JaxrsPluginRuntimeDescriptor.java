@@ -15,12 +15,17 @@
  */
 package com.springsource.insight.plugin.jaxrs;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
+import com.springsource.insight.util.ArrayUtil;
 
 public class JaxrsPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "jax-rs";
     private static final JaxrsPluginRuntimeDescriptor	INSTANCE=new JaxrsPluginRuntimeDescriptor();
+    private static final List<? extends EndPointAnalyzer>	epAnalyzers=ArrayUtil.asUnmodifiableList(JaxrsEndPointAnalyzer.getInstance());
 
     private JaxrsPluginRuntimeDescriptor () {
     	super();
@@ -31,8 +36,8 @@ public class JaxrsPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     }
 
     @Override
-    public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return toArray(JaxrsEndPointAnalyzer.getInstance());
+    public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
+        return epAnalyzers;
     }
 
     @Override

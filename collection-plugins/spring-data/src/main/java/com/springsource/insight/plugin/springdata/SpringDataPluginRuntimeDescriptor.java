@@ -16,12 +16,17 @@
 
 package com.springsource.insight.plugin.springdata;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
+import com.springsource.insight.util.ArrayUtil;
 
 public class SpringDataPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "spring-data";
     private static final SpringDataPluginRuntimeDescriptor	INSTANCE=new SpringDataPluginRuntimeDescriptor();
+    private static final List<? extends EndPointAnalyzer>	epAnalyzers=ArrayUtil.asUnmodifiableList(RepositoryMethodEndPointAnalyzer.getInstance());
 
     private SpringDataPluginRuntimeDescriptor () {
         super();
@@ -32,8 +37,8 @@ public class SpringDataPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     }
 
     @Override
-    public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return toArray(RepositoryMethodEndPointAnalyzer.getInstance());
+    public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
+        return epAnalyzers;
     }
 
     @Override

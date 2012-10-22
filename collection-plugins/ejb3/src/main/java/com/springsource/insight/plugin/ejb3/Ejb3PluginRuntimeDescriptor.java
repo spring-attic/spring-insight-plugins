@@ -15,13 +15,18 @@
  */
 package com.springsource.insight.plugin.ejb3;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
+import com.springsource.insight.util.ArrayUtil;
 
 public class Ejb3PluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "ejb3";
     private static final Ejb3PluginRuntimeDescriptor	INSTANCE=new Ejb3PluginRuntimeDescriptor();
-    
+    private static final List<? extends EndPointAnalyzer>	epAnalyzers=ArrayUtil.asUnmodifiableList(Ejb3LocalServiceEndPointAnalyzer.getInstance());
+
     private Ejb3PluginRuntimeDescriptor () {
     	super();
     }
@@ -31,8 +36,8 @@ public class Ejb3PluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     }
 
     @Override
-    public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return toArray(Ejb3LocalServiceEndPointAnalyzer.getInstance());
+    public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
+        return epAnalyzers;
     }
 
     @Override

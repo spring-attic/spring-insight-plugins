@@ -15,7 +15,6 @@
  */
 package com.springsource.insight.plugin.socket;
 
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class SocketPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
@@ -31,13 +30,7 @@ public class SocketPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     }
 
     @Override
-    public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return null;
-    }
-
-    @Override
     public String getPluginName() {
         return PLUGIN_NAME;
     }
-
 }

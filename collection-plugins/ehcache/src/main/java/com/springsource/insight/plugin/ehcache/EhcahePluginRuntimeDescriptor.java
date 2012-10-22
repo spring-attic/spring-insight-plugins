@@ -15,7 +15,6 @@
  */
 package com.springsource.insight.plugin.ehcache;
 
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class EhcahePluginRuntimeDescriptor extends PluginRuntimeDescriptor {
@@ -28,11 +27,6 @@ public class EhcahePluginRuntimeDescriptor extends PluginRuntimeDescriptor {
 	public static final EhcahePluginRuntimeDescriptor getInstance() {
 		return INSTANCE;
 	}
-
-    @Override
-    public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return null;
-    }
 
     @Override
     public String getPluginName() {

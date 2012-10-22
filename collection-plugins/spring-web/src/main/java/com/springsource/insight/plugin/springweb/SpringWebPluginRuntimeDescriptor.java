@@ -16,14 +16,21 @@
 
 package com.springsource.insight.plugin.springweb;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 import com.springsource.insight.plugin.springweb.controller.ControllerEndPointAnalyzer;
 import com.springsource.insight.plugin.springweb.validation.ValidationEndPointAnalyzer;
+import com.springsource.insight.util.ArrayUtil;
 
 public class SpringWebPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "spring-web";
     private static final SpringWebPluginRuntimeDescriptor	INSTANCE=new SpringWebPluginRuntimeDescriptor();
+    private static final List<? extends EndPointAnalyzer>	epAnalyzers=
+    		ArrayUtil.asUnmodifiableList(ControllerEndPointAnalyzer.getInstance(),
+     			   						 ValidationEndPointAnalyzer.getInstance());
 
     private SpringWebPluginRuntimeDescriptor () {
         super();
@@ -34,9 +41,8 @@ public class SpringWebPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     }
 
     @Override
-    public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return toArray(ControllerEndPointAnalyzer.getInstance(),
-        			   ValidationEndPointAnalyzer.getInstance());
+    public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
+        return epAnalyzers;
     }
 
     @Override
