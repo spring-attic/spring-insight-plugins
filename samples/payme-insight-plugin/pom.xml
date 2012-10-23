@@ -22,10 +22,55 @@
 			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.springsource.insight</groupId>
+			<artifactId>insight-collection</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.springsource.insight</groupId>
+			<artifactId>insight-intercept</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.springsource.insight</groupId>
+			<artifactId>insight-util</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
 		
-		<!-- Provided dependencies (part of the user application) -->
-		
-		<!-- Test dependencies -->
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>com.springsource.insight</groupId>
+            <artifactId>insight-util</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.springsource.insight</groupId>
+            <artifactId>insight-intercept</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.springsource.insight</groupId>
+            <artifactId>insight-collection</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.springsource.insight</groupId>
+            <artifactId>insight-idk</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

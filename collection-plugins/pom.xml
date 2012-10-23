@@ -73,13 +73,72 @@
     <dependencies>
         <!-- Provided dependencies (part of Insight) -->
         <dependency>
+           <groupId>org.aspectj</groupId>
+           <artifactId>aspectjrt</artifactId>
+           <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>com.springsource.insight</groupId>
             <artifactId>insight-idk</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.springsource.insight</groupId>
+            <artifactId>insight-util</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.springsource.insight</groupId>
+            <artifactId>insight-intercept</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.springsource.insight</groupId>
+            <artifactId>insight-annotation</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.springsource.insight</groupId>
+            <artifactId>insight-collection</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
         
         <!-- Test dependencies -->
+        <dependency>
+            <groupId>com.springsource.insight</groupId>
+            <artifactId>insight-util</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.springsource.insight</groupId>
+            <artifactId>insight-intercept</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.springsource.insight</groupId>
+            <artifactId>insight-collection</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.springsource.insight</groupId>
+            <artifactId>insight-idk</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
            <groupId>org.aspectj</groupId>
            <artifactId>aspectjweaver</artifactId>

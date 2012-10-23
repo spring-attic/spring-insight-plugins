@@ -16,23 +16,18 @@
 
 		<!-- common build configurations for all core artifacts -->
 	<dependencies>
-		<!-- Provided dependencies (part of the user application) -->
+			<!-- Test dependencies -->
 		<dependency>
-			<!-- junit is provided here, because we need it to compile the tests support
-             	classes (which are shipped in the regular jar) -->
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<scope>provided</scope>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<!-- mockito is provided here, because we need it to compile the tests support
-             	classes (which are shipped in the regular jar) -->
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
-			<scope>provided</scope>
+			<scope>test</scope>
 		</dependency>
 
-			<!-- Test dependencies -->
         <dependency> <!-- Required also by various frameworks (e.g., Spring) -->
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
