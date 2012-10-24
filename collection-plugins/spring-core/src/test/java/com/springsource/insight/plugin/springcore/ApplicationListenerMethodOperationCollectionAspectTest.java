@@ -137,12 +137,14 @@ public class ApplicationListenerMethodOperationCollectionAspectTest extends Oper
         assertNull("Unexpected stereotyped bean method collection: " + compType, compType);
 
         String	methodName=op.get(OperationFields.METHOD_NAME, String.class, "");
-        assertTrue(methodName + " does not start with onApplicationEvent", methodName.startsWith("onApplicationEvent"));
+        assertTrue(shortName + methodName + " does not start with onApplicationEvent", methodName.startsWith("onApplicationEvent"));
+        assertEquals(shortName + ": mismatched event type",
+        		     MyEvent.class.getName(), op.get(ApplicationListenerMethodOperationCollectionAspect.EVENT_ATTR, String.class));
 
         OperationList	argsList=op.get(OperationFields.ARGUMENTS, OperationList.class);
-        assertNotNull("Missing arguments list", argsList);
-        assertEquals("Mismatched number of arguments", 1, argsList.size());
-        assertEquals("Mismatched argument type", MyEvent.class.getName(), argsList.get(0));
+        assertNotNull(shortName + ": Missing arguments list", argsList);
+        assertEquals(shortName + ": Mismatched number of arguments", 1, argsList.size());
+        assertEquals(shortName + ": Mismatched argument type", MyEvent.class.getName(), argsList.get(0));
         
         return matchingClass;
     }

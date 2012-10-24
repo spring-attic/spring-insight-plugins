@@ -16,19 +16,19 @@
 
 package il.co.springsource.insight;
 
-import org.springframework.context.ApplicationListener;
-import org.springframework.stereotype.Repository;
+import org.springframework.context.ApplicationEvent;
 
-@Repository
-public class MyApplicationListenerAndRepository
-		extends MyEventHolder
-		implements ApplicationListener<MyEvent> {
+/**
+ * 
+ */
+public abstract class MyEventHolder {
+    protected ApplicationEvent lastEvent;
 
-    public MyApplicationListenerAndRepository () {
-    	super();
-    }
-   
-    public void onApplicationEvent(MyEvent event) {
-        lastEvent = event;
+	protected MyEventHolder() {
+		super();
+	}
+
+	public ApplicationEvent getLastEvent() {
+        return lastEvent;
     }
 }

@@ -40,6 +40,7 @@ public abstract aspect StereotypedSpringBeanMethodOperationCollectionAspectSuppo
 	protected pointcut excludedLifecyclePointcuts ()
 		: ApplicationListenerMethodOperationCollectionAspect.appListener()
 	   || InitializingBeanOperationCollectionAspect.beanInitialization()
+	   || EventPublisingOperationCollectionAspect.publishingPoint()
 	   || AnnotationDrivenMethodOperationCollectionAspect.collectionPoint()
 	/*
 	 * We exclude all Insight beans since if we want insight-on-insight we

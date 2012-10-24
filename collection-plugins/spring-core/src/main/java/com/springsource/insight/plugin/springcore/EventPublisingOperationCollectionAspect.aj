@@ -17,42 +17,46 @@
 package com.springsource.insight.plugin.springcore;
 
 import org.aspectj.lang.JoinPoint;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.GenericApplicationListenerAdapter;
-import org.springframework.context.event.SourceFilteringListener;
+import org.aspectj.lang.Signature;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.ApplicationEventMulticaster;
 
 import com.springsource.insight.collection.method.AnnotationDrivenMethodOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
 
+/**
+ * 
+ */
+public aspect EventPublisingOperationCollectionAspect extends SpringLifecycleMethodOperationCollectionAspect {
+	public static final String	ACTION_ATTR="actionType", EVENT_ATTR="eventType", ACTION_SUFFIX="Event";
 
-public aspect ApplicationListenerMethodOperationCollectionAspect extends SpringLifecycleMethodOperationCollectionAspect {
-	public static final String EVENT_ATTR="eventType";
+	public EventPublisingOperationCollectionAspect () {
+		super();
+	}
 
-    public ApplicationListenerMethodOperationCollectionAspect() {
-        super();
-    }
+	public pointcut publishingPoint ()
+		: execution(* ApplicationEventPublisher+.publishEvent(ApplicationEvent))
+	   || execution(* ApplicationEventMulticaster+.multicastEvent(ApplicationEvent))
+	    ;
 
-    public pointcut appListener()
-        : execution(* ApplicationListener+.onApplicationEvent(..));
+	public pointcut collectionPoint()
+		: publishingPoint()
+	  && !AnnotationDrivenMethodOperationCollectionAspect.collectionPoint()
+	    ;
 
-    public pointcut delegatingGenericListenerAdapter()
-        : execution(* GenericApplicationListenerAdapter+.onApplicationEvent(..));
-
-    public pointcut sourceFilteringListener()
-        : execution(* SourceFilteringListener+.onApplicationEvent(..));
-
-    public pointcut collectionPoint() : 
-        appListener() && 
-        !delegatingGenericListenerAdapter() && 
-        !sourceFilteringListener() && 
-        !AnnotationDrivenMethodOperationCollectionAspect.collectionPoint();
-    
 	@Override
 	protected Operation createOperation(JoinPoint jp) {
+		Signature	sig=jp.getSignature();
+		String		name=sig.getName();
+		if (name.endsWith(ACTION_SUFFIX) && (name.length() > ACTION_SUFFIX.length())) {
+			name = name.substring(0, name.length() - ACTION_SUFFIX.length());
+		}
+
 		Object	event=jp.getArgs()[0];
 		return super.createOperation(jp)
+					.put(ACTION_ATTR, name)
 					.put(EVENT_ATTR, (event == null) ? Object.class.getName() : event.getClass().getName())
 					;
 	}
 }
-
