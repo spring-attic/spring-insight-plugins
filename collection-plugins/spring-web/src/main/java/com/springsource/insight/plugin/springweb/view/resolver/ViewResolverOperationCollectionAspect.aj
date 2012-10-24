@@ -22,11 +22,9 @@ import org.aspectj.lang.JoinPoint;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
 
-import com.springsource.insight.collection.DefaultOperationCollector;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
-import com.springsource.insight.plugin.springweb.view.ViewUtils;
 
 public aspect ViewResolverOperationCollectionAspect extends AbstractSpringWebAspectSupport {
     private static final OperationType TYPE = OperationType.valueOf("view_resolver");

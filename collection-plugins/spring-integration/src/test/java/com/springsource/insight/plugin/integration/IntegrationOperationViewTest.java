@@ -33,7 +33,7 @@ import com.springsource.insight.intercept.operation.SourceCodeLocation;
 /**
  * This tests the view-rendering portion of the Spring Integration plugin. 
  */
-@ContextConfiguration(locations = { "classpath:META-INF/insight-plugin-integration-plugin.xml", 
+@ContextConfiguration(locations = { "classpath:META-INF/insight-plugin-spring-integration.xml", 
                                     "classpath:META-INF/test-app-context.xml" },
                       loader = WebApplicationContextLoader.class)
 @RunWith(SpringJUnit4ClassRunner.class)
