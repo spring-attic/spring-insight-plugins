@@ -16,15 +16,18 @@
 
 package com.springsource.insight.plugin.springcore;
 
-import com.springsource.insight.collection.method.MethodOperationsCollected;
+import org.springframework.stereotype.Service;
 
 /**
  * Causes all {@link org.springframework.stereotype.Service} annotated classes to be instrumented
  */
-public aspect ServiceMethodOperationCollectionAspect {
-	/*
-	 * We exclude all Insight beans since if we want insight-on-insight we
-	 * cannot use this aspect as it may cause infinite recursion
-	 */
-    declare @type: (@org.springframework.stereotype.Service *) && !(com.springsource.insight..*) : @MethodOperationsCollected;
+public aspect ServiceMethodOperationCollectionAspect extends StereotypedSpringBeanMethodOperationCollectionAspectSupport {
+	public ServiceMethodOperationCollectionAspect () {
+		super(Service.class);
+	}
+
+	public pointcut collectionPoint()
+		: execution(public * (@Service *).*(..))
+	   && !excludedLifecyclePointcuts()
+	    ;
 }

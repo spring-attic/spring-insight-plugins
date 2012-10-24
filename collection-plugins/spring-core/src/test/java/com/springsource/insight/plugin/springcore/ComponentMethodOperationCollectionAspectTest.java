@@ -17,8 +17,10 @@
 package com.springsource.insight.plugin.springcore;
 
 import org.junit.Test;
+import org.springframework.stereotype.Component;
 
 import com.foo.example.ExampleComponent;
+import com.springsource.insight.plugin.springcore.beans.InsightComponent;
 
 
 /**
@@ -26,11 +28,21 @@ import com.foo.example.ExampleComponent;
  */
 public class ComponentMethodOperationCollectionAspectTest extends StereotypeOperationCollectionAspectTestSupport {
 	public ComponentMethodOperationCollectionAspectTest() {
-		super();
+		super(Component.class);
 	}
 
 	@Test
 	public void testNonInsightComponentCollected () {
-		assertStereotypeOperation(new ExampleComponent());
+		assertStereotypeOperation(new ExampleComponent(), true);
+	}
+
+	@Test
+	public void testInsightComponentNotCollected () {
+		assertStereotypeOperation(new InsightComponent(), false);
+	}
+
+	@Override
+	public ComponentMethodOperationCollectionAspect getAspect() {
+		return ComponentMethodOperationCollectionAspect.aspectOf();
 	}
 }

@@ -16,11 +16,15 @@
 
 package com.springsource.insight.plugin.springcore;
 
-import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.method.AnnotationDrivenMethodOperationCollectionAspect;
-import com.springsource.insight.collection.method.MethodOperationsCollected;
+import java.lang.annotation.Annotation;
+import java.util.List;
+
+import com.springsource.insight.collection.OperationCollector;
+import com.springsource.insight.collection.OperationListCollector;
 import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.OperationType;
+import com.springsource.insight.util.ListUtil;
 
 /**
  * 
@@ -28,26 +32,51 @@ import com.springsource.insight.intercept.operation.Operation;
 public abstract class StereotypeOperationCollectionAspectTestSupport
 		extends	OperationCollectionAspectTestSupport {
 
-	public StereotypeOperationCollectionAspectTestSupport() {
-		super();
+	protected final Class<? extends Annotation>	stereoTypeClass;
+
+	protected StereotypeOperationCollectionAspectTestSupport(Class<? extends Annotation> annClass) {
+		if ((stereoTypeClass=annClass) == null) {
+			throw new IllegalStateException("No stereotype class provided");
+		}
 	}
 
-	protected Operation assertStereotypeOperation (Runnable beanInstance) {
-		beanInstance.run();
-		return assertStereotypeOperation(beanInstance.getClass(), "run");
-	}
-
-	protected Operation assertStereotypeOperation (Class<?> beanClass, String beanMethod) {
-		MethodOperationsCollected	ann=beanClass.getAnnotation(MethodOperationsCollected.class);
-		assertNotNull(beanClass.getSimpleName() + " not annotated as @" + MethodOperationsCollected.class.getSimpleName(), ann);
-
-        Operation   operation=getLastEntered();
-        assertEquals("Mismatched label", beanClass.getSimpleName() + "#" + beanMethod, operation.getLabel());
-        return operation;
+    @Override
+	protected OperationCollector createSpiedOperationCollector(OperationCollector originalCollector) {
+        assertNotNull("No original collector", originalCollector);
+		return new OperationListCollector();
 	}
 
 	@Override
-	public OperationCollectionAspectSupport getAspect() {
-        return AnnotationDrivenMethodOperationCollectionAspect.aspectOf();
+	protected Operation getLastEnteredOperation(OperationCollector spiedCollector) {
+        List<Operation>	opsList=((OperationListCollector) spiedCollector).getCollectedOperations();
+		if (ListUtil.size(opsList) <= 0) {
+			return null;
+		} else {
+			return opsList.get(opsList.size() - 1);
+		}
+	}
+
+	protected Operation assertStereotypeOperation (Runnable beanInstance, boolean withOperation) {
+		Class<?>	beanClass=beanInstance.getClass();
+		Annotation	ann=beanClass.getAnnotation(stereoTypeClass);
+		assertNotNull("Missing stereotype @" + stereoTypeClass.getSimpleName(), ann);
+
+		beanInstance.run();
+
+		Operation   operation=getLastEntered();
+		if (withOperation) {
+			assertStereotypeOperation(operation, beanClass, "run");
+		} else if (operation != null) {
+        	fail(beanClass.getSimpleName() + " unexpected operation: " + operation.getLabel());
+        }
+		return operation;
+	}
+
+	protected Operation assertStereotypeOperation (Operation operation, Class<?> beanClass, String beanMethod) {
+        assertNotNull(beanClass.getSimpleName() + " no operation", operation);
+        assertEquals(beanClass.getSimpleName() + " mismatched type", OperationType.METHOD, operation.getType());
+        assertEquals("Mismatched component type", stereoTypeClass.getSimpleName(), operation.get(StereotypedSpringBeanMethodOperationCollectionAspectSupport.COMP_TYPE_ATTR, String.class));
+        assertEquals("Mismatched label", beanClass.getSimpleName() + "#" + beanMethod, operation.getLabel());
+        return operation;
 	}
 }

@@ -18,7 +18,6 @@ package com.springsource.insight.plugin.springcore;
 
 import org.aspectj.lang.JoinPoint;
 
-import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.operation.Operation;
 
@@ -26,7 +25,7 @@ import com.springsource.insight.intercept.operation.Operation;
  * 
  */
 public abstract aspect SpringLifecycleMethodOperationCollectionAspect
-			extends MethodOperationCollectionAspect {
+			extends SpringCoreOperationCollectionAspect {
     /**
      * The <U>static</U> score assigned to operations that do not contain
      * interesting enough Spring core API(s) - it is just slightly
@@ -42,9 +41,4 @@ public abstract aspect SpringLifecycleMethodOperationCollectionAspect
 	protected Operation createOperation(JoinPoint jp) {
 		return super.createOperation(jp).put(EndPointAnalysis.SCORE_FIELD, LIFECYCLE_SCORE);
 	}
-
-	@Override
-    public String getPluginName() {
-        return SpringCorePluginRuntimeDescriptor.PLUGIN_NAME;
-    }
 }

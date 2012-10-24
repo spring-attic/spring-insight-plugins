@@ -33,8 +33,11 @@ public aspect InitializingBeanOperationCollectionAspect extends SpringLifecycleM
     public pointcut postConstruct()
         : execution(@PostConstruct * *(..));
 
+    public pointcut beanInitialization()
+    	: afterPropertiesSet() || postConstruct();
+
     public pointcut collectionPoint() :
-        (afterPropertiesSet() || postConstruct()) &&
+    	beanInitialization() &&
         !AnnotationDrivenMethodOperationCollectionAspect.collectionPoint();
 }
 

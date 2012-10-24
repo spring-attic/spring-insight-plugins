@@ -18,10 +18,15 @@ package com.springsource.insight.plugin.springcore.beans;
 
 import org.springframework.stereotype.Repository;
 
+import com.foo.example.AbstractBean;
+
 @Repository
-public class InsightRepository {
+public class InsightRepository extends AbstractBean {
 	public InsightRepository() {
 		super();
 	}
 
+	public void run () {
+		logger.info("run(" + getClass().getSimpleName() + ")");
+	}
 }

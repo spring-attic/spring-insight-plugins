@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package com.springsource.insight.plugin.springcore.beans;
+package com.springsource.insight.plugin.springcore;
 
-import org.springframework.stereotype.Component;
+import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
 
-import com.foo.example.AbstractBean;
-
-@Component
-public class InsightComponent extends AbstractBean {
-	public InsightComponent() {
+/**
+ * 
+ */
+public abstract aspect SpringCoreOperationCollectionAspect extends MethodOperationCollectionAspect {
+	protected SpringCoreOperationCollectionAspect () {
 		super();
 	}
 
-	public void run () {
-		logger.info("run(" + getClass().getSimpleName() + ")");
-	}
+	@Override
+    public String getPluginName() {
+        return SpringCorePluginRuntimeDescriptor.PLUGIN_NAME;
+    }
 }

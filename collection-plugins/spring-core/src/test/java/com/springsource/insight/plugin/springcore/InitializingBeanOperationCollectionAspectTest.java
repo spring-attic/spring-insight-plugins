@@ -24,6 +24,7 @@ import org.springframework.beans.factory.InitializingBean;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.SourceCodeLocation;
 
 public class InitializingBeanOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
     public InitializingBeanOperationCollectionAspectTest () {
@@ -34,16 +35,14 @@ public class InitializingBeanOperationCollectionAspectTest extends OperationColl
     public void initializingBean() {
         MyInitializingBean bean = new MyInitializingBean();
         bean.afterPropertiesSet();
-        Operation op = getLastEntered();
-        assertEquals("afterPropertiesSet", op.getSourceCodeLocation().getMethodName());
+        assertInitMethod("afterPropertiesSet");
     }
 
     @Test
     public void postConstruct() {
         PostConstructBean bean = new PostConstructBean();
         bean.postConstruct();
-        Operation op = getLastEntered();
-        assertEquals("postConstruct", op.getSourceCodeLocation().getMethodName());
+        assertInitMethod("postConstruct");
     }
 
     @Override
@@ -51,13 +50,26 @@ public class InitializingBeanOperationCollectionAspectTest extends OperationColl
         return InitializingBeanOperationCollectionAspect.aspectOf();
     }
 
-    class MyInitializingBean implements InitializingBean {
+    private Operation assertInitMethod (String methodName) {
+        Operation op = getLastEntered();
+        assertNotNull("No operation", op);
+
+        String	compType=op.get(StereotypedSpringBeanMethodOperationCollectionAspectSupport.COMP_TYPE_ATTR, String.class);
+        // make sure not intercepted by one of the stereotyped beans aspects
+        assertNull("Unexpected stereotyped bean method collection: " + compType, compType);
+
+        SourceCodeLocation	scl=op.getSourceCodeLocation();
+        assertEquals("Mismatched method", methodName, scl.getMethodName());
+        return op;
+    }
+
+    static class MyInitializingBean implements InitializingBean {
         public void afterPropertiesSet() {
         	// do nothing
         }
     }
 
-    class PostConstructBean {
+    static class PostConstructBean {
         @PostConstruct
         public void postConstruct() {
         	// do nothing

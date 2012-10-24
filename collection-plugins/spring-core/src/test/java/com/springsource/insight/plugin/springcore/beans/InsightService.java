@@ -18,10 +18,15 @@ package com.springsource.insight.plugin.springcore.beans;
 
 import org.springframework.stereotype.Service;
 
+import com.foo.example.AbstractBean;
+
 @Service
-public class InsightService {
+public class InsightService extends AbstractBean {
 	public InsightService() {
 		super();
 	}
 
+	public void run () {
+		logger.info("run(" + getClass().getSimpleName() + ")");
+	}
 }

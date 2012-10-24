@@ -17,16 +17,28 @@
 package com.springsource.insight.plugin.springcore;
 
 import org.junit.Test;
+import org.springframework.stereotype.Repository;
 
 import com.foo.example.ExampleRepository;
+import com.springsource.insight.plugin.springcore.beans.InsightRepository;
 
 public class RepositoryMethodOperationCollectionAspectTest extends StereotypeOperationCollectionAspectTestSupport {
 	public RepositoryMethodOperationCollectionAspectTest () {
-		super();
+		super(Repository.class);
 	}
 
     @Test
     public void testNonInsightComponentCollected() {
-        assertStereotypeOperation(new ExampleRepository());
+        assertStereotypeOperation(new ExampleRepository(), true);
     }
+
+	@Test
+	public void testInsightComponentNotCollected () {
+		assertStereotypeOperation(new InsightRepository(), false);
+	}
+
+	@Override
+	public RepositoryMethodOperationCollectionAspect getAspect() {
+		return RepositoryMethodOperationCollectionAspect.aspectOf();
+	}
 }

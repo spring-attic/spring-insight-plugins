@@ -17,16 +17,28 @@
 package com.springsource.insight.plugin.springcore;
 
 import org.junit.Test;
+import org.springframework.stereotype.Service;
 
 import com.foo.example.ExampleService;
+import com.springsource.insight.plugin.springcore.beans.InsightService;
 
 public class ServiceMethodOperationCollectionAspectTest extends StereotypeOperationCollectionAspectTestSupport {
 	public ServiceMethodOperationCollectionAspectTest () {
-		super();
+		super(Service.class);
 	}
 
     @Test
     public void testNonInsightComponentCollected() {
-        assertStereotypeOperation(new ExampleService());
+        assertStereotypeOperation(new ExampleService(), true);
     }
+
+	@Test
+	public void testInsightComponentNotCollected () {
+		assertStereotypeOperation(new InsightService(), false);
+	}
+
+	@Override
+	public ServiceMethodOperationCollectionAspect getAspect() {
+		return ServiceMethodOperationCollectionAspect.aspectOf();
+	}
 }
