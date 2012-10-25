@@ -33,6 +33,7 @@ public class ExposedIntegrationPluginSpringBeanTest
      */
 	@Autowired(required=false) protected IntegrationPluginRuntimeDescriptor	integrationPluginRuntimeDescriptor;
 	@Autowired(required=false) protected IntegrationEndPointAnalyzer	integrationEndPointAnalyzer;
+	@Autowired(required=false) protected TcpConnectionExternalResourceAnalyzer	tcpConnectionExternalResourceAnalyzer;
 
 	public ExposedIntegrationPluginSpringBeanTest() {
 		super(IntegrationPluginRuntimeDescriptor.class);

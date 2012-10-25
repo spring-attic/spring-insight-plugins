@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.springsource.insight.plugin.socket;
+
+package com.springsource.insight.plugin.integration;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -22,6 +23,7 @@ import java.util.Set;
 
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
+import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.topology.AbstractExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
@@ -29,36 +31,39 @@ import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.ListUtil;
+import com.springsource.insight.util.StringUtil;
 
 /**
- * Extracts {@link SocketDefinitions#CONNECT_ACTION} target addresses as
- * {@link ExternalResourceType#SERVER} {@link ExternalResourceDescriptor}-s
+ * Extracts {@link TcpConnectionOperationCollector#HOST_ADDRESS_ATTR} target addresses
+ * as {@link ExternalResourceType#SERVER} {@link ExternalResourceDescriptor}-s
  */
-public class SocketExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-	private static final SocketExternalResourceAnalyzer	INSTANCE=new SocketExternalResourceAnalyzer();
+public class TcpConnectionExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
+    public static final OperationType TYPE = OperationType.valueOf("integration_tcpconn");
+    private static final TcpConnectionExternalResourceAnalyzer	INSTANCE=new TcpConnectionExternalResourceAnalyzer();
 
-    private SocketExternalResourceAnalyzer() {
-       super(SocketDefinitions.TYPE);
-    }
+	private TcpConnectionExternalResourceAnalyzer() {
+		super(TYPE);
+	}
 
-    public static final SocketExternalResourceAnalyzer getInstance() {
-    	return INSTANCE;
-    }
+	public static final TcpConnectionExternalResourceAnalyzer getInstance() {
+		return INSTANCE;
+	}
 
-    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame>   framesList) {
-        if (ListUtil.size(framesList) <= 0) {
+	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> externalFrames) {
+        if (ListUtil.size(externalFrames) <= 0) {
             return Collections.emptyList();
         }
 
-        Set<ExternalResourceDescriptor> resSet=new HashSet<ExternalResourceDescriptor>(framesList.size());
-        for (Frame frame : framesList) {
+        Set<ExternalResourceDescriptor> resSet=new HashSet<ExternalResourceDescriptor>(externalFrames.size());
+        for (Frame frame : externalFrames) {
             ExternalResourceDescriptor  res=extractExternalResourceDescriptor(frame);
             if (res == null) {  // can happen if failed to parse the URI somehow
                 continue;
             }
-            
-            if (!resSet.add(res))
+
+            if (!resSet.add(res)) {
                 continue;   // debug breakpoint
+            }
         }
         
         return resSet;
@@ -66,24 +71,23 @@ public class SocketExternalResourceAnalyzer extends AbstractExternalResourceAnal
 
     ExternalResourceDescriptor extractExternalResourceDescriptor (Frame frame) {
         Operation   op=(frame == null) ? null : frame.getOperation();
-        String      action=(op == null) ? null : op.get(SocketDefinitions.ACTION_ATTR, String.class);
-        if (!SocketDefinitions.CONNECT_ACTION.equals(action)) {
+        String      addr=(op == null) ? null : op.get(TcpConnectionOperationCollector.HOST_ADDRESS_ATTR, String.class);
+        if (StringUtil.isEmpty(addr)) {
             return null;
         }
 
-        String  addr=op.get(SocketDefinitions.ADDRESS_ATTR, String.class);
-        int     port=op.get(SocketDefinitions.PORT_ATTR, Number.class).intValue();
-        String  uri=op.get(OperationFields.URI,String.class);
-        ExternalResourceType    type=(uri == null) ? ExternalResourceType.SERVER : ExternalResourceType.WEB_SERVER;
-        String color = colorManager.getColor(op);
-        
+        int     port=op.get(TcpConnectionOperationCollector.PORT_ATTR, Number.class).intValue();
+        String	uri=op.get(OperationFields.URI, String.class);
+        String	color=colorManager.getColor(op);
         return new ExternalResourceDescriptor(frame,
-        									  MD5NameGenerator.getName(addr + ":" + port),
-                                              op.getLabel(),
-                                              type.name(),
+        									  MD5NameGenerator.getName(uri),
+                                              op.getLabel() + " " + uri,
+                                              ExternalResourceType.SERVER.name(),
                                               null,
                                               addr,
                                               port,
-                                              color, false);
+                                              color,
+                                              false);
     }
+
 }

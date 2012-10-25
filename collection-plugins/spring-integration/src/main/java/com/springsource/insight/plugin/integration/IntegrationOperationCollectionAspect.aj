@@ -16,6 +16,9 @@
 
 package com.springsource.insight.plugin.integration;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.aspectj.lang.JoinPoint;
 import org.springframework.integration.Message;
 import org.springframework.integration.MessageChannel;
@@ -23,22 +26,15 @@ import org.springframework.integration.context.IntegrationObjectSupport;
 import org.springframework.integration.core.MessageHandler;
 import org.springframework.integration.transformer.Transformer;
 
-import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Aspect collecting operations for Spring Integration frames; channels, 
  * message handlers, and transformers are supported.
  *
  */
-public aspect IntegrationOperationCollectionAspect
-    extends AbstractOperationCollectionAspect
-{
-
+public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOperationCollectionAspect {
     public static final OperationType TYPE = OperationType.valueOf("integration_operation");
 
     public static final String CHANNEL = "Channel";
@@ -120,11 +116,6 @@ public aspect IntegrationOperationCollectionAspect
     @Override
     public boolean isEndpoint() {
         return true;
-    }
-
-    @Override
-    public String getPluginName() {
-        return IntegrationPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 
 }

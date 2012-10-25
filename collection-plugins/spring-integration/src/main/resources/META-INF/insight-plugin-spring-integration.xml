@@ -9,9 +9,16 @@
 
 	<insight:operation-view operation="integration_operation" 
 				template="com/springsource/insight/plugin/integration/integration_operation.ftl"/>
+    <insight:operation-view operation="integration_tcpconn" 
+                template="com/springsource/insight/plugin/integration/integration_tcpconn.ftl"/>
 
     <bean id="springIntegrationPluginEndPointAnalyzer"
           class="com.springsource.insight.plugin.integration.IntegrationEndPointAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="springIntegrationPluginTcpConnectionExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.integration.TcpConnectionExternalResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
         />

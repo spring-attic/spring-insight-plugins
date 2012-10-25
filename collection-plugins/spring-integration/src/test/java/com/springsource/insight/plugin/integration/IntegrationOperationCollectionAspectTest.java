@@ -16,19 +16,18 @@
 
 package com.springsource.insight.plugin.integration;
 
-import static org.mockito.MockitoAnnotations.initMocks;
+import java.util.UUID;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.integration.Message;
 import org.springframework.integration.MessageChannel;
+import org.springframework.integration.MessageHeaders;
 import org.springframework.integration.MessagingException;
 import org.springframework.integration.context.IntegrationObjectSupport;
 import org.springframework.integration.core.MessageHandler;
 import org.springframework.integration.message.GenericMessage;
 import org.springframework.integration.transformer.Transformer;
 
-import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
@@ -39,66 +38,61 @@ import com.springsource.insight.intercept.operation.Operation;
  * @author Gary Russell
  */
 public class IntegrationOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-    private Message<String> transformedMessage;
-
     public IntegrationOperationCollectionAspectTest () {
     	super();
     }
-
-    @Before
-    @Override
-    public void setUp() {
-    	super.setUp();
-        initMocks(this);
-    }
     
     @Test
-    public void channelCollected() {
+    public void testChannelCollected() {
         MyChannel channel = new MyChannel();
         channel.setBeanName("testChannel");
         Message<String> message = new GenericMessage<String>("Test");
         channel.send(message);
-        
-        Operation op = getLastEntered();
-        
-        assertEquals("Channel", op.get("siComponentType"));
-        assertEquals("testChannel", op.get("beanName"));
-        assertEquals(message.getHeaders().getId().toString(), op.get("idHeader"));
-        assertEquals("java.lang.String", op.get("payloadType"));
+        assertIntegrationOperation("Channel", "testChannel", message);
     }
 
     @Test
-    public void handlerCollected() {
+    public void testHandlerCollected() {
         MyHandler handler = new MyHandler();
         handler.setBeanName("testHandler");
         Message<String> message = new GenericMessage<String>("Test");
         handler.handleMessage(message);
-        
-        Operation op = getLastEntered();
-        
-        assertEquals("MessageHandler", op.get("siComponentType"));        
-        assertEquals("testHandler", op.get("beanName"));
-        assertEquals(message.getHeaders().getId().toString(), op.get("idHeader"));
-        assertEquals("java.lang.String", op.get("payloadType"));
+        assertIntegrationOperation("MessageHandler", "testHandler", message);
     }
 
     @Test
-    public void transformerCollected() {
+    public void testTransformerCollected() {
         MyTransformer transformer = new MyTransformer();
         transformer.setBeanName("testTransform");
+        transformer.transformedMessage = new GenericMessage<String>("Transformed");
         Message<String> message = new GenericMessage<String>("Test");
-        this.transformedMessage = new GenericMessage<String>("Transformed");
-        transformer.transform(message);
-        
-        Operation op = getLastEntered();
-        
-        assertEquals("Transformer", op.get("siComponentType"));        
-        assertEquals("testTransform", op.get("beanName"));
-        assertEquals(message.getHeaders().getId().toString(), op.get("idHeader"));
-        assertEquals("java.lang.String", op.get("payloadType"));
+        Message<?>		result = transformer.transform(message);
+        assertSame("Mismatched transformed instance", transformer.transformedMessage, result);
+        assertIntegrationOperation("Transformer", "testTransform", message);
     }
 
-    private class MyChannel extends IntegrationObjectSupport implements MessageChannel {
+    private Operation assertIntegrationOperation (String compType, String beanName, Message<String> message) {
+        Operation op = getLastEntered();
+        assertNotNull("No operation", op);
+        assertEquals("Mismatched type", IntegrationOperationCollectionAspect.TYPE, op.getType());
+
+        assertEquals("Mismatched component type", compType, op.get("siComponentType", String.class));        
+        assertEquals("Mismatched bean name", beanName, op.get("beanName", String.class));
+
+        MessageHeaders	hdrs=message.getHeaders();
+        UUID			msgId=hdrs.getId();
+        assertEquals("Mismatched message id", msgId.toString(), op.get("idHeader", String.class));
+        assertEquals("Mismatched payload type", "java.lang.String", op.get("payloadType", String.class));
+        
+        return op;
+    }
+    
+    @Override
+    public IntegrationOperationCollectionAspect getAspect() {
+        return IntegrationOperationCollectionAspect.aspectOf();
+    }
+
+    private static class MyChannel extends IntegrationObjectSupport implements MessageChannel {
     	public MyChannel () {
     		super();
     	}
@@ -112,7 +106,7 @@ public class IntegrationOperationCollectionAspectTest extends OperationCollectio
         }
     }
     
-    private class MyHandler extends IntegrationObjectSupport implements MessageHandler {
+    private static class MyHandler extends IntegrationObjectSupport implements MessageHandler {
     	public MyHandler () {
     		super();
     	}
@@ -122,20 +116,15 @@ public class IntegrationOperationCollectionAspectTest extends OperationCollectio
         }
     }
     
-    private class MyTransformer extends IntegrationObjectSupport implements Transformer {
+    private static class MyTransformer extends IntegrationObjectSupport implements Transformer {
+        Message<String> transformedMessage;
+
     	public MyTransformer () {
     		super();
     	}
 
-        @SuppressWarnings("synthetic-access")
 		public Message<?> transform(Message<?> message) {
             return transformedMessage;
         }
-    }
-
-    
-    @Override
-    public OperationCollectionAspectSupport getAspect() {
-        return IntegrationOperationCollectionAspect.aspectOf();
     }
 }
