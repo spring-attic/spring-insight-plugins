@@ -16,11 +16,10 @@
 
 package com.springsource.insight.plugin.springweb;
 
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-import com.springsource.insight.intercept.spring.AbstractExposedPluginSpringBeanTestSupport;
+import com.springsource.insight.intercept.spring.AbstractExposedStandardPluginSpringBeanTestSupport;
 import com.springsource.insight.plugin.springweb.controller.ControllerEndPointAnalyzer;
 import com.springsource.insight.plugin.springweb.validation.ValidationEndPointAnalyzer;
 import com.springsource.insight.plugin.springweb.validation.ValidationErrorsMetricsGenerator;
@@ -29,7 +28,8 @@ import com.springsource.insight.plugin.springweb.validation.ValidationErrorsMetr
  * Makes sure that the exposed singletons are indeed visible 
  */
 @ContextConfiguration(locations={ "classpath:META-INF/insight-plugin-springweb.xml" })
-public class ExposedPluginSpringBeanTest extends AbstractExposedPluginSpringBeanTestSupport {
+public class ExposedSpringWebPluginSpringBeanTest
+		extends AbstractExposedStandardPluginSpringBeanTestSupport<SpringWebPluginRuntimeDescriptor> {
     /* NOTE: all beans are autowired with required=false since we want
      * to have specific tests for each and we don't want to fail ALL the
      * tests if one bean is missing
@@ -39,17 +39,7 @@ public class ExposedPluginSpringBeanTest extends AbstractExposedPluginSpringBean
 	@Autowired(required=false) protected ValidationErrorsMetricsGenerator	validationErrorsMetricsGenerator;
 	@Autowired(required=false) protected SpringWebPluginRuntimeDescriptor	springWebPluginRuntimeDescriptor;
 	
-	public ExposedPluginSpringBeanTest() {
-		super();
-	}
-
-    @Test
-    public void testWiredBeanDefinitions () throws Exception {
-    	assertWiredBeanDefinitions(SpringWebPluginRuntimeDescriptor.class);
-    }
-
-	@Test
-	public void testExposedPluginRuntimeDescriptor () throws Exception {
-		assertExposedPluginRuntimeDescriptorExports(SpringWebPluginRuntimeDescriptor.getInstance());
+	public ExposedSpringWebPluginSpringBeanTest() {
+		super(SpringWebPluginRuntimeDescriptor.class);
 	}
 }

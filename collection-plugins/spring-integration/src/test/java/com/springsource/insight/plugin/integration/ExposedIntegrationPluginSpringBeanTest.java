@@ -16,17 +16,17 @@
 
 package com.springsource.insight.plugin.integration;
 
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-import com.springsource.insight.intercept.spring.AbstractExposedPluginSpringBeanTestSupport;
+import com.springsource.insight.intercept.spring.AbstractExposedStandardPluginSpringBeanTestSupport;
 
 /**
  * Makes sure that the exposed singletons are indeed visible 
  */
 @ContextConfiguration(locations={ "classpath:META-INF/insight-plugin-spring-integration.xml" })
-public class ExposedPluginSpringBeanTest extends AbstractExposedPluginSpringBeanTestSupport {
+public class ExposedIntegrationPluginSpringBeanTest
+	   extends AbstractExposedStandardPluginSpringBeanTestSupport<IntegrationPluginRuntimeDescriptor> {
     /* NOTE: all beans are autowired with required=false since we want
      * to have specific tests for each and we don't want to fail ALL the
      * tests if one bean is missing
@@ -34,18 +34,7 @@ public class ExposedPluginSpringBeanTest extends AbstractExposedPluginSpringBean
 	@Autowired(required=false) protected IntegrationPluginRuntimeDescriptor	integrationPluginRuntimeDescriptor;
 	@Autowired(required=false) protected IntegrationEndPointAnalyzer	integrationEndPointAnalyzer;
 
-	public ExposedPluginSpringBeanTest() {
-		super();
-	}
-
-
-    @Test
-    public void testWiredBeanDefinitions () throws Exception {
-    	assertWiredBeanDefinitions(IntegrationPluginRuntimeDescriptor.class);
-    }
-
-	@Test
-	public void testExposedPluginRuntimeDescriptor () throws Exception {
-		assertExposedPluginRuntimeDescriptorExports(IntegrationPluginRuntimeDescriptor.getInstance());
+	public ExposedIntegrationPluginSpringBeanTest() {
+		super(IntegrationPluginRuntimeDescriptor.class);
 	}
 }
