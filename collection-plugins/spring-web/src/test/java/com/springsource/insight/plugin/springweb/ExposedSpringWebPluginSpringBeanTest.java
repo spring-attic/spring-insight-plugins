@@ -21,6 +21,8 @@ import org.springframework.test.context.ContextConfiguration;
 
 import com.springsource.insight.intercept.spring.AbstractExposedStandardPluginSpringBeanTestSupport;
 import com.springsource.insight.plugin.springweb.controller.ControllerEndPointAnalyzer;
+import com.springsource.insight.plugin.springweb.remoting.HttpInvokerRequestExecutorExternalResourceAnalyzer;
+import com.springsource.insight.plugin.springweb.remoting.HttpInvokerRequestExecutorTraceErrorAnalyzer;
 import com.springsource.insight.plugin.springweb.validation.ValidationEndPointAnalyzer;
 import com.springsource.insight.plugin.springweb.validation.ValidationErrorsMetricsGenerator;
 
@@ -38,7 +40,9 @@ public class ExposedSpringWebPluginSpringBeanTest
 	@Autowired(required=false) protected ValidationEndPointAnalyzer	validationEndPointAnalyzer;
 	@Autowired(required=false) protected ValidationErrorsMetricsGenerator	validationErrorsMetricsGenerator;
 	@Autowired(required=false) protected SpringWebPluginRuntimeDescriptor	springWebPluginRuntimeDescriptor;
-	
+	@Autowired(required=false) protected HttpInvokerRequestExecutorExternalResourceAnalyzer httpInvokerRequestExecutorExternalResourceAnalyzer;
+	@Autowired(required=false) protected HttpInvokerRequestExecutorTraceErrorAnalyzer	httpInvokerRequestExecutorTraceErrorAnalyzer;
+
 	public ExposedSpringWebPluginSpringBeanTest() {
 		super(SpringWebPluginRuntimeDescriptor.class);
 	}

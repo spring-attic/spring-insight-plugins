@@ -14,7 +14,7 @@
 	<insight:operation-view operation="web_request" template="com/springsource/insight/plugin/springweb/request/web_request.ftl"/>
     <insight:operation-view operation="controller_method" template="com/springsource/insight/plugin/springweb/controller/controller_method.ftl"/>
     <insight:operation-view operation="controller_validator" template="com/springsource/insight/plugin/springweb/validation/controller_validator.ftl"/>
-	
+    <insight:operation-view operation="http_invoker" template="com/springsource/insight/plugin/springweb/remoting/http_invoker.ftl"/>
 
 	<insight:operation-group group="Web" operation="init_binder" />
 	<insight:operation-group group="Web" operation="controller_method" />
@@ -23,6 +23,16 @@
 	<insight:operation-group group="Web" operation="view_resolver" />
     <insight:operation-group group="Web" operation="controller_validator" />
 
+    <bean id="springWebPluginHttpRemotingExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.springweb.remoting.HttpInvokerRequestExecutorExternalResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="springWebPluginHttpRemotingErrorsAnalyzer"
+          class="com.springsource.insight.plugin.springweb.remoting.HttpInvokerRequestExecutorTraceErrorAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
     <bean id="springWebPluginControllerEndPointAnalyzer"
           class="com.springsource.insight.plugin.springweb.controller.ControllerEndPointAnalyzer"
           factory-method="getInstance"

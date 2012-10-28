@@ -17,7 +17,6 @@
 package com.springsource.insight.plugin.springweb.validation;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -119,11 +118,8 @@ public class ValidationErrorsMetricsGeneratorTest extends AbstractCollectionTest
 							.label(numErrors + " errors")
 							.type(ValidationErrorsMetricsGenerator.TYPE)
 							.put(ValidationJoinPointFinalizer.ERRORS_COUNT, numErrors);
-		Frame	frame=Mockito.mock(Frame.class);
+		Frame	frame=createMockOperationWrapperFrame(op);
 		Mockito.when(frame.getRange()).thenReturn(range);
-		Mockito.when(frame.getOperation()).thenReturn(op);
-		Mockito.when(frame.getParent()).thenReturn(null);
-		Mockito.when(frame.getChildren()).thenReturn(Collections.<Frame>emptyList());
 		return frame;
 	}
 }
