@@ -20,6 +20,7 @@ import com.springsource.insight.intercept.operation.OperationType;
 
 
 public enum OperationCollectionTypes {
+	INIT_TYPE("neo4j-init", "Neo4j: Initialization"),
 	QUERY_TYPE("neo4j-query", "Neo4j: "),
 	FIND_TYPE("neo4j-find", "Neo4j: "),
 	LOOKUP_TYPE("neo4j-lookup", "Neo4j: Lookup"),

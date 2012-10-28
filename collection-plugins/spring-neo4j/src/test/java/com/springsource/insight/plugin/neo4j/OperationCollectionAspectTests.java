@@ -34,6 +34,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class OperationCollectionAspectTests {
 	@Autowired Neo4jTemplate template;
 	
+	
+	public void test_Init() {
+		template.setInfrastructure(template.getInfrastructure());
+	}
+	
 	@Test
 	public void test_Find() {
 	    Movie movie = template.save(new Movie(1, "Forrest Gump", 1994));
