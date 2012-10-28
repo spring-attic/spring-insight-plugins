@@ -42,6 +42,18 @@ import com.springsource.insight.util.StringUtil;
  */
 public class HttpInvokerRequestExecutorExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
 	public static final OperationType	HTTP_INVOKER=OperationType.valueOf("http_invoker");
+	/**
+	 * Special attribute used to indicate whether the HTTP invocation was
+	 * executed using core Java classes (e.g. {@link java.net.HttpURLConnection} only
+	 * or via a framework (e.g., <A HREF="http://hc.apache.org/httpclient-3.x/">Apache client</A>).
+	 * We generate an external resource only for the <U>core</U> classes
+	 * invocation and rely on the other plugins for the alternative frameworks.
+	 * This is done in order to avoid ambiguity if both the HTTP invoker aspect
+	 * and the framework plugin are applied to the same trace, and thus may
+	 * generate equivalent (though not same) external resource descriptors
+	 * @see org.springframework.remoting.httpinvoker.SimpleHttpInvokerRequestExecutor
+	 */
+	public static final String	DIRECT_CALL_ATTR="directInvocationCall";
 	public static final int	IPPORT_HTTP=80;
 	private static final HttpInvokerRequestExecutorExternalResourceAnalyzer	INSTANCE=new HttpInvokerRequestExecutorExternalResourceAnalyzer();
 
@@ -75,6 +87,11 @@ public class HttpInvokerRequestExecutorExternalResourceAnalyzer extends Abstract
 
 	ExternalResourceDescriptor extractExternalResourceDescriptor (Frame frame) {
 		Operation	op=frame.getOperation();
+		Boolean		directCall=op.get(DIRECT_CALL_ATTR, Boolean.class);
+		if ((directCall == null) || (!directCall.booleanValue())) {
+			return null;
+		}
+
 		String		url=op.get(OperationFields.URI, String.class);
 		if (StringUtil.isEmpty(url)) {
 			return null;

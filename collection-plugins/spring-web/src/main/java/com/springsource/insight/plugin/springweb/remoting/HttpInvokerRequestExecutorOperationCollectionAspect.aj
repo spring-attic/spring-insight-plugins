@@ -24,6 +24,7 @@ import org.springframework.remoting.httpinvoker.HttpInvokerClientConfiguration;
 import org.springframework.remoting.httpinvoker.HttpInvokerRequestExecutor;
 import org.springframework.remoting.support.RemoteInvocation;
 
+import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.intercept.InterceptConfiguration;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
@@ -54,18 +55,13 @@ public aspect HttpInvokerRequestExecutorOperationCollectionAspect extends Abstra
 		Object[]						args=jp.getArgs();
 		HttpInvokerClientConfiguration	config=(HttpInvokerClientConfiguration) args[0];
 		RemoteInvocation				invocation=(RemoteInvocation) args[1];
-		Operation						op=new Operation()
-													.type(HttpInvokerRequestExecutorExternalResourceAnalyzer.HTTP_INVOKER)
-													.label(createLabel(invocation))
-													.sourceCodeLocation(getSourceCodeLocation(jp))
-													;
+		Operation						op=OperationCollectionUtil.methodOperation(
+        			new Operation().type(HttpInvokerRequestExecutorExternalResourceAnalyzer.HTTP_INVOKER), jp)
+        				.put(HttpInvokerRequestExecutorExternalResourceAnalyzer.DIRECT_CALL_ATTR, false)
+        				;
 		encodeRemoteInvocation(op, invocation);
 		encodeInvocationConfig(op, config);
 		return op;
-	}
-
-	static String createLabel(RemoteInvocation invocation) {
-		return HttpInvokerRequestExecutor.class.getSimpleName() + "#executeRequest(" + invocation.getMethodName() + ")";
 	}
 	
 	protected Operation encodeInvocationConfig (Operation op, HttpInvokerClientConfiguration config) {
@@ -93,12 +89,9 @@ public aspect HttpInvokerRequestExecutorOperationCollectionAspect extends Abstra
 
 	protected Operation encodeRemoteInvocation (Operation op, RemoteInvocation invocation) {
 		String	methodName=invocation.getMethodName();
+		String	remoteLocation=JoinPointBreakDown.getMethodStringFromArgs(methodName, invocation.getParameterTypes());
+		op.label(remoteLocation).put("remoteMethodSignature", remoteLocation);
 
-		op.put(OperationFields.CLASS_NAME, RemoteInvocation.class.getName())
-		  .put(OperationFields.SHORT_CLASS_NAME, RemoteInvocation.class.getSimpleName())
-		  .put(OperationFields.METHOD_NAME, methodName)
-		  .put(OperationFields.METHOD_SIGNATURE, JoinPointBreakDown.getMethodStringFromArgs(methodName, invocation.getParameterTypes()))
-		  ;
 		if (collectExtraInformation()) {
 			encodeInvocationAttributes(op.createMap("remoteInvocationAttrs"), invocation.getAttributes());
 		}
