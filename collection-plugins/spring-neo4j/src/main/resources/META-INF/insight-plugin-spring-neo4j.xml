@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:insight="http://www.springframework.org/schema/insight-idk"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
+
+	<insight:plugin name="neo4j" version="${project.version}" publisher="SpringSource" />
+
+    <insight:operation-view operation="neo4j-query" template="com/springsource/insight/plugin/neo4j/query.ftl"/>
+	<insight:operation-view operation="neo4j-find" template="com/springsource/insight/plugin/neo4j/find.ftl"/>
+	<insight:operation-view operation="neo4j-lookup" template="com/springsource/insight/plugin/neo4j/lookup.ftl"/>
+	<insight:operation-view operation="neo4j-traverse" template="com/springsource/insight/plugin/neo4j/traverse.ftl"/>
+	
+	<insight:operation-group group="DB" operation="neo4j-query" />
+	<insight:operation-group group="DB" operation="neo4j-find" />
+	<insight:operation-group group="DB" operation="neo4j-lookup" />
+	<insight:operation-group group="DB" operation="neo4j-traverse" />
+
+    <bean id="springNeo4jPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.neo4j.Neo4jPluginRuntimeDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+</beans>

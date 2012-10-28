@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="insight-plugin-spring-neo4j" default="install">
+    <description>
+        Provides some useful ANT tasks involving the entire project
+    </description>
+
+    <dirname property="module.root.folder" file="${ant.file}" />
+    <dirname property="collection.plugins.folder" file="${module.root.folder}" />
+    <dirname property="insight.community.folder" file="${collection.plugins.folder}" />
+    <dirname property="insight.root.folder" file="${insight.community.folder}" />
+    <property name="insight.parent.folder" value="${insight.root.folder}${file.separator}parent" />
+    <property name="module.artifact.name" value="${ant.project.name}" />
+    <import file="${insight.parent.folder}${file.separator}build-insight.xml" />
+
+    <target name="compile" depends="run-module-mvn" description="Runs the mvn install command - including all the tests" />
+    <target name="uncompile" depends="clean-module-mvn" description="Runs the mvn clean command - including un-install the artifact from Maven local repository" />
+
+        <!-- ############### Generic targets ############## -->
+    <target name="install" depends="compile,copy-collection-plugin-artifact"
+            description="Compiles (including all the tests) and deploys the required artifacts" />
+
+    <target name="clean" depends="clean-module-mvn,clean-collection-plugin-artifact"
+            description="Runs the mvn clean command + undeploys the generated artifacts" />
+
+    <target name="re-install" depends="clean,install"
+            description="Cleans the artifacts and re-creates them from scratch (including all the tests)" />
+</project>

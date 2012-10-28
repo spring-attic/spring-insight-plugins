@@ -61,6 +61,7 @@
 		<module>spring-core</module>
 		<module>spring-data</module>
 		<module>spring-integration</module>
+		<module>spring-neo4j</module>
 		<module>spring-security</module>
 		<module>spring-tx</module>
 		<module>spring-web</module>
