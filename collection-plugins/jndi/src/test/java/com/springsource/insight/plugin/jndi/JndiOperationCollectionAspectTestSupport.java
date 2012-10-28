@@ -25,7 +25,6 @@ import javax.naming.Context;
 import javax.naming.NamingException;
 
 import org.junit.Before;
-import org.mockito.Mockito;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.OperationCollector;
@@ -64,9 +63,7 @@ public abstract class JndiOperationCollectionAspectTestSupport
 	}
 
 	protected EndPointAnalysis assertEndPointAnalysis (Operation op) {
-		Frame	frame=Mockito.mock(Frame.class);
-		Mockito.when(frame.getOperation()).thenReturn(op);
-
+		Frame				frame=createMockOperationWrapperFrame(op);
 		EndPointAnalysis	analysis=analyzer.locateEndPoint(frame, 0);
 		assertSame("Mismatched source operation for " + op.getLabel(), op, analysis.getSourceOperation());
 		assertEquals("Mismatched endpoint for " + op.getLabel(), EndPointName.valueOf(op), analysis.getEndPointName());

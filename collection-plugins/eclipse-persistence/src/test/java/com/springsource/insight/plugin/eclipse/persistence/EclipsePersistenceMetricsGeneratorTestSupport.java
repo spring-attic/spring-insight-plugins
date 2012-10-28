@@ -36,7 +36,6 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.resource.ResourceKey;
 import com.springsource.insight.intercept.server.ServerName;
 import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.FrameId;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
 import com.springsource.insight.util.DataPoint;
@@ -125,12 +124,7 @@ public abstract class EclipsePersistenceMetricsGeneratorTestSupport extends Abst
     						.label(actionName + ": " + range)
     						.put(EclipsePersistenceDefinitions.ACTION_ATTR, actionName)
     						;
-    	FrameId	id=FrameId.valueOf(7365L);
-    	Frame	frame=Mockito.mock(Frame.class);
-    	Mockito.when(frame.getParent()).thenReturn(null);
-    	Mockito.when(frame.getChildren()).thenReturn(Collections.<Frame>emptyList());
-    	Mockito.when(frame.getId()).thenReturn(id);
-    	Mockito.when(frame.getOperation()).thenReturn(op);
+    	Frame	frame=createMockOperationWrapperFrame(op);
     	Mockito.when(frame.getRange()).thenReturn(range);
     	return frame;
     }

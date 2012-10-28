@@ -16,10 +16,7 @@
 
 package com.springsource.insight.plugin.integration;
 
-import java.util.Collections;
-
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.springframework.integration.ip.tcp.connection.ConnectionFactory;
 import org.springframework.integration.ip.tcp.connection.TcpConnection;
 
@@ -30,8 +27,6 @@ import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.FrameId;
-import com.springsource.insight.util.time.TimeRange;
 
 /**
  * 
@@ -50,20 +45,16 @@ public class TcpConnectionOperationCollectionAspectTest extends OperationCollect
 	}
 
 	private ExternalResourceDescriptor assertExternalResourceAnalysis (Operation op) {
-        Frame	frame=Mockito.mock(Frame.class);
-        Mockito.when(frame.getId()).thenReturn(FrameId.valueOf(7365L));
-        Mockito.when(frame.getOperation()).thenReturn(op);
-        Mockito.when(frame.getChildren()).thenReturn(Collections.<Frame>emptyList());
-        Mockito.when(frame.getParent()).thenReturn(null);
-        Mockito.when(frame.getRange()).thenReturn(new TimeRange(7365L, 3777347L));
-        
+        Frame						frame=createMockOperationWrapperFrame(op);
         ExternalResourceDescriptor	desc=analyzer.extractExternalResourceDescriptor(frame);
         assertNotNull("No resource", desc);
         assertSame("Mismatched frame", frame, desc.getFrame());
         assertEquals("Mismatched host", op.get(TcpConnectionOperationCollector.HOST_ADDRESS_ATTR, String.class), desc.getHost());
         assertEquals("Mismatched port", op.get(TcpConnectionOperationCollector.PORT_ATTR, Number.class).intValue(), desc.getPort());
         assertEquals("Mismatched type", ExternalResourceType.SERVER.name(), desc.getType());
-        
+        assertFalse("Not outgoing", desc.isIncoming());
+        assertFalse("Unexpected parent", desc.isParent());
+
         String	uri=op.get(OperationFields.URI, String.class);
         assertEquals("Mismatched name", MD5NameGenerator.getName(uri), desc.getName());
         assertEquals("Mismatched label", op.getLabel() + " " + uri, desc.getLabel());
