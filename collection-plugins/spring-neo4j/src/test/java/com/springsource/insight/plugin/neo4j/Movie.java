@@ -30,12 +30,13 @@ public class Movie {
     int year;
     
     public Movie() {
+    	super();
     }
     
-    public Movie(int id, String title, int year) {
-    	this.id=id;
-    	this.title=title;
-    	this.year=year;
+    public Movie(int movieId, String movieTitle, int movieYear) {
+    	this.id=movieId;
+    	this.title=movieTitle;
+    	this.year=movieYear;
     }
     
     public Long getNodeId() {

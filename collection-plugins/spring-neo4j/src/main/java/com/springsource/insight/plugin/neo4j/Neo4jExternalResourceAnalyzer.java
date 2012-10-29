@@ -15,8 +15,8 @@
  */
 package com.springsource.insight.plugin.neo4j;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,6 +30,7 @@ import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.ListUtil;
+import com.springsource.insight.util.StringUtil;
 
 
 public class Neo4jExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
@@ -51,30 +52,30 @@ public class Neo4jExternalResourceAnalyzer extends AbstractExternalResourceAnaly
 		List<ExternalResourceDescriptor> queueDescriptors = new ArrayList<ExternalResourceDescriptor>(frames.size());
 		for (Frame cacheFrame : frames) {
 			Operation op = cacheFrame.getOperation();
-			String service = op.get("service", String.class, null);
-			if (service==null)
+			String service = op.get("service", String.class);
+			if (StringUtil.isEmpty(service))
 				continue;
 			
 			String hashString = MD5NameGenerator.getName(service);
             String color = colorManager.getColor(op);
             
             ExternalResourceType resType=ExternalResourceType.DATABASE;
-            if (service.indexOf("EmbeddedGraphDatabase")!=-1) {
-            	resType=ExternalResourceType.FILESTORE;
+            if (service.indexOf("EmbeddedGraphDatabase") >= 0) {
+            	resType = ExternalResourceType.FILESTORE;
             }
             
-            int port=0;
+            int port=-1;
 			String host="localhost";
 			
-            String serviceUri=op.get("serviceUri", String.class, null);
-            if (serviceUri!=null) {
+            String serviceUri=op.get("serviceUri", String.class);
+            if (!StringUtil.isEmpty(serviceUri)) {
             	try {
-					URL url=new URL(serviceUri);
-					host=url.getHost();
-					port=url.getPort();
+					URI url=new URI(serviceUri);
+					host = url.getHost();
+					port = url.getPort();
 				}
-				catch (MalformedURLException e) {
-					// invalid url
+				catch (URISyntaxException e) {
+					// invalid uri
 				}
             }
             

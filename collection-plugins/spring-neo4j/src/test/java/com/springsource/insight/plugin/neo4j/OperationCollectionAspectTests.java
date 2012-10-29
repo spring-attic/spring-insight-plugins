@@ -18,6 +18,7 @@ package com.springsource.insight.plugin.neo4j;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.neo4j.graphdb.Node;
@@ -34,15 +35,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class OperationCollectionAspectTests {
 	@Autowired Neo4jTemplate template;
 	
-	
+	public OperationCollectionAspectTests () {
+		super();
+	}
+
 	public void test_Init() {
 		template.setInfrastructure(template.getInfrastructure());
 	}
 	
 	@Test
 	public void test_Find() {
-	    Movie movie = template.save(new Movie(1, "Forrest Gump", 1994));
-		template.findOne(movie.getNodeId(), Movie.class);
+	    Movie 	movie=template.save(new Movie(1, "Forrest Gump", 1994));
+		Movie	found=template.findOne(movie.getNodeId().longValue(), Movie.class);
+		Assert.assertNotNull("Cannot re-find movie", found);
 	}
 	
 	@Test
@@ -67,7 +72,7 @@ public class OperationCollectionAspectTests {
 			template.lookup(String.class,"sampleProperty","sampleValue");
 		}
 		catch(Exception e) {
-			
+			// ignored
 		}
 	}
 	
@@ -82,7 +87,7 @@ public class OperationCollectionAspectTests {
 			template.execute("sampleStatement", map("paramKey", "paramValue"));
 		}
 		catch(Exception e) {
-			
+			// ignored
 		}
 	}
 	
@@ -92,7 +97,7 @@ public class OperationCollectionAspectTests {
 			template.traverse(template.createNode(), Traversal.description());
 		}
 		catch(Exception e) {
-			
+			// ignored
 		}
 	}
 	
@@ -102,7 +107,7 @@ public class OperationCollectionAspectTests {
 			template.traverse("sampleEntity", String.class, Traversal.description());
 		}
 		catch(Exception e) {
-			
+			// ignored
 		}
 	}
 	

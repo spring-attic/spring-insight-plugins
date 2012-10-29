@@ -15,11 +15,10 @@
  */
 package com.springsource.insight.plugin.neo4j;
 
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class Neo4jPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
-    public static final String PLUGIN_NAME = "neo4j";
+    public static final String PLUGIN_NAME = "spring-neo4j";
     private static final Neo4jPluginRuntimeDescriptor	INSTANCE=new Neo4jPluginRuntimeDescriptor();
 
     private Neo4jPluginRuntimeDescriptor () {
@@ -28,11 +27,6 @@ public class Neo4jPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
 
     public static final Neo4jPluginRuntimeDescriptor getInstance() {
     	return INSTANCE;
-    }
-
-    @Override
-    public EndPointAnalyzer[] getEndPointAnalyzers() {
-        return null;
     }
 
     @Override

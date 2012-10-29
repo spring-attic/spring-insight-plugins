@@ -5,7 +5,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
-	<insight:plugin name="neo4j" version="${project.version}" publisher="SpringSource" />
+	<insight:plugin name="spring-neo4j" version="${project.version}" publisher="SpringSource" />
 
     <insight:operation-view operation="neo4j-init" template="com/springsource/insight/plugin/neo4j/init.ftl"/>
     <insight:operation-view operation="neo4j-query" template="com/springsource/insight/plugin/neo4j/query.ftl"/>
