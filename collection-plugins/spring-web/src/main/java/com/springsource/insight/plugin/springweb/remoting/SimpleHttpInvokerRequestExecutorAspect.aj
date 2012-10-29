@@ -41,13 +41,13 @@ public privileged aspect SimpleHttpInvokerRequestExecutorAspect extends Operatio
 	}
 
 	public pointcut connectionPreparation()
-		: execution(* org.springframework.remoting.httpinvoker.SimpleHttpInvokerRequestExecutor+.prepareConnection(..))
+		: execution(* org.springframework.remoting.httpinvoker.SimpleHttpInvokerRequestExecutor+.prepareConnection(HttpURLConnection,int))
 	    ;
 
     @SuppressAjWarnings("adviceDidNotMatch")
 	Object around() throws IOException
 		: connectionPreparation()
-	  && (!cflowbelow(connectionPreparation()))
+	  && (!cflowbelow(connectionPreparation()))	// using cflowbelow in case a derived class delegates to its parent
       && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart)) {
         OperationCollector  	opsCollector=getCollector();
         final HttpURLConnection	connection=(HttpURLConnection) thisJoinPoint.getArgs()[0];

@@ -23,6 +23,16 @@
 	<insight:operation-group group="Web" operation="view_resolver" />
     <insight:operation-group group="Web" operation="controller_validator" />
 
+    <bean id="springWebPluginClientHttpRequestExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.springweb.http.ClientHttpRequestExternalResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+    <bean id="springWebPluginClientHttpRequestTraceErrorAnalyzer"
+          class="com.springsource.insight.plugin.springweb.http.ClientHttpRequestTraceErrorAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
     <bean id="springWebPluginHttpRemotingExternalResourceAnalyzer"
           class="com.springsource.insight.plugin.springweb.remoting.HttpInvokerRequestExecutorExternalResourceAnalyzer"
           factory-method="getInstance"

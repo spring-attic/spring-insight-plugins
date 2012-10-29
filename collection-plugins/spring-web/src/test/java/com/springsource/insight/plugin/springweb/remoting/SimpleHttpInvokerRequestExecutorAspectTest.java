@@ -28,6 +28,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -56,6 +58,7 @@ import com.springsource.insight.util.StringUtil;
  */
 public class SimpleHttpInvokerRequestExecutorAspectTest
 		extends HttpInvokerRequestOperationCollectionTestSupport {
+    private static final Log	logger=LogFactory.getLog(SimpleHttpInvokerRequestExecutorAspectTest.class);
     private static Server    SERVER;
 
 	public SimpleHttpInvokerRequestExecutorAspectTest() {
@@ -63,23 +66,20 @@ public class SimpleHttpInvokerRequestExecutorAspectTest
 	}
 
     @BeforeClass
-    public static void startEmbeddedServer () throws Exception
-    {
+    public static void startEmbeddedServer () throws Exception {
         SERVER = new Server(TEST_PORT);
         SERVER.setHandler(new TestHandler());
-        System.out.println("Starting embedded server on port " + TEST_PORT);
+        logger.info("Starting embedded server on port " + TEST_PORT);
         SERVER.start();
-        System.out.println("Started embedded server on port " + TEST_PORT);
+        logger.info("Started embedded server on port " + TEST_PORT);
     }
 
     @AfterClass
-    public static void stopEmbeddedServer () throws Exception
-    {
-        if (SERVER != null)
-        {
-            System.out.println("Stopping embedded server");
+    public static void stopEmbeddedServer () throws Exception {
+        if (SERVER != null) {
+        	logger.info("Stopping embedded server");
             SERVER.stop();
-            System.out.println("Server stopped");
+            logger.info("Server stopped");
         }
     }
 
