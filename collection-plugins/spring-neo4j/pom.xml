@@ -10,16 +10,88 @@
 	<parent>
 		<groupId>com.springsource.insight</groupId>
 		<artifactId>community-plugins</artifactId>
-		<version>1.9.1-CI-SNAPSHOT</version>
+		<version>1.9.2-CI-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
+    
+    <properties>
+        <neo4j.version>1.6</neo4j.version>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>neo4j-releases</id>
+            <url>http://m2.neo4j.org/content/repositories/releases</url>
+        </repository>
+    </repositories>
 
 	<dependencies>
 		<dependency>
 			 <groupId>org.springframework.data</groupId>
 			 <artifactId>spring-data-neo4j</artifactId>
 			 <version>2.0.2.RELEASE</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
 		</dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-commons-core</artifactId>
+            <!--
+                NOTE: we override the default version since we need
+                a more advanced version 
+             -->
+            <version>1.2.1.RELEASE</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-neo4j-rest</artifactId>
+            <version>2.0.2.RELEASE</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.codehaus.jackson</groupId>
+                    <artifactId>jackson-jaxrs</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.codehaus.jackson</groupId>
+                    <artifactId>jackson-mapper-asl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.jersey</groupId>
+                    <artifactId>jersey-server</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-rest-graphdb</artifactId>
+            <version>${neo4j.version}</version>
+            <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         
 		<dependency>
 		    <groupId>org.springframework</groupId>
@@ -29,10 +101,15 @@
 		<dependency>
 		    <groupId>org.neo4j</groupId>
 		    <artifactId>neo4j-cypher</artifactId>
-		    <version>1.6</version>
+		    <version>${neo4j.version}</version>
 		    <scope>test</scope>
 		</dependency>
 
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>test</scope>
+        </dependency>
 		<dependency>
 		    <groupId>org.slf4j</groupId>
 		    <artifactId>jcl-over-slf4j</artifactId>
@@ -43,41 +120,10 @@
 		    <artifactId>slf4j-simple</artifactId>
 		    <scope>test</scope>
 		</dependency>
-        
-		<dependency>
-		    <groupId>org.springframework.data</groupId>
-		    <artifactId>spring-data-neo4j-rest</artifactId>
-		    <version>2.0.2.RELEASE</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.codehaus.jackson</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sun.jersey</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-		</dependency>
 	</dependencies>
-    
-    <repositories>
-        <repository>
-            <id>neo4j-releases</id>
-            <url>http://m2.neo4j.org/content/repositories/releases</url>
-        </repository>
-    </repositories>
 
 	<build>
-	<plugins>
+		<plugins>
             <plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
