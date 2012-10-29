@@ -25,26 +25,14 @@ import javax.mail.URLName;
 
 import org.aspectj.lang.JoinPoint;
 
-import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
-import com.springsource.insight.intercept.InterceptConfiguration;
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.operation.OperationList;
-import com.springsource.insight.intercept.operation.OperationMap;
-import com.springsource.insight.intercept.trace.FrameBuilder;
 
 /**
  * 
  */
-public aspect MessageSendOperationCollectionAspect extends MethodOperationCollectionAspect {
-    private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
-    private final Logger    logger=Logger.getLogger(getClass().getName());
+public aspect MessageSendOperationCollectionAspect extends MailOperationCollectionSupport {
     public MessageSendOperationCollectionAspect () {
         super();
-    }
-
-    @Override
-    public String getPluginName() {
-        return MailPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 
     public pointcut collectionPoint()
@@ -54,66 +42,26 @@ public aspect MessageSendOperationCollectionAspect extends MethodOperationCollec
     @Override
     protected Operation createOperation(JoinPoint jp) {
         Object[]    args=jp.getArgs();
-        return createOperation(super.createOperation(jp).type(MailDefinitions.SEND_OPERATION),
-                               (Transport) jp.getTarget(), (Message) args[0], (Address[]) args[1]);
+        return createOperation(super.createOperation(jp), (Transport) jp.getTarget(), (Message) args[0], (Address[]) args[1]);
     }
 
-    Operation createOperation (Operation op, Transport transport, Message msg, Address[] recips) {
-        URLName urlName=transport.getURLName();
-        try
-        {
-            op.label("Send Mail: " + msg.getSubject());
-        }
-        catch(MessagingException e)
-        {
-            logger.warning(e.getClass().getSimpleName() + " while get subject: " + e.getMessage());
-        }
-        
-        createOperation(op, urlName);
+    Operation createOperation (Operation op, Transport transport, Message msg, Address ... recips) {
+        addMessageDetails(op, msg);
+        createOperation(op, transport.getURLName());
 
         if (collectExtraInformation()) {
-            try
-            {
+            try {
                 addAddresses(op.createList(MailDefinitions.SEND_SENDERS), msg.getFrom());
-            }
-            catch(MessagingException e)
-            {
+            } catch(MessagingException e) {
+            	Logger    logger=Logger.getLogger(getClass().getName());
                 logger.warning(e.getClass().getSimpleName() + " while get senders: " + e.getMessage());
             }
 
             // TODO consider using getRecipients(RecipientType) call instead
             addAddresses(op.createList(MailDefinitions.SEND_RECIPS), recips);
-
-            try
-            {
-                addMessageDetails(op.createMap(MailDefinitions.SEND_DETAILS), msg);
-            }
-            catch(MessagingException e)
-            {
-                logger.warning(e.getClass().getSimpleName() + " while get message details: " + e.getMessage());
-            }
         }
+
         return op;
-    }
-
-    OperationMap addMessageDetails (OperationMap op, Message msg) throws MessagingException {
-        return op.putAnyNonEmpty(MailDefinitions.SEND_SUBJECT, msg.getSubject())
-          .putAnyNonEmpty("content-type", msg.getContentType())
-          .putAnyNonEmpty("sent-date", msg.getSentDate())
-          .put("size", msg.getSize())
-          ;
-    }
-
-    static String getSafeSubject (Message msg)
-    {
-        try
-        {
-            return msg.getSubject();
-        }
-        catch(MessagingException e) // TODO consider something else to return
-        {
-            return e.getClass().getSimpleName();
-        }
     }
 
     Operation createOperation (Operation op, URLName urlName) {
@@ -134,24 +82,5 @@ public aspect MessageSendOperationCollectionAspect extends MethodOperationCollec
         }
 
         return op;
-    }
-
-    OperationList addAddresses (OperationList op, Address[] addrs) {
-        if ((addrs == null) || (addrs.length <= 0)) {
-            return op;
-        }
-
-        for (Address a : addrs) {
-            op.createMap()
-              .put("type", a.getType())
-              .put("value", a.toString())
-              ;
-        }
-        return op;
-    }
-
-    boolean collectExtraInformation ()
-    {
-        return FrameBuilder.OperationCollectionLevel.HIGH.equals(configuration.getCollectionLevel());
     }
 }

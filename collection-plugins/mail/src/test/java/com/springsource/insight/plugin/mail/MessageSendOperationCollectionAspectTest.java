@@ -78,8 +78,7 @@ public class MessageSendOperationCollectionAspectTest extends OperationCollectio
 	}
 
 	private void testSendMessage (int port) {
-		JavaMailSenderImpl  sender;
-		sender = new JavaMailSenderImpl();
+		JavaMailSenderImpl  sender=new JavaMailSenderImpl();
 		sender.setProtocol(JavaMailSenderImpl.DEFAULT_PROTOCOL);
 		sender.setPort(port);
 
