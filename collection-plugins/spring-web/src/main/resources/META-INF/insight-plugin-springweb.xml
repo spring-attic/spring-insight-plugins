@@ -15,6 +15,8 @@
     <insight:operation-view operation="controller_method" template="com/springsource/insight/plugin/springweb/controller/controller_method.ftl"/>
     <insight:operation-view operation="controller_validator" template="com/springsource/insight/plugin/springweb/validation/controller_validator.ftl"/>
     <insight:operation-view operation="http_invoker" template="com/springsource/insight/plugin/springweb/remoting/http_invoker.ftl"/>
+    <insight:operation-view operation="spring_client_reqhttp" template="com/springsource/insight/plugin/springweb/http/spring_client_reqhttp.ftl"/>
+    <insight:operation-view operation="spring_http_connfactory" template="com/springsource/insight/plugin/springweb/http/spring_http_connfactory.ftl"/>
 
 	<insight:operation-group group="Web" operation="init_binder" />
 	<insight:operation-group group="Web" operation="controller_method" />
@@ -22,6 +24,7 @@
 	<insight:operation-group group="Web" operation="view_render" />
 	<insight:operation-group group="Web" operation="view_resolver" />
     <insight:operation-group group="Web" operation="controller_validator" />
+    <insight:operation-group group="Web" operation="spring_client_reqhttp" />
 
     <bean id="springWebPluginClientHttpRequestExternalResourceAnalyzer"
           class="com.springsource.insight.plugin.springweb.http.ClientHttpRequestExternalResourceAnalyzer"
