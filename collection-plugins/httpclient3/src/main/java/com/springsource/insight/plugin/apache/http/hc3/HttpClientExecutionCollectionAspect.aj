@@ -220,7 +220,7 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
         op.put("statusCode", statusCode);
 
         if (collectExtra) {
-            op.put("reasonPhrase", method.getStatusText());
+            op.putAnyNonEmpty("reasonPhrase", method.getStatusText());
             fillInMethodHeaders(op.createList("headers"), method, false);
         }
 
@@ -238,7 +238,7 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
             if (OBFUSCATED_HEADERS.contains(name)) {
                 obscuredMarker.markObscured(value);
             }
-            OperationUtils.addNameValuePair(headers,name, value);
+            OperationUtils.addNameValuePair(headers, name, value);
         }
 
         return headers;

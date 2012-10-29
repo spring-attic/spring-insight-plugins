@@ -280,7 +280,7 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
         op.put("statusCode", statusLine.getStatusCode());
 
         if (collectExtra) {
-            op.put("reasonPhrase", statusLine.getReasonPhrase());
+            op.putAnyNonEmpty("reasonPhrase", statusLine.getReasonPhrase());
             fillInMessageHeaders(op.createList("headers"), response);
         }
 
