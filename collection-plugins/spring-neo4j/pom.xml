@@ -25,6 +25,28 @@
         </repository>
     </repositories>
 
+		<!-- NOTE: by default we deploy only 1.5 compiled artifacts,
+				but this plugin works only with 1.6 so deploy it anyway -->
+	<profiles>
+		<profile>
+			<id>force-deploy-artifacts</id>
+			<activation>
+				<jdk>[1.6,)</jdk>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-deploy-plugin</artifactId>
+						<configuration>
+							<skip>false</skip>
+						</configuration>
+					</plugin>            
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 	<dependencies>
 		<dependency>
 			 <groupId>org.springframework.data</groupId>
