@@ -761,6 +761,26 @@
 				</exclusions>
 			</dependency>
 
+			<!-- amqp -->
+			<dependency>
+				<groupId>org.springframework.amqp</groupId>
+				<artifactId>spring-amqp</artifactId>
+				<version>${org.springframework.amqp.version}</version>
+			</dependency>
+
+				<!-- Rabbitmq -->
+			<dependency>
+				<groupId>com.rabbitmq</groupId>
+				<artifactId>amqp-client</artifactId>
+				<version>${rabbitmq.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.amqp</groupId>
+				<artifactId>spring-rabbit</artifactId>
+				<version>${org.springframework.amqp.version}</version>
+			</dependency>
+
 			<dependency>
 				<groupId>org.springframework.data</groupId>
 				<artifactId>spring-data-commons-core</artifactId>
