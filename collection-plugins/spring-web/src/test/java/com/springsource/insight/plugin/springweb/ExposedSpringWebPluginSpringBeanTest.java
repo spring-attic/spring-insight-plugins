@@ -19,7 +19,7 @@ package com.springsource.insight.plugin.springweb;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-import com.springsource.insight.intercept.spring.AbstractExposedStandardPluginSpringBeanTestSupport;
+import com.springsource.insight.idk.test.AbstractExposedIdkPuginsTestSupport;
 import com.springsource.insight.plugin.springweb.controller.ControllerEndPointAnalyzer;
 import com.springsource.insight.plugin.springweb.http.ClientHttpRequestExternalResourceAnalyzer;
 import com.springsource.insight.plugin.springweb.http.ClientHttpRequestTraceErrorAnalyzer;
@@ -33,7 +33,7 @@ import com.springsource.insight.plugin.springweb.validation.ValidationErrorsMetr
  */
 @ContextConfiguration(locations={ "classpath:META-INF/insight-plugin-springweb.xml" })
 public class ExposedSpringWebPluginSpringBeanTest
-		extends AbstractExposedStandardPluginSpringBeanTestSupport<SpringWebPluginRuntimeDescriptor> {
+		extends AbstractExposedIdkPuginsTestSupport<SpringWebPluginRuntimeDescriptor> {
     /* NOTE: all beans are autowired with required=false since we want
      * to have specific tests for each and we don't want to fail ALL the
      * tests if one bean is missing
