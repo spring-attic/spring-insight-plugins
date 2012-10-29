@@ -19,14 +19,14 @@ package com.springsource.insight.plugin.integration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-import com.springsource.insight.intercept.spring.AbstractExposedStandardPluginSpringBeanTestSupport;
+import com.springsource.insight.idk.test.AbstractExposedIdkPuginsTestSupport;
 
 /**
  * Makes sure that the exposed singletons are indeed visible 
  */
 @ContextConfiguration(locations={ "classpath:META-INF/insight-plugin-spring-integration.xml" })
 public class ExposedIntegrationPluginSpringBeanTest
-	   extends AbstractExposedStandardPluginSpringBeanTestSupport<IntegrationPluginRuntimeDescriptor> {
+	   extends AbstractExposedIdkPuginsTestSupport<IntegrationPluginRuntimeDescriptor> {
     /* NOTE: all beans are autowired with required=false since we want
      * to have specific tests for each and we don't want to fail ALL the
      * tests if one bean is missing
