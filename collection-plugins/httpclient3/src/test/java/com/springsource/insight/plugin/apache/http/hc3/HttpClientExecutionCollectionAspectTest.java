@@ -15,13 +15,10 @@
  */
 package com.springsource.insight.plugin.apache.http.hc3;
 
-import static java.util.Collections.unmodifiableSet;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -48,6 +45,7 @@ import org.mortbay.jetty.HttpConnection;
 import org.mortbay.jetty.Request;
 import org.mortbay.jetty.Server;
 
+import com.springsource.insight.collection.ObscuredValueSetMarker;
 import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
@@ -55,7 +53,6 @@ import com.springsource.insight.intercept.operation.OperationList;
 import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationUtils;
 import com.springsource.insight.intercept.plugin.CollectionSettingsRegistry;
-import com.springsource.insight.intercept.trace.ObscuredValueMarker;
 import com.springsource.insight.util.StringFormatterUtils;
 
 /**
@@ -185,15 +182,14 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
             method.addRequestHeader(name, String.valueOf(System.nanoTime()));
         }
 
-        DummyObscuredValueMarker    marker=new DummyObscuredValueMarker();
-        getAspect().setSensitiveValueMarker(marker);
+        ObscuredValueSetMarker    obscuredValues=new ObscuredValueSetMarker();
+        getAspect().setSensitiveValueMarker(obscuredValues);
 
         int                 response=httpClient.executeMethod(method);
         Operation           op=assertExecutionResult(uri, method, response, false);
         OperationMap        details=op.get("request", OperationMap.class);
         OperationList       headers=details.get("headers", OperationList.class);
         Map<String,String>  hdrsMap=toHeadersMap(headers);
-        Set<Object>         obscuredValues=marker.getValues();
         for (String name : headerSet) {
             String  value=hdrsMap.get(name);
             assertNotNull("Missing header=" + name, value);
@@ -454,16 +450,5 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
     static String createTestUri (String testName)
     {
         return TEST_URI + testName;
-    }
-
-    public static class DummyObscuredValueMarker implements ObscuredValueMarker {
-        private final Set<Object> objects=new HashSet<Object>();
-        public Set<Object> getValues() {
-            return unmodifiableSet(objects);
-        }
-
-        public void markObscured(Object o) {
-            objects.add(o);
-        }
     }
 }

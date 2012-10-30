@@ -15,21 +15,18 @@
  */
 package com.springsource.insight.plugin.jdbc;
 
-import static java.util.Collections.unmodifiableSet;
-
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Properties;
-import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.springsource.insight.collection.ObscuredValueSetMarker;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.plugin.CollectionSettingsRegistry;
@@ -42,6 +39,7 @@ import com.springsource.insight.util.StringUtil;
 public class JdbcDriverConnectOperationCollectionAspectTest
         extends JdbcConnectionOperationCollectionTestSupport {
     private ObscuredValueMarker originalMarker;
+    private final ObscuredValueSetMarker	replaceMarker=new ObscuredValueSetMarker();
 
     public JdbcDriverConnectOperationCollectionAspectTest() {
         super();
@@ -54,7 +52,8 @@ public class JdbcDriverConnectOperationCollectionAspectTest
 
         JdbcDriverConnectOperationCollectionAspect  aspectInstance=getAspect();
         originalMarker = aspectInstance.getSensitiveValueMarker();
-        aspectInstance.setSensitiveValueMarker(new DummyObscuredValueMarker());
+        replaceMarker.clear();
+        aspectInstance.setSensitiveValueMarker(replaceMarker);
     }
 
     @Override
@@ -135,8 +134,7 @@ public class JdbcDriverConnectOperationCollectionAspectTest
             return;
 
         JdbcDriverConnectOperationCollectionAspect  aspectInstance=getAspect();
-        DummyObscuredValueMarker                    marker=(DummyObscuredValueMarker) aspectInstance.getSensitiveValueMarker();
-        Collection<Object>                          obscuredValue=marker.getValues();
+        ObscuredValueSetMarker                    	obscuredValue=(ObscuredValueSetMarker) aspectInstance.getSensitiveValueMarker();
         for (String key : obscuredKeys) {
             Object  value=params.get(key);
             if (value == null) {
@@ -146,17 +144,6 @@ public class JdbcDriverConnectOperationCollectionAspectTest
             assertEquals("Key=" + key + " obscured state mismatch",
                                 Boolean.valueOf(expectedState),
                                 Boolean.valueOf(obscuredValue.contains(value)));
-        }
-    }
-
-    static class DummyObscuredValueMarker implements ObscuredValueMarker {
-        private final Set<Object> objects=new HashSet<Object>();
-        public Set<Object> getValues() {
-            return unmodifiableSet(objects);
-        }
-
-        public void markObscured(Object o) {
-            objects.add(o);
         }
     }
 }

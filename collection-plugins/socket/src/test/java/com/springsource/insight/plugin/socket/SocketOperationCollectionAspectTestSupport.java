@@ -15,14 +15,11 @@
  */
 package com.springsource.insight.plugin.socket;
 
-import static java.util.Collections.unmodifiableSet;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
+import com.springsource.insight.collection.ObscuredValueSetMarker;
 import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.operation.Operation;
@@ -34,7 +31,6 @@ import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.FrameId;
-import com.springsource.insight.intercept.trace.ObscuredValueMarker;
 import com.springsource.insight.intercept.trace.SimpleFrame;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
@@ -89,12 +85,12 @@ public abstract class SocketOperationCollectionAspectTestSupport
         return op;
     }
 
-    protected DummyObscuredValueMarker setupObscuredTest (
+    protected ObscuredValueSetMarker setupObscuredTest (
             CollectionSettingName settingName, String pattern) {
         SocketOperationCollectionAspectSupport  aspectInstance=
                 (SocketOperationCollectionAspectSupport) getAspect();
         SocketCollectOperationContext           context=aspectInstance.getSocketCollectOperationContext();
-        DummyObscuredValueMarker                marker=new DummyObscuredValueMarker();
+        ObscuredValueSetMarker                marker=new ObscuredValueSetMarker();
         context.setObscuredValueMarker(marker);
         
         CollectionSettingsRegistry  registry=CollectionSettingsRegistry.getInstance();
@@ -102,29 +98,16 @@ public abstract class SocketOperationCollectionAspectTestSupport
         return marker;
     }
 
-    protected void assertObscureTestResults (DummyObscuredValueMarker   marker,
-                                             String                     pattern,
-                                             String                     testAddress,
-                                             boolean                    shouldObscure) {
-        Set<?>  markedValues=marker.getValues();
+    protected void assertObscureTestResults (ObscuredValueSetMarker   markedValues,
+                                             String                   pattern,
+                                             String                   testAddress,
+                                             boolean                  shouldObscure) {
         if (shouldObscure) {
             assertTrue("assertObscureTestResults(" + pattern + ") Address not obscured: " + testAddress,
-                              markedValues.contains(testAddress));
+                       markedValues.contains(testAddress));
         } else {
             assertFalse("assertObscureTestResults(" + pattern + ") Address un-necessarily obscured",
-                               markedValues.contains(testAddress));
-        }
-    }
-
-    public static class DummyObscuredValueMarker implements ObscuredValueMarker {
-        private Set<Object> objects = new HashSet<Object>();
-
-        public Set<Object> getValues() {
-            return unmodifiableSet(objects);
-        }
-
-        public void markObscured(Object o) {
-            objects.add(o);
+            			markedValues.contains(testAddress));
         }
     }
 }

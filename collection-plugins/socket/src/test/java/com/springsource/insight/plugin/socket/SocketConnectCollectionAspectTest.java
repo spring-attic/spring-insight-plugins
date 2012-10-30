@@ -22,6 +22,8 @@ import java.net.SocketAddress;
 
 import org.junit.Test;
 
+import com.springsource.insight.collection.ObscuredValueSetMarker;
+
 
 /**
  * Note: the basic functionality is tested (indirectly) by {@link SocketExternalResourceAnalyzerTest}
@@ -44,10 +46,10 @@ public class SocketConnectCollectionAspectTest
     }
 
     private void runObscuredTest (String pattern, String testAddress, boolean shouldObscure) {
-        DummyObscuredValueMarker    marker=
+    	ObscuredValueSetMarker    marker=
                 setupObscuredTest(SocketCollectOperationContext.OBSCURED_ADDRESSES_PATTERN_SETTING, pattern);
-        SocketAddress               connectAddress=new InetSocketAddress(testAddress, TEST_PORT);
-        Socket                      socket=new Socket();
+        SocketAddress         	  connectAddress=new InetSocketAddress(testAddress, TEST_PORT);
+        Socket                    socket=new Socket();
         try {
             socket.connect(connectAddress, 125);
             socket.close(); // just in case it somehow succeeded

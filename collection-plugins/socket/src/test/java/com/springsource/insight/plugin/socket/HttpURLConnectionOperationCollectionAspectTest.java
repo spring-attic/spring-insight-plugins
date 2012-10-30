@@ -34,6 +34,7 @@ import org.mortbay.jetty.HttpConnection;
 import org.mortbay.jetty.Request;
 import org.mortbay.jetty.Server;
 
+import com.springsource.insight.collection.ObscuredValueSetMarker;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
@@ -93,7 +94,7 @@ public class HttpURLConnectionOperationCollectionAspectTest
         Set<String> defaultObscuredHeaders=
                 HttpURLConnectionOperationCollectionAspect.toHeaderNameSet(
                         HttpURLConnectionOperationCollectionAspect.DEFAULT_OBFUSCATED_HEADERS_LIST);
-        DummyObscuredValueMarker    marker=
+        ObscuredValueSetMarker    marker=
                 setupObscuredTest(HttpURLConnectionOperationCollectionAspect.OBFUSCATED_HEADERS_SETTING,
                                   HttpURLConnectionOperationCollectionAspect.DEFAULT_OBFUSCATED_HEADERS_LIST);
         HttpURLConnection   conn=createConnection("testDefaultObscuredHeaders");
@@ -118,8 +119,8 @@ public class HttpURLConnectionOperationCollectionAspectTest
 
     @Test
     public void testObscuredHeaders () throws IOException {
-        final String                hdrName="testObscuredHeaders", hdrValue=String.valueOf(System.nanoTime());
-        DummyObscuredValueMarker    marker=
+        final String            hdrName="testObscuredHeaders", hdrValue=String.valueOf(System.nanoTime());
+        ObscuredValueSetMarker	marker=
                 setupObscuredTest(HttpURLConnectionOperationCollectionAspect.OBFUSCATED_HEADERS_SETTING, hdrName);
 
         HttpURLConnection   conn=createConnection("testObscuredHeaders");
