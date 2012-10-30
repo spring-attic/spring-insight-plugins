@@ -20,8 +20,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StreamCorruptedException;
 import java.net.URI;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +35,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.http.client.ClientHttpResponse;
 
+import com.springsource.insight.collection.ObscuredValueSetMarker;
+import com.springsource.insight.collection.http.HttpHeadersObfuscator;
 import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
@@ -46,9 +53,34 @@ import com.springsource.insight.util.StringUtil;
  */
 public class ClientHttpRequestCollectionOperationAspectTest extends OperationCollectionAspectTestSupport {
 	private static final ClientHttpRequestTraceErrorAnalyzer	errAnalyzer=ClientHttpRequestTraceErrorAnalyzer.getInstance();
+	private HttpHeadersObfuscator originalObfuscator;
+	private final ObscuredValueSetMarker	marker=new ObscuredValueSetMarker();
 
 	public ClientHttpRequestCollectionOperationAspectTest() {
 		super();
+	}
+	
+	@Before
+	@Override
+	public void setUp() {
+		super.setUp();
+
+		ClientHttpRequestCollectionOperationAspect	aspectInstance=getAspect();
+		ClientHttpRequestOperationCollector	collector=(ClientHttpRequestOperationCollector) aspectInstance.getCollector();
+		originalObfuscator = collector.getHttpHeadersObfuscator();
+		marker.clear();
+		collector.setHttpHeadersObfuscator(new HttpHeadersObfuscator(marker));
+	}
+
+	@After
+	@Override
+	public void restore() {
+		ClientHttpRequestCollectionOperationAspect	aspectInstance=getAspect();
+		ClientHttpRequestOperationCollector	collector=(ClientHttpRequestOperationCollector) aspectInstance.getCollector();
+		collector.setHttpHeadersObfuscator(originalObfuscator);
+		marker.clear();
+
+		super.restore();
 	}
 
 	@Test
@@ -56,8 +88,8 @@ public class ClientHttpRequestCollectionOperationAspectTest extends OperationCol
 		ClientHttpRequest	request=
 				new TestClientHttpRequest(HttpMethod.GET,
 					  new URI("http://somewhere:7365/testExecutionCollected"),
-					  createHttpHeaders("Req-Header1", "req-value1", "Req-Header2", "req-value2"),
-					  createMockClientHttpResponse(HttpStatus.OK, createHttpHeaders("Rsp-Header1", "rsp-value1", "Rso-Header2", "rsp-value2")));
+					  createIdentityHttpHeaders(Arrays.asList("Req-Header1", "Req-Header2")),
+					  createMockClientHttpResponse(HttpStatus.OK, createIdentityHttpHeaders(Arrays.asList("Rsp-Header1", "Rsp-Header2"))));
 		ClientHttpResponse	response=request.execute();
 		Operation 			op=assertExecuteRequest(request);
 		assertRequestDetails(op, request);
@@ -72,17 +104,63 @@ public class ClientHttpRequestCollectionOperationAspectTest extends OperationCol
 		ClientHttpRequest	request=
 				new TestClientHttpRequest(HttpMethod.GET,
 					  new URI("http://somewhere:7365/testExecutionCollected"),
-					  createHttpHeaders("Req-Header1", "req-value1", "Req-Header2", "req-value2"),
-					  createMockClientHttpResponse(HttpStatus.GATEWAY_TIMEOUT, createHttpHeaders("Rsp-Header1", "rsp-value1", "Rso-Header2", "rsp-value2")));
+					  createIdentityHttpHeaders(Arrays.asList("Req-Header1", "req-value1", "Req-Header2", "req-value2")),
+					  createMockClientHttpResponse(HttpStatus.GATEWAY_TIMEOUT, createIdentityHttpHeaders(Arrays.asList("Rsp-Header1", "Rsp-Header2"))));
 		ClientHttpResponse	response=request.execute();
 		Operation 			op=assertExecuteRequest(request);
 		TraceError			err=assertTraceError(op, response);
 		assertNotNull("No error detected", err);
 	}
 
+	@Test
+	public void testDefaultHeadersObfuscation() throws Exception {
+		runObfuscationTest("testDefaultHeadersObfuscation", HttpHeadersObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST, true);
+	}
+
+	@Test
+	public void testNonDefaultHeadersObfuscation() throws Exception {
+		runObfuscationTest("testNonDefaultHeadersObfuscation", Arrays.asList("Hdr1", "Hdr2"), false);
+	}
+
 	@Override
 	public ClientHttpRequestCollectionOperationAspect getAspect() {
 		return ClientHttpRequestCollectionOperationAspect.aspectOf();
+	}
+
+	private void runObfuscationTest(String testName, Collection<String> hdrs, boolean defaultHeaders) throws Exception {
+		ClientHttpRequestCollectionOperationAspect	aspectInstance=getAspect();
+		ClientHttpRequestOperationCollector	collector=(ClientHttpRequestOperationCollector) aspectInstance.getCollector();
+		HttpHeadersObfuscator	obfuscator=collector.getHttpHeadersObfuscator();
+		if (!defaultHeaders) {
+			obfuscator.incrementalUpdate(HttpHeadersObfuscator.OBFUSCATED_HEADERS_SETTING, StringUtil.implode(hdrs, ","));
+		}
+
+		HttpHeaders	reqHdrs=createIdentityHttpHeaders(HttpHeadersObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST);
+		assertNotNull("Failed to remove response header value", reqHdrs.remove("WWW-Authenticate"));
+		if (!defaultHeaders) {
+			addIdentityHttpHeaders(reqHdrs, hdrs);
+		}
+		
+		HttpHeaders	rspHdrs=createIdentityHttpHeaders(Collections.singletonList("WWW-Authenticate"));
+		ClientHttpRequest	request=
+				new TestClientHttpRequest(HttpMethod.GET,
+										  new URI("http://somewhere:7365/" + testName),
+										  reqHdrs,
+										  createMockClientHttpResponse(HttpStatus.OK, rspHdrs));
+		ClientHttpResponse	response=request.execute();
+		assertNotNull("No response", response);
+
+		ObscuredValueSetMarker	obsMarker=(ObscuredValueSetMarker) obfuscator.getSensitiveValueMarker();
+		for (String name : hdrs) {
+			assertTrue("Value not obscured for " + name, obsMarker.remove(name));
+		}
+
+		// if obscured headers are not the defaults, make sure defaults are not obscured
+		if (!defaultHeaders) {
+			for (String name : HttpHeadersObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST) {
+				assertFalse("Value un-necessarily obscured for " + name, obsMarker.contains(name));
+			}
+		}
 	}
 
 	private TraceError assertTraceError(Operation op, ClientHttpResponse rsp) throws IOException {
@@ -170,11 +248,17 @@ public class ClientHttpRequestCollectionOperationAspectTest extends OperationCol
 		return response;
 	}
 
-	private static HttpHeaders createHttpHeaders (String ... pairs) {
-		HttpHeaders	hdrs=new HttpHeaders();
-		for (int	index=0; index < pairs.length; index += 2) {
-			String	name=pairs[index], value=pairs[index+1];
-			hdrs.add(name, value);
+	private static HttpHeaders createIdentityHttpHeaders (Collection<String> hdrNames) {
+		return addIdentityHttpHeaders(new HttpHeaders(), hdrNames);
+	}
+
+	private static HttpHeaders addIdentityHttpHeaders (HttpHeaders hdrs, Collection<String> hdrNames) {
+		if (ListUtil.size(hdrNames) <= 0) {
+			return hdrs;
+		}
+
+		for (String name : hdrNames) {
+			hdrs.add(name, name);
 		}
 
 		return hdrs;
