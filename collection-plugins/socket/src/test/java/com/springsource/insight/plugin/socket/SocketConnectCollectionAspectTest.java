@@ -35,7 +35,7 @@ public class SocketConnectCollectionAspectTest
         super();
     }
 
-    @Test
+	@Test
     public void testMatchingObscuredAddressesPattern () {
         runObscuredTest("^10\\..*", "10.1.2.3", true);
     }
@@ -57,6 +57,7 @@ public class SocketConnectCollectionAspectTest
             // ignored since we don't really expect it to succeed
         }
 
+        assertSocketOperation(SocketDefinitions.CONNECT_ACTION, testAddress, TEST_PORT);
         assertObscureTestResults(marker, pattern, testAddress, shouldObscure);
     }
 
@@ -64,5 +65,4 @@ public class SocketConnectCollectionAspectTest
     public SocketConnectCollectionAspect getAspect() {
         return SocketConnectCollectionAspect.aspectOf();
     }
-
 }

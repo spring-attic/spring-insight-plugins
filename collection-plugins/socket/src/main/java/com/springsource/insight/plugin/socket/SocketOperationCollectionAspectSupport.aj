@@ -29,8 +29,9 @@ import com.springsource.insight.intercept.trace.FrameBuilder;
 public abstract aspect SocketOperationCollectionAspectSupport
                 extends MethodOperationCollectionAspect {
     private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
-    private final SocketCollectOperationContext collectContext=new SocketCollectOperationContext();
+    private SocketCollectOperationContext collectContext=new SocketCollectOperationContext();
     protected final Logger  logger=Logger.getLogger(getClass().getName());
+
     protected SocketOperationCollectionAspectSupport() {
         super();
     }
@@ -39,8 +40,13 @@ public abstract aspect SocketOperationCollectionAspectSupport
         return collectContext;
     }
 
+    void setSocketCollectOperationContext (SocketCollectOperationContext context) {
+    	collectContext = context;
+    }
+
     protected Operation createOperation (Operation op, String action, String addr, int port) {
-        if (collectContext.updateObscuredAddressValue(addr)) {
+    	SocketCollectOperationContext	context=getSocketCollectOperationContext();
+        if (context.updateObscuredAddressValue(addr)) {
             if (logger.isLoggable(Level.FINE)) {
                 logger.fine("createOperation(" + action + ") obscured: " + addr);
             }
@@ -49,8 +55,7 @@ public abstract aspect SocketOperationCollectionAspectSupport
         return SocketDefinitions.initializeOperation(op, action, addr, port);
     }
 
-    protected boolean collectExtraInformation ()
-    {
+    protected boolean collectExtraInformation () {
         return FrameBuilder.OperationCollectionLevel.HIGH.equals(configuration.getCollectionLevel());
     }
 

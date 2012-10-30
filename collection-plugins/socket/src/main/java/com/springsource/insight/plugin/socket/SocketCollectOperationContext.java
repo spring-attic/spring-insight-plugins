@@ -16,49 +16,65 @@
 package com.springsource.insight.plugin.socket;
 
 import java.io.Serializable;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.springsource.insight.collection.FrameBuilderHintObscuredValueMarker;
-import com.springsource.insight.intercept.InterceptConfiguration;
+import com.springsource.insight.collection.http.HttpHeadersObfuscator;
 import com.springsource.insight.intercept.plugin.CollectionSettingName;
 import com.springsource.insight.intercept.plugin.CollectionSettingsRegistry;
 import com.springsource.insight.intercept.plugin.CollectionSettingsUpdateListener;
 import com.springsource.insight.intercept.trace.ObscuredValueMarker;
+import com.springsource.insight.util.StringUtil;
 
 /**
  * Need it as a separate class mainly due to testing issues - but it is also more convenient
  */
-class SocketCollectOperationContext {
-    private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
+class SocketCollectOperationContext implements CollectionSettingsUpdateListener {
+    /**
+     * The {@link CollectionSettingName} used to configured obscured address patterns
+     */
     public static final CollectionSettingName    OBSCURED_ADDRESSES_PATTERN_SETTING=
-            new CollectionSettingName("obscured.addresses.pattern", "socket", "Regexp used to obscure addresses");
-    protected static volatile Pattern  OBSCURED_ADDRESSES_PATTERN /* =null - i.e., no obscuring */;
+            new CollectionSettingName("obscured.addresses.pattern", SocketPluginRuntimeDescriptor.PLUGIN_NAME, "Regexp used to obscure addresses");
+    /**
+     * Special setting value used to signal that no obscuring pattern is required
+     */
+    public static final String	NO_PATTERN_VALUE="NONE";
 
-    static {
-        CollectionSettingsRegistry  registry=CollectionSettingsRegistry.getInstance();
-        registry.addListener(new CollectionSettingsUpdateListener() {
-            public void incrementalUpdate(CollectionSettingName name, Serializable value) {
-               Logger   LOG=Logger.getLogger(SocketCollectOperationContext.class.getName());
-               if (OBSCURED_ADDRESSES_PATTERN_SETTING.equals(name)) {
-                   Pattern  newPattern=CollectionSettingsRegistry.getPatternSettingValue(value);
-                   LOG.info("incrementalUpdate(" + name + "): " + OBSCURED_ADDRESSES_PATTERN + " => " + value);
-                   OBSCURED_ADDRESSES_PATTERN = newPattern;
-               } else if (LOG.isLoggable(Level.FINE)) {
-                   LOG.fine("incrementalUpdate(" + name + ")[" + value + "] ignored");
-               }
-            }
-        });
-    }
-
-    private ObscuredValueMarker obscuredMarker =
-            new FrameBuilderHintObscuredValueMarker(configuration.getFrameBuilder());
+    private volatile Pattern  obscuredAddressesPattern /* =null - i.e., no obscuring */;
+    private ObscuredValueMarker obscuredMarker;
+    private HttpHeadersObfuscator	obfuscator;
 
     public SocketCollectOperationContext() {
-        super();
+        this(HttpHeadersObfuscator.getInstance());
+
+        CollectionSettingsRegistry  registry=CollectionSettingsRegistry.getInstance();
+        registry.addListener(this);
+        registry.register(OBSCURED_ADDRESSES_PATTERN_SETTING, NO_PATTERN_VALUE);
     }
+
+    SocketCollectOperationContext(HttpHeadersObfuscator hdrsObfuscator) {
+    	obfuscator = hdrsObfuscator;
+        obscuredMarker = hdrsObfuscator.getSensitiveValueMarker();
+    }
+
+    public void incrementalUpdate(CollectionSettingName name, Serializable value) {
+        if (OBSCURED_ADDRESSES_PATTERN_SETTING.equals(name)) {
+            Logger  	LOG=Logger.getLogger(getClass().getName());
+            String		curValue=(obscuredAddressesPattern == null) ? NO_PATTERN_VALUE : obscuredAddressesPattern.pattern(); 
+            String		newValue=StringUtil.safeToString(value);
+            if (StringUtil.safeCompare(curValue, newValue) != 0) {
+            	Pattern  	newPattern=(StringUtil.isEmpty(newValue) || NO_PATTERN_VALUE.equalsIgnoreCase(newValue))
+            					? null
+            					: CollectionSettingsRegistry.getPatternSettingValue(value)
+            					;
+            	LOG.info("incrementalUpdate(" + name + "): " + curValue + " => " + newValue);
+            	obscuredAddressesPattern = newPattern;
+            }
+        } else if (HttpHeadersObfuscator.OBFUSCATED_HEADERS_SETTING.equals(name)) {
+       		obfuscator.incrementalUpdate(name, value);	// make sure change is propagated
+        }
+     }
 
     ObscuredValueMarker getObscuredValueMarker () {
         return obscuredMarker;
@@ -73,15 +89,35 @@ class SocketCollectOperationContext {
      * @return <code>true</code> if address has been marked as obscured value
      */
     boolean updateObscuredAddressValue (String addr) {
-        if ((addr != null) && (addr.length() > 0) && (OBSCURED_ADDRESSES_PATTERN != null)) {
-            Matcher matcher=OBSCURED_ADDRESSES_PATTERN.matcher(addr);
-            if (matcher.matches()) {
-                obscuredMarker.markObscured(addr);
-                return true;
-            }
+        if (StringUtil.isEmpty(addr) || (obscuredAddressesPattern == null)) {
+        	return false;
+        }
+
+        Matcher matcher=obscuredAddressesPattern.matcher(addr);
+        if (matcher.matches()) {
+        	obscuredMarker.markObscured(addr);
+        	return true;
         }
         
         return false;
     }
+    
+    boolean updateObscuredHeaderValue (String name, String value) {
+        if (!obfuscator.processHeader(name, value)) {
+        	return false;
+        }
 
+        ObscuredValueMarker	curMarker=getObscuredValueMarker();
+        ObscuredValueMarker	httpMarker=obfuscator.getSensitiveValueMarker();
+    	/*
+    	 * Check if substituted the marker (e.g., for addresses obscuring).
+    	 * If so, then inform the substituted marker as well of the
+    	 * obscured header value
+    	 */
+    	if (curMarker != httpMarker) {
+    		curMarker.markObscured(value);
+    	}
+        
+        return true;
+    }
 }

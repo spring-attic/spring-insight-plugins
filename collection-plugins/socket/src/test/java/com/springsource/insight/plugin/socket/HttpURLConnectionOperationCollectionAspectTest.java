@@ -19,7 +19,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Set;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
@@ -35,9 +36,13 @@ import org.mortbay.jetty.Request;
 import org.mortbay.jetty.Server;
 
 import com.springsource.insight.collection.ObscuredValueSetMarker;
+import com.springsource.insight.collection.http.HttpHeadersObfuscator;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
+import com.springsource.insight.util.ListUtil;
+import com.springsource.insight.util.MapUtil;
+import com.springsource.insight.util.io.Base64;
 
 /**
  * 
@@ -71,9 +76,10 @@ public class HttpURLConnectionOperationCollectionAspectTest
 
     @Test
     public void testConnect () throws IOException {
-        HttpURLConnection   conn=createConnection("testConnect");
-        conn.connect();
+    	final String		METHOD="GET";
+        HttpURLConnection   conn=createConnection(METHOD, "testConnect");
         try {
+            conn.connect();
             int responseCode=conn.getResponseCode();
             assertEquals("Bad response code", HttpServletResponse.SC_OK, responseCode);
         } finally {
@@ -81,7 +87,7 @@ public class HttpURLConnectionOperationCollectionAspectTest
         }
 
         Operation   op=assertSocketOperation(SocketDefinitions.CONNECT_ACTION, TEST_HOST, TEST_PORT);
-        assertEquals("Mismatched method", "GET", op.get("method", String.class));
+        assertEquals("Mismatched method", METHOD, op.get("method", String.class));
 
         URL url=conn.getURL();
         assertEquals("Mismatched URL", url.toExternalForm(), op.get(OperationFields.URI, String.class));
@@ -91,42 +97,49 @@ public class HttpURLConnectionOperationCollectionAspectTest
 
     @Test
     public void testDefaultObscuredHeaders () throws IOException {
-        Set<String> defaultObscuredHeaders=
-                HttpURLConnectionOperationCollectionAspect.toHeaderNameSet(
-                        HttpURLConnectionOperationCollectionAspect.DEFAULT_OBFUSCATED_HEADERS_LIST);
         ObscuredValueSetMarker    marker=
-                setupObscuredTest(HttpURLConnectionOperationCollectionAspect.OBFUSCATED_HEADERS_SETTING,
-                                  HttpURLConnectionOperationCollectionAspect.DEFAULT_OBFUSCATED_HEADERS_LIST);
-        HttpURLConnection   conn=createConnection("testDefaultObscuredHeaders");
-        for (String hdrName : defaultObscuredHeaders) {
-            assertTrue("Default header not marked in set: " + hdrName,
-                              HttpURLConnectionOperationCollectionAspect.OBFUSCATED_HEADERS.contains(hdrName));
-            conn.setRequestProperty(hdrName, hdrName);
-        }
-
-        conn.connect();
+                setupObscuredTest(HttpHeadersObfuscator.OBFUSCATED_HEADERS_SETTING, HttpHeadersObfuscator.DEFAULT_OBFUSCATED_HEADERS_VALUES);
+        HttpURLConnection   		conn=createConnection("POST", "testDefaultObscuredHeaders");
+        Map<String,List<String>>	propsMap;
         try {
+            propsMap = conn.getRequestProperties();
+            assertTrue("No request properties map", MapUtil.size(propsMap) > 0);
+
+            conn.connect();
             int responseCode=conn.getResponseCode();
             assertEquals("Bad response code", HttpServletResponse.SC_OK, responseCode);
         } finally {
             conn.disconnect();
         }
 
-        for (String hdrName : defaultObscuredHeaders) {
-            assertObscureTestResults(marker, hdrName, hdrName, true);
+        for (String hdrName : HttpHeadersObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST) {
+        	if ("WWW-Authenticate".equals(hdrName)) {
+        		continue;	// this is a response header and we do not intercept them
+        	}
+
+        	// see http://stackoverflow.com/questions/2864062/getrequestpropertyauthorization-always-returns-null
+        	List<String>	values=propsMap.get(hdrName);
+        	if (ListUtil.size(values) <= 0) {
+        		continue;
+        	}
+
+        	assertEquals("Mismatched num. of values for " + hdrName, 1, values.size());
+            assertObscureTestResults(marker, hdrName, values.get(0), true);
         }
     }
 
     @Test
     public void testObscuredHeaders () throws IOException {
-        final String            hdrName="testObscuredHeaders", hdrValue=String.valueOf(System.nanoTime());
-        ObscuredValueSetMarker	marker=
-                setupObscuredTest(HttpURLConnectionOperationCollectionAspect.OBFUSCATED_HEADERS_SETTING, hdrName);
-
-        HttpURLConnection   conn=createConnection("testObscuredHeaders");
-        conn.setRequestProperty(hdrName, hdrValue);
-        conn.connect();
+        final String            	hdrName="TestObscuredHeaders", hdrValue=String.valueOf(System.nanoTime());
+        ObscuredValueSetMarker		marker=setupObscuredTest(HttpHeadersObfuscator.OBFUSCATED_HEADERS_SETTING, hdrName);
+        HttpURLConnection   		conn=createConnection("POST", hdrName);
+        Map<String,List<String>>	propsMap;
         try {
+            conn.setRequestProperty(hdrName, hdrValue);
+            propsMap = conn.getRequestProperties();
+            assertTrue("No request properties map", MapUtil.size(propsMap) > 0);
+
+            conn.connect();
             int responseCode=conn.getResponseCode();
             assertEquals("Bad response code", HttpServletResponse.SC_OK, responseCode);
         } finally {
@@ -135,6 +148,17 @@ public class HttpURLConnectionOperationCollectionAspectTest
 
         assertObscureTestResults(marker, hdrName, hdrValue, true);
         assertObscureTestResults(marker, hdrName, "X-Dummy-Value", false);
+
+        for (String defName : HttpHeadersObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST) {
+        	// see http://stackoverflow.com/questions/2864062/getrequestpropertyauthorization-always-returns-null
+        	List<String>	values=propsMap.get(defName);
+        	if (ListUtil.size(values) <= 0) {
+        		continue;
+        	}
+
+        	assertEquals("Mismatched num. of values for " + defName, 1, values.size());
+            assertObscureTestResults(marker, defName, values.get(0), false);
+        }
     }
 
     @Override
@@ -142,24 +166,30 @@ public class HttpURLConnectionOperationCollectionAspectTest
         return HttpURLConnectionOperationCollectionAspect.aspectOf();
     }
 
-    protected HttpURLConnection createConnection (final String testName)
+    protected HttpURLConnection createConnection (final String method, final String testName)
                 throws IOException {
         URL               testURL=new URL(createTestUri(testName));
         HttpURLConnection conn=(HttpURLConnection) testURL.openConnection();
         conn.setConnectTimeout((int) TimeUnit.SECONDS.toMillis(5L));
         conn.setReadTimeout((int) TimeUnit.SECONDS.toMillis(5L));
-        conn.setRequestMethod("GET");
-        conn.setRequestProperty("Authorization", "Basic insight:admin");
+        if ("POST".equalsIgnoreCase(method)) {
+        	conn.setDoOutput(true);
+        }
+        conn.setRequestMethod(method);
+        
+		final String	authToken=Base64.encode(getClass().getSimpleName() + ":" + testName);
+        conn.setRequestProperty("Authentication-Info", "Blah");
+        conn.setRequestProperty("Authorization", "Basic " + authToken);
+        conn.setRequestProperty("Proxy-Authenticate", "Base64 " + authToken);
+        conn.setRequestProperty("Proxy-Authorization", "Basic " + authToken); 
         return conn;
     }
 
-    static String createResponseContent (String testName)
-    {
+    static String createResponseContent (String testName) {
         return "<test name=\"" + testName + "\" />";
     }
 
-    static String createTestUri (String testName)
-    {
+    static String createTestUri (String testName) {
         return TEST_URI + testName;
     }
 
@@ -235,7 +265,7 @@ public class HttpURLConnectionOperationCollectionAspectTest
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("text/xml;charset=utf-8");
             response.addHeader("X-Test-Name", testName);
-            response.addHeader("Authorization", "Authorization");
+            response.addHeader("WWW-Authenticate", "allowed");
 
             Writer  writer=response.getWriter();
             try {

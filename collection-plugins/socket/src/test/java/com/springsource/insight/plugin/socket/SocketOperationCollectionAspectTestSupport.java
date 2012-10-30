@@ -18,13 +18,19 @@ package com.springsource.insight.plugin.socket;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+
+import org.junit.After;
+import org.junit.Before;
 
 import com.springsource.insight.collection.ObscuredValueSetMarker;
+import com.springsource.insight.collection.OperationCollector;
+import com.springsource.insight.collection.OperationListCollector;
+import com.springsource.insight.collection.http.HttpHeadersObfuscator;
 import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.plugin.CollectionSettingName;
-import com.springsource.insight.intercept.plugin.CollectionSettingsRegistry;
 import com.springsource.insight.intercept.server.ServerName;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
@@ -44,10 +50,47 @@ public abstract class SocketOperationCollectionAspectTestSupport
             extends OperationCollectionAspectTestSupport {
     protected static final int    TEST_PORT=7365;
     protected static final String TEST_HOST="localhost";
+    private SocketCollectOperationContext	originalContext;
+    private final ObscuredValueSetMarker   	marker=new ObscuredValueSetMarker();
 
     protected SocketOperationCollectionAspectTestSupport() {
         super();
     }
+
+    @Before
+    @Override
+    public void setUp () {
+    	super.setUp();
+
+    	SocketOperationCollectionAspectSupport  aspectInstance=(SocketOperationCollectionAspectSupport) getAspect();
+    	originalContext = aspectInstance.getSocketCollectOperationContext();
+    	marker.clear();
+    	aspectInstance.setSocketCollectOperationContext(new SocketCollectOperationContext(new HttpHeadersObfuscator(marker)));
+    }
+
+    @After
+    @Override
+    public void restore () {
+    	SocketOperationCollectionAspectSupport  aspectInstance=(SocketOperationCollectionAspectSupport) getAspect();
+    	aspectInstance.setSocketCollectOperationContext(originalContext);
+    	marker.clear();	// make sure again
+    }
+
+	@Override
+	protected OperationCollector createSpiedOperationCollector(OperationCollector originalCollector) {
+		return new OperationListCollector();
+	}
+
+	@Override
+	protected Operation getLastEnteredOperation(OperationCollector spiedCollector) {
+		OperationListCollector	collector=(OperationListCollector) spiedCollector;
+		List<Operation>			ops=collector.getCollectedOperations();
+		if (ListUtil.size(ops) > 0) {
+			return ops.get(ops.size() - 1);
+		} else {
+			return null;
+		}
+	}
 
     protected Operation assertSocketOperation (String action, String addr, int port) {
         Operation   op=getLastEntered();
@@ -85,29 +128,24 @@ public abstract class SocketOperationCollectionAspectTestSupport
         return op;
     }
 
-    protected ObscuredValueSetMarker setupObscuredTest (
-            CollectionSettingName settingName, String pattern) {
+    protected ObscuredValueSetMarker setupObscuredTest (CollectionSettingName settingName, String pattern) {
         SocketOperationCollectionAspectSupport  aspectInstance=
                 (SocketOperationCollectionAspectSupport) getAspect();
-        SocketCollectOperationContext           context=aspectInstance.getSocketCollectOperationContext();
-        ObscuredValueSetMarker                marker=new ObscuredValueSetMarker();
-        context.setObscuredValueMarker(marker);
-        
-        CollectionSettingsRegistry  registry=CollectionSettingsRegistry.getInstance();
-        registry.set(settingName, pattern);
-        return marker;
+        SocketCollectOperationContext			context=aspectInstance.getSocketCollectOperationContext();
+        context.incrementalUpdate(settingName, pattern);
+        return (ObscuredValueSetMarker) context.getObscuredValueMarker();
     }
 
     protected void assertObscureTestResults (ObscuredValueSetMarker   markedValues,
                                              String                   pattern,
-                                             String                   testAddress,
+                                             String                   value,
                                              boolean                  shouldObscure) {
         if (shouldObscure) {
-            assertTrue("assertObscureTestResults(" + pattern + ") Address not obscured: " + testAddress,
-                       markedValues.contains(testAddress));
+            assertTrue("assertObscureTestResults(" + pattern + ") value not obscured: " + value,
+                       markedValues.contains(value));
         } else {
-            assertFalse("assertObscureTestResults(" + pattern + ") Address un-necessarily obscured",
-            			markedValues.contains(testAddress));
+            assertFalse("assertObscureTestResults(" + pattern + ") value un-necessarily obscured",
+            			markedValues.contains(value));
         }
     }
 }
