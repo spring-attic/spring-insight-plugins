@@ -87,6 +87,7 @@ public class ClientHttpRequestOperationCollector extends DefaultOperationCollect
                     }
                 }
             });
+        registry.register(OBFUSCATED_HEADERS_SETTING, DEFAULT_OBFUSCATED_HEADERS_LIST);
     }
 
     private ObscuredValueMarker obscuredMarker =

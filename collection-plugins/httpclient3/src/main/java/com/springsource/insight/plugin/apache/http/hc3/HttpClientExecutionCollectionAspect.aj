@@ -88,6 +88,7 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
                     }
                 }
             });
+        registry.register(OBFUSCATED_HEADERS_SETTING, DEFAULT_OBFUSCATED_HEADERS_LIST);
     }
 
     private ObscuredValueMarker obscuredMarker =
