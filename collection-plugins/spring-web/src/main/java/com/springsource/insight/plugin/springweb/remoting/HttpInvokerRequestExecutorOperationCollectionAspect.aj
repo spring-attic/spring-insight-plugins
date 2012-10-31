@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.aspectj.lang.JoinPoint;
 import org.springframework.remoting.httpinvoker.HttpInvokerClientConfiguration;
+import org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean;
 import org.springframework.remoting.httpinvoker.HttpInvokerRequestExecutor;
 import org.springframework.remoting.support.RemoteInvocation;
 
@@ -59,12 +60,20 @@ public aspect HttpInvokerRequestExecutorOperationCollectionAspect extends Abstra
         			new Operation().type(HttpInvokerRequestExecutorExternalResourceAnalyzer.HTTP_INVOKER), jp)
         				.put(HttpInvokerRequestExecutorExternalResourceAnalyzer.DIRECT_CALL_ATTR, false)
         				;
-		encodeRemoteInvocation(op, invocation);
+		
 		encodeInvocationConfig(op, config);
+		encodeRemoteInvocation(op, invocation);
 		return op;
 	}
 	
 	protected Operation encodeInvocationConfig (Operation op, HttpInvokerClientConfiguration config) {
+	    if (config instanceof HttpInvokerProxyFactoryBean) {
+	        Class<?> serviceInterface = ((HttpInvokerProxyFactoryBean)config).getServiceInterface();
+	        if (serviceInterface != null) {
+	            op.put("serviceInterface", serviceInterface.getName());
+	        }
+	    }
+	    
 		op.put(OperationFields.URI, config.getServiceUrl());
 		
 		if (collectExtraInformation()) {
@@ -88,15 +97,38 @@ public aspect HttpInvokerRequestExecutorOperationCollectionAspect extends Abstra
 	}
 
 	protected Operation encodeRemoteInvocation (Operation op, RemoteInvocation invocation) {
-		String	methodName=invocation.getMethodName();
-		String	remoteLocation=JoinPointBreakDown.getMethodStringFromArgs(methodName, invocation.getParameterTypes());
-		op.label(remoteLocation).put("remoteMethodSignature", remoteLocation);
+	    String	methodName=invocation.getMethodName();
+	    String	remoteLocation=JoinPointBreakDown.getMethodStringFromArgs(methodName, invocation.getParameterTypes());
+	    
+		op.label(generateLabel(op, remoteLocation)).put("remoteMethodSignature", remoteLocation);
 
 		if (collectExtraInformation()) {
 			encodeInvocationAttributes(op.createMap("remoteInvocationAttrs"), invocation.getAttributes());
 		}
 
 		return op;
+	}
+	
+	protected String generateLabel(Operation op, String remoteLocation) {
+	    String simpleServiceInterface = null;
+	    String serviceInterface = op.get("serviceInterface", String.class);
+	    
+	    StringBuilder builder;
+	    if (!StringUtil.isEmpty(serviceInterface)) {
+	        int lastIndex = serviceInterface.lastIndexOf('.');
+	        simpleServiceInterface = serviceInterface.substring(lastIndex+1, serviceInterface.length());
+	        
+	        builder = new StringBuilder(simpleServiceInterface.length() + remoteLocation.length() + 1);
+	        builder.append(simpleServiceInterface).append('#');
+	        
+	    } else {
+	        builder = new StringBuilder(remoteLocation.length());
+	    }
+	    
+	    builder.append(remoteLocation);
+	    
+	    return builder.toString();
+	    
 	}
 
 	protected OperationMap encodeInvocationAttributes(OperationMap map, Map<String,?> attrs) {
