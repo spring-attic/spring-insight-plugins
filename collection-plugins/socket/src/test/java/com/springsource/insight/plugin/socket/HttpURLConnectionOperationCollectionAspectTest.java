@@ -170,8 +170,8 @@ public class HttpURLConnectionOperationCollectionAspectTest
                 throws IOException {
         URL               testURL=new URL(createTestUri(testName));
         HttpURLConnection conn=(HttpURLConnection) testURL.openConnection();
-        conn.setConnectTimeout((int) TimeUnit.SECONDS.toMillis(5L));
-        conn.setReadTimeout((int) TimeUnit.SECONDS.toMillis(5L));
+        conn.setConnectTimeout((int) TimeUnit.SECONDS.toMillis(15L));
+        conn.setReadTimeout((int) TimeUnit.SECONDS.toMillis(15L));
         if ("POST".equalsIgnoreCase(method)) {
         	conn.setDoOutput(true);
         }
