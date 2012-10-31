@@ -1120,6 +1120,7 @@
                         </goals>
                         <configuration>
                             <source>
+							<![CDATA[
                                 for (java.io.File file=new java.io.File(new java.net.URI('${project.baseUri}')); file != null; file = file.getParentFile()) {
                                     if (!file.isDirectory()) {
                                         continue
@@ -1133,6 +1134,7 @@
                                 }
                                 
                                 System.err.println("Failed to detected Insight root dir")
+							]]>
                             </source>
                         </configuration>
                     </execution>
@@ -1144,7 +1146,9 @@
                         </goals>
                         <configuration>
                             <source>
+							<![CDATA[
                                 project.properties['buildtimestamp'] = java.text.MessageFormat.format("{0,date,yyyyMMddHHmmss}", new Date())
+							]]>
                             </source>
                         </configuration>
                     </execution>
@@ -1157,6 +1161,7 @@
                         <configuration>
 								<!-- see http://maven.apache.org/ref/3.0.4/maven-core/apidocs/org/apache/maven/execution/MavenSession.html -->
                             <source>
+							<![CDATA[
 								if (!session.goals.contains("deploy")) {
 									return;
 								}
@@ -1186,6 +1191,7 @@
 									project.properties['deploy.repo.name'] = project.properties['milestone.repo.name']
 									project.properties['deploy.repo.url'] = project.properties['milestone.dist.url']
                                 }
+							]]>
                             </source>
                         </configuration>
                     </execution>
