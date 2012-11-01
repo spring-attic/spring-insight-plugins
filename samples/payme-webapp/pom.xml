@@ -3,14 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.springsource.insight.samples</groupId>
 	<artifactId>payme-webapp</artifactId>
-	<version>1.9.1.RC1</version>
+	<version>1.9.1.RELEASE</version>
 	<name>com.springsource.insight.samples:payme-webapp</name>
 	<packaging>war</packaging>
 
 	<parent>
 		<groupId>com.springsource.insight.samples</groupId>
 		<artifactId>sample-modules</artifactId>
-		<version>1.9.1.RC1</version>
+		<version>1.9.1.RELEASE</version>
 		<relativePath>..</relativePath>
 	</parent>
 	
