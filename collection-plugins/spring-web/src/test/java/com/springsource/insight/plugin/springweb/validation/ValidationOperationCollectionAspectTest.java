@@ -108,7 +108,7 @@ public class ValidationOperationCollectionAspectTest extends OperationCollection
     		String	objName=actual.get(OperationUtils.NAME_KEY, String.class);
     		assertEquals("Mismatched object name at entry #" + index, expected.getObjectName(), objName);
 
-    		String	errExpected=StringUtil.trimWithEllipsis(expected.toString(), ValidationJoinPointFinalizer.MAX_ERROR_TEXT_LENGTH);
+    		String	errExpected=StringUtil.chopTailAndEllipsify(expected.toString(), ValidationJoinPointFinalizer.MAX_ERROR_TEXT_LENGTH);
     		String	errActual=actual.get(OperationUtils.VALUE_KEY, String.class);
     		assertEquals("Mismatched error text at entry #" + index, errExpected, errActual);
     	}

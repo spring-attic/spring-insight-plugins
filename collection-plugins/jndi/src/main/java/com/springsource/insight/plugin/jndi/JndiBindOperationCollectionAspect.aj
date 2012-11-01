@@ -61,7 +61,7 @@ public aspect JndiBindOperationCollectionAspect extends JndiOperationCollectionS
 		Object[]	args=jp.getArgs();
 		if (ArrayUtil.length(args) > 1) {
 			Object	value=args[1];
-			op.put("value", StringUtil.trimWithEllipsis(StringUtil.safeToString(value), StringFormatterUtils.MAX_PARAM_LENGTH));
+			op.put("value", StringUtil.chopTailAndEllipsify(StringUtil.safeToString(value), StringFormatterUtils.MAX_PARAM_LENGTH));
 		}
 
 		return op;

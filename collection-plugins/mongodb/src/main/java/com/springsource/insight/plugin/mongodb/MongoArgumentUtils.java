@@ -37,6 +37,7 @@ import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
 import com.mongodb.WriteResult;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.util.StringFormatterUtils;
 import com.springsource.insight.util.StringUtil;
 
 /**
@@ -49,7 +50,7 @@ public final class MongoArgumentUtils {
     /**
      * The maximum length of a string we generate
      */
-    private static final int MAX_STRING_LENGTH = 256;
+    public static final int MAX_STRING_LENGTH = 256;
 
     /**
      * These classes can just be converted willy-nilly
@@ -195,7 +196,7 @@ public final class MongoArgumentUtils {
     @SuppressWarnings("unchecked")
     public static String toString(final Object object, final int maxLength) {
         if (object == null) {
-            return "null";
+            return StringFormatterUtils.NULL_VALUE_STRING;
         }
 
         Class<? extends Object> cls = object.getClass();
@@ -203,18 +204,18 @@ public final class MongoArgumentUtils {
                 .get(cls);
 
         if (stringForm != null) {
-            return StringUtil.trimWithEllipsis(stringForm.stringify(object), maxLength);
+            return StringUtil.chopTailAndEllipsify(stringForm.stringify(object), maxLength);
         }
 
         return cls.getSimpleName();
     }
 
     public static String toString(final DBObject dbObject) {
-        return dbObject == null ? null : trimWithEllipsis(dbObject.toString());
+        return dbObject == null ? null : chopTailAndEllipsify(dbObject.toString());
     }
 
-    public static String trimWithEllipsis(final String string) {
-        return StringUtil.trimWithEllipsis(string, MAX_STRING_LENGTH);
+    public static String chopTailAndEllipsify(final String string) {
+        return StringUtil.chopTailAndEllipsify(string, MAX_STRING_LENGTH);
     }
 
     public static Operation putDatabaseDetails (Operation op, DB db) {

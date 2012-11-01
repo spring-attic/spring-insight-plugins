@@ -154,6 +154,11 @@ public class ControllerOperationCollectionAspectTest extends AbstractControllerO
     	return assertEncodeModelValues(op, ControllerOperationCollectionAspect.MODEL_ARGUMENT_NAME, argModel);
     }
 
+    @Override
+    public ControllerOperationCollectionAspect getAspect() {
+        return ControllerOperationCollectionAspect.aspectOf();
+    }
+
     @Controller
     static class ExampleController extends TestSupportController {
     	ExampleController () {
@@ -245,11 +250,5 @@ public class ControllerOperationCollectionAspectTest extends AbstractControllerO
 			assertNotNull("No request", request);
 			assertNotNull("No response", response);
 		}
-    	
     }
-    @Override
-    public ControllerOperationCollectionAspect getAspect() {
-        return ControllerOperationCollectionAspect.aspectOf();
-    }
-
 }

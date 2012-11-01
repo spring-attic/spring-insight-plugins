@@ -102,7 +102,7 @@ public class ValidationJoinPointFinalizer extends JoinPointFinalizer {
 
 		for (ObjectError err : errDetails) {
 			String	objName=err.getObjectName();
-			String	objError=StringUtil.trimWithEllipsis(err.toString(), MAX_ERROR_TEXT_LENGTH);
+			String	objError=StringUtil.chopTailAndEllipsify(err.toString(), MAX_ERROR_TEXT_LENGTH);
 			OperationUtils.addNameValuePair(errList, objName, objError);
 		}
 

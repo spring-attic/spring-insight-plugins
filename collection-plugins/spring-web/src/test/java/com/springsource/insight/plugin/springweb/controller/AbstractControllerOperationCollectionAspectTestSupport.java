@@ -78,7 +78,7 @@ public abstract class AbstractControllerOperationCollectionAspectTestSupport
     	for (Map.Entry<String,?> me : map.entrySet()) {
     		String	key=me.getKey();
     		Object	actualValue=me.getValue();
-    		Object	expectedValue=expected.get(key);
+    		Object	expectedValue=ControllerOperationCollector.resolveCollectedValue(expected.get(key));
     		assertEquals(mapName + ": Mismatched value for " + key, expectedValue, actualValue);
     	}
 

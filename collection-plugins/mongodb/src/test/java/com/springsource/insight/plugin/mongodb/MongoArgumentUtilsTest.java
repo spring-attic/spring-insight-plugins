@@ -21,97 +21,103 @@ import java.math.BigInteger;
 import java.util.Random;
 
 import org.bson.types.ObjectId;
-
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
-public class MongoArgumentUtilsTest {
+import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
+import com.springsource.insight.util.StringFormatterUtils;
+import com.springsource.insight.util.StringUtil;
+
+public class MongoArgumentUtilsTest extends AbstractCollectionTestSupport {
+	public MongoArgumentUtilsTest () {
+		super();
+	}
 
     @Test
     public void testLongStringTruncatedToLimit() {
-        String bigRandom = new BigInteger(2048, new Random()).toString(32);
-        assertEquals(bigRandom.substring(0, 256) + "...", MongoArgumentUtils.toString(bigRandom));
+        String 	bigRandom = new BigInteger(2048, new Random()).toString(32);
+        String	argVal = MongoArgumentUtils.toString(bigRandom);
+        assertEquals("Mismatched result length", MongoArgumentUtils.MAX_STRING_LENGTH, StringUtil.getSafeLength(argVal));
+        assertTrue("Not ellipsified", argVal.endsWith(StringUtil.ELLIPSIS));
     }
 
     @Test
     public void testNullToString() {
-        assertEquals("null", MongoArgumentUtils.toString((Object) null));
+        assertEquals(StringFormatterUtils.NULL_VALUE_STRING, MongoArgumentUtils.toString((Object) null));
     }
 
     @Test
     public void testStringValue() {
-        assertEquals("Slartibartfast",
-                MongoArgumentUtils.toString("Slartibartfast"));
+    	final String	value="Slartibartfast";
+        assertEquals(value, MongoArgumentUtils.toString(value));
     }
 
     @Test
     public void testBooleanValue() {
-        assertEquals("true", MongoArgumentUtils.toString(Boolean.TRUE));
+        assertEquals(Boolean.TRUE.toString(), MongoArgumentUtils.toString(Boolean.TRUE));
     }
 
-    @SuppressWarnings("boxing")
 	@Test
     public void testByteValue() {
-        assertEquals("42", MongoArgumentUtils.toString((byte) 42));
+		Byte	value=Byte.valueOf((byte) 42);
+        assertEquals(value.toString(), MongoArgumentUtils.toString(value));
     }
 
-    @SuppressWarnings("boxing")
 	@Test
     public void testCharacterValue() {
-        assertEquals("A", MongoArgumentUtils.toString('A'));
+		Character	value=Character.valueOf('A');
+        assertEquals(value.toString(), MongoArgumentUtils.toString(value));
     }
 
-    @SuppressWarnings("boxing")
 	@Test
     public void testShortValue() {
-        assertEquals("42", MongoArgumentUtils.toString((short) 42));
+		Short	value=Short.valueOf((short) 42);
+        assertEquals(value.toString(), MongoArgumentUtils.toString(value));
     }
 
-    @SuppressWarnings("boxing")
 	@Test
     public void testIntegerValue() {
-        assertEquals("42", MongoArgumentUtils.toString(42));
+		Integer	value=Integer.valueOf(42);
+        assertEquals(value.toString(), MongoArgumentUtils.toString(value));
     }
 
-    @SuppressWarnings("boxing")
 	@Test
     public void testLongValue() {
-        assertEquals("42", MongoArgumentUtils.toString(42L));
+		Long	value=Long.valueOf(42L);
+        assertEquals(value.toString(), MongoArgumentUtils.toString(value));
     }
 
-    @SuppressWarnings("boxing")
 	@Test
     public void testFloatValue() {
-        assertEquals("42.0", MongoArgumentUtils.toString((float) 42.0));
+		Float	value=Float.valueOf(42.0f);
+        assertEquals(value.toString(), MongoArgumentUtils.toString(value));
     }
 
-    @SuppressWarnings("boxing")
 	@Test
     public void testDoubleValue() {
-        assertEquals("42.0", MongoArgumentUtils.toString(42.0d));
+		Double	value=Double.valueOf(42.0d);
+        assertEquals(value.toString(), MongoArgumentUtils.toString(value));
     }
 
     @Test
     public void testBigIntegerValue() {
-        assertEquals("42424242",
-                MongoArgumentUtils.toString(new BigInteger("42424242")));
+    	String	value="42424242";
+        assertEquals(value,  MongoArgumentUtils.toString(new BigInteger(value)));
     }
 
     @Test
     public void testBigDecimalValue() {
-        assertEquals("42.424242",
-                MongoArgumentUtils.toString(new BigDecimal("42.424242")));
+    	String	value="42.424242";
+        assertEquals(value, MongoArgumentUtils.toString(new BigDecimal(value)));
     }
 
     @Test
     public void testObjectIdValue() {
-        assertEquals("0123456789abcd0123456789",
-                MongoArgumentUtils.toString(new ObjectId("0123456789abcd0123456789")));
+    	String value="0123456789abcd0123456789";
+        assertEquals(value, MongoArgumentUtils.toString(new ObjectId(value)));
     }
 
     @Test
     public void testUnknownClass() {
-        assertEquals("Random", MongoArgumentUtils.toString(new Random()));
+        assertEquals(Random.class.getSimpleName(), MongoArgumentUtils.toString(new Random()));
     }
 }
