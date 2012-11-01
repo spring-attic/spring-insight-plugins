@@ -17,18 +17,16 @@
 package com.springsource.insight.plugin.eclipse.persistence;
 
 import org.aspectj.lang.JoinPoint;
-import org.eclipse.persistence.queries.DatabaseQuery;
 import org.eclipse.persistence.sessions.Session;
 
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.util.ArrayUtil;
 
 /**
  * 
  */
 public aspect SessionQueryOperationCollectionAspect extends EclipsePersistenceCollectionAspect {
     public SessionQueryOperationCollectionAspect () {
-        super(EclipsePersistenceDefinitions.QUERY, "Execute query");
+        super(SessionQueryOperationJoinPointFinalizer.getSessionQueryOperationJoinPointFinalizer(), EclipsePersistenceDefinitions.QUERY, "Execute query");
     }
 
     public pointcut executeQuery () : execution(* Session+.executeQuery(..));
@@ -37,25 +35,7 @@ public aspect SessionQueryOperationCollectionAspect extends EclipsePersistenceCo
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        String  queryName=resolveQueryName(jp.getArgs());
+        String  queryName=SessionQueryOperationJoinPointFinalizer.resolveQueryName(jp.getArgs());
         return createOperation(jp, queryName);
-    }
-
-    static String resolveQueryName (Object ... args) {
-        if (ArrayUtil.length(args) <= 0) {
-            return EclipsePersistenceDefinitions.UNKNOWN_ACTION;
-        }
-        
-        Object  arg0=args[0];
-        if (arg0 instanceof String) {
-            return (String) arg0;
-        }
-        
-        if (arg0 instanceof DatabaseQuery) {
-            return ((DatabaseQuery) arg0).getName();
-        }
-
-        // TODO consider logging a warning
-        return arg0.getClass().getSimpleName();
     }
 }

@@ -24,23 +24,17 @@ import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
 
 public aspect InitBinderOperationCollectionAspect extends AbstractSpringWebAspectSupport {
-    static final OperationType TYPE = OperationType.valueOf("init_binder");
+    public static final OperationType TYPE = OperationType.valueOf("init_binder");
+    private InitBinderOperationFinalizer	finalizer;
 
     public InitBinderOperationCollectionAspect () {
-    	super();
+    	finalizer = InitBinderOperationFinalizer.getInstance();
     }
     
     public pointcut collectionPoint() : execution(@InitBinder * *(..));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Operation operation = new Operation()
-            .type(TYPE)
-            .sourceCodeLocation(getSourceCodeLocation(jp))
-            ;
-
-        InitBinderOperationFinalizer	finalizer=InitBinderOperationFinalizer.getInstance();
-        finalizer.registerBinderOperation(operation, jp);
-        return operation;
+        return finalizer.registerWithSelf(new Operation().type(TYPE).sourceCodeLocation(getSourceCodeLocation(jp)), jp);
     }
 }

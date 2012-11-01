@@ -17,6 +17,7 @@ package com.springsource.insight.collection.method;
 
 import org.aspectj.lang.JoinPoint;
 
+import com.springsource.insight.collection.DefaultOperationCollector;
 import com.springsource.insight.collection.OperationCollector;
 import com.springsource.insight.collection.TrailingAbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
@@ -28,18 +29,30 @@ import com.springsource.insight.intercept.operation.Operation;
  */
 public abstract aspect TrailingMethodOperationCollectionAspect
         extends TrailingAbstractOperationCollectionAspect {
-    protected TrailingMethodOperationCollectionAspect () {
-        super();
+	protected final JoinPointFinalizer	finalizer;
+
+    protected TrailingMethodOperationCollectionAspect() {
+        this(JoinPointFinalizer.getJoinPointFinalizerInstance());
     }
 
-    public TrailingMethodOperationCollectionAspect(OperationCollector operationCollector) {
-        super(operationCollector);
+    protected TrailingMethodOperationCollectionAspect(JoinPointFinalizer finalizerInstance) {
+    	this(finalizerInstance, new DefaultOperationCollector());
+    }
+
+    protected TrailingMethodOperationCollectionAspect(OperationCollector collector) {
+    	this(JoinPointFinalizer.getJoinPointFinalizerInstance(), collector);
+    }
+
+    protected TrailingMethodOperationCollectionAspect(JoinPointFinalizer finalizerInstance, OperationCollector collector) {
+        super(collector);
+        
+        if ((finalizer=finalizerInstance) == null) {
+        	throw new IllegalStateException("No finalizer instance provided");
+        }
     }
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Operation op = new Operation();
-        JoinPointFinalizer.register(op,  jp);
-        return op;
+        return finalizer.registerWithSelf(new Operation(),  jp);
     }
 }

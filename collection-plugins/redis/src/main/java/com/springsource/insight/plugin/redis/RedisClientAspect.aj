@@ -29,7 +29,10 @@ import com.springsource.insight.intercept.operation.Operation;
  * Driver-level support for redis clients
  */
 public aspect RedisClientAspect extends AbstractOperationCollectionAspect {
-
+	private final JoinPointFinalizer	finalizer;
+	public RedisClientAspect () {
+		finalizer = JoinPointFinalizer.getJoinPointFinalizerInstance();
+	}
     /*
     No JRedis support yet...
     Not readily available in a public maven repository. Everyone uses
@@ -52,9 +55,7 @@ public aspect RedisClientAspect extends AbstractOperationCollectionAspect {
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Operation op = new Operation().type(RedisExternalResourceAnalyzer.TYPE);
-        JoinPointFinalizer.register(op, jp);
-
+        Operation op = finalizer.registerWithSelf(new Operation().type(RedisExternalResourceAnalyzer.TYPE), jp);
         String methodName = jp.getSignature().getName();
         Object[] args = jp.getArgs();
         if (args.length >= 1 && args[0] instanceof String) {

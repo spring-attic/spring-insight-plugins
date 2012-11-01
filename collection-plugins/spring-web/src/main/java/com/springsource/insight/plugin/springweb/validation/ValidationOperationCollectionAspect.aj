@@ -25,8 +25,10 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
 
 public aspect ValidationOperationCollectionAspect extends AbstractSpringWebAspectSupport {
+	private final ValidationJoinPointFinalizer	finalizer;
+
 	public ValidationOperationCollectionAspect () {
-		super();
+		finalizer = ValidationJoinPointFinalizer.getInstance();
 	}
 
     public pointcut collectionPoint() : execution(* Validator+.validate(Object, Errors));
@@ -43,8 +45,6 @@ public aspect ValidationOperationCollectionAspect extends AbstractSpringWebAspec
         				.sourceCodeLocation(getSourceCodeLocation(jp))
         				.put(EndPointAnalysis.SCORE_FIELD, EndPointAnalysis.CEILING_LAYER_SCORE)
         				;
-        ValidationJoinPointFinalizer	finalizer=ValidationJoinPointFinalizer.getInstance();
-        finalizer.registerValidationOperation(op, jp);
-        return op;
+        return finalizer.registerWithSelf(op, jp);
 	}
 }
