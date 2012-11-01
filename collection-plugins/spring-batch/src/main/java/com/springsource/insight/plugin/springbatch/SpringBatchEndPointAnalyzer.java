@@ -18,9 +18,6 @@ package com.springsource.insight.plugin.springbatch;
 
 import com.springsource.insight.intercept.endpoint.AbstractSingleTypeEndpointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
-import com.springsource.insight.intercept.endpoint.EndPointName;
-import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.trace.Frame;
 
 public class SpringBatchEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
     /**
@@ -42,11 +39,5 @@ public class SpringBatchEndPointAnalyzer extends AbstractSingleTypeEndpointAnaly
     @Override
     protected int getDefaultScore(int depth) {
     	return DEFAULT_SCORE;
-    }
-
-    @Override
-    protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
-        Operation   op=frame.getOperation();
-        return new EndPointAnalysis(EndPointName.valueOf(op), op.getLabel(), op.getLabel(), getOperationScore(op, depth), op);
     }
 }
