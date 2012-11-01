@@ -56,6 +56,7 @@ public class EventPublisingOperationCollectionAspectTest extends OperationCollec
 	protected Operation assertPublishOperation(String expectedAction) {
 		Operation	op=getLastEntered();
 		assertNotNull(expectedAction + ": no operation", op);
+		assertEquals(expectedAction + ": mismatched type", SpringLifecycleMethodEndPointAnalyzer.EVENT_PUBLISH_TYPE, op.getType());
 
 		String	compType=op.get(StereotypedSpringBeanMethodOperationCollectionAspectSupport.COMP_TYPE_ATTR, String.class);
         // make sure not intercepted by one of the stereotyped beans aspects
@@ -63,7 +64,7 @@ public class EventPublisingOperationCollectionAspectTest extends OperationCollec
         assertEquals("Mismatched action", expectedAction, op.get(EventPublisingOperationCollectionAspect.ACTION_ATTR, String.class));
         
         assertEquals(expectedAction + ": mismatched event type",
-   		     MyEvent.class.getName(), op.get(EventPublisingOperationCollectionAspect.EVENT_ATTR, String.class));
+   		     		 MyEvent.class.getName(), op.get(SpringLifecycleMethodOperationCollectionAspect.EVENT_ATTR, String.class));
         return op;
 	}
 

@@ -16,27 +16,35 @@
 
 package com.springsource.insight.plugin.springcore;
 
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
-public aspect ClassPathScanOperationCollectionAspect extends SpringLifecycleMethodOperationCollectionAspect {
+import com.springsource.insight.util.StringUtil;
+
+
+public privileged aspect ClassPathScanOperationCollectionAspect extends SpringLifecycleMethodOperationCollectionAspect {
     public ClassPathScanOperationCollectionAspect() {
-        super();
+        super(SpringLifecycleMethodEndPointAnalyzer.CLASSPATH_SCAN_TYPE);
     }
 
     public pointcut findPathMatchingResources()
-        : execution(* PathMatchingResourcePatternResolver+.findPathMatchingResources(..));
+        : execution(* PathMatchingResourcePatternResolver+.findPathMatchingResources(String));
 
-    public pointcut scan()
-        : execution(* ClassPathScanningCandidateComponentProvider+.findCandidateComponents(..));
+    public pointcut findCandidateComponents()
+        : execution(* ClassPathScanningCandidateComponentProvider+.findCandidateComponents(String));
 
-    public pointcut contextRefresh()
-        : execution(* ConfigurableApplicationContext+.refresh(..));
+    public pointcut collectionPoint()
+    	: findPathMatchingResources()
+       || findCandidateComponents()
+    	;
 
-    public pointcut collectionPoint() :
-        findPathMatchingResources() ||
-        scan() ||
-        contextRefresh();
+	@Override
+	protected String resolveEventData (Object event) {
+		String	location=StringUtil.safeToString(event);
+		if (StringUtil.isEmpty(location)) {
+			return "<unknown>";
+		} else {
+			return location;
+		}
+	}
 }
-

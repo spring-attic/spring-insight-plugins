@@ -24,11 +24,11 @@ import com.springsource.insight.collection.method.AnnotationDrivenMethodOperatio
 
 public aspect InitializingBeanOperationCollectionAspect extends SpringLifecycleMethodOperationCollectionAspect {
     public InitializingBeanOperationCollectionAspect() {
-        super();
+        super(SpringLifecycleMethodEndPointAnalyzer.BEAN_LIFECYLE_TYPE);
     }
 
     public pointcut afterPropertiesSet()
-        : execution(* InitializingBean+.afterPropertiesSet(..));
+        : execution(* InitializingBean+.afterPropertiesSet());
 
     public pointcut postConstruct()
         : execution(@PostConstruct * *(..));
@@ -39,5 +39,10 @@ public aspect InitializingBeanOperationCollectionAspect extends SpringLifecycleM
     public pointcut collectionPoint() :
     	beanInitialization() &&
         !AnnotationDrivenMethodOperationCollectionAspect.collectionPoint();
+
+	@Override
+	protected String resolveEventData(Object event) {
+		return PostConstruct.class.getSimpleName();
+	}
 }
 
