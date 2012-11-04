@@ -14,18 +14,19 @@
 		<relativePath>../parent</relativePath>
 	</parent>
 
-   <profiles>
-       <profile>
-           <activation>
+	<profiles>
+		<profile>
+			<id>jdk6</id>
+			<activation>
 				<jdk>[1.6,)</jdk>
-           </activation>
-           <modules>
+			</activation>
+			<modules>
 				<module>cassandra</module>
 				<module>hadoop</module>
 				<module>redis</module>
 				<module>spring-neo4j</module>
-           </modules>
-       </profile>
+			</modules>
+		</profile>
     </profiles>
 
 	<modules>
