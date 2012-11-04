@@ -21,26 +21,27 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import com.springsource.insight.collection.errorhandling.CollectionErrors;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.strategies.CollectionStrategyRunner;
+import com.springsource.insight.collection.errorhandling.CollectionErrors;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 
 public aspect JdbcPreparedStatementOperationCollectionAspect
     extends OperationCollectionAspectSupport 
 {
-    
-    private static final CollectionStrategyRunner runner = CollectionStrategyRunner.getInstance();
     /**
      * The keys and values of this should be strongly referenced in the modified class instance
      * and the frame respectively, so they should not be prematurely removed.
      */
     private final WeakKeyHashMap<PreparedStatement, Operation> storage = new WeakKeyHashMap<PreparedStatement, Operation>();
     
+    public JdbcPreparedStatementOperationCollectionAspect () {
+    	super();
+    }
+
     /* Select PreparedStatement's execute(), executeUpdate(), and executeQuery()
      * methods -- none of them take any parameters. Although, PreparedStatement
      * is a Statement, therefore, has execute*(String, ..) methods, we don't select
@@ -53,7 +54,7 @@ public aspect JdbcPreparedStatementOperationCollectionAspect
         && collect();
 
     public pointcut collect()
-        :  if (runner.collect(thisAspectInstance, thisJoinPointStaticPart));
+        :  if (strategies.collect(thisAspectInstance, thisJoinPointStaticPart));
 
     pointcut preparedStatementCreation(String sql) 
         : collect()
@@ -68,7 +69,6 @@ public aspect JdbcPreparedStatementOperationCollectionAspect
         : collect() && execution(public void CallableStatement.set*(String, *))
             && this(statement) && args(key, parameter);
 
-    
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after(String sql) returning(PreparedStatement statement) : preparedStatementCreation(sql) {
         createOperationForStatement(thisJoinPoint, statement, sql);
