@@ -42,6 +42,9 @@ public aspect JdbcPreparedStatementOperationCollectionAspect
     	super();
     }
 
+    public pointcut metaDataRetrieval() : execution(* java.sql.Connection.getMetaData());
+    public pointcut fetchDatabaseUrl() : execution(* java.sql.DatabaseMetaData.getURL());
+
     /* Select PreparedStatement's execute(), executeUpdate(), and executeQuery()
      * methods -- none of them take any parameters. Although, PreparedStatement
      * is a Statement, therefore, has execute*(String, ..) methods, we don't select
@@ -54,20 +57,32 @@ public aspect JdbcPreparedStatementOperationCollectionAspect
         && collect();
 
     public pointcut collect()
-        :  if (strategies.collect(thisAspectInstance, thisJoinPointStaticPart));
+        :  if (strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
+   // avoid collecting SQL queries due to meta-data retrieval since it would cause infinite recursion
+     && (!cflow(metaDataRetrieval()))
+     && (!cflow(fetchDatabaseUrl()))
+        ;
 
     pointcut preparedStatementCreation(String sql) 
         : collect()
         && ((execution(PreparedStatement Connection.prepareStatement(String, ..))
-            || execution(CallableStatement Connection.prepareCall(String, ..))) && args(sql, ..));
+          || execution(CallableStatement Connection.prepareCall(String, ..)))
+        && args(sql, ..))
+         ;
 
     pointcut preparedStatementSetParameter(PreparedStatement statement, int index, Object parameter)
-        : collect() && execution(public void PreparedStatement.set*(int, *))
-            && this(statement) && args(index, parameter);
+        : collect()
+       && execution(public void PreparedStatement.set*(int, *))
+       && this(statement)
+       && args(index, parameter)
+        ;
     
     pointcut callableStatementSetParameter(CallableStatement statement, String key, Object parameter)
-        : collect() && execution(public void CallableStatement.set*(String, *))
-            && this(statement) && args(key, parameter);
+        : collect()
+       && execution(public void CallableStatement.set*(String, *))
+       && this(statement)
+       && args(key, parameter)
+       ;
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after(String sql) returning(PreparedStatement statement) : preparedStatementCreation(sql) {
