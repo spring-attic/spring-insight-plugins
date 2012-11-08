@@ -20,10 +20,7 @@ import java.util.Arrays;
 
 import com.springsource.insight.intercept.endpoint.AbstractEndPointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
-import com.springsource.insight.intercept.endpoint.EndPointName;
-import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
-import com.springsource.insight.intercept.trace.Frame;
 
 /**
  * 
@@ -45,13 +42,5 @@ public class JndiEndpointAnalyzer extends AbstractEndPointAnalyzer {
 	@Override
 	protected int getDefaultScore(int depth) {
 		return DEFAULT_SCORE;
-	}
-
-	@Override
-	protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
-		Operation		op=frame.getOperation();
-        EndPointName 	name=EndPointName.valueOf(op);
-        String 			label=op.getLabel();
-        return new EndPointAnalysis(name, label, label, getOperationScore(op, depth), op);
 	}
 }

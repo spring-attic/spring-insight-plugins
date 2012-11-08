@@ -19,8 +19,10 @@ package com.springsource.insight.plugin.springweb;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-import com.springsource.insight.intercept.spring.AbstractExposedStandardPluginSpringBeanTestSupport;
+import com.springsource.insight.idk.test.AbstractExposedIdkPuginsTestSupport;
 import com.springsource.insight.plugin.springweb.controller.ControllerEndPointAnalyzer;
+import com.springsource.insight.plugin.springweb.http.ClientHttpRequestExternalResourceAnalyzer;
+import com.springsource.insight.plugin.springweb.http.ClientHttpRequestTraceErrorAnalyzer;
 import com.springsource.insight.plugin.springweb.remoting.HttpInvokerRequestExecutorExternalResourceAnalyzer;
 import com.springsource.insight.plugin.springweb.remoting.HttpInvokerRequestExecutorTraceErrorAnalyzer;
 import com.springsource.insight.plugin.springweb.validation.ValidationEndPointAnalyzer;
@@ -31,7 +33,7 @@ import com.springsource.insight.plugin.springweb.validation.ValidationErrorsMetr
  */
 @ContextConfiguration(locations={ "classpath:META-INF/insight-plugin-springweb.xml" })
 public class ExposedSpringWebPluginSpringBeanTest
-		extends AbstractExposedStandardPluginSpringBeanTestSupport<SpringWebPluginRuntimeDescriptor> {
+		extends AbstractExposedIdkPuginsTestSupport<SpringWebPluginRuntimeDescriptor> {
     /* NOTE: all beans are autowired with required=false since we want
      * to have specific tests for each and we don't want to fail ALL the
      * tests if one bean is missing
@@ -42,6 +44,8 @@ public class ExposedSpringWebPluginSpringBeanTest
 	@Autowired(required=false) protected SpringWebPluginRuntimeDescriptor	springWebPluginRuntimeDescriptor;
 	@Autowired(required=false) protected HttpInvokerRequestExecutorExternalResourceAnalyzer httpInvokerRequestExecutorExternalResourceAnalyzer;
 	@Autowired(required=false) protected HttpInvokerRequestExecutorTraceErrorAnalyzer	httpInvokerRequestExecutorTraceErrorAnalyzer;
+	@Autowired(required=false) protected ClientHttpRequestTraceErrorAnalyzer	clientHttpRequestTraceErrorAnalyzer;
+	@Autowired(required=false) protected ClientHttpRequestExternalResourceAnalyzer	clientHttpRequestExternalResourceAnalyzer;
 
 	public ExposedSpringWebPluginSpringBeanTest() {
 		super(SpringWebPluginRuntimeDescriptor.class);

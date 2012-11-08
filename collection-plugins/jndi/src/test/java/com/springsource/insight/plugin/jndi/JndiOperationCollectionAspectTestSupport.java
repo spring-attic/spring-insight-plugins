@@ -63,7 +63,7 @@ public abstract class JndiOperationCollectionAspectTestSupport
 	}
 
 	protected EndPointAnalysis assertEndPointAnalysis (Operation op) {
-		Frame				frame=createMockOperationWrapperFrame(op);
+		Frame				frame=createMockOperationWrapperFrame(op, true);
 		EndPointAnalysis	analysis=analyzer.locateEndPoint(frame, 0);
 		assertSame("Mismatched source operation for " + op.getLabel(), op, analysis.getSourceOperation());
 		assertEquals("Mismatched endpoint for " + op.getLabel(), EndPointName.valueOf(op), analysis.getEndPointName());

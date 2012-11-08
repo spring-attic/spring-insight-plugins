@@ -18,6 +18,7 @@ package com.springsource.insight.plugin.eclipse.persistence;
 
 import org.aspectj.lang.JoinPoint;
 
+import com.springsource.insight.collection.method.JoinPointFinalizer;
 import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
@@ -31,6 +32,12 @@ public abstract aspect EclipsePersistenceCollectionAspect extends MethodOperatio
 	protected final String			labelPrefix;
 
 	protected EclipsePersistenceCollectionAspect (OperationType type, String lblPrefix) {
+		this(JoinPointFinalizer.getJoinPointFinalizerInstance(), type, lblPrefix);
+	}
+
+	protected EclipsePersistenceCollectionAspect (JoinPointFinalizer finalizerInstance, OperationType type, String lblPrefix) {
+		super(finalizerInstance);
+
 		if ((opType=type) == null) {
 			throw new IllegalStateException("No operation type provided");
 		}

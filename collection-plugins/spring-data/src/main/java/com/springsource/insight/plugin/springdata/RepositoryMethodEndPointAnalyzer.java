@@ -17,10 +17,6 @@
 package com.springsource.insight.plugin.springdata;
 
 import com.springsource.insight.intercept.endpoint.AbstractSingleTypeEndpointAnalyzer;
-import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
-import com.springsource.insight.intercept.endpoint.EndPointName;
-import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.trace.Frame;
 
 /**
  * 
@@ -35,11 +31,4 @@ public class RepositoryMethodEndPointAnalyzer extends AbstractSingleTypeEndpoint
 	public static final RepositoryMethodEndPointAnalyzer getInstance() {
 		return INSTANCE;
 	}
-
-    @Override
-	protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
-		Operation	  op=frame.getOperation();
-        EndPointName  endPointName=EndPointName.valueOf(op);
-        return new EndPointAnalysis(endPointName, op.getLabel(), op.getLabel(), getOperationScore(op, depth), op);
-    }
 }

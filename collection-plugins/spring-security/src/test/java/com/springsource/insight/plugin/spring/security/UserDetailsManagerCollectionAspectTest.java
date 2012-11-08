@@ -27,6 +27,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.springsource.insight.collection.ObscuredValueSetMarker;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
@@ -38,7 +39,7 @@ import com.springsource.insight.intercept.operation.OperationMap;
 public class UserDetailsManagerCollectionAspectTest
         extends SpringSecurityCollectionTestSupport {
     private final TestingUserDetailsManager manager=new TestingUserDetailsManager();
-    private static final DummyObscuredValueMarker    marker=new DummyObscuredValueMarker();
+    private static final ObscuredValueSetMarker    marker=new ObscuredValueSetMarker();
 
     public UserDetailsManagerCollectionAspectTest() {
         super();
@@ -54,7 +55,7 @@ public class UserDetailsManagerCollectionAspectTest
     public void setUp () {
         super.setUp();
         // making sure again
-        marker.cleanValues();
+        marker.clear();
         manager.clearUsers();
     }
 
@@ -62,7 +63,7 @@ public class UserDetailsManagerCollectionAspectTest
     @After
     public void restore () {
         super.restore();
-        marker.cleanValues();
+        marker.clear();
         manager.clearUsers();
     }
 
@@ -146,14 +147,13 @@ public class UserDetailsManagerCollectionAspectTest
     }
 
     protected void assertObscuredString (String type, String value) {
-        Collection<?> obscuredValues=marker.getValues();
-        assertTrue("Not obscured - " + type, obscuredValues.contains(value));
+        assertTrue("Not obscured - " + type, marker.contains(value));
     }
 
     protected Operation assertOperationResult (String actionName, UserDetails details, String mapName) {
         Operation   op=assertOperationAction(actionName);
         assertUserDetails(op.get(mapName, OperationMap.class), details);
-        assertObscuredDetails(details, marker.getValues());
+        assertObscuredDetails(details, marker);
         return op;
     }
 

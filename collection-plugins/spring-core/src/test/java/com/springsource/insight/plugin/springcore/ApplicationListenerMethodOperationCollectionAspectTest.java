@@ -120,6 +120,7 @@ public class ApplicationListenerMethodOperationCollectionAspectTest extends Oper
     		op.finalizeConstruction();
     	}
 
+    	assertEquals("Mismatched operation type", SpringLifecycleMethodEndPointAnalyzer.APP_LISTENER_TYPE, op.getType());
     	String		shortName=op.get(OperationFields.SHORT_CLASS_NAME, String.class);
     	Class<?>	matchingClass=null;
     	for (Class<?> clazz : beanTypes) {
@@ -139,7 +140,7 @@ public class ApplicationListenerMethodOperationCollectionAspectTest extends Oper
         String	methodName=op.get(OperationFields.METHOD_NAME, String.class, "");
         assertTrue(shortName + methodName + " does not start with onApplicationEvent", methodName.startsWith("onApplicationEvent"));
         assertEquals(shortName + ": mismatched event type",
-        		     MyEvent.class.getName(), op.get(ApplicationListenerMethodOperationCollectionAspect.EVENT_ATTR, String.class));
+        		     MyEvent.class.getName(), op.get(SpringLifecycleMethodOperationCollectionAspect.EVENT_ATTR, String.class));
 
         OperationList	argsList=op.get(OperationFields.ARGUMENTS, OperationList.class);
         assertNotNull(shortName + ": Missing arguments list", argsList);

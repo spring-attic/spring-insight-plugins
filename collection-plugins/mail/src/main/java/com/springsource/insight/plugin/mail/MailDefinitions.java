@@ -32,12 +32,15 @@ public final class MailDefinitions {
 	public static final OperationType   SEND_OPERATION=OperationType.valueOf("javax.mail.send");
 	// useful operation attributes
 	public static final String  SEND_PROTOCOL="protocol",
-	SEND_HOST="host",
-	SEND_PORT="port",
-	SEND_DETAILS="details",
-	SEND_SUBJECT="subject",
-	SEND_SENDERS="senders",
-	SEND_RECIPS="recipients"; 
+								SEND_HOST="host",
+								SEND_PORT="port",
+								SEND_DETAILS="details",
+								SEND_SUBJECT="subject",
+								SEND_DATE="date",
+								SEND_SENDERS="senders",
+								SEND_RECIPS="recipients",
+								RECIP_TYPE="type",
+								RECIP_VALUE="value";
 
 	public static final Map<String, Integer> protocolToPortMap = 
 		Collections.unmodifiableMap(new TreeMap<String, Integer>(String.CASE_INSENSITIVE_ORDER)

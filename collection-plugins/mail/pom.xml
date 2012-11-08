@@ -22,23 +22,13 @@
 			<artifactId>mail</artifactId>
 			<version>1.4</version>
 		</dependency>
-        
-        <!-- Test dependencies -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <scope>test</scope>
-        </dependency>
         <dependency>    <!-- We use its JavaMailSender -->
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
-            <scope>test</scope>
+            <scope>provided</scope>
         </dependency>
+        
+        <!-- Test dependencies -->
         <dependency>    <!-- embedded SMTP server for tests -->
             <groupId>org.subethamail</groupId>
             <artifactId>subethasmtp</artifactId>

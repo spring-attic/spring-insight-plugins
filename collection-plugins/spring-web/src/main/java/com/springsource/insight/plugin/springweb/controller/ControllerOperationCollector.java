@@ -133,20 +133,26 @@ public class ControllerOperationCollector extends DefaultOperationCollector {
 
 		for (Map.Entry<?,?> ee : modelMap.entrySet()) {
 			String	key=String.valueOf(ee.getKey());
-			Object	value=ee.getValue();
-			if (StringFormatterUtils.isPrimitiveWrapper(value) || (value instanceof Date)) {
-				map.putAny(key, value);
+			Object	value=resolveCollectedValue(ee.getValue());
+			if (value instanceof String) {
+				map.put(key, (String) value);
 			} else {
-				String	str=StringUtil.trimWithEllipsis(String.valueOf(value), StringFormatterUtils.MAX_PARAM_LENGTH);
-				map.put(key, str);
+				map.putAny(key, value);
 			}
 		}
 
 		return map;
 	}
 
+	static final Object resolveCollectedValue (Object value) {
+		if (StringFormatterUtils.isPrimitiveWrapper(value) || (value instanceof Date)) {
+			return value;
+		} else {
+			return StringUtil.chopTailAndEllipsify(String.valueOf(value), StringFormatterUtils.MAX_PARAM_LENGTH);
+		}
+	}
+
 	static final boolean collectExtraInformation () {
         return FrameBuilder.OperationCollectionLevel.HIGH.equals(configuration.getCollectionLevel());
     }
-
 }

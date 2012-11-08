@@ -14,26 +14,17 @@
  * limitations under the License.
  */
 
-package com.springsource.insight.plugin.spring.security;
+package com.springsource.insight.plugin.springweb.rest;
 
-import java.util.Collections;
+import org.springframework.web.client.RestOperations;
 
-import java.util.HashSet;
-import java.util.Set;
+/**
+ * 
+ */
+public aspect RestDeleteOperationCollectionAspect extends RestOperationCollectionSupport {
+	public RestDeleteOperationCollectionAspect () {
+		super("DELETE");
+	}
 
-import com.springsource.insight.intercept.trace.ObscuredValueMarker;
-
-public class DummyObscuredValueMarker implements ObscuredValueMarker {
-    private final Set<Object> objects=new HashSet<Object>();
-    public Set<Object> getValues() {
-        return Collections.unmodifiableSet(objects);
-    }
-
-    public void markObscured(Object o) {
-        objects.add(o);
-    }
-    
-    void cleanValues () {
-        objects.clear();
-    }
+	public pointcut accessPoint () : execution(* RestOperations+.delete(..));
 }

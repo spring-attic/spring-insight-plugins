@@ -24,6 +24,8 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
+import com.springsource.insight.collection.ObscuredValueSetMarker;
+
 public class AuthenticationProviderCollectionAspectTest extends AuthenticationCollectionAspectTestSupport {
     public AuthenticationProviderCollectionAspectTest() {
         super();
@@ -42,7 +44,7 @@ public class AuthenticationProviderCollectionAspectTest extends AuthenticationCo
 
     @Test
     public void testObscuredCredentials () {
-        DummyObscuredValueMarker    marker=new DummyObscuredValueMarker();
+    	ObscuredValueSetMarker    marker=new ObscuredValueSetMarker();
         getAspect().setSensitiveValueMarker(marker);
 
         String[]                grants={ "tester", "insight"};
@@ -50,7 +52,7 @@ public class AuthenticationProviderCollectionAspectTest extends AuthenticationCo
         AuthenticationProvider  testProvider=new AuthenticationProviderCollectionAspectTestProvider(true);
         Authentication          result=testProvider.authenticate(token);
         assertNotSame("Authentication token not cloned", token, result);
-        assertObscuredAuthValues(token, result, marker.getValues());
+        assertObscuredAuthValues(token, result, marker);
     }
 
     @Override

@@ -19,7 +19,6 @@ package com.springsource.insight.plugin.eclipse.persistence;
 import java.util.Collections;
 
 import org.eclipse.persistence.internal.jpa.JPAQuery;
-import org.eclipse.persistence.queries.DatabaseQuery;
 import org.eclipse.persistence.sessions.Session;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -125,29 +124,11 @@ public class SessionQueryOperationCollectionAspectTest
             public Object executeQuery (Session session) {
                 return session.executeQuery(new JPAQuery(name(), name(), null, Collections.<String,Object>emptyMap()));
             }
-            
-            @Override   // the arguments "stringify" behaves like this for compound objects
-            protected String extractQueryNameArgument (Object obj) {
-                if (DatabaseQuery.class.getName().equals(obj)) {
-                    return name();
-                }
-                
-                return null;
-            }
         },
         DBQUERYARGSLIST(2) {
             @Override
             public Object executeQuery (Session session) {
                 return session.executeQuery(new JPAQuery(name(), name(), null, Collections.<String,Object>emptyMap()), Collections.singletonList(this));
-            }
-
-            @Override   // the arguments "stringify" behaves like this for compound objects
-            protected String extractQueryNameArgument (Object obj) {
-                if (DatabaseQuery.class.getName().equals(obj)) {
-                    return name();
-                }
-                
-                return null;
             }
         };
 
@@ -164,20 +145,9 @@ public class SessionQueryOperationCollectionAspectTest
             assertNotNull(name() + ": No arguments extracted", argsList);
             assertEquals(name() + ": Mismatched number of arguments", numArgs, argsList.size());
             
-            String  name=extractQueryNameArgument(argsList.get(0));
+            String  name=SessionQueryOperationJoinPointFinalizer.resolveQueryNameFromArgument(argsList.get(0));
             assertEquals(name() + ": Mismatched query name argument value", name(), name);
             return name;
-        }
-        
-        protected String extractQueryNameArgument (Object obj) {
-            if (obj instanceof String) {
-                return (String) obj;
-            } else if (obj instanceof DatabaseQuery) {
-                DatabaseQuery   query=(DatabaseQuery) obj;
-                return query.getName();
-            }
-            
-            throw new IllegalArgumentException(name() + ": Invalid query argument type: " + obj);
         }
     }
 }

@@ -15,6 +15,7 @@
  */
 package com.springsource.insight.plugin.jdbc;
 
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -27,36 +28,38 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 @ContextConfiguration("classpath:jdbc-test-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
-public class JdbcStatementOperationCollectionAspectTest
-   			extends OperationCollectionAspectTestSupport {
-    @Autowired
-    DataSource dataSource;
+public class JdbcStatementOperationCollectionAspectTest extends JdbcStatementOperationCollectionTestSupport {
+    @Autowired private DataSource dataSource;
 
     public JdbcStatementOperationCollectionAspectTest () {
     	super();
     }
 
     @Test
-    public void operationCollection() throws SQLException {
+    public void testOperationCollection() throws SQLException {
+		final String sql = "select * from appointment where owner = 'Agim' and dateTime = '2009-06-01'";
         Connection c = dataSource.getConnection();
-        Statement ps = c.createStatement();
+        try {
+        	Statement ps = c.createStatement();
+        	try {
+        		ps.execute(sql);
+        	} finally {
+        		ps.close();
+        	}
+        } finally {
+        	c.close();
+        }
 
-        String sql = "select * from appointment where owner = 'Agim' and dateTime = '2009-06-01'";
-        ps.execute(sql);
-
-        Operation   operation=getLastEntered();
-        assertEquals(sql, operation.get("sql"));
-        assertNull(operation.get("params"));
+        Operation	operation=assertJdbcOperation(sql);
+        assertNull("Unexpected parameters", operation.get("params"));
     }
 
     @Override
-    public OperationCollectionAspectSupport getAspect() {
+    public JdbcStatementOperationCollectionAspect getAspect() {
         return JdbcStatementOperationCollectionAspect.aspectOf();
     }
 }

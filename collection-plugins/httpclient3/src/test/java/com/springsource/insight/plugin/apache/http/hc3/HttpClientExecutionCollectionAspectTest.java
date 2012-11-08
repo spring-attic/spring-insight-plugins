@@ -15,15 +15,13 @@
  */
 package com.springsource.insight.plugin.apache.http.hc3;
 
-import static java.util.Collections.unmodifiableSet;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import javax.servlet.ServletException;
@@ -39,7 +37,9 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.io.IOUtils;
+import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -48,15 +48,18 @@ import org.mortbay.jetty.HttpConnection;
 import org.mortbay.jetty.Request;
 import org.mortbay.jetty.Server;
 
+import com.springsource.insight.collection.ObscuredValueSetMarker;
+import com.springsource.insight.collection.http.HttpHeadersObfuscator;
 import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationList;
 import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationUtils;
-import com.springsource.insight.intercept.plugin.CollectionSettingsRegistry;
-import com.springsource.insight.intercept.trace.ObscuredValueMarker;
+import com.springsource.insight.util.ArrayUtil;
+import com.springsource.insight.util.MapUtil;
 import com.springsource.insight.util.StringFormatterUtils;
+import com.springsource.insight.util.StringUtil;
 
 /**
  * Tests {@link HttpClientExecutionCollectionAspect} using embedded
@@ -66,14 +69,15 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
     private static final int    TEST_PORT=7365;
     private static final String TEST_URI="http://localhost:" + TEST_PORT + "/";
     private static Server    SERVER;
+    private HttpHeadersObfuscator	originalObfuscator;
+    private final ObscuredValueSetMarker	marker=new ObscuredValueSetMarker();
 
     public HttpClientExecutionCollectionAspectTest() {
         super();
     }
 
     @BeforeClass
-    public static void startEmbeddedServer () throws Exception
-    {
+    public static void startEmbeddedServer () throws Exception {
         SERVER = new Server(TEST_PORT);
         SERVER.setHandler(new TestHandler());
         System.out.println("Starting embedded server on port " + TEST_PORT);
@@ -82,14 +86,32 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
     }
 
     @AfterClass
-    public static void stopEmbeddedServer () throws Exception
-    {
-        if (SERVER != null)
-        {
+    public static void stopEmbeddedServer () throws Exception {
+        if (SERVER != null) {
             System.out.println("Stopping embedded server");
             SERVER.stop();
             System.out.println("Server stopped");
         }
+    }
+
+    @Before
+    @Override
+    public void setUp() {
+    	super.setUp();
+    	
+    	HttpClientExecutionCollectionAspect	aspectInstance=getAspect();
+    	originalObfuscator = aspectInstance.getHttpHeadersObfuscator();
+    	marker.clear();
+    	aspectInstance.setHttpHeadersObfuscator(new HttpHeadersObfuscator(marker));
+    }
+
+    @After
+    @Override
+    public void restore() {
+    	HttpClientExecutionCollectionAspect	aspectInstance=getAspect();
+    	aspectInstance.setHttpHeadersObfuscator(originalObfuscator);
+    	marker.clear();
+    	super.restore();
     }
 
     @Test
@@ -109,18 +131,12 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
 
     @Test
     public void testDefaultObfuscatedHeaders () throws Exception {
-        CollectionSettingsRegistry registry=CollectionSettingsRegistry.getInstance();
-        // make sure the defaults are set
-        registry.set(HttpClientExecutionCollectionAspect.OBFUSCATED_HEADERS_SETTING, HttpClientExecutionCollectionAspect.DEFAULT_OBFUSCATED_HEADERS_LIST);
-        runHeadersObfuscationTest("testDefaultObfuscatedHeaders", HttpClientExecutionCollectionAspect.DEFAULT_OBFUSCATED_HEADERS_LIST);
+        runHeadersObfuscationTest("testDefaultObfuscatedHeaders", HttpHeadersObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST, true);
     }
 
     @Test
     public void testNonDefaultObfuscatedHeaders () throws Exception {
-        final String                TEST_HEADERS="X-Hdr1,X-Hdr2,X-Test3";
-        CollectionSettingsRegistry  registry=CollectionSettingsRegistry.getInstance();
-        // replace the defaults
-        registry.set(HttpClientExecutionCollectionAspect.OBFUSCATED_HEADERS_SETTING, TEST_HEADERS);
+        runHeadersObfuscationTest("testNonDefaultObfuscatedHeaders", Arrays.asList("X-Hdr1", "X-Hdr2", "X-Hdr3"), false);
     }
 
     /**
@@ -176,31 +192,59 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
         public abstract int executeMethod (HttpClient httpClient) throws HttpException, IOException; 
     }
 
-    private Map<String,String> runHeadersObfuscationTest (String testName, String filterHeaders) throws IOException {
+    private Map<String,String> runHeadersObfuscationTest (String testName, Collection<String> headerSet, boolean defaultHeaders) throws IOException {
         HttpClient  httpClient=new HttpClient();
         String      uri=createTestUri(testName); 
         HttpMethod  method=new GetMethod(uri);
-        Set<String> headerSet=HttpClientExecutionCollectionAspect.toHeaderNameSet(filterHeaders);
         for (String name : headerSet) {
-            method.addRequestHeader(name, String.valueOf(System.nanoTime()));
+			if ("WWW-Authenticate".equalsIgnoreCase(name)) {
+				continue;	// this is a response header
+			}
+            method.addRequestHeader(name, name);
         }
 
-        DummyObscuredValueMarker    marker=new DummyObscuredValueMarker();
-        getAspect().setSensitiveValueMarker(marker);
+    	HttpClientExecutionCollectionAspect	aspectInstance=getAspect();
+    	HttpHeadersObfuscator				obfuscator=aspectInstance.getHttpHeadersObfuscator();
+    	if (!defaultHeaders) {
+    		for (String name : HttpHeadersObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST) {
+    			if ("WWW-Authenticate".equalsIgnoreCase(name)) {
+    				continue;	// this is a response header
+    			}
+                method.addRequestHeader(name, name);
+    		}
+    		obfuscator.incrementalUpdate(HttpHeadersObfuscator.OBFUSCATED_HEADERS_SETTING, StringUtil.implode(headerSet, ","));
+    	}
 
         int                 response=httpClient.executeMethod(method);
         Operation           op=assertExecutionResult(uri, method, response, false);
-        OperationMap        details=op.get("request", OperationMap.class);
-        OperationList       headers=details.get("headers", OperationList.class);
-        Map<String,String>  hdrsMap=toHeadersMap(headers);
-        Set<Object>         obscuredValues=marker.getValues();
+        OperationMap        reqDetails=op.get("request", OperationMap.class);
+        OperationList       reqHeaders=reqDetails.get("headers", OperationList.class);
+        Map<String,String>  requestHeaders=toHeadersMap(reqHeaders);
+        OperationMap        rspDetails=op.get("response", OperationMap.class);
+        OperationList       rspHeaders=rspDetails.get("headers", OperationList.class);
+        Map<String,String>  responseHeaders=toHeadersMap(rspHeaders);
+        Map<String,String>	hdrsMap=new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+        if (MapUtil.size(requestHeaders) > 0) {
+        	hdrsMap.putAll(requestHeaders);
+        }
+        if (MapUtil.size(responseHeaders) > 0) {
+        	hdrsMap.putAll(responseHeaders);
+        }
+
+        Collection<?>	obscuredValues=(ObscuredValueSetMarker) obfuscator.getSensitiveValueMarker();
         for (String name : headerSet) {
             String  value=hdrsMap.get(name);
-            assertNotNull("Missing header=" + name, value);
+            assertNotNull("Missing value for header: " + name, value);
             assertTrue("Unobscured value of " + name, obscuredValues.contains(value));
         }
-        
-        return hdrsMap;
+
+    	if (!defaultHeaders) {
+    		for (String name : HttpHeadersObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST) {
+                assertFalse("Un-necessarily obscured value of " + name, obscuredValues.contains(name));
+    		}
+    	}
+
+    	return hdrsMap;
     }
 
     private void runExecuteHostMethodTest (String testName, HttpState state) throws Exception
@@ -235,13 +279,10 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
                                       int        response,
                                       boolean    checkHeaders) throws IOException {
         InputStream body=method.getResponseBodyAsStream();
-        try
-        {
+        try {
             String  content=IOUtils.toString(body);
             assertEquals("Mismatched content", createResponseContent(testName), content);
-        }
-        finally
-        {
+        } finally {
             body.close();
         }
 
@@ -314,10 +355,10 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
         }
     }
 
-    private Map<String,String> toHeadersMap (Header ... headers)
-    {
-        if ((headers == null) || (headers.length <= 0))
+    private Map<String,String> toHeadersMap (Header ... headers) {
+        if (ArrayUtil.length(headers) <= 0) {
             return Collections.emptyMap();
+        }
 
         Map<String,String>  hdrsMap=new TreeMap<String, String>();
         for (Header hdrValue : headers) {
@@ -329,10 +370,10 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
         return hdrsMap;
     }
 
-    private Map<String,String> toHeadersMap (OperationList headers)
-    {
-        if ((headers == null) || (headers.size() <= 0))
+    private Map<String,String> toHeadersMap (OperationList headers) {
+        if ((headers == null) || (headers.size() <= 0)) {
             return Collections.emptyMap();
+        }
 
         Map<String,String>  hdrsMap=new TreeMap<String, String>();
         for (int    index=0; index < headers.size(); index++) {
@@ -344,9 +385,7 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
 
         return hdrsMap;
     }
-    /*
-     * @see com.springsource.insight.collection.OperationCollectionAspectTestSupport#getAspect()
-     */
+
     @Override
     public HttpClientExecutionCollectionAspect getAspect() {
         return HttpClientExecutionCollectionAspect.aspectOf();
@@ -425,6 +464,7 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("text/xml;charset=utf-8");
             response.addHeader("X-Test-Name", testName);
+            response.addHeader("WWW-Authenticate", "allowed");
 
             Writer  writer=response.getWriter();
             try {
@@ -454,16 +494,5 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
     static String createTestUri (String testName)
     {
         return TEST_URI + testName;
-    }
-
-    public static class DummyObscuredValueMarker implements ObscuredValueMarker {
-        private final Set<Object> objects=new HashSet<Object>();
-        public Set<Object> getValues() {
-            return unmodifiableSet(objects);
-        }
-
-        public void markObscured(Object o) {
-            objects.add(o);
-        }
     }
 }

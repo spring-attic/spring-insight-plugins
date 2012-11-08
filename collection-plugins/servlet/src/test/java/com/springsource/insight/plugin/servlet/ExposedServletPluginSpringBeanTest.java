@@ -19,11 +19,11 @@ package com.springsource.insight.plugin.servlet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-import com.springsource.insight.intercept.spring.AbstractExposedStandardPluginSpringBeanTestSupport;
+import com.springsource.insight.idk.test.AbstractExposedIdkPuginsTestSupport;
 
 @ContextConfiguration(locations={ "classpath:META-INF/insight-plugin-servlet.xml" })
 public class ExposedServletPluginSpringBeanTest
-		extends AbstractExposedStandardPluginSpringBeanTestSupport<ServletPluginRuntimeDescriptor> {
+		extends AbstractExposedIdkPuginsTestSupport<ServletPluginRuntimeDescriptor> {
 	    /* NOTE: all beans are autowired with required=false since we want
 	     * to have specific tests for each and we don't want to fail ALL the
 	     * tests if one bean is missing

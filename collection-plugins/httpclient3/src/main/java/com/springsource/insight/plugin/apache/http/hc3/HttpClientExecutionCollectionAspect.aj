@@ -16,12 +16,6 @@
 package com.springsource.insight.plugin.apache.http.hc3;
 
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
@@ -32,10 +26,10 @@ import org.apache.commons.httpclient.URIException;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 
-import com.springsource.insight.collection.FrameBuilderHintObscuredValueMarker;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.collection.OperationCollector;
+import com.springsource.insight.collection.http.HttpHeadersObfuscator;
 import com.springsource.insight.intercept.InterceptConfiguration;
 import com.springsource.insight.intercept.color.ColorManager.ColorParams;
 import com.springsource.insight.intercept.operation.Operation;
@@ -43,66 +37,31 @@ import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationList;
 import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationUtils;
-import com.springsource.insight.intercept.plugin.CollectionSettingName;
-import com.springsource.insight.intercept.plugin.CollectionSettingsRegistry;
-import com.springsource.insight.intercept.plugin.CollectionSettingsUpdateListener;
 import com.springsource.insight.intercept.trace.FrameBuilder;
-import com.springsource.insight.intercept.trace.ObscuredValueMarker;
+import com.springsource.insight.util.ArrayUtil;
 
 /**
  * 
  */
 public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAspectSupport {
-    private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
-    // NOTE: using same value as version 4.0 to enable mutual configuration
-    protected static final CollectionSettingName    OBFUSCATED_HEADERS_SETTING =
-            new CollectionSettingName("obfuscated.headers", "apache.http.client", "Comma separated list of headers whose data requires obfuscation");
+	private static final InterceptConfiguration	configuration=InterceptConfiguration.getInstance();
+	private HttpHeadersObfuscator	obfuscator=HttpHeadersObfuscator.getInstance();
 
-    // see RFC(s) 2616-2617
-    static final String DEFAULT_OBFUSCATED_HEADERS_LIST="Authorization,Authentication-Info,WWW-Authenticate";
-    // NOTE: using a synchronized set in order to allow modification while running
-    static final Set<String>    OBFUSCATED_HEADERS=
-            Collections.synchronizedSet(new TreeSet<String>(String.CASE_INSENSITIVE_ORDER) {
-                private static final long serialVersionUID = 1L;
-
-                {
-                    addAll(toHeaderNameSet(DEFAULT_OBFUSCATED_HEADERS_LIST));
-                }
-            });
-
-    // register a collection setting update listener to update the obfuscated headers
-    static {
-        CollectionSettingsRegistry registry = CollectionSettingsRegistry.getInstance();
-        registry.addListener(new CollectionSettingsUpdateListener() {
-                public void incrementalUpdate (CollectionSettingName name, Serializable value) {
-                    Logger   LOG=Logger.getLogger(HttpClientExecutionCollectionAspect.class.getName());
-                    if (OBFUSCATED_HEADERS_SETTING.equals(name) && (value instanceof String)) {
-                       if (OBFUSCATED_HEADERS.size() > 0) { // check if replacing or populating
-                           LOG.info("incrementalUpdate(" + name + ")" + OBFUSCATED_HEADERS + " => [" + value + "]");
-                           OBFUSCATED_HEADERS.clear();
-                       }
-
-                       OBFUSCATED_HEADERS.addAll(toHeaderNameSet((String) value));
-                    } else if (LOG.isLoggable(Level.FINE)) {
-                        LOG.fine("incrementalUpdate(" + name + ")[" + value + "] ignored");
-                    }
-                }
-            });
-    }
-
-    private ObscuredValueMarker obscuredMarker =
-            new FrameBuilderHintObscuredValueMarker(configuration.getFrameBuilder());
     public HttpClientExecutionCollectionAspect () {
         super();
+    }
+
+    HttpHeadersObfuscator getHttpHeadersObfuscator () {
+    	return obfuscator;
+    }
+
+    void setHttpHeadersObfuscator (HttpHeadersObfuscator obfs) {
+    	obfuscator = obfs;
     }
 
     @Override
     public String getPluginName() {
         return HC3PluginRuntimeDescriptor.PLUGIN_NAME;
-    }
-
-    void setSensitiveValueMarker(ObscuredValueMarker marker) {
-        this.obscuredMarker = marker;
     }
 
     public pointcut clientExecutionFlow ()
@@ -220,7 +179,7 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
         op.put("statusCode", statusCode);
 
         if (collectExtra) {
-            op.put("reasonPhrase", method.getStatusText());
+            op.putAnyNonEmpty("reasonPhrase", method.getStatusText());
             fillInMethodHeaders(op.createList("headers"), method, false);
         }
 
@@ -229,35 +188,24 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
 
     OperationList fillInMethodHeaders (OperationList headers, HttpMethod method, boolean useRequestHeaders) {
         Header[]    hdrs=useRequestHeaders ? method.getRequestHeaders() : method.getResponseHeaders(); 
-        if ((hdrs == null) || (hdrs.length <= 0)) {
+        if (ArrayUtil.length(hdrs) <= 0) {
             return headers;
         }
 
+        HttpHeadersObfuscator obfs=getHttpHeadersObfuscator();
         for (Header h : hdrs) {
             String  name=h.getName(), value=h.getValue();
-            if (OBFUSCATED_HEADERS.contains(name)) {
-                obscuredMarker.markObscured(value);
+
+            OperationUtils.addNameValuePair(headers, name, value);
+            if (obfs.processHeader(name, value)) {
+            	continue;	// debug breakpoint
             }
-            OperationUtils.addNameValuePair(headers,name, value);
         }
 
         return headers;
     }
 
-    static Set<String> toHeaderNameSet (String value) {
-        Set<String> result=new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-        String[]    names=value.split(",");
-        for (String headerName : names) {
-            String   trimmedValue=headerName.trim(); // in case extra whitespace
-            if (trimmedValue.length() > 0) {
-                result.add(trimmedValue);
-            }
-        }
-        return result;
-    }
-
-    boolean collectExtraInformation ()
-    {
+    boolean collectExtraInformation () {
         return FrameBuilder.OperationCollectionLevel.HIGH.equals(configuration.getCollectionLevel());
     }
 }

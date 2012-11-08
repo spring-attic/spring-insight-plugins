@@ -16,6 +16,7 @@
 		<spring.webflow.version>2.3.1.RELEASE</spring.webflow.version>
         <spring.integration.version>2.1.4.RELEASE</spring.integration.version>
         <spring.integration.version>2.1.4.RELEASE</spring.integration.version>
+        <spring.data.commons.version>1.1.0.RELEASE</spring.data.commons.version>
         <aspectj.version>1.7.1</aspectj.version>
         <junit.version>4.10</junit.version>
         <mockito.version>1.9.0</mockito.version>
@@ -101,6 +102,47 @@
 				</plugins>
 			</build>
 		</profile>
+
+        <profile>
+            <id>jdk15</id>
+            <activation>
+                <jdk>1.5</jdk>
+            </activation>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-compiler-plugin</artifactId>
+							<configuration>
+								<testExcludes>
+									<exclude>**/jdk16/*.java</exclude>
+								</testExcludes>
+							</configuration>
+						</plugin>            
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-surefire-plugin</artifactId>
+							<configuration>
+								<excludes>
+									<exclude>**/jdk16/*.java</exclude>
+								</excludes>
+							</configuration>
+						</plugin>            
+						<plugin>
+							<groupId>org.codehaus.mojo</groupId>
+							<artifactId>aspectj-maven-plugin</artifactId>
+							<configuration>
+								<excludes>
+									<exclude>**/jdk16/*.java</exclude>
+									<exclude>**/jdk16/*.aj</exclude>
+								</excludes>
+							</configuration>
+						</plugin>            
+					</plugins>
+				</pluginManagement>
+			</build>
+        </profile>
 
 		<profile>
 			<id>with-micro-benchmarks</id>
@@ -709,6 +751,11 @@
                 <artifactId>spring-integration-test</artifactId>
                 <version>${spring.integration.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework.integration</groupId>
+                <artifactId>spring-integration-mail</artifactId>
+                <version>${spring.integration.version}</version>
+            </dependency>
 
 			<dependency>
 				<groupId>org.springframework.security</groupId>
@@ -758,6 +805,32 @@
 						<artifactId>aspectjweaver</artifactId>
 					</exclusion>
 				</exclusions>
+			</dependency>
+
+			<!-- amqp -->
+			<dependency>
+				<groupId>org.springframework.amqp</groupId>
+				<artifactId>spring-amqp</artifactId>
+				<version>${org.springframework.amqp.version}</version>
+			</dependency>
+
+				<!-- Rabbitmq -->
+			<dependency>
+				<groupId>com.rabbitmq</groupId>
+				<artifactId>amqp-client</artifactId>
+				<version>${rabbitmq.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.amqp</groupId>
+				<artifactId>spring-rabbit</artifactId>
+				<version>${org.springframework.amqp.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework.data</groupId>
+				<artifactId>spring-data-commons-core</artifactId>
+				<version>${spring.data.commons.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -1074,6 +1147,26 @@
             </plugins>
         </pluginManagement>
         <plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>1.1.1</version>
+				<executions>
+					<execution>
+						<id>enforce-versions</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<rules>
+						<requireMavenVersion>
+							<version>[3.0,)</version>
+						</requireMavenVersion>
+					</rules>
+				</configuration>
+			</plugin>
             <plugin>
                 <groupId>org.codehaus.groovy.maven</groupId>
                 <artifactId>gmaven-plugin</artifactId>
@@ -1088,6 +1181,7 @@
                         </goals>
                         <configuration>
                             <source>
+							<![CDATA[
                                 for (java.io.File file=new java.io.File(new java.net.URI('${project.baseUri}')); file != null; file = file.getParentFile()) {
                                     if (!file.isDirectory()) {
                                         continue
@@ -1101,6 +1195,7 @@
                                 }
                                 
                                 System.err.println("Failed to detected Insight root dir")
+							]]>
                             </source>
                         </configuration>
                     </execution>
@@ -1112,7 +1207,9 @@
                         </goals>
                         <configuration>
                             <source>
+							<![CDATA[
                                 project.properties['buildtimestamp'] = java.text.MessageFormat.format("{0,date,yyyyMMddHHmmss}", new Date())
+							]]>
                             </source>
                         </configuration>
                     </execution>
@@ -1125,6 +1222,7 @@
                         <configuration>
 								<!-- see http://maven.apache.org/ref/3.0.4/maven-core/apidocs/org/apache/maven/execution/MavenSession.html -->
                             <source>
+							<![CDATA[
 								if (!session.goals.contains("deploy")) {
 									return;
 								}
@@ -1154,6 +1252,7 @@
 									project.properties['deploy.repo.name'] = project.properties['milestone.repo.name']
 									project.properties['deploy.repo.url'] = project.properties['milestone.dist.url']
                                 }
+							]]>
                             </source>
                         </configuration>
                     </execution>

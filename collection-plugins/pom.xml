@@ -14,17 +14,19 @@
 		<relativePath>../parent</relativePath>
 	</parent>
 
-   <profiles>
-       <profile>
-           <activation>
+	<profiles>
+		<profile>
+			<id>jdk6</id>
+			<activation>
 				<jdk>[1.6,)</jdk>
-           </activation>
-           <modules>
+			</activation>
+			<modules>
 				<module>cassandra</module>
 				<module>hadoop</module>
 				<module>redis</module>
-           </modules>
-       </profile>
+				<module>spring-neo4j</module>
+			</modules>
+		</profile>
     </profiles>
 
 	<modules>
@@ -166,6 +168,17 @@
 		</resources>
 
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<configuration>
+					<rules>
+						<requireJavaVersion>
+							<version>[1.5,)</version>
+						</requireJavaVersion>
+					</rules>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>aspectj-maven-plugin</artifactId>

@@ -16,20 +16,16 @@
 
 package com.springsource.insight.plugin.springcore;
 
-import org.aspectj.lang.JoinPoint;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.GenericApplicationListenerAdapter;
 import org.springframework.context.event.SourceFilteringListener;
 
 import com.springsource.insight.collection.method.AnnotationDrivenMethodOperationCollectionAspect;
-import com.springsource.insight.intercept.operation.Operation;
 
 
-public aspect ApplicationListenerMethodOperationCollectionAspect extends SpringLifecycleMethodOperationCollectionAspect {
-	public static final String EVENT_ATTR="eventType";
-
+public aspect ApplicationListenerMethodOperationCollectionAspect extends SpringEventReferenceCollectionAspect {
     public ApplicationListenerMethodOperationCollectionAspect() {
-        super();
+        super(SpringLifecycleMethodEndPointAnalyzer.APP_LISTENER_TYPE);
     }
 
     public pointcut appListener()
@@ -46,13 +42,5 @@ public aspect ApplicationListenerMethodOperationCollectionAspect extends SpringL
         !delegatingGenericListenerAdapter() && 
         !sourceFilteringListener() && 
         !AnnotationDrivenMethodOperationCollectionAspect.collectionPoint();
-    
-	@Override
-	protected Operation createOperation(JoinPoint jp) {
-		Object	event=jp.getArgs()[0];
-		return super.createOperation(jp)
-					.put(EVENT_ATTR, (event == null) ? Object.class.getName() : event.getClass().getName())
-					;
-	}
 }
 

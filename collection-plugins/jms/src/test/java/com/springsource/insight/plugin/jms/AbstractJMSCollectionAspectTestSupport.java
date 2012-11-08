@@ -16,15 +16,12 @@
 
 package com.springsource.insight.plugin.jms;
 
-import static java.util.Collections.unmodifiableSet;
-
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
 
+import com.springsource.insight.collection.ObscuredValueSetMarker;
 import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.trace.ObscuredValueMarker;
 import com.springsource.insight.util.ListUtil;
@@ -34,6 +31,7 @@ import com.springsource.insight.util.ListUtil;
  */
 public abstract class AbstractJMSCollectionAspectTestSupport extends OperationCollectionAspectTestSupport {
 	private ObscuredValueMarker	originalMarker;
+	private final ObscuredValueSetMarker	replaceMarker=new ObscuredValueSetMarker();
 
 	protected AbstractJMSCollectionAspectTestSupport() {
 		super();
@@ -49,7 +47,8 @@ public abstract class AbstractJMSCollectionAspectTestSupport extends OperationCo
 
     	AbstractJMSCollectionAspect	aspectInstance=getJmsCollectionAspect();
     	originalMarker = aspectInstance.getSensitiveValueMarker();
-    	aspectInstance.setSensitiveValueMarker(new DummyObscuredValueMarker());
+    	replaceMarker.clear();
+    	aspectInstance.setSensitiveValueMarker(replaceMarker);
     }
 
     @After
@@ -67,8 +66,7 @@ public abstract class AbstractJMSCollectionAspectTestSupport extends OperationCo
 
     protected void assertObfuscatedValuesState (Map<String,?> attrs, boolean obfuscated) {
     	AbstractJMSCollectionAspect	aspectInstance=getJmsCollectionAspect();
-    	DummyObscuredValueMarker	marker=(DummyObscuredValueMarker) aspectInstance.getSensitiveValueMarker();
-    	Set<Object>					markedObjects=new HashSet<Object>(marker.getValues());
+    	ObscuredValueSetMarker		markedObjects=(ObscuredValueSetMarker) aspectInstance.getSensitiveValueMarker();
     	if (!obfuscated) {
     		assertEquals("Unexpected obfuscated values: " + markedObjects, 0, ListUtil.size(markedObjects));
     		return;
@@ -79,25 +77,11 @@ public abstract class AbstractJMSCollectionAspectTestSupport extends OperationCo
     		Object	value=ae.getValue();
     		assertTrue("Value for key=" + key + " not marked as obfuscated", markedObjects.remove(value));
     	}
+    	
+    	assertTrue("Orphan obfuscated values: " + markedObjects, markedObjects.isEmpty());
     }
 
 	public AbstractJMSCollectionAspect getJmsCollectionAspect() {
 		return (AbstractJMSCollectionAspect) getAspect();
 	}
-
-    public static class DummyObscuredValueMarker implements ObscuredValueMarker {
-        private Set<Object> objects = new HashSet<Object>();
-
-        public DummyObscuredValueMarker () {
-        	super();
-        }
-
-        public Set<Object> getValues() {
-            return unmodifiableSet(objects);
-        }
-
-        public void markObscured(Object o) {
-            objects.add(o);
-        }
-    }
 }

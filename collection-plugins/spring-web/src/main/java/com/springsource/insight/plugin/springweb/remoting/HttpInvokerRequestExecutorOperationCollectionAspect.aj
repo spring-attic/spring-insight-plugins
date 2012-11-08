@@ -21,9 +21,11 @@ import java.util.Map;
 
 import org.aspectj.lang.JoinPoint;
 import org.springframework.remoting.httpinvoker.HttpInvokerClientConfiguration;
+import org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean;
 import org.springframework.remoting.httpinvoker.HttpInvokerRequestExecutor;
 import org.springframework.remoting.support.RemoteInvocation;
 
+import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.intercept.InterceptConfiguration;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
@@ -54,21 +56,24 @@ public aspect HttpInvokerRequestExecutorOperationCollectionAspect extends Abstra
 		Object[]						args=jp.getArgs();
 		HttpInvokerClientConfiguration	config=(HttpInvokerClientConfiguration) args[0];
 		RemoteInvocation				invocation=(RemoteInvocation) args[1];
-		Operation						op=new Operation()
-													.type(HttpInvokerRequestExecutorExternalResourceAnalyzer.HTTP_INVOKER)
-													.label(createLabel(invocation))
-													.sourceCodeLocation(getSourceCodeLocation(jp))
-													;
-		encodeRemoteInvocation(op, invocation);
+		Operation						op=OperationCollectionUtil.methodOperation(
+        			new Operation().type(HttpInvokerRequestExecutorExternalResourceAnalyzer.HTTP_INVOKER), jp)
+        				.put(HttpInvokerRequestExecutorExternalResourceAnalyzer.DIRECT_CALL_ATTR, false)
+        				;
+		
 		encodeInvocationConfig(op, config);
+		encodeRemoteInvocation(op, invocation);
 		return op;
-	}
-
-	static String createLabel(RemoteInvocation invocation) {
-		return HttpInvokerRequestExecutor.class.getSimpleName() + "#executeRequest(" + invocation.getMethodName() + ")";
 	}
 	
 	protected Operation encodeInvocationConfig (Operation op, HttpInvokerClientConfiguration config) {
+	    if (config instanceof HttpInvokerProxyFactoryBean) {
+	        Class<?> serviceInterface = ((HttpInvokerProxyFactoryBean)config).getServiceInterface();
+	        if (serviceInterface != null) {
+	            op.put("serviceInterface", serviceInterface.getName());
+	        }
+	    }
+	    
 		op.put(OperationFields.URI, config.getServiceUrl());
 		
 		if (collectExtraInformation()) {
@@ -92,18 +97,38 @@ public aspect HttpInvokerRequestExecutorOperationCollectionAspect extends Abstra
 	}
 
 	protected Operation encodeRemoteInvocation (Operation op, RemoteInvocation invocation) {
-		String	methodName=invocation.getMethodName();
+	    String	methodName=invocation.getMethodName();
+	    String	remoteLocation=JoinPointBreakDown.getMethodStringFromArgs(methodName, invocation.getParameterTypes());
+	    
+		op.label(generateLabel(op, remoteLocation)).put("remoteMethodSignature", remoteLocation);
 
-		op.put(OperationFields.CLASS_NAME, RemoteInvocation.class.getName())
-		  .put(OperationFields.SHORT_CLASS_NAME, RemoteInvocation.class.getSimpleName())
-		  .put(OperationFields.METHOD_NAME, methodName)
-		  .put(OperationFields.METHOD_SIGNATURE, JoinPointBreakDown.getMethodStringFromArgs(methodName, invocation.getParameterTypes()))
-		  ;
 		if (collectExtraInformation()) {
 			encodeInvocationAttributes(op.createMap("remoteInvocationAttrs"), invocation.getAttributes());
 		}
 
 		return op;
+	}
+	
+	protected String generateLabel(Operation op, String remoteLocation) {
+	    String simpleServiceInterface = null;
+	    String serviceInterface = op.get("serviceInterface", String.class);
+	    
+	    StringBuilder builder;
+	    if (!StringUtil.isEmpty(serviceInterface)) {
+	        int lastIndex = serviceInterface.lastIndexOf('.');
+	        simpleServiceInterface = serviceInterface.substring(lastIndex+1, serviceInterface.length());
+	        
+	        builder = new StringBuilder(simpleServiceInterface.length() + remoteLocation.length() + 1);
+	        builder.append(simpleServiceInterface).append('#');
+	        
+	    } else {
+	        builder = new StringBuilder(remoteLocation.length());
+	    }
+	    
+	    builder.append(remoteLocation);
+	    
+	    return builder.toString();
+	    
 	}
 
 	protected OperationMap encodeInvocationAttributes(OperationMap map, Map<String,?> attrs) {

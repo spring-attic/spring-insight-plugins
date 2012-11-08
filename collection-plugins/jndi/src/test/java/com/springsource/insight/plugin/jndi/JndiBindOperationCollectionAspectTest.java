@@ -105,7 +105,7 @@ public class JndiBindOperationCollectionAspectTest extends JndiOperationCollecti
 	protected Operation assertBindOperation (JndiTestContext context, String action, String name, Object value) throws NamingException {
 		Operation	op=assertCollectedOperation(action, name);
 		if (value != null) {
-			String	expected=StringUtil.trimWithEllipsis(StringUtil.safeToString(value), StringFormatterUtils.MAX_PARAM_LENGTH);
+			String	expected=StringUtil.chopTailAndEllipsify(StringUtil.safeToString(value), StringFormatterUtils.MAX_PARAM_LENGTH);
 			String	actual=op.get("value", String.class);
 			assertEquals(action + "[" + name + "] mismatched value", expected, actual);
 		}

@@ -26,11 +26,21 @@ import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 
-public aspect JdbcStatementOperationCollectionAspect 
-    extends AbstractOperationCollectionAspect {
-    
+public aspect JdbcStatementOperationCollectionAspect extends AbstractOperationCollectionAspect {
+    public JdbcStatementOperationCollectionAspect () {
+    	super();
+    }
+
+    public pointcut sqlQueryExecution() : execution(* java.sql.Statement.execute*(String, ..));
+    public pointcut metaDataRetrieval() : execution(* java.sql.Connection.getMetaData());
+    public pointcut fetchDatabaseUrl() : execution(* java.sql.DatabaseMetaData.getURL());
+
     public pointcut collectionPoint() 
-        : execution(* java.sql.Statement.execute*(String, ..));
+        : sqlQueryExecution()
+      // avoid collecting SQL queries due to meta-data retrieval since it would cause infinite recursion
+      && (!cflow(metaDataRetrieval()))
+      && (!cflow(fetchDatabaseUrl()))
+        ;
 
     @Override
     protected Operation createOperation(JoinPoint jp) {

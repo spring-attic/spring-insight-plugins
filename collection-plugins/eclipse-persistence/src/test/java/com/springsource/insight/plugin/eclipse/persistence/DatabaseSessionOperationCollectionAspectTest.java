@@ -16,11 +16,7 @@
 
 package com.springsource.insight.plugin.eclipse.persistence;
 
-import static java.util.Collections.unmodifiableSet;
-
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.eclipse.persistence.exceptions.DatabaseException;
 import org.eclipse.persistence.sessions.DatabaseSession;
@@ -30,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.springsource.insight.collection.ObscuredValueSetMarker;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationList;
@@ -42,6 +39,8 @@ import com.springsource.insight.intercept.trace.ObscuredValueMarker;
 public class DatabaseSessionOperationCollectionAspectTest
         extends EclipsePersistenceCollectionTestSupport {
     private ObscuredValueMarker originalMarker;
+    private final ObscuredValueSetMarker	replaceMarker=new ObscuredValueSetMarker();
+
     public DatabaseSessionOperationCollectionAspectTest() {
         super();
     }
@@ -53,7 +52,8 @@ public class DatabaseSessionOperationCollectionAspectTest
         
         DatabaseSessionOperationCollectionAspect    aspectInstance=getAspect();
         originalMarker = aspectInstance.getSensitiveValueMarker();
-        aspectInstance.setSensitiveValueMarker(new DummyObscuredValueMarker());
+        replaceMarker.clear();
+        aspectInstance.setSensitiveValueMarker(replaceMarker);
     }
 
     @After
@@ -66,8 +66,8 @@ public class DatabaseSessionOperationCollectionAspectTest
 
     @Test
     public void testLogin () {
-        DatabaseSessionOperationCollectionAspect    aspectInstance=getAspect();
-        DummyObscuredValueMarker                    marker=(DummyObscuredValueMarker) aspectInstance.getSensitiveValueMarker();
+        DatabaseSessionOperationCollectionAspect  aspectInstance=getAspect();
+        ObscuredValueSetMarker                    marker=(ObscuredValueSetMarker) aspectInstance.getSensitiveValueMarker();
         for (LoginAction action : LoginAction.values()) {
             Login   mockLogin=Mockito.mock(Login.class);
             Mockito.when(mockLogin.getUserName()).thenReturn("username:" + action.name());
@@ -76,11 +76,11 @@ public class DatabaseSessionOperationCollectionAspectTest
             action.executeAction(mockSession, mockLogin);
 
             Operation   op=assertDatabaseSessionOperation(action.name(), "login");
-            action.assertExecutionResult(op, mockLogin, marker.getValues());
+            action.assertExecutionResult(op, mockLogin, marker);
 
             // prepare for next iteration
             Mockito.reset(spiedOperationCollector);
-            marker.reset();
+            marker.clear();
         }
     }
 
@@ -141,22 +141,4 @@ public class DatabaseSessionOperationCollectionAspectTest
             return argsList;
         }
     }
-
-    static class DummyObscuredValueMarker implements ObscuredValueMarker {
-        private final Set<Object> objects=new HashSet<Object>();
-        public Set<Object> getValues() {
-            return unmodifiableSet(objects);
-        }
-
-        public void markObscured(Object o) {
-            objects.add(o);
-        }
-        
-        public void reset () {
-            if (!objects.isEmpty()) {
-                objects.clear();
-            }
-        }
-    }
-
 }

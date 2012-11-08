@@ -28,11 +28,11 @@ import com.springsource.insight.intercept.operation.Operation;
 /**
  * 
  */
-public aspect EventPublisingOperationCollectionAspect extends SpringLifecycleMethodOperationCollectionAspect {
-	public static final String	ACTION_ATTR="actionType", EVENT_ATTR="eventType", ACTION_SUFFIX="Event";
+public aspect EventPublisingOperationCollectionAspect extends SpringEventReferenceCollectionAspect {
+	public static final String	ACTION_ATTR="actionType", ACTION_SUFFIX="Event";
 
 	public EventPublisingOperationCollectionAspect () {
-		super();
+		super(SpringLifecycleMethodEndPointAnalyzer.EVENT_PUBLISH_TYPE);
 	}
 
 	public pointcut publishingPoint ()
@@ -53,10 +53,6 @@ public aspect EventPublisingOperationCollectionAspect extends SpringLifecycleMet
 			name = name.substring(0, name.length() - ACTION_SUFFIX.length());
 		}
 
-		Object	event=jp.getArgs()[0];
-		return super.createOperation(jp)
-					.put(ACTION_ATTR, name)
-					.put(EVENT_ATTR, (event == null) ? Object.class.getName() : event.getClass().getName())
-					;
+		return super.createOperation(jp).put(ACTION_ATTR, name);
 	}
 }

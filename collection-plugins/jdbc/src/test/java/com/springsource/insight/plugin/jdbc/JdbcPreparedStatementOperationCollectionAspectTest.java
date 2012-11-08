@@ -32,77 +32,100 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.util.ArrayUtil;
+import com.springsource.insight.util.ListUtil;
 
 @ContextConfiguration("classpath:jdbc-test-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
-public class JdbcPreparedStatementOperationCollectionAspectTest
-    		extends OperationCollectionAspectTestSupport {
-    @Autowired DataSource dataSource;
+public class JdbcPreparedStatementOperationCollectionAspectTest extends JdbcStatementOperationCollectionTestSupport {
+    @Autowired private DataSource dataSource;
 
     public JdbcPreparedStatementOperationCollectionAspectTest () {
     	super();
     }
 
     @Test
-    public void operationCollectionForPreparedStatement() throws SQLException {
-        Connection c = dataSource.getConnection();
-        String sql = "select * from appointment where owner = ? and dateTime = ?";
-        PreparedStatement ps = c.prepareStatement(sql);
-        ps.setString(1, "Agim");
-        ps.setDate(2, Date.valueOf("2009-06-01"));
+    public void testOperationCollectionForPreparedStatement() throws SQLException {
+    	final String	sql = "select * from appointment where owner = ? and dateTime = ?";
+    	final String	strParam="Agim";
+    	final Date		dtParam=Date.valueOf("2009-06-01");
+        Connection	 	c = dataSource.getConnection();
+        try {
+        	PreparedStatement ps = c.prepareStatement(sql);
+        	try {
+	        	ps.setString(1, strParam);
+	        	ps.setDate(2, dtParam);
 
-        ps.execute();
+	        	ps.execute();
+        	} finally {
+        		ps.close();
+        	}
+        } finally {
+        	c.close();
+        }
 
-        Operation   operation=getLastEntered();
-        assertEquals(sql, operation.get("sql"));
-        @SuppressWarnings("unchecked")
-        List<String> parameters = (List<String>) operation.asMap().get("params");
-        assertEquals(2, parameters.size());
-        assertArrayEquals(new Object[] { "Agim", Date.valueOf("2009-06-01").toString() }, parameters.toArray());
+        Operation   operation=assertJdbcOperation(sql);
+        assertSqlParams(operation, strParam, dtParam.toString());
     }
 
     @Test
-    public void operationCollectionForCallableStatement() throws SQLException {
+    public void testOperationCollectionForCallableStatement() throws SQLException {
+        final String	sql = "{call testSp(?)}";
+        final String	strParam = "Agim";
         Connection c = dataSource.getConnection();
-        String sql = "{call testSp(?)}";
+        try {
+        	CallableStatement cs = c.prepareCall(sql);
+        	try {
+        		cs.setString(1, strParam);
+        		cs.executeQuery();
+        	} finally {
+        		cs.close();
+        	}
+        } finally {
+        	c.close();
+        }
 
-        CallableStatement cs = c.prepareCall(sql);
-        
-        cs.setString(1, "Agim");
-        cs.executeQuery();
-
-        Operation   operation=getLastEntered();
-        assertEquals(sql, operation.get("sql"));
-        @SuppressWarnings("unchecked")
-        List<String> parameters = (List<String>) operation.asMap().get("params");
-        assertEquals(1, parameters.size());
-        assertArrayEquals(new Object[] { "Agim" }, parameters.toArray());
+        Operation   operation=assertJdbcOperation(sql);
+        assertSqlParams(operation, strParam);
     }
     
     @Test
-    public void operationCollectionForCallableStatementWithNamedParameters() throws SQLException {
+    public void testOperationCollectionForCallableStatementWithNamedParameters() throws SQLException {
+        final String sql = "{call testSp(?)}", paramName = "@p1", paramValue="someValue";
         Connection c = dataSource.getConnection();
-        String sql = "{call testSp(?)}";
+        try {
+	        CallableStatement cs = c.prepareCall(sql);
+	        
+	        // So finally, figured out how hsqldb maps named parameters (@p1, @p2 etc.)
+	        try {
+	        	cs.setString(paramName, paramValue);
+	        	cs.executeQuery();
+	        } finally {
+	        	cs.close();
+	        }
+        } finally {
+        	c.close();
+        }
 
-        CallableStatement cs = c.prepareCall(sql);
-        
-        // So finally, figured out how hsqldb maps named parameters (@p1, @p2 etc.)
-        cs.setString("@p1", "someValue");
-        cs.executeQuery();
+        Operation   operation=assertJdbcOperation(sql);
 
-        Operation   operation=getLastEntered();
-        assertEquals(sql, operation.get("sql"));
         @SuppressWarnings("unchecked")
         Map<String, String> parameters = (Map<String, String>) operation.asMap().get("params");
-        assertEquals(1, parameters.size());
-        assertEquals("someValue", parameters.get("@p1"));
+        assertEquals("Mismatched parameters count", 1, parameters.size());
+        assertEquals("Mismatched parameter value", paramValue, parameters.get(paramName));
     }
-    
+
+    protected List<String> assertSqlParams (Operation	op, String ... values) {
+        @SuppressWarnings("unchecked")
+        List<String> parameters = (List<String>) op.asMap().get("params");
+        assertEquals("Mismatched parameters count", ArrayUtil.length(values), ListUtil.size(parameters));
+        assertArrayEquals("Mismatched parameters values", values, parameters.toArray(new String[parameters.size()]));
+        return parameters;
+    }
+
     @Override
-    public OperationCollectionAspectSupport getAspect() {
+    public JdbcPreparedStatementOperationCollectionAspect getAspect() {
         return JdbcPreparedStatementOperationCollectionAspect.aspectOf();
     }
 }
