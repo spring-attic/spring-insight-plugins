@@ -8,7 +8,7 @@
     The instance of the Operation is bound to the variable 'operation'.
     -->
 
-<@insight.group label="">
+<@insight.group label="Spring Integration " + operation.siComponentType>
     <@insight.entry name=operation.siComponentType value=operation.beanName />
     <@insight.entry name="Message Payload Type" value=operation.payloadType />
     <@insight.entry name="Message ID" value=operation.idHeader />

@@ -16,6 +16,8 @@
 
 package com.springsource.insight.plugin.integration;
 
+import java.util.List;
+
 import org.junit.Test;
 
 import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
@@ -35,7 +37,7 @@ import com.springsource.insight.intercept.trace.TraceId;
 public class IntegrationEndPointAnalyzerTest extends AbstractCollectionTestSupport{
     private final ApplicationName app = ApplicationName.valueOf("app");    
     private final IntegrationEndPointAnalyzer endPointAnalyzer=IntegrationEndPointAnalyzer.getInstance();
-	private final OperationType operationType = IntegrationEndPointAnalyzer.integrationType;
+	private final List<OperationType> operationTypes = IntegrationEndPointAnalyzer.SI_OPS;
     
 	public IntegrationEndPointAnalyzerTest () {
 		super();
@@ -46,7 +48,7 @@ public class IntegrationEndPointAnalyzerTest extends AbstractCollectionTestSuppo
         String beanName="test";
         String beanType="Channel";
         Operation operation = new Operation()
-			.type(this.operationType)
+			.type(this.operationTypes.get(0))
 			.label("MessageChannel#" + beanName)
 			.put("siComponentType", beanType)
 			.put("beanName", beanName)
@@ -70,7 +72,7 @@ public class IntegrationEndPointAnalyzerTest extends AbstractCollectionTestSuppo
         String beanName="test";
         String beanType="MessageHandler";
         Operation operation = new Operation()
-			.type(this.operationType)
+			.type(this.operationTypes.get(0))
 			.label("MessageHandler#" + beanName)
 			.put("siComponentType", beanType)
 			.put("beanName", beanName)

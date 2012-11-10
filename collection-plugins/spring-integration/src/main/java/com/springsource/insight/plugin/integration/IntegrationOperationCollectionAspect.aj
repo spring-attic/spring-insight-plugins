@@ -16,106 +16,268 @@
 
 package com.springsource.insight.plugin.integration;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.SuppressAjWarnings;
+import org.springframework.expression.Expression;
 import org.springframework.integration.Message;
 import org.springframework.integration.MessageChannel;
+import org.springframework.integration.MessageHeaders;
 import org.springframework.integration.context.IntegrationObjectSupport;
 import org.springframework.integration.core.MessageHandler;
+import org.springframework.integration.handler.ExpressionEvaluatingMessageProcessor;
+import org.springframework.integration.handler.ServiceActivatingHandler;
+import org.springframework.integration.splitter.MethodInvokingSplitter;
+import org.springframework.integration.transformer.MessageTransformingHandler;
 import org.springframework.integration.transformer.Transformer;
 
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
+import com.springsource.insight.util.ExtraReflectionUtils;
+import com.springsource.insight.util.StringUtil;
 
 /**
  * Aspect collecting operations for Spring Integration frames; channels, 
  * message handlers, and transformers are supported.
  *
  */
-public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOperationCollectionAspect {
-    public static final OperationType TYPE = OperationType.valueOf("integration_operation");
+public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOperationCollectionAspect {	
 
-    public static final String CHANNEL = "Channel";
-    public static final String MESSAGE_HANDLER = "MessageHandler";
-    public static final String TRANSFORMER = "Transformer";
+	private Map<String, Operation> opCache = new ConcurrentHashMap<String, Operation>();
+	private Map<String, MessageHandlerProps> messageHandlerPropsCache = new ConcurrentHashMap<String, MessageHandlerProps>();
 
-    private Map<String, Operation> opCache = new ConcurrentHashMap<String, Operation>();
+	private Field expressionField = ExtraReflectionUtils.getAccessibleField(ExpressionEvaluatingMessageProcessor.class, "expression");
+	public static final String DEFAULT_LABEL = "Spring Integration";
 
-    public pointcut collectionPoint() : 
-        // filter out anonymous channels
-        execution (* org.springframework.integration.context.IntegrationObjectSupport+.*(..))
-            &&
-        (execution(boolean org.springframework.integration.MessageChannel+.send(org.springframework.integration.Message, long))
-            || execution(void org.springframework.integration.core.MessageHandler+.handleMessage(org.springframework.integration.Message))
-            || execution(* org.springframework.integration.transformer.Transformer+.transform(org.springframework.integration.Message)));
+	public IntegrationOperationCollectionAspect(){
+		super();
+	}
 
-    private Operation createCachedOperation(Object target, String beanName) {
-        String beanType = target.getClass().getSimpleName();
-        String generalType = "unknown";
-        String label = "Spring Integration";
-        if (target instanceof MessageChannel) {
-            generalType = CHANNEL;
-            label = beanType + "#" + beanName;
-        } else if (target instanceof MessageHandler) {
-            generalType = MESSAGE_HANDLER;
-            label = beanType + "#" + beanName;
-        } else if (target instanceof Transformer) {
-            generalType = TRANSFORMER;
-            label = beanType + "#" + beanName;
-        }
-        Operation cachedOp = new Operation()
-                .type(TYPE)
-                .label(label)
-                .put("siComponentType", generalType)
-                .put("siSpecificType", beanType)
-                .put("beanName", beanName);
-        opCache.put(beanName, cachedOp);
-        return cachedOp;
-    }
+	@SuppressAjWarnings
+	after (Object object, MethodInvokingSplitter splitter) : 
+		execution(public MethodInvokingSplitter.new(Object)) && args(object) && target(splitter) { 
 
-    @Override
-    protected Operation createOperation(JoinPoint jp) {
-        Object target = jp.getTarget();
-        String beanName = ((IntegrationObjectSupport) target).getComponentName();
-        Operation cachedOp = null;
+		MessageHandlerProps messageHandlerProps = new MessageHandlerProps(object.getClass().getSimpleName());
+		messageHandlerPropsCache.put(getHandlerkey(splitter), messageHandlerProps);
+	}
 
-        if (beanName == null) {
-            beanName = "anonymous";
-        } else {
-            cachedOp = opCache.get(beanName);
-        }
+	@SuppressAjWarnings
+	after (Object object, Method method, MethodInvokingSplitter splitter) : 
+		execution(public MethodInvokingSplitter.new(Object, Method)) && args(object, method) && target(splitter) {
 
-        if (cachedOp == null) {
-            cachedOp = createCachedOperation(target, beanName);
-        }
+		MessageHandlerProps messageHandlerProps = new MessageHandlerProps(object.getClass().getSimpleName(), method.getName());
+		messageHandlerPropsCache.put(getHandlerkey(splitter), messageHandlerProps);
+	}
 
-        // Payload type can be different on every message
-        Message<?> message = (Message<?>) jp.getArgs()[0];
-        Class<?> payloadClazz = message.getPayload().getClass();
-        String payloadType;
-        if (!payloadClazz.isArray()) {
-            payloadType = payloadClazz.getName();
-        } else {
-            payloadType = payloadClazz.getComponentType().getSimpleName() + "[]";
-        }
+	@SuppressAjWarnings
+	after (Object object, String method, MethodInvokingSplitter splitter) : 
+		execution(public MethodInvokingSplitter.new(Object, String)) && args(object, method) && target(splitter) {
 
-        // The id is different on every message
-        String idHeader = message.getHeaders().getId().toString();
+		MessageHandlerProps messageHandlerProps = new MessageHandlerProps(object.getClass().getSimpleName(), method);
+		messageHandlerPropsCache.put(getHandlerkey(splitter), messageHandlerProps);
+	}
 
-        Operation op = new Operation().copyPropertiesFrom(cachedOp);
+	@SuppressAjWarnings
+	after (Object object, ServiceActivatingHandler handler) : 
+		execution(public ServiceActivatingHandler.new(Object)) && args(object) && target(handler)  { 
 
-        op.label(cachedOp.getLabel())
-                .type(TYPE)
-                .put("payloadType", payloadType)
-                .put("idHeader", idHeader);
-    	return op;
-    }
+		MessageHandlerProps serviceActivatingHandlerProps = new MessageHandlerProps(object.getClass().getSimpleName());
+		messageHandlerPropsCache.put(getHandlerkey(handler), serviceActivatingHandlerProps);
+	}
 
-    @Override
-    public boolean isEndpoint() {
-        return true;
-    }
+	@SuppressAjWarnings
+	after (Object object, Method method, ServiceActivatingHandler handler) : 
+		execution(public ServiceActivatingHandler.new(Object, Method)) && args(object, method) && target(handler) {
+
+		MessageHandlerProps serviceActivatingHandlerProps = new MessageHandlerProps(object.getClass().getSimpleName(), method.getName());
+		messageHandlerPropsCache.put(getHandlerkey(handler), serviceActivatingHandlerProps);
+	}
+
+	@SuppressAjWarnings
+	after (Object object, String method, ServiceActivatingHandler handler) : 
+		execution(public ServiceActivatingHandler.new(Object, String)) && args(object, method) && target(handler) {
+
+		MessageHandlerProps serviceActivatingHandlerProps = new MessageHandlerProps(object.getClass().getSimpleName(), method);
+		messageHandlerPropsCache.put(getHandlerkey(handler), serviceActivatingHandlerProps);
+	}
+
+	@SuppressWarnings("rawtypes")
+	@SuppressAjWarnings
+	// cant use a specific type in the constructor because it is not consistent across SI versions
+	after (ServiceActivatingHandler handler) : execution(public ServiceActivatingHandler.new(*)) && target(handler){		
+
+		Object arg = thisJoinPoint.getArgs()[0];
+		if (arg instanceof ExpressionEvaluatingMessageProcessor){
+			ExpressionEvaluatingMessageProcessor processor = (ExpressionEvaluatingMessageProcessor)arg;
+
+			String expressionString = "unknown";
+
+			if (expressionField != null){
+				Expression expression = ExtraReflectionUtils.getFieldValue(expressionField, processor, Expression.class);
+				expressionString = expression.getExpressionString();
+			}
+
+			MessageHandlerProps serviceActivatingHandlerProps = 
+					new MessageHandlerProps("(expression='" + expressionString + "')");			
+			messageHandlerPropsCache.put(getHandlerkey(handler), serviceActivatingHandlerProps);
+
+		}
+	}
+
+
+	@SuppressAjWarnings
+	after (Transformer transformer, MessageTransformingHandler transformerHandler) :
+		execution(public MessageTransformingHandler.new(Transformer)) && args(transformer) && target(transformerHandler){
+
+		MessageHandlerProps messageHandlerProps = new MessageHandlerProps(transformer.getClass().getSimpleName());
+		messageHandlerPropsCache.put(getHandlerkey(transformerHandler), messageHandlerProps);
+	}
+
+	private String getHandlerkey(Object handler) {
+		return String.valueOf(handler.hashCode());
+	}
+
+	private class MessageHandlerProps{
+		private String methodName;
+		private String objectTypeName;
+
+
+		MessageHandlerProps(String objectTypeName){
+			this.objectTypeName = objectTypeName;
+		}
+
+		MessageHandlerProps(String objectTypeName, String methodName){
+			this.methodName = methodName;
+			this.objectTypeName = objectTypeName;
+		}
+	}
+
+
+
+
+
+
+	public pointcut collectionPoint() : 
+		// filter out anonymous channels
+		execution (* org.springframework.integration.context.IntegrationObjectSupport+.*(..))
+		&&
+		(execution(boolean org.springframework.integration.MessageChannel+.send(org.springframework.integration.Message, long))
+				|| execution(void org.springframework.integration.core.MessageHandler+.handleMessage(org.springframework.integration.Message))
+				|| execution(* org.springframework.integration.transformer.Transformer+.transform(org.springframework.integration.Message)));
+
+
+	private Operation createCachedOperation(Object target, String beanName) {
+		String beanType = target.getClass().getSimpleName();
+		OperationType operationType = SpringIntegrationDefinitions.SI_OPERATION_TYPE;
+		String generalType = "unknown";
+		String label = DEFAULT_LABEL;
+		if (target instanceof MessageChannel) {
+			generalType = SpringIntegrationDefinitions.CHANNEL;
+			label = beanType + "#" + beanName;
+			operationType = SpringIntegrationDefinitions.SI_OP_CHANNEL_TYPE;
+		} 
+		// ServiceActivatingHandler is a special kind of MessageHandler 
+		else if (target instanceof ServiceActivatingHandler) {
+			generalType = SpringIntegrationDefinitions.SERVICE_ACTIVATOR;
+			label = beanType + "#" + beanName;
+			operationType = SpringIntegrationDefinitions.SI_OP_SERVICE_ACTIVATOR_TYPE;
+		} else if (target instanceof MessageHandler) {
+			generalType = SpringIntegrationDefinitions.MESSAGE_HANDLER;
+			label = beanType + "#" + beanName;
+		} else if (target instanceof Transformer) {
+			generalType = SpringIntegrationDefinitions.TRANSFORMER;
+			label = beanType + "#" + beanName;
+		}
+		Operation cachedOp = new Operation()
+		.type(operationType)
+		.label(label)
+		.put(SpringIntegrationDefinitions.SI_COMPONENT_TYPE_ATTR, generalType)
+		.put(SpringIntegrationDefinitions.SI_SPECIFIC_TYPE_ATTR, beanType)
+		.put(SpringIntegrationDefinitions.BEAN_NAME_ATTR, beanName);
+		opCache.put(beanName, cachedOp);
+		return cachedOp;
+	}
+
+	@Override
+	protected Operation createOperation(JoinPoint jp) {
+		Object target = jp.getTarget();
+		String beanName = null;
+
+		MessageHandlerProps serviceActivatingHandlerProps = messageHandlerPropsCache.get(String.valueOf(target.hashCode()));
+		if (serviceActivatingHandlerProps != null){
+
+			String obj = serviceActivatingHandlerProps.objectTypeName;
+
+			if (obj != null) {
+				String method = serviceActivatingHandlerProps.methodName;
+
+				String simpleName = obj;
+				int length = simpleName.length();
+
+				if (!StringUtil.isEmpty(method)) {
+					length += 1 + method.length();
+				}
+
+				StringBuilder builder = new StringBuilder(length);
+
+				builder.append(simpleName);
+
+				if (!StringUtil.isEmpty(method)) {
+					builder.append('#').append(method);
+				}
+
+				beanName = builder.toString();
+			}
+		} else {
+			beanName = ((IntegrationObjectSupport) target).getComponentName();
+		}
+
+		Operation cachedOp = null;
+
+		if (beanName == null) {
+			beanName = "anonymous";			
+		} else {
+			cachedOp = opCache.get(beanName);
+		}
+
+		if (cachedOp == null) {
+			cachedOp = createCachedOperation(target, beanName);
+		}
+
+		// Payload type can be different on every message
+		Message<?> message = (Message<?>) jp.getArgs()[0];
+		Class<?> payloadClazz = message.getPayload().getClass();
+		String payloadType;
+		if (!payloadClazz.isArray()) {
+			payloadType = payloadClazz.getName();
+		} else {
+			payloadType = payloadClazz.getComponentType().getSimpleName() + "[]";
+		}
+
+		// The id is different on every message
+		MessageHeaders messageHeaders = message.getHeaders();
+		UUID id = messageHeaders.getId();
+		String idHeader = id.toString();
+
+		Operation op = new Operation().copyPropertiesFrom(cachedOp);		
+
+		op.label(cachedOp.getLabel())
+		.type(cachedOp.getType())
+		.put(SpringIntegrationDefinitions.PAYLOAD_TYPE_ATTR, payloadType)
+		.put(SpringIntegrationDefinitions.ID_HEADER_ATTR, idHeader);
+		return op;
+
+	}
+
+	@Override
+	public boolean isEndpoint() {
+		return true;
+	}
+
 
 }

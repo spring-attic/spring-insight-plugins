@@ -4,6 +4,7 @@
 
 <@insight.group label="Connection">
 	<@insight.entry name="Connection URL" value=operation.connectionUrl if=operation.connectionUrl?? />
+	<@insight.entry name="Consumed from Queue" value=operation.consumedQueues if=operation.consumedQueues?? />
 	<@insight.entry name="Server Version" value=operation.serverVersion if=operation.serverVersion?? />
 	<@insight.entry name="Client Version" value=operation.clientVersion if=operation.clientVersion?? />
 </@insight.group>
@@ -19,8 +20,9 @@
 <#else>
 	<#if operation.envelope?? && operation.envelope?has_content>
 		<@insight.group label="Envelope">
-		    <@insight.entry name="Delivery Tag" value=operation.envelope.deliveryTag />
+		    <@insight.entry name="Exchange" value=operation.envelope.exchange if=operation.envelope.exchange?? />
 		    <@insight.entry name="Routing Key" value=operation.envelope.routingKey if=operation.envelope.routingKey?? />
+		    <@insight.entry name="Delivery Tag" value=operation.envelope.deliveryTag />
 		    <@insight.entry name="Body Length" value=operation.envelope.bytes if=operation.bytes?? />
 		</@insight.group>
 	</#if>	

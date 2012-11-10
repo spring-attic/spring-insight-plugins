@@ -17,6 +17,8 @@
 package com.springsource.insight.plugin.rabbitmqClient;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.aspectj.lang.annotation.SuppressAjWarnings;
@@ -37,6 +39,31 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
     public RabbitMQConsumerCollectionAspect () {
         super(RabbitPluginOperationType.CONSUME);
     }
+    
+    // use inter-type declaration so that each Consumer 'knows' the list of all queues which it serves as their callback
+    
+    interface HasQueues {}
+    declare parents: com.rabbitmq.client.Consumer extends HasQueues;
+    
+    private Set<String> HasQueues.__insightQueues = new TreeSet<String>();
+    public void HasQueues.__setInsightQueues(String queue) { this.__insightQueues.add(queue); }
+    public String HasQueues.__getInsightQueues() { return this.__insightQueues.toString(); }
+    
+    String around () : 
+    	execution (public String com.rabbitmq.client.Channel.basicConsume(..)){
+    	Object[] args = thisJoinPoint.getArgs();
+    	String queue = (String) args[0];
+    	Consumer callback = (Consumer) args[args.length -1];
+    	
+        String res = proceed();
+        
+        if (callback instanceof HasQueues) {
+            ((HasQueues)callback).__setInsightQueues(queue);
+        }
+        
+        return res;
+    }    
+    
 
     // Holds Operations in progress for a given Channel
     // According to the API, the Channel should only be
@@ -60,6 +87,7 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
             : basicGet(queue, ack) {
         Channel channel = (Channel) thisJoinPoint.getThis();
         Operation op = createOperation();
+        op.put("consumedQueues",  queue);
         opHolder.put(channel,op);
         getCollector().enter(op);
     }
@@ -111,6 +139,9 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
         Operation op = createOperation();
         if (conn != null) {
             applyConnectionData(op, conn);
+            if (consumer instanceof HasQueues) {
+            	op.putAnyNonEmpty("consumedQueues",  ((HasQueues)consumer).__getInsightQueues());
+            }
         }
         if (props != null) {
             applyPropertiesData(op, props);

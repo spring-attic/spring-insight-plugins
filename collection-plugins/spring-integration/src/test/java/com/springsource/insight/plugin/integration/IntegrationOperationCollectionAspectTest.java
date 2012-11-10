@@ -30,6 +30,7 @@ import org.springframework.integration.transformer.Transformer;
 
 import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.OperationType;
 
 /**
  * This test verifies that Integration operations correctly captured by
@@ -48,7 +49,7 @@ public class IntegrationOperationCollectionAspectTest extends OperationCollectio
         channel.setBeanName("testChannel");
         Message<String> message = new GenericMessage<String>("Test");
         channel.send(message);
-        assertIntegrationOperation("Channel", "testChannel", message);
+        assertIntegrationOperation("Channel", "testChannel", message, SpringIntegrationDefinitions.SI_OP_CHANNEL_TYPE);
     }
 
     @Test
@@ -57,7 +58,7 @@ public class IntegrationOperationCollectionAspectTest extends OperationCollectio
         handler.setBeanName("testHandler");
         Message<String> message = new GenericMessage<String>("Test");
         handler.handleMessage(message);
-        assertIntegrationOperation("MessageHandler", "testHandler", message);
+        assertIntegrationOperation("MessageHandler", "testHandler", message, SpringIntegrationDefinitions.SI_OPERATION_TYPE);
     }
 
     @Test
@@ -68,13 +69,13 @@ public class IntegrationOperationCollectionAspectTest extends OperationCollectio
         Message<String> message = new GenericMessage<String>("Test");
         Message<?>		result = transformer.transform(message);
         assertSame("Mismatched transformed instance", transformer.transformedMessage, result);
-        assertIntegrationOperation("Transformer", "testTransform", message);
+        assertIntegrationOperation("Transformer", "testTransform", message, SpringIntegrationDefinitions.SI_OPERATION_TYPE);
     }
 
-    private Operation assertIntegrationOperation (String compType, String beanName, Message<String> message) {
+    private Operation assertIntegrationOperation (String compType, String beanName, Message<String> message, OperationType type) {
         Operation op = getLastEntered();
         assertNotNull("No operation", op);
-        assertEquals("Mismatched type", IntegrationOperationCollectionAspect.TYPE, op.getType());
+        assertEquals("Mismatched type", type, op.getType());
 
         assertEquals("Mismatched component type", compType, op.get("siComponentType", String.class));        
         assertEquals("Mismatched bean name", beanName, op.get("beanName", String.class));

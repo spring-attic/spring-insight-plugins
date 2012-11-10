@@ -15,69 +15,47 @@
  */
 package com.springsource.insight.plugin.integration;
 
-import com.springsource.insight.intercept.endpoint.AbstractSingleTypeEndpointAnalyzer;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import com.springsource.insight.intercept.endpoint.AbstractEndPointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.Trace;
 
 /**
  * {@link EndPointAnalyzer} for Spring Integration traces.
  * Integration 'Transformer' operations are never considered.
  *
  */
-public class IntegrationEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
-    public static final OperationType integrationType = OperationType.valueOf("integration_operation");
-    private static final IntegrationEndPointAnalyzer	INSTANCE=new IntegrationEndPointAnalyzer();
+public class IntegrationEndPointAnalyzer extends AbstractEndPointAnalyzer {	
+	// NOTE - order matters here!
+	// the first ServiceActivator frame beats the first Gateway frame which beats the first Channel frame
+	public static final List<OperationType>	SI_OPS=Collections.unmodifiableList(Arrays.asList(
+			SpringIntegrationDefinitions.SI_OP_SERVICE_ACTIVATOR_TYPE, SpringIntegrationDefinitions.SI_OP_GATEWAY_TYPE, 
+			SpringIntegrationDefinitions.SI_OP_CHANNEL_TYPE));
+	private static final IntegrationEndPointAnalyzer INSTANCE = new IntegrationEndPointAnalyzer();
+	public static final int ANALYSIS_SCORE = EndPointAnalysis.CEILING_LAYER_SCORE + 2;
 
-    private IntegrationEndPointAnalyzer () {
-    	super(integrationType);
-    }
-
-    public static final IntegrationEndPointAnalyzer getInstance() {
-    	return INSTANCE;
-    }
-
-    @Override
-	public Frame getScoringFrame(Trace trace) {
-    	Frame	frame=super.getScoringFrame(trace);
-    	if (frame == null) {
-    		return null;
-    	}
-
-    	if (validateScoringFrame(frame) == null) {
-    		return null;
-    	}
-
-    	return frame;
-    }
-
-    @Override
-	protected OperationType validateScoringFrame(Frame frame) {
-		OperationType	type=super.validateScoringFrame(frame);
-		if (type == null) {
-			return null;
-		}
-
-        Operation 	op=frame.getOperation();
-        String		siComponentType=op.get("siComponentType", String.class);
-        if ("Transformer".equals(siComponentType)) {
-            return null;
-        } else  {
-        	return type;
-        }
+	private IntegrationEndPointAnalyzer () {
+		super(SI_OPS);
 	}
 
-    @Override
+	public static final IntegrationEndPointAnalyzer getInstance() {
+		return INSTANCE;
+	}
+	
+	@Override
 	protected EndPointAnalysis makeEndPoint(Frame si, int depth) {
-        Operation op = si.getOperation();
-        String exampleRequest = op.get("siComponentType", String.class);
-        String opLabel = op.getLabel();
-        EndPointName name = EndPointName.valueOf(opLabel);
-        String label = name.getName();
-        return new EndPointAnalysis(name, label, exampleRequest, getOperationScore(op, depth), op);
-    }
+		Operation op = si.getOperation();
+		String exampleRequest = op.get(SpringIntegrationDefinitions.SI_COMPONENT_TYPE_ATTR, String.class);
+		String opLabel = op.getLabel();
+		EndPointName name = EndPointName.valueOf(opLabel);
+		String label = name.getName();
+		return new EndPointAnalysis(name, label, exampleRequest, ANALYSIS_SCORE, op);
+	}
 }

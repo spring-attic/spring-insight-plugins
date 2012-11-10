@@ -7,8 +7,24 @@
 
 	<insight:plugin name="spring-integration" version="${project.version}" publisher="SpringSource" />
 
+	<insight:operation-group group="Spring Integration" operation="integration_operation" />
+	<insight:operation-group group="Spring Integration" operation="integration_tcpconn" />
+	<insight:operation-group group="Spring Integration" operation="integration_gateway_operation" />
+	<insight:operation-group group="Spring Integration" operation="integration_service_activator_operation" />
+	<insight:operation-group group="Spring Integration" operation="integration_message_adapter" />		
+	<insight:operation-group group="Spring Integration" operation="integration_channel_operation" />		
+	
+	
 	<insight:operation-view operation="integration_operation" 
 				template="com/springsource/insight/plugin/integration/integration_operation.ftl"/>
+	<insight:operation-view operation="integration_service_activator_operation" 
+				template="com/springsource/insight/plugin/integration/integration_operation.ftl"/>
+	<insight:operation-view operation="integration_channel_operation" 
+				template="com/springsource/insight/plugin/integration/integration_operation.ftl"/>
+		<insight:operation-view operation="integration_gateway_operation" 
+				template="com/springsource/insight/plugin/integration/integration_operation.ftl"/>
+    <insight:operation-view operation="integration_message_adapter" 
+                template="com/springsource/insight/plugin/integration/integration_adapter.ftl"/>
     <insight:operation-view operation="integration_tcpconn" 
                 template="com/springsource/insight/plugin/integration/integration_tcpconn.ftl"/>
 
