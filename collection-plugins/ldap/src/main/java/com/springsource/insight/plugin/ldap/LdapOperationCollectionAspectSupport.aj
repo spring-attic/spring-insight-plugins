@@ -69,10 +69,9 @@ public abstract aspect LdapOperationCollectionAspectSupport
 
     protected static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
     protected static final CollectionSettingName    OBFUSCATED_PROPERTIES_SETTING =
-            new CollectionSettingName("obfuscated.properties", "javax.naming.ldap", "Comma separated list of context properties whose data requires obfuscation");
+            new CollectionSettingName("obfuscated.properties", LdapPluginRuntimeDescriptor.PLUGIN_NAME, "Comma separated list of context properties whose data requires obfuscation");
     protected static final CollectionSettingName    LDAP_OPERATIONS_LOG_SETTING =
-            new CollectionSettingName("tracking.loglevel", "javax.naming.ldap", "The java.util.logging.Level value to use for logging internal functionality (default=" + DEFAULT_LEVEL + ")");
-
+            new CollectionSettingName("tracking.loglevel", LdapPluginRuntimeDescriptor.PLUGIN_NAME, "The java.util.logging.Level value to use for logging internal functionality (default=" + DEFAULT_LEVEL + ")");
 
     // NOTE: using a synchronized set in order to allow modification while running
     static final Set<String>    OBFUSCATED_PROPERTIES=
