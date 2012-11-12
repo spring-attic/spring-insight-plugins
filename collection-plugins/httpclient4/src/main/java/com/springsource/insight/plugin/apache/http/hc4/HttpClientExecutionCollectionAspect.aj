@@ -225,13 +225,17 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
           .put(OperationFields.URI, reqLine.getUri());
 
         if (collectExtra) {
-            op.put("protocol", createVersionValue(reqLine.getProtocolVersion()));
+            op.putAnyNonEmpty("protocol", createVersionValue(reqLine.getProtocolVersion()));
         }
 
         return op;
     }
 
     static String createVersionValue (ProtocolVersion protoVersion) {
+    	if (protoVersion == null) {
+    		return null;
+    	}
+    	
         return protoVersion.getProtocol() + "/" + String.valueOf(protoVersion.getMajor()) + "." + String.valueOf(protoVersion.getMinor());
     }
 

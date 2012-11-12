@@ -156,7 +156,7 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
           .put(OperationFields.URI, getUri(method));
 
         if (collectExtra) {
-            op.put("protocol", createVersionValue(method));
+            op.putAnyNonEmpty("protocol", createVersionValue(method));
         }
 
         return op;
@@ -164,7 +164,12 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
 
     static String createVersionValue (HttpMethod method) {
         StatusLine  line=method.getStatusLine();
-        return line.getHttpVersion();
+        
+        if (line != null) {
+        	return line.getHttpVersion();
+        } else {
+        	return null;
+        }
     }
 
     static String getUri (HttpMethod method) {
