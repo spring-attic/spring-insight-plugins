@@ -61,9 +61,9 @@ public abstract class AbstractFilesTrackerAspectSupport extends OperationCollect
     private static volatile Level  logLevel=DEFAULT_LEVEL;
 
     protected static final CollectionSettingName    MAX_TRACKED_FILES_SETTING =
-            new CollectionSettingName("max.tracked.files", "files.tracker", "Controls the number of concurrently tracked files (default=" + DEFAULT_FILE_CACHE_SIZE + ")");
+            new CollectionSettingName("max.tracked.files", FilesTrackerPluginRuntimeDescriptor.PLUGIN_NAME, "Controls the number of concurrently tracked files (default=" + DEFAULT_FILE_CACHE_SIZE + ")");
     protected static final CollectionSettingName    MAPPINGS_TRACKER_LOG_SETTING =
-            new CollectionSettingName("mappings.tracker.loglevel", "files.tracker", "The java.util.logging.Level value to use for logging tracked files (default=" + DEFAULT_LEVEL + ")");
+            new CollectionSettingName("mappings.tracker.loglevel", FilesTrackerPluginRuntimeDescriptor.PLUGIN_NAME, "The java.util.logging.Level value to use for logging tracked files (default=" + DEFAULT_LEVEL + ")");
 
     // register a collection setting update listener and register the initial defaults
     static {
