@@ -66,28 +66,25 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
 
     @SuppressWarnings("rawtypes")
     @SuppressAjWarnings
-    Object around(Method method, Map map) : call(public org.springframework.integration.gateway.GatewayMethodInboundMessageMapper.new(Method, Map))
-                                                    && args(method, map) {
-        Object obj = proceed(method, map);
+    after(Method method, Map map, org.springframework.integration.gateway.GatewayMethodInboundMessageMapper gatewayMapper) : 
+    	execution(public org.springframework.integration.gateway.GatewayMethodInboundMessageMapper.new(Method, Map))
+    	&& args(method, map) && target(gatewayMapper) {
         
-        if (obj instanceof HasMethod) {
-            ((HasMethod)obj).__setInsightMethod(method);
+        if (gatewayMapper instanceof HasMethod) {
+            ((HasMethod)gatewayMapper).__setInsightMethod(method);
         }
-        
-        return obj;
     }
     
     @SuppressAjWarnings
     @SuppressWarnings("rawtypes")
-    void around(MessagingGatewaySupport gateway, InboundMessageMapper mapper) : 
-                                execution(public void MessagingGatewaySupport.setRequestMapper(InboundMessageMapper))
-                                        && args(mapper) && target(gateway) {
+    after(MessagingGatewaySupport gateway, InboundMessageMapper mapper) : 
+        execution(public void MessagingGatewaySupport.setRequestMapper(InboundMessageMapper))
+                && args(mapper) && target(gateway) {
         
         if (gateway instanceof HasRequestMapper) {
             ((HasRequestMapper)gateway).__setInsightMapper(mapper);
         }
         
-        proceed(gateway, mapper);
     }
     
     /* ------------------------------------------------------------------------------------------------------------- */

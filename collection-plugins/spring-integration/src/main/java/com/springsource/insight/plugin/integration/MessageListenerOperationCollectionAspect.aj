@@ -30,13 +30,14 @@ import com.springsource.insight.collection.TrailingAbstractOperationCollectionAs
 import com.springsource.insight.intercept.operation.Operation;
 
 
-public privileged aspect MessageListenerOperationCollectionAspect extends TrailingAbstractOperationCollectionAspect {
+//public privileged aspect MessageListenerOperationCollectionAspect extends TrailingAbstractOperationCollectionAspect {
+public aspect MessageListenerOperationCollectionAspect{
 
 	public MessageListenerOperationCollectionAspect(){
 		super();
 	}
 	
-    @Override
+    /*@Override
     public final String getPluginName() {
         return IntegrationPluginRuntimeDescriptor.PLUGIN_NAME;
     }
@@ -129,7 +130,7 @@ public privileged aspect MessageListenerOperationCollectionAspect extends Traili
 			adapterBeanName = assignedAdapterBeanName;
 			adapterBeanType = assignedAdapterBeanType;			 
 		}
-	}
+	}*/
 	
 
 }

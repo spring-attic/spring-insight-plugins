@@ -137,7 +137,7 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 		MessageHandlerProps messageHandlerProps = new MessageHandlerProps(transformer.getClass().getSimpleName());
 		messageHandlerPropsCache.put(getHandlerkey(transformerHandler), messageHandlerProps);
 	}
-
+	
 	private String getHandlerkey(Object handler) {
 		return String.valueOf(handler.hashCode());
 	}
@@ -145,17 +145,43 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 	private class MessageHandlerProps{
 		private String methodName;
 		private String objectTypeName;
+		private String beanString;
 
-		MessageHandlerProps(String typeName){
-			this(typeName, null);
+
+		MessageHandlerProps(String objectTypeName){
+			this.objectTypeName = objectTypeName;
+			setBeanString();
 		}
 
-		MessageHandlerProps(String typeName, String invokedMethodName){
-			methodName = invokedMethodName;
-			objectTypeName = typeName;
+		MessageHandlerProps(String objectTypeName, String methodName){
+			this.methodName = methodName;
+			this.objectTypeName = objectTypeName;
+			setBeanString();
+		}
+		
+		private void setBeanString(){
+				int length = objectTypeName.length();
+
+				if (!StringUtil.isEmpty(methodName)) {
+					length += 1 + methodName.length();
+				}
+
+				StringBuilder builder = new StringBuilder(length);
+
+				builder.append(objectTypeName);
+
+				if (!StringUtil.isEmpty(methodName)) {
+					builder.append('#').append(methodName);
+				}
+
+				beanString = builder.toString();
 		}
 	}
 
+
+
+
+	
 	public pointcut collectionPoint() : 
 		// filter out anonymous channels
 		execution (* org.springframework.integration.context.IntegrationObjectSupport+.*(..))
@@ -203,31 +229,9 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 		Object target = jp.getTarget();
 		String beanName = null;
 
-		MessageHandlerProps serviceActivatingHandlerProps = messageHandlerPropsCache.get(String.valueOf(target.hashCode()));
+		MessageHandlerProps serviceActivatingHandlerProps = messageHandlerPropsCache.get(getHandlerkey(target));
 		if (serviceActivatingHandlerProps != null){
-
-			String obj = serviceActivatingHandlerProps.objectTypeName;
-
-			if (obj != null) {
-				String method = serviceActivatingHandlerProps.methodName;
-
-				String simpleName = obj;
-				int length = simpleName.length();
-
-				if (!StringUtil.isEmpty(method)) {
-					length += 1 + method.length();
-				}
-
-				StringBuilder builder = new StringBuilder(length);
-
-				builder.append(simpleName);
-
-				if (!StringUtil.isEmpty(method)) {
-					builder.append('#').append(method);
-				}
-
-				beanName = builder.toString();
-			}
+			beanName = serviceActivatingHandlerProps.beanString;
 		} else {
 			beanName = ((IntegrationObjectSupport) target).getComponentName();
 		}
