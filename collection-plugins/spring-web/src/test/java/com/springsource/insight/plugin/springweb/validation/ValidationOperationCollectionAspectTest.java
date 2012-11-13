@@ -84,7 +84,7 @@ public class ValidationOperationCollectionAspectTest extends OperationCollection
 
     private static OperationList assertValidationErrors (Operation op, Errors errors) {
     	int	numErrors=(errors == null) ? 0 : errors.getErrorCount();
-    	assertEquals("Mismatched number of errors", Integer.valueOf(numErrors), op.get(ValidationJoinPointFinalizer.ERRORS_COUNT, Integer.class));
+    	assertEquals("Mismatched number of errors", numErrors, op.getInt(ValidationJoinPointFinalizer.ERRORS_COUNT, (-1)));
 
     	OperationList	errDetails=op.get(ValidationJoinPointFinalizer.ERRORS_LIST, OperationList.class);
     	if (numErrors > 0) {

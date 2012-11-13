@@ -16,59 +16,42 @@
 
 package com.springsource.insight.plugin.springweb.remoting;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.trace.AbstractTraceErrorAnalyzer;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceError;
-import com.springsource.insight.intercept.trace.TraceErrorAnalyzer;
-import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.StringUtil;
 
 /**
  * 
  */
-public class HttpInvokerRequestExecutorTraceErrorAnalyzer implements TraceErrorAnalyzer {
+public class HttpInvokerRequestExecutorTraceErrorAnalyzer extends AbstractTraceErrorAnalyzer {
 	private static final HttpInvokerRequestExecutorTraceErrorAnalyzer	INSTANCE=new HttpInvokerRequestExecutorTraceErrorAnalyzer();
 
 	private HttpInvokerRequestExecutorTraceErrorAnalyzer() {
-		super();
+		super(HttpInvokerRequestExecutorExternalResourceAnalyzer.HTTP_INVOKER);
 	}
 
 	public static final HttpInvokerRequestExecutorTraceErrorAnalyzer getInstance() {
 		return INSTANCE;
 	}
 
-	public List<TraceError> locateErrors(Trace trace) {
-		Collection<Frame>	frames=trace.getAllFramesOfType(HttpInvokerRequestExecutorExternalResourceAnalyzer.HTTP_INVOKER);
-		if (ListUtil.size(frames) <= 0) {
-			return Collections.emptyList();
-		}
-
-		List<TraceError>	errors=null;
-		for (Frame frame : frames) {
-			Operation	op=frame.getOperation();
-			String		remoteError=op.get(HttpInvokerRequestExecutorOperationCollector.REMOTE_EXCEPTION, String.class);
-			if (StringUtil.isEmpty(remoteError)) {
-				continue;
-			}
-
-			if (errors == null) {
-				errors = new ArrayList<TraceError>(frames.size());
-			}
-			
-			errors.add(new TraceError(remoteError));
-		}
-		
-		if (errors == null) {
-			return Collections.emptyList();
+	@Override
+	public TraceError locateFrameError(Frame frame) {
+		Operation	op=frame.getOperation();
+		String		remoteError=op.get(HttpInvokerRequestExecutorOperationCollector.REMOTE_EXCEPTION, String.class);
+		if (StringUtil.isEmpty(remoteError)) {
+			return null;
 		} else {
-			return errors;
+			return new TraceError(remoteError);
 		}
 	}
 
+	@Override	// if ANY remote invocation failed, then declare the trace an error
+	public Collection<Frame> locateFrames(Trace trace) {
+		return trace.getAllFramesOfType(HttpInvokerRequestExecutorExternalResourceAnalyzer.HTTP_INVOKER);
+	}
 }

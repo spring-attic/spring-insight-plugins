@@ -41,15 +41,18 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
      * 1. MessagingGatewaySupport#requestMapper - done with HasRequestMapper
      * 2. GatewayMethodInboundMessageMapper#method - done with HasMethod
      * ------------------------------------------------------------------------------------------------------------- */
-    interface HasMethod {}
+    interface HasMethod {
+    	// marker interface
+    }
     declare parents: org.springframework.integration.gateway.GatewayMethodInboundMessageMapper implements HasMethod;
     
     private Method HasMethod.__insightMethod;
     public void HasMethod.__setInsightMethod(Method method) { this.__insightMethod = method; }
     public Method HasMethod.__getInsightMethod() { return this.__insightMethod; }
     
-    
-    interface HasRequestMapper {}
+    interface HasRequestMapper {
+    	// marker interface
+    }
     declare parents: MessagingGatewaySupport implements HasRequestMapper;
     
     @SuppressWarnings("rawtypes")
@@ -97,15 +100,11 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
     
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        
-        Operation op = new Operation().type(SpringIntegrationDefinitions.SI_OP_GATEWAY_TYPE);
-        
-        fillOperation(jp, op);
-        return op;
+        return fillOperation(jp, new Operation().type(SpringIntegrationDefinitions.SI_OP_GATEWAY_TYPE));
     }
     
     @SuppressWarnings("rawtypes")
-    private static void fillOperation(JoinPoint jp, Operation op) {
+    private static Operation fillOperation(JoinPoint jp, Operation op) {
         MessagingGatewaySupport gateway = (MessagingGatewaySupport)jp.getTarget();
         
         String beanType = gateway.getClass().getSimpleName();
@@ -152,7 +151,7 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
             }
         }
         
-        op.label(label)
+        return op.label(label)
           .put(SpringIntegrationDefinitions.SI_COMPONENT_TYPE_ATTR, SpringIntegrationDefinitions.GATEWAY)
           .put(SpringIntegrationDefinitions.SI_SPECIFIC_TYPE_ATTR, beanType)
           .put(SpringIntegrationDefinitions.BEAN_NAME_ATTR,  gateway.getComponentName());

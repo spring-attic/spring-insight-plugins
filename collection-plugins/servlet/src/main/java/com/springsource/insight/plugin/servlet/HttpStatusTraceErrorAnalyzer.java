@@ -15,54 +15,58 @@
  */
 package com.springsource.insight.plugin.servlet;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationType;
+import com.springsource.insight.intercept.trace.AbstractTraceErrorAnalyzer;
 import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceError;
-import com.springsource.insight.intercept.trace.TraceErrorAnalyzer;
+import com.springsource.insight.util.StringUtil;
 
-public class HttpStatusTraceErrorAnalyzer implements TraceErrorAnalyzer {
-    private static final List<TraceError> contextNotAvailable
-            = Collections.singletonList(new TraceError("Context not available"));
+public class HttpStatusTraceErrorAnalyzer extends AbstractTraceErrorAnalyzer {
+    private static final TraceError contextNotAvailableError=new TraceError("Context not available");
     private static final HttpStatusTraceErrorAnalyzer	INSTANCE=new HttpStatusTraceErrorAnalyzer();
+	public static final String	STATUS_CODE_ATTR="statusCode", REASON_PHRASE_ATTR="reasonPhrase";
 
     private HttpStatusTraceErrorAnalyzer () {
-    	super();
+    	super(OperationType.HTTP);
     }
 
     public static final HttpStatusTraceErrorAnalyzer getInstance() {
     	return INSTANCE;
     }
 
-    public List<TraceError> locateErrors(Trace trace) {
-        Frame httpFrame = trace.getFirstFrameOfType(OperationType.HTTP);
-        if (httpFrame == null) {
-            return Collections.emptyList();
-        }
+    @Override
+	public TraceError locateFrameError(Frame httpFrame) {
         Operation op = httpFrame.getOperation();
         OperationMap response = op.get("response", OperationMap.class);
 
-        Integer statusCode = (response == null) ? null : response.get("statusCode", Integer.class);
-        if ((statusCode != null) && httpStatusIsError(statusCode.intValue())) {
-            return Collections.singletonList(new TraceError("Status code = " + statusCode)); 
+        int statusCode =(response == null) ? (-1) : response.getInt(STATUS_CODE_ATTR, (-1));
+        if ((statusCode >= 0) && httpStatusIsError(statusCode)) {
+            return new TraceError(createErrorMessage(statusCode, response.get(REASON_PHRASE_ATTR, String.class))); 
         }
 
         OperationMap request = op.get("request", OperationMap.class);
         Boolean contextAvailable = (request == null) ? null : request.get(OperationFields.CONTEXT_AVAILABLE, Boolean.class);
         if ((contextAvailable != null) && (!contextAvailable.booleanValue())) {
-            return contextNotAvailable;
+            return contextNotAvailableError;
+        } else {
+        	return null;
         }
-        return Collections.emptyList();
     }
 
-    boolean httpStatusIsError(int status) {
-        return status >= 500 && status < 600;
-    }
-
+	// TODO make this a general utility
+	static String createErrorMessage (int statusCode, String reasonPhrase) {
+		if (StringUtil.isEmpty(reasonPhrase)) {
+			return String.valueOf("Status code = " + statusCode);
+		} else {
+			return String.valueOf(statusCode) + " " + reasonPhrase;
+		}
+	}
+	
+	// TODO make this a general utility
+	static boolean httpStatusIsError(int status) {
+	    return (status < 100) || (status >= 400);
+	}
 }

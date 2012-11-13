@@ -41,6 +41,7 @@ import com.springsource.insight.intercept.plugin.CollectionSettingsRegistry;
 import com.springsource.insight.intercept.plugin.CollectionSettingsUpdateListener;
 import com.springsource.insight.intercept.trace.ObscuredValueMarker;
 import com.springsource.insight.util.ListUtil;
+import com.springsource.insight.util.StringUtil;
 
 public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAspectSupport {
     private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
@@ -65,6 +66,8 @@ public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAs
             		}
             	}
         	});
+        registry.register(OBFUSCATED_HEADERS_SETTING, "");
+        registry.register(OBFUSCATED_PROPERTIES_SETTING, "");
     }
 
     static void updateObscuredSettings (CollectionSettingName name, Serializable value, Collection<String> nameSet) {
@@ -82,12 +85,15 @@ public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAs
     }
 
     static Set<String> toHeaderNameSet (String value) {
-        Set<String> result=new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-        String[]    names=value.split(",");
-        for (String headerName : names) {
-            String   trimmedValue=headerName.trim(); // in case extra whitespace
-            if (trimmedValue.length() > 0) {
-                result.add(trimmedValue);
+    	if (StringUtil.isEmpty(value)) {
+    		return Collections.emptySet();
+    	}
+
+        Set<String> 		result=new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+        Collection<String>	nameList=StringUtil.explode(value, ",", true, true);
+        for (String headerName : nameList) {
+            if (!result.add(headerName)) {
+            	continue;
             }
         }
         return result;
@@ -112,12 +118,11 @@ public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAs
     }
     
     Operation createOperation(JoinPoint jp) {
-        Operation op = new Operation();
-        op.type(optype.getOperationType());
-        op.label(optype.getLabel());
-        op.sourceCodeLocation(getSourceCodeLocation(jp));
-        
-        return op;
+        return new Operation()
+        			.type(optype.getOperationType())
+        			.label(optype.getLabel())
+        			.sourceCodeLocation(getSourceCodeLocation(jp))
+        			;
     }
 
     Operation applyDestinationData(Message message, Operation op) {

@@ -44,13 +44,24 @@ public class TcpConnectionOperationCollectionAspectTest extends OperationCollect
 		assertExternalResourceAnalysis(op);
 	}
 
+	@Test
+	public void testMissingPortExternalResourceAnalyzer()
+	{
+		assertExternalResourceAnalysis(new Operation()
+					.type(TcpConnectionExternalResourceAnalyzer.TYPE)
+					.label("testMissingPortExternalResourceAnalyzer")
+					.put(TcpConnectionOperationCollector.HOST_ADDRESS_ATTR, "37.77.34.7")
+					.put(OperationFields.URI, "tcp://localhost:7365")
+				);
+	}
+
 	private ExternalResourceDescriptor assertExternalResourceAnalysis (Operation op) {
         Frame						frame=createMockOperationWrapperFrame(op);
         ExternalResourceDescriptor	desc=analyzer.extractExternalResourceDescriptor(frame);
         assertNotNull("No resource", desc);
         assertSame("Mismatched frame", frame, desc.getFrame());
         assertEquals("Mismatched host", op.get(TcpConnectionOperationCollector.HOST_ADDRESS_ATTR, String.class), desc.getHost());
-        assertEquals("Mismatched port", op.get(TcpConnectionOperationCollector.PORT_ATTR, Number.class).intValue(), desc.getPort());
+        assertEquals("Mismatched port", op.getInt(TcpConnectionOperationCollector.PORT_ATTR, (-1)), desc.getPort());
         assertEquals("Mismatched type", ExternalResourceType.SERVER.name(), desc.getType());
         assertFalse("Not outgoing", desc.isIncoming());
         assertFalse("Unexpected parent", desc.isParent());

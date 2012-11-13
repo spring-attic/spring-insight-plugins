@@ -36,14 +36,15 @@ import com.springsource.insight.intercept.operation.OperationType;
  * there could be an unexpected version change within the instrumented library. In either
  * case insight should catch these without interfering with the application.
  */
-public aspect CashMoneyOperationCollectionAspect
-    extends AbstractOperationCollectionAspect
+public aspect CashMoneyOperationCollectionAspect extends AbstractOperationCollectionAspect
 {
-    
-    private static final OperationType TYPE = OperationType.valueOf("cash_money_operation");
-    
-    public pointcut collectionPoint()
-        : execution(void *.setBalance(int));
+    static final OperationType TYPE = OperationType.valueOf("cash_money_operation");
+
+    public CashMoneyOperationCollectionAspect () {
+    	super();
+    }
+
+    public pointcut collectionPoint() : execution(void *.setBalance(int));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
@@ -54,7 +55,7 @@ public aspect CashMoneyOperationCollectionAspect
          * Simulate a bug in the plugin. Bugs within plugins should be caught by insight. See the
          * insight logs to see these errors.
          */
-        if (newBalance == -999) {
+        if (newBalance.intValue() == -999) {
             System.out.println("Simulated Plugin Bug");
             throw new IllegalStateException("CashMoneyOperationCollectionAspect SIMULATED PLUGIN BUG");
         }
@@ -63,7 +64,8 @@ public aspect CashMoneyOperationCollectionAspect
             .type(TYPE)
             .sourceCodeLocation(getSourceCodeLocation(jp))
             .label("Cash Balance Set: " + newBalance)
-            .put("newBalance", newBalance);
+            .put("newBalance", newBalance.intValue())
+            ;
     }
 
     @Override

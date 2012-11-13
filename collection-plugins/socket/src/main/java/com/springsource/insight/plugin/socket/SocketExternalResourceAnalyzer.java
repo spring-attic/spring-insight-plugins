@@ -72,7 +72,7 @@ public class SocketExternalResourceAnalyzer extends AbstractExternalResourceAnal
         }
 
         String  addr=op.get(SocketDefinitions.ADDRESS_ATTR, String.class);
-        int     port=op.get(SocketDefinitions.PORT_ATTR, Number.class).intValue();
+        int     port=op.getInt(SocketDefinitions.PORT_ATTR, (-1));
         String  uri=op.get(OperationFields.URI,String.class);
         ExternalResourceType    type=(uri == null) ? ExternalResourceType.SERVER : ExternalResourceType.WEB_SERVER;
         String color = colorManager.getColor(op);

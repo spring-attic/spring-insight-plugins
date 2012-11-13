@@ -18,11 +18,11 @@ package com.springsource.insight.plugin.redis;
 
 import org.junit.Test;
 
-import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationList;
+import com.springsource.insight.util.StringFormatterUtils;
 
 /**
  * Test cases for {@link RedisClientAspect}
@@ -37,13 +37,13 @@ public class RedisClientAspectTest extends OperationCollectionAspectTestSupport 
         DummyJedisCommands client = new DummyJedisCommands(null);
         client.set("mykey", "myvalue");
         Operation op = getLastEntered();
-        assertNotNull(op);
-        assertEquals("set", op.get("methodName"));
-        assertEquals("Redis: mykey.set", op.getLabel());
-        assertEquals("mykey", op.get(OperationFields.ARGUMENTS, OperationList.class).get(0));
-        assertEquals(null, op.get("host"));
-        assertEquals("6379", op.get("port", Integer.class).toString());
-        assertEquals("0", op.get("dbName"));
+        assertNotNull("No operation extracted", op);
+        assertEquals("Mismatched method name", "set", op.get("methodName"));
+        assertEquals("Mismatched label", "Redis: mykey.set", op.getLabel());
+        assertEquals("Mismatched argument value", "mykey", op.get(OperationFields.ARGUMENTS, OperationList.class).get(0));
+        assertEquals("Mismatched host", StringFormatterUtils.NULL_VALUE_STRING, op.get("host"));
+        assertEquals("Mismatched port", 6379, op.getInt("port", (-1)));
+        assertEquals("Mismatched DB name", "0", op.get("dbName"));
     }
     
     @Test
@@ -51,13 +51,13 @@ public class RedisClientAspectTest extends OperationCollectionAspectTestSupport 
         DummyJedisCommands client = new DummyJedisCommands("localhost");
         client.set("mykey", "myvalue");
         Operation op = getLastEntered();
-        assertNotNull(op);
-        assertEquals("set", op.get("methodName"));
-        assertEquals("Redis: mykey.set", op.getLabel());
-        assertEquals("mykey", op.get("arguments", OperationList.class).get(0));
-        assertEquals("localhost", op.get("host"));
-        assertEquals("6379", op.get("port", Integer.class).toString());
-        assertEquals("0", op.get("dbName"));
+        assertNotNull("No operation extracted", op);
+        assertEquals("Mismatched method name", "set", op.get("methodName"));
+        assertEquals("Mismatched label", "Redis: mykey.set", op.getLabel());
+        assertEquals("Mismatched argument value", "mykey", op.get(OperationFields.ARGUMENTS, OperationList.class).get(0));
+        assertEquals("Mismatched host", "localhost", op.get("host"));
+        assertEquals("Mismatched port", 6379, op.getInt("port", (-1)));
+        assertEquals("Mismatched DB name", "0", op.get("dbName"));
     }
 
     @Test
@@ -65,13 +65,13 @@ public class RedisClientAspectTest extends OperationCollectionAspectTestSupport 
         DummyJedisCommands client = new DummyJedisCommands(null);
         client.ping();
         Operation op = getLastEntered();
-        assertNotNull(op);
-        assertEquals("ping", op.get("methodName"));
-        assertEquals("Redis: ping", op.getLabel());
+        assertNotNull("No operation extracted", op);
+        assertEquals("Mismatched method name", "ping", op.get("methodName"));
+        assertEquals("Mismatched label", "Redis: ping", op.getLabel());
     }
 
     @Override
-    public OperationCollectionAspectSupport getAspect() {
+    public RedisClientAspect getAspect() {
         return RedisClientAspect.aspectOf();
     }
 }

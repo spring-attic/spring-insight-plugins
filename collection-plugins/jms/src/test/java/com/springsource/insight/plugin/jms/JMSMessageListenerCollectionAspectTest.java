@@ -26,6 +26,7 @@ import javax.jms.MessageListener;
 import javax.jms.Queue;
 import javax.jms.TextMessage;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
@@ -34,6 +35,13 @@ import com.springsource.insight.intercept.operation.Operation;
 public class JMSMessageListenerCollectionAspectTest extends AbstractJMSCollectionAspectTestSupport {
 	public JMSMessageListenerCollectionAspectTest () {
 		super();
+	}
+
+	@Before
+	@Override
+	public void setUp() {
+		super.setUp();
+		AbstractJMSCollectionAspect.OBFUSCATED_PROPERTIES.clear();
 	}
 
     @Test
@@ -66,11 +74,13 @@ public class JMSMessageListenerCollectionAspectTest extends AbstractJMSCollectio
         
         MockMessageListener listener = new MockMessageListener();
         listener.onMessage(_mockMessage);
-        
+        Message	lastMessage = listener.getLastMessage();
+        assertSame("Mismatched invoked listener messages", _mockMessage, lastMessage);
+
         Operation op = getLastEntered();
-        
-        assertEquals(JMSPluginOperationType.LISTENER_RECEIVE.getOperationType(), op.getType());
-        assertEquals(JMSPluginOperationType.LISTENER_RECEIVE.getLabel(), op.getLabel());
+        assertNotNull("No operation collected", op);
+        assertEquals("Mismatched operation type", JMSPluginOperationType.LISTENER_RECEIVE.getOperationType(), op.getType());
+        assertEquals("Mismatched operation label", JMSPluginOperationType.LISTENER_RECEIVE.getLabel(), op.getLabel());
         
         JMSPluginUtilsTest.assertHeaders(_mockMessage, op);
         JMSPluginUtilsTest.assertAttributes(msgAttributesMap, op);
@@ -79,12 +89,18 @@ public class JMSMessageListenerCollectionAspectTest extends AbstractJMSCollectio
     }
 
     private static class MockMessageListener implements MessageListener {
+    	private Message	lastMessage;
+
         public MockMessageListener () {
             super();
         }
 
+        Message getLastMessage () {
+        	return lastMessage;
+        }
+
         public void onMessage(Message msg) {
-            // do nothing
+            lastMessage = msg;
         }
     }
 

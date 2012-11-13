@@ -98,13 +98,13 @@ public abstract class SocketOperationCollectionAspectTestSupport
         assertEquals("Mismatched operation type", SocketDefinitions.TYPE, op.getType());
         assertEquals("Mismatched action", action, op.get(SocketDefinitions.ACTION_ATTR, String.class));
         assertEquals("Mismatched address", addr, op.get(SocketDefinitions.ADDRESS_ATTR, String.class));
-        assertEquals("Mismatched port", Integer.valueOf(port), op.get(SocketDefinitions.PORT_ATTR, Integer.class));
+        assertEquals("Mismatched port", port, op.getInt(SocketDefinitions.PORT_ATTR, (-1)));
         return op;
     }
 
     protected Operation runExternalResourceAnalyzer (Operation op, ExternalResourceType expType, String expAddress, int expPort) {
         Frame       frame=new SimpleFrame(FrameId.valueOf("1"), null, op,
-                                          TimeRange.milliTimeRange(0, 1),
+                                          TimeRange.milliTimeRange(0, 1L),
                                           Collections.<Frame>emptyList());
         Trace       trace=new Trace(ServerName.valueOf("fake-server"),
                                     ApplicationName.valueOf("fake-app"),

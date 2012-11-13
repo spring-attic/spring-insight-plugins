@@ -37,8 +37,8 @@ public aspect JMSMessageListenerCollectionAspect extends AbstractJMSCollectionAs
 
 	@SuppressAjWarnings({"adviceDidNotMatch"})
     before(final Message message) : messageListener(message) {
-        JoinPoint jp = thisJoinPoint;
         if (message != null) {
+            JoinPoint jp = thisJoinPoint;
             Operation op = createOperation(jp);
             try {
                 applyDestinationData(message, op);
@@ -46,8 +46,6 @@ public aspect JMSMessageListenerCollectionAspect extends AbstractJMSCollectionAs
             } catch (Throwable t) {
                 markException("beforeListen", t);
             }
-
-            getCollector().enter(op);
 
             //Set the color for this frame
             extractColor(new ExtractColorParams() {				
@@ -59,16 +57,22 @@ public aspect JMSMessageListenerCollectionAspect extends AbstractJMSCollectionAs
                     }
                 }
             });
+
+            getCollector().enter(op);
         }
     }
     
 	@SuppressAjWarnings({"adviceDidNotMatch"})
-    after(Message message) : messageListener(message) {
-        getCollector().exitNormal();
+    after(Message message) returning : messageListener(message) {
+    	if (message != null) {
+    		getCollector().exitNormal();
+    	}
     }
 
 	@SuppressAjWarnings({"adviceDidNotMatch"})
     after(Message message) throwing(Throwable exception) : messageListener(message) {
-        getCollector().exitAbnormal(exception);
+    	if (message != null) {
+    		getCollector().exitAbnormal(exception);
+    	}
     }
 }

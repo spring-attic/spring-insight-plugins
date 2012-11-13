@@ -16,7 +16,6 @@
 
 package com.springsource.insight.plugin.springweb.controller;
 
-import java.util.Date;
 import java.util.Map;
 
 import org.springframework.ui.Model;
@@ -145,7 +144,7 @@ public class ControllerOperationCollector extends DefaultOperationCollector {
 	}
 
 	static final Object resolveCollectedValue (Object value) {
-		if (StringFormatterUtils.isPrimitiveWrapper(value) || (value instanceof Date)) {
+		if (StringFormatterUtils.isPrimitiveWrapper(value)) {
 			return value;
 		} else {
 			return StringUtil.chopTailAndEllipsify(String.valueOf(value), StringFormatterUtils.MAX_PARAM_LENGTH);

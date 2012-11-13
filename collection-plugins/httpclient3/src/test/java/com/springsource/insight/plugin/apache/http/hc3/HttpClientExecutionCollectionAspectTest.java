@@ -323,10 +323,8 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
     }
     
     private void assertResponseDetails (String uri, OperationMap details, HttpMethod method, int statusCode, boolean checkHeaders) {
-        assertEquals("Mismatched status code",
-                            Integer.valueOf(statusCode),
-                            details.get("statusCode"));
-        assertEquals("Mismatched reason phrase", method.getStatusText(), details.get("reasonPhrase"));
+        assertEquals("Mismatched status code", statusCode, details.getInt("statusCode", (-1)));
+        assertEquals("Mismatched reason phrase", method.getStatusText(), details.get("reasonPhrase", String.class));
         if (checkHeaders) {
             assertHeadersContents(uri, "response", details, method, false);
         }

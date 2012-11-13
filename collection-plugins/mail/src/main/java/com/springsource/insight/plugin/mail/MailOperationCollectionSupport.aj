@@ -63,7 +63,7 @@ public abstract aspect MailOperationCollectionSupport extends MethodOperationCol
     	try {
 	        return op.putAnyNonEmpty(MailDefinitions.SEND_SUBJECT, getSafeSubject(msg))
 	        		 .putAnyNonEmpty("content-type", msg.getContentType())
-	        		 .putAnyNonEmpty(MailDefinitions.SEND_DATE, msg.getSentDate())
+	        		 .put(MailDefinitions.SEND_DATE, MailDefinitions.getSendDate(msg.getSentDate()))
 	        		 .put("size", msg.getSize())
 	        		 ;
     	} catch(MessagingException e) {

@@ -35,6 +35,7 @@ import com.springsource.insight.collection.test.OperationCollectionAspectTestSup
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
 import com.springsource.insight.intercept.operation.OperationMap;
+import com.springsource.insight.util.system.net.NetworkAddressUtil;
 
 /**
  * 
@@ -79,6 +80,7 @@ public class MessageSendOperationCollectionAspectTest extends OperationCollectio
 
 	private void testSendMessage (int port) {
 		JavaMailSenderImpl  sender=new JavaMailSenderImpl();
+		sender.setHost(NetworkAddressUtil.LOOPBACK_ADDRESS);
 		sender.setProtocol(JavaMailSenderImpl.DEFAULT_PROTOCOL);
 		sender.setPort(port);
 
@@ -100,10 +102,9 @@ public class MessageSendOperationCollectionAspectTest extends OperationCollectio
 		assertEquals("Mismatched protocol", sender.getProtocol(), op.get(MailDefinitions.SEND_PROTOCOL, String.class));
 		assertEquals("Mismatched host", sender.getHost(), op.get(MailDefinitions.SEND_HOST, String.class));
 		if (port == -1) {
-			assertEquals("Mismatched port", 25, op.get(MailDefinitions.SEND_PORT, Number.class).intValue());
-		}
-		else {
-			assertEquals("Mismatched port", sender.getPort(), op.get(MailDefinitions.SEND_PORT, Number.class).intValue());
+			assertEquals("Mismatched default port", 25, op.getInt(MailDefinitions.SEND_PORT, (-1)));
+		} else {
+			assertEquals("Mismatched send port", sender.getPort(), op.getInt(MailDefinitions.SEND_PORT, (-1)));
 		}
 
 		if (getAspect().collectExtraInformation()) {

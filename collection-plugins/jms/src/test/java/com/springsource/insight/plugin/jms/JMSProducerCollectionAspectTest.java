@@ -29,7 +29,6 @@ import javax.jms.TextMessage;
 
 import org.junit.Test;
 
-import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class JMSProducerCollectionAspectTest extends AbstractJMSCollectionAspectTestSupport {
@@ -48,7 +47,7 @@ public class JMSProducerCollectionAspectTest extends AbstractJMSCollectionAspect
     }
 
     @Override
-    public OperationCollectionAspectSupport getAspect() {
+    public JMSProducerCollectionAspect getAspect() {
         return JMSProducerCollectionAspect.aspectOf();
     }
 
@@ -67,9 +66,9 @@ public class JMSProducerCollectionAspectTest extends AbstractJMSCollectionAspect
         producer.send(_mockMessage);
         
         Operation op = getLastEntered();
-        
-        assertEquals(JMSPluginOperationType.SEND.getOperationType(), op.getType());
-        assertEquals(JMSPluginOperationType.SEND.getLabel(), op.getLabel());
+        assertNotNull("No operation extracted", op);
+        assertEquals("Mismatched operation type", JMSPluginOperationType.SEND.getOperationType(), op.getType());
+        assertEquals("Mismatched label", JMSPluginOperationType.SEND.getLabel(), op.getLabel());
         
         JMSPluginUtilsTest.assertHeaders(_mockMessage, op);
         JMSPluginUtilsTest.assertAttributes(msgAttributesMap, op);

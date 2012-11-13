@@ -120,9 +120,8 @@ public class TransactionOperationCollectionAspectTest
         assertEquals(testName + ": Mismatched operation type", TransactionOperationCollectionAspect.TYPE, op.getType());
         assertEquals(testName + ": Mismatched name", txDefinition.getName(), op.get("name", String.class));
         assertEquals(testName + ": Mismatched read only value",
-                            Boolean.valueOf(txDefinition.isReadOnly()), op.get("readOnly", Boolean.class));
-        assertEquals(testName + ": Mismatched timeout value",
-                            Integer.valueOf(txDefinition.getTimeout()), op.get("timeout", Integer.class));
+                     Boolean.valueOf(txDefinition.isReadOnly()), op.get("readOnly", Boolean.class));
+        assertEquals(testName + ": Mismatched timeout value", txDefinition.getTimeout(), op.getInt("timeout", (-1)));
 
         Operation   dummyOp=new Operation()
                         .put("propagation", txDefinition.getPropagationBehavior())

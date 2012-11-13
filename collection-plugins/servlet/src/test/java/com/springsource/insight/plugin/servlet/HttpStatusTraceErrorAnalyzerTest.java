@@ -86,18 +86,4 @@ public class HttpStatusTraceErrorAnalyzerTest extends AbstractCollectionTestSupp
         Frame httpFrame = builder.exit();
         return Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), httpFrame);
     }
-
-    @Test
-    public void httpStatusIsError() throws Exception {
-        for (int status=0; status<800; status++) {
-            boolean error = analyzer.httpStatusIsError(status);
-            
-            if (status >= 500 && status < 600) {
-                assertTrue(error);
-            } else {
-                assertFalse(error);
-            }
-        }
-    }
-    
 }

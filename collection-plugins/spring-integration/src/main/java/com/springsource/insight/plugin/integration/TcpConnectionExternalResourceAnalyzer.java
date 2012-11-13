@@ -76,7 +76,7 @@ public class TcpConnectionExternalResourceAnalyzer extends AbstractExternalResou
             return null;
         }
 
-        int     port=op.get(TcpConnectionOperationCollector.PORT_ATTR, Number.class).intValue();
+        int     port=op.getInt(TcpConnectionOperationCollector.PORT_ATTR, (-1));
         String	uri=op.get(OperationFields.URI, String.class);
         String	color=colorManager.getColor(op);
         return new ExternalResourceDescriptor(frame,

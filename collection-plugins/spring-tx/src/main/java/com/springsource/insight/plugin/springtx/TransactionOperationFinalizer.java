@@ -71,34 +71,30 @@ public class TransactionOperationFinalizer implements OperationFinalizer {
     }
     
     static String normalizeIsolation(Operation operation) {
-        Integer isolation = operation.get("isolation", Integer.class);
-        if (isolation == null) {
-            return null;
+        int 	isolation=operation.getInt("isolation", (-1));
+        if (isolation < 0) {
+        	return DEFAULT_ISOLATION_LEVEL;	// debug breakpoint
         }
 
-        String  level=isolationLevels.get(isolation);
-        if (level == null) {
+        String  level=isolationLevels.get(Integer.valueOf(isolation));
+        if (StringUtil.isEmpty(level)) {
             return DEFAULT_ISOLATION_LEVEL;
+        } else {
+        	return level;
         }
-        
-        return level;
     }
     
     static String normalizePropagation(Operation operation) {
-        Integer propagation = operation.get("propagation", Integer.class);
-        if (propagation == null) {
-            return null;
+        int propagation=operation.getInt("propagation", (-1));
+        if ((propagation >= 0) && (propagation < propagationNames.size())) {
+            return propagationNames.get(propagation);
+        } else {
+        	return null;
         }
-
-        if ((propagation.intValue() >= 0) && (propagation.intValue() < propagationNames.size())) {
-            return propagationNames.get(propagation.intValue());
-        }
-
-        return null;
     }
     
     static String buildLabel(Operation operation) {
-        StringBuilder label = new StringBuilder("Transaction");
+        StringBuilder label=new StringBuilder("Transaction");
         String        name=operation.get("name", String.class);
         if (name != null) {
             label.append(": ")
@@ -125,5 +121,4 @@ public class TransactionOperationFinalizer implements OperationFinalizer {
         String chopped = txName.substring(packageIdx + 1);
         return StringUtil.chopTailAndEllipsify(chopped, maxChars);
     }
-
 }

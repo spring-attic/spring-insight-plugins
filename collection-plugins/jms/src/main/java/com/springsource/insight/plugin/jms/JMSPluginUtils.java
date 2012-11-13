@@ -16,7 +16,6 @@
 package com.springsource.insight.plugin.jms;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.Enumeration;
 
 import javax.jms.DeliveryMode;
@@ -125,7 +124,7 @@ final class JMSPluginUtils {
     static OperationMap extractMessageHeaders(Operation op, Message message, ObscuredValueMarker marker, Collection<String> nameSet)
     		throws JMSException {
         OperationMap headersMap = op.createMap(MESSAGE_HEADERS);
-        
+
         addDestinationDetailsToMapIfNeeded(message.getJMSDestination(), headersMap, marker, nameSet, MESSAGE_DESTINATION);
         addDestinationDetailsToMapIfNeeded(message.getJMSReplyTo(), headersMap, marker, nameSet, REPLY_TO);
         updateAny(headersMap, CORRELATION_ID, message.getJMSCorrelationID(), marker, nameSet);
@@ -137,7 +136,7 @@ final class JMSPluginUtils {
 
         long timestamp = message.getJMSTimestamp();
         if (timestamp > 0L) {
-        	updateAny(headersMap, TIMESTAMP, new Date(timestamp), marker, nameSet);
+        	updateAny(headersMap, TIMESTAMP, Long.valueOf(timestamp), marker, nameSet);
         }
 
         updateAny(headersMap, JMS_TYPE, message.getJMSType(), marker, nameSet);

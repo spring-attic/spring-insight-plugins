@@ -146,21 +146,15 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 		private String methodName;
 		private String objectTypeName;
 
-
-		MessageHandlerProps(String objectTypeName){
-			this.objectTypeName = objectTypeName;
+		MessageHandlerProps(String typeName){
+			this(typeName, null);
 		}
 
-		MessageHandlerProps(String objectTypeName, String methodName){
-			this.methodName = methodName;
-			this.objectTypeName = objectTypeName;
+		MessageHandlerProps(String typeName, String invokedMethodName){
+			methodName = invokedMethodName;
+			objectTypeName = typeName;
 		}
 	}
-
-
-
-
-
 
 	public pointcut collectionPoint() : 
 		// filter out anonymous channels
@@ -203,6 +197,7 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 		return cachedOp;
 	}
 
+	@SuppressWarnings("synthetic-access")
 	@Override
 	protected Operation createOperation(JoinPoint jp) {
 		Object target = jp.getTarget();

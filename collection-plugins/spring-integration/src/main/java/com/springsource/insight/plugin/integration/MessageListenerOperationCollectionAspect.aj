@@ -44,6 +44,7 @@ public privileged aspect MessageListenerOperationCollectionAspect extends Traili
 	public pointcut collectionPoint() : 
 		execution (void MessageListener+.onMessage(Message));
 
+	@SuppressWarnings("synthetic-access")
 	@Override
 	protected Operation createOperation(JoinPoint jp) {		
 		MessageListener messageListener = (MessageListener) jp.getTarget();
@@ -122,11 +123,11 @@ public privileged aspect MessageListenerOperationCollectionAspect extends Traili
 		private String adapterBeanName;
 		private String adapterBeanType;
 
-		MessageListenerProps(String outputChannelName, String queueNames, String adapterBeanName, String adapterBeanType){
-			this.outputChannelName = outputChannelName;
-			this.queueNames = queueNames;
-			this.adapterBeanName = adapterBeanName;
-			this.adapterBeanType = adapterBeanType;			 
+		MessageListenerProps(String outChannelName, String queueNamesList, String assignedAdapterBeanName, String assignedAdapterBeanType){
+			outputChannelName = outChannelName;
+			queueNames = queueNamesList;
+			adapterBeanName = assignedAdapterBeanName;
+			adapterBeanType = assignedAdapterBeanType;			 
 		}
 	}
 	

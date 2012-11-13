@@ -411,10 +411,8 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
         }
 
         StatusLine statusLine = response.getStatusLine();
-        assertEquals("Mismatched status code",
-                            Integer.valueOf(statusLine.getStatusCode()),
-                            details.get("statusCode"));
-        assertEquals("Mismatched reason phrase", statusLine.getReasonPhrase(), details.get("reasonPhrase"));
+        assertEquals("Mismatched status code", statusLine.getStatusCode(), details.getInt("statusCode", (-1)));
+        assertEquals("Mismatched reason phrase", statusLine.getReasonPhrase(), details.get("reasonPhrase", String.class));
         if (checkHeaders) {
             assertHeadersContents(uri, "response", details, response);
         }

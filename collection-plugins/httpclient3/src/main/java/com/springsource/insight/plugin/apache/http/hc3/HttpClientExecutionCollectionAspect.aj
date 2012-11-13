@@ -181,10 +181,10 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
     }
 
     OperationMap fillInResponseDetails(OperationMap op, HttpMethod method, int statusCode, boolean collectExtra) {
-        op.put("statusCode", statusCode);
+        op.put(HttpStatusTraceErrorAnalyzer.STATUS_CODE_ATTR, statusCode);
 
         if (collectExtra) {
-            op.putAnyNonEmpty("reasonPhrase", method.getStatusText());
+            op.putAnyNonEmpty(HttpStatusTraceErrorAnalyzer.REASON_PHRASE_ATTR, method.getStatusText());
             fillInMethodHeaders(op.createList("headers"), method, false);
         }
 

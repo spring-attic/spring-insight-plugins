@@ -15,36 +15,28 @@
  */
 package com.springsource.insight.plugin.logging;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.trace.AbstractTraceErrorAnalyzer;
 import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceError;
-import com.springsource.insight.intercept.trace.TraceErrorAnalyzer;
 
 /**
  * 
  */
-public class LoggingTraceErrorAnalyzer implements TraceErrorAnalyzer {
+public class LoggingTraceErrorAnalyzer extends AbstractTraceErrorAnalyzer {
 	private static final LoggingTraceErrorAnalyzer	INSTANCE=new LoggingTraceErrorAnalyzer();
 
     private LoggingTraceErrorAnalyzer() {
-        super();
+        super(LoggingDefinitions.TYPE);
     }
 
     public static final LoggingTraceErrorAnalyzer getInstance() {
     	return INSTANCE;
     }
 
-    public List<TraceError> locateErrors(Trace trace) {
-        Frame   logFrame=trace.getFirstFrameOfType(LoggingDefinitions.TYPE);
-        if (logFrame == null) {
-            return Collections.emptyList();
-        }
-
-        Operation op = logFrame.getOperation();
-        return Collections.singletonList(new TraceError(op.getLabel()));
-    }
+    @Override
+	public TraceError locateFrameError(Frame frame) {
+        Operation op = frame.getOperation();
+		return new TraceError(op.getLabel());
+	}
 }

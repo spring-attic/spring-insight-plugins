@@ -141,7 +141,7 @@ public class RedisMapOperationCollectionAspectTest extends OperationCollectionAs
     }
 
     private Operation mapSizeAsserts(Operation op, String method, int size) {
-        assertEquals(String.format("Map.%s: size", method), new Integer(size), op.get(kw_size));
+        assertEquals(String.format("Map.%s: size", method), size, op.getInt(kw_size, (-1)));
         return op;
     }
 }

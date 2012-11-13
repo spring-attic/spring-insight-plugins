@@ -82,7 +82,7 @@ public class QuartzSchedulerOperationCollectionAspectTest extends OperationColle
     private static OperationMap assertTriggerDetails (OperationMap map, Trigger trigger) {
     	assertNotNull("No trigger details", map);
     	assertKeyValue(map, trigger.getKey());
-    	assertEquals("Mismatched priority value", Integer.valueOf(trigger.getPriority()), map.get("priority", Integer.class));
+    	assertEquals("Mismatched priority value", trigger.getPriority(), map.getInt("priority", (-1)));
     	assertOperationStringValue(map, "description", trigger.getDescription());
     	assertOperationStringValue(map, "calendarName", trigger.getCalendarName());
     	return map;

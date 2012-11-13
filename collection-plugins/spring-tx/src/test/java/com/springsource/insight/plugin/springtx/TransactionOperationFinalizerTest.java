@@ -124,10 +124,12 @@ public class TransactionOperationFinalizerTest extends AbstractCollectionTestSup
 
     @Test
     public void normalizeBadIsolationValues () {
-        assertNull("Unexpected result for null", TransactionOperationFinalizer.normalizeIsolation(new Operation()));
+        assertEquals("Unexpected result for null",
+        			 TransactionOperationFinalizer.DEFAULT_ISOLATION_LEVEL,
+        		     TransactionOperationFinalizer.normalizeIsolation(new Operation()));
         assertEquals("Unexpected negative value result",
                      TransactionOperationFinalizer.DEFAULT_ISOLATION_LEVEL,
-                     TransactionOperationFinalizer.normalizeIsolation(new Operation().put("isolation", (-1))));
+                     TransactionOperationFinalizer.normalizeIsolation(new Operation().put("isolation", (-3777347))));
 
         int maxValue=Integer.MIN_VALUE;
         for (Integer value : TransactionOperationFinalizer.isolationLevels.keySet()) {
@@ -137,8 +139,8 @@ public class TransactionOperationFinalizerTest extends AbstractCollectionTestSup
         }
 
         assertEquals("Unexpected beyond max. value result",
-                TransactionOperationFinalizer.DEFAULT_ISOLATION_LEVEL,
-                TransactionOperationFinalizer.normalizeIsolation(new Operation().put("isolation", maxValue + 1)));
+                	 TransactionOperationFinalizer.DEFAULT_ISOLATION_LEVEL,
+                	 TransactionOperationFinalizer.normalizeIsolation(new Operation().put("isolation", maxValue + 1)));
     }
 
     private static void finalize(Operation operation) {

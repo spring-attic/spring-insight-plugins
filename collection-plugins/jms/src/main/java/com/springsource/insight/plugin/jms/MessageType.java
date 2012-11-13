@@ -27,6 +27,7 @@ import javax.jms.TextMessage;
 
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
+import com.springsource.insight.util.StringFormatterUtils;
 
 /**
  * This enum values reflects all five types of JMS messages
@@ -55,14 +56,13 @@ enum MessageType {
             super.handleMessage(message, op);
             
             OperationMap contentMap = op.createMap(JMSPluginUtils.MESSAGE_CONTENT_MAP);
-            
             MapMessage mapMessage = (MapMessage) message;
             
-            for(Enumeration<String> entryNameEnum = mapMessage.getMapNames(); entryNameEnum.hasMoreElements();) {
+            for(Enumeration<String> entryNameEnum = mapMessage.getMapNames();
+            	(entryNameEnum != null) && entryNameEnum.hasMoreElements();) {
                 String entryName = entryNameEnum.nextElement();
                 Object entryValue = mapMessage.getObject(entryName);
-                
-                contentMap.putAny(entryName, entryValue);
+                contentMap.putAnyNonEmpty(entryName, entryValue);
             }
         }
 
@@ -99,7 +99,10 @@ enum MessageType {
         @Override
         public void handleMessage(Message message, Operation op) throws JMSException {
             super.handleMessage(message, op);
-            op.put(JMSPluginUtils.MESSAGE_CONTENT, ((TextMessage) message).getText());
+            
+            TextMessage		textMessage=(TextMessage) message;
+            String			content=textMessage.getText();
+            op.put(JMSPluginUtils.MESSAGE_CONTENT, StringFormatterUtils.formatObjectAndTrim(content));
         }
 
         @Override

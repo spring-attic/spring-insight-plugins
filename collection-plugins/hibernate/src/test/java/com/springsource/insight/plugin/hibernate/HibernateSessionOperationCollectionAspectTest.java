@@ -20,7 +20,6 @@ import org.junit.Test;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.operation.OperationType;
 
 public class HibernateSessionOperationCollectionAspectTest 
    		extends OperationCollectionAspectTestSupport {
@@ -71,16 +70,17 @@ public class HibernateSessionOperationCollectionAspectTest
     }
     
     @Override
-    public OperationCollectionAspectSupport getAspect() {
+    public HibernateSessionOperationCollectionAspect getAspect() {
         return HibernateSessionOperationCollectionAspect.aspectOf();
     }
 
 	private void standardAsserts(String method) {
         Operation op = getLastEntered();
-        assertEquals("Hibernate Session." + method, op.getLabel());
-        assertEquals(OperationType.valueOf("hibernate"), op.getType());
-        assertEquals(Integer.valueOf(DummySessionImpl.DUMMY_COLLECTION_COUNT), op.get("collectionCount"));
-        assertEquals(Integer.valueOf(DummySessionImpl.DUMMY_ENTITY_COUNT), op.get("entityCount"));
-        assertEquals(DummySessionImpl.DUMMY_FLUSH_MODE.toString(), op.get("flushMode"));
+        assertNotNull("No operation collected", op);
+        assertEquals("Mismatched operation type", HibernateSessionOperationCollectionAspect.TYPE, op.getType());
+        assertEquals("Mismatched label", "Hibernate Session." + method, op.getLabel());
+        assertEquals("Mismatched collection count", DummySessionImpl.DUMMY_COLLECTION_COUNT, op.getInt("collectionCount", (-1)));
+        assertEquals("Mismatched entity count", DummySessionImpl.DUMMY_ENTITY_COUNT, op.getInt("entityCount", (-1)));
+        assertEquals("Mismatched flush mode", DummySessionImpl.DUMMY_FLUSH_MODE.toString(), op.get("flushMode", String.class));
 	}
 }

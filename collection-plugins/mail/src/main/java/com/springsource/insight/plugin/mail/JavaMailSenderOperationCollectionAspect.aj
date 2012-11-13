@@ -113,7 +113,7 @@ public aspect JavaMailSenderOperationCollectionAspect extends MailOperationColle
 
 	protected OperationMap addMessageDetails(OperationMap op, SimpleMailMessage msg) {
 		return op.putAnyNonEmpty(MailDefinitions.SEND_SUBJECT, msg.getSubject())
-				 .put(MailDefinitions.SEND_DATE, msg.getSentDate())
+				 .put(MailDefinitions.SEND_DATE, MailDefinitions.getSendDate(msg.getSentDate()))
 				 ;
 	}
 

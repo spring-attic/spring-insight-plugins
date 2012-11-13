@@ -50,9 +50,7 @@ public abstract class AbstractMongoDBExternalResourceAnalyzer extends AbstractEx
 		for (Frame dbFrame : dbFrames) {
 			Operation op = dbFrame.getOperation();
 			String host = op.get("host", String.class);           
-			Integer portProperty = op.get("port", Integer.class);
-			int port = portProperty == null ? -1 : portProperty.intValue();
-			
+			int	port = op.getInt("port", (-1));
 			String dbName = op.get("dbName", String.class);
 			
 			String mongoHash = MD5NameGenerator.getName(dbName+host+port);

@@ -54,9 +54,8 @@ public class RedisExternalResourceAnalyzer extends AbstractExternalResourceAnaly
 		List<ExternalResourceDescriptor> dbDescriptors = new ArrayList<ExternalResourceDescriptor>(dbFrames.size());
 		for (Frame dbFrame : dbFrames) {
 			Operation op = dbFrame.getOperation();
-			String host = op.get("host", String.class);           
-			Integer portProperty = op.get("port", Integer.class);
-			int port = portProperty == null ? -1 : portProperty.intValue();
+			String host = op.get("host", String.class);
+			int port = op.getInt("port", (-1));
 			String color = colorManager.getColor(op);
 			String dbName = op.get("dbName", String.class);
 			

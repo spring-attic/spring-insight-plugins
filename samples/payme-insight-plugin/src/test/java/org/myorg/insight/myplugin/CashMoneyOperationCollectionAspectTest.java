@@ -18,19 +18,21 @@ package org.myorg.insight.myplugin;
 
 import org.junit.Test;
 
-import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.SourceCodeLocation;
 
 /**
  * This test verifies that {@link MyOperation} is correctly captured by
  * the aspect, {@link MyOperationAspectCollectionAspect}.
  */
-public class CashMoneyOperationCollectionAspectTest
-    extends OperationCollectionAspectTestSupport
-{
+public class CashMoneyOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
+	public CashMoneyOperationCollectionAspectTest () {
+		super();
+	}
+
     @Test
-    public void myOperationCollected() {
+    public void testMyOperationCollected() {
         /**
          * First step:  Execute whatever method is matched by our pointcut in
          * {@link CashMoneyOperationCollectionAspect}
@@ -45,24 +47,27 @@ public class CashMoneyOperationCollectionAspectTest
          * Second step:  Snatch the operation that was just created   
          */
         Operation op = getLastEntered();
-        
+        assertNotNull("No operation collected", op);
         /**
          * Third step:  Validate that our operation has been created as we expect
          */
-        assertEquals(42, op.get("newBalance"));
-        assertEquals("Cash Balance Set: 42", op.getLabel());
-        assertEquals(DummyAccount.class.getName(), op.getSourceCodeLocation().getClassName());
-        assertEquals("setBalance", op.getSourceCodeLocation().getMethodName());
+        assertEquals("Mismatched operation type", CashMoneyOperationCollectionAspect.TYPE, op.getType());
+        assertEquals("Mismatched balance value", 42, op.getInt("newBalance", (-1)));
+        assertEquals("Mismatched label", "Cash Balance Set: 42", op.getLabel());
+        
+        SourceCodeLocation	scl=op.getSourceCodeLocation();
+        assertEquals("Mismatched source code class", DummyAccount.class.getName(), scl.getClassName());
+        assertEquals("Mismatched source code method", "setBalance", scl.getMethodName());
     }
 
-    private static class DummyAccount {
+    static class DummyAccount {
         public void setBalance(int balance) {
             // ... real implementations will actually do something here.
         }
     }
 
     @Override
-    public OperationCollectionAspectSupport getAspect() {
+    public CashMoneyOperationCollectionAspect getAspect() {
         return CashMoneyOperationCollectionAspect.aspectOf();
     }
 }

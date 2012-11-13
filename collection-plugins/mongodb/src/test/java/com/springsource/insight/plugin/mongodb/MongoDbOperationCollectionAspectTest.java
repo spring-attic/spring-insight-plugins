@@ -24,10 +24,10 @@ import org.junit.Test;
 import com.mongodb.DB;
 import com.mongodb.Mongo;
 import com.mongodb.ServerAddress;
-import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
+import com.springsource.insight.util.StringUtil;
 
 /**
  */
@@ -40,43 +40,53 @@ public class MongoDbOperationCollectionAspectTest
     // execution(CommandResult DB.command(..));
     @SuppressWarnings("boxing")
 	@Test
-    public void dbCommand() throws Exception {
+    public void testDbCommandWithHost() throws Exception {
+    	final String	HOST="7.3.6.5";
+    	final int		PORT=27017;
         Mongo mongo = mock(Mongo.class);
         ServerAddress address = mock(ServerAddress.class);
-        when(address.getHost()).thenReturn("local");
-        when(address.getPort()).thenReturn(27017);
+        when(address.getHost()).thenReturn(HOST);
+        when(address.getPort()).thenReturn(PORT);
         when(mongo.getAddress()).thenReturn(address);
-        DB db = new DBDummy(mongo, "my thing");
-        db.command("Hello there");
-        Operation op = getLastEntered();
-        assertNotNull(op);
-        assertEquals("MongoDB: DB.command()", op.getLabel());
-        assertEquals(MongoDBOperationExternalResourceAnalyzer.TYPE, op.getType());
-        assertEquals("Hello there", ((OperationList)op.get("args")).get(0));
 
-        assertEquals("local", op.get("host", String.class));
-        assertEquals("my thing",  op.get("dbName", String.class));
-        assertEquals("27017", op.get("port", Integer.class).toString());
+        Operation	op=assertCommandOperation(new DBDummy(mongo, "testDbCommandWithHost"));
+        assertEquals("Mismatched host", HOST, op.get("host", String.class));
+        assertEquals("Mismatched port", 27017, op.getInt("port", (-1)));
     }
     
     @Test
-    public void dbCommandNoHost() throws Exception {
+    public void testDbCommandNoHost() throws Exception {
         Mongo mongo = mock(Mongo.class);
-        DB db = new DBDummy(mongo, "my thing");
-        db.command("Hello there");
-        Operation op = getLastEntered();
-        assertNotNull(op);
-        assertEquals("MongoDB: DB.command()", op.getLabel());
-        assertEquals(MongoDBOperationExternalResourceAnalyzer.TYPE, op.getType());
-        assertEquals("Hello there", ((OperationList)op.get("args")).get(0));
+        Operation	op=assertCommandOperation(new DBDummy(mongo, "testDbCommandNoHost"));
 
-        assertEquals("my thing",  op.get("dbName", String.class));
-        assertNull(op.get("host", String.class));
-        assertNull(op.get("port", Integer.class));
+        for (String key : new String[] { "host", "port" }) {
+        	assertNullValue("Unexpected value for " + key, op.get(key));
+        }
+    }
+
+    private Operation assertCommandOperation (DB db) {
+    	final String argVal=db.getName() + "-arg";
+    	db.command(argVal);
+
+        Operation op = getLastEntered();
+        assertNotNull("No operation extracted", op);
+        assertEquals("Mismatched operation type", MongoDBOperationExternalResourceAnalyzer.TYPE, op.getType());
+        assertEquals("Mismatched operation label", "MongoDB: DB.command()", op.getLabel());
+        assertEquals("Mismatched DB name", db.getName(), op.get("dbName", String.class));
+
+        if (!StringUtil.isEmpty(argVal)) {
+        	OperationList	argsList=op.get("args", OperationList.class);
+        	assertNotNull("Missing arguments list");
+        	
+        	String	actVal=argsList.get(0, String.class);
+        	assertEquals("Mismatched operation arguments", argVal, actVal);
+        }
+
+        return op;
     }
 
     @Override
-    public OperationCollectionAspectSupport getAspect() {
+    public MongoDbOperationCollectionAspect getAspect() {
         return MongoDbOperationCollectionAspect.aspectOf();
     }
 }

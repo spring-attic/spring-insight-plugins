@@ -16,6 +16,7 @@
 package com.springsource.insight.plugin.mail;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -54,4 +55,8 @@ public final class MailDefinitions {
 					}
 				}
 		);
+	
+	public static final long getSendDate (Date date) {
+		return (date == null) ? (-1L) : date.getTime();
+	}
 }

@@ -16,77 +16,64 @@
 
 package com.springsource.insight.plugin.springweb.http;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
+import com.springsource.insight.intercept.trace.AbstractTraceErrorAnalyzer;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceError;
-import com.springsource.insight.intercept.trace.TraceErrorAnalyzer;
-import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.StringUtil;
 
 /**
  * 
  */
-public class ClientHttpRequestTraceErrorAnalyzer implements TraceErrorAnalyzer {
+public class ClientHttpRequestTraceErrorAnalyzer extends AbstractTraceErrorAnalyzer {
 	public static final String	STATUS_CODE_ATTR="statusCode", REASON_PHRASE_ATTR="reasonPhrase";
 	private static final ClientHttpRequestTraceErrorAnalyzer	INSTANCE=new ClientHttpRequestTraceErrorAnalyzer();
 
 	private ClientHttpRequestTraceErrorAnalyzer() {
-		super();
+		super(ClientHttpRequestOperationCollector.TYPE);
 	}
 
 	public static final ClientHttpRequestTraceErrorAnalyzer getInstance() {
 		return INSTANCE;
 	}
 
-	public List<TraceError> locateErrors(Trace trace) {
-		Collection<Frame>	frames=trace.getAllFramesOfType(ClientHttpRequestOperationCollector.TYPE);
-		if (ListUtil.size(frames) <= 0) {
-			return Collections.emptyList();
-		}
-
-		List<TraceError>	errors=null;
-		for (Frame frame : frames) {
-			Operation		op=frame.getOperation();
-			OperationMap	rsp=op.get("response", OperationMap.class);
-			if (rsp == null) {
-				continue;
-			}
-
-			Number	statusCode=rsp.get(STATUS_CODE_ATTR, Number.class);
-			if ((statusCode == null) || (!httpStatusIsError(statusCode.intValue()))) {
-				continue;
-			}
-			
-			String	reasonPhrase=rsp.get(REASON_PHRASE_ATTR, String.class);
-			if (errors == null) {
-				errors = new ArrayList<TraceError>(frames.size());
-			}
-			
-			errors.add(new TraceError(createErrorMessage(statusCode.intValue(), reasonPhrase)));
-		}
-		
-		if (errors == null) {
-			return Collections.emptyList();
-		} else {
-			return errors;
-		}
+    @Override	// if ANY invocation was an error then declare a trace error
+	public Collection<Frame> locateFrames(Trace trace) {
+		return trace.getAllFramesOfType(ClientHttpRequestOperationCollector.TYPE);
 	}
 
+	@Override
+	public TraceError locateFrameError(Frame httpFrame) {
+        Operation op = (httpFrame == null) ? null : httpFrame.getOperation();
+        // NOTE: if an IOException occurred we will not have a response either
+        OperationMap response = (op == null) ? null : op.get("response", OperationMap.class);
+        if (response == null) {
+            return null;
+        }
+
+        int statusCode = response.getInt(STATUS_CODE_ATTR, (-1));
+        if ((statusCode < 0) /* no code */ || (!httpStatusIsError(statusCode))) {
+        	return null;
+        }
+
+        String	reasonPhrase = response.get(REASON_PHRASE_ATTR, String.class);
+        return new TraceError(createErrorMessage(statusCode, reasonPhrase)); 
+    }
+
+	// TODO make this a general utility
 	static String createErrorMessage (int statusCode, String reasonPhrase) {
 		if (StringUtil.isEmpty(reasonPhrase)) {
-			return String.valueOf(statusCode);
+			return String.valueOf("Status code = " + statusCode);
 		} else {
 			return String.valueOf(statusCode) + " " + reasonPhrase;
 		}
 	}
 
+	// TODO make this a general utility
     static boolean httpStatusIsError(int status) {
         return (status < 100) || (status >= 400);
     }

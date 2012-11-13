@@ -41,7 +41,7 @@ public abstract class AbstractRabbitMQCollectionAspectTestSupport
     }
 
     protected Operation assertBasicOperation(Operation op, BasicProperties props, byte[] body) {
-        assertEquals("Mismatched body length", Integer.valueOf(ArrayUtil.length(body)), op.get("bytes", Integer.class));
+        assertEquals("Mismatched body length", ArrayUtil.length(body), op.getInt("bytes", (-1)));
 
         for (String propName : new String[] { "connectionUrl", "serverVersion", "clientVersion"}) {
         	assertNullValue(propName, op.get(propName));
@@ -53,7 +53,7 @@ public abstract class AbstractRabbitMQCollectionAspectTestSupport
         assertEquals("Mismatched application ID", props.getAppId(), propsMap.get("App Id"));
         assertEquals("Mismatched content encoding", props.getContentEncoding(), propsMap.get("Content Encoding"));
         assertEquals("Mismatched content type", props.getContentType(), propsMap.get("Content Type"));
-        assertEquals("Mismatched delivery mode", props.getDeliveryMode(), propsMap.get("Delivery Mode"));
+        assertEquals("Mismatched delivery mode", props.getDeliveryMode().intValue(), propsMap.getInt("Delivery Mode", (-1)));
         assertEquals("Mismatched expiration", props.getExpiration(), propsMap.get("Expiration"));
         return op;
     }
@@ -61,7 +61,6 @@ public abstract class AbstractRabbitMQCollectionAspectTestSupport
     protected Operation assertOperationCreated() {
         Operation op = getLastEntered();
         assertNotNull("No operation entered", op);
-        
         assertEquals("Mismatched operation type", pluginOpType.getOperationType(), op.getType());
         assertEquals("Mismatched label", pluginOpType.getLabel(), op.getLabel());
         return op;

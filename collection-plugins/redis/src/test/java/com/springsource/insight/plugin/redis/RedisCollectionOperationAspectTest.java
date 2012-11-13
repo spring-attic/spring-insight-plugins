@@ -113,7 +113,7 @@ public class RedisCollectionOperationAspectTest extends OperationCollectionAspec
     }
 
     private Operation collectionSizeAsserts(Operation op, String method, int size) {
-        assertEquals(String.format("RedisCollection.%s: size", method), new Integer(size), op.get(kw_size));
+        assertEquals(String.format("RedisCollection.%s: size", method), size, op.getInt(kw_size, (-1)));
         return op;
     }
 

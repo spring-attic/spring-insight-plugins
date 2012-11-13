@@ -72,12 +72,12 @@ public final class MongoArgumentUtils {
      * A little helper interface to convert an {@link Object} to a
      * {@link String}
      *
-     * @param <T>
+     * @param <T> Type of object being string-ified
      */
-    private interface StringForm<T extends Object> {
+    private interface StringForm<T> {
         /**
          * @param object guaranteed non-null
-         * @return
+         * @return The {@link String} representation of the object
          */
         String stringify(T object);
     }
@@ -193,15 +193,14 @@ public final class MongoArgumentUtils {
      * @param object
      * @return
      */
-    @SuppressWarnings("unchecked")
     public static String toString(final Object object, final int maxLength) {
         if (object == null) {
             return StringFormatterUtils.NULL_VALUE_STRING;
         }
 
         Class<? extends Object> cls = object.getClass();
-        StringForm<Object> stringForm = (StringForm<Object>) STRING_FORM_MAP
-                .get(cls);
+        @SuppressWarnings("unchecked")
+        StringForm<Object> stringForm = (StringForm<Object>) STRING_FORM_MAP.get(cls);
 
         if (stringForm != null) {
             return StringUtil.chopTailAndEllipsify(stringForm.stringify(object), maxLength);

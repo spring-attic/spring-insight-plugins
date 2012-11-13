@@ -118,8 +118,7 @@ public abstract class AbstractRabbitMQResourceAnalyzer
 		for (Frame queueFrame : queueFrames) {
 			Operation op = queueFrame.getOperation();
 			String host = op.get("host", String.class);            
-			Integer portProperty = op.get("port", Integer.class);
-			int port = portProperty == null ? -1 : portProperty.intValue();
+			int port = op.getInt("port", (-1));
 			String color = colorManager.getColor(op);			
 
 			String finalExchange = getFinalExchangeName(getExchange(op));

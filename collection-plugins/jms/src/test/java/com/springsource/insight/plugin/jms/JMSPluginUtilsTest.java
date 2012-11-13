@@ -61,6 +61,7 @@ import org.junit.Test;
 import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
+import com.springsource.insight.util.MathUtil;
 
 public class JMSPluginUtilsTest extends AbstractCollectionTestSupport {
 	public JMSPluginUtilsTest () {
@@ -114,7 +115,18 @@ public class JMSPluginUtilsTest extends AbstractCollectionTestSupport {
         assertNotNull("Missing " + MESSAGE_PROPERTIES + " map", opMap);
 
         for(String key : mockMap.keySet()) {
-            assertEquals("Mismatched value for key=" + key, mockMap.get(key), opMap.get(key));
+        	Object	mockValue=mockMap.get(key);
+        	if (mockValue instanceof Number) {
+        		Number	opValue=opMap.get(key, Number.class);
+        		assertNotNull("Missing number value for key=" + key, opValue);
+        		if (MathUtil.isIntegralNumber(opValue)) {
+            		assertEquals("Mismatched integral value for key=" + key, ((Number) mockValue).longValue(), opValue.longValue());
+        		} else {
+        			assertEquals("Mismatched integral value for key=" + key, ((Number) mockValue).doubleValue(), opValue.doubleValue(), 0.0001d);
+        		}
+        	} else {
+        		assertEquals("Mismatched value for key=" + key, mockValue, opMap.get(key));
+        	}
         }
         
         return opMap;
@@ -172,14 +184,14 @@ public class JMSPluginUtilsTest extends AbstractCollectionTestSupport {
 
     static OperationMap assertHeaders(Message message, Operation op) throws JMSException {
     	OperationMap opMap = op.get(MESSAGE_HEADERS, OperationMap.class);
-        
         assertNotNull("Missing " + MESSAGE_HEADERS + " map", opMap);
-        assertEquals(CORRELATION_ID, message.getJMSCorrelationID(), opMap.get(CORRELATION_ID));
-        assertEquals(DELIVERY_MODE, getDeliveryMode(message.getJMSDeliveryMode()).getLabel(), opMap.get(DELIVERY_MODE));
-        assertEquals(EXPIRATION, Long.valueOf(message.getJMSExpiration()), opMap.get(EXPIRATION));
-        assertEquals(MESSAGE_ID, message.getJMSMessageID(), opMap.get(MESSAGE_ID));
-        assertEquals(PRIORITY, Integer.valueOf(message.getJMSPriority()), opMap.get(PRIORITY));
-        assertEquals(REDELIVERED, Boolean.valueOf(message.getJMSRedelivered()), opMap.get(REDELIVERED));
+
+        assertEquals(CORRELATION_ID, message.getJMSCorrelationID(), opMap.get(CORRELATION_ID, String.class));
+        assertEquals(DELIVERY_MODE, getDeliveryMode(message.getJMSDeliveryMode()).getLabel(), opMap.get(DELIVERY_MODE, String.class));
+        assertEquals(EXPIRATION, message.getJMSExpiration(), opMap.getLong(EXPIRATION, (-1L)));
+        assertEquals(MESSAGE_ID, message.getJMSMessageID(), opMap.get(MESSAGE_ID, String.class));
+        assertEquals(PRIORITY, message.getJMSPriority(), opMap.getInt(PRIORITY, (-1)));
+        assertEquals(REDELIVERED, Boolean.valueOf(message.getJMSRedelivered()), opMap.get(REDELIVERED, Boolean.class));
         
         return opMap;
     }
@@ -188,7 +200,7 @@ public class JMSPluginUtilsTest extends AbstractCollectionTestSupport {
     static void mockHeaders(Message message) throws JMSException {
         when(message.getJMSCorrelationID()).thenReturn("1");
         when(message.getJMSDeliveryMode()).thenReturn(DeliveryMode.PERSISTENT);
-        when(message.getJMSExpiration()).thenReturn(0l);
+        when(message.getJMSExpiration()).thenReturn(0L);
         when(message.getJMSMessageID()).thenReturn("2");
         when(message.getJMSPriority()).thenReturn(3);
         when(message.getJMSRedelivered()).thenReturn(true);

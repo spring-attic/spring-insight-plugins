@@ -22,6 +22,7 @@ import javax.jms.MessageConsumer;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 
+import com.springsource.insight.collection.OperationCollector;
 import com.springsource.insight.intercept.color.ColorManager.ExtractColorParams;
 import com.springsource.insight.intercept.operation.Operation;
 
@@ -48,9 +49,6 @@ public aspect JMSConsumerCollectionAspect extends AbstractJMSCollectionAspect {
              } catch (Throwable t) {
             	 markException("afterReturning", t);
              }
-            //we enter and exit cause we want to ignore null messages
-            //for now there is no way to discard a frame once it was entered
-            getCollector().enter(op);
 
             //Set the color for this frame
             extractColor(new ExtractColorParams() {				
@@ -62,21 +60,29 @@ public aspect JMSConsumerCollectionAspect extends AbstractJMSCollectionAspect {
         		    }
                 }
             });
-
-            getCollector().exitNormal(message);
+            
+            OperationCollector	collector=getCollector();
+            //we enter and exit cause we want to ignore null messages
+            //for now there is no way to discard a frame once it was entered
+            collector.enter(op);
+            collector.exitNormal(message);
         }
     }
 
 	@SuppressAjWarnings({"adviceDidNotMatch"})
     after() throwing(Throwable exception) : consumer() {
-        getCollector().exitAbnormal(exception);
+        Operation op = createOperation(thisJoinPoint);
+        OperationCollector	collector=getCollector();
+        collector.enter(op);
+        // we enter and exit since there is no "before" clause
+        collector.exitAbnormal(exception);
     }
     
     private Operation applyAdditionalData(Operation op, JoinPoint jp) {
         try {
             MessageConsumer consumer =  (MessageConsumer) jp.getThis();
             String selector = consumer.getMessageSelector();
-            op.put("selector", selector);
+            op.putAnyNonEmpty("selector", selector);
         } catch (JMSException e) {
        	 	markException("applyAdditionalData", e);
         }
