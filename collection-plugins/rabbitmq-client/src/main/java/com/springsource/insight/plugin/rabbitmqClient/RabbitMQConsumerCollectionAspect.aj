@@ -36,6 +36,9 @@ import com.springsource.insight.intercept.operation.OperationMap;
 
 public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectionAspect {
 
+	public static final String LABEL_PREFIX = "Consumed from queue(s) - ";
+	private static final String CONSUMED_QUEUES = "consumedQueues";
+	
     public RabbitMQConsumerCollectionAspect () {
         super(RabbitPluginOperationType.CONSUME);
     }
@@ -86,8 +89,8 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
     before(String queue, boolean ack)
             : basicGet(queue, ack) {
         Channel channel = (Channel) thisJoinPoint.getThis();
-        Operation op = createOperation();
-        op.put("consumedQueues",  queue);
+        Operation op = createOperation();        
+        op.put(CONSUMED_QUEUES,  queue);        
         opHolder.put(channel,op);
         getCollector().enter(op);
     }
@@ -99,6 +102,7 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
         Channel channel = (Channel) thisJoinPoint.getThis();
         Connection conn = channel.getConnection();
         Operation op = opHolder.remove(channel);
+        
         if (conn != null) {
             applyConnectionData(op, conn);
         }
@@ -114,6 +118,7 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
         }
         getCollector().exitNormal(resp);
     }
+	
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after(String queue, boolean ack) throwing(Throwable t)
@@ -140,7 +145,7 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
         if (conn != null) {
             applyConnectionData(op, conn);
             if (consumer instanceof HasQueues) {
-            	op.putAnyNonEmpty("consumedQueues",  ((HasQueues)consumer).__getInsightQueues());
+            	op.putAnyNonEmpty(CONSUMED_QUEUES,  ((HasQueues)consumer).__getInsightQueues());
             }
         }
         if (props != null) {
@@ -189,12 +194,21 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
         }
 
         OperationMap map = op.createMap("envelope");
-        map.put("deliveryTag", envelope.getDeliveryTag())
-           .putAnyNonEmpty("exchange", envelope.getExchange())
-           .putAnyNonEmpty("routingKey", envelope.getRoutingKey())
+        String exchangeString = envelope.getExchange();
+		String routingKeyString = envelope.getRoutingKey();
+		map.put("deliveryTag", envelope.getDeliveryTag())
+           .putAnyNonEmpty("exchange", exchangeString)
+           .putAnyNonEmpty("routingKey", routingKeyString)
            ;
+        
+        op.label(getConsumeOperationLabel(op, exchangeString, routingKeyString));
+        
         return op;
     }
+    
+    private String getConsumeOperationLabel(Operation op, String exchange, String routingKey) {
+		return AbstractRabbitMQResourceAnalyzer.RABBIT + "-" + LABEL_PREFIX +  op.get(CONSUMED_QUEUES) + " ("  + exchange + "#" + routingKey + ")";
+	}
 
     @Override
 	public boolean isEndpoint() {

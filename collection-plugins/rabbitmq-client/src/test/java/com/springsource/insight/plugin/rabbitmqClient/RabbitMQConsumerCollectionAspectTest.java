@@ -67,7 +67,7 @@ public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollec
         assertTrue(RabbitMQConsumerCollectionAspect.opHolder.isEmpty());
         consumer.handleDelivery(consumerTag, envelope, props, body);
         assertTrue(RabbitMQConsumerCollectionAspect.opHolder.isEmpty());
-        assertOperation(envelope, props, body);
+        assertOperation(envelope, props, body, AbstractRabbitMQResourceAnalyzer.RABBIT + "-" + RabbitMQConsumerCollectionAspect.LABEL_PREFIX + "null (exchange#routingKey)");
     }
     
     @Test
@@ -81,11 +81,11 @@ public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollec
         assertTrue(RabbitMQConsumerCollectionAspect.opHolder.isEmpty());
         channel.basicGet("rk", false);
         assertTrue(RabbitMQConsumerCollectionAspect.opHolder.isEmpty());
-        assertOperation(envelope, props, body);
+        assertOperation(envelope, props, body, AbstractRabbitMQResourceAnalyzer.RABBIT + "-" + RabbitMQConsumerCollectionAspect.LABEL_PREFIX + "rk (exchange#routingKey)");
     }
 
-    void assertOperation(Envelope envelope, BasicProperties props, byte[] body) {
-        Operation op = assertBasicOperation(props, body);
+    void assertOperation(Envelope envelope, BasicProperties props, byte[] body, String opLabel) {
+        Operation op = assertBasicOperation(props, body, opLabel);
         
         OperationMap envMap = op.get("envelope", OperationMap.class);
         assertNotNull("No envelope", envMap);

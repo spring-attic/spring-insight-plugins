@@ -65,7 +65,7 @@ public class RabbitMQPublishCollectionAspectTest extends AbstractRabbitMQCollect
         
         channel.basicPublish(exchange, routingKey, mandatory, immediate, props, body);
         
-        Operation op = assertBasicOperation(props, body);
+        Operation op = assertBasicOperation(props, body, AbstractRabbitMQResourceAnalyzer.RABBIT + "-" + "Published to " + exchange + "#" + routingKey);
         assertEquals("Mismatched exchange", exchange, op.get("exchange", String.class));
         assertEquals("Mismatched routing key", routingKey, op.get("routingKey", String.class));
         assertEquals("Mismatched mandatory value", Boolean.valueOf(mandatory), op.get("mandatory", Boolean.class));

@@ -40,11 +40,13 @@ public aspect RabbitMQPublishCollectionAspect extends AbstractRabbitMQCollection
         publish(exchange,routingKey,mandatory,immediate,props,body) {
         
         final Operation op = createOperation()
-						        .put("exchange", exchange)
-						        .put("routingKey", routingKey)
-						        .put("mandatory", mandatory)
-						        .put("immediate", immediate)
-						        ;        
+        		.label(AbstractRabbitMQResourceAnalyzer.RABBIT + "-" + "Published to " + exchange + "#" + routingKey)
+        		.put("exchange", exchange)
+				.put("routingKey", routingKey)
+				.put("mandatory", mandatory)
+				.put("immediate", immediate)
+				.put("showPublishData", "true")
+				;        
     
         Channel channel = (Channel) thisJoinPoint.getThis();
         Connection conn = channel.getConnection();

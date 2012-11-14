@@ -132,7 +132,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends AbstractColle
 		Operation op = createOperation();
 		KeyValPair<String,String> props = addOperationProps(op, false, true, Boolean.FALSE);		
 		assertEquals("Mismatched label", "Exchange#e", 
-				AbstractRabbitMQResourceAnalyzer.buildLabel(props.getKey(), props.getValue(), true));
+				AbstractRabbitMQResourceAnalyzer.buildLabel(props.getKey(), props.getValue()));
 	}
 	
 	@Test
@@ -140,7 +140,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends AbstractColle
 		Operation op = createOperation();
 		KeyValPair<String,String> props = addOperationProps(op, true, false, Boolean.FALSE);		
 		assertEquals("Mismatched label", "Exchange#" + AbstractRabbitMQResourceAnalyzer.NO_EXCHANGE + " RoutingKey#rk", 
-				AbstractRabbitMQResourceAnalyzer.buildLabel(props.getKey(), props.getValue(), true));
+				AbstractRabbitMQResourceAnalyzer.buildLabel(props.getKey(), props.getValue()));
 	}
 	
 	@Test
@@ -148,7 +148,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends AbstractColle
 		Operation op = createOperation();
 		KeyValPair<String,String> props = addOperationProps(op, true, true, Boolean.FALSE);		
 		assertEquals("Mismatched label", "Exchange#e RoutingKey#rk", 
-				AbstractRabbitMQResourceAnalyzer.buildLabel(props.getKey(), props.getValue(), true));
+				AbstractRabbitMQResourceAnalyzer.buildLabel(props.getKey(), props.getValue()));
 	}
 	
 	@Test
@@ -156,7 +156,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends AbstractColle
 		Operation op = createOperation();
 		KeyValPair<String,String> props = addOperationProps(op, true, true, Boolean.TRUE);		
 		assertEquals("Mismatched label", "Exchange#e RoutingKey#" + AbstractRabbitMQResourceAnalyzer.UNNAMED_TEMP_QUEUE_LABEL, 
-				AbstractRabbitMQResourceAnalyzer.buildLabel(props.getKey(), props.getValue(), true));
+				AbstractRabbitMQResourceAnalyzer.buildLabel(props.getKey(), props.getValue()));
 	}
 
 
@@ -168,7 +168,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends AbstractColle
 		EndPointAnalysis	analysis=analyzer.locateEndPoint(trace);
 		assertNotNull("No endpoint analysis located", analysis);
 
-		String label = AbstractRabbitMQResourceAnalyzer.buildLabel(props.getKey(), props.getValue(), true);
+		String label = AbstractRabbitMQResourceAnalyzer.buildLabel(props.getKey(), props.getValue());
 
 		assertEquals("Mismatched endpoint name", label, analysis.getEndPointName().getName());
 		assertEquals("Mismatched example", analyzer.buildExample(label), analysis.getExample());
@@ -187,27 +187,33 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends AbstractColle
 	void assertParentChildExternalResourceDescriptors(Trace trace, Operation op, KeyValPair<String,String> props,
 			ExternalResourceDescriptor descriptorParent, String host, int port, boolean isChildDummyResource) {
 
-		assertExternalResourceDescriptorContent(descriptorParent, props, op, false, host, port, trace, false);
+		assertExternalResourceDescriptorContent(descriptorParent, props, op, false, true, host, port, trace, false, false);
 
 		List<ExternalResourceDescriptor> 	children=descriptorParent.getChildren();
 		assertEquals("Mismatched number of children for " + descriptorParent, 1, ListUtil.size(children));
 
 		ExternalResourceDescriptor descriptorChild = children.get(0);
-		assertExternalResourceDescriptorContent(descriptorChild, props, op, true, host, port, trace, isChildDummyResource);
+		assertExternalResourceDescriptorContent(descriptorChild, props, op, true, false, host, port, trace, isChildDummyResource, true);
 		assertEquals("Mismatched parent name", descriptorParent.getName(), descriptorChild.getParentResourceName());
 	}
 
 	ExternalResourceDescriptor assertExternalResourceDescriptorContent (ExternalResourceDescriptor descriptor,
-			KeyValPair<String,String> props, Operation op, boolean useRoutingKey, 
-			String host, int port, Trace trace, boolean isDummyResource) {
+			KeyValPair<String,String> props, Operation op, boolean useRoutingKey, boolean useExchange,
+			String host, int port, Trace trace, boolean isDummyResource, boolean isChild) {
 		if (trace != null) {
 			assertEquals("Mismatched operation frame", op, descriptor.getFrame().getOperation());
 		}
 
 		String finalRoutingKey = isDummyResource ? AbstractRabbitMQResourceAnalyzer.NO_ROUTING_KEY : props.getValue();
-		String label = AbstractRabbitMQResourceAnalyzer.buildLabel(props.getKey(), finalRoutingKey, useRoutingKey);
+		String label = AbstractRabbitMQResourceAnalyzer.buildLabel(
+				useExchange ? props.getKey() : null, 
+				useRoutingKey ? finalRoutingKey : null);
+		
+		if (!isChild){
+			label = AbstractRabbitMQResourceAnalyzer.buildExternalResourceLabel(label);
+		}
 
-		assertEquals("Mismatched label", AbstractRabbitMQResourceAnalyzer.buildExternalResourceLabel(label), descriptor.getLabel());
+		assertEquals("Mismatched label", label, descriptor.getLabel());
 		assertEquals("Mismatched type", ExternalResourceType.QUEUE.name(), descriptor.getType());
 		assertEquals("Mismatched vendor", AbstractRabbitMQResourceAnalyzer.RABBIT, descriptor.getVendor());
 		assertEquals("Mismatched host", host, descriptor.getHost());

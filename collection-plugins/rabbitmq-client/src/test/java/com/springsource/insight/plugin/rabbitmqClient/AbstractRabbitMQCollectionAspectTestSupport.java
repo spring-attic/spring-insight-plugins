@@ -36,12 +36,13 @@ public abstract class AbstractRabbitMQCollectionAspectTestSupport
     	}
     }
 
-    protected Operation assertBasicOperation(BasicProperties props, byte[] body) {
-    	return assertBasicOperation(assertOperationCreated(), props, body);
+    protected Operation assertBasicOperation(BasicProperties props, byte[] body, String opLabel) {
+    	return assertBasicOperation(assertOperationCreated(), props, body, opLabel);
     }
 
-    protected Operation assertBasicOperation(Operation op, BasicProperties props, byte[] body) {
+    protected Operation assertBasicOperation(Operation op, BasicProperties props, byte[] body, String opLabel) {
         assertEquals("Mismatched body length", ArrayUtil.length(body), op.getInt("bytes", (-1)));
+        assertEquals("Mismatched label", opLabel, op.getLabel());
 
         for (String propName : new String[] { "connectionUrl", "serverVersion", "clientVersion"}) {
         	assertNullValue(propName, op.get(propName));
@@ -61,8 +62,7 @@ public abstract class AbstractRabbitMQCollectionAspectTestSupport
     protected Operation assertOperationCreated() {
         Operation op = getLastEntered();
         assertNotNull("No operation entered", op);
-        assertEquals("Mismatched operation type", pluginOpType.getOperationType(), op.getType());
-        assertEquals("Mismatched label", pluginOpType.getLabel(), op.getLabel());
+        assertEquals("Mismatched operation type", pluginOpType.getOperationType(), op.getType());       
         return op;
     }
 }

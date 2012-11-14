@@ -92,7 +92,7 @@ public abstract class AbstractRabbitMQResourceAnalyzer
 	@Override
 	protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
 		Operation op = frame.getOperation();
-		String label = buildLabel(getFinalExchangeName(getExchange(op)), getFinalRoutingKey(getRoutingKey(op)), true);
+		String label = buildLabel(getFinalExchangeName(getExchange(op)), getFinalRoutingKey(getRoutingKey(op)));
 		String endPointLabel = buildEndPointLabel(label);
 		String example = buildExample(label);
 		EndPointName endPointName = EndPointName.valueOf(label);
@@ -128,7 +128,7 @@ public abstract class AbstractRabbitMQResourceAnalyzer
 			ExternalResourceDescriptor externalResourceExchangeDescriptor =
 					new ExternalResourceDescriptor(queueFrame,
 							exchangeResourceName,
-							buildExternalResourceLabel(buildLabel(finalExchange, finalRoutingKey, false)),
+							buildExternalResourceLabel(buildLabel(finalExchange, null)),
 							ExternalResourceType.QUEUE.name(),
 							RABBIT,
 							host,
@@ -146,7 +146,7 @@ public abstract class AbstractRabbitMQResourceAnalyzer
 			ExternalResourceDescriptor externalResourceRoutingKeyDescriptor =
 					new ExternalResourceDescriptor(queueFrame,
 							buildExternalResourceName(finalExchange, childRoutingKey, true, host, port),
-							buildExternalResourceLabel(buildLabel(finalExchange, childRoutingKey, true)),
+							buildLabel(null, childRoutingKey),
 							ExternalResourceType.QUEUE.name(),
 							RABBIT,
 							host,
@@ -198,16 +198,24 @@ public abstract class AbstractRabbitMQResourceAnalyzer
 		return RABBIT + "-" + label;
 	}
 
-	public static String buildLabel (String finalExchange, String finalRoutingKey, boolean useRoutingKey) {
-		boolean hasRoutingKey=!isTrimEmpty(finalRoutingKey);
+	public static String buildLabel (String finalExchange, String finalRoutingKey) {
 
 		StringBuilder sb = new StringBuilder(StringUtil.getSafeLength(finalExchange)
 				+ StringUtil.getSafeLength(finalRoutingKey)
-				+ 24 /* extra text */);		
-		sb.append("Exchange#").append(finalExchange);
+				+ 24 /* extra text */);	
+		
+		
+		boolean hasExchange = !isTrimEmpty(finalExchange);
+		if (hasExchange) {		
+			sb.append("Exchange#").append(finalExchange);
+		}
 
-		if (hasRoutingKey && useRoutingKey) {				
-			sb.append(' ').append("RoutingKey#").append(finalRoutingKey);
+		boolean hasRoutingKey = !isTrimEmpty(finalRoutingKey);
+		if (hasRoutingKey) {
+			if (hasExchange) {	
+				sb.append(' ');
+			}
+			sb.append("RoutingKey#").append(finalRoutingKey);
 		}
 
 		return sb.toString();

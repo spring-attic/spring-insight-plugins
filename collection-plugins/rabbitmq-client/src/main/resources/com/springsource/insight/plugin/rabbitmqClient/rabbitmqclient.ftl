@@ -9,7 +9,7 @@
 	<@insight.entry name="Client Version" value=operation.clientVersion if=operation.clientVersion?? />
 </@insight.group>
 
-<#if operation.label == "Publish">
+<#if operation.showPublishData??>
 	<@insight.group label="Publish Data">
 	    <@insight.entry name="Exchange" value=operation.exchange if=operation.exchange?? />
 	    <@insight.entry name="Routing Key" value=operation.routingKey if=operation.routingKey?? />
@@ -18,7 +18,7 @@
 	    <@insight.entry name="Body Length" value=operation.bytes if=operation.bytes?? />
 	</@insight.group>
 <#else>
-	<#if operation.envelope?? && operation.envelope?has_content>
+<#if operation.envelope?? && operation.envelope?has_content>
 		<@insight.group label="Envelope">
 		    <@insight.entry name="Exchange" value=operation.envelope.exchange if=operation.envelope.exchange?? />
 		    <@insight.entry name="Routing Key" value=operation.envelope.routingKey if=operation.envelope.routingKey?? />
