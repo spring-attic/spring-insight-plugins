@@ -32,6 +32,9 @@ import groovy.lang.GroovyObject;
  * This aspect steals off the action parameters before the handler method would be invoked.
  */
 public aspect GrailsControllerInstanceAspect {
+	public GrailsControllerInstanceAspect() {
+		super();
+	}
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     before(GroovyObject controllerInstance) : GrailsControllerPointcuts.getControllerInstanceMethod(controllerInstance) {
