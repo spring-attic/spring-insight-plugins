@@ -60,56 +60,56 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 
 	@SuppressAjWarnings
 	after (Object object, MethodInvokingSplitter splitter) : 
-		execution(public MethodInvokingSplitter.new(Object)) && args(object) && target(splitter) { 
+		execution(public MethodInvokingSplitter+.new(Object)) && args(object) && target(splitter) { 
 
 		MessageHandlerProps messageHandlerProps = new MessageHandlerProps(object.getClass().getSimpleName());
-		messageHandlerPropsCache.put(getHandlerkey(splitter), messageHandlerProps);
+		messageHandlerPropsCache.put(SpringIntegrationDefinitions.getObjectKey(splitter), messageHandlerProps);
 	}
 
 	@SuppressAjWarnings
 	after (Object object, Method method, MethodInvokingSplitter splitter) : 
-		execution(public MethodInvokingSplitter.new(Object, Method)) && args(object, method) && target(splitter) {
+		execution(public MethodInvokingSplitter+.new(Object, Method)) && args(object, method) && target(splitter) {
 
 		MessageHandlerProps messageHandlerProps = new MessageHandlerProps(object.getClass().getSimpleName(), method.getName());
-		messageHandlerPropsCache.put(getHandlerkey(splitter), messageHandlerProps);
+		messageHandlerPropsCache.put(SpringIntegrationDefinitions.getObjectKey(splitter), messageHandlerProps);
 	}
 
 	@SuppressAjWarnings
 	after (Object object, String method, MethodInvokingSplitter splitter) : 
-		execution(public MethodInvokingSplitter.new(Object, String)) && args(object, method) && target(splitter) {
+		execution(public MethodInvokingSplitter+.new(Object, String)) && args(object, method) && target(splitter) {
 
 		MessageHandlerProps messageHandlerProps = new MessageHandlerProps(object.getClass().getSimpleName(), method);
-		messageHandlerPropsCache.put(getHandlerkey(splitter), messageHandlerProps);
+		messageHandlerPropsCache.put(SpringIntegrationDefinitions.getObjectKey(splitter), messageHandlerProps);
 	}
 
 	@SuppressAjWarnings
 	after (Object object, ServiceActivatingHandler handler) : 
-		execution(public ServiceActivatingHandler.new(Object)) && args(object) && target(handler)  { 
+		execution(public ServiceActivatingHandler+.new(Object)) && args(object) && target(handler)  { 
 
 		MessageHandlerProps serviceActivatingHandlerProps = new MessageHandlerProps(object.getClass().getSimpleName());
-		messageHandlerPropsCache.put(getHandlerkey(handler), serviceActivatingHandlerProps);
+		messageHandlerPropsCache.put(SpringIntegrationDefinitions.getObjectKey(handler), serviceActivatingHandlerProps);
 	}
 
 	@SuppressAjWarnings
 	after (Object object, Method method, ServiceActivatingHandler handler) : 
-		execution(public ServiceActivatingHandler.new(Object, Method)) && args(object, method) && target(handler) {
+		execution(public ServiceActivatingHandler+.new(Object, Method)) && args(object, method) && target(handler) {
 
 		MessageHandlerProps serviceActivatingHandlerProps = new MessageHandlerProps(object.getClass().getSimpleName(), method.getName());
-		messageHandlerPropsCache.put(getHandlerkey(handler), serviceActivatingHandlerProps);
+		messageHandlerPropsCache.put(SpringIntegrationDefinitions.getObjectKey(handler), serviceActivatingHandlerProps);
 	}
 
 	@SuppressAjWarnings
 	after (Object object, String method, ServiceActivatingHandler handler) : 
-		execution(public ServiceActivatingHandler.new(Object, String)) && args(object, method) && target(handler) {
+		execution(public ServiceActivatingHandler+.new(Object, String)) && args(object, method) && target(handler) {
 
 		MessageHandlerProps serviceActivatingHandlerProps = new MessageHandlerProps(object.getClass().getSimpleName(), method);
-		messageHandlerPropsCache.put(getHandlerkey(handler), serviceActivatingHandlerProps);
+		messageHandlerPropsCache.put(SpringIntegrationDefinitions.getObjectKey(handler), serviceActivatingHandlerProps);
 	}
 
 	@SuppressWarnings("rawtypes")
 	@SuppressAjWarnings
 	// cant use a specific type in the constructor because it is not consistent across SI versions
-	after (ServiceActivatingHandler handler) : execution(public ServiceActivatingHandler.new(*)) && target(handler){		
+	after (ServiceActivatingHandler handler) : execution(public ServiceActivatingHandler+.new(*)) && target(handler){		
 
 		Object arg = thisJoinPoint.getArgs()[0];
 		if (arg instanceof ExpressionEvaluatingMessageProcessor){
@@ -117,6 +117,12 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 
 			String expressionString = "unknown";
 
+			// TALYA: it would be better to simply make the aspect 'privileged' and access the 'expression' field directly
+			// but for some reason this causes the following exception from AspectJ:
+			// java.lang.NoSuchMethodError: 
+			// org.springframework.integration.handler.ExpressionEvaluatingMessageProcessor.ajc$get$expression
+			// (Lorg/springframework/integration/handler/ExpressionEvaluatingMessageProcessor;)Lorg/springframework/expression/Expression;
+			// Log and code sent to Andy..
 			if (expressionField != null){
 				Expression expression = ExtraReflectionUtils.getFieldValue(expressionField, processor, Expression.class);
 				expressionString = expression.getExpressionString();
@@ -124,7 +130,7 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 
 			MessageHandlerProps serviceActivatingHandlerProps = 
 					new MessageHandlerProps("(expression='" + expressionString + "')");			
-			messageHandlerPropsCache.put(getHandlerkey(handler), serviceActivatingHandlerProps);
+			messageHandlerPropsCache.put(SpringIntegrationDefinitions.getObjectKey(handler), serviceActivatingHandlerProps);
 
 		}
 	}
@@ -132,16 +138,12 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 
 	@SuppressAjWarnings
 	after (Transformer transformer, MessageTransformingHandler transformerHandler) :
-		execution(public MessageTransformingHandler.new(Transformer)) && args(transformer) && target(transformerHandler){
+		execution(public MessageTransformingHandler+.new(Transformer)) && args(transformer) && target(transformerHandler){
 
 		MessageHandlerProps messageHandlerProps = new MessageHandlerProps(transformer.getClass().getSimpleName());
-		messageHandlerPropsCache.put(getHandlerkey(transformerHandler), messageHandlerProps);
+		messageHandlerPropsCache.put(SpringIntegrationDefinitions.getObjectKey(transformerHandler), messageHandlerProps);
 	}
 	
-	private String getHandlerkey(Object handler) {
-		return String.valueOf(handler.hashCode());
-	}
-
 	private class MessageHandlerProps{
 		private String methodName;
 		private String objectTypeName;
@@ -229,7 +231,7 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 		Object target = jp.getTarget();
 		String beanName = null;
 
-		MessageHandlerProps serviceActivatingHandlerProps = messageHandlerPropsCache.get(getHandlerkey(target));
+		MessageHandlerProps serviceActivatingHandlerProps = messageHandlerPropsCache.get(SpringIntegrationDefinitions.getObjectKey(target));
 		if (serviceActivatingHandlerProps != null){
 			beanName = serviceActivatingHandlerProps.beanString;
 		} else {

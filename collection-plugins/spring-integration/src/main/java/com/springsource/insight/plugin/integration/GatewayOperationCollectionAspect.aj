@@ -44,7 +44,7 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
     interface HasMethod {
     	// marker interface
     }
-    declare parents: org.springframework.integration.gateway.GatewayMethodInboundMessageMapper implements HasMethod;
+    declare parents: org.springframework.integration.gateway.GatewayMethodInboundMessageMapper+ implements HasMethod;
     
     private Method HasMethod.__insightMethod;
     public void HasMethod.__setInsightMethod(Method method) { this.__insightMethod = method; }
@@ -53,7 +53,7 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
     interface HasRequestMapper {
     	// marker interface
     }
-    declare parents: MessagingGatewaySupport implements HasRequestMapper;
+    declare parents: MessagingGatewaySupport+ implements HasRequestMapper;
     
     @SuppressWarnings("rawtypes")
     private InboundMessageMapper HasRequestMapper.insightMapper;
@@ -67,7 +67,7 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
     @SuppressWarnings("rawtypes")
     @SuppressAjWarnings
     after(Method method, Map map, org.springframework.integration.gateway.GatewayMethodInboundMessageMapper gatewayMapper) : 
-    	execution(public org.springframework.integration.gateway.GatewayMethodInboundMessageMapper.new(Method, Map))
+    	execution(public org.springframework.integration.gateway.GatewayMethodInboundMessageMapper+.new(Method, Map))
     	&& args(method, map) && target(gatewayMapper) {
         
         if (gatewayMapper instanceof HasMethod) {
@@ -78,7 +78,7 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
     @SuppressAjWarnings
     @SuppressWarnings("rawtypes")
     after(MessagingGatewaySupport gateway, InboundMessageMapper mapper) : 
-        execution(public void MessagingGatewaySupport.setRequestMapper(InboundMessageMapper))
+        execution(public void MessagingGatewaySupport+.setRequestMapper(InboundMessageMapper))
                 && args(mapper) && target(gateway) {
         
         if (gateway instanceof HasRequestMapper) {

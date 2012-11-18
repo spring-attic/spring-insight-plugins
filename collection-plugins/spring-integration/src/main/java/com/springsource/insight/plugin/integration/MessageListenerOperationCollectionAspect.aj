@@ -30,14 +30,13 @@ import com.springsource.insight.collection.TrailingAbstractOperationCollectionAs
 import com.springsource.insight.intercept.operation.Operation;
 
 
-//public privileged aspect MessageListenerOperationCollectionAspect extends TrailingAbstractOperationCollectionAspect {
-public aspect MessageListenerOperationCollectionAspect{
+public privileged aspect MessageListenerOperationCollectionAspect extends TrailingAbstractOperationCollectionAspect {
 
 	public MessageListenerOperationCollectionAspect(){
 		super();
 	}
 	
-    /*@Override
+    @Override
     public final String getPluginName() {
         return IntegrationPluginRuntimeDescriptor.PLUGIN_NAME;
     }
@@ -50,7 +49,7 @@ public aspect MessageListenerOperationCollectionAspect{
 	protected Operation createOperation(JoinPoint jp) {		
 		MessageListener messageListener = (MessageListener) jp.getTarget();
 
-		MessageListenerProps cachedMessageListenerProps = messageListenerPropsCache.get(String.valueOf(messageListener.hashCode()));
+		MessageListenerProps cachedMessageListenerProps = messageListenerPropsCache.get(SpringIntegrationDefinitions.getObjectKey(messageListener));
 		
 		// we only want to catch MessageListener+.onMessage calls of MessageListeners that belong to an AmqpInboundChannelAdapter
 		if (cachedMessageListenerProps != null){
@@ -102,7 +101,7 @@ public aspect MessageListenerOperationCollectionAspect{
 
 			AmqpInboundChannelAdapter inboundChannelAdapter = (AmqpInboundChannelAdapter) thisJoinPoint.getThis();
 			MessageListenerProps cachedMessageListenerProps = createCachedMessageListenerProps(messageListener, inboundChannelAdapter);
-			messageListenerPropsCache.put(String.valueOf(messageListener.hashCode()), cachedMessageListenerProps);
+			messageListenerPropsCache.put(SpringIntegrationDefinitions.getObjectKey(messageListener), cachedMessageListenerProps);
 		}
 
 		proceed(messageListener);
@@ -130,7 +129,6 @@ public aspect MessageListenerOperationCollectionAspect{
 			adapterBeanName = assignedAdapterBeanName;
 			adapterBeanType = assignedAdapterBeanType;			 
 		}
-	}*/
-	
+	}
 
 }
