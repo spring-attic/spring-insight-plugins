@@ -23,10 +23,12 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageListener;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.integration.amqp.inbound.AmqpInboundChannelAdapter;
 import org.springframework.util.StringUtils;
 
 import com.springsource.insight.collection.TrailingAbstractOperationCollectionAspect;
+import com.springsource.insight.intercept.color.ColorManager.ColorParams;
 import com.springsource.insight.intercept.operation.Operation;
 
 
@@ -52,30 +54,39 @@ public privileged aspect MessageListenerOperationCollectionAspect extends Traili
 		MessageListenerProps cachedMessageListenerProps = messageListenerPropsCache.get(SpringIntegrationDefinitions.getObjectKey(messageListener));
 		
 		// we only want to catch MessageListener+.onMessage calls of MessageListeners that belong to an AmqpInboundChannelAdapter
-		if (cachedMessageListenerProps != null){
-
-			String beanName = cachedMessageListenerProps.adapterBeanName;
-			String beanType = cachedMessageListenerProps.adapterBeanType;       
-			String label = beanType + "#" + beanName;			
-			Message message = (Message) jp.getArgs()[0];		
-
-			Operation op = new Operation()
-			.type(SpringIntegrationDefinitions.SI_OP_MESSAGE_ADAPTER_TYPE)
-			.label(label)
-			.put("listeningOnQueues", cachedMessageListenerProps.queueNames)  
-			.put("messageExchange", message.getMessageProperties().getReceivedExchange())
-			.put("messageRoutingKey", message.getMessageProperties().getReceivedRoutingKey())
-			.put("messageContentType", message.getMessageProperties().getContentType())
-			.put("outputChannel", cachedMessageListenerProps.outputChannelName) 
-			.put("siComponentType", SpringIntegrationDefinitions.MESSAGE_ADAPTER)
-			.put("siSpecificType", beanType)
-			.put("beanName", beanName);
-
-			return op;
+		if (cachedMessageListenerProps == null){
+			return null;
 		}
 
-		return null;
+		String beanName = cachedMessageListenerProps.adapterBeanName;
+		String beanType = cachedMessageListenerProps.adapterBeanType;       
+		String label = beanType + "#" + beanName;			
+		Message message = (Message) jp.getArgs()[0];		
+		final MessageProperties	props= message.getMessageProperties();
+		final Operation op = new Operation()
+						.type(SpringIntegrationDefinitions.SI_OP_MESSAGE_ADAPTER_TYPE)
+						.label(label)
+						.put("listeningOnQueues", cachedMessageListenerProps.queueNames)  
+						.put("messageExchange", message.getMessageProperties().getReceivedExchange())
+						.put("messageRoutingKey", message.getMessageProperties().getReceivedRoutingKey())
+						.put("messageContentType", message.getMessageProperties().getContentType())
+						.put("outputChannel", cachedMessageListenerProps.outputChannelName) 
+						.put("siComponentType", SpringIntegrationDefinitions.MESSAGE_ADAPTER)
+						.put("siSpecificType", beanType)
+						.put("beanName", beanName);
+		colorForward(new ColorParams() {
+				public void setColor(String key, String value) {
+					if (props == null)
+						return;	// debug breakpoint
+					props.setHeader(key, value);
+				}
 
+				public Operation getOperation() {
+					return op;
+				}
+				
+			});
+		return op;
 	}
 	
 	

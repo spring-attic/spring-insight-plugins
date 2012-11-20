@@ -101,7 +101,7 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
     }
     
     @SuppressWarnings("rawtypes")
-    private static Operation fillOperation(JoinPoint jp, Operation op) {
+    private Operation fillOperation(JoinPoint jp, Operation op) {
         MessagingGatewaySupport gateway = (MessagingGatewaySupport)jp.getTarget();
         
         String beanType = gateway.getClass().getSimpleName();
@@ -124,13 +124,13 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
             Class<?> payloadClass = null;
             
             if (obj instanceof Message) {
-            	Message message = (Message)obj;
+            	Message<?> message = (Message<?>)obj;
             	
         		MessageHeaders messageHeaders = message.getHeaders();
         		UUID id = messageHeaders.getId();
         		String idHeader = id.toString();
             	op.put(SpringIntegrationDefinitions.ID_HEADER_ATTR, idHeader);
-            	
+            	colorForward(op, messageHeaders);
 				payloadObj = message.getPayload();
                 
                 if (payloadObj != null) {
@@ -149,12 +149,11 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
         }
         
         return op.label(label)
-          .put(SpringIntegrationDefinitions.SI_COMPONENT_TYPE_ATTR, SpringIntegrationDefinitions.GATEWAY)
-          .put(SpringIntegrationDefinitions.SI_SPECIFIC_TYPE_ATTR, beanType)
-          .put(SpringIntegrationDefinitions.BEAN_NAME_ATTR,  gateway.getComponentName());
+		         .put(SpringIntegrationDefinitions.SI_COMPONENT_TYPE_ATTR, SpringIntegrationDefinitions.GATEWAY)
+		         .put(SpringIntegrationDefinitions.SI_SPECIFIC_TYPE_ATTR, beanType)
+		         .put(SpringIntegrationDefinitions.BEAN_NAME_ATTR,  gateway.getComponentName());
     }
 
-    
     @SuppressWarnings("rawtypes")
     private static Method resloveMethod(JoinPoint jp) {
         Object gateway = jp.getTarget();
@@ -171,18 +170,16 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
         }
         
         HasMethod hasMethod = (HasMethod) mapper;
-        
         return hasMethod.__getInsightMethod();
     }
     
     private static final String createLabel(String beanType, String method) {
-        StringBuilder builder = new StringBuilder(beanType.length() + method.length() + 1);
-        
-        builder.append(beanType);
-        builder.append('#');
-        builder.append(method);
-        
-        return builder.toString();
+        return new StringBuilder(beanType.length() + method.length() + 1)
+        				.append(beanType)
+        				.append('#')
+        				.append(method)
+        			.toString()
+        			;
     }
     
     @Override

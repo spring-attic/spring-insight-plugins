@@ -135,7 +135,6 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 		}
 	}
 
-
 	@SuppressAjWarnings
 	after (Transformer transformer, MessageTransformingHandler transformerHandler) :
 		execution(public MessageTransformingHandler+.new(Transformer)) && args(transformer) && target(transformerHandler){
@@ -144,45 +143,43 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 		messageHandlerPropsCache.put(SpringIntegrationDefinitions.getObjectKey(transformerHandler), messageHandlerProps);
 	}
 	
-	private class MessageHandlerProps{
+	private static class MessageHandlerProps{
 		private String methodName;
 		private String objectTypeName;
 		private String beanString;
 
-
-		MessageHandlerProps(String objectTypeName){
-			this.objectTypeName = objectTypeName;
-			setBeanString();
+		MessageHandlerProps(String typeName){
+			this(typeName, null);
 		}
 
-		MessageHandlerProps(String objectTypeName, String methodName){
-			this.methodName = methodName;
-			this.objectTypeName = objectTypeName;
-			setBeanString();
+		MessageHandlerProps(String typeName, String method){
+			methodName = method;
+			objectTypeName = typeName;
+			beanString= createBeanString(typeName, method);
 		}
 		
-		private void setBeanString(){
-				int length = objectTypeName.length();
+		@Override
+		public String toString() {
+			return objectTypeName + "#" + methodName + ": " + beanString;
+		}
 
-				if (!StringUtil.isEmpty(methodName)) {
-					length += 1 + methodName.length();
-				}
+		private static String createBeanString(String objectTypeName, String methodName){
+			int length = objectTypeName.length();
 
-				StringBuilder builder = new StringBuilder(length);
+			if (!StringUtil.isEmpty(methodName)) {
+				length += 1 + methodName.length();
+			}
 
-				builder.append(objectTypeName);
+			StringBuilder builder = new StringBuilder(length);
+			builder.append(objectTypeName);
 
-				if (!StringUtil.isEmpty(methodName)) {
-					builder.append('#').append(methodName);
-				}
+			if (!StringUtil.isEmpty(methodName)) {
+				builder.append('#').append(methodName);
+			}
 
-				beanString = builder.toString();
+			return builder.toString();
 		}
 	}
-
-
-
-
 	
 	public pointcut collectionPoint() : 
 		// filter out anonymous channels
@@ -216,11 +213,11 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 			label = beanType + "#" + beanName;
 		}
 		Operation cachedOp = new Operation()
-		.type(operationType)
-		.label(label)
-		.put(SpringIntegrationDefinitions.SI_COMPONENT_TYPE_ATTR, generalType)
-		.put(SpringIntegrationDefinitions.SI_SPECIFIC_TYPE_ATTR, beanType)
-		.put(SpringIntegrationDefinitions.BEAN_NAME_ATTR, beanName);
+						.type(operationType)
+						.label(label)
+						.put(SpringIntegrationDefinitions.SI_COMPONENT_TYPE_ATTR, generalType)
+						.put(SpringIntegrationDefinitions.SI_SPECIFIC_TYPE_ATTR, beanType)
+						.put(SpringIntegrationDefinitions.BEAN_NAME_ATTR, beanName);
 		opCache.put(beanName, cachedOp);
 		return cachedOp;
 	}
@@ -265,12 +262,14 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 		UUID id = messageHeaders.getId();
 		String idHeader = id.toString();
 
-		Operation op = new Operation().copyPropertiesFrom(cachedOp);		
-
-		op.label(cachedOp.getLabel())
-		.type(cachedOp.getType())
-		.put(SpringIntegrationDefinitions.PAYLOAD_TYPE_ATTR, payloadType)
-		.put(SpringIntegrationDefinitions.ID_HEADER_ATTR, idHeader);
+		Operation op = new Operation()
+			.copyPropertiesFrom(cachedOp)		
+			.label(cachedOp.getLabel())
+			.type(cachedOp.getType())
+			.put(SpringIntegrationDefinitions.PAYLOAD_TYPE_ATTR, payloadType)
+			.put(SpringIntegrationDefinitions.ID_HEADER_ATTR, idHeader)
+			;
+		colorForward(op, messageHeaders);
 		return op;
 
 	}
@@ -279,6 +278,4 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 	public boolean isEndpoint() {
 		return true;
 	}
-
-
 }
