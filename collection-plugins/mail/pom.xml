@@ -21,6 +21,7 @@
 			<groupId>javax.mail</groupId>
 			<artifactId>mail</artifactId>
 			<version>1.4</version>
+            <scope>provided</scope>
 		</dependency>
         <dependency>    <!-- We use its JavaMailSender -->
             <groupId>org.springframework</groupId>
