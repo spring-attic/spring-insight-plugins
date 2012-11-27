@@ -39,7 +39,9 @@ public class SpringIntegrationDefinitions {
 	public static final String  BEAN_NAME_ATTR 		 = "beanName";
 	public static final String  PAYLOAD_TYPE_ATTR 	 = "payloadType";
 	public static final String  ID_HEADER_ATTR 	 = "idHeader";
-
-
+	
+	public static String getObjectKey(Object handler) {
+		return handler.getClass().getSimpleName() + "@" + System.identityHashCode(handler);
+	}
 
 }

@@ -60,56 +60,56 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 
 	@SuppressAjWarnings
 	after (Object object, MethodInvokingSplitter splitter) : 
-		execution(public MethodInvokingSplitter.new(Object)) && args(object) && target(splitter) { 
+		execution(public MethodInvokingSplitter+.new(Object)) && args(object) && target(splitter) { 
 
 		MessageHandlerProps messageHandlerProps = new MessageHandlerProps(object.getClass().getSimpleName());
-		messageHandlerPropsCache.put(getHandlerkey(splitter), messageHandlerProps);
+		messageHandlerPropsCache.put(SpringIntegrationDefinitions.getObjectKey(splitter), messageHandlerProps);
 	}
 
 	@SuppressAjWarnings
 	after (Object object, Method method, MethodInvokingSplitter splitter) : 
-		execution(public MethodInvokingSplitter.new(Object, Method)) && args(object, method) && target(splitter) {
+		execution(public MethodInvokingSplitter+.new(Object, Method)) && args(object, method) && target(splitter) {
 
 		MessageHandlerProps messageHandlerProps = new MessageHandlerProps(object.getClass().getSimpleName(), method.getName());
-		messageHandlerPropsCache.put(getHandlerkey(splitter), messageHandlerProps);
+		messageHandlerPropsCache.put(SpringIntegrationDefinitions.getObjectKey(splitter), messageHandlerProps);
 	}
 
 	@SuppressAjWarnings
 	after (Object object, String method, MethodInvokingSplitter splitter) : 
-		execution(public MethodInvokingSplitter.new(Object, String)) && args(object, method) && target(splitter) {
+		execution(public MethodInvokingSplitter+.new(Object, String)) && args(object, method) && target(splitter) {
 
 		MessageHandlerProps messageHandlerProps = new MessageHandlerProps(object.getClass().getSimpleName(), method);
-		messageHandlerPropsCache.put(getHandlerkey(splitter), messageHandlerProps);
+		messageHandlerPropsCache.put(SpringIntegrationDefinitions.getObjectKey(splitter), messageHandlerProps);
 	}
 
 	@SuppressAjWarnings
 	after (Object object, ServiceActivatingHandler handler) : 
-		execution(public ServiceActivatingHandler.new(Object)) && args(object) && target(handler)  { 
+		execution(public ServiceActivatingHandler+.new(Object)) && args(object) && target(handler)  { 
 
 		MessageHandlerProps serviceActivatingHandlerProps = new MessageHandlerProps(object.getClass().getSimpleName());
-		messageHandlerPropsCache.put(getHandlerkey(handler), serviceActivatingHandlerProps);
+		messageHandlerPropsCache.put(SpringIntegrationDefinitions.getObjectKey(handler), serviceActivatingHandlerProps);
 	}
 
 	@SuppressAjWarnings
 	after (Object object, Method method, ServiceActivatingHandler handler) : 
-		execution(public ServiceActivatingHandler.new(Object, Method)) && args(object, method) && target(handler) {
+		execution(public ServiceActivatingHandler+.new(Object, Method)) && args(object, method) && target(handler) {
 
 		MessageHandlerProps serviceActivatingHandlerProps = new MessageHandlerProps(object.getClass().getSimpleName(), method.getName());
-		messageHandlerPropsCache.put(getHandlerkey(handler), serviceActivatingHandlerProps);
+		messageHandlerPropsCache.put(SpringIntegrationDefinitions.getObjectKey(handler), serviceActivatingHandlerProps);
 	}
 
 	@SuppressAjWarnings
 	after (Object object, String method, ServiceActivatingHandler handler) : 
-		execution(public ServiceActivatingHandler.new(Object, String)) && args(object, method) && target(handler) {
+		execution(public ServiceActivatingHandler+.new(Object, String)) && args(object, method) && target(handler) {
 
 		MessageHandlerProps serviceActivatingHandlerProps = new MessageHandlerProps(object.getClass().getSimpleName(), method);
-		messageHandlerPropsCache.put(getHandlerkey(handler), serviceActivatingHandlerProps);
+		messageHandlerPropsCache.put(SpringIntegrationDefinitions.getObjectKey(handler), serviceActivatingHandlerProps);
 	}
 
 	@SuppressWarnings("rawtypes")
 	@SuppressAjWarnings
 	// cant use a specific type in the constructor because it is not consistent across SI versions
-	after (ServiceActivatingHandler handler) : execution(public ServiceActivatingHandler.new(*)) && target(handler){		
+	after (ServiceActivatingHandler handler) : execution(public ServiceActivatingHandler+.new(*)) && target(handler){		
 
 		Object arg = thisJoinPoint.getArgs()[0];
 		if (arg instanceof ExpressionEvaluatingMessageProcessor){
@@ -117,6 +117,12 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 
 			String expressionString = "unknown";
 
+			// TALYA: it would be better to simply make the aspect 'privileged' and access the 'expression' field directly
+			// but for some reason this causes the following exception from AspectJ:
+			// java.lang.NoSuchMethodError: 
+			// org.springframework.integration.handler.ExpressionEvaluatingMessageProcessor.ajc$get$expression
+			// (Lorg/springframework/integration/handler/ExpressionEvaluatingMessageProcessor;)Lorg/springframework/expression/Expression;
+			// Log and code sent to Andy..
 			if (expressionField != null){
 				Expression expression = ExtraReflectionUtils.getFieldValue(expressionField, processor, Expression.class);
 				expressionString = expression.getExpressionString();
@@ -124,63 +130,56 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 
 			MessageHandlerProps serviceActivatingHandlerProps = 
 					new MessageHandlerProps("(expression='" + expressionString + "')");			
-			messageHandlerPropsCache.put(getHandlerkey(handler), serviceActivatingHandlerProps);
+			messageHandlerPropsCache.put(SpringIntegrationDefinitions.getObjectKey(handler), serviceActivatingHandlerProps);
 
 		}
 	}
 
-
 	@SuppressAjWarnings
 	after (Transformer transformer, MessageTransformingHandler transformerHandler) :
-		execution(public MessageTransformingHandler.new(Transformer)) && args(transformer) && target(transformerHandler){
+		execution(public MessageTransformingHandler+.new(Transformer)) && args(transformer) && target(transformerHandler){
 
 		MessageHandlerProps messageHandlerProps = new MessageHandlerProps(transformer.getClass().getSimpleName());
-		messageHandlerPropsCache.put(getHandlerkey(transformerHandler), messageHandlerProps);
+		messageHandlerPropsCache.put(SpringIntegrationDefinitions.getObjectKey(transformerHandler), messageHandlerProps);
 	}
 	
-	private String getHandlerkey(Object handler) {
-		return String.valueOf(handler.hashCode());
-	}
-
-	private class MessageHandlerProps{
+	private static class MessageHandlerProps{
 		private String methodName;
 		private String objectTypeName;
 		private String beanString;
 
-
-		MessageHandlerProps(String objectTypeName){
-			this.objectTypeName = objectTypeName;
-			setBeanString();
+		MessageHandlerProps(String typeName){
+			this(typeName, null);
 		}
 
-		MessageHandlerProps(String objectTypeName, String methodName){
-			this.methodName = methodName;
-			this.objectTypeName = objectTypeName;
-			setBeanString();
+		MessageHandlerProps(String typeName, String method){
+			methodName = method;
+			objectTypeName = typeName;
+			beanString= createBeanString(typeName, method);
 		}
 		
-		private void setBeanString(){
-				int length = objectTypeName.length();
+		@Override
+		public String toString() {
+			return objectTypeName + "#" + methodName + ": " + beanString;
+		}
 
-				if (!StringUtil.isEmpty(methodName)) {
-					length += 1 + methodName.length();
-				}
+		private static String createBeanString(String objectTypeName, String methodName){
+			int length = objectTypeName.length();
 
-				StringBuilder builder = new StringBuilder(length);
+			if (!StringUtil.isEmpty(methodName)) {
+				length += 1 + methodName.length();
+			}
 
-				builder.append(objectTypeName);
+			StringBuilder builder = new StringBuilder(length);
+			builder.append(objectTypeName);
 
-				if (!StringUtil.isEmpty(methodName)) {
-					builder.append('#').append(methodName);
-				}
+			if (!StringUtil.isEmpty(methodName)) {
+				builder.append('#').append(methodName);
+			}
 
-				beanString = builder.toString();
+			return builder.toString();
 		}
 	}
-
-
-
-
 	
 	public pointcut collectionPoint() : 
 		// filter out anonymous channels
@@ -214,11 +213,11 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 			label = beanType + "#" + beanName;
 		}
 		Operation cachedOp = new Operation()
-		.type(operationType)
-		.label(label)
-		.put(SpringIntegrationDefinitions.SI_COMPONENT_TYPE_ATTR, generalType)
-		.put(SpringIntegrationDefinitions.SI_SPECIFIC_TYPE_ATTR, beanType)
-		.put(SpringIntegrationDefinitions.BEAN_NAME_ATTR, beanName);
+						.type(operationType)
+						.label(label)
+						.put(SpringIntegrationDefinitions.SI_COMPONENT_TYPE_ATTR, generalType)
+						.put(SpringIntegrationDefinitions.SI_SPECIFIC_TYPE_ATTR, beanType)
+						.put(SpringIntegrationDefinitions.BEAN_NAME_ATTR, beanName);
 		opCache.put(beanName, cachedOp);
 		return cachedOp;
 	}
@@ -229,7 +228,7 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 		Object target = jp.getTarget();
 		String beanName = null;
 
-		MessageHandlerProps serviceActivatingHandlerProps = messageHandlerPropsCache.get(getHandlerkey(target));
+		MessageHandlerProps serviceActivatingHandlerProps = messageHandlerPropsCache.get(SpringIntegrationDefinitions.getObjectKey(target));
 		if (serviceActivatingHandlerProps != null){
 			beanName = serviceActivatingHandlerProps.beanString;
 		} else {
@@ -263,12 +262,14 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 		UUID id = messageHeaders.getId();
 		String idHeader = id.toString();
 
-		Operation op = new Operation().copyPropertiesFrom(cachedOp);		
-
-		op.label(cachedOp.getLabel())
-		.type(cachedOp.getType())
-		.put(SpringIntegrationDefinitions.PAYLOAD_TYPE_ATTR, payloadType)
-		.put(SpringIntegrationDefinitions.ID_HEADER_ATTR, idHeader);
+		Operation op = new Operation()
+			.copyPropertiesFrom(cachedOp)		
+			.label(cachedOp.getLabel())
+			.type(cachedOp.getType())
+			.put(SpringIntegrationDefinitions.PAYLOAD_TYPE_ATTR, payloadType)
+			.put(SpringIntegrationDefinitions.ID_HEADER_ATTR, idHeader)
+			;
+		colorForward(op, messageHeaders);
 		return op;
 
 	}
@@ -277,6 +278,4 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 	public boolean isEndpoint() {
 		return true;
 	}
-
-
 }

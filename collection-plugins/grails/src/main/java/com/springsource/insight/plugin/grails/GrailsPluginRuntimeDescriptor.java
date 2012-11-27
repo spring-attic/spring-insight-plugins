@@ -16,11 +16,19 @@
 
 package com.springsource.insight.plugin.grails;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class GrailsPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "grails";
     private static final GrailsPluginRuntimeDescriptor	INSTANCE=new GrailsPluginRuntimeDescriptor();
+    public static final List<EndPointAnalyzer>	epAnalyzers=
+    		Collections.unmodifiableList(Arrays.asList((EndPointAnalyzer) GrailsControllerMethodEndPointAnalyzer.getInstance()));
 
     private GrailsPluginRuntimeDescriptor () {
     	super();
@@ -31,8 +39,12 @@ public class GrailsPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     }
 
     @Override
+	public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
+		return epAnalyzers;
+	}
+
+	@Override
     public String getPluginName() {
         return PLUGIN_NAME;
     }
-
 }

@@ -44,7 +44,7 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
     interface HasMethod {
     	// marker interface
     }
-    declare parents: org.springframework.integration.gateway.GatewayMethodInboundMessageMapper implements HasMethod;
+    declare parents: org.springframework.integration.gateway.GatewayMethodInboundMessageMapper+ implements HasMethod;
     
     private Method HasMethod.__insightMethod;
     public void HasMethod.__setInsightMethod(Method method) { this.__insightMethod = method; }
@@ -53,7 +53,7 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
     interface HasRequestMapper {
     	// marker interface
     }
-    declare parents: MessagingGatewaySupport implements HasRequestMapper;
+    declare parents: MessagingGatewaySupport+ implements HasRequestMapper;
     
     @SuppressWarnings("rawtypes")
     private InboundMessageMapper HasRequestMapper.insightMapper;
@@ -67,7 +67,7 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
     @SuppressWarnings("rawtypes")
     @SuppressAjWarnings
     after(Method method, Map map, org.springframework.integration.gateway.GatewayMethodInboundMessageMapper gatewayMapper) : 
-    	execution(public org.springframework.integration.gateway.GatewayMethodInboundMessageMapper.new(Method, Map))
+    	execution(public org.springframework.integration.gateway.GatewayMethodInboundMessageMapper+.new(Method, Map))
     	&& args(method, map) && target(gatewayMapper) {
         
         if (gatewayMapper instanceof HasMethod) {
@@ -78,7 +78,7 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
     @SuppressAjWarnings
     @SuppressWarnings("rawtypes")
     after(MessagingGatewaySupport gateway, InboundMessageMapper mapper) : 
-        execution(public void MessagingGatewaySupport.setRequestMapper(InboundMessageMapper))
+        execution(public void MessagingGatewaySupport+.setRequestMapper(InboundMessageMapper))
                 && args(mapper) && target(gateway) {
         
         if (gateway instanceof HasRequestMapper) {
@@ -101,7 +101,7 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
     }
     
     @SuppressWarnings("rawtypes")
-    private static Operation fillOperation(JoinPoint jp, Operation op) {
+    private Operation fillOperation(JoinPoint jp, Operation op) {
         MessagingGatewaySupport gateway = (MessagingGatewaySupport)jp.getTarget();
         
         String beanType = gateway.getClass().getSimpleName();
@@ -124,13 +124,13 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
             Class<?> payloadClass = null;
             
             if (obj instanceof Message) {
-            	Message message = (Message)obj;
+            	Message<?> message = (Message<?>)obj;
             	
         		MessageHeaders messageHeaders = message.getHeaders();
         		UUID id = messageHeaders.getId();
         		String idHeader = id.toString();
             	op.put(SpringIntegrationDefinitions.ID_HEADER_ATTR, idHeader);
-            	
+            	colorForward(op, messageHeaders);
 				payloadObj = message.getPayload();
                 
                 if (payloadObj != null) {
@@ -149,12 +149,11 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
         }
         
         return op.label(label)
-          .put(SpringIntegrationDefinitions.SI_COMPONENT_TYPE_ATTR, SpringIntegrationDefinitions.GATEWAY)
-          .put(SpringIntegrationDefinitions.SI_SPECIFIC_TYPE_ATTR, beanType)
-          .put(SpringIntegrationDefinitions.BEAN_NAME_ATTR,  gateway.getComponentName());
+		         .put(SpringIntegrationDefinitions.SI_COMPONENT_TYPE_ATTR, SpringIntegrationDefinitions.GATEWAY)
+		         .put(SpringIntegrationDefinitions.SI_SPECIFIC_TYPE_ATTR, beanType)
+		         .put(SpringIntegrationDefinitions.BEAN_NAME_ATTR,  gateway.getComponentName());
     }
 
-    
     @SuppressWarnings("rawtypes")
     private static Method resloveMethod(JoinPoint jp) {
         Object gateway = jp.getTarget();
@@ -171,18 +170,16 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
         }
         
         HasMethod hasMethod = (HasMethod) mapper;
-        
         return hasMethod.__getInsightMethod();
     }
     
     private static final String createLabel(String beanType, String method) {
-        StringBuilder builder = new StringBuilder(beanType.length() + method.length() + 1);
-        
-        builder.append(beanType);
-        builder.append('#');
-        builder.append(method);
-        
-        return builder.toString();
+        return new StringBuilder(beanType.length() + method.length() + 1)
+        				.append(beanType)
+        				.append('#')
+        				.append(method)
+        			.toString()
+        			;
     }
     
     @Override

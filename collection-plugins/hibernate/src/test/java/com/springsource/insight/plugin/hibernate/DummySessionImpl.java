@@ -50,147 +50,122 @@ public class DummySessionImpl implements Session {
     }
 
     public Transaction beginTransaction() throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public void cancelQuery() throws HibernateException {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public void clear() {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public Connection close() throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Connection connection() throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public boolean contains(Object arg0) {
-        // TODO Auto-generated method stub
         return false;
     }
 
-    public Criteria createCriteria(Class arg0) {
-        // TODO Auto-generated method stub
+    @SuppressWarnings("rawtypes")
+	public Criteria createCriteria(Class arg0) {
         return null;
     }
 
     public Criteria createCriteria(String arg0) {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    @SuppressWarnings("rawtypes")
     public Criteria createCriteria(Class arg0, String arg1) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Criteria createCriteria(String arg0, String arg1) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Query createFilter(Object arg0, String arg1) throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Query createQuery(String arg0) throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public SQLQuery createSQLQuery(String arg0) throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public void delete(Object arg0) throws HibernateException {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public void delete(String arg0, Object arg1) throws HibernateException {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public void disableFilter(String arg0) {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public Connection disconnect() throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Filter enableFilter(String arg0) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public void evict(Object arg0) throws HibernateException {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public void flush() throws HibernateException {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
+    @SuppressWarnings("rawtypes")
     public Object get(Class arg0, Serializable arg1) throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Object get(String arg0, Serializable arg1) throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    @SuppressWarnings("rawtypes")
     public Object get(Class arg0, Serializable arg1, LockMode arg2) throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Object get(String arg0, Serializable arg1, LockMode arg2) throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public CacheMode getCacheMode() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public LockMode getCurrentLockMode(Object arg0) throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Filter getEnabledFilter(String arg0) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public EntityMode getEntityMode() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public String getEntityName(Object arg0) throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -199,281 +174,230 @@ public class DummySessionImpl implements Session {
     }
 
     public Serializable getIdentifier(Object arg0) throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Query getNamedQuery(String arg0) throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Session getSession(EntityMode arg0) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public SessionFactory getSessionFactory() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public SessionStatistics getStatistics() {
-        // TODO Auto-generated method stub
-        SessionStatistics stats = new SessionStatistics() {
-
+        return  new SessionStatistics() {
             public int getCollectionCount() {
-                // TODO Auto-generated method stub
                 return DUMMY_COLLECTION_COUNT;
             }
 
-            public Set getCollectionKeys() {
-                // TODO Auto-generated method stub
+            @SuppressWarnings("rawtypes")
+			public Set getCollectionKeys() {
                 return null;
             }
 
             public int getEntityCount() {
-                // TODO Auto-generated method stub
                 return DUMMY_ENTITY_COUNT;
             }
 
+            @SuppressWarnings("rawtypes")
             public Set getEntityKeys() {
-                // TODO Auto-generated method stub
                 return null;
             }
-            
         };
-        return stats;
     }
 
     public Transaction getTransaction() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public boolean isConnected() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     public boolean isDirty() throws HibernateException {
-        // TODO Auto-generated method stub
         return false;
     }
 
     public boolean isOpen() {
-        // TODO Auto-generated method stub
         return false;
     }
 
+    @SuppressWarnings("rawtypes")
     public Object load(Class arg0, Serializable arg1) throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Object load(String arg0, Serializable arg1) throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public void load(Object arg0, Serializable arg1) throws HibernateException {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
+    @SuppressWarnings("rawtypes")
     public Object load(Class arg0, Serializable arg1, LockMode arg2) throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Object load(String arg0, Serializable arg1, LockMode arg2) throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public void lock(Object arg0, LockMode arg1) throws HibernateException {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public void lock(String arg0, Object arg1, LockMode arg2) throws HibernateException {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public Object merge(Object arg0) throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Object merge(String arg0, Object arg1) throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public void persist(Object arg0) throws HibernateException {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public void persist(String arg0, Object arg1) throws HibernateException {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public void reconnect() throws HibernateException {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public void reconnect(Connection arg0) throws HibernateException {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public void refresh(Object arg0) throws HibernateException {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public void refresh(Object arg0, LockMode arg1) throws HibernateException {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public void replicate(Object arg0, ReplicationMode arg1) throws HibernateException {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public void replicate(String arg0, Object arg1, ReplicationMode arg2) throws HibernateException {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public Serializable save(Object arg0) throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Serializable save(String arg0, Object arg1) throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public void saveOrUpdate(Object arg0) throws HibernateException {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public void saveOrUpdate(String arg0, Object arg1) throws HibernateException {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public void setCacheMode(CacheMode arg0) {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public void setFlushMode(FlushMode arg0) {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public void setReadOnly(Object arg0, boolean arg1) {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public void update(Object arg0) throws HibernateException {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public void update(String arg0, Object arg1) throws HibernateException {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public boolean isDefaultReadOnly() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     public void setDefaultReadOnly(boolean readOnly) {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
+    @SuppressWarnings("rawtypes")
     public Object load(Class theClass, Serializable id, LockOptions lockOptions)
             throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
-    public Object load(String entityName, Serializable id,
-            LockOptions lockOptions) throws HibernateException {
-        // TODO Auto-generated method stub
+    public Object load(String entityName, Serializable id, LockOptions lockOptions)
+    		throws HibernateException {
         return null;
     }
 
     public LockRequest buildLockRequest(LockOptions lockOptions) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public void refresh(Object object, LockOptions lockOptions)
             throws HibernateException {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
+    @SuppressWarnings("rawtypes")
     public Object get(Class clazz, Serializable id, LockOptions lockOptions)
             throws HibernateException {
-        // TODO Auto-generated method stub
         return null;
     }
 
-    public Object get(String entityName, Serializable id,
-            LockOptions lockOptions) throws HibernateException {
-        // TODO Auto-generated method stub
+    public Object get(String entityName, Serializable id, LockOptions lockOptions)
+    		throws HibernateException {
         return null;
     }
 
     public boolean isReadOnly(Object entityOrProxy) {
-        // TODO Auto-generated method stub
         return false;
     }
 
     public void doWork(Work work) throws HibernateException {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public boolean isFetchProfileEnabled(String name)
             throws UnknownProfileException {
-        // TODO Auto-generated method stub
         return false;
     }
 
     public void enableFetchProfile(String name) throws UnknownProfileException {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public void disableFetchProfile(String name) throws UnknownProfileException {
-        // TODO Auto-generated method stub
-        
+    	// ignored
     }
 
     public TypeHelper getTypeHelper() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public LobHelper getLobHelper() {
-        // TODO Auto-generated method stub
         return null;
     }
 
