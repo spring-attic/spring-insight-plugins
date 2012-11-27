@@ -4,13 +4,13 @@
     <groupId>com.springsource.insight.plugins</groupId>
     <artifactId>insight-plugin-run-exec</artifactId>
     <name>com.springsource.insight.plugins:run-exec</name>
-    <version>1.9.0.RELEASE</version>
+    <version>1.9.1.SR1</version>
     <packaging>jar</packaging>
     
 	<parent>
 		<groupId>com.springsource.insight</groupId>
 		<artifactId>community-plugins</artifactId>
-		<version>1.9.0.RELEASE</version>
+		<version>1.9.1.SR1</version>
 		<relativePath>..</relativePath>
 	</parent>
 
