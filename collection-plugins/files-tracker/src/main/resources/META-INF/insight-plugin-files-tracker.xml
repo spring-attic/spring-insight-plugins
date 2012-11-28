@@ -8,12 +8,12 @@
     <insight:plugin name="files-tracker" version="${project.version}" publisher="SpringSource" />
     <insight:operation-view operation="files-tracker" template="com/springsource/insight/plugin/files/tracker/files-tracker.ftl"/>
     
-    <bean id="filesTrackerExternalResourceAnalyzer",
+    <bean id="filesTrackerExternalResourceAnalyzer"
           class="com.springsource.insight.plugin.files.tracker.FilesTrackerExternalResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
         />
-    <bean id="filesTrackerPluginRuntimeDescriptor",
+    <bean id="filesTrackerPluginRuntimeDescriptor"
           class="com.springsource.insight.plugin.files.tracker.FilesTrackerPluginRuntimeDescriptor"
           factory-method="getInstance"
           lazy-init="true"
