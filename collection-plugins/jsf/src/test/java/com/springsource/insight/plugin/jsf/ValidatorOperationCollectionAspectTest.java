@@ -1,0 +1,81 @@
+/**
+ * Copyright (c) 2009-2011 VMware, Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.springsource.insight.plugin.jsf;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.validator.Validator;
+import javax.faces.validator.ValidatorException;
+
+import org.junit.Test;
+
+import com.springsource.insight.collection.OperationCollectionAspectSupport;
+import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
+import com.springsource.insight.intercept.operation.Operation;
+
+/**
+ * This test verifies that JSF validators are correctly captured by the aspect,
+ * {@link ValidatorOperationCollectionAspect}.
+ */
+public class ValidatorOperationCollectionAspectTest extends
+		OperationCollectionAspectTestSupport {
+
+	@Test
+	public void myOperationCollected() {
+		/**
+		 * First step: Execute whatever method is matched by our pointcut in
+		 * {@link ValidatorOperationCollectionAspect}
+		 * 
+		 */
+		UIComponent mockUiComponent = mock(UIComponent.class);
+		when(mockUiComponent.getId()).thenReturn("component id");
+
+		Object mockObject = mock(Object.class);
+		when(mockObject.toString()).thenReturn("test");
+
+		MockValidator bean = new MockValidator();
+		bean.validate(null, mockUiComponent, mockObject);
+
+		/**
+		 * Second step: Snatch the operation that was just created
+		 */
+		Operation op = getLastEntered();
+
+		/**
+		 * Third step: Validate that our operation has been created as we expect
+		 */
+		assertEquals(MockValidator.class.getName(), op.getSourceCodeLocation()
+				.getClassName());
+		assertEquals("validate", op.getSourceCodeLocation().getMethodName());
+		assertEquals("component id", op.get("uiComponentId"));
+		assertEquals("test", op.get("value"));
+	}
+
+	private static class MockValidator implements Validator {
+
+		public void validate(FacesContext context, UIComponent component,
+				Object value) throws ValidatorException {
+		}
+	}
+
+	@Override
+	public OperationCollectionAspectSupport getAspect() {
+		return ValidatorOperationCollectionAspect.aspectOf();
+	}
+}

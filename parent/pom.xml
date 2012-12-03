@@ -60,6 +60,10 @@
         <httpclinet.version>4.1.1</httpclinet.version>
         <javax.jms.version>1.1</javax.jms.version>
 		<javax.inject.version>1</javax.inject.version>
+		<powermock.version>1.4.9</powermock.version>
+		<jsf.version>2.1.13</jsf.version>
+		<myfaces.version>2.1.9</myfaces.version>
+		<javax.el.version>2.2.4</javax.el.version>
 
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <build.timestamp>${maven.build.timestamp}</build.timestamp>
@@ -831,6 +835,45 @@
 				<groupId>org.springframework.data</groupId>
 				<artifactId>spring-data-commons-core</artifactId>
 				<version>${spring.data.commons.version}</version>
+			</dependency>
+			
+			<!-- JSF related dependencies -->
+			<dependency>
+				<groupId>javax.el</groupId>
+				<artifactId>javax.el-api</artifactId>
+				<version>${javax.el.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.faces</groupId>
+				<artifactId>jsf-api</artifactId>
+				<version>${jsf.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.faces</groupId>
+				<artifactId>jsf-impl</artifactId>
+				<version>${jsf.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.myfaces.core</groupId>
+				<artifactId>myfaces-api</artifactId>
+				<version>${myfaces.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.myfaces.core</groupId>
+				<artifactId>myfaces-impl</artifactId>
+				<version>${myfaces.version}</version>
+			</dependency>
+			
+			<!-- PowerMock related -->
+			<dependency>
+				<groupId>org.powermock</groupId>
+				<artifactId>powermock-module-junit4</artifactId>
+				<version>${powermock.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.powermock</groupId>
+				<artifactId>powermock-api-mockito</artifactId>
+				<version>${powermock.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

@@ -46,6 +46,7 @@
 		<module>jms</module>
 		<module>jndi</module>
 		<module>jpa</module>
+		<module>jsf</module>
 		<module>jta</module>
 		<module>jws</module>
 		<module>ldap</module>
