@@ -241,11 +241,15 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
 
     OperationMap fillInResponseDetails(OperationMap op, HttpResponse response, boolean collectExtra) {
         StatusLine statusLine = response.getStatusLine();
-        op.put("statusCode", statusLine.getStatusCode());
-
-        if (collectExtra) {
-            op.putAnyNonEmpty("reasonPhrase", statusLine.getReasonPhrase());
-            fillInMessageHeaders(op.createList("headers"), response);
+        
+        if (statusLine != null) {
+			op.put("statusCode", statusLine.getStatusCode());
+		}
+		if (collectExtra) {
+            if (statusLine != null) {
+				op.putAnyNonEmpty("reasonPhrase", statusLine.getReasonPhrase());
+			}
+			fillInMessageHeaders(op.createList("headers"), response);
         }
 
         return op;

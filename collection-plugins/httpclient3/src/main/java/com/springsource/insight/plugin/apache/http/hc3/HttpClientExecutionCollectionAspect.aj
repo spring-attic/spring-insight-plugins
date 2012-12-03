@@ -184,7 +184,12 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
         op.put(HttpStatusTraceErrorAnalyzer.STATUS_CODE_ATTR, statusCode);
 
         if (collectExtra) {
-            op.putAnyNonEmpty(HttpStatusTraceErrorAnalyzer.REASON_PHRASE_ATTR, method.getStatusText());
+        	StatusLine statusLine = method.getStatusLine();
+        	
+        	if (statusLine != null) {
+        		op.putAnyNonEmpty(HttpStatusTraceErrorAnalyzer.REASON_PHRASE_ATTR, statusLine.getReasonPhrase());
+        	}
+        	
             fillInMethodHeaders(op.createList("headers"), method, false);
         }
 
