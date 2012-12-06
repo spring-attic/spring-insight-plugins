@@ -15,66 +15,138 @@
  */
 package com.springsource.insight.plugin.jdbc;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
-import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
+import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.plugin.CollectionSettingsRegistry;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.FrameId;
-import com.springsource.insight.intercept.trace.SimpleFrame;
+import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.ListUtil;
-import com.springsource.insight.util.time.TimeRange;
 
-public class JdbcOperationExternalResourceAnalyzerTest extends Assert {
-	@Test
-	public void testCreateAndAddQueryExternalResourceDescriptorsEmptyDbDescriptors() {
-		Collection<ExternalResourceDescriptor> result = 
-				JdbcOperationExternalResourceAnalyzer.createAndAddQueryExternalResourceDescriptors(Collections.<ExternalResourceDescriptor>emptyList());
-		
-		assertEquals("Total number of descriptors with empty db descriptors", 0, ListUtil.size(result));
+public class JdbcOperationExternalResourceAnalyzerTest extends AbstractDatabaseJDBCURIAnalyzerTest {
+	
+	private CollectionSettingsRegistry registry;
+	private JdbcOperationExternalResourceAnalyzer analyzer;
+	
+	@Before
+	public void setUp() {
+		registry = new CollectionSettingsRegistry();
+		analyzer = new JdbcOperationExternalResourceAnalyzer(registry);
 	}
 	
 	@Test
-	public void testCreateAndAddQueryExternalResourceDescriptorsNullDbDescriptors() {
-		Collection<ExternalResourceDescriptor> result = 
-				JdbcOperationExternalResourceAnalyzer.createAndAddQueryExternalResourceDescriptors(null);
+	public void testIncrementalUpdate() {
+		assertInitialState();
 		
-		assertEquals("Total number of descriptors with null db descriptors", 0, ListUtil.size(result));
+		//update active state
+		registry.set(JdbcOperationExternalResourceAnalyzer.CS_NAME, Boolean.TRUE);
+		
+		boolean active = analyzer.isGeneratingExternalResources();
+		assertTrue("Active state should be true after update", active);
+		
+		//add application to ignore list
+		ApplicationName appName = ApplicationName.valueOf("test-app");
+		registry.set(JdbcOperationExternalResourceAnalyzer.createApplicationCollectionSettingName(appName), Boolean.FALSE);
+		
+		Collection<ApplicationName> apps = analyzer.getDisabledApplicationNames();
+		assertEquals("Total disabled apps", 1, apps.size());
+		assertTrue(appName + "is known when disabled", analyzer.isApplicationNameKnown(appName));
+		
+		ApplicationName disabledAppName = ListUtil.getFirstMember(apps);
+		assertEquals("The only disabled app", appName, disabledAppName);
+		
+		//removed application from ignore list
+		registry.set(JdbcOperationExternalResourceAnalyzer.createApplicationCollectionSettingName(appName), Boolean.TRUE);
+		
+		apps = analyzer.getDisabledApplicationNames();
+		assertTrue("Total disabled apps is empty", apps.isEmpty());
+		assertTrue(appName + "is known when enabled", analyzer.isApplicationNameKnown(appName));
 	}
 	
 	@Test
-	public void testCreateAndAddQueryExternalResourceDescriptorsNoSQL() {
-		Collection<ExternalResourceDescriptor> dbDescriptors = createDbDescriptors(2, false);
+	public void testLocateExternalResourceNameWhenDisabled() {
+		assertInitialState();
 		
-		Collection<ExternalResourceDescriptor> result = 
-				JdbcOperationExternalResourceAnalyzer.createAndAddQueryExternalResourceDescriptors(dbDescriptors);
+		Operation op = createJdbcOperation("jdbc:foobar://huh:8080");
+		op.type(JdbcOperationExternalResourceAnalyzer.TYPE);
 		
-		assertEquals("Total number of descriptors", dbDescriptors.size(), result.size());
-		assertArrayEquals("descriptors content should remain the same", dbDescriptors.toArray(new ExternalResourceDescriptor[0]), 
-																   result.toArray(new ExternalResourceDescriptor[0]));
+		Frame frame = createJdbcFrame(op);
+		Trace trace = createJdbcTrace(frame);
 		
+		Collection<ExternalResourceDescriptor> resources = analyzer.locateExternalResourceName(trace);
+		
+		//make sure that no query external resources were created
+		assertNotNull("external resource descriptors list", resources);
+		assertEquals("total external resource descriptors", 1, resources.size());
+		
+		ExternalResourceDescriptor firstDescriptor = ListUtil.getFirstMember(resources);
+		ExternalResourceType type = ExternalResourceType.valueOf(firstDescriptor.getType());
+		assertSame("first descriptor type", ExternalResourceType.DATABASE, type);
+		assertFalse("first descriptor is a parent", firstDescriptor.isParent());
+		
+		assertTrue(trace.getAppName() + "is known", analyzer.isApplicationNameKnown(trace.getAppName()));
 	}
 	
 	@Test
-	public void testCreateAndAddQueryExternalResourceDescriptorsWithSQL() {
-		Collection<ExternalResourceDescriptor> dbDescriptors = createDbDescriptors(2, true);
+	public void testLocateExternalResourceNameWhenEnabledAndWithoutSql() {
+		assertInitialState();
 		
-		Collection<ExternalResourceDescriptor> result = 
-				JdbcOperationExternalResourceAnalyzer.createAndAddQueryExternalResourceDescriptors(dbDescriptors);
+		//enable query external resources creation
+		registry.set(JdbcOperationExternalResourceAnalyzer.CS_NAME, Boolean.TRUE);
 		
-		assertEquals("Total number of descriptors", 2*dbDescriptors.size(), result.size());
+		Operation op = createJdbcOperation("jdbc:foobar://huh:8080");
+		op.type(JdbcOperationExternalResourceAnalyzer.TYPE);
+		
+		Frame frame = createJdbcFrame(op);
+		Trace trace = createJdbcTrace(frame);
+		
+		Collection<ExternalResourceDescriptor> resources = analyzer.locateExternalResourceName(trace);
+		
+		//make sure that no query external resources were created
+		assertNotNull("external resource descriptors list", resources);
+		assertEquals("total external resource descriptors", 1, resources.size());
+		
+		ExternalResourceDescriptor firstDescriptor = ListUtil.getFirstMember(resources);
+		ExternalResourceType type = ExternalResourceType.valueOf(firstDescriptor.getType());
+		assertSame("first descriptor type", ExternalResourceType.DATABASE, type);
+		assertFalse("first descriptor is a parent", firstDescriptor.isParent());
+		
+		assertTrue(trace.getAppName() + "is known", analyzer.isApplicationNameKnown(trace.getAppName()));
+	}
+	
+	@Test
+	public void testLocateExternalResourceNameWhenEnabledAndWithSql() {
+		assertInitialState();
+		
+		//enable query external resources creation
+		registry.set(JdbcOperationExternalResourceAnalyzer.CS_NAME, Boolean.TRUE);
+		
+		Operation op = createJdbcOperation("jdbc:foobar://huh:8080");
+		op.type(JdbcOperationExternalResourceAnalyzer.TYPE);
+		op.put("sql", "selct * from all");
+		
+		Frame frame = createJdbcFrame(op);
+		Trace trace = createJdbcTrace(frame);
+		
+		Collection<ExternalResourceDescriptor> resources = analyzer.locateExternalResourceName(trace);
+		
+		//make sure that no query external resources were created
+		assertNotNull("external resource descriptors list", resources);
+		assertEquals("total external resource descriptors", 2, resources.size());
+		
+		assertTrue(trace.getAppName() + "is known", analyzer.isApplicationNameKnown(trace.getAppName()));
 		
 		int totalDbs = 0;
 		int totalQuerys = 0;
 		
-		for(ExternalResourceDescriptor desc : result) {
+		for(ExternalResourceDescriptor desc : resources) {
 			ExternalResourceType type = ExternalResourceType.valueOf(desc.getType());
 			
 			switch(type) {
@@ -92,8 +164,48 @@ public class JdbcOperationExternalResourceAnalyzerTest extends Assert {
 			}
 		}
 		
-		assertEquals("Total db external resource descriptors", 2, totalDbs);
-		assertEquals("Total query external resource descriptors", 2, totalQuerys);
+		assertEquals("Total db external resource descriptors", 1, totalDbs);
+		assertEquals("Total query external resource descriptors", 1, totalQuerys);
+	}
+	
+	@Test
+	public void testLocateExternalResourceNameWhenEnabledWithSqlAndDisabledApp() {
+		assertInitialState();
+		
+		//enable query external resources creation
+		registry.set(JdbcOperationExternalResourceAnalyzer.CS_NAME, Boolean.TRUE);
+		
+		Operation op = createJdbcOperation("jdbc:foobar://huh:8080");
+		op.type(JdbcOperationExternalResourceAnalyzer.TYPE);
+		
+		Frame frame = createJdbcFrame(op);
+		Trace trace = createJdbcTrace(frame);
+		
+
+		registry.set(JdbcOperationExternalResourceAnalyzer.createApplicationCollectionSettingName(trace.getAppName()), Boolean.FALSE);
+		
+		Collection<ExternalResourceDescriptor> resources = analyzer.locateExternalResourceName(trace);
+		
+		//make sure that no query external resources were created
+		assertNotNull("external resource descriptors list", resources);
+		assertEquals("total external resource descriptors", 1, resources.size());
+		
+		ExternalResourceDescriptor firstDescriptor = ListUtil.getFirstMember(resources);
+		ExternalResourceType type = ExternalResourceType.valueOf(firstDescriptor.getType());
+		assertSame("first descriptor type", ExternalResourceType.DATABASE, type);
+		assertFalse("first descriptor is a parent", firstDescriptor.isParent());
+		
+		assertTrue(trace.getAppName() + "is known", analyzer.isApplicationNameKnown(trace.getAppName()));
+	}
+	
+	private void assertInitialState() {
+		boolean active = analyzer.isGeneratingExternalResources();
+		Collection<ApplicationName> apps = analyzer.getDisabledApplicationNames();
+		
+		assertFalse("Generating queries external resources should be disabled by default", active);
+		
+		assertNotNull("Disabled apps collection", apps);
+		assertTrue("Disabled apps should be empty by default", apps.isEmpty());
 	}
 	
 	private void assertQueryDescriptor(ExternalResourceDescriptor desc) {
@@ -125,32 +237,4 @@ public class JdbcOperationExternalResourceAnalyzerTest extends Assert {
 		assertEquals("QUERY ExternalResourceDescriptor port", parent.getPort(), desc.getPort());
 		assertEquals("QUERY ExternalResourceDescriptor incoming", parent.isIncoming(), desc.isIncoming());
 	}
-	
-	private Collection<ExternalResourceDescriptor> createDbDescriptors(int num, boolean createQuery) {
-		Collection<ExternalResourceDescriptor> descriptors = new ArrayList<ExternalResourceDescriptor>();
-		
-		for(int i=0; i<num; i++) {
-			Operation op = new Operation();
-			if (createQuery) {
-				op.put("sql", "select * from table" + i);
-			}
-			Frame frame = new SimpleFrame(FrameId.valueOf(i), null, op, 
-									TimeRange.milliTimeRange(0L, 1L), Collections.<Frame>emptyList());
-			
-			ExternalResourceDescriptor descriptor=new ExternalResourceDescriptor(frame, 
-					 "name"+i,
-					 "label"+i,
-					 ExternalResourceType.DATABASE.name(),
-					 "vendor"+i,
-					 "vendor"+i,
-					 i,
-					 null, 
-					 false);
-			
-			descriptors.add(descriptor);
-		}
-		
-		return descriptors;
-	}
-
 }

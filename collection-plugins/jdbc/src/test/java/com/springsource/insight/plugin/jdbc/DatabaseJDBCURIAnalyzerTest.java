@@ -17,31 +17,20 @@ package com.springsource.insight.plugin.jdbc;
 
 import static org.mockito.Mockito.mock;
 
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
 
-import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.operation.OperationFields;
-import com.springsource.insight.intercept.operation.OperationType;
-import com.springsource.insight.intercept.server.ServerName;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
-import com.springsource.insight.intercept.trace.FrameId;
-import com.springsource.insight.intercept.trace.SimpleFrame;
 import com.springsource.insight.intercept.trace.Trace;
-import com.springsource.insight.intercept.trace.TraceId;
-import com.springsource.insight.util.time.TimeRange;
 
 /**
  */
-public class DatabaseJDBCURIAnalyzerTest extends Assert {
+public class DatabaseJDBCURIAnalyzerTest extends AbstractDatabaseJDBCURIAnalyzerTest {
 	private final DatabaseJDBCURIAnalyzer dbAnalyzer=new TestJDBCURIAnalyzer();
 	
 	public DatabaseJDBCURIAnalyzerTest() {
@@ -50,20 +39,11 @@ public class DatabaseJDBCURIAnalyzerTest extends Assert {
 
 	@Test
 	public void testLocateDatabaseURI() throws Exception {
-		Operation op = TestJDBCURIAnalyzer.createOperation();
 		String jdbcUri = "jdbc:foobar://huh:8080";
-		op.put(OperationFields.CONNECTION_URL, jdbcUri);
-		Frame frame = new SimpleFrame(FrameId.valueOf("0"),
-				null,
-				op,
-				TimeRange.milliTimeRange(0, 1),
-				Collections.<Frame>emptyList());
-
-		Trace trace = new Trace(ServerName.valueOf("fake-server"),
-				ApplicationName.valueOf("fake-app"),
-				new Date(),
-				TraceId.valueOf("fake-id"),
-				frame);
+		
+		Operation op = createJdbcOperation(jdbcUri);
+		Frame frame = createJdbcFrame(op);
+		Trace trace = createJdbcTrace(frame);
 
 		List<ExternalResourceDescriptor>	descList=
 				(List<ExternalResourceDescriptor>) dbAnalyzer.locateExternalResourceName(trace);
@@ -139,20 +119,5 @@ public class DatabaseJDBCURIAnalyzerTest extends Assert {
 		assertEquals(8080, res.getPort());
 		assertEquals("mydb:1:" + MD5NameGenerator.getName(testUri), res.getName());
 		assertEquals(Boolean.FALSE, Boolean.valueOf(res.isIncoming()));
-	}
-	
-	static class TestJDBCURIAnalyzer extends DatabaseJDBCURIAnalyzer {
-	    static final OperationType TYPE=OperationType.valueOf("analyzer-test");
-	    TestJDBCURIAnalyzer () {
-	        super(TYPE);
-	    }
-
-	    static Operation createOperation () {
-	        return createOperation(new Operation());
-	    }
-
-	    static Operation createOperation (Operation op) {
-	        return op.type(TYPE);
-	    }
 	}
 }
