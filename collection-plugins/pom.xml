@@ -21,6 +21,7 @@
 				<jdk>[1.6,)</jdk>
 			</activation>
 			<modules>
+                <module>akka</module>
 				<module>cassandra</module>
 				<module>hadoop</module>
 				<module>redis</module>
@@ -30,7 +31,6 @@
     </profiles>
 
 	<modules>
-		<module>akka</module>
 		<module>eclipse-persistence</module>
 		<module>ehcache</module>
 		<module>ejb3</module>
