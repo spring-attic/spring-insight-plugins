@@ -90,11 +90,8 @@ public privileged aspect MessageListenerOperationCollectionAspect extends Traili
 	}
 	
 	
-	//The AmqpInboundChannelAdapter contains a messageListenerContainer, and sets it's messageListener inline in it's onInit() method
-	//(this.messageListenerContainer.setMessageListener(new MessageListener() {
-	//   public void onMessage(Message message) {...} }
-	//So we want to catch all MessageListener+.onMessage calls, but only if they belong to an AmqpInboundChannelAdapter
-	//Here we use an aspect to catch these associations and remember the AmqpInboundChannelAdapter for each message listener so we have access 
+	//We want to catch all MessageListener+.onMessage calls, but only if they belong to an AmqpInboundChannelAdapter
+	//Here we use an aspect to remember the AmqpInboundChannelAdapter for each message listener so we have access 
 	//to it when a message is actually consumed
 	
 	//This is the description of the AmqpInboundChannelAdapter class:
@@ -104,21 +101,15 @@ public privileged aspect MessageListenerOperationCollectionAspect extends Traili
 	private Map<String, MessageListenerProps> messageListenerPropsCache = new ConcurrentHashMap<String, MessageListenerProps>();
 
 	@SuppressAjWarnings
-	void around(MessageListener messageListener) : 
-		call(void org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer.setMessageListener(Object))		
-		&& args(messageListener){
-
-		if (thisJoinPoint.getThis() instanceof AmqpInboundChannelAdapter) {
-
+	after() : execution(void AmqpInboundChannelAdapter.onInit()){
 			AmqpInboundChannelAdapter inboundChannelAdapter = (AmqpInboundChannelAdapter) thisJoinPoint.getThis();
-			MessageListenerProps cachedMessageListenerProps = createCachedMessageListenerProps(messageListener, inboundChannelAdapter);
-			messageListenerPropsCache.put(SpringIntegrationDefinitions.getObjectKey(messageListener), cachedMessageListenerProps);
-		}
-
-		proceed(messageListener);
+			MessageListenerProps cachedMessageListenerProps = createCachedMessageListenerProps(inboundChannelAdapter);
+			messageListenerPropsCache.put(
+					SpringIntegrationDefinitions.getObjectKey(inboundChannelAdapter.messageListenerContainer.getMessageListener()),
+					cachedMessageListenerProps);
 	}
 
-	private MessageListenerProps createCachedMessageListenerProps(MessageListener listener, AmqpInboundChannelAdapter inboundChannelAdapter) {
+	private MessageListenerProps createCachedMessageListenerProps(AmqpInboundChannelAdapter inboundChannelAdapter) {
 		String outputChannelName = inboundChannelAdapter.outputChannel.toString();
 		String queueNames = StringUtils.arrayToCommaDelimitedString(inboundChannelAdapter.messageListenerContainer.getQueueNames());
 		String beanName = inboundChannelAdapter.getComponentName();
