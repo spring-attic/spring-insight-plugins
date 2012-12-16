@@ -32,6 +32,9 @@ import akka.routing.RoutedActorRef;
 public class RouterActorRefPropertyExtractorTest {
 
     private RoutedActorRef tested;
+    public RouterActorRefPropertyExtractorTest() {
+    	super();
+    }
 
     @Before
     public void setUp() {

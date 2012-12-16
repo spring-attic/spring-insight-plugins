@@ -42,6 +42,10 @@ public class AkkaRouterConfigHelperTest {
 	    "test-value");
     private AkkaRouterConfigHelper tested;
 
+    public AkkaRouterConfigHelperTest() {
+    	super();
+    }
+
     @Before
     public void setUp() {
 	tested = AkkaRouterConfigHelper.getInstance();
@@ -49,7 +53,8 @@ public class AkkaRouterConfigHelperTest {
 	ReflectionUtils.setField(field, tested,
 		Collections.singletonMap(CustomRouterConfig.class, new RouterConfigDataExtractor() {
 
-		    public Map<String, String> extract(RouterConfig routerConfig) {
+		    @SuppressWarnings("synthetic-access")
+			public Map<String, String> extract(RouterConfig routerConfig) {
 			return ROUTER_CONFIG_KEY_VALUE;
 		    }
 		}));
@@ -71,6 +76,9 @@ public class AkkaRouterConfigHelperTest {
     }
 
     private static final class TestCustomRouterConfig extends CustomRouterConfig {
+    public TestCustomRouterConfig() {
+    	super();
+    }
 
 	public SupervisorStrategy supervisorStrategy() {
 	    return null;

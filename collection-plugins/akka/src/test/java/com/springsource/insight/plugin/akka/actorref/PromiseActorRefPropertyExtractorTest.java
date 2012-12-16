@@ -30,12 +30,15 @@ import akka.dispatch.Promise;
 import akka.pattern.PromiseActorRef;
 
 public class PromiseActorRefPropertyExtractorTest {
+	public PromiseActorRefPropertyExtractorTest() {
+		super();
+	}
 
     @Test
     public void testExtractProperties() {
 	PromiseActorRef ref = createActorRef();
 	Map<String, Object> result = PromiseActorRefPropertyExtractor.INSTANCE.extractProperties(ref);
-	assertEquals("not the expected result", Collections.singletonMap("local", true), result);
+	assertEquals("not the expected result", Collections.singletonMap("local", Boolean.TRUE), result);
     }
 
     private PromiseActorRef createActorRef() {

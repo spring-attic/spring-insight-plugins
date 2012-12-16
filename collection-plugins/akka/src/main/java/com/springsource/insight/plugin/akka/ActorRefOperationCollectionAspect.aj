@@ -30,6 +30,9 @@ import com.springsource.insight.plugin.akka.actorref.ActorRefHelper;
  * 
  */
 public aspect ActorRefOperationCollectionAspect extends MethodOperationCollectionAspect {
+	public ActorRefOperationCollectionAspect() {
+		super();
+	}
 
     public pointcut collectionPoint() : execution(public void ActorRef+.tell(Object)) || execution(public void ActorRef+.tell(Object, ActorRef));
 
@@ -41,10 +44,14 @@ public aspect ActorRefOperationCollectionAspect extends MethodOperationCollectio
 	String path = String.valueOf(actorRef.path());
 	String actorRefType = target.getClass().getSimpleName();
 	Class<?> messageClass = jp.getArgs()[0].getClass();
-	return super.createOperation(jp).type(AkkaDefinitions.OperationTypes.AKKA_OP_ACTOR_REF)
-		.label(buildLabel(path, messageClass)).put(AkkaDefinitions.Labels.PATH, path)
+	return super.createOperation(jp)
+		.type(AkkaDefinitions.OperationTypes.AKKA_OP_ACTOR_REF)
+		.label(buildLabel(path, messageClass))
+		.put(AkkaDefinitions.Labels.PATH, path)
 		.put(AkkaDefinitions.Labels.MESSAGE, messageClass.getName())
-		.put(AkkaDefinitions.Labels.ACTOR_REF, actorRefType).putAnyAll(additionalInfo);
+		.put(AkkaDefinitions.Labels.ACTOR_REF, actorRefType)
+		.putAnyAll(additionalInfo)
+		;
 
     }
 

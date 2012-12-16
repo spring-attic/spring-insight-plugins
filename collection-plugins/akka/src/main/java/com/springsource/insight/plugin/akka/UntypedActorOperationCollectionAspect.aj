@@ -29,6 +29,9 @@ import com.springsource.insight.intercept.operation.Operation;
  * 
  */
 public aspect UntypedActorOperationCollectionAspect extends MethodOperationCollectionAspect {
+	public UntypedActorOperationCollectionAspect() {
+		super();
+	}
 
     public pointcut collectionPoint() : execution(public void UntypedActor+.onReceive(Object));
 
@@ -41,14 +44,15 @@ public aspect UntypedActorOperationCollectionAspect extends MethodOperationColle
 	ActorRef senderRef = actor.getSender();
 	String senderPath = buildPath(senderRef);
 	Class<?> messageClass = jp.getArgs()[0].getClass();
-	return super.createOperation(jp).type(AkkaDefinitions.OperationTypes.AKKA_OP_UNTYPED_ACTOR)
+	return super.createOperation(jp)
+		.type(AkkaDefinitions.OperationTypes.AKKA_OP_UNTYPED_ACTOR)
 		.label(buildLabel(actorType, messageClass))
 		.put(AkkaDefinitions.Labels.ACTOR + AkkaDefinitions.Labels.PATH, buildPath(actor.getSelf()))
 		.put(AkkaDefinitions.Labels.SYSTEM, system)
 		.put(AkkaDefinitions.Labels.SENDER + AkkaDefinitions.Labels.PATH, senderPath)
 		.put(AkkaDefinitions.Labels.MESSAGE, messageClass.getName())
-		.put(AkkaDefinitions.Labels.ACTOR, actorType);
-
+		.put(AkkaDefinitions.Labels.ACTOR, actorType)
+		;
     }
 
     private String buildLabel(String actorType, Class<?> messageClass) {

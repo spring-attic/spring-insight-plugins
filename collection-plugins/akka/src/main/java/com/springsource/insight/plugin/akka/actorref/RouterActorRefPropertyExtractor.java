@@ -29,15 +29,16 @@ class RouterActorRefPropertyExtractor implements ActorRefPropertyExtractor {
     public static final RouterActorRefPropertyExtractor INSTANCE = new RouterActorRefPropertyExtractor();
 
     private RouterActorRefPropertyExtractor() {
+    	super();
     }
 
     public Map<String, Object> extractProperties(ActorRef actorRef) {
-	RoutedActorRef ref = (RoutedActorRef) actorRef;
-	Map<String, Object> result = new HashMap<String, Object>();
-	RouterConfig routerConfig = ref.routerConfig();
-	result.putAll(AkkaRouterConfigHelper.getInstance().getRouterConfigInformation(routerConfig));
-	result.put("local", ref.isLocal());
-	return result;
+		RoutedActorRef ref = (RoutedActorRef) actorRef;
+		Map<String, Object> result = new HashMap<String, Object>();
+		RouterConfig routerConfig = ref.routerConfig();
+		result.putAll(AkkaRouterConfigHelper.getInstance().getRouterConfigInformation(routerConfig));
+		result.put("local", Boolean.valueOf(ref.isLocal()));
+		return result;
     }
 
 }

@@ -25,6 +25,9 @@ import org.junit.Test;
 import akka.routing.RoundRobinRouter;
 
 public class RoundRobinRouterDataExtractorTest {
+	public RoundRobinRouterDataExtractorTest() {
+		super();
+	}
 
     @Test
     public void testExtract() {

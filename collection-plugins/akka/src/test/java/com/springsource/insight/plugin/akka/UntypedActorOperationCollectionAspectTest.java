@@ -26,6 +26,9 @@ import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class UntypedActorOperationCollectionAspectTest extends AbstractAkkaOperationCollectionAspectTestSupport {
+	public UntypedActorOperationCollectionAspectTest() {
+		super();
+	}
 
     @Test
     public void testCreateOperation() {
