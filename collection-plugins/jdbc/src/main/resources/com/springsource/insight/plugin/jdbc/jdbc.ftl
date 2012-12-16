@@ -17,6 +17,7 @@
         </#if>
     </@insight.entry>
     <@insight.entry name="Connection URL" value=operation.connectionUrl />
+    <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
 </@insight.group>
 
 <@insight.sourceCodeLocation location=operation.sourceCodeLocation />

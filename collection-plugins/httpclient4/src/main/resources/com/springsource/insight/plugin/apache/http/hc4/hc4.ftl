@@ -15,3 +15,9 @@
 <@insight.group label="Response Headers" if=response.headers?has_content collection=response.headers ; h>
     <@insight.entry name=h.name value=h.value required="true" />
 </@insight.group>
+
+<#if operation.exception??>
+	<@insight.group label="Exception Details">
+		<@insight.entry name="Exception" value=operation.exception/>
+	</@insight.group>
+</#if>

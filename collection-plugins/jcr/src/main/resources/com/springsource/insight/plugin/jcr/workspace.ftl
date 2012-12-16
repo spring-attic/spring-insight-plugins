@@ -6,9 +6,9 @@
     <@insight.entry name="Destination Absolute Path" value=operation.destAbsPath/>
     <@insight.entry name="Source Workspace" value=operation.srcWorkspace/>
     <@insight.entry name="Source Absolute Path" value=operation.srcAbsPath/>
-    
     <@insight.entry name="Overwrite" value=operation.removeExisting/>
     <@insight.entry name="Save and Refresh" value=operation.keepChanges/>
+    <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
 </@insight.group>    
 
 <@insight.sourceCodeLocation location=operation.sourceCodeLocation />

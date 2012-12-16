@@ -3,6 +3,7 @@
 
 <@insight.group label="Eclipse Persistence Query">
     <@insight.entry name="Query name" value=operation.action />
+    <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
 </@insight.group>
 
 <@insight.sourceCodeLocation location=operation.sourceCodeLocation />

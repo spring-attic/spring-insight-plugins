@@ -8,19 +8,26 @@
 
 <#if operation.method == "addAll">
     <@insight.group label="${operation.label?html}">
-    <@insight.entry name="Size" value=operation.size if=operation.size?? />
+		<@insight.entry name="Size" value=operation.size if=operation.size?? />
     </@insight.group>
 </#if>
 
 <#if operation.method == "remove">
     <@insight.group label="${operation.label?html}">
-    <@insight.entry name="Value" value=operation.value if=operation.value?? />
+		<@insight.entry name="Value" value=operation.value if=operation.value?? />
     </@insight.group>
 </#if>
 
 <#if operation.method == "removeAll">
     <@insight.group label="${operation.label?html}">
-    <@insight.entry name="Size" value=operation.size if=operation.size?? />
+		<@insight.entry name="Size" value=operation.size if=operation.size?? />
     </@insight.group>
 </#if>
+
+<#if operation.exception??>
+	<@insight.group label="Exception Details">
+		<@insight.entry name="Exception" value=operation.exception/>
+	</@insight.group>
+</#if>
+
 

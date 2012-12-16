@@ -23,7 +23,6 @@
 			<@insight.entry name=key value=operation.messageContentMap[key] />
 		</@insight.group>
 	</@insight.entry>
-	
 </@insight.group>
 
 <#if operation.messageHeaders?has_content>
@@ -35,6 +34,12 @@
 <#if operation.messageProperties?has_content>
 	<@insight.group label="Message Properties" collection=operation.messageProperties?keys ; key>
 		<@insight.entry name=key value=operation.messageProperties[key] />
+	</@insight.group>
+</#if>
+
+<#if operation.exception??>
+	<@insight.group label="Exception Details">
+		<@insight.entry name="Exception" value=operation.exception/>
 	</@insight.group>
 </#if>
 

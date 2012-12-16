@@ -6,6 +6,7 @@
     <@insight.entry name="Port" value=operation.port />
     <@insight.entry name="Server mode" value=operation.serverMode />
     <@insight.entry name="Connection-ID" value=operation.connectionId if=operation.connectionId?? />
+    <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
 </@insight.group>
 
 <@insight.sourceCodeLocation location=operation.sourceCodeLocation />

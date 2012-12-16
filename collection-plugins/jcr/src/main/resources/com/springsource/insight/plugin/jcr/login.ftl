@@ -3,9 +3,9 @@
 
 <@insight.group label="Details">
     <@insight.entry name="Workspace" value=operation.workspace/>
-    
     <@insight.entry name="Username" value=operation.user/>
     <@insight.entry name="Password" value=operation.pass/>
+    <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
 </@insight.group>    
 
 <@insight.sourceCodeLocation location=operation.sourceCodeLocation />

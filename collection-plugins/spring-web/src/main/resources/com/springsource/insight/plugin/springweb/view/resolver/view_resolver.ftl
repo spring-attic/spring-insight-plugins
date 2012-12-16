@@ -6,4 +6,5 @@
     <@insight.entry name="Locale" value=operation.locale />
     <@insight.entry name="Resolved View" value=operation.resolvedView required="true" />
     <@insight.entry name="Content-Type" value=operation.contentType required="true" />
+    <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
 </@insight.group>

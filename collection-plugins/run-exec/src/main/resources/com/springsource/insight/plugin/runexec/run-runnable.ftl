@@ -9,6 +9,7 @@
         <@insight.entry name="Method" value=operation.spawnLocation['methodName'] />
         <@insight.entry name="Line" value=operation.spawnLocation['lineNumber'] />
     </@insight.entry>
+    <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
 </@insight.group>
 
 <@insight.sourceCodeLocation location=operation.sourceCodeLocation />

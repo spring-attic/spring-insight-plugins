@@ -12,4 +12,5 @@
     <@insight.entry name=operation.siComponentType value=operation.beanName />
     <@insight.entry name="Message Payload Type" value=operation.payloadType />
     <@insight.entry name="Message ID" value=operation.idHeader />
+    <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
 </@insight.group>

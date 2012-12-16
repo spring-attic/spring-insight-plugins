@@ -11,5 +11,6 @@
     <@insight.entry name="Return">
     	${operation.returnValue?html}
     </@insight.entry>
+    <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
 </@insight.group>
 

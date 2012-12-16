@@ -3,4 +3,5 @@
 
 <@insight.group label="Details">
     <@insight.entry name="Action" value=operation.action />
+    <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
 </@insight.group>

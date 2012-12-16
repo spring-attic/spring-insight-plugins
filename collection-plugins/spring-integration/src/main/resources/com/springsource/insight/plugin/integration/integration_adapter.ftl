@@ -9,4 +9,5 @@
     <@insight.entry name="Message Exchange" value=operation.messageExchange />    
     <@insight.entry name="Message Routing Key" value=operation.messageRoutingKey />    
     <@insight.entry name="Message Content Type" value=operation.messageContentType />
+    <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
 </@insight.group>
