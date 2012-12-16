@@ -19,6 +19,10 @@ package com.springsource.insight.plugin.springcore;
 import java.lang.annotation.Annotation;
 import java.util.List;
 
+import org.springframework.context.ApplicationEvent;
+
+import com.foo.example.AbstractBean;
+import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.OperationCollector;
 import com.springsource.insight.collection.OperationListCollector;
 import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
@@ -56,6 +60,32 @@ public abstract class StereotypeOperationCollectionAspectTestSupport
 		}
 	}
 
+	protected void assertLifecycleMethodsNotIntercepted(AbstractBean beanInstance) throws Exception {
+		OperationCollectionAspectSupport	aspectInstance=getAspect();
+		OperationCollector					orgCollector=aspectInstance.getCollector();
+		OperationListCollector				collector=new OperationListCollector();
+		aspectInstance.setCollector(collector);
+		
+		List<Operation>	collectedOps=collector.getCollectedOperations();
+		try {
+			beanInstance.afterPropertiesSet();
+			assertTrue("Unexpected invocation for 'afterPropertiesSet': " + collectedOps, collectedOps.isEmpty());
+
+			ApplicationEvent	testEvent=new TestEvent(beanInstance);
+
+			beanInstance.onApplicationEvent(testEvent);
+			assertTrue("Unexpected invocation for 'onApplicationEvent': " + collectedOps, collectedOps.isEmpty());
+
+			beanInstance.publishEvent(testEvent);
+			assertTrue("Unexpected invocation for 'publishEvent': " + collectedOps, collectedOps.isEmpty());
+
+			beanInstance.multicastEvent(testEvent);
+			assertTrue("Unexpected invocation for 'multicastEvent': " + collectedOps, collectedOps.isEmpty());
+		} finally {
+			aspectInstance.setCollector(orgCollector);
+		}
+	}
+
 	protected Operation assertStereotypeOperation (Runnable beanInstance, boolean withOperation) {
 		Class<?>	beanClass=beanInstance.getClass();
 		Annotation	ann=beanClass.getAnnotation(stereoTypeClass);
@@ -78,5 +108,13 @@ public abstract class StereotypeOperationCollectionAspectTestSupport
         assertEquals("Mismatched component type", stereoTypeClass.getSimpleName(), operation.get(StereotypedSpringBeanMethodOperationCollectionAspectSupport.COMP_TYPE_ATTR, String.class));
         assertEquals("Mismatched label", beanClass.getSimpleName() + "#" + beanMethod, operation.getLabel());
         return operation;
+	}
+	
+	protected static class TestEvent extends ApplicationEvent {
+		private static final long serialVersionUID = 1L;
+
+		public TestEvent(AbstractBean beanInstance) {
+			super(beanInstance);
+		}
 	}
 }

@@ -18,15 +18,62 @@ package com.foo.example;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ApplicationEventMulticaster;
 
 /**
  * 
  */
-public abstract class AbstractBean implements Runnable {
+public abstract class AbstractBean implements Runnable,
+												ApplicationListener<ApplicationEvent>,
+												InitializingBean,
+												ApplicationEventPublisher,
+												ApplicationEventMulticaster {
 	protected final Log	logger=LogFactory.getLog(getClass());
 
 	protected AbstractBean() {
 		super();
+	}
+
+	public void afterPropertiesSet() throws Exception {
+		logger.info("afterPropertiesSet()");
+	}
+
+	@SuppressWarnings("rawtypes")
+	public void addApplicationListener(ApplicationListener listener) {
+		// ignored
+	}
+
+	public void addApplicationListenerBean(String listenerBeanName) {
+		// ignored
+	}
+
+	@SuppressWarnings("rawtypes")
+	public void removeApplicationListener(ApplicationListener listener) {
+		// ignored
+	}
+
+	public void removeApplicationListenerBean(String listenerBeanName) {
+		// ignored
+	}
+
+	public void removeAllListeners() {
+		// ignored
+	}
+
+	public void multicastEvent(ApplicationEvent event) {
+		logger.info("multicastEvent(" + event.getClass().getSimpleName() + ")@" + event.getTimestamp());
+	}
+
+	public void publishEvent(ApplicationEvent event) {
+		logger.info("publishEvent(" + event.getClass().getSimpleName() + ")@" + event.getTimestamp());
+	}
+
+	public void onApplicationEvent(ApplicationEvent event) {
+		logger.info("onApplicationEvent(" + event.getClass().getSimpleName() + ")@" + event.getTimestamp());
 	}
 
 	@Override

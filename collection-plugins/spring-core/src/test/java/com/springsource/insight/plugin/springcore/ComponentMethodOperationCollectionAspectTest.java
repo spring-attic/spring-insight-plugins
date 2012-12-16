@@ -41,6 +41,11 @@ public class ComponentMethodOperationCollectionAspectTest extends StereotypeOper
 		assertStereotypeOperation(new InsightComponent(), false);
 	}
 
+	@Test
+	public void testLifecycleMethodsNotCollected() throws Exception {
+		assertLifecycleMethodsNotIntercepted(new ExampleComponent());
+	}
+
 	@Override
 	public ComponentMethodOperationCollectionAspect getAspect() {
 		return ComponentMethodOperationCollectionAspect.aspectOf();
