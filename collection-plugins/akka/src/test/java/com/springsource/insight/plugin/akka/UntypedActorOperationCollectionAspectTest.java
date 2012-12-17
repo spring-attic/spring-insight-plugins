@@ -31,10 +31,12 @@ public class UntypedActorOperationCollectionAspectTest extends AbstractAkkaOpera
 	}
 
     @Test
-    public void testCreateOperation() {
+    public void testCreateOperation() throws Exception {
 	ActorRef ref = createActorRef();
 	ref.tell(getClass());
 
+	Thread.sleep(1000);
+	
 	Operation operation = getLastEntered();
 	Operation expected = new Operation().type(AkkaDefinitions.OperationTypes.AKKA_OP_UNTYPED_ACTOR)
 		.put(AkkaDefinitions.Labels.MESSAGE, Class.class.getName())

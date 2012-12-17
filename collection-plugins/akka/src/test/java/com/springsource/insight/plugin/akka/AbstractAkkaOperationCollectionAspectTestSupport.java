@@ -69,7 +69,7 @@ public abstract class AbstractAkkaOperationCollectionAspectTestSupport extends O
 
 	@Override
 	public void onReceive(Object o) throws Exception {
-	   // getSender().tell(o, getSelf());
+	    // do nothing
 	}
 
     }
