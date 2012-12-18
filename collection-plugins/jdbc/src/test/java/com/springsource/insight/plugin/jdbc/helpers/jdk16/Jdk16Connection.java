@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import java.sql.SQLXML;
 import java.sql.Struct;
 import java.util.Properties;
+import java.util.concurrent.Executor;
 
 import com.springsource.insight.plugin.jdbc.helpers.AbstractConnection;
 
@@ -85,5 +86,23 @@ public class Jdk16Connection extends AbstractConnection {
 
 	public Struct createStruct(String typeName, Object[] attributes) throws SQLException {
 		return null;
+	}
+
+	public void setSchema(String schema) throws SQLException {
+	}
+
+	public String getSchema() throws SQLException {
+		return null;
+	}
+
+	public void abort(Executor executor) throws SQLException {
+	}
+
+	public void setNetworkTimeout(Executor executor, int milliseconds)
+			throws SQLException {
+	}
+
+	public int getNetworkTimeout() throws SQLException {
+		return 0;
 	}
 }

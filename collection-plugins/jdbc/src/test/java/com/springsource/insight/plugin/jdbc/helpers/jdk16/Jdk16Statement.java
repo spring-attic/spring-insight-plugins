@@ -331,4 +331,21 @@ public class Jdk16Statement extends AbstractStatement {
 			throws SQLException {
 		// ignored
 	}
+
+	public <T> T getObject(int parameterIndex, Class<T> type)
+			throws SQLException {
+		return null;
+	}
+
+	public <T> T getObject(String parameterName, Class<T> type)
+			throws SQLException {
+		return null;
+	}
+
+	public void closeOnCompletion() throws SQLException {
+	}
+
+	public boolean isCloseOnCompletion() throws SQLException {
+		return false;
+	}
 }
