@@ -1235,7 +1235,7 @@
 									project.properties['deploy.repo.id'] = project.properties['snapshot.repo.id']
 									project.properties['deploy.repo.name'] = project.properties['snapshot.repo.name']
 									project.properties['deploy.repo.url'] = project.properties['snapshot.dist.url']
-                                } else if ('${project.version}'.contains("RELEASE")) {
+                                } else if ('${project.version}'.contains("RELEASE") || '${project.version}'.contains(".SR")) {
                                     session.currentProject.distributionManagement.repository.id = project.properties['release.repo.id']
                                     session.currentProject.distributionManagement.repository.name = project.properties['release.repo.name']
                                     session.currentProject.distributionManagement.repository.url = project.properties['release.dist.url']
