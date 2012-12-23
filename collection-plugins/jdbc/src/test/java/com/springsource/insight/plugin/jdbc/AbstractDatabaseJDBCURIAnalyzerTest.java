@@ -18,8 +18,7 @@ package com.springsource.insight.plugin.jdbc;
 import java.util.Collections;
 import java.util.Date;
 
-import org.junit.Assert;
-
+import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
@@ -32,9 +31,9 @@ import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
 import com.springsource.insight.util.time.TimeRange;
 
-public class AbstractDatabaseJDBCURIAnalyzerTest extends Assert {
+public abstract class AbstractDatabaseJDBCURIAnalyzerTest extends AbstractCollectionTestSupport {
 
-	public AbstractDatabaseJDBCURIAnalyzerTest() {
+	protected AbstractDatabaseJDBCURIAnalyzerTest() {
 		super();
 	}
 

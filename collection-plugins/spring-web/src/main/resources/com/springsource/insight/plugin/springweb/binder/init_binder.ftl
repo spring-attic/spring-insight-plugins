@@ -24,4 +24,5 @@
             <em>none specified</em>
         </#if>
     </@insight.entry>
+    <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
 </@insight.group>

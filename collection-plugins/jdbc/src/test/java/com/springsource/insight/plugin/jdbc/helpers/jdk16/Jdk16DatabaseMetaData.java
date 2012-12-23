@@ -66,4 +66,14 @@ public class Jdk16DatabaseMetaData extends AbstractDatabaseMetaData {
 			throws SQLException {
 		return null;
 	}
+
+	public ResultSet getPseudoColumns(String catalog, String schemaPattern,
+			String tableNamePattern, String columnNamePattern)
+			throws SQLException {
+		return null;
+	}
+
+	public boolean generatedKeyAlwaysReturned() throws SQLException {
+		return false;
+	}
 }

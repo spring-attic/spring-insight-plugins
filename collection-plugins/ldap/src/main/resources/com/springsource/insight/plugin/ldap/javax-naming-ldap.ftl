@@ -9,6 +9,7 @@
             <@insight.entry name=key value=operation.searchControls[key] />
         </@insight.group>
     </@insight.entry>
+    <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
 </@insight.group>
 
 <@insight.sourceCodeLocation location=operation.sourceCodeLocation />

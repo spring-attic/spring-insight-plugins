@@ -25,6 +25,13 @@
 			<artifactId>grails-web</artifactId>
 			<version>${grails.version}</version>
 			<scope>provided</scope>
+			<exclusions>
+			         <!-- as of spring 3.2 it is inside the core -->
+			     <exclusion>
+			         <groupId>org.springframework</groupId>
+			         <artifactId>spring-asm</artifactId>
+			     </exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>

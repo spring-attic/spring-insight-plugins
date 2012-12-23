@@ -20,6 +20,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,7 @@ public class JdbcPreparedStatementOperationCollectionAspectTest extends JdbcStat
 	        	ps.setString(1, strParam);
 	        	ps.setDate(2, dtParam);
 
-	        	ps.execute();
+	        	assertTrue("Failed to execute", ps.execute());
         	} finally {
         		ps.close();
         	}
@@ -78,7 +79,11 @@ public class JdbcPreparedStatementOperationCollectionAspectTest extends JdbcStat
         	CallableStatement cs = c.prepareCall(sql);
         	try {
         		cs.setString(1, strParam);
-        		cs.executeQuery();
+        		
+        		ResultSet	returnValue	= cs.executeQuery();
+        		if (returnValue != null) {
+        			returnValue.close();
+        		}
         	} finally {
         		cs.close();
         	}
@@ -100,7 +105,10 @@ public class JdbcPreparedStatementOperationCollectionAspectTest extends JdbcStat
 	        // So finally, figured out how hsqldb maps named parameters (@p1, @p2 etc.)
 	        try {
 	        	cs.setString(paramName, paramValue);
-	        	cs.executeQuery();
+	        	ResultSet	returnValue = cs.executeQuery();
+        		if (returnValue != null) {
+        			returnValue.close();
+        		}
 	        } finally {
 	        	cs.close();
 	        }

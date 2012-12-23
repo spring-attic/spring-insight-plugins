@@ -21,6 +21,7 @@
 				<jdk>[1.6,)</jdk>
 			</activation>
 			<modules>
+                <module>akka</module>
 				<module>cassandra</module>
 				<module>hadoop</module>
 				<module>redis</module>

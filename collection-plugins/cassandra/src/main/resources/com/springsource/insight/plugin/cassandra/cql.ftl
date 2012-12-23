@@ -11,6 +11,7 @@
     <@insight.entry name="Parameters" if=operation.params?has_content>
         <@insight.list type="ordered" collection=operation.params />
     </@insight.entry>
+    <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
 </@insight.group>
 
 <@insight.sourceCodeLocation location=operation.sourceCodeLocation />

@@ -11,11 +11,10 @@
 
     <properties>
         <insight.root.dir>${project.parent.basedir}/..</insight.root.dir>
-        <spring.framework.version>3.1.3.RELEASE</spring.framework.version>
+        <spring.framework.version>3.2.0.RELEASE</spring.framework.version>
         <spring.security.version>3.1.3.RELEASE</spring.security.version>
 		<spring.webflow.version>2.3.1.RELEASE</spring.webflow.version>
-        <spring.integration.version>2.1.4.RELEASE</spring.integration.version>
-        <spring.integration.version>2.1.4.RELEASE</spring.integration.version>
+        <spring.integration.version>2.2.0.RELEASE</spring.integration.version>
         <spring.data.commons.version>1.1.0.RELEASE</spring.data.commons.version>
         <aspectj.version>1.7.1</aspectj.version>
         <junit.version>4.10</junit.version>
@@ -25,7 +24,7 @@
         <commons.math.version>2.1</commons.math.version>
         <commons.io.version>1.4</commons.io.version>
         <clover2.version>2.6.3</clover2.version>
-        <slf4j.version>1.6.6</slf4j.version>
+        <slf4j.version>1.7.2</slf4j.version>
         <servlet-api.version>2.5</servlet-api.version>
 		<jetty-api.version>6.1.25</jetty-api.version>
         <freemarker.version>2.3.15</freemarker.version>
@@ -611,11 +610,6 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-aop</artifactId>
-				<version>${spring.framework.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-asm</artifactId>
 				<version>${spring.framework.version}</version>
 			</dependency>
 			<dependency>
@@ -1235,7 +1229,7 @@
 									project.properties['deploy.repo.id'] = project.properties['snapshot.repo.id']
 									project.properties['deploy.repo.name'] = project.properties['snapshot.repo.name']
 									project.properties['deploy.repo.url'] = project.properties['snapshot.dist.url']
-                                } else if ('${project.version}'.contains("RELEASE")) {
+                                } else if ('${project.version}'.contains("RELEASE") || '${project.version}'.contains(".SR")) {
                                     session.currentProject.distributionManagement.repository.id = project.properties['release.repo.id']
                                     session.currentProject.distributionManagement.repository.name = project.properties['release.repo.name']
                                     session.currentProject.distributionManagement.repository.url = project.properties['release.dist.url']

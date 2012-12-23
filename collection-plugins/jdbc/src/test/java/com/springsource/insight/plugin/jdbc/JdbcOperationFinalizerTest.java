@@ -18,13 +18,13 @@ package com.springsource.insight.plugin.jdbc;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
-public class JdbcOperationFinalizerTest extends Assert {
+public class JdbcOperationFinalizerTest extends AbstractCollectionTestSupport {
     private Operation operation;
     
     public JdbcOperationFinalizerTest () {
@@ -32,13 +32,15 @@ public class JdbcOperationFinalizerTest extends Assert {
     }
 
     @Before
+    @Override
     public void setUp() {
+    	super.setUp();
         operation = new Operation().type(JdbcOperationExternalResourceAnalyzer.TYPE);
         JdbcOperationFinalizer.register(operation);
     }
     
     @Test
-    public void setParameterInSequence() {
+    public void testSetParameterInSequence() {
         JdbcOperationFinalizer.addParam(operation, 1, "a"); // this is 1-based index
         JdbcOperationFinalizer.addParam(operation, 2, "b"); // this is 1-based index
         
@@ -46,13 +48,13 @@ public class JdbcOperationFinalizerTest extends Assert {
         @SuppressWarnings("unchecked")
         List<String> params = (List<String>) operation.asMap().get("params");
         
-        assertEquals(2, params.size());
-        assertEquals("a", params.get(0));
-        assertEquals("b", params.get(1));
+        assertEquals("Mismatched number of parameters", 2, params.size());
+        assertEquals("Mismatched 1st parameter", "a", params.get(0));
+        assertEquals("Mismatched 2nd parameter", "b", params.get(1));
     }
 
     @Test
-    public void setParameterOutOfSequence() {
+    public void testSetParameterOutOfSequence() {
         JdbcOperationFinalizer.addParam(operation, 2, "b"); // this is 1-based index
         JdbcOperationFinalizer.addParam(operation, 1, "a"); // this is 1-based index
         
@@ -60,13 +62,13 @@ public class JdbcOperationFinalizerTest extends Assert {
         @SuppressWarnings("unchecked")
         List<String> params = (List<String>) operation.asMap().get("params");
         
-        assertEquals(2, params.size());
-        assertEquals("a", params.get(0));
-        assertEquals("b", params.get(1));
+        assertEquals("Mismatched number of parameters", 2, params.size());
+        assertEquals("Mismatched 1st parameter", "a", params.get(0));
+        assertEquals("Mismatched 2nd parameter", "b", params.get(1));
     }
 
     @Test
-    public void setMappedParameter() {
+    public void testSetMappedParameter() {
         JdbcOperationFinalizer.addParam(operation, "key1", "value1");
         JdbcOperationFinalizer.addParam(operation, "key2", "value2");
         
@@ -157,5 +159,4 @@ public class JdbcOperationFinalizerTest extends Assert {
     public void testCreateLabelStatement() {
         assertEquals("JDBC STATEMENT", JdbcOperationFinalizer.createLabel("ALTER MY DRESS"));
     }
-    
 }

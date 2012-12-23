@@ -25,6 +25,8 @@ import org.aspectj.lang.JoinPoint;
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
+import com.springsource.insight.util.ArrayUtil;
+import com.springsource.insight.util.StringUtil;
 
 public aspect JdbcStatementOperationCollectionAspect extends AbstractOperationCollectionAspect {
     public JdbcStatementOperationCollectionAspect () {
@@ -44,16 +46,19 @@ public aspect JdbcStatementOperationCollectionAspect extends AbstractOperationCo
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Operation operation = new Operation()
+    	Object[]	args=jp.getArgs();
+    	String		sql=(ArrayUtil.length(args) <= 0) ? "<UNKNOWN>" : StringUtil.safeToString(args[0]);
+        Operation 	operation = new Operation()
             .type(JdbcOperationExternalResourceAnalyzer.TYPE)
             .sourceCodeLocation(getSourceCodeLocation(jp))
-            .put("sql", (String)jp.getArgs()[0]);
-        JdbcOperationFinalizer.register(operation);
+            .label(JdbcOperationFinalizer.createLabel(sql))
+            .putAnyNonEmpty("sql", sql)
+            ;
         try {
             Statement 	statement = (Statement) jp.getTarget();
             Connection	connection = statement.getConnection();
             DatabaseMetaData	metaData = connection.getMetaData();
-            operation.put(OperationFields.CONNECTION_URL, metaData.getURL());            
+            operation.putAnyNonEmpty(OperationFields.CONNECTION_URL, metaData.getURL());            
         } catch (SQLException e) {
             // ignore
         }

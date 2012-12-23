@@ -44,22 +44,20 @@ import com.springsource.insight.intercept.operation.Operation;
 
 @ContextConfiguration("classpath:jdbc-test-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
-public class PoolingConnectionTest
-    	extends OperationCollectionAspectTestSupport {
+public class PoolingConnectionTest extends OperationCollectionAspectTestSupport {
     @Autowired
-    DataSource dataSource;
+    private DataSource dataSource;
 
     public PoolingConnectionTest () {
     	super();
     }
 
     @Test
-    public void operationCollection() throws SQLException {
+    public void testOperationCollection() throws SQLException {
         DataSourceConnectionFactory connFactory = new DataSourceConnectionFactory(dataSource);
         ObjectPool connPool = new GenericObjectPool();
         PoolableConnectionFactory poolFactory = new PoolableConnectionFactory(connFactory, connPool, null, null, false, true);
         PoolingDataSource poolDs = new PoolingDataSource(poolFactory.getPool());
-        
         String sql = "select * from appointment where owner = 'Agim'";
         Connection c = poolDs.getConnection();
         try {
@@ -80,15 +78,14 @@ public class PoolingConnectionTest
         verify(spiedOperationCollector, times(3)).enter(opCaptor.capture());
 
         List<Operation> ops = opCaptor.getAllValues();
-        assertEquals(3, ops.size());
-        assertTrue(ops.get(0).getSourceCodeLocation().toString().startsWith("org.apache.commons.dbcp.PoolingDataSource$PoolGuardConnectionWrapper#prepareStatement:"));
-        assertTrue(ops.get(1).getSourceCodeLocation().toString().startsWith("org.apache.commons.dbcp.DelegatingConnection#prepareStatement:"));
-        assertTrue(ops.get(2).getSourceCodeLocation().toString().startsWith("org.hsqldb.jdbc.jdbcConnection#prepareStatement:"));
+        assertEquals("Mismatched number of operations", 3, ops.size());
+        assertSourceCodeLocation("top-op", ops.get(0), "org.apache.commons.dbcp.PoolingDataSource$PoolGuardConnectionWrapper", "prepareStatement");
+        assertSourceCodeLocation("mid-op", ops.get(1), "org.apache.commons.dbcp.DelegatingConnection", "prepareStatement");
+        assertSourceCodeLocation("bottom-op", ops.get(2), "org.hsqldb.jdbc.jdbcConnection", "prepareStatement");
     }
 
     @Override
     public OperationCollectionAspectSupport getAspect() {
         return JdbcPreparedStatementOperationCollectionAspect.aspectOf();
     }
-
 }

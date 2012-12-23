@@ -3,4 +3,5 @@
 
 <@insight.group label="Spring REST Operation">
     <@insight.entry name="Label" value=operation.label />
+    <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
 </@insight.group>

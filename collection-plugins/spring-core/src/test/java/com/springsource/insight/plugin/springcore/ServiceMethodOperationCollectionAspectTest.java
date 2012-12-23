@@ -37,6 +37,11 @@ public class ServiceMethodOperationCollectionAspectTest extends StereotypeOperat
 		assertStereotypeOperation(new InsightService(), false);
 	}
 
+	@Test
+	public void testLifecycleMethodsNotCollected() throws Exception {
+		assertLifecycleMethodsNotIntercepted(new ExampleService());
+	}
+
 	@Override
 	public ServiceMethodOperationCollectionAspect getAspect() {
 		return ServiceMethodOperationCollectionAspect.aspectOf();

@@ -8,4 +8,5 @@
     <@insight.entry name="Read Only" value=operation.readOnly />
     <@insight.entry name="Timeout" value=operation.timeout />
     <@insight.entry name="Status" value=operation.status />
+    <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
 </@insight.group>

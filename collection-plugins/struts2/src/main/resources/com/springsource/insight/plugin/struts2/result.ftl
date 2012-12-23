@@ -11,3 +11,9 @@
         <@insight.entry name=p value=operation.errs[p] />
     </@insight.group>
 </#if>
+
+<#if operation.exception??>
+	<@insight.group label="Exception Details">
+		<@insight.entry name="Exception" value=operation.exception/>
+	</@insight.group>
+</#if>

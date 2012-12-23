@@ -3,6 +3,7 @@
 
 <@insight.group label="Details">
     <@insight.entry name="Statement" value=operation.statement/>
-</@insight.group>    
+    <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
+</@insight.group>
 
 <@insight.sourceCodeLocation location=operation.sourceCodeLocation />

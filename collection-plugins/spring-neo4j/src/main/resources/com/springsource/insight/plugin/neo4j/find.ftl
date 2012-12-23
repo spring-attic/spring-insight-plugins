@@ -6,7 +6,7 @@
 	<#if operation.entityId??>
 	   <@insight.entry name="Entity Id" value=operation.entityId/>
 	</#if>
-	
+    <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
 	<@insight.sourceCodeLocation location=operation.sourceCodeLocation />
 </@insight.group>
 

@@ -4,7 +4,6 @@
 <#assign request = operation.request>
 <#assign response = operation.response>
 
-
 <@insight.title>HTTP Summary</@insight.title>
 <code class="raw http">${request.method?html} ${request.uri?html}<#if request.queryString?has_content>?${request.queryString?html}</#if> ${request.protocol?html}</code>
 <code class="raw http">${request.protocol?html} ${response.statusCode?html} ${response.reasonPhrase?html}</code>
@@ -29,3 +28,9 @@
 <@insight.group label="Response Headers" if=response.headers?has_content collection=response.headers ; h>
     <@insight.entry name=h.name value=h.value required="true" />
 </@insight.group>
+
+<#if operation.exception??>
+	<@insight.group label="Exception Details">
+		<@insight.entry name="Exception" value=operation.exception/>
+	</@insight.group>
+</#if>

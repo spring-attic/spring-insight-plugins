@@ -37,6 +37,11 @@ public class RepositoryMethodOperationCollectionAspectTest extends StereotypeOpe
 		assertStereotypeOperation(new InsightRepository(), false);
 	}
 
+	@Test
+	public void testLifecycleMethodsNotCollected() throws Exception {
+		assertLifecycleMethodsNotIntercepted(new ExampleRepository());
+	}
+
 	@Override
 	public RepositoryMethodOperationCollectionAspect getAspect() {
 		return RepositoryMethodOperationCollectionAspect.aspectOf();

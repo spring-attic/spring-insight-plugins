@@ -6,6 +6,7 @@
     <@insight.entry name="Values" if=operation.values?has_content>
         <@insight.list type="ordered" collection=operation.values />
     </@insight.entry>
+    <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
 </@insight.group>
 
 <@insight.sourceCodeLocation location=operation.sourceCodeLocation />

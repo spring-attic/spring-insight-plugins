@@ -10,7 +10,7 @@
         <@insight.list type="ordered" collection=operation.arguments />
     </@insight.entry>
     <@insight.entry name="Return Value" value=operation.returnValue />
-    <@insight.entry name="Exception" value=operation.exception />
+    <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
 </@insight.group>
 
 <@insight.sourceCodeLocation location=operation.sourceCodeLocation />

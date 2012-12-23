@@ -17,7 +17,7 @@
     <#if operation.query??>
         <@insight.entry name="Query" value=operation.query />
 	</#if>
-	
+    <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
 	<@insight.sourceCodeLocation location=operation.sourceCodeLocation />
 </@insight.group>
 

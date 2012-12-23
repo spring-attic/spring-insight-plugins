@@ -14,7 +14,7 @@
     <@insight.entry name="Server" if=operation.servers?has_content>
         <@insight.list type="ordered" collection=operation.servers />
     </@insight.entry>
-        
+    <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
 </@insight.group>
 
 <@insight.sourceCodeLocation location=operation.sourceCodeLocation />

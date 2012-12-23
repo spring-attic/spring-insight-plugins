@@ -36,7 +36,9 @@ public class JdbcOperationExternalResourceAnalyzerTest extends AbstractDatabaseJ
 	private JdbcOperationExternalResourceAnalyzer analyzer;
 	
 	@Before
+	@Override
 	public void setUp() {
+		super.setUp();
 		registry = new CollectionSettingsRegistry();
 		analyzer = new JdbcOperationExternalResourceAnalyzer(registry);
 	}

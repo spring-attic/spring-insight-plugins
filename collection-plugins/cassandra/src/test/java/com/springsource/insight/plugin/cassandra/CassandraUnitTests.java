@@ -39,6 +39,10 @@ import org.apache.thrift.transport.TTransportException;
 import com.springsource.insight.plugin.cassandra.embeded.EmbeddedCassandraService;
 
 public class CassandraUnitTests {
+	// NOTE !!! must match the values in the yaml file
+	public static final String	TEST_HOST="127.0.0.1";
+	public static final int	RPC_PORT=7365;
+
 	private static EmbeddedCassandraService cassandra;
 	private static CassandraUnitTests instance;
 	private static Cassandra.Client lastClient;
@@ -59,7 +63,7 @@ public class CassandraUnitTests {
 	
 	private Cassandra.Client getClient() throws TTransportException {
 		if (lastClient==null) {
-			TTransport tr = new TFramedTransport(new TSocket("localhost", 9160));
+			TTransport tr = new TFramedTransport(new TSocket(TEST_HOST, RPC_PORT));
 			lastClient=new Cassandra.Client(new TBinaryProtocol(tr));
 			tr.open();
 		}
