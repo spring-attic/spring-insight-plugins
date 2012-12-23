@@ -2,9 +2,9 @@ cluster_name: 'Test Cluster'
 initial_token: 0
 
 data_file_directories:
-    - /tmp/cassandra/data
-commitlog_directory: /tmp/cassandra/commitlog
-saved_caches_directory: /tmp/cassandra/saved_caches
+    - ./target/cassandra/data
+commitlog_directory: ./target/cassandra/commitlog
+saved_caches_directory: ./target/cassandra/saved_caches
 
 listen_address: 127.0.0.1
 storage_port: 7000
