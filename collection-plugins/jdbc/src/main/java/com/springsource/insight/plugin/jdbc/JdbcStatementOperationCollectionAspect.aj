@@ -58,7 +58,7 @@ public aspect JdbcStatementOperationCollectionAspect extends AbstractOperationCo
             Statement 	statement = (Statement) jp.getTarget();
             Connection	connection = statement.getConnection();
             DatabaseMetaData	metaData = connection.getMetaData();
-            operation.put(OperationFields.CONNECTION_URL, metaData.getURL());            
+            operation.putAnyNonEmpty(OperationFields.CONNECTION_URL, metaData.getURL());            
         } catch (SQLException e) {
             // ignore
         }
