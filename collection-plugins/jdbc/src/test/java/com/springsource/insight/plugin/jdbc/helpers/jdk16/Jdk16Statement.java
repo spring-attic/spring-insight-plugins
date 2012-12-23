@@ -343,6 +343,7 @@ public class Jdk16Statement extends AbstractStatement {
 	}
 
 	public void closeOnCompletion() throws SQLException {
+		// ignored
 	}
 
 	public boolean isCloseOnCompletion() throws SQLException {

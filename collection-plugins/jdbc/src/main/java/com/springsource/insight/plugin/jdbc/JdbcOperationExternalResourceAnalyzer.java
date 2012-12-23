@@ -53,9 +53,7 @@ public class JdbcOperationExternalResourceAnalyzer extends DatabaseJDBCURIAnalyz
     
     public static final String APP_KEY_NAME = APP_CS_NAME.getKey() + ".";
     
-    private static final class LazyFieldHolder {
-    	static final JdbcOperationExternalResourceAnalyzer INSTANCE = new JdbcOperationExternalResourceAnalyzer();
-    }
+    private static final JdbcOperationExternalResourceAnalyzer INSTANCE = new JdbcOperationExternalResourceAnalyzer();
     
     private final CollectionSettingsRegistry registry;
     private final Collection<ApplicationName> disabledApps;
@@ -97,7 +95,7 @@ public class JdbcOperationExternalResourceAnalyzer extends DatabaseJDBCURIAnalyz
     }
 
     public static final JdbcOperationExternalResourceAnalyzer getInstance() {
-    	return LazyFieldHolder.INSTANCE;
+    	return INSTANCE;
     }
     
     @Override

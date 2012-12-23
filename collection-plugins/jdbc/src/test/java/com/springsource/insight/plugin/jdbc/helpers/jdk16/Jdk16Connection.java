@@ -89,6 +89,7 @@ public class Jdk16Connection extends AbstractConnection {
 	}
 
 	public void setSchema(String schema) throws SQLException {
+		// ignored
 	}
 
 	public String getSchema() throws SQLException {
@@ -96,10 +97,12 @@ public class Jdk16Connection extends AbstractConnection {
 	}
 
 	public void abort(Executor executor) throws SQLException {
+		// ignored
 	}
 
 	public void setNetworkTimeout(Executor executor, int milliseconds)
 			throws SQLException {
+		// ignored
 	}
 
 	public int getNetworkTimeout() throws SQLException {
