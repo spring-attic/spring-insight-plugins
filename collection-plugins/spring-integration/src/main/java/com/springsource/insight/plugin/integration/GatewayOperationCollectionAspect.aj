@@ -56,14 +56,8 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
     declare parents: MessagingGatewaySupport+ implements HasRequestMapper;
     
     @SuppressWarnings("rawtypes")
-    private InboundMessageMapper HasRequestMapper.insightMapper;
+    public InboundMessageMapper HasRequestMapper.insightMapper;
     
-    @SuppressWarnings("rawtypes")
-    public void HasRequestMapper.__setInsightMapper(InboundMessageMapper mapper) { this.insightMapper = mapper; }
-    
-    @SuppressWarnings("rawtypes")
-    public InboundMessageMapper HasRequestMapper.__getInsightMapper() { return this.insightMapper; }
-
     @SuppressWarnings("rawtypes")
     @SuppressAjWarnings
     after(Method method, Map map, org.springframework.integration.gateway.GatewayMethodInboundMessageMapper gatewayMapper) : 
@@ -82,7 +76,7 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
                 && args(mapper) && target(gateway) {
         
         if (gateway instanceof HasRequestMapper) {
-            ((HasRequestMapper)gateway).__setInsightMapper(mapper);
+            ((HasRequestMapper)gateway).insightMapper = mapper;
         }
         
     }
@@ -163,7 +157,7 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
         }
         
         HasRequestMapper hasRequestMapper = (HasRequestMapper) gateway;
-        InboundMessageMapper mapper = hasRequestMapper.__getInsightMapper();
+        InboundMessageMapper mapper = hasRequestMapper.insightMapper;
         
         if (!(mapper instanceof HasMethod)) {
             return null;
