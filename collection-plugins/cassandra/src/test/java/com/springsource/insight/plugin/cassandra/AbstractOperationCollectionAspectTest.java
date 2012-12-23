@@ -25,6 +25,11 @@ import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationType;
 
 public abstract class AbstractOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
+
+	protected AbstractOperationCollectionAspectTest() {
+		super();
+	}
+
 	public void validate(OperationType opType, String... p_params) throws Exception {
 		// Step 2:  Get the Operation that was just created by our aspect
 		Operation op = getLastEntered();
@@ -36,7 +41,7 @@ public abstract class AbstractOperationCollectionAspectTest extends OperationCol
 		// prepare parameters
 		List<String> params=new ArrayList<String>();
 		Collections.addAll(params, p_params); 
-		params.add("server = localhost:9160");
+		params.add("server = " + CassandraUnitTests.TEST_HOST + ":" + CassandraUnitTests.RPC_PORT);
 		// Step 4: Validate parameters
 		for (String def: params) {
 			String[] param=null;
