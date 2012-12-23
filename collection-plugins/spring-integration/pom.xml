@@ -50,6 +50,11 @@
         </dependency>
 
 		<!-- Test dependencies -->
+        <dependency>    <!-- required for the FreeMarkerConfigurationFactory -->
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <scope>test</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>

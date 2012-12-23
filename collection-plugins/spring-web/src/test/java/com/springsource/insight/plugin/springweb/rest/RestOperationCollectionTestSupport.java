@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.junit.Before;
 import org.mockito.Mockito;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -274,6 +275,23 @@ public abstract class RestOperationCollectionTestSupport extends OperationCollec
 		}
 
 		public <T> T execute(String url, HttpMethod httpMethod, RequestCallback requestCallback, ResponseExtractor<T> responseExtractor, Map<String, ?> uriVariables)
+				throws RestClientException {
+			setState(httpMethod, url);
+			return null;
+		}
+
+		public <T> ResponseEntity<T> exchange(URI url, HttpMethod httpMethod, HttpEntity<?> requestEntity, ParameterizedTypeReference<T> responseType) throws RestClientException {
+			// delegate on purpose to check cflowbelow behavior
+			return exchange(url.toString(), httpMethod, requestEntity, responseType, ArrayUtil.EMPTY_OBJECTS);
+		}
+
+		public <T> ResponseEntity<T> exchange(String url, HttpMethod httpMethod, HttpEntity<?> requestEntity, ParameterizedTypeReference<T> responseType, Object... uriVariables)
+				throws RestClientException {
+			// delegate on purpose to check cflowbelow behavior
+			return exchange(url, httpMethod, requestEntity, responseType, Collections.<String,Object>emptyMap());
+		}
+
+		public <T> ResponseEntity<T> exchange(String url, HttpMethod httpMethod, HttpEntity<?> requestEntity, ParameterizedTypeReference<T> responseType, Map<String, ?> uriVariables)
 				throws RestClientException {
 			setState(httpMethod, url);
 			return null;
