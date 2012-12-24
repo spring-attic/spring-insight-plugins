@@ -22,8 +22,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -34,8 +32,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.OperationList;
+import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.util.ArrayUtil;
-import com.springsource.insight.util.ListUtil;
+import com.springsource.insight.util.StringUtil;
 
 @ContextConfiguration("classpath:jdbc-test-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -118,17 +118,20 @@ public class JdbcPreparedStatementOperationCollectionAspectTest extends JdbcStat
 
         Operation   operation=assertJdbcOperation(sql);
 
-        @SuppressWarnings("unchecked")
-        Map<String, String> parameters = (Map<String, String>) operation.asMap().get("params");
+        OperationMap parameters = operation.get(JdbcOperationFinalizer.PARAMS_VALUES, OperationMap.class);
+        assertNotNull("Missing parameters map", parameters);
         assertEquals("Mismatched parameters count", 1, parameters.size());
         assertEquals("Mismatched parameter value", paramValue, parameters.get(paramName));
     }
 
-    protected List<String> assertSqlParams (Operation	op, String ... values) {
-        @SuppressWarnings("unchecked")
-        List<String> parameters = (List<String>) op.asMap().get("params");
-        assertEquals("Mismatched parameters count", ArrayUtil.length(values), ListUtil.size(parameters));
-        assertArrayEquals("Mismatched parameters values", values, parameters.toArray(new String[parameters.size()]));
+    protected OperationList assertSqlParams (Operation	op, String ... values) {
+        OperationList	parameters =op.get(JdbcOperationFinalizer.PARAMS_VALUES, OperationList.class);
+        assertNotNull("Missing parameters list", parameters);
+        assertEquals("Mismatched parameters count", ArrayUtil.length(values), parameters.size());
+        
+        for (int	index=0; index < parameters.size(); index++) {
+        	assertEquals("Mismatched parameter at index=" + index, values[index], StringUtil.safeToString(parameters.get(index)));
+        }
         return parameters;
     }
 

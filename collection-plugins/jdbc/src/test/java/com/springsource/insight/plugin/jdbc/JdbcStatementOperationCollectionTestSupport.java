@@ -27,7 +27,10 @@ public abstract class JdbcStatementOperationCollectionTestSupport extends Operat
 	}
     
     protected Operation assertJdbcOperation (String sql) {
-        Operation   operation=getLastEntered();
+        return assertJdbcOperation(getLastEntered(), sql);
+    }
+    
+    protected Operation assertJdbcOperation (Operation operation, String sql) {
         assertNotNull("No operation collected", operation);
         assertEquals("Mismatched type", JdbcOperationExternalResourceAnalyzer.TYPE, operation.getType());
         assertEquals("Mismatched SQL statement", sql, operation.get("sql", String.class));

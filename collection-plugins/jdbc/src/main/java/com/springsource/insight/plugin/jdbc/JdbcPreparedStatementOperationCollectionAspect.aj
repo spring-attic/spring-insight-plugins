@@ -20,6 +20,9 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
@@ -29,15 +32,42 @@ import com.springsource.insight.collection.errorhandling.CollectionErrors;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 
+/**
+ * <P>Intercepts execution of queries via {@link PreparedStatement}s or
+ * {@link CallableStatement}s. The expected usage model of the aspect is:</P></BR>
+ * <UL>
+ * 
+ * 		<LI>
+ * 		A {@link PreparedStatement} or {@link CallableStatement} is created via
+ * 		call(s) to {@link Connection#prepareStatement(String)}s or
+ * 		{@link Connection#prepareCall(String)}s.
+ * 		</LI>
+ * 
+ * 		<LI>
+ * 		The statement is initialized via calls to <code>setXXX</code> parameter
+ * 		calls.
+ * 		</LI>
+ * 
+ * 		</LI>
+ * 		The <code>execute</code> method is called
+ * 		</LI>
+ * 
+ * 		<LI>
+ * 		The last 2 steps are repeated several times before the statement is <code>close</code>-d
+ * </UL
+ */
 public aspect JdbcPreparedStatementOperationCollectionAspect
-    extends OperationCollectionAspectSupport 
-{
+    extends OperationCollectionAspectSupport {
     /**
-     * The keys and values of this should be strongly referenced in the modified class instance
-     * and the frame respectively, so they should not be prematurely removed.
+     * A {@link Map} of the prepared statements &quot;templates&quot;
      */
     private final WeakKeyHashMap<PreparedStatement, Operation> storage = new WeakKeyHashMap<PreparedStatement, Operation>();
-    
+    /**
+     * A {@link Map} of the currently entered statements
+     */
+    private final Map<PreparedStatement, Operation>	entered =
+    		Collections.synchronizedMap(new WeakHashMap<PreparedStatement, Operation>());
+
     public JdbcPreparedStatementOperationCollectionAspect () {
     	super();
     }
@@ -93,7 +123,7 @@ public aspect JdbcPreparedStatementOperationCollectionAspect
     after(PreparedStatement statement, int index, Object parameter) returning
         : preparedStatementSetParameter(statement, index, parameter) 
     {
-        Operation operation = getOperationForStatement(statement);
+        Operation operation = storage.get(statement);
         if (operation != null) {
             JdbcOperationFinalizer.addParam(operation, index, parameter);
         }
@@ -103,7 +133,7 @@ public aspect JdbcPreparedStatementOperationCollectionAspect
     after(PreparedStatement statement, String parameterName, Object parameter) returning
         : callableStatementSetParameter(statement, parameterName, parameter) 
     {
-        Operation operation = getOperationForStatement(statement);
+        Operation operation = storage.get(statement);
         if (operation != null) {
             JdbcOperationFinalizer.addParam(operation, parameterName, parameter);
         }
@@ -116,8 +146,17 @@ public aspect JdbcPreparedStatementOperationCollectionAspect
          * collected the SQL for (via a prepareStatement or prepareCall)
          */
         PreparedStatement thisStatement = (PreparedStatement) thisJoinPoint.getThis();
-        Operation op = getOperationForStatement(thisStatement);
-        if (op != null) {
+        Operation template = storage.get(thisStatement);
+        if (template != null) {
+        	JdbcOperationFinalizer.finalize(template);
+
+        	Operation	op=new Operation()
+        						.type(template.getType())
+        						.label(template.getLabel())
+        						.sourceCodeLocation(template.getSourceCodeLocation())
+        						.copyPropertiesFrom(template)
+        						;
+        	entered.put(thisStatement, op);
             getCollector().enter(op);
         } else {
             // stmt.execute() called, but stmt was never returned via a prepareStatement().
@@ -129,7 +168,7 @@ public aspect JdbcPreparedStatementOperationCollectionAspect
     after() returning(Object returnValue): execute() {
 
         PreparedStatement thisStatement = (PreparedStatement) thisJoinPoint.getThis();
-        Operation op = getOperationForStatement(thisStatement);
+        Operation op = entered.remove(thisStatement);
 
         if (op != null) {
             getCollector().exitNormal(returnValue);
@@ -142,7 +181,7 @@ public aspect JdbcPreparedStatementOperationCollectionAspect
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after() throwing(Throwable exception): execute() {
         PreparedStatement thisStatement = (PreparedStatement) thisJoinPoint.getThis();
-        Operation op = getOperationForStatement(thisStatement);
+        Operation op = entered.remove(thisStatement);
 
         if (op != null) {
             getCollector().exitAbnormal(exception);
@@ -155,14 +194,13 @@ public aspect JdbcPreparedStatementOperationCollectionAspect
         Operation operation = new Operation()
                 .type(JdbcOperationExternalResourceAnalyzer.TYPE)
                 .sourceCodeLocation(getSourceCodeLocation(jp))
+                .label(JdbcOperationFinalizer.createLabel(sql))
                 .put("sql", sql)
                 ;
+    	storage.put(statement, operation);
 
         // always return an operation
         try {
-            JdbcOperationFinalizer.register(operation);
-            addStatementToMap(statement, operation);
-
             Connection	connection = statement.getConnection();
             DatabaseMetaData	metaData = connection.getMetaData();
             operation.putAnyNonEmpty(OperationFields.CONNECTION_URL, metaData.getURL());
@@ -174,14 +212,6 @@ public aspect JdbcPreparedStatementOperationCollectionAspect
         return operation;
     }
     
-    private Operation getOperationForStatement(PreparedStatement statement) {
-        return storage.get(statement);
-    }
-    
-    private void addStatementToMap(PreparedStatement ps, Operation op) {
-        storage.put(ps, op);
-    }
-
     @Override
     public String getPluginName() {
         return JdbcRuntimePluginDescriptor.PLUGIN_NAME;

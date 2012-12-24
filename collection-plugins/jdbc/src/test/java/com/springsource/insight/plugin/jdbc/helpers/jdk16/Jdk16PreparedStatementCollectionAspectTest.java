@@ -15,20 +15,32 @@
  */
 package com.springsource.insight.plugin.jdbc.helpers.jdk16;
 
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
+import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.OperationList;
+import com.springsource.insight.intercept.operation.OperationMap;
+import com.springsource.insight.plugin.jdbc.JdbcOperationFinalizer;
 import com.springsource.insight.plugin.jdbc.JdbcPreparedStatementOperationCollectionAspect;
 import com.springsource.insight.plugin.jdbc.JdbcStatementOperationCollectionTestSupport;
 import com.springsource.insight.plugin.jdbc.helpers.AbstractConnection;
 import com.springsource.insight.plugin.jdbc.helpers.AbstractStatement;
+import com.springsource.insight.util.ObjectUtil;
 
 /**
  * 
@@ -103,6 +115,63 @@ public class Jdk16PreparedStatementCollectionAspectTest extends JdbcStatementOpe
 
     	assertEquals("Mismatched meta data calls count", 1, callsCount.intValue());
     	assertJdbcOperation(sql);
+	}
+
+	@Test
+	public void testReusePreparedIndexedParameterStatement() throws SQLException {
+		final String sql = "select * from tests where test = 'testReusePreparedIndexedParameterStatement' and index < ?";
+		PreparedStatement	ps=metaDataConn.prepareStatement(sql);
+		final int	NUM_ITERATIONS=Byte.SIZE;
+		for (int	index=0; index < NUM_ITERATIONS; index++) {
+			ps.setInt(1, index);
+			assertTrue("Failed to execute for index=" + index, ps.execute());
+		}
+		
+        ArgumentCaptor<Operation> opCaptor = ArgumentCaptor.forClass(Operation.class);
+        verify(spiedOperationCollector, times(NUM_ITERATIONS)).enter(opCaptor.capture());
+
+        List<Operation> ops = opCaptor.getAllValues();
+        assertEquals("Mismatched number of operations", NUM_ITERATIONS, ops.size());
+
+		Set<Operation>	opsList=new TreeSet<Operation>(ObjectUtil.OBJECT_INSTANCE_COMPARATOR);
+		for (int index=0; index < ops.size(); index++) {
+			Operation	op=assertJdbcOperation(ops.get(index), sql);
+			assertFalse("Non-unique operation for index=" + index, opsList.contains(op));
+			
+			OperationList	params=op.get(JdbcOperationFinalizer.PARAMS_VALUES, OperationList.class);
+			assertNotNull("No parameters for index=" + index, params);
+			assertEquals("Mismatched #params for index=" + index, 1, params.size());
+			assertEquals("Mismatched value for index=" + index, String.valueOf(index), params.get(0));
+		}
+	}
+
+	@Test
+	public void testReusePreparedMappedParameterStatement() throws SQLException {
+		final String sql = "select * from tests where test = 'testReusePreparedMappedParameterStatement' and index < ?";
+		CallableStatement	ps=metaDataConn.prepareCall(sql);
+		final int	NUM_ITERATIONS=Byte.SIZE;
+		final String	TEST_PARAM="testIndex";
+		for (int	index=0; index < NUM_ITERATIONS; index++) {
+			ps.setInt(TEST_PARAM, index);
+			assertTrue("Failed to execute for index=" + index, ps.execute());
+		}
+		
+        ArgumentCaptor<Operation> opCaptor = ArgumentCaptor.forClass(Operation.class);
+        verify(spiedOperationCollector, times(NUM_ITERATIONS)).enter(opCaptor.capture());
+
+        List<Operation> ops = opCaptor.getAllValues();
+        assertEquals("Mismatched number of operations", NUM_ITERATIONS, ops.size());
+
+		Set<Operation>	opsList=new TreeSet<Operation>(ObjectUtil.OBJECT_INSTANCE_COMPARATOR);
+		for (int index=0; index < ops.size(); index++) {
+			Operation	op=assertJdbcOperation(ops.get(index), sql);
+			assertFalse("Non-unique operation for index=" + index, opsList.contains(op));
+			
+			OperationMap	params=op.get(JdbcOperationFinalizer.PARAMS_VALUES, OperationMap.class);
+			assertNotNull("No parameters for index=" + index, params);
+			assertEquals("Mismatched #params for index=" + index, 1, params.size());
+			assertEquals("Mismatched value for index=" + index, String.valueOf(index), params.get(TEST_PARAM));
+		}
 	}
 
     @Override

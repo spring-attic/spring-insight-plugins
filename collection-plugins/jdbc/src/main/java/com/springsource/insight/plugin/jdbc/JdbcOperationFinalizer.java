@@ -17,6 +17,7 @@ package com.springsource.insight.plugin.jdbc;
 
 import static com.springsource.insight.util.StringUtil.indexOfNotIn;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,16 +29,15 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import com.springsource.insight.intercept.operation.Operation;
-import com.springsource.insight.intercept.operation.OperationFinalizer;
 import com.springsource.insight.intercept.operation.OperationList;
 import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.StringFormatterUtils;
 import com.springsource.insight.util.StringUtil;
 
-public class JdbcOperationFinalizer implements OperationFinalizer {
-    private static final JdbcOperationFinalizer INSTANCE = new JdbcOperationFinalizer();
-    
+public class JdbcOperationFinalizer {
+    public static final String	PARAMS_VALUES="params";
+
     /**
      * The keys in these maps should be strongly referenced in the frame stack; so they should not
      * be removed until the frame leaves the station.
@@ -45,16 +45,12 @@ public class JdbcOperationFinalizer implements OperationFinalizer {
     private static final WeakKeyHashMap<Operation, Map<String, Object>> mappedParamStorage = new WeakKeyHashMap<Operation, Map<String, Object>>();
     private static final WeakKeyHashMap<Operation, List<Object>> indexedParamStorage = new WeakKeyHashMap<Operation, List<Object>>();
 
-    public JdbcOperationFinalizer () {
-    	super();
+    private JdbcOperationFinalizer () {
+    	throw new UnsupportedOperationException("No instance");
     }
 
-    public static void register(Operation operation) {
-        operation.addFinalizer(INSTANCE);
-    }
-    
     public static void addParam(Operation operation, String key, Object param) {
-        synchronized (operation) {
+        synchronized (mappedParamStorage) {
             Map<String, Object> params = mappedParamStorage.get(operation);
             if (params == null) {
                 params = new HashMap<String, Object>();
@@ -67,7 +63,7 @@ public class JdbcOperationFinalizer implements OperationFinalizer {
     public static void addParam(Operation operation, int paramIndex, Object param) {
         // JDBC indexes are 1-based, so let's adjust it to the modern world first!
         int index=paramIndex - 1;
-        synchronized (operation) {
+        synchronized (indexedParamStorage) {
             List<Object> params = indexedParamStorage.get(operation);
             if (params == null) {
                 params = new ArrayList<Object>();
@@ -81,26 +77,36 @@ public class JdbcOperationFinalizer implements OperationFinalizer {
         }
     }
     
-    public void finalize(Operation operation, Map<String, Object> richObjects) {
-        operation.label(createLabel(operation.get("sql", String.class)));
-        if (mappedParamStorage.get(operation) != null) {
-            OperationMap params = operation.createMap("params");
-            for (Entry<String, Object> entry : mappedParamStorage.get(operation).entrySet()) {
+    public static Operation finalize(Operation operation) {
+        Map<String, Object>	mappedValues;
+        synchronized(mappedParamStorage) {
+        	mappedValues = mappedParamStorage.remove(operation);
+        }
+
+        List<Object>	indexedValues;
+        synchronized(indexedParamStorage) {
+        	indexedValues = indexedParamStorage.remove(operation);
+        }
+
+        // make sure we start with a clean slate
+        Serializable	prev=operation.remove(PARAMS_VALUES);
+        if (prev != null) {
+        	prev = null;	// debug breakpoint
+        }
+
+        if (mappedValues != null) {
+            OperationMap params = operation.createMap(PARAMS_VALUES);
+            for (Entry<String, Object> entry : mappedValues.entrySet()) {
                 params.put(entry.getKey(), StringFormatterUtils.formatObjectAndTrim(entry.getValue()));
             }
-        } else if (indexedParamStorage.get(operation) != null) {
-            OperationList params = operation.createList("params");
-            for (Object param : indexedParamStorage.get(operation)) {
+        } else if (indexedValues != null) {
+            OperationList params = operation.createList(PARAMS_VALUES);
+            for (Object param : indexedValues) {
                 params.add(StringFormatterUtils.formatObjectAndTrim(param));
             }
         }
-        /**
-         * We know we will never need these SoftKeyEntries again, so let's
-         * remove it explicitly so they are cleaned up using traditional
-         * garbage collection.
-         */
-        mappedParamStorage.remove(operation);
-        indexedParamStorage.remove(operation);
+        
+        return operation;
     }
 
     private static final Collection<Map.Entry<String,String>>	stmtsList=

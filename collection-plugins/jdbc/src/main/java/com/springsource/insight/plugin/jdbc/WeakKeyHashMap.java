@@ -40,17 +40,24 @@ public class WeakKeyHashMap<K, V> {
     private final ConcurrentHashMap<WeakRef<K, V>, WeakRef<K, V>> map = new ConcurrentHashMap<WeakRef<K, V>, WeakRef<K, V>>();
     private final ReferenceQueue<V> refQueue = new ReferenceQueue<V>();
 
+    public WeakKeyHashMap () {
+    	super();
+    }
+
     public int size() {
         return map.size();
     }
     
-    public void put(K key, V val) {
+    public V put(K key, V val) {
         WeakRef<K, V> newRef = new WeakRef<K, V>(key, refQueue, val);
         WeakRef<K, V> oldRef = map.put(newRef, newRef);
+        V	prev=null;
         if (oldRef != null) {
             // System.out.println("** Overwrote old reference to statement=" + dumpObj(key));
+        	prev = oldRef.getHardRef();
         }
         cleanupRefQueue();
+        return prev;
     }
     
     public V get(K key) {
@@ -65,11 +72,14 @@ public class WeakKeyHashMap<K, V> {
         }
     }
 
-    public void remove(K key) {
+    public V remove(K key) {
         WeakRef<K, V> lookupRef = new WeakRef<K, V>(key, refQueue, null);
         WeakRef<K, V> ref = map.remove(lookupRef);
         if (ref == null) {
             // System.out.println("** Reference no longer available anyway to statement=" + dumpObj(key));
+        	return null;
+        } else {
+        	return ref.getHardRef();
         }
     }
 
