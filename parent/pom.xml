@@ -1327,6 +1327,9 @@
 					</includes>
 					<excludedGroups>${excluded.tests.group}</excludedGroups>
                   <forkMode>once</forkMode><!-- at least once -->
+                        <!-- avoid inherent multi-threaded tests -->
+                  <perCoreThreadCount>false</perCoreThreadCount>
+                  <threadCount>1</threadCount>
 				  <systemPropertyVariables>
 						<java.io.tmpdir>${project.build.directory}${file.separator}temp</java.io.tmpdir>
 						<java.awt.headless>true</java.awt.headless>
