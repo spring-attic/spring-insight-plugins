@@ -39,6 +39,16 @@ public class MssqlParserTest extends SqlParserTestImpl<MssqlParser> {
 			  new SqlTestEntry("jdbc:microsoft:sqlserver://:1434;DatabaseName=dbname",
 								JdbcUrlParser.DEFAULT_HOST,
 								1434,
-								"dbname"));
+								"dbname"),
+			  new SqlTestEntry("jdbc:sqlserver://10.150.31.43:1433;authenticationScheme=nativeAuthentication;" +
+			  		           "xopenStates=false;sendTimeAsDatetime=true;trustServerCertificate=false;" +
+			  		           "sendStringParametersAsUnicode=true;selectMethod=direct;responseBuffering=adaptive;" +
+			  		           "packetSize=8000;multiSubnetFailover=false;loginTimeout=15;lockTimeout=-1;" +
+			  		           "lastUpdateCount=true;encrypt=false;disableStatementPooling=true;" +
+			  		           "databaseName=moviestore;applicationName=Microsoft JDBC Driver for SQL Server;" +
+			  		           "applicationIntent=readwrite;",
+					            "10.150.31.43",
+								1433,
+								"moviestore"));
 	}
 }
