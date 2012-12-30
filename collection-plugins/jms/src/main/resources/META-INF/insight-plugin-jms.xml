@@ -50,6 +50,11 @@
           factory-method="getInstance"
           lazy-init="true"
         />
+    <bean id="JmsTraceSourceAnalyzer"
+          class="com.springsource.insight.plugin.jms.JmsTraceSourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
 </beans>
 

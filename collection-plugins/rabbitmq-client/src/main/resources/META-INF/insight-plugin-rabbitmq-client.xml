@@ -39,5 +39,11 @@
           factory-method="getInstance"
           lazy-init="true"
         />
+     
+    <bean id="rabbitTraceSourceAnalyzer"
+          class="com.springsource.insight.plugin.rabbitmqClient.RabbitTraceSourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 </beans>
 

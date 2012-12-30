@@ -34,6 +34,7 @@ public class ExposedServletPluginSpringBeanTest
 	@Autowired(required=false) protected ServletEndPointAnalyzer	servletEndPointAnalyzer;
 	@Autowired(required=false) protected RequestResponseSizeMetricsGenerator	requestResponseSizeMetricsGenerator;
 	@Autowired(required=false) protected HttpStatusTraceErrorAnalyzer	httpStatusTraceErrorAnalyzer;
+	@Autowired(required=false) protected HttpTraceSourceAnalyzer httpTraceSourceAnalyzer;
 	
 	
 	public ExposedServletPluginSpringBeanTest() {

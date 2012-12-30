@@ -18,5 +18,10 @@
           factory-method="getInstance"
           lazy-init="true"
         />
+    <bean id="quartzTraceSourceAnalyzer"
+          class="com.springsource.insight.plugin.quartz.scheduler.QuartzTraceSourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
 
 </beans>

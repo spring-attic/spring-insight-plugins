@@ -49,4 +49,10 @@
           lazy-init="true"
         />
 
+    <bean id="httpTraceSourceAnalyzer"
+          class="com.springsource.insight.plugin.servlet.HttpTraceSourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+        />
+
 </beans>
