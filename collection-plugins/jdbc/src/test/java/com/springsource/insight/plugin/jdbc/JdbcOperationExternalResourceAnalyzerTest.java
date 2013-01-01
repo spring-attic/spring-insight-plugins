@@ -24,6 +24,7 @@ import org.junit.Test;
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.plugin.CollectionSettingsRegistry;
+import com.springsource.insight.intercept.plugin.names.CollectionSettingNames;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.trace.Frame;
@@ -48,14 +49,14 @@ public class JdbcOperationExternalResourceAnalyzerTest extends AbstractDatabaseJ
 		assertInitialState();
 		
 		//update active state
-		registry.set(JdbcOperationExternalResourceAnalyzer.CS_NAME, Boolean.TRUE);
+		registry.set(CollectionSettingNames.CS_QUERY_EXRTERNAL_RESOURCE_NAME, Boolean.TRUE);
 		
 		boolean active = analyzer.isGeneratingExternalResources();
 		assertTrue("Active state should be true after update", active);
 		
 		//add application to ignore list
 		ApplicationName appName = ApplicationName.valueOf("test-app");
-		registry.set(JdbcOperationExternalResourceAnalyzer.createApplicationCollectionSettingName(appName), Boolean.FALSE);
+		registry.set(CollectionSettingNames.createApplicationCollectionSettingName(appName), Boolean.FALSE);
 		
 		Collection<ApplicationName> apps = analyzer.getDisabledApplicationNames();
 		assertEquals("Total disabled apps", 1, apps.size());
@@ -65,7 +66,7 @@ public class JdbcOperationExternalResourceAnalyzerTest extends AbstractDatabaseJ
 		assertEquals("The only disabled app", appName, disabledAppName);
 		
 		//removed application from ignore list
-		registry.set(JdbcOperationExternalResourceAnalyzer.createApplicationCollectionSettingName(appName), Boolean.TRUE);
+		registry.set(CollectionSettingNames.createApplicationCollectionSettingName(appName), Boolean.TRUE);
 		
 		apps = analyzer.getDisabledApplicationNames();
 		assertTrue("Total disabled apps is empty", apps.isEmpty());
@@ -101,7 +102,7 @@ public class JdbcOperationExternalResourceAnalyzerTest extends AbstractDatabaseJ
 		assertInitialState();
 		
 		//enable query external resources creation
-		registry.set(JdbcOperationExternalResourceAnalyzer.CS_NAME, Boolean.TRUE);
+		registry.set(CollectionSettingNames.CS_QUERY_EXRTERNAL_RESOURCE_NAME, Boolean.TRUE);
 		
 		Operation op = createJdbcOperation("jdbc:foobar://huh:8080");
 		op.type(JdbcOperationExternalResourceAnalyzer.TYPE);
@@ -128,7 +129,7 @@ public class JdbcOperationExternalResourceAnalyzerTest extends AbstractDatabaseJ
 		assertInitialState();
 		
 		//enable query external resources creation
-		registry.set(JdbcOperationExternalResourceAnalyzer.CS_NAME, Boolean.TRUE);
+		registry.set(CollectionSettingNames.CS_QUERY_EXRTERNAL_RESOURCE_NAME, Boolean.TRUE);
 		
 		Operation op = createJdbcOperation("jdbc:foobar://huh:8080");
 		op.type(JdbcOperationExternalResourceAnalyzer.TYPE);
@@ -175,7 +176,7 @@ public class JdbcOperationExternalResourceAnalyzerTest extends AbstractDatabaseJ
 		assertInitialState();
 		
 		//enable query external resources creation
-		registry.set(JdbcOperationExternalResourceAnalyzer.CS_NAME, Boolean.TRUE);
+		registry.set(CollectionSettingNames.CS_QUERY_EXRTERNAL_RESOURCE_NAME, Boolean.TRUE);
 		
 		Operation op = createJdbcOperation("jdbc:foobar://huh:8080");
 		op.type(JdbcOperationExternalResourceAnalyzer.TYPE);
@@ -184,7 +185,7 @@ public class JdbcOperationExternalResourceAnalyzerTest extends AbstractDatabaseJ
 		Trace trace = createJdbcTrace(frame);
 		
 
-		registry.set(JdbcOperationExternalResourceAnalyzer.createApplicationCollectionSettingName(trace.getAppName()), Boolean.FALSE);
+		registry.set(CollectionSettingNames.createApplicationCollectionSettingName(trace.getAppName()), Boolean.FALSE);
 		
 		Collection<ExternalResourceDescriptor> resources = analyzer.locateExternalResourceName(trace);
 		

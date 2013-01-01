@@ -29,6 +29,7 @@ import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.plugin.CollectionSettingName;
 import com.springsource.insight.intercept.plugin.CollectionSettingsRegistry;
 import com.springsource.insight.intercept.plugin.CollectionSettingsUpdateListener;
+import com.springsource.insight.intercept.plugin.names.CollectionSettingNames;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
@@ -42,16 +43,6 @@ import com.springsource.insight.util.StringUtil;
  */
 public class JdbcOperationExternalResourceAnalyzer extends DatabaseJDBCURIAnalyzer implements CollectionSettingsUpdateListener {
     public static final OperationType   TYPE=OperationType.valueOf("jdbc");
-    
-    public static final String PLUGINS          = "plugins";
-    public static final String GENERATE_STR     = JdbcRuntimePluginDescriptor.PLUGIN_NAME + ".generate-query-external-resource";
-    public static final String GENERATE_APP_STR = GENERATE_STR + ".application";
-    
-    public static final CollectionSettingName CS_NAME = new CollectionSettingName(GENERATE_STR + ".active", PLUGINS);
-    
-    public static final CollectionSettingName APP_CS_NAME = new CollectionSettingName(GENERATE_APP_STR, PLUGINS);
-    
-    public static final String APP_KEY_NAME = APP_CS_NAME.getKey() + ".";
     
     private static final JdbcOperationExternalResourceAnalyzer INSTANCE = new JdbcOperationExternalResourceAnalyzer();
     
@@ -82,13 +73,13 @@ public class JdbcOperationExternalResourceAnalyzer extends DatabaseJDBCURIAnalyz
     	Boolean value = null;
     	
     	try {
-    		value = registry.getBooleanSetting(CS_NAME);
+    		value = registry.getBooleanSetting(CollectionSettingNames.CS_QUERY_EXRTERNAL_RESOURCE_NAME);
     	} catch (RuntimeException e) {
-    		Logger.getLogger(getClass().getName()).warning("initListener() - invalid value [" + registry.get(CS_NAME) + "] for [" + CS_NAME  + "]");
+    		Logger.getLogger(getClass().getName()).warning("initListener() - invalid value [" + registry.get(CollectionSettingNames.CS_QUERY_EXRTERNAL_RESOURCE_NAME) + "] for [" + CollectionSettingNames.CS_QUERY_EXRTERNAL_RESOURCE_NAME  + "]");
     	}
     	
     	if (value == null) {
-    		registry.set(CS_NAME, Boolean.FALSE);
+    		registry.set(CollectionSettingNames.CS_QUERY_EXRTERNAL_RESOURCE_NAME, Boolean.FALSE);
     	} else {
     		active.set(value.booleanValue());
     	}
@@ -160,7 +151,7 @@ public class JdbcOperationExternalResourceAnalyzer extends DatabaseJDBCURIAnalyz
     
     private boolean registerApplicationNameIfNeeded(ApplicationName appName) {
     	if (knownApps.add(appName)) {
-    		CollectionSettingName name = createApplicationCollectionSettingName(appName);
+    		CollectionSettingName name = CollectionSettingNames.createApplicationCollectionSettingName(appName);
     		registry.register(name, Boolean.TRUE);
     		
     		return true;
@@ -176,13 +167,13 @@ public class JdbcOperationExternalResourceAnalyzer extends DatabaseJDBCURIAnalyz
 		
 		boolean booleanValue = ((Boolean) value).booleanValue();
 		
-		if (CS_NAME.equals(name)) {
+		if (CollectionSettingNames.CS_QUERY_EXRTERNAL_RESOURCE_NAME.equals(name)) {
 			active.set(booleanValue);
 		} else {
 			String key = name.getKey();
 			
-			if (key.startsWith(APP_KEY_NAME)) {
-				String appNameStr = key.substring(APP_KEY_NAME.length());
+			if (key.startsWith(CollectionSettingNames.APP_QUERY_EXRTERNAL_RESOURCE_KEY_NAME)) {
+				String appNameStr = key.substring(CollectionSettingNames.APP_QUERY_EXRTERNAL_RESOURCE_KEY_NAME.length());
 				
 				ApplicationName appName = ApplicationName.valueOf(appNameStr);
 				knownApps.add(appName);
@@ -194,13 +185,6 @@ public class JdbcOperationExternalResourceAnalyzer extends DatabaseJDBCURIAnalyz
 				}
 			}
 		}
-	}
-	
-	static CollectionSettingName createApplicationCollectionSettingName(ApplicationName appName) {
-		CollectionSettingName name = new CollectionSettingName(
-												GENERATE_APP_STR + "." + appName.getName(), 
-												PLUGINS);
-		return name;
 	}
 	
 	public final boolean isGeneratingExternalResources() {
