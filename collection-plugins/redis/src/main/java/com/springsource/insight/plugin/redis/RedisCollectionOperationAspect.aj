@@ -21,6 +21,7 @@ import static com.springsource.insight.plugin.redis.util.RedisUtil.objectToStrin
 import java.util.Collection;
 
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
+import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.util.ArrayUtil;
@@ -59,6 +60,7 @@ public aspect RedisCollectionOperationAspect extends AbstractOperationCollection
         }
         op.put("collectionKey", collectionKey);
         op.label("RedisCollection: " + collectionKey + "." + method + "()");
+        op.sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(jp));
         Object[] args = jp.getArgs();
         if(ArrayUtil.length(args) == 1) {
             if(StringUtil.safeCompare(method, "add") == 0) {

@@ -26,6 +26,7 @@ import org.springframework.integration.MessageHeaders;
 import org.springframework.integration.gateway.MessagingGatewaySupport;
 import org.springframework.integration.mapping.InboundMessageMapper;
 
+import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.util.ArrayUtil;
 
@@ -91,7 +92,8 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
     
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        return fillOperation(jp, new Operation().type(SpringIntegrationDefinitions.SI_OP_GATEWAY_TYPE));
+        return fillOperation(jp, new Operation().type(SpringIntegrationDefinitions.SI_OP_GATEWAY_TYPE)
+        		.sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(jp)));
     }
     
     @SuppressWarnings("rawtypes")

@@ -89,7 +89,7 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
     before(String queue, boolean ack)
             : basicGet(queue, ack) {
         Channel channel = (Channel) thisJoinPoint.getThis();
-        Operation op = createOperation();        
+        Operation op = createOperation(thisJoinPoint);        
         op.put(CONSUMED_QUEUES,  queue);        
         opHolder.put(channel,op);
         getCollector().enter(op);
@@ -141,7 +141,7 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
             conn = dconsumer.getChannel().getConnection();
         }
 
-        Operation op = createOperation();
+        Operation op = createOperation(thisJoinPoint);
         if (conn != null) {
             applyConnectionData(op, conn);
             if (consumer instanceof HasQueues) {

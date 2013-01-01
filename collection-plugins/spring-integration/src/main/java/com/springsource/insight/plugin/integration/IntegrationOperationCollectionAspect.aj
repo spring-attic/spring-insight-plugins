@@ -36,6 +36,7 @@ import org.springframework.integration.splitter.MethodInvokingSplitter;
 import org.springframework.integration.transformer.MessageTransformingHandler;
 import org.springframework.integration.transformer.Transformer;
 
+import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.util.ExtraReflectionUtils;
@@ -266,6 +267,7 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 			.copyPropertiesFrom(cachedOp)		
 			.label(cachedOp.getLabel())
 			.type(cachedOp.getType())
+			.sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(jp))
 			.put(SpringIntegrationDefinitions.PAYLOAD_TYPE_ATTR, payloadType)
 			.put(SpringIntegrationDefinitions.ID_HEADER_ATTR, idHeader)
 			;

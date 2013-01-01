@@ -27,6 +27,7 @@ import org.springframework.amqp.core.MessageProperties;
 import org.springframework.integration.amqp.inbound.AmqpInboundChannelAdapter;
 import org.springframework.util.StringUtils;
 
+import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.collection.TrailingAbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.color.ColorManager.ColorParams;
 import com.springsource.insight.intercept.operation.Operation;
@@ -66,6 +67,7 @@ public privileged aspect MessageListenerOperationCollectionAspect extends Traili
 		final Operation op = new Operation()
 						.type(SpringIntegrationDefinitions.SI_OP_MESSAGE_ADAPTER_TYPE)
 						.label(label)
+						.sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(jp))
 						.put("listeningOnQueues", cachedMessageListenerProps.queueNames)  
 						.put("messageExchange", message.getMessageProperties().getReceivedExchange())
 						.put("messageRoutingKey", message.getMessageProperties().getReceivedRoutingKey())

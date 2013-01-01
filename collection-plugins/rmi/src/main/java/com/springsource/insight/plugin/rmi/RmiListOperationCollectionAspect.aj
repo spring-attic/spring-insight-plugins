@@ -19,6 +19,7 @@ package com.springsource.insight.plugin.rmi;
 import java.rmi.registry.Registry;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
+import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.collection.OperationCollector;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
@@ -39,7 +40,8 @@ public aspect RmiListOperationCollectionAspect extends OperationCollectionAspect
  	   : list() && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart)) {
 		Operation op = new Operation()
 							.type(RmiDefinitions.RMI_LIST)
-							.label("List bound remotes");
+							.label("List bound remotes")
+							.sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(thisJoinPoint));
 		OperationCollector collector = getCollector();
 		collector.enter(op);
 		try {

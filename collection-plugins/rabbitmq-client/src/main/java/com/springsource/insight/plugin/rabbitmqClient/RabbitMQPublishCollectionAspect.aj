@@ -39,7 +39,7 @@ public aspect RabbitMQPublishCollectionAspect extends AbstractRabbitMQCollection
     void around(String exchange, String routingKey, boolean mandatory, boolean immediate, BasicProperties props,byte[] body) : 
         publish(exchange,routingKey,mandatory,immediate,props,body) {
         
-        final Operation op = createOperation()
+        final Operation op = createOperation(thisJoinPoint)
         		.label(AbstractRabbitMQResourceAnalyzer.RABBIT + "-" + "Published to " + exchange + "#" + routingKey)
         		.put("exchange", exchange)
 				.put("routingKey", routingKey)

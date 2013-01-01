@@ -22,6 +22,7 @@ import java.util.Map;
 import org.aspectj.lang.JoinPoint;
 
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
+import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.util.StringUtil;
@@ -63,6 +64,7 @@ public aspect RedisMapOperationCollectionAspect extends AbstractOperationCollect
         }
         op.put("mapKey", mapKey);
         op.label("RedisMap: " + mapKey + "." + method + "()");
+        op.sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(jp));
         Object[] args = jp.getArgs();
         if(args != null) {
             int argLen = args.length;

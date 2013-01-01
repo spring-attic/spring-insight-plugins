@@ -27,6 +27,7 @@ import com.mongodb.MapReduceOutput;
 import com.mongodb.WriteConcern;
 import com.mongodb.WriteResult;
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
+import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
 
@@ -89,6 +90,7 @@ public aspect MongoCollectionOperationCollectionAspect extends AbstractOperation
         Operation op = new Operation()
                 .label("MongoDB: " + collection + "." + signature.getName())
                 .type(MongoDBCollectionExternalResourceAnalyzer.TYPE)
+                 .sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(joinPoint))
                 .put("collection", collection.getFullName());
         OperationList opList = op.createList("args");
         List<String> args = MongoArgumentUtils.toString(joinPoint.getArgs());

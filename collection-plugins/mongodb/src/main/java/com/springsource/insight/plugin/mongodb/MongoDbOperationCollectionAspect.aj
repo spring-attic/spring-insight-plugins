@@ -23,6 +23,7 @@ import org.aspectj.lang.JoinPoint;
 import com.mongodb.CommandResult;
 import com.mongodb.DB;
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
+import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
 
@@ -37,7 +38,8 @@ public aspect MongoDbOperationCollectionAspect extends AbstractOperationCollecti
     protected Operation createOperation(final JoinPoint jp) {
         Operation op = new Operation()
         					.label("MongoDB: DB." + jp.getSignature().getName() + "()")
-        					.type(MongoDBOperationExternalResourceAnalyzer.TYPE);
+        					.type(MongoDBOperationExternalResourceAnalyzer.TYPE)
+        					.sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(jp));
         OperationList opList = op.createList("args");
 
         List<String> args = MongoArgumentUtils.toString(jp.getArgs());

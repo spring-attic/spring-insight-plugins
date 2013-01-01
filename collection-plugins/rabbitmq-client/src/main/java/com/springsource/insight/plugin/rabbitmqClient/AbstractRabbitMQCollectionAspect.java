@@ -28,13 +28,17 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.aspectj.lang.JoinPoint;
+
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.impl.AMQConnection;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
+import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.intercept.color.ColorManager.ColorParams;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
+import com.springsource.insight.intercept.operation.SourceCodeLocation;
 import com.springsource.insight.util.ArrayUtil;
 import com.springsource.insight.util.ClassUtil;
 import com.springsource.insight.util.ExtraReflectionUtils;
@@ -65,10 +69,11 @@ public abstract class AbstractRabbitMQCollectionAspect extends OperationCollecti
     	return RabbitMQPluginRuntimeDescriptor.PLUGIN_NAME;
    	}
 
-    protected Operation createOperation() {
+    protected Operation createOperation(JoinPoint jp) {
         return new Operation()
                     .type(pluginOpType.getOperationType())
                     .label(pluginOpType.getLabel())
+                    .sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(jp))
                     ;
     }
 

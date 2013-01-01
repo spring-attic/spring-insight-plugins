@@ -25,6 +25,7 @@ import org.aspectj.lang.Signature;
 
 import com.mongodb.DBCursor;
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
+import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.intercept.operation.Operation;
 
 public aspect MongoCursorOperationCollectionAspect extends AbstractOperationCollectionAspect {
@@ -54,7 +55,8 @@ public aspect MongoCursorOperationCollectionAspect extends AbstractOperationColl
         final DBCursor cursor = (DBCursor) joinPoint.getTarget();
         Operation op = new Operation()
                 .type(TYPE)
-                .label("MongoDB: DBCursor." + signature.getName() + "()");
+                .label("MongoDB: DBCursor." + signature.getName() + "()")
+                .sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(joinPoint));
 
         op.put("keysWanted", MongoArgumentUtils.toString(cursor.getKeysWanted()))
           .put("query", MongoArgumentUtils.toString(cursor.getQuery()));
