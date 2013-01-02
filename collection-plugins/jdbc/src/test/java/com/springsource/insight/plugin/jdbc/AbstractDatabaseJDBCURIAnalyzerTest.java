@@ -65,8 +65,12 @@ public abstract class AbstractDatabaseJDBCURIAnalyzerTest extends AbstractCollec
 	    static final OperationType TYPE=OperationType.valueOf("analyzer-test");
 	    
 	    TestJDBCURIAnalyzer () {
-	        super(TYPE);
+            this(TYPE);
 	    }
+
+        TestJDBCURIAnalyzer(OperationType type) {
+            super(type);
+        }
 
 	    static Operation createOperation () {
 	        return createOperation(new Operation());

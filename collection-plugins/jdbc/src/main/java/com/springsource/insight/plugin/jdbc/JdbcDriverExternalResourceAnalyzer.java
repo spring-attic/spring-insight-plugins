@@ -15,20 +15,41 @@
  */
 package com.springsource.insight.plugin.jdbc;
 
+import java.util.Collection;
+
 import com.springsource.insight.intercept.operation.OperationType;
+import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
+import com.springsource.insight.intercept.trace.Frame;
+import com.springsource.insight.intercept.trace.Trace;
 
 /**
  * 
  */
 public class JdbcDriverExternalResourceAnalyzer extends DatabaseJDBCURIAnalyzer {
-    public static final OperationType   TYPE=OperationType.valueOf("jdbc-connect");
-    private static final JdbcDriverExternalResourceAnalyzer	INSTANCE=new JdbcDriverExternalResourceAnalyzer();
+    public static final OperationType TYPE = OperationType.valueOf("jdbc-connect");
+    private static final JdbcDriverExternalResourceAnalyzer INSTANCE = new JdbcDriverExternalResourceAnalyzer();
 
-    private JdbcDriverExternalResourceAnalyzer () {
-        super(TYPE);
+    private JdbcQueryExternalResourceGenerator queryExternalResourceGenerator;
+
+    private JdbcDriverExternalResourceAnalyzer() {
+        this(TYPE, JdbcQueryExternalResourceGenerator.getInstance());
+    }
+
+    // package visibility for unit tests
+    JdbcDriverExternalResourceAnalyzer(OperationType type, JdbcQueryExternalResourceGenerator generator) {
+        super(type);
+        this.queryExternalResourceGenerator = generator;
     }
 
     public static final JdbcDriverExternalResourceAnalyzer getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
+    }
+
+    @Override
+    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> dbFrames) {
+        return queryExternalResourceGenerator
+                .createAndAddQueryExternalResourceDescriptors(
+                        super.locateExternalResourceName(trace, dbFrames),
+                        trace);
     }
 }
