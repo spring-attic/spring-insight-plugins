@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.springsource.insight.plugin.integration;
+package com.springsource.insight.plugin.integration.tcp;
 
 import org.springframework.integration.ip.tcp.connection.TcpConnection;
 

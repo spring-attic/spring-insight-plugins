@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.springsource.insight.plugin.integration;
+package com.springsource.insight.plugin.integration.tcp;
 
 import org.junit.Test;
 import org.springframework.integration.ip.tcp.connection.ConnectionFactory;
@@ -27,6 +27,9 @@ import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
+import com.springsource.insight.plugin.integration.tcp.TcpConnectionExternalResourceAnalyzer;
+import com.springsource.insight.plugin.integration.tcp.TcpConnectionOperationCollectionAspect;
+import com.springsource.insight.plugin.integration.tcp.TcpConnectionOperationCollector;
 
 /**
  * 

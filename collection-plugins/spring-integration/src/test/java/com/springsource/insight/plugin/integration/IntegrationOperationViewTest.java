@@ -71,6 +71,5 @@ public class IntegrationOperationViewTest extends AbstractOperationViewTestSuppo
         assertTrue(content.contains("testChan"));    
         assertFalse(content.contains("Result Message ID"));
     }    
-
 }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.springsource.insight.plugin.integration;
+package com.springsource.insight.plugin.integration.tcp;
 
 import java.util.Collection;
 import java.util.Collections;

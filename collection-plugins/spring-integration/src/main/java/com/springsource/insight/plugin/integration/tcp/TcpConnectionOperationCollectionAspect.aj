@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package com.springsource.insight.plugin.integration;
+package com.springsource.insight.plugin.integration.tcp;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
 import org.springframework.integration.ip.tcp.connection.ConnectionFactory;
 
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.plugin.integration.AbstractIntegrationOperationCollectionAspect;
 
 
 /**

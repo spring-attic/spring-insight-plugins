@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.springsource.insight.idk.test.AbstractExposedIdkPuginsTestSupport;
+import com.springsource.insight.plugin.integration.tcp.TcpConnectionExternalResourceAnalyzer;
 
 /**
  * Makes sure that the exposed singletons are indeed visible 

@@ -26,7 +26,7 @@
     <insight:operation-view operation="integration_message_adapter" 
                 template="com/springsource/insight/plugin/integration/integration_adapter.ftl"/>
     <insight:operation-view operation="integration_tcpconn" 
-                template="com/springsource/insight/plugin/integration/integration_tcpconn.ftl"/>
+                template="com/springsource/insight/plugin/integration/tcp/integration_tcpconn.ftl"/>
 
     <bean id="springIntegrationPluginEndPointAnalyzer"
           class="com.springsource.insight.plugin.integration.IntegrationEndPointAnalyzer"
@@ -34,7 +34,7 @@
           lazy-init="true"
         />
     <bean id="springIntegrationPluginTcpConnectionExternalResourceAnalyzer"
-          class="com.springsource.insight.plugin.integration.TcpConnectionExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.integration.tcp.TcpConnectionExternalResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
         />
