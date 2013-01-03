@@ -75,9 +75,4 @@ public aspect RabbitMQPublishCollectionAspect extends AbstractRabbitMQCollection
         	ExceptionUtils.rethrowException(e);
         }
     }
-
-    @Override
-	public boolean isEndpoint() {
-    	return false;
-    }
 }

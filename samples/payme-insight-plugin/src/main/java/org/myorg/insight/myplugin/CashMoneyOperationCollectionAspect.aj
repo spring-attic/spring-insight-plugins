@@ -69,7 +69,7 @@ public aspect CashMoneyOperationCollectionAspect extends AbstractOperationCollec
     }
 
     @Override
-    public boolean isEndpoint() {
+    public boolean isMetricsGenerator() {
         return true; // Always include this frame in the trace
 }
 

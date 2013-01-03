@@ -79,6 +79,11 @@ public abstract aspect AbstractGemFireCollectionAspect extends AbstractOperation
     public String getPluginName() {
         return GemFireLightPluginRuntimeDescriptor.PLUGIN_NAME;
     }
+    
+    @Override
+    public boolean isMetricsGenerator() {
+        return true; // This provides an external resource
+    }
 
 
 }

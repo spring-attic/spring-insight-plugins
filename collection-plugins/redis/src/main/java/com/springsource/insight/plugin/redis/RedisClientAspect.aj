@@ -81,4 +81,9 @@ public aspect RedisClientAspect extends AbstractOperationCollectionAspect {
     public String getPluginName() {
         return RedisPluginRuntimeDescriptor.PLUGIN_NAME;
     }
+    
+    @Override
+    public boolean isMetricsGenerator() {
+        return true; // This provides an external resource
+    }
 }

@@ -216,4 +216,9 @@ public aspect JdbcPreparedStatementOperationCollectionAspect
     public String getPluginName() {
         return JdbcRuntimePluginDescriptor.PLUGIN_NAME;
     }
+    
+    @Override
+    public boolean isMetricsGenerator() {
+        return true; // This provides an external resource
+    }
 }

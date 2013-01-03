@@ -36,7 +36,7 @@ import java.util.Map;
 /**
  * Collection operation for CassandraDB CQL queries
  */
-public privileged aspect UpdateOperationCollectionAspect extends AbstractOperationCollectionAspect {
+public privileged aspect UpdateOperationCollectionAspect extends AbstractCassandraOperationCollectionAspect {
     public UpdateOperationCollectionAspect() {
         super();
     }

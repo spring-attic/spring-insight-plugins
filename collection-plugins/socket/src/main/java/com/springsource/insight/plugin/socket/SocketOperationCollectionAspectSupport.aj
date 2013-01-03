@@ -63,4 +63,9 @@ public abstract aspect SocketOperationCollectionAspectSupport
     public String getPluginName() {
         return SocketPluginRuntimeDescriptor.PLUGIN_NAME;
     }
+    
+    @Override
+    public boolean isMetricsGenerator() {
+        return true; // This provides an external resource
+    }
 }

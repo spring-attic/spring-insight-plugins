@@ -228,7 +228,7 @@ public aspect Ejb3LocalServiceOperationCollectionAspect
     }
     
     @Override
-    public boolean isEndpoint() {
+    public boolean isMetricsGenerator() {
     	return true;
     }
     

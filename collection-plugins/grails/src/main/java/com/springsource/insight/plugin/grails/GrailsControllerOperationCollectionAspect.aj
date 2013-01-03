@@ -45,7 +45,7 @@ public aspect GrailsControllerOperationCollectionAspect extends AbstractOperatio
     }
 
     @Override
-    public boolean isEndpoint() {
+    public boolean isMetricsGenerator() {
         return true; // This provides an EndPoint
     }
 

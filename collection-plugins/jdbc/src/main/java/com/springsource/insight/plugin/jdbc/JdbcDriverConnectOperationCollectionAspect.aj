@@ -164,4 +164,9 @@ public aspect JdbcDriverConnectOperationCollectionAspect extends AbstractOperati
             }
         }
     }
+    
+    @Override
+    public boolean isMetricsGenerator() {
+        return true; // This provides an external resource
+    }
 }

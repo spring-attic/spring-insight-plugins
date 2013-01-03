@@ -244,4 +244,9 @@ public abstract aspect LdapOperationCollectionAspectSupport
 
     @Override
     public String getPluginName() { return LdapPluginRuntimeDescriptor.PLUGIN_NAME; }
+    
+    @Override
+    public boolean isMetricsGenerator() {
+        return true; // This provides an external resource
+    }
 }

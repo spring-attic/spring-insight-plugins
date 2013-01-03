@@ -49,7 +49,7 @@ public aspect JwsOperationCollectionAspect extends MethodOperationCollectionAspe
     }
 
     @Override
-    public boolean isEndpoint() {
+    public boolean isMetricsGenerator() {
         return true;
     }
 

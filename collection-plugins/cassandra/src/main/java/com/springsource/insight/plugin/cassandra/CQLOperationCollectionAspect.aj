@@ -35,7 +35,7 @@ import com.springsource.insight.util.ListUtil;
 /**
  * Collection operation for CassandraDB CQL queries
  */
-public privileged aspect CQLOperationCollectionAspect extends AbstractOperationCollectionAspect {
+public privileged aspect CQLOperationCollectionAspect extends AbstractCassandraOperationCollectionAspect {
     public CQLOperationCollectionAspect() {
         super();
     }

@@ -281,4 +281,9 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
     public String getPluginName() {
         return HC4PluginRuntimeDescriptor.PLUGIN_NAME;
     }
+    
+    @Override
+    public boolean isMetricsGenerator() {
+        return true; // This provides an external resource
+    }
 }

@@ -100,7 +100,7 @@ public aspect RepositoryMethodOperationCollectionAspect extends MethodOperationC
     }
 
     @Override
-    public boolean isEndpoint() {
+    public boolean isMetricsGenerator() {
         return true;
     }
 

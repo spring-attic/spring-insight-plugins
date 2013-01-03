@@ -70,8 +70,8 @@ public aspect UntypedActorOperationCollectionAspect extends MethodOperationColle
     }
 
     @Override
-    public boolean isEndpoint() {
-	return true;
-    }
+	public boolean isMetricsGenerator() {
+		return true; // This provides an end point
+	}
 
 }

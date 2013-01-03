@@ -40,7 +40,7 @@ import com.springsource.insight.intercept.operation.OperationMap;
 /**
  * Collection operation for CassandraDB CQL queries
  */
-public privileged aspect GetOperationCollectionAspect extends AbstractOperationCollectionAspect {
+public privileged aspect GetOperationCollectionAspect extends AbstractCassandraOperationCollectionAspect {
     public GetOperationCollectionAspect() {
         super();
     }

@@ -33,7 +33,7 @@ import com.springsource.insight.intercept.operation.OperationMap;
 /**
  * Collection operation for CassandraDB system commands 
  */
-public privileged aspect SystemOperationCollectionAspect extends AbstractOperationCollectionAspect {
+public privileged aspect SystemOperationCollectionAspect extends AbstractCassandraOperationCollectionAspect {
     public SystemOperationCollectionAspect() {
         super();
     }

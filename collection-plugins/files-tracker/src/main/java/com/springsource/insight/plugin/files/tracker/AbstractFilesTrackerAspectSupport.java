@@ -307,4 +307,9 @@ public abstract class AbstractFilesTrackerAspectSupport extends OperationCollect
                 return new CacheKey(instance);
         }
     }
+    
+    @Override
+    public boolean isMetricsGenerator() {
+        return true; // This provides an external resource
+    }
 }

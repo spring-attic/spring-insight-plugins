@@ -41,33 +41,33 @@ public privileged aspect SimpleHttpInvokerRequestExecutorAspect extends Operatio
 	}
 
 	public pointcut connectionPreparation()
-		: execution(* org.springframework.remoting.httpinvoker.SimpleHttpInvokerRequestExecutor+.prepareConnection(HttpURLConnection,int))
-	    ;
+	: execution(* org.springframework.remoting.httpinvoker.SimpleHttpInvokerRequestExecutor+.prepareConnection(HttpURLConnection,int))
+	;
 
-    @SuppressAjWarnings("adviceDidNotMatch")
+	@SuppressAjWarnings("adviceDidNotMatch")
 	Object around() throws IOException
-		: connectionPreparation()
-	  && (!cflowbelow(connectionPreparation()))	// using cflowbelow in case a derived class delegates to its parent
-      && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart)) {
-        OperationCollector  	opsCollector=getCollector();
-        final HttpURLConnection	connection=(HttpURLConnection) thisJoinPoint.getArgs()[0];
-        final Operation   	  	op=createOperation(thisJoinPoint, connection);
+	: connectionPreparation()
+	&& (!cflowbelow(connectionPreparation()))	// using cflowbelow in case a derived class delegates to its parent
+	&& if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart)) {
+		OperationCollector  	opsCollector=getCollector();
+		final HttpURLConnection	connection=(HttpURLConnection) thisJoinPoint.getArgs()[0];
+		final Operation   	  	op=createOperation(thisJoinPoint, connection);
 
-        opsCollector.enter(op);
+		opsCollector.enter(op);
 		try {
 			Object	returnValue=proceed();
-	        colorForward(new ColorParams() {
+			colorForward(new ColorParams() {
 				public void setColor(String key, String value) {
 					connection.setRequestProperty(key, value);
 				}
 
-	            public Operation getOperation() {
+				public Operation getOperation() {
 					return op;
 				}
 			});
-	        updatePreparedConnectionDetails(op, connection);
-	        opsCollector.exitNormal();
-	        return returnValue;
+			updatePreparedConnectionDetails(op, connection);
+			opsCollector.exitNormal();
+			return returnValue;
 		} catch(IOException e) {
 			opsCollector.exitAbnormal(e);
 			throw e;
@@ -77,21 +77,26 @@ public privileged aspect SimpleHttpInvokerRequestExecutorAspect extends Operatio
 		}
 	}
 
-    Operation createOperation (JoinPoint jp, HttpURLConnection conn) {
-        URL	url=conn.getURL();
-        return OperationCollectionUtil.methodOperation(
-        		new Operation().type(HttpInvokerRequestExecutorExternalResourceAnalyzer.HTTP_INVOKER), jp)
-        			.put(OperationFields.URI, url.toExternalForm())
-        			.put(HttpInvokerRequestExecutorExternalResourceAnalyzer.DIRECT_CALL_ATTR, true)
-        			;
-    }
+	Operation createOperation (JoinPoint jp, HttpURLConnection conn) {
+		URL	url=conn.getURL();
+		return OperationCollectionUtil.methodOperation(
+				new Operation().type(HttpInvokerRequestExecutorExternalResourceAnalyzer.HTTP_INVOKER), jp)
+				.put(OperationFields.URI, url.toExternalForm())
+				.put(HttpInvokerRequestExecutorExternalResourceAnalyzer.DIRECT_CALL_ATTR, true)
+				;
+	}
 
-    Operation updatePreparedConnectionDetails (Operation op, HttpURLConnection conn) {
-    	return op.put("method", conn.getRequestMethod());
-    }
+	Operation updatePreparedConnectionDetails (Operation op, HttpURLConnection conn) {
+		return op.put("method", conn.getRequestMethod());
+	}
 
 	@Override
 	public String getPluginName() {
 		return SpringWebPluginRuntimeDescriptor.PLUGIN_NAME;
+	}
+
+	@Override
+	public boolean isMetricsGenerator() {
+		return true; // This provides an external resource
 	}
 }

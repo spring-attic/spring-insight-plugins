@@ -92,4 +92,9 @@ public abstract aspect AbstractIntegrationOperationCollectionAspect extends Abst
     public final String getPluginName() {
         return IntegrationPluginRuntimeDescriptor.PLUGIN_NAME;
     }
+    
+    @Override
+    public boolean isMetricsGenerator(){
+        return true; // This provides an external resource
+    }
 }

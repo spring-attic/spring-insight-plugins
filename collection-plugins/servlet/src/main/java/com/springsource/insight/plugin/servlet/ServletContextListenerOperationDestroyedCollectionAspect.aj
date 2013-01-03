@@ -66,7 +66,7 @@ public aspect ServletContextListenerOperationDestroyedCollectionAspect extends A
     }
 
     @Override
-    public boolean isEndpoint() {
+    public boolean isMetricsGenerator() {
         return true;
     }
 

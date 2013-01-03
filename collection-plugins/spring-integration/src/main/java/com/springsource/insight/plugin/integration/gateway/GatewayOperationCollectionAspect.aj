@@ -125,9 +125,4 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
         			.toString()
         			;
     }
-    
-    @Override
-	public boolean isEndpoint() {
-		return true;
-	}
 }

@@ -90,7 +90,7 @@ public aspect JaxrsOperationCollectionAspect extends MethodOperationCollectionAs
     }
 
     @Override
-    public boolean isEndpoint() {
+    public boolean isMetricsGenerator() {
         return true;
     }
 
@@ -254,4 +254,5 @@ public aspect JaxrsOperationCollectionAspect extends MethodOperationCollectionAs
 
         return paramName;   // TODO consider throwing a "formatException"
     }
+    
 }

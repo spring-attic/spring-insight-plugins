@@ -60,4 +60,9 @@ public privileged aspect MapOperationCollectionAspect extends AbstractOperationC
     public String getPluginName() {
 		return HadoopPluginRuntimeDescriptor.PLUGIN_NAME;
 	}
+	
+	 @Override
+	    public boolean isMetricsGenerator() {
+	        return true; // This provides an external resource
+	    }
 }

@@ -60,4 +60,9 @@ public aspect MongoDbOperationCollectionAspect extends AbstractOperationCollecti
     public String getPluginName() {
         return MongoDBPluginRuntimeDescriptor.PLUGIN_NAME;
     }
+    
+    @Override
+    public boolean isMetricsGenerator() {
+        return true; // This provides an external resource
+    }
 }

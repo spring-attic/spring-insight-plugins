@@ -276,8 +276,4 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 
 	}
 
-	@Override
-	public boolean isEndpoint() {
-		return true;
-	}
 }

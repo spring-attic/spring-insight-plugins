@@ -30,7 +30,7 @@ import java.nio.ByteBuffer;
 /**
  * Collection operation for CassandraDB CQL queries
  */
-public privileged aspect RemoveOperationCollectionAspect extends AbstractOperationCollectionAspect {
+public privileged aspect RemoveOperationCollectionAspect extends AbstractCassandraOperationCollectionAspect {
     public RemoveOperationCollectionAspect() {
         super();
     }

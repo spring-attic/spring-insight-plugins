@@ -166,5 +166,10 @@ public abstract aspect EhcacheMethodOperationCollectionAspect extends MethodOper
     public String getPluginName() {
         return EhcacheDefinitions.PLUGIN_NAME;
     }
+    
+    @Override
+    public boolean isMetricsGenerator() {
+        return true; // This provides an external resource
+    }
 
 }

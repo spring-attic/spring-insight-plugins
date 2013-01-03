@@ -34,9 +34,9 @@ public aspect ValidationOperationCollectionAspect extends AbstractSpringWebAspec
     public pointcut collectionPoint() : execution(* Validator+.validate(Object, Errors));
 
     @Override
-    public boolean isEndpoint() {
-        return true;
-    }
+	public boolean isMetricsGenerator() {
+		return true; // This provides an end point
+	}
 
     @Override
 	protected Operation createOperation(JoinPoint jp) {

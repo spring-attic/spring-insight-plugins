@@ -87,7 +87,7 @@ public abstract aspect SpringBatchOperationCollectionAspect extends MethodOperat
     }
 
     @Override
-    public boolean isEndpoint() {
+    public boolean isMetricsGenerator() {
         return true;
     }
     

@@ -303,4 +303,9 @@ public abstract class AbstractRabbitMQCollectionAspect extends OperationCollecti
 		longStringClassHolder.set(String.class);	// avoid repeated load attempts and use an incompatible class
 		return null;
 	}
+    
+    @Override
+    public boolean isMetricsGenerator(){
+        return true; // This provides an endpoint and external resource
+    }
 }

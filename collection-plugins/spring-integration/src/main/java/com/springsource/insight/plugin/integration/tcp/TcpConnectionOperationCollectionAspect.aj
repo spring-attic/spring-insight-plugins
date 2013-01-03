@@ -39,8 +39,8 @@ public aspect TcpConnectionOperationCollectionAspect extends AbstractIntegration
 		Object		target=jp.getTarget();
 		Signature	sig=jp.getSignature();
 		return new Operation().type(TcpConnectionExternalResourceAnalyzer.TYPE)
-							  .sourceCodeLocation(getSourceCodeLocation(jp))
-							  .label(target.getClass().getSimpleName() + "#" + sig.getName())
-							  ;
+				.sourceCodeLocation(getSourceCodeLocation(jp))
+				.label(target.getClass().getSimpleName() + "#" + sig.getName())
+				;
 	}
 }

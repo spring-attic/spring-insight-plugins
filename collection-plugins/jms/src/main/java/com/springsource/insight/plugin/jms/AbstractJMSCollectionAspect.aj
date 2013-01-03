@@ -206,7 +206,7 @@ public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAs
     }
 
     @Override
-    public boolean isEndpoint() {
+    public boolean isMetricsGenerator() {
         return true;
     }
 

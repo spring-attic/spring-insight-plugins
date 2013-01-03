@@ -72,4 +72,9 @@ public aspect JdbcConnectionCloseOperationCollectionAspect extends OperationColl
             return null;
         }
     }
+    
+    @Override
+    public boolean isMetricsGenerator() {
+        return true; // This provides an external resource
+    }
 }

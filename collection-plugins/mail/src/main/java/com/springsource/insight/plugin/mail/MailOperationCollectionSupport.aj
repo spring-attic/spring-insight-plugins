@@ -130,4 +130,9 @@ public abstract aspect MailOperationCollectionSupport extends MethodOperationCol
     boolean collectExtraInformation () {
         return FrameBuilder.OperationCollectionLevel.HIGH.equals(configuration.getCollectionLevel());
     }
+    
+    @Override
+    public boolean isMetricsGenerator() {
+        return true; // This provides an external resource
+    }
 }

@@ -209,9 +209,4 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
     private String getConsumeOperationLabel(Operation op, String exchange, String routingKey) {
 		return AbstractRabbitMQResourceAnalyzer.RABBIT + "-" + LABEL_PREFIX +  op.get(CONSUMED_QUEUES) + " ("  + exchange + "#" + routingKey + ")";
 	}
-
-    @Override
-	public boolean isEndpoint() {
-    	return true;
-   	}
 }
