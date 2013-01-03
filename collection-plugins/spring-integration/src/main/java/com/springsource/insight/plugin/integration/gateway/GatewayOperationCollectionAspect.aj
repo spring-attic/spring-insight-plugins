@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.springsource.insight.plugin.integration;
+package com.springsource.insight.plugin.integration.gateway;
 
 import java.lang.reflect.Method;
-import java.util.Map;
 import java.util.UUID;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.SuppressAjWarnings;
 import org.springframework.integration.Message;
 import org.springframework.integration.MessageHeaders;
 import org.springframework.integration.gateway.MessagingGatewaySupport;
-import org.springframework.integration.mapping.InboundMessageMapper;
 
 import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.plugin.integration.AbstractIntegrationOperationCollectionAspect;
+import com.springsource.insight.plugin.integration.SpringIntegrationDefinitions;
 import com.springsource.insight.util.ArrayUtil;
 
 public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegrationOperationCollectionAspect {
@@ -35,54 +34,6 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
     public GatewayOperationCollectionAspect() {
         super();
     }
-    
-    /* ------------------------------------------------------------------------------------------------------------- *
-     * HasMethod and HasRequestMapper - add support to proxy gateways. Proxy gateways are just interfaces, in-order 
-     * to expose the real gateway interface name, and the real method name we must expose:
-     * 1. MessagingGatewaySupport#requestMapper - done with HasRequestMapper
-     * 2. GatewayMethodInboundMessageMapper#method - done with HasMethod
-     * ------------------------------------------------------------------------------------------------------------- */
-    interface HasMethod {
-    	// marker interface
-    }
-    declare parents: org.springframework.integration.gateway.GatewayMethodInboundMessageMapper+ implements HasMethod;
-    
-    private Method HasMethod.__insightMethod;
-    public void HasMethod.__setInsightMethod(Method method) { this.__insightMethod = method; }
-    public Method HasMethod.__getInsightMethod() { return this.__insightMethod; }
-    
-    interface HasRequestMapper {
-    	// marker interface
-    }
-    declare parents: MessagingGatewaySupport+ implements HasRequestMapper;
-    
-    @SuppressWarnings("rawtypes")
-    public InboundMessageMapper HasRequestMapper.insightMapper;
-    
-    @SuppressWarnings("rawtypes")
-    @SuppressAjWarnings
-    after(Method method, Map map, org.springframework.integration.gateway.GatewayMethodInboundMessageMapper gatewayMapper) : 
-    	execution(public org.springframework.integration.gateway.GatewayMethodInboundMessageMapper+.new(Method, Map))
-    	&& args(method, map) && target(gatewayMapper) {
-        
-        if (gatewayMapper instanceof HasMethod) {
-            ((HasMethod)gatewayMapper).__setInsightMethod(method);
-        }
-    }
-    
-    @SuppressAjWarnings
-    @SuppressWarnings("rawtypes")
-    after(MessagingGatewaySupport gateway, InboundMessageMapper mapper) : 
-        execution(public void MessagingGatewaySupport+.setRequestMapper(InboundMessageMapper))
-                && args(mapper) && target(gateway) {
-        
-        if (gateway instanceof HasRequestMapper) {
-            ((HasRequestMapper)gateway).insightMapper = mapper;
-        }
-        
-    }
-    
-    /* ------------------------------------------------------------------------------------------------------------- */
     
     public pointcut collectionPoint() : 
         execution(void org.springframework.integration.gateway.MessagingGatewaySupport+.send(Object)) ||
@@ -150,22 +101,19 @@ public privileged aspect GatewayOperationCollectionAspect extends AbstractIntegr
 		         .put(SpringIntegrationDefinitions.BEAN_NAME_ATTR,  gateway.getComponentName());
     }
 
-    @SuppressWarnings("rawtypes")
     private static Method resloveMethod(JoinPoint jp) {
         Object gateway = jp.getTarget();
-        
         if (!(gateway instanceof HasRequestMapper)) {
             return null;
         }
         
         HasRequestMapper hasRequestMapper = (HasRequestMapper) gateway;
-        InboundMessageMapper mapper = hasRequestMapper.insightMapper;
-        
-        if (!(mapper instanceof HasMethod)) {
+        Object mapperInstance = hasRequestMapper.__getRequestMapper();
+        if (!(mapperInstance instanceof HasMethod)) {
             return null;
         }
         
-        HasMethod hasMethod = (HasMethod) mapper;
+        HasMethod hasMethod = (HasMethod) mapperInstance;
         return hasMethod.__getInsightMethod();
     }
     
