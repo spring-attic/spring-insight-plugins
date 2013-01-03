@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.springsource.insight.plugin.integration;
+package com.springsource.insight.plugin.integration.amqp;
 
 import org.aspectj.lang.JoinPoint;
 import org.springframework.amqp.core.Message;
@@ -25,6 +25,9 @@ import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.collection.TrailingAbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.color.ColorManager.ColorParams;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.plugin.integration.IntegrationPluginRuntimeDescriptor;
+import com.springsource.insight.plugin.integration.MessageListenerProps;
+import com.springsource.insight.plugin.integration.SpringIntegrationDefinitions;
 
 
 public privileged aspect MessageListenerOperationCollectionAspect extends TrailingAbstractOperationCollectionAspect {
