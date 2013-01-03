@@ -16,16 +16,16 @@
 
 package com.springsource.insight.plugin.gemfire;
 
+import java.util.Collections;
+
 import org.junit.Test;
 
-import com.gemstone.bp.edu.emory.mathcs.backport.java.util.Collections;
 import com.gemstone.gemfire.cache.Region;
-import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class GemFireRegionCollectionAspectTest extends GemFireAspectTestSupport {
     	
-	private final TestCallback test = new TestCallback() {			
+	private static final TestCallback testCallback = new TestCallback() {			
 			public void doTest(Operation operation) {
 				assertEquals("/test", operation.get(GemFireDefenitions.FIELD_PATH));
 			}
@@ -36,167 +36,155 @@ public class GemFireRegionCollectionAspectTest extends GemFireAspectTestSupport 
 	}
 
     @Test
-    public void getOperationCollection() {
+    public void testGetOperationCollection() {
     	testInGemfire(new GemFireCallback() {			
-			public void doInGemfire(Region r) {
-				r.get("a");
+			public void doInGemfire(Region<?,?> r) {
+				r.get("testGetOperationCollection");
 			}
-		}, test);
+		}, testCallback);
     }
 
     @Test
-    public void getAllOperationCollection() {
+    public void testGetAllOperationCollection() {
     	testInGemfire(new GemFireCallback() {			
-			public void doInGemfire(Region r) {
-				r.getAll(Collections.singleton("a"));
+			public void doInGemfire(Region<?,?> r) {
+				r.getAll(Collections.singleton("testGetAllOperationCollection"));
 			}
-		}, test);
+		}, testCallback);
     }
     
     @Test
-    public void getEntryOperationCollection() {
+    public void testGetEntryOperationCollection() {
     	testInGemfire(new GemFireCallback() {			
-			public void doInGemfire(Region r) {
-				r.getEntry("a");
+			public void doInGemfire(Region<?,?> r) {
+				r.getEntry("testGetEntryOperationCollection");
 			}
-		}, test);
+		}, testCallback);
     }
     
     @Test
-    public void selectOperationCollection() {
+    public void testSelectOperationCollection() {
     	testInGemfire(new GemFireCallback() {			
-			public void doInGemfire(Region r) {
+			public void doInGemfire(Region<?,?> r) {
 				try {
 					r.selectValue("length > 1");
 				} catch (Exception e) {
 					e.printStackTrace();
-					org.junit.Assert.fail();
+					fail(e.getClass().getSimpleName() + ": " + e.getMessage());
 				}
 			}
-		}, test);
+		}, testCallback);
     }
 
     @Test
-    public void valuesOperationCollection() {
+    public void testValuesOperationCollection() {
     	testInGemfire(new GemFireCallback() {			
-			public void doInGemfire(Region r) {
+			public void doInGemfire(Region<?,?> r) {
 				r.values();
 			}
-		}, test);
+		}, testCallback);
     }
     
     @Test
-    public void putOperationCollection() {
+    public void testPutOperationCollection() {
     	testInGemfire(new GemFireCallback() {			
-			public void doInGemfire(Region r) {
-				r.put("a", "b");
+			@SuppressWarnings("unchecked")
+			public void doInGemfire(Region<?,?> r) {
+				((Region<Object,Object>) r).put("testPutOperationCollection", r.getClass().getSimpleName());
 			}
-		}, test);
+		}, testCallback);
     }
     
     @Test
-    public void putAllOperationCollection() {
+    public void testPutAllOperationCollection() {
     	testInGemfire(new GemFireCallback() {			
-			public void doInGemfire(Region r) {
-				r.putAll(Collections.singletonMap("a", "b'"));
+			@SuppressWarnings("unchecked")
+			public void doInGemfire(Region<?,?> r) {
+				((Region<Object,Object>) r).putAll(Collections.<Object,Object>singletonMap("testPutAllOperationCollection", r.getClass().getSimpleName()));
 			}
-		}, test);
+		}, testCallback);
     }
     
     @Test
-    public void queryOperationCollection() {
+    public void testQueryOperationCollection() {
     	testInGemfire(new GemFireCallback() {			
-			public void doInGemfire(Region r) {
+			public void doInGemfire(Region<?,?> r) {
 				try {
 					r.query("length > 1");
 				} catch (Exception e) {
 					e.printStackTrace();
-					org.junit.Assert.fail();
+					fail(e.getClass().getSimpleName() + ": " + e.getMessage());
 				}
 			}
-		}, test);
+		}, testCallback);
     }
     
     @Test
-    public void removeOperationCollection() {
+    public void testRemoveOperationCollection() {
     	testInGemfire(new GemFireCallback() {			
-			public void doInGemfire(Region r) {
-				r.remove("a");
+			public void doInGemfire(Region<?,?> r) {
+				r.remove("testRemoveOperationCollection");
 			}
-		}, test);
+		}, testCallback);
     }
         
     @Test
-    public void clearOperationCollection() {
+    public void testClearOperationCollection() {
     	testInGemfire(new GemFireCallback() {			
-			public void doInGemfire(Region r) {
+			public void doInGemfire(Region<?,?> r) {
 				r.clear();
 			}
-		}, test);
+		}, testCallback);
     }
     
     @Test
-    public void containsKeyOperationCollection() {
+    public void testContainsKeyOperationCollection() {
     	testInGemfire(new GemFireCallback() {			
-			public void doInGemfire(Region r) {
-				r.containsKey("a");
+			public void doInGemfire(Region<?,?> r) {
+				r.containsKey("testContainsKeyOperationCollection");
 			}
-		}, test);
+		}, testCallback);
     }
     
     @Test
-    public void containsValueOperationCollection() {
+    public void testContainsValueOperationCollection() {
     	testInGemfire(new GemFireCallback() {			
-			public void doInGemfire(Region r) {
-				r.containsValue("a");
+			public void doInGemfire(Region<?,?> r) {
+				r.containsValue("testContainsValueOperationCollection");
 			}
-		}, test);
+		}, testCallback);
     }
     
     @Test(expected=com.gemstone.gemfire.cache.EntryNotFoundException.class)
-    public void destroyOperationCollection() {
+    public void testDestroyOperationCollection() {
     	testInGemfire(new GemFireCallback() {			
-			public void doInGemfire(Region r) {
-				r.destroy("a");
+			public void doInGemfire(Region<?,?> r) {
+				r.destroy("testDestroyOperationCollection");
 			}
-		}, test);
+		}, testCallback);
     }
     
-    @Test
-    public void existsValueOperationCollection() {
-    	testInGemfire(new GemFireCallback() {			
-			public void doInGemfire(Region r) {
-				try {
-					r.query("length > 1");
-				} catch (Exception e) {
-					e.printStackTrace();
-					org.junit.Assert.fail();
-				}
-			}
-		}, test);
-    }
     
     @Test
-    public void isEmptyOperationCollection() {
+    public void testIsEmptyOperationCollection() {
     	testInGemfire(new GemFireCallback() {			
-			public void doInGemfire(Region r) {
+			public void doInGemfire(Region<?,?> r) {
 				r.isEmpty();
 			}
-		}, test);
+		}, testCallback);
     }
 
     @Test(expected=com.gemstone.gemfire.cache.EntryNotFoundException.class)
-    public void invalidateOperationCollection() {
+    public void testInvalidateOperationCollection() {
     	testInGemfire(new GemFireCallback() {			
-			public void doInGemfire(Region r) {
-				r.invalidate("a");
+			public void doInGemfire(Region<?,?> r) {
+				r.invalidate("testInvalidateOperationCollection");
 			}
-		}, test);
+		}, testCallback);
     }
-    
-    
+   
     @Override
-	public OperationCollectionAspectSupport getAspect() {
+	public GemFireRegionCollectionAspect getAspect() {
 		return GemFireRegionCollectionAspect.aspectOf();
 	}
 }

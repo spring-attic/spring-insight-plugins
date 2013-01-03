@@ -19,7 +19,6 @@ package com.springsource.insight.plugin.gemfire;
 import org.junit.Test;
 
 import com.gemstone.gemfire.cache.Region;
-import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class GemFireQueryCollectionAspectTest extends GemFireAspectTestSupport {
@@ -28,14 +27,14 @@ public class GemFireQueryCollectionAspectTest extends GemFireAspectTestSupport {
     }
 	
     @Test
-    public void putOperationCollection() throws Exception {
+    public void testQueryOperationCollection() throws Exception {
     	testInGemfire(new GemFireCallback() {			
-			public void doInGemfire(Region r) {
+			public void doInGemfire(Region<?,?> r) {
 				try {
 					r.query("/test.size > 1");
 				} catch (Exception e) {
 					e.printStackTrace();
-					org.junit.Assert.fail();
+					fail(e.getClass().getSimpleName() + ": " + e.getMessage());
 				}
 			}
 		}, new TestCallback() {			
@@ -46,7 +45,7 @@ public class GemFireQueryCollectionAspectTest extends GemFireAspectTestSupport {
     }
         
 	@Override
-	public OperationCollectionAspectSupport getAspect() {
+	public GemFireQueryCollectionAspect getAspect() {
 		return GemFireQueryCollectionAspect.aspectOf();
 	}
 

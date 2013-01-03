@@ -31,7 +31,6 @@ import com.gemstone.gemfire.distributed.internal.ServerLocation;
 import com.gemstone.gemfire.i18n.LogWriterI18n;
 import com.gemstone.gemfire.internal.cache.tier.MessageType;
 import com.gemstone.gemfire.internal.cache.tier.sockets.Message;
-import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 
@@ -106,7 +105,7 @@ public class GemFireRemoteCollectionAspectTest extends GemFireAspectTestSupport 
     }
 
     @Override
-	public OperationCollectionAspectSupport getAspect() {
+	public GemFireRemoteOperationCollectionAspect getAspect() {
 		return GemFireRemoteOperationCollectionAspect.aspectOf();
 	}
 	

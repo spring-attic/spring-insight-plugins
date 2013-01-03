@@ -27,6 +27,9 @@ import com.springsource.insight.intercept.operation.Operation;
 public abstract class GemFireAspectTestSupport extends OperationCollectionAspectTestSupport {
 	private Cache cache;
 
+	// NOTE: this must match the name if the gemfire XML file
+	protected static final String	TEST_REGION_NAME="test";
+
 	protected GemFireAspectTestSupport () {
 		super();
 	}
@@ -36,25 +39,24 @@ public abstract class GemFireAspectTestSupport extends OperationCollectionAspect
 	public void setUp() {
 		super.setUp();
     	cache = new CacheFactory()
-        .set("name", "Test")
-        .set("log-level", "warning")
-        .set("cache-xml-file", "gemfire.xml")
-        .create();    			
+        				.set("name", "Test")
+        				.set("log-level", "warning")
+        				.set("cache-xml-file", "gemfire.xml")
+        				.create()
+        				;    			
 	}
 	
     protected void testInGemfire(GemFireCallback callback, TestCallback test) {
-    	Region r = cache.getRegion("test");
+    	Region<?,?> r = cache.getRegion(TEST_REGION_NAME);
     	callback.doInGemfire(r);
         test.doTest(getLastEntered());    	
     }
     
-    protected interface GemFireCallback {
-    	void doInGemfire(Region region);
+    protected static interface GemFireCallback {
+    	void doInGemfire(Region<?,?> region);
     }
 
-    protected interface TestCallback {
+    protected static interface TestCallback {
     	void doTest(Operation operation);
     }
-    
-
 }
