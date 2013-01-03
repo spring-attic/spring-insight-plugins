@@ -24,6 +24,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.Queue;
+import javax.jms.TemporaryQueue;
 import javax.jms.TextMessage;
 
 import org.junit.Before;
@@ -33,25 +34,35 @@ import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class JMSMessageListenerCollectionAspectTest extends AbstractJMSCollectionAspectTestSupport {
-	public JMSMessageListenerCollectionAspectTest () {
-		super();
-	}
+    public JMSMessageListenerCollectionAspectTest () {
+        super();
+    }
 
-	@Before
-	@Override
-	public void setUp() {
-		super.setUp();
-		AbstractJMSCollectionAspect.OBFUSCATED_PROPERTIES.clear();
-	}
-
-    @Test
-    public void testUnobscuredMessageListenerValues() throws JMSException {
-    	runListenerTest(false);
+    @Before
+    @Override
+    public void setUp() {
+        super.setUp();
+        AbstractJMSCollectionAspect.OBFUSCATED_PROPERTIES.clear();
     }
 
     @Test
-    public void testObscuredMessageListenerValues() throws JMSException {
-    	runListenerTest(true);
+    public void testUnobscuredProducerAttributes() throws JMSException {
+        runListenerTest(false);
+    }
+
+    @Test
+    public void testUnobscuredProducerAttributesWithTemporaryQueue() throws JMSException {
+        runListenerTestWithTemporaryQueue(false);
+    }
+
+    @Test
+    public void testObscuredProducerAtttributes() throws JMSException {
+        runListenerTest(true);
+    }
+
+    @Test
+    public void testObscuredProducerAtttributesWithTemporaryQueue() throws JMSException {
+        runListenerTestWithTemporaryQueue(true);
     }
 
     @Override
@@ -61,27 +72,41 @@ public class JMSMessageListenerCollectionAspectTest extends AbstractJMSCollectio
 
     private void runListenerTest (boolean obscureAttrs) throws JMSException {
         Queue queue = mock(Queue.class);
+        DestinationType type = DestinationType.Queue;
+
+        assertOperation(obscureAttrs, queue, type);
+    }
+
+    private void runListenerTestWithTemporaryQueue(boolean obscureAttrs) throws JMSException {
+        Queue queue = mock(TemporaryQueue.class);
+        DestinationType type = DestinationType.TemporaryQueue;
+
+        assertOperation(obscureAttrs, queue, type);
+    }
+
+    private void assertOperation(boolean obscureAttrs, Queue queue, DestinationType type) throws JMSException {
         when(queue.getQueueName()).thenReturn("test.queue");
-        
+
         Message _mockMessage = mock(TextMessage.class);
         when(_mockMessage.getJMSDestination()).thenReturn(queue);
-        
+
         Map<String, Object> msgAttributesMap = JMSPluginUtilsTest.mockAttributes(_mockMessage);
         if (obscureAttrs) {
-        	AbstractJMSCollectionAspect.OBFUSCATED_PROPERTIES.addAll(msgAttributesMap.keySet());
+            AbstractJMSCollectionAspect.OBFUSCATED_PROPERTIES.addAll(msgAttributesMap.keySet());
         }
         JMSPluginUtilsTest.mockHeaders(_mockMessage);
-        
+
         MockMessageListener listener = new MockMessageListener();
         listener.onMessage(_mockMessage);
-        Message	lastMessage = listener.getLastMessage();
+        Message lastMessage = listener.getLastMessage();
         assertSame("Mismatched invoked listener messages", _mockMessage, lastMessage);
 
         Operation op = getLastEntered();
         assertNotNull("No operation collected", op);
         assertEquals("Mismatched operation type", JMSPluginOperationType.LISTENER_RECEIVE.getOperationType(), op.getType());
         assertEquals("Mismatched operation label", JMSPluginOperationType.LISTENER_RECEIVE.getLabel(), op.getLabel());
-        
+        assertEquals("Mismatched destination type", type.getLabel(), op.get("destinationType", String.class));
+
         JMSPluginUtilsTest.assertHeaders(_mockMessage, op);
         JMSPluginUtilsTest.assertAttributes(msgAttributesMap, op);
 
@@ -89,14 +114,14 @@ public class JMSMessageListenerCollectionAspectTest extends AbstractJMSCollectio
     }
 
     private static class MockMessageListener implements MessageListener {
-    	private Message	lastMessage;
+        private Message	lastMessage;
 
         public MockMessageListener () {
             super();
         }
 
         Message getLastMessage () {
-        	return lastMessage;
+            return lastMessage;
         }
 
         public void onMessage(Message msg) {

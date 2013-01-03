@@ -25,6 +25,7 @@ import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.Queue;
+import javax.jms.TemporaryQueue;
 import javax.jms.TextMessage;
 
 import org.junit.Before;
@@ -34,25 +35,35 @@ import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class JMSConsumerCollectionAspectTest extends AbstractJMSCollectionAspectTestSupport {
-	public JMSConsumerCollectionAspectTest () {
-		super();
-	}
+    public JMSConsumerCollectionAspectTest () {
+        super();
+    }
 
-	@Before
-	@Override
-	public void setUp() {
-		super.setUp();
-		AbstractJMSCollectionAspect.OBFUSCATED_PROPERTIES.clear();
-	}
-
-    @Test
-    public void testUnobscuredConsumerAttributes() throws JMSException {
-    	runConsumerTest(false);
+    @Before
+    @Override
+    public void setUp() {
+        super.setUp();
+        AbstractJMSCollectionAspect.OBFUSCATED_PROPERTIES.clear();
     }
 
     @Test
-    public void testObscuredConsumerAttributes() throws JMSException {
-    	runConsumerTest(true);
+    public void testUnobscuredProducerAttributes() throws JMSException {
+        runConsumerTest(false);
+    }
+
+    @Test
+    public void testUnobscuredProducerAttributesWithTemporaryQueue() throws JMSException {
+        runConsumerTestWithTemporaryQueue(false);
+    }
+
+    @Test
+    public void testObscuredProducerAtttributes() throws JMSException {
+        runConsumerTest(true);
+    }
+
+    @Test
+    public void testObscuredProducerAtttributesWithTemporaryQueue() throws JMSException {
+        runConsumerTestWithTemporaryQueue(true);
     }
 
     @Override
@@ -62,12 +73,25 @@ public class JMSConsumerCollectionAspectTest extends AbstractJMSCollectionAspect
 
     private void runConsumerTest (boolean obscureAttrs) throws JMSException {
         Queue queue = mock(Queue.class);
+        DestinationType type = DestinationType.Queue;
+
+        assertOperation(obscureAttrs, queue, type);
+    }
+
+    private void runConsumerTestWithTemporaryQueue(boolean obscureAttrs) throws JMSException {
+        Queue queue = mock(TemporaryQueue.class);
+        DestinationType type = DestinationType.TemporaryQueue;
+
+        assertOperation(obscureAttrs, queue, type);
+    }
+
+    private void assertOperation(boolean obscureAttrs, Queue queue, DestinationType type) throws JMSException {
         when(queue.getQueueName()).thenReturn("test.queue");
-        
+
         MockConsumer consumer = new MockConsumer(queue);
         Map<String, Object> msgAttributesMap = consumer.msgAttributesMap;
         if (obscureAttrs) {
-        	AbstractJMSCollectionAspect.OBFUSCATED_PROPERTIES.addAll(msgAttributesMap.keySet());
+            AbstractJMSCollectionAspect.OBFUSCATED_PROPERTIES.addAll(msgAttributesMap.keySet());
         }
 
         Message message = consumer.receive();
@@ -77,7 +101,8 @@ public class JMSConsumerCollectionAspectTest extends AbstractJMSCollectionAspect
         assertNotNull("No operation collected", op);
         assertEquals("Mismatched operation type", JMSPluginOperationType.RECEIVE.getOperationType(), op.getType());
         assertEquals("Mismatched operation label", JMSPluginOperationType.RECEIVE.getLabel(), op.getLabel());
-        
+        assertEquals("Mismatched destination type", type.getLabel(), op.get("destinationType", String.class));
+
         JMSPluginUtilsTest.assertHeaders(message, op);
         JMSPluginUtilsTest.assertAttributes(consumer.msgAttributesMap, op);
 
@@ -87,18 +112,18 @@ public class JMSConsumerCollectionAspectTest extends AbstractJMSCollectionAspect
     private static class MockConsumer implements MessageConsumer {
         private final TextMessage _mockMessage;
         final Map<String, Object> msgAttributesMap;
-        
+
         public MockConsumer(Queue queue) throws JMSException {
             _mockMessage = mock(TextMessage.class);
             when(_mockMessage.getText()).thenReturn(getClass().getSimpleName());
             when(_mockMessage.getJMSDestination()).thenReturn(queue);
             when(_mockMessage.getJMSType()).thenReturn(TextMessage.class.getSimpleName());
             when(_mockMessage.getJMSCorrelationID()).thenReturn("3777347");
-            
+
             msgAttributesMap = JMSPluginUtilsTest.mockAttributes(_mockMessage);
             JMSPluginUtilsTest.mockHeaders(_mockMessage);
         }
-        
+
         public void close() throws JMSException {
             // do nothing
         }

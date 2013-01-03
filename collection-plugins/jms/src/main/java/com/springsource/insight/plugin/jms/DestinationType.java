@@ -15,8 +15,46 @@
  */
 package com.springsource.insight.plugin.jms;
 
+import java.util.EnumSet;
+
+import com.springsource.insight.util.StringUtil;
+
 enum DestinationType {
-    Queue, 
-    Topic, 
-    Unknown
+    Queue("Queue", false),
+    Topic("Topic", false),
+    TemporaryQueue("Temporary queue", true),
+    TemporaryTopic("Temporary topic", true),
+    Unknown("Unknown", false);
+
+    public static final EnumSet<DestinationType> enumSet = EnumSet.allOf(DestinationType.class);
+
+    private boolean temporary;
+    private String label;
+
+    DestinationType(String lbl, boolean temp) {
+        this.label = lbl;
+        this.temporary = temp;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public boolean isTemporary() {
+        return temporary;
+    }
+
+    public static DestinationType fromLabel(String lbl) {
+        if (StringUtil.isEmpty(lbl)) {
+            return null;
+        }
+
+        for (DestinationType type : enumSet) {
+            if (lbl.equals(type.label)) {
+                return type;
+            }
+        }
+
+        return null;
+    }
 }

@@ -45,169 +45,206 @@ import com.springsource.insight.util.StringUtil;
 import com.springsource.insight.util.time.TimeRange;
 
 public abstract class AbstractJMSResourceAnalyzerTest extends Assert {
-	private final JMSPluginOperationType operationType;
-	private final boolean isIncoming;
-	private final AbstractJMSResourceAnalyzer	analyzer;
-	/*
-	 * NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!!
-	 * These values must be the same as the ones used in the JMSServlet class
-	 * of the jms-webapp integration test
-	 */
-	protected static final String	INTTEST_PROTOCOL="vm", INTTEST_HOST="localhost";
-	protected static final int	INTTEST_PORT=61618;
-	protected static final String	INTTEST_QUEUE_NAME="Dummy ActiveMQ queue", INTTEST_TOPIC_NAME="Dummy Topic";
-	protected static final ApplicationName	INTTEST_APP=ApplicationName.valueOf("localhost", "jms_webapp");
-	protected static final Map<DestinationType,String>	DESTS_NAMES=Collections.unmodifiableMap(
-				new EnumMap<DestinationType,String>(DestinationType.class) {
-					private static final long serialVersionUID = 1L;
+    private final JMSPluginOperationType operationType;
+    private final boolean isIncoming;
+    private final AbstractJMSResourceAnalyzer analyzer;
+    /*
+     * NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! These
+     * values must be the same as the ones used in the JMSServlet class of the
+     * jms-webapp integration test
+     */
+    protected static final String INTTEST_PROTOCOL = "vm",
+            INTTEST_HOST = "localhost";
+    protected static final int INTTEST_PORT = 61618;
+    protected static final String INTTEST_QUEUE_NAME = "Dummy ActiveMQ queue",
+            INTTEST_TOPIC_NAME = "Dummy Topic";
+    protected static final ApplicationName INTTEST_APP = ApplicationName.valueOf("localhost", "jms_webapp");
+    protected static final Map<DestinationType, String> DESTS_NAMES = Collections.unmodifiableMap(
+            new EnumMap<DestinationType, String>(DestinationType.class) {
+                private static final long serialVersionUID = 1L;
 
-					{
-						put(DestinationType.Queue, INTTEST_QUEUE_NAME);
-						put(DestinationType.Topic, INTTEST_TOPIC_NAME);
-					}
-				}
-			);
+                {
+                    put(DestinationType.Queue, INTTEST_QUEUE_NAME);
+                    put(DestinationType.Topic, INTTEST_TOPIC_NAME);
+                }
+            }
+            );
 
-	protected AbstractJMSResourceAnalyzerTest(AbstractJMSResourceAnalyzer analyzerInstance) {
-		if ((this.analyzer=analyzerInstance) == null) {
-			throw new IllegalStateException("No analyzer instance provided");
-		}
+    protected AbstractJMSResourceAnalyzerTest(AbstractJMSResourceAnalyzer analyzerInstance) {
+        if ((this.analyzer = analyzerInstance) == null) {
+            throw new IllegalStateException("No analyzer instance provided");
+        }
 
-		this.operationType = analyzerInstance.operationType;
-		this.isIncoming = analyzerInstance.isIncoming;
-	}
-	
+        this.operationType = analyzerInstance.operationType;
+        this.isIncoming = analyzerInstance.isIncoming;
+    }
+
     @Test
     public void testLocateEndPoint() {
-        Trace trace = createValidTrace();        
+        Trace trace = createValidTrace();
+        String label = "Queue#test.queue";
+
+        assertEndPoint(trace, label);
+    }
+
+    @Test
+    public void testLocateEndPointTemporaryQueue() {
+        Trace trace = createValidTrace(DestinationType.TemporaryQueue);
+        String typeLabel = DestinationType.TemporaryQueue.getLabel();
+
+        assertEndPoint(trace, typeLabel);
+    }
+
+    private void assertEndPoint(Trace trace, String typeLabel) {
         EndPointAnalysis analysis = analyzer.locateEndPoint(trace);
-        
         assertNotNull("No analysis located", analysis);
-        assertEquals("Mismatched example", operationType.getEndPointPrefix() + "Queue#test.queue", analysis.getExample());
-        assertEquals("Mismatached endpoint", EndPointName.valueOf("Queue#test.queue"), analysis.getEndPointName());
-        assertEquals("Mismatched label", "JMS-Queue#test.queue", analysis.getResourceLabel());
+        assertEquals("Mismatched example", operationType.getEndPointPrefix() + typeLabel, analysis.getExample());
+        assertEquals("Mismatached endpoint", EndPointName.valueOf(typeLabel), analysis.getEndPointName());
+        assertEquals("Mismatched label", "JMS-" + typeLabel, analysis.getResourceLabel());
         assertEquals("Mismatched score", AbstractJMSResourceAnalyzer.DEFAULT_SCORE, analysis.getScore());
     }
-    
+
     @Test
-	public void testLocateExternalResourceName() {
-		Trace trace = createValidTrace();
-		List<ExternalResourceDescriptor> externalResourceDescriptors =
-				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
+    public void testLocateExternalResourceName() {
+        Trace trace = createValidTrace();
+        String label = "Queue#test.queue";
 
-		assertEquals(1, externalResourceDescriptors.size());        
-		ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);
+        assertExternalResource(trace, label);
+    }
 
-		assertEquals(trace.getRootFrame(), descriptor.getFrame());
-		assertEquals("JMS-Queue#test.queue", descriptor.getLabel());
-		assertEquals(ExternalResourceType.QUEUE.name(), descriptor.getType());
-		assertEquals("JMS", descriptor.getVendor());
-		assertEquals(null, descriptor.getHost());
-		assertEquals(-1, descriptor.getPort());
-		String expectedHash = MD5NameGenerator.getName("Queue#test.queuenull-1");
-		assertEquals("JMS:" + expectedHash, descriptor.getName());
-		assertEquals(Boolean.valueOf(isIncoming), Boolean.valueOf(descriptor.isIncoming()));
-	}
-    
     @Test
-	public void testExactlyTwoDifferentExternalResourceNames() {   	
-		Operation op1 = createOperation();
-		Operation op2 = createOperation();
-		op2.put("host", "127.0.0.2");
-		op2.put("port", 1111);
-		Operation dummyOp = new Operation();
+    public void testLocateExternalResourceNameWithTemporaryQueue() {
+        Trace trace = createValidTrace(DestinationType.TemporaryQueue);
+        String label = DestinationType.TemporaryQueue.getLabel();
 
-		SimpleFrameBuilder builder = new SimpleFrameBuilder();
-		builder.enter(new Operation().type(OperationType.HTTP));
-		builder.enter(op2);
-		builder.exit();
-		builder.enter(dummyOp);
-		builder.enter(op1);
-		builder.exit();
-		builder.exit();
-		Frame frame = builder.exit();
-		Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
+        assertExternalResource(trace, label);
+    }
 
-		List<ExternalResourceDescriptor> externalResourceDescriptors =
-				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
+    private void assertExternalResource(Trace trace, String label) {
+        List<ExternalResourceDescriptor> externalResourceDescriptors =
+                (List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
 
-		assertEquals(2, externalResourceDescriptors.size());        
+        assertEquals(1, externalResourceDescriptors.size());
+        ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);
 
-		ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);        
-		assertEquals(op2, descriptor.getFrame().getOperation());
-		assertEquals("JMS-Queue#test.queue", descriptor.getLabel());
-		assertEquals(ExternalResourceType.QUEUE.name(), descriptor.getType());
-		assertEquals("JMS", descriptor.getVendor());
-		assertEquals("127.0.0.2", descriptor.getHost());
-		assertEquals(1111, descriptor.getPort());
-		String expectedHash = MD5NameGenerator.getName("Queue#test.queue127.0.0.21111");
-		assertEquals("JMS:" + expectedHash, descriptor.getName());
-		assertEquals(Boolean.valueOf(isIncoming), Boolean.valueOf(descriptor.isIncoming()));
+        assertEquals(trace.getRootFrame(), descriptor.getFrame());
+        assertEquals("JMS-" + label, descriptor.getLabel());
+        assertEquals(ExternalResourceType.QUEUE.name(), descriptor.getType());
+        assertEquals("JMS", descriptor.getVendor());
+        assertEquals(null, descriptor.getHost());
+        assertEquals(-1, descriptor.getPort());
+        String expectedHash = MD5NameGenerator.getName(label + "null-1");
+        assertEquals("JMS:" + expectedHash, descriptor.getName());
+        assertEquals(Boolean.valueOf(isIncoming), Boolean.valueOf(descriptor.isIncoming()));
+    }
 
-		descriptor = externalResourceDescriptors.get(1);        
-		assertEquals(op1, descriptor.getFrame().getOperation());
-		assertEquals("JMS-Queue#test.queue", descriptor.getLabel());
-		assertEquals(ExternalResourceType.QUEUE.name(), descriptor.getType());
-		assertEquals("JMS", descriptor.getVendor());
-		assertEquals(null, descriptor.getHost());
-		assertEquals(-1, descriptor.getPort());
-		expectedHash = MD5NameGenerator.getName("Queue#test.queuenull-1");
-		assertEquals("JMS:" + expectedHash, descriptor.getName());
-		assertEquals(Boolean.valueOf(isIncoming), Boolean.valueOf(descriptor.isIncoming()));
-	}
+    @Test
+    public void testExactlyTwoDifferentExternalResourceNames() {
+        Operation op1 = createOperation();
+        Operation op2 = createOperation();
+        op2.put("host", "127.0.0.2");
+        op2.put("port", 1111);
+        Operation dummyOp = new Operation();
+
+        SimpleFrameBuilder builder = new SimpleFrameBuilder();
+        builder.enter(new Operation().type(OperationType.HTTP));
+        builder.enter(op2);
+        builder.exit();
+        builder.enter(dummyOp);
+        builder.enter(op1);
+        builder.exit();
+        builder.exit();
+        Frame frame = builder.exit();
+        Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
+
+        List<ExternalResourceDescriptor> externalResourceDescriptors =
+                (List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
+
+        assertEquals(2, externalResourceDescriptors.size());
+
+        ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);
+        assertEquals(op2, descriptor.getFrame().getOperation());
+        assertEquals("JMS-Queue#test.queue", descriptor.getLabel());
+        assertEquals(ExternalResourceType.QUEUE.name(), descriptor.getType());
+        assertEquals("JMS", descriptor.getVendor());
+        assertEquals("127.0.0.2", descriptor.getHost());
+        assertEquals(1111, descriptor.getPort());
+        String expectedHash = MD5NameGenerator.getName("Queue#test.queue127.0.0.21111");
+        assertEquals("JMS:" + expectedHash, descriptor.getName());
+        assertEquals(Boolean.valueOf(isIncoming), Boolean.valueOf(descriptor.isIncoming()));
+
+        descriptor = externalResourceDescriptors.get(1);
+        assertEquals(op1, descriptor.getFrame().getOperation());
+        assertEquals("JMS-Queue#test.queue", descriptor.getLabel());
+        assertEquals(ExternalResourceType.QUEUE.name(), descriptor.getType());
+        assertEquals("JMS", descriptor.getVendor());
+        assertEquals(null, descriptor.getHost());
+        assertEquals(-1, descriptor.getPort());
+        expectedHash = MD5NameGenerator.getName("Queue#test.queuenull-1");
+        assertEquals("JMS:" + expectedHash, descriptor.getName());
+        assertEquals(Boolean.valueOf(isIncoming), Boolean.valueOf(descriptor.isIncoming()));
+    }
 
     /*
      * This isn't a real test as much as it provides useful data for the
      * integration tests in case of failure
      */
     @Test
-    public void generateIntegrationTestsHashes () {
-    	final Operation	BASE_OP=new Operation()
-									.type(operationType.getOperationType())
-									.label(getClass().getSimpleName() + "#generateIntegrationTestsHashes")
-									.put("host", INTTEST_HOST)
-									.put("port", INTTEST_PORT)
-									;
-    	final Frame	TEST_FRAME=new SimpleFrame(FrameId.valueOf("7365"), null, BASE_OP, new TimeRange(1L, 10L), Collections.<Frame>emptyList());
-    	final Trace	TEST_TRACE=new Trace(ServerName.valueOf("7.3.6.5"), INTTEST_APP, new Date(System.currentTimeMillis()), TraceId.valueOf("3777347"), TEST_FRAME);
-    	final ColorManager colorManager=ColorManager.getInstance();
+    public void generateIntegrationTestsHashes() {
+        final Operation BASE_OP = new Operation()
+        .type(operationType.getOperationType())
+        .label(getClass().getSimpleName() + "#generateIntegrationTestsHashes")
+        .put("host", INTTEST_HOST)
+        .put("port", INTTEST_PORT);
 
-    	for (DestinationType destType : DestinationType.values()) {
-    		String	destName=DESTS_NAMES.get(destType);
-    		if (StringUtil.isEmpty(destName)) {
-    			continue;
-    		}
+        final Frame TEST_FRAME = new SimpleFrame(FrameId.valueOf("7365"), null, BASE_OP, new TimeRange(1L, 10L), Collections.<Frame> emptyList());
+        final Trace TEST_TRACE = new Trace(ServerName.valueOf("7.3.6.5"), INTTEST_APP, new Date(System.currentTimeMillis()), TraceId.valueOf("3777347"), TEST_FRAME);
+        final ColorManager colorManager = ColorManager.getInstance();
 
-    		Operation	op=AbstractJMSCollectionAspect.applyDestinationData(BASE_OP, destType, destName);
-    		assertSame("Mismatched test operation instance for " + destType + "[" + destName + "]", BASE_OP, op);
+        for (DestinationType destType : DestinationType.values()) {
+            String destName = DESTS_NAMES.get(destType);
+            if (StringUtil.isEmpty(destName)) {
+                continue;
+            }
 
-    		ExternalResourceDescriptor	desc=analyzer.createExternalResourceDescriptor(colorManager, TEST_FRAME);
-    		assertNotNull("No descriptor for " + destType + "[" + destName + "]", desc);
-    		System.out.append('\t').append(destType.name()).append('[').append(destName).append("]: ").println(desc);
+            Operation op = AbstractJMSCollectionAspect.applyDestinationData(BASE_OP, destType, destName);
+            assertSame("Mismatched test operation instance for " + destType + "[" + destName + "]", BASE_OP, op);
 
-    		EndPointAnalysis	analysis=analyzer.locateEndPoint(TEST_TRACE);
-    		assertNotNull("No analysis for " + destType + "[" + destName + "]", analysis);
-    	}
+            ExternalResourceDescriptor desc = analyzer.createExternalResourceDescriptor(colorManager, TEST_FRAME);
+            assertNotNull("No descriptor for " + destType + "[" + destName + "]", desc);
+            System.out.append('\t').append(destType.name()).append('[').append(destName).append("]: ").println(desc);
+
+            EndPointAnalysis analysis = analyzer.locateEndPoint(TEST_TRACE);
+            assertNotNull("No analysis for " + destType + "[" + destName + "]", analysis);
+        }
     }
 
     private Trace createValidTrace() {
+        return createValidTrace(DestinationType.Queue);
+    }
+
+    private Trace createValidTrace(DestinationType type) {
         SimpleFrameBuilder builder = new SimpleFrameBuilder();
-        Operation op = createOperation();
-        
+        Operation op = createOperation(type);
+
         builder.enter(op);
-        
+
         Frame frame = builder.exit();
         return Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
     }
 
-	private Operation createOperation() {
-		Operation op = new Operation().type(operationType.getOperationType());
-        
+    private Operation createOperation() {
+        return createOperation(DestinationType.Queue);
+    }
+
+    private Operation createOperation(DestinationType type) {
+        Operation op = new Operation().type(operationType.getOperationType());
+
         op.put("destinationName", "test.queue");
-        op.put("destinationType", "Queue");
+        op.put("destinationType", type.getLabel());
         op.put(OperationFields.METHOD_SIGNATURE, "test.queue");
         op.put(OperationFields.CLASS_NAME, "Queue");
-		return op;
-	}
+        return op;
+    }
 
 }

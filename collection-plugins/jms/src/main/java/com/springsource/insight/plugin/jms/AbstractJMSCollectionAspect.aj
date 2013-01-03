@@ -58,71 +58,71 @@ public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAs
     static {
         CollectionSettingsRegistry registry = CollectionSettingsRegistry.getInstance();
         registry.addListener(new CollectionSettingsUpdateListener() {
-            	public void incrementalUpdate (CollectionSettingName name, Serializable value) {
-            		if (OBFUSCATED_HEADERS_SETTING.equals(name)) {
-            			updateObscuredSettings(name, value, OBFUSCATED_HEADERS);
-            		} else if (OBFUSCATED_PROPERTIES_SETTING.equals(name)) {
-            			updateObscuredSettings(name, value, OBFUSCATED_PROPERTIES);
-            		}
-            	}
-        	});
+            public void incrementalUpdate (CollectionSettingName name, Serializable value) {
+                if (OBFUSCATED_HEADERS_SETTING.equals(name)) {
+                    updateObscuredSettings(name, value, OBFUSCATED_HEADERS);
+                } else if (OBFUSCATED_PROPERTIES_SETTING.equals(name)) {
+                    updateObscuredSettings(name, value, OBFUSCATED_PROPERTIES);
+                }
+            }
+        });
         registry.register(OBFUSCATED_HEADERS_SETTING, "");
         registry.register(OBFUSCATED_PROPERTIES_SETTING, "");
     }
 
     static void updateObscuredSettings (CollectionSettingName name, Serializable value, Collection<String> nameSet) {
-    	if (!(value instanceof String)) {
-    		return;
-    	}
+        if (!(value instanceof String)) {
+            return;
+        }
 
-    	Logger	LOG=Logger.getLogger(AbstractJMSCollectionAspect.class.getName());
-    	if (nameSet.size() > 0) {
-    		LOG.info("updateObscuredSettings(" + name + ")" + nameSet + " => [" + value + "]");
-    		nameSet.clear();
-    	}
-    	
-    	nameSet.addAll(toHeaderNameSet((String) value));
+        Logger	LOG=Logger.getLogger(AbstractJMSCollectionAspect.class.getName());
+        if (nameSet.size() > 0) {
+            LOG.info("updateObscuredSettings(" + name + ")" + nameSet + " => [" + value + "]");
+            nameSet.clear();
+        }
+
+        nameSet.addAll(toHeaderNameSet((String) value));
     }
 
     static Set<String> toHeaderNameSet (String value) {
-    	if (StringUtil.isEmpty(value)) {
-    		return Collections.emptySet();
-    	}
+        if (StringUtil.isEmpty(value)) {
+            return Collections.emptySet();
+        }
 
         Set<String> 		result=new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
         Collection<String>	nameList=StringUtil.explode(value, ",", true, true);
         for (String headerName : nameList) {
             if (!result.add(headerName)) {
-            	continue;
+                continue;
             }
         }
         return result;
     }
 
-	protected final JMSPluginOperationType optype;
+    protected final JMSPluginOperationType optype;
     protected ObscuredValueMarker obscuredMarker =
             new FrameBuilderHintObscuredValueMarker(configuration.getFrameBuilder());
 
     protected AbstractJMSCollectionAspect (JMSPluginOperationType type) {
-    	if ((optype=type) == null) {
-    		throw new IllegalStateException("No operation type specified");
-    	}
+        if ((optype=type) == null) {
+            throw new IllegalStateException("No operation type specified");
+        }
     }
 
     ObscuredValueMarker getSensitiveValueMarker () {
-    	return this.obscuredMarker;
+        return this.obscuredMarker;
     }
 
     void setSensitiveValueMarker(ObscuredValueMarker marker) {
         this.obscuredMarker = marker;
     }
-    
+
     Operation createOperation(JoinPoint jp) {
         return new Operation()
-        			.type(optype.getOperationType())
-        			.label(optype.getLabel())
-        			.sourceCodeLocation(getSourceCodeLocation(jp))
-        			;
+        .type(optype.getOperationType())
+        .label(optype.getLabel())
+        .sourceCodeLocation(getSourceCodeLocation(jp))
+        ;
     }
 
     Operation applyDestinationData(Message message, Operation op) {
@@ -133,7 +133,7 @@ public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAs
             return op;
         }
     }
-    
+
     Operation applyDestinationData(Destination dest, Operation op) {
         try {
             DestinationType destinationType = JMSPluginUtils.getDestinationType(dest);
@@ -144,24 +144,24 @@ public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAs
             return op;
         }
     }
-    
+
     Operation applyMessageData(Message message, Operation op) {
         try {
             JMSPluginUtils.extractMessageTypeAttributes(op, message);
         } catch(JMSException e) {
-        	markException("extractMessageTypeAttributes", e);
+            markException("extractMessageTypeAttributes", e);
         }
-        
+
         try {
             JMSPluginUtils.extractMessageHeaders(op, message, getSensitiveValueMarker(), OBFUSCATED_HEADERS);
         } catch(JMSException e) {
-        	markException("extractMessageHeaders", e);
+            markException("extractMessageHeaders", e);
         }
-        
+
         try {
-        	JMSPluginUtils.extractMessageProperties(op, message, getSensitiveValueMarker(), OBFUSCATED_PROPERTIES);
+            JMSPluginUtils.extractMessageProperties(op, message, getSensitiveValueMarker(), OBFUSCATED_PROPERTIES);
         } catch (JMSException e) {
-        	markException("extractMessageProperties", e);
+            markException("extractMessageProperties", e);
         }
 
         return op;
@@ -169,45 +169,45 @@ public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAs
 
     // returns a Map of the obscured keys and values
     Map<String,Object> obscureValues (OperationMap valuesMap, CollectionSettingName settingName, Collection<String> nameSet) {
-    	if ((ListUtil.size(nameSet) <= 0) || (valuesMap.size() <= 0)) {
-    		return Collections.emptyMap();	// nothing to obscure
-    	}
+        if ((ListUtil.size(nameSet) <= 0) || (valuesMap.size() <= 0)) {
+            return Collections.emptyMap();	// nothing to obscure
+        }
 
-    	Map<String,Object>	result=null;
-    	for (String key : valuesMap.keySet()) {
-    		if (!nameSet.contains(key)) {
-    			continue;
-    		}
+        Map<String,Object>	result=null;
+        for (String key : valuesMap.keySet()) {
+            if (!nameSet.contains(key)) {
+                continue;
+            }
 
-    		Object	value=valuesMap.get(key);
-    		obscuredMarker.markObscured(value);
-    		
-    		if (result == null) {
-    			result = new TreeMap<String, Object>();
-    		}
-    		
-    		result.put(key, value);
-    	}
+            Object	value=valuesMap.get(key);
+            obscuredMarker.markObscured(value);
 
-    	if (result == null) {
-    		return Collections.emptyMap();
-    	} else {
-    		return result;
-    	}
+            if (result == null) {
+                result = new TreeMap<String, Object>();
+            }
+
+            result.put(key, value);
+        }
+
+        if (result == null) {
+            return Collections.emptyMap();
+        } else {
+            return result;
+        }
     }
 
     static Operation applyDestinationData (Operation op, DestinationType destinationType, String destinationName) {
         op.put(OperationFields.CLASS_NAME, destinationType.name());
         op.put(OperationFields.METHOD_SIGNATURE, destinationName);
-        
-        op.put("destinationType", destinationType.name());
+
+        op.put("destinationType", destinationType.getLabel());
         op.put("destinationName", destinationName);
         return op;
     }
 
     @Override
     public boolean isEndpoint() {
-    	return true;
+        return true;
     }
 
     @Override

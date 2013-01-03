@@ -25,6 +25,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageProducer;
 import javax.jms.Queue;
+import javax.jms.TemporaryQueue;
 import javax.jms.TextMessage;
 
 import org.junit.Test;
@@ -32,18 +33,28 @@ import org.junit.Test;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class JMSProducerCollectionAspectTest extends AbstractJMSCollectionAspectTestSupport {
-	public JMSProducerCollectionAspectTest () {
-		super();
-	}
+    public JMSProducerCollectionAspectTest () {
+        super();
+    }
 
     @Test
     public void testUnobscuredProducerAttributes() throws JMSException {
-    	runProducerTest(false);
+        runProducerTest(false);
+    }
+
+    @Test
+    public void testUnobscuredProducerAttributesWithTemporaryQueue() throws JMSException {
+        runProducerTestWithTemporaryQueue(false);
     }
 
     @Test
     public void testObscuredProducerAtttributes () throws JMSException {
-    	runProducerTest(true);
+        runProducerTest(true);
+    }
+
+    @Test
+    public void testObscuredProducerAtttributesWithTemporaryQueue() throws JMSException {
+        runProducerTestWithTemporaryQueue(true);
     }
 
     @Override
@@ -53,23 +64,37 @@ public class JMSProducerCollectionAspectTest extends AbstractJMSCollectionAspect
 
     private void runProducerTest (boolean obscureAttrs) throws JMSException {
         Queue queue = mock(Queue.class);
+        DestinationType type = DestinationType.Queue;
+
+        assertOperation(obscureAttrs, queue, type);
+    }
+
+    private void runProducerTestWithTemporaryQueue(boolean obscureAttrs) throws JMSException {
+        Queue queue = mock(TemporaryQueue.class);
+        DestinationType type = DestinationType.TemporaryQueue;
+
+        assertOperation(obscureAttrs, queue, type);
+    }
+
+    private void assertOperation(boolean obscureAttrs, Queue queue, DestinationType type) throws JMSException {
         when(queue.getQueueName()).thenReturn("test.queue");
-        
+
         Message _mockMessage = mock(TextMessage.class);
         Map<String, Object> msgAttributesMap = JMSPluginUtilsTest.mockAttributes(_mockMessage);
         JMSPluginUtilsTest.mockHeaders(_mockMessage);
 
         MockProducer 	producer = new MockProducer(queue);
         if (obscureAttrs) {
-        	AbstractJMSCollectionAspect.OBFUSCATED_PROPERTIES.addAll(msgAttributesMap.keySet());
+            AbstractJMSCollectionAspect.OBFUSCATED_PROPERTIES.addAll(msgAttributesMap.keySet());
         }
         producer.send(_mockMessage);
-        
+
         Operation op = getLastEntered();
         assertNotNull("No operation extracted", op);
         assertEquals("Mismatched operation type", JMSPluginOperationType.SEND.getOperationType(), op.getType());
         assertEquals("Mismatched label", JMSPluginOperationType.SEND.getLabel(), op.getLabel());
-        
+        assertEquals("Mismatched destination type", type.getLabel(), op.get("destinationType", String.class));
+
         JMSPluginUtilsTest.assertHeaders(_mockMessage, op);
         JMSPluginUtilsTest.assertAttributes(msgAttributesMap, op);
 
@@ -78,7 +103,7 @@ public class JMSProducerCollectionAspectTest extends AbstractJMSCollectionAspect
 
     private static class MockProducer implements MessageProducer {
         final Queue queue;
-        
+
         public MockProducer(Queue q) throws JMSException {
             if ((this.queue=q) == null) {
                 throw new JMSException("No queue");

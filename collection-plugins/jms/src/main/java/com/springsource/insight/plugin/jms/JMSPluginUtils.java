@@ -24,6 +24,8 @@ import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.Queue;
+import javax.jms.TemporaryQueue;
+import javax.jms.TemporaryTopic;
 import javax.jms.TextMessage;
 import javax.jms.Topic;
 
@@ -35,7 +37,7 @@ import com.springsource.insight.intercept.trace.ObscuredValueMarker;
  * Utility class for all JMS plugin operations
  */
 final class JMSPluginUtils {
-    
+
     static final String CORRELATION_ID = "correlationId";
     static final String DELIVERY_MODE = "deliveryMode";
     static final String EXPIRATION = "expiration";
@@ -54,13 +56,13 @@ final class JMSPluginUtils {
     static final String TIMESTAMP = "timestamp";
     static final String TYPE = "Type";
     static final String UNKNOWN = "UNKNOWN";
-    
+
     private JMSPluginUtils() {
         throw new UnsupportedOperationException("No instance");
     }
-    
+
     /**
-     * Adds destination type and name to a given {@link OperationMap} only if {@code dest} 
+     * Adds destination type and name to a given {@link OperationMap} only if {@code dest}
      * is not {@code null}
      * 
      * @param dest jms destination
@@ -72,18 +74,18 @@ final class JMSPluginUtils {
      * @throws JMSException if any occurs by accessing {@code dest} attributes
      */
     static OperationMap addDestinationDetailsToMapIfNeeded(Destination dest, OperationMap map, ObscuredValueMarker marker, Collection<String> nameSet, String prefix)
-    		throws JMSException {
+            throws JMSException {
         if (dest == null) {
-        	return map;
+            return map;
         }
-         
+
         DestinationType destinationType = getDestinationType(dest);
         String destinationName = getDestinationName(dest, destinationType);
         updateAny(map, prefix+TYPE, destinationType.name(), marker, nameSet);
         updateAny(map, prefix+NAME, destinationName, marker, nameSet);
         return map;
     }
-    
+
     /**
      * Creates an operation map named {@link #MESSAGE_PROPERTIES} and populates the map with {@code message} properties
      * 
@@ -95,9 +97,9 @@ final class JMSPluginUtils {
      * @throws JMSException if any occurs by accessing {@code message} properties
      */
     static OperationMap extractMessageProperties(Operation op, Message message, ObscuredValueMarker marker, Collection<String> nameSet)
-    		throws JMSException {
+            throws JMSException {
         OperationMap attributesMap = op.createMap(MESSAGE_PROPERTIES);
-        
+
         Enumeration<?> propertyNames = message.getPropertyNames();
         if (propertyNames != null) {
             for (Enumeration<?> propertyNameEnum = propertyNames; propertyNameEnum.hasMoreElements();) {
@@ -106,12 +108,12 @@ final class JMSPluginUtils {
                 updateAny(attributesMap, propertyName, propertyValue, marker, nameSet);
             }
         }
-        
+
         return attributesMap;
     }
-    
+
     /**
-     * Creates an operation map name {@link #MESSAGE_HEADERS} and populates the map 
+     * Creates an operation map name {@link #MESSAGE_HEADERS} and populates the map
      * with {@code message} headers values
      * 
      * @param op insight {@link Operation}
@@ -122,7 +124,7 @@ final class JMSPluginUtils {
      * @throws JMSException if any occurs by accessing {@code message} properties
      */
     static OperationMap extractMessageHeaders(Operation op, Message message, ObscuredValueMarker marker, Collection<String> nameSet)
-    		throws JMSException {
+            throws JMSException {
         OperationMap headersMap = op.createMap(MESSAGE_HEADERS);
 
         addDestinationDetailsToMapIfNeeded(message.getJMSDestination(), headersMap, marker, nameSet, MESSAGE_DESTINATION);
@@ -136,7 +138,7 @@ final class JMSPluginUtils {
 
         long timestamp = message.getJMSTimestamp();
         if (timestamp > 0L) {
-        	updateAny(headersMap, TIMESTAMP, Long.valueOf(timestamp), marker, nameSet);
+            updateAny(headersMap, TIMESTAMP, Long.valueOf(timestamp), marker, nameSet);
         }
 
         updateAny(headersMap, JMS_TYPE, message.getJMSType(), marker, nameSet);
@@ -144,25 +146,25 @@ final class JMSPluginUtils {
     }
 
     private static OperationMap updateAny (OperationMap map, String name, Object value, ObscuredValueMarker marker, Collection<String> nameSet) {
-    	map.putAny(name, value);
-    	updateSensitiveValues(name, value, marker, nameSet);
-    	return map;
+        map.putAny(name, value);
+        updateSensitiveValues(name, value, marker, nameSet);
+        return map;
     }
 
     private static boolean updateSensitiveValues (String name, Object value, ObscuredValueMarker marker, Collection<String> nameSet) {
         if (nameSet.contains(name) && (value != null)) {
-        	marker.markObscured(value);
-        	return true;
+            marker.markObscured(value);
+            return true;
         }
 
         return false;
     }
-    
+
     /**
-     * Adds the message type ({@link MessageType}) to the {@code message}.<br> 
+     * Adds the message type ({@link MessageType}) to the {@code message}.<br>
      * It also adds the {@code message} content ({@link TextMessage#getText()}) if the {@code message} is a {@link TextMessage}, <br>
      * and if the {@code message} is a {@link MapMessage} then the {@code message} content map is added.
-     *  
+     * 
      * @param op insight operation
      * @param message jms message
      * @throws JMSException if any occurs by accessing {@code message} properties
@@ -171,7 +173,7 @@ final class JMSPluginUtils {
         MessageType messageType = MessageType.getType(message);
         messageType.handleMessage(message, op);
     }
-    
+
     /**
      * @param deliveryMode message delivery mode ({@link DeliveryMode})
      * 
@@ -179,7 +181,7 @@ final class JMSPluginUtils {
      */
     static DeliveryModeType getDeliveryMode(int deliveryMode) {
         DeliveryModeType mode;
-        
+
         switch(deliveryMode) {
             case DeliveryMode.NON_PERSISTENT:
                 mode = DeliveryModeType.NON_PERSISTENT;
@@ -191,34 +193,36 @@ final class JMSPluginUtils {
                 mode = DeliveryModeType.UNKNOWN;
                 break;
         }
-        
+
         return mode;
     }
-    
+
     /**
      * @param dest jms destination
      * @param type destination type
      * 
-     * @return destination name ({@link Queue#getQueueName()}, {@link Topic#getTopicName()}) 
+     * @return destination name ({@link Queue#getQueueName()}, {@link Topic#getTopicName()})
      * 
      * @throws JMSException if any occurs by accessing {@code dest} properties
      */
     static String getDestinationName(Destination dest, DestinationType type) throws JMSException {
         String name = UNKNOWN;
-        
+
         switch(type) {
             case Queue:
+            case TemporaryQueue:
                 name = ((Queue) dest).getQueueName();
                 break;
             case Topic:
+            case TemporaryTopic:
                 name = ((Topic) dest).getTopicName();
                 break;
-            default : // do nothing
+            default: // do nothing
         }
-        
+
         return name;
     }
-    
+
     /**
      * @param dest jms destination
      * 
@@ -226,16 +230,20 @@ final class JMSPluginUtils {
      */
     static DestinationType getDestinationType(Destination dest) {
         DestinationType type = DestinationType.Unknown;
-        
-        if (dest instanceof Queue) {
+
+        if (dest instanceof TemporaryQueue) {
+            type = DestinationType.TemporaryQueue;
+        } else if (dest instanceof Queue) {
             type = DestinationType.Queue;
+        } else if (dest instanceof TemporaryTopic) {
+            type = DestinationType.TemporaryTopic;
         } else if (dest instanceof Topic) {
             type = DestinationType.Topic;
         }
-        
+
         return type;
     }
-    
+
     /**
      * Extracts a {@link Message} from a {@code args}
      * 
