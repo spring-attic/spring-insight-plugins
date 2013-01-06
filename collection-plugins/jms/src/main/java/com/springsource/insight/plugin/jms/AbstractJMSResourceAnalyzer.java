@@ -26,6 +26,7 @@ import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
@@ -100,9 +101,13 @@ public abstract class AbstractJMSResourceAnalyzer extends AbstractSingleTypeEndp
     ExternalResourceDescriptor createExternalResourceDescriptor (ColorManager colorManager, Frame queueFrame) {
         Operation op = queueFrame.getOperation();
         String label = buildLabel(op);
-        String host = op.get("host", String.class);
-        Number portProperty = op.get("port", Number.class);
+
+        OperationMap connectionData = op.get(JMSPluginUtils.CONNECTION_DATA, OperationMap.class);
+
+        String host = connectionData == null ? null : connectionData.get("host", String.class);
+        Number portProperty = connectionData == null ? null : connectionData.get("port", Number.class);
         int port = portProperty == null ? -1 : portProperty.intValue();
+
         String color = colorManager.getColor(op);
         String hashString = buildNameHash(label, host, port);
 

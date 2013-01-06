@@ -43,6 +43,7 @@ final class JMSPluginUtils {
     static final String EXPIRATION = "expiration";
     static final String JMS_TYPE = "jmsType";
     static final String MESSAGE_PROPERTIES = "messageProperties";
+    static final String CONNECTION_DATA = "connectionData";
     static final String MESSAGE_CONTENT = "messageContent";
     static final String MESSAGE_CONTENT_MAP = "messageContentMap";
     static final String MESSAGE_DESTINATION = "destination";
@@ -101,7 +102,26 @@ final class JMSPluginUtils {
         OperationMap attributesMap = op.createMap(MESSAGE_PROPERTIES);
 
         Enumeration<?> propertyNames = message.getPropertyNames();
+
         if (propertyNames != null) {
+
+            Object host = message.getObjectProperty("host");
+            Object port = message.getObjectProperty("port");
+
+            if (host != null && port != null) {
+                OperationMap connectionData = op.createMap(CONNECTION_DATA);
+                int _port;
+
+                try {
+                    _port = Integer.parseInt(String.valueOf(port));
+                } catch (NumberFormatException e) {
+                    _port = -1;
+                }
+
+                connectionData.put("port", _port);
+                connectionData.put("host", String.valueOf(host));
+            }
+
             for (Enumeration<?> propertyNameEnum = propertyNames; propertyNameEnum.hasMoreElements();) {
                 String propertyName = (String) propertyNameEnum.nextElement();
                 Object propertyValue = message.getObjectProperty(propertyName);
