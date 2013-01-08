@@ -15,15 +15,15 @@
  */
 package com.springsource.insight.plugin.ehcache;
 
-import org.aspectj.lang.JoinPoint;
-
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
+
+import org.aspectj.lang.JoinPoint;
 
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public aspect EhcachePutOperationCollectionAspect extends EhcacheMethodOperationCollectionAspect {
 	public EhcachePutOperationCollectionAspect () {
@@ -43,14 +43,14 @@ public aspect EhcachePutOperationCollectionAspect extends EhcacheMethodOperation
         ;
 
     @Override
-    protected Operation createOperation(JoinPoint jp) {
+    protected Operation createOperation(final JoinPoint jp) {
         return createPutOperation(super.createOperation(jp), (Ehcache) jp.getTarget(), (Element) jp.getArgs()[0]);
     }
 
-    Operation createPutOperation (Operation op, Ehcache cache, Element elem) {
-    	Object value=elem.getObjectValue();
+    Operation createPutOperation (final Operation op, final Ehcache cache, final Element elem) {
+    	final Object value=elem.getObjectValue();
         return initCommonFields(op, cache, EhcacheDefinitions.PUT_METHOD, elem.getObjectKey())
-                    .putAnyNonEmpty(EhcacheDefinitions.VALUE_ATTRIBUTE, (value!=null)?value.toString():null)
+                    .putAnyNonEmpty(EhcacheDefinitions.VALUE_ATTRIBUTE, (value!=null)?value.getClass().getSimpleName():null)
                     ;
     }
 }

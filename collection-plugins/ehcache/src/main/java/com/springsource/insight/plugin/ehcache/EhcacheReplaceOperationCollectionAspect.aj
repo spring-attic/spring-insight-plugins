@@ -23,7 +23,7 @@ import org.aspectj.lang.JoinPoint;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public aspect EhcacheReplaceOperationCollectionAspect extends EhcacheMethodOperationCollectionAspect {
 	public EhcacheReplaceOperationCollectionAspect () {
@@ -41,22 +41,22 @@ public aspect EhcacheReplaceOperationCollectionAspect extends EhcacheMethodOpera
         ;
 
     @Override
-    protected Operation createOperation(JoinPoint jp) {
+    protected Operation createOperation(final JoinPoint jp) {
         return createReplaceOperation(super.createOperation(jp), (Ehcache) jp.getTarget(), jp.getArgs());
     }
-    
-    Operation createReplaceOperation (Operation op, Ehcache cache, Object ... args) {
-        Element oldElement=(Element) args[0];
+
+    Operation createReplaceOperation (final Operation op, final Ehcache cache, final Object ... args) {
+        final Element oldElement=(Element) args[0];
         initCommonFields(op, cache, EhcacheDefinitions.RPL_METHOD, oldElement.getObjectKey());
 
         final Object value;
         if (args.length > 1) {
-            Element newElement=(Element) args[1];
+            final Element newElement=(Element) args[1];
             value = newElement.getObjectValue();
         } else {    // this is a one argument replacement - i.e., the element contains BOTH key and value
             value = oldElement.getObjectValue();
         }
-        op.putAnyNonEmpty(EhcacheDefinitions.VALUE_ATTRIBUTE, (value!=null)?value.toString():null);
+        op.putAnyNonEmpty(EhcacheDefinitions.VALUE_ATTRIBUTE, (value!=null)?value.getClass().getSimpleName():null);
 
         return op;
     }
