@@ -66,7 +66,8 @@ public abstract class FilesTrackerAspectTestSupport extends OperationCollectionA
             instance.close();
 
             // after close the tracked files map must be empty - this indirectly tests the closing aspect
-            assertTrue("Tracking map not empty", AbstractFilesTrackerAspectSupport.trackedFilesMap.isEmpty());
+            Map<?,?>	trackingMap=AbstractFilesTrackerAspectSupport.trackedFilesMap;
+            assertTrue("Tracking map not empty for file=" + filePath + "[" + opcode + "/" + mode + "]: " + trackingMap, trackingMap.isEmpty());
         }
     }
 
@@ -78,7 +79,7 @@ public abstract class FilesTrackerAspectTestSupport extends OperationCollectionA
                 AbstractFilesTrackerAspectSupport.trackedFilesMap =
                         (threads > 1) ? Collections.synchronizedMap(cache) : cache;
                 runSynchronizedAspectPerformance(accessor, threads);
-                assertTrue("Tracking map not empty for threads=" + threads, cache.isEmpty());
+                assertTrue("Tracking map not empty for threads=" + threads + ": " + cache, cache.isEmpty());
             } finally {
                 AbstractFilesTrackerAspectSupport.trackedFilesMap = orgCache;
             }
@@ -99,7 +100,8 @@ public abstract class FilesTrackerAspectTestSupport extends OperationCollectionA
                             Closeable   instance=accessor.createInstance();
                             instance.close();
                         } catch (Exception e) {
-                            fail("Error running multi-threaded test" + e.getMessage());
+                            fail(e.getClass().getSimpleName() + " error while running multi-threaded test"
+                               + " at index=" + cIndex + " out of " + NUM_CALLS + " calls: " + e.getMessage());
                         }
                     }
                     InterceptConfiguration.getInstance().getFrameBuilder().dump();
@@ -115,9 +117,9 @@ public abstract class FilesTrackerAspectTestSupport extends OperationCollectionA
             for (Future<?> f: futureList) {
                 try {
                     // see javadoc for ExecutorService#submit...
-                    assertNull("Unexpected Future termination value", f.get());
+                    assertNullValue("Unexpected Future termination value", f.get());
                 } catch (Exception e) {
-                    fail("Error running multi-threaded test" + e.getMessage());
+                    fail(e.getClass().getSimpleName() + " error while checking multi-threaded termination: " + e.getMessage());
                 }
             }
             long    endTime=System.nanoTime(), endFree=RUNTIME.freeMemory();
