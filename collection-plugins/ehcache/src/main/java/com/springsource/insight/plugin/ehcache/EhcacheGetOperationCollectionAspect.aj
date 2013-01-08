@@ -25,7 +25,7 @@ import com.springsource.insight.collection.DefaultOperationCollector;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public aspect EhcacheGetOperationCollectionAspect extends EhcacheMethodOperationCollectionAspect {
     public EhcacheGetOperationCollectionAspect () {
@@ -47,13 +47,13 @@ public aspect EhcacheGetOperationCollectionAspect extends EhcacheMethodOperation
         ;
 
     @Override
-    protected Operation createOperation(JoinPoint jp) {
+    protected Operation createOperation(final JoinPoint jp) {
         return createGetOperation(super.createOperation(jp).type(EhcacheDefinitions.CACHE_OPERATION),
                                   (Ehcache) jp.getTarget(),
                                   jp.getArgs()[0]);
     }
 
-    Operation createGetOperation (Operation op, Ehcache cache, Object key) {
+    Operation createGetOperation (final Operation op, final Ehcache cache, final Object key) {
         return initCommonFields(op, cache, EhcacheDefinitions.GET_METHOD, key);
     }
 
@@ -63,10 +63,10 @@ public aspect EhcacheGetOperationCollectionAspect extends EhcacheMethodOperation
         }
 
         @Override
-        protected void processNormalExit(Operation op, Object returnValue) {
+        protected void processNormalExit(final Operation op, final Object returnValue) {
             if (returnValue instanceof Element) {
-            	Object value=((Element) returnValue).getObjectValue();
-                op.putAnyNonEmpty(EhcacheDefinitions.VALUE_ATTRIBUTE, (value!=null)?value.toString():null);
+            	final Object value=((Element) returnValue).getObjectValue();
+                op.putAnyNonEmpty(EhcacheDefinitions.VALUE_ATTRIBUTE, (value!=null)?value.getClass().getSimpleName():null);
             }
             super.processNormalExit(op, returnValue);
         }
