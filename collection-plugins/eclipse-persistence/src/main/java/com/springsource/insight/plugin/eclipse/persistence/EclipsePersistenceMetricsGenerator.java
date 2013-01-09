@@ -75,6 +75,14 @@ public abstract class EclipsePersistenceMetricsGenerator extends AbstractMetrics
     		return  mbList;
     	}
     }
+    
+    //because this class inherits from  AbstractMetricsGenerator and we don't want to generate the default metrics on the endpoint (only the extras)
+    //this should be changed sometime (the AbstractMetricsGenerator shouldn't be directly inheritable)
+    @Override
+    protected Collection<MetricsBag> generateFramesMetrics (Trace trace, ResourceKey endpointResourceKey, Collection<Frame> frames) {
+    	return new ArrayList<MetricsBag>();
+	}
+
 
     protected String getBaseMetricName (String actionName) {
 		if (StringUtil.isEmpty(actionName)) {
