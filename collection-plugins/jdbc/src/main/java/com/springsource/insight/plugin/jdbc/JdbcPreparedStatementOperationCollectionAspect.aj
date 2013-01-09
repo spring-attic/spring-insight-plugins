@@ -207,7 +207,7 @@ public aspect JdbcPreparedStatementOperationCollectionAspect
         } catch(SQLException e) {
             // ignore, possibly expected
         } catch (Throwable t) {
-            CollectionErrors.markCollectionError(this.getClass(), t);
+            CollectionErrors.markCollectionError(this, t);
         }
         return operation;
     }
