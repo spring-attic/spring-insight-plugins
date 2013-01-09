@@ -54,7 +54,7 @@ public aspect JdbcConnectionCloseOperationCollectionAspect extends OperationColl
                 collector.enter(ConnectionsTracker.createOperation(thisJoinPointStaticPart, url, "close"));
             }
         } catch (Throwable t) {
-            CollectionErrors.markCollectionError(this.getClass(), t);
+            CollectionErrors.markCollectionError(this, t);
         }
         
         try {

@@ -30,7 +30,6 @@ import net.sf.ehcache.config.ConfigurationFactory;
 import net.sf.ehcache.config.DiskStoreConfiguration;
 import net.sf.ehcache.writer.CacheWriter;
 
-import org.junit.Assert;
 import org.junit.BeforeClass;
 
 import com.springsource.insight.collection.IgnoringOperationCollector;
@@ -41,7 +40,7 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.util.FileUtil;
 
 /**
- * 
+ *
  */
 public abstract class EhcacheOperationCollectionAspectTestSupport
             extends OperationCollectionAspectTestSupport {
@@ -54,13 +53,13 @@ public abstract class EhcacheOperationCollectionAspectTestSupport
     }
 
     // neutralizes the argument captor
-    protected Element putUncaptured (Object key, Object value) {
+    protected Element putUncaptured (final Object key, final Object value) {
         assertNotNull("Null key", key);
         assertNotNull("Null value", value);
 
-        Element                             elem=new Element(key, value);
-        OperationCollectionAspectSupport    collAspect=getAspect();
-        OperationCollector                  current=collAspect.getCollector();
+        final Element                             elem=new Element(key, value);
+        final OperationCollectionAspectSupport    collAspect=getAspect();
+        final OperationCollector                  current=collAspect.getCollector();
         try {
             collAspect.setCollector(IgnoringOperationCollector.DEFAULT);
             cache.put(elem);
@@ -71,16 +70,16 @@ public abstract class EhcacheOperationCollectionAspectTestSupport
 
     }
 
-    protected Operation assertEhcacheOperationContents (String method, Object key, Object value) {
-        Operation op=getLastEntered();
+    protected Operation assertEhcacheOperationContents (final String method, final Object key, final Object value) {
+        final Operation op=getLastEntered();
         assertNotNull("No operation extracted", op);
         assertEquals("Mismatched operation type", EhcacheDefinitions.CACHE_OPERATION, op.getType());
         assertEquals("Mismatched cache name", TEST_CACHE_NAME,op.get(EhcacheDefinitions.NAME_ATTRIBUTE, String.class));
         assertEquals("Mismatched method", method, op.get(EhcacheDefinitions.METHOD_ATTRIBUTE, String.class));
-        assertEquals("Mismatched key", key.toString(), op.get(EhcacheDefinitions.KEY_ATTRIBUTE));
+        assertEquals("Mismatched key", key.getClass().getSimpleName(), op.get(EhcacheDefinitions.KEY_ATTRIBUTE));
 
         if (value != null) {
-            assertEquals("Mismatched value", value.toString(), op.get(EhcacheDefinitions.VALUE_ATTRIBUTE));
+            assertEquals("Mismatched value", value.getClass().getSimpleName(), op.get(EhcacheDefinitions.VALUE_ATTRIBUTE));
         }
         return op;
     }
@@ -92,12 +91,12 @@ public abstract class EhcacheOperationCollectionAspectTestSupport
         }
 
         final Class<?>	anchorClass=EhcacheOperationCollectionAspectTestSupport.class;
-        URL				configURL=anchorClass.getResource("/ehcache.xml");
+        final URL				configURL=anchorClass.getResource("/ehcache.xml");
         assertNotNull("Cannot find configuration file URL");
 
-        File					testDir=FileUtil.detectTargetFolder(anchorClass), testStore=new File(testDir, "ehcache-store");
-        Configuration			config=ConfigurationFactory.parseConfiguration(configURL);
-        DiskStoreConfiguration	diskStore=config.getDiskStoreConfiguration();
+        final File					testDir=FileUtil.detectTargetFolder(anchorClass), testStore=new File(testDir, "ehcache-store");
+        final Configuration			config=ConfigurationFactory.parseConfiguration(configURL);
+        final DiskStoreConfiguration	diskStore=config.getDiskStoreConfiguration();
         diskStore.setPath(testStore.getAbsolutePath());
 
         manager = CacheManager.create(config);
@@ -109,12 +108,12 @@ public abstract class EhcacheOperationCollectionAspectTestSupport
     @SuppressWarnings("hiding")
     public static class TestCacheWriter implements CacheWriter, Cloneable {
         private Ehcache   cache;
-        public TestCacheWriter (Ehcache cache) {
+        public TestCacheWriter (final Ehcache cache) {
             this.cache = cache;
         }
 
-        public CacheWriter clone(Ehcache cache) throws CloneNotSupportedException {
-            TestCacheWriter writer=getClass().cast(super.clone());
+        public CacheWriter clone(final Ehcache cache) throws CloneNotSupportedException {
+            final TestCacheWriter writer=getClass().cast(super.clone());
             writer.cache = cache;
             return writer;
         }
@@ -127,7 +126,7 @@ public abstract class EhcacheOperationCollectionAspectTestSupport
             System.out.println(toString() + " - disposed");
         }
 
-        public void write(Element element) throws CacheException {
+        public void write(final Element element) throws CacheException {
             if (element == null) {
                 throw new CacheException("No element to write");
             }
@@ -135,28 +134,29 @@ public abstract class EhcacheOperationCollectionAspectTestSupport
             System.out.println(toString() + " write[" + element.getObjectKey() + "]=" + element.getObjectValue());
         }
 
-        public void writeAll(Collection<Element> elements) throws CacheException {
+        public void writeAll(final Collection<Element> elements) throws CacheException {
             if ((elements == null) || elements.isEmpty()) {
                 return;
             }
- 
-            for (Element elem : elements)
+
+            for (final Element elem : elements) {
                 write(elem);
+            }
         }
 
-        public void delete(CacheEntry entry) throws CacheException {
+        public void delete(final CacheEntry entry) throws CacheException {
             if (entry == null) {
                 throw new CacheException("No entry to delete");
             }
             System.out.println(toString() + " - delete[" + entry.getKey() + "]");
         }
 
-        public void deleteAll(Collection<CacheEntry> entries) throws CacheException {
+        public void deleteAll(final Collection<CacheEntry> entries) throws CacheException {
             if ((entries == null) || entries.isEmpty()) {
                 return;
             }
-     
-            for (CacheEntry e : entries) {
+
+            for (final CacheEntry e : entries) {
                 delete(e);
             }
         }

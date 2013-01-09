@@ -30,6 +30,7 @@ import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
+import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.server.ServerName;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
@@ -142,8 +143,11 @@ public abstract class AbstractJMSResourceAnalyzerTest extends Assert {
     public void testExactlyTwoDifferentExternalResourceNames() {
         Operation op1 = createOperation();
         Operation op2 = createOperation();
-        op2.put("host", "127.0.0.2");
-        op2.put("port", 1111);
+
+        OperationMap map = op2.createMap(JMSPluginUtils.CONNECTION_DATA);
+        map.put("host", "127.0.0.2");
+        map.put("port", 1111);
+
         Operation dummyOp = new Operation();
 
         SimpleFrameBuilder builder = new SimpleFrameBuilder();
