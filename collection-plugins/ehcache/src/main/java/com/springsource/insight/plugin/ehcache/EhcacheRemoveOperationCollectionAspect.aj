@@ -31,17 +31,13 @@ public aspect EhcacheRemoveOperationCollectionAspect extends EhcacheMethodOperat
 		super();
 	}
 
-    public pointcut removeValueFlow ()
+    public pointcut ehcacheCollectionPoint ()
         : execution(* Ehcache+.remove(..))
        || execution(* Ehcache+.removeQuiet(..))
        || execution(* Ehcache+.removeWithWriter(Object))
        || execution(* Ehcache+.removeElement(Element))
         ;
 
-    public pointcut collectionPoint ()
-        : removeValueFlow()
-       && (!cflowbelow(removeValueFlow()))
-        ;
 
     @Override
     protected Operation createOperation(JoinPoint jp) {

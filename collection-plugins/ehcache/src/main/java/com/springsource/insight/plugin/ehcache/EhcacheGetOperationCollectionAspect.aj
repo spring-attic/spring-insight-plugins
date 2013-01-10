@@ -32,18 +32,9 @@ public aspect EhcacheGetOperationCollectionAspect extends EhcacheMethodOperation
         super(new EhcacheGetOperationCollector());
     }
 
-    @Override
-    public String getPluginName() {
-        return EhcacheDefinitions.PLUGIN_NAME;
-    }
-
-    public pointcut getValueFlow ()
+    public pointcut ehcacheCollectionPoint ()
         : execution(* Ehcache+.get(..))
        || execution(* Ehcache+.getQuiet(..))
-        ;
-    public pointcut collectionPoint ()
-        : getValueFlow()
-       && (!cflowbelow(getValueFlow()))
         ;
 
     @Override
