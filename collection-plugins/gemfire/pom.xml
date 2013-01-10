@@ -16,6 +16,7 @@
 	</parent>
 
     <dependencies>
+            <!-- Javadoc: https://www.vmware.com/support/developer/vfabric-gemfire/661-api/ -->
         <dependency>
             <groupId>com.gemstone.gemfire</groupId>
             <artifactId>gemfire</artifactId>

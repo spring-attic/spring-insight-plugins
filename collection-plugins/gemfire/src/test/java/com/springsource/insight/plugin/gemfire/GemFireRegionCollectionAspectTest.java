@@ -67,7 +67,14 @@ public class GemFireRegionCollectionAspectTest extends GemFireAspectTestSupport 
     	testInGemfire(new GemFireCallback() {			
 			public void doInGemfire(Region<?,?> r) {
 				try {
-					r.selectValue("length > 1");
+					/*
+					 * NOTE: Make sure at most 1 result is returned (actually we expect zero...)
+					 * otherwise an exception is thrown
+					 */
+					Object	result=r.selectValue("length > " + Short.MAX_VALUE);
+					if (result != null) {
+						System.out.println("testSelectOperationCollection: " + result);
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 					fail(e.getClass().getSimpleName() + ": " + e.getMessage());

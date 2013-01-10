@@ -15,26 +15,12 @@
         <!-- NOTE: we use the same FTL file for all operations since they look the same -->
 	<insight:operation-view operation="jta-tx-op" template="com/springsource/insight/plugin/jta/jta.ftl"/>
 	<insight:operation-group group="Database" operation="jta-tx-op" />
-    <bean id="jtaPluginTransactionMetricsGenerator"
-          class="com.springsource.insight.plugin.jta.TransactionMetricsGenerator"
-          factory-method="getInstance"
-          lazy-init="true"
-        />
     
     <insight:operation-view operation="jta-tx-mgr" template="com/springsource/insight/plugin/jta/jta.ftl"/>
     <insight:operation-group group="Database" operation="jta-tx-mgr" />
-    <bean id="jtaPluginTransactionManagerMetricsGenerator"
-          class="com.springsource.insight.plugin.jta.TransactionManagerMetricsGenerator"
-          factory-method="getInstance"
-          lazy-init="true"
-        />
-
+    
     <insight:operation-view operation="jta-tx-user" template="com/springsource/insight/plugin/jta/jta.ftl"/>
     <insight:operation-group group="Database" operation="jta-tx-user" />
-    <bean id="jtaPLuginUserTransactionMetricsGenerator"
-          class="com.springsource.insight.plugin.jta.UserTransactionMetricsGenerator"
-          factory-method="getInstance"
-          lazy-init="true"
-        />
+    
     
 </beans>

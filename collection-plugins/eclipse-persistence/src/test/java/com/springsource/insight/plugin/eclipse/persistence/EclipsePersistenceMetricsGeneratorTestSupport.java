@@ -51,6 +51,11 @@ public abstract class EclipsePersistenceMetricsGeneratorTestSupport extends Abst
     	super(generator);
     }
 
+    @Override
+    public void testGenerateMetrics() {
+        // we do NOT want metrics to be generated on the endpoint
+    }
+    
     @Test
     public void testExtraMetricsGeneration () {
     	TimeRange				range=new TimeRange(7365L, 3777347L);
