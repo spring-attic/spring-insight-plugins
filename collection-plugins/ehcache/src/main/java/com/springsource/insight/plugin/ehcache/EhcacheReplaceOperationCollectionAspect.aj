@@ -30,14 +30,9 @@ public aspect EhcacheReplaceOperationCollectionAspect extends EhcacheMethodOpera
 		super();
 	}
 
-    public pointcut replaceValueFlow ()
+    public pointcut ehcacheCollectionPoint ()
         : execution(* Ehcache+.replace(Element,Element))
        || execution(* Ehcache+.replace(Element))
-        ;
-
-    public pointcut ehcacheCollectionPoint ()
-        : replaceValueFlow()
-       && (!cflowbelow(replaceValueFlow()))
         ;
 
     @Override

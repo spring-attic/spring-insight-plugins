@@ -32,12 +32,10 @@ public aspect EhcacheGetOperationCollectionAspect extends EhcacheMethodOperation
         super(new EhcacheGetOperationCollector());
     }
 
-    public pointcut getValueFlow ()
+    public pointcut ehcacheCollectionPoint ()
         : execution(* Ehcache+.get(..))
        || execution(* Ehcache+.getQuiet(..))
         ;
-
-    protected pointcut ehcacheCollectionPoint() : getValueFlow() && (!cflowbelow(getValueFlow()));
 
     @Override
     protected Operation createOperation(final JoinPoint jp) {

@@ -30,7 +30,7 @@ public final class EhcacheCollapsingFrameHelper extends AbstractCollapsingFrameH
     private EhcacheCollapsingFrameHelper() {
     }
 
-    public static CollapsingFrameHelper getInstance() {
+    public static final CollapsingFrameHelper getInstance() {
         return INSTANCE;
     }
 

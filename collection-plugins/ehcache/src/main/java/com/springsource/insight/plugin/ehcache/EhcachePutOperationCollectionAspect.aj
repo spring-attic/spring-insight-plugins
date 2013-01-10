@@ -30,16 +30,11 @@ public aspect EhcachePutOperationCollectionAspect extends EhcacheMethodOperation
 		super();
 	}
 
-    public pointcut putValueFlow ()
+    public pointcut ehcacheCollectionPoint ()
         : execution(* Ehcache+.put(..))
        || execution(* Ehcache+.putWithWriter(..))
        || execution(* Ehcache+.putQuiet(..))
        || execution(* Ehcache+.putIfAbsent(..))
-        ;
-    
-    protected pointcut ehcacheCollectionPoint ()
-        : putValueFlow()
-       && (!cflowbelow(putValueFlow()))
         ;
 
     @Override
