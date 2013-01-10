@@ -36,8 +36,8 @@ public aspect EhcachePutOperationCollectionAspect extends EhcacheMethodOperation
        || execution(* Ehcache+.putQuiet(..))
        || execution(* Ehcache+.putIfAbsent(..))
         ;
-
-    public pointcut collectionPoint ()
+    
+    protected pointcut ehcacheCollectionPoint ()
         : putValueFlow()
        && (!cflowbelow(putValueFlow()))
         ;

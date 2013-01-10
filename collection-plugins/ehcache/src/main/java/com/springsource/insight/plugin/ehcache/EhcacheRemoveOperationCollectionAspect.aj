@@ -38,7 +38,7 @@ public aspect EhcacheRemoveOperationCollectionAspect extends EhcacheMethodOperat
        || execution(* Ehcache+.removeElement(Element))
         ;
 
-    public pointcut collectionPoint ()
+    public pointcut ehcacheCollectionPoint ()
         : removeValueFlow()
        && (!cflowbelow(removeValueFlow()))
         ;

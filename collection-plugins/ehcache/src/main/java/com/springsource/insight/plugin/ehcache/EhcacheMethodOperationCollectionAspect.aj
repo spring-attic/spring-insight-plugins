@@ -40,6 +40,12 @@ public abstract aspect EhcacheMethodOperationCollectionAspect extends MethodOper
         super(collector);
     }
 
+    protected abstract pointcut ehcacheCollectionPoint();
+
+    protected pointcut ehcacheExecutionCall() : execution(* Ehcache+.*(..));
+
+    public final pointcut collectionPoint() : ehcacheCollectionPoint() && (!cflowbelow(ehcacheExecutionCall()));
+
     Operation initCommonFields(final Operation op, final Ehcache cache, final String method, final Object key) {
         op.type(EhcacheDefinitions.CACHE_OPERATION)
           .put(EhcacheDefinitions.METHOD_ATTRIBUTE, method)
