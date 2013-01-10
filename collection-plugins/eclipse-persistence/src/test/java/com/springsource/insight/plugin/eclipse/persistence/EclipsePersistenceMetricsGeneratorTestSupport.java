@@ -51,9 +51,9 @@ public abstract class EclipsePersistenceMetricsGeneratorTestSupport extends Abst
     	super(generator);
     }
 
-    // we do NOT want metrics to be generated on the endpoint
     @Override
     public void testGenerateMetrics() {
+        // we do NOT want metrics to be generated on the endpoint
     }
     
     @Test
