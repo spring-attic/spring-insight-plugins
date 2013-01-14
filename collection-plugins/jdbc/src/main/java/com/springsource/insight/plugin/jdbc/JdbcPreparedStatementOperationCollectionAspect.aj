@@ -148,15 +148,11 @@ public aspect JdbcPreparedStatementOperationCollectionAspect
         PreparedStatement thisStatement = (PreparedStatement) thisJoinPoint.getThis();
         Operation template = storage.get(thisStatement);
         if (template != null) {
-        	JdbcOperationFinalizer.finalize(template);
+            JdbcOperationFinalizer.finalize(template);
 
-        	Operation	op=new Operation()
-        						.type(template.getType())
-        						.label(template.getLabel())
-        						.sourceCodeLocation(template.getSourceCodeLocation())
-        						.copyPropertiesFrom(template)
-        						;
-        	entered.put(thisStatement, op);
+            Operation op = new Operation().cloneFrom(template);            
+            entered.put(thisStatement, op);
+            
             getCollector().enter(op);
         } else {
             // stmt.execute() called, but stmt was never returned via a prepareStatement().
@@ -168,26 +164,22 @@ public aspect JdbcPreparedStatementOperationCollectionAspect
     after() returning(Object returnValue): execute() {
 
         PreparedStatement thisStatement = (PreparedStatement) thisJoinPoint.getThis();
-        Operation op = entered.remove(thisStatement);
+        entered.remove(thisStatement);
 
-        if (op != null) {
-            getCollector().exitNormal(returnValue);
-            // removing the softkey entry here actually appears to *degrade* performance
-            // This may be because the entire object, including "storage" is thrown away
-            // anyways.
-        }
+        getCollector().exitNormal(returnValue);
+        // removing the softkey entry here actually appears to *degrade* performance
+        // This may be because the entire object, including "storage" is thrown away
+        // anyways.
     }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after() throwing(Throwable exception): execute() {
         PreparedStatement thisStatement = (PreparedStatement) thisJoinPoint.getThis();
-        Operation op = entered.remove(thisStatement);
+        entered.remove(thisStatement);
 
-        if (op != null) {
-            getCollector().exitAbnormal(exception);
-            // See the note above for exitNormal for why we do not explicitly remove
-            // the SoftKeyEntries here
-        }
+        getCollector().exitAbnormal(exception);
+        // See the note above for exitNormal for why we do not explicitly remove
+        // the SoftKeyEntries here
     }
 
     Operation createOperationForStatement(JoinPoint jp, PreparedStatement statement, String sql) {

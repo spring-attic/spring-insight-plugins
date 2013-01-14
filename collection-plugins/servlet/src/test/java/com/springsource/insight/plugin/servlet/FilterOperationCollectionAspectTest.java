@@ -48,9 +48,11 @@ public class FilterOperationCollectionAspectTest extends OperationCollectionAspe
         dFilter.doFilter(null, null, null);
         Operation second = getLastEntered();
 
-        // We cache the entire Operation, so the references should be the same
-        assertTrue(first == second);
-
+        // We cache the entire Operation, but return different references
+        assertTrue(first.equals(second));
+        assertEquals(first.getLabel(), second.getLabel());
+        assertEquals(first.get("filterClass"), second.get("filterClass"));
+        assertEquals(first.get("filterName"), second.get("filterName"));
     }
 
     @Override

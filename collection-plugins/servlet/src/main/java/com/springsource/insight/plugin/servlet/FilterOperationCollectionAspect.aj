@@ -58,7 +58,13 @@ public aspect FilterOperationCollectionAspect extends AbstractOperationCollectio
         // If we have some servlet request/response specific junk to add, do so here
         // Right now we just fill the filter up with the initParams, so we just pass in
         // the exact same operation
-        return operation;
+        
+        //return a copy of the operation so that properties added in the analysis set are not persisted cross-analysis
+        //(specifically epSource)
+        Operation operationCopy = new Operation();
+        operationCopy.cloneFrom(operation);
+        
+        return operationCopy;
     }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
