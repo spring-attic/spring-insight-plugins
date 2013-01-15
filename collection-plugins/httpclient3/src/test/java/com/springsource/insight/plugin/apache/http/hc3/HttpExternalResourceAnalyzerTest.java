@@ -28,9 +28,6 @@ import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
-import com.springsource.insight.intercept.operation.OperationList;
-import com.springsource.insight.intercept.operation.OperationMap;
-import com.springsource.insight.intercept.operation.OperationUtils;
 import com.springsource.insight.intercept.server.ServerName;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
@@ -41,104 +38,78 @@ import com.springsource.insight.intercept.trace.SimpleFrame;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
 import com.springsource.insight.util.ListUtil;
-import com.springsource.insight.util.StringUtil;
 import com.springsource.insight.util.time.TimeRange;
 
 /**
  * 
  */
 public class HttpExternalResourceAnalyzerTest extends AbstractCollectionTestSupport {
-    private final HttpExternalResourceAnalyzer  analyzer=HttpExternalResourceAnalyzer.getInstance();
-    private static final AtomicLong frameIdGenerator=new AtomicLong(0L);
+    private final HttpExternalResourceAnalyzer analyzer = HttpExternalResourceAnalyzer.getInstance();
+    private static final AtomicLong frameIdGenerator = new AtomicLong(0L);
 
     public HttpExternalResourceAnalyzerTest() {
         super();
     }
 
     @Test
-    public void testBasicAnalysis () throws URISyntaxException {
-        final URI                               TEST_URI=new URI("http://test-host:3777/testBasicOperatiom");
-        Trace                                   trace=createTrace(createFrame(null, TEST_URI));
-        Collection<ExternalResourceDescriptor>  resList=analyzer.locateExternalResourceName(trace);
+    public void testBasicAnalysis() throws URISyntaxException {
+        final URI TEST_URI = new URI("http://test-host:3777/testBasicOperatiom");
+        Trace trace = createTrace(createFrame(null, TEST_URI));
+        Collection<ExternalResourceDescriptor> resList = analyzer.locateExternalResourceName(trace);
         assertEquals("Mismatched resources size", 1, resList.size());
 
-        ExternalResourceDescriptor  res=ListUtil.getFirstMember(resList);
-        assertResourceContents(res, TEST_URI, null);
+        ExternalResourceDescriptor res = ListUtil.getFirstMember(resList);
+        assertResourceContents(res, TEST_URI, "test-host:3777");
         assertSame("Mismatched frame instance", trace.getRootFrame(), res.getFrame());
     }
 
-    @Test   // make sure that repeated URI is reported only once
-    public void testDuplicateURI () throws URISyntaxException {
-        final URI                               TEST_URI=new URI("http://test-host:3777/testBasicOperatiom");
-        Trace                                   trace=createTrace(createFrame(createFrame(null, TEST_URI), TEST_URI));
-        Collection<ExternalResourceDescriptor>  resList=analyzer.locateExternalResourceName(trace);
+    @Test
+    // make sure that repeated URI is reported only once
+    public void testDuplicateURI() throws URISyntaxException {
+        final URI TEST_URI = new URI("http://test-host:3777/testBasicOperatiom");
+        Trace trace = createTrace(createFrame(createFrame(null, TEST_URI), TEST_URI));
+        Collection<ExternalResourceDescriptor> resList = analyzer.locateExternalResourceName(trace);
         assertEquals("Mismatched resources size", 1, resList.size());
-        assertResourceContents(ListUtil.getFirstMember(resList), TEST_URI, null);
+        assertResourceContents(ListUtil.getFirstMember(resList), TEST_URI, "test-host:3777");
     }
 
     @Test
-    public void testMalformedURI () {
-        Trace   trace=createTrace(createFrame(null, "^^^this:is|a$bad(uri)"));
-        Collection<ExternalResourceDescriptor>    resList=analyzer.locateExternalResourceName(trace);
+    public void testMalformedURI() {
+        Trace trace = createTrace(createFrame(null, "^^^this:is|a$bad(uri)"));
+        Collection<ExternalResourceDescriptor> resList = analyzer.locateExternalResourceName(trace);
         assertTrue("Mismatched resources size", (resList == null) || resList.isEmpty());
     }
 
-    @Test
-    public void testResolveServerType () throws URISyntaxException {
-        Trace           trace=createTrace(createFrame(null, new URI("http://test-host:3777/testResolveServerType")));
-        Frame           frame=trace.getRootFrame();
-        Operation       op=frame.getOperation();
-        OperationMap    responseDetails=op.createMap("response");
-        OperationList   responseHeaders=responseDetails.createList("headers");
-        final String    SERVER_VALUE="Jetty-Embedded/0.0";
-        OperationUtils.addNameValuePair(responseHeaders, "Server", SERVER_VALUE);
-
-        Collection<ExternalResourceDescriptor>    resList=analyzer.locateExternalResourceName(trace);
-        assertEquals("Mismatched resources size", 1, resList.size());
-
-        ExternalResourceDescriptor  res=ListUtil.getFirstMember(resList);
-        assertEquals("Mismatched vendor value", SERVER_VALUE, res.getVendor());
-    }
-
-    @Test
-    public void testResolveMissingServerType () throws URISyntaxException {
-        Trace                                   trace=createTrace(createFrame(null, new URI("http://test-host:3777/testResolveMissingServerType")));
-        Collection<ExternalResourceDescriptor>  resList=analyzer.locateExternalResourceName(trace);
-        assertEquals("Mismatched resources size", 1, resList.size());
-
-        ExternalResourceDescriptor  res=ListUtil.getFirstMember(resList);
-        assertEquals("Unexpected vendor value", res.getHost(), res.getVendor());
-    }
-
-    static void assertResourceContents (ExternalResourceDescriptor res, URI uri, String label) {
-        assertEquals("Mismatched name", MD5NameGenerator.getName(uri), res.getName());
-        assertEquals("Mismatched label", res.getLabel(), (StringUtil.isEmpty(label) ? res.getHost() : label) + ":" + res.getPort());
+    static void assertResourceContents(ExternalResourceDescriptor res, URI uri, String label) {
+        assertEquals("Mismatched name", MD5NameGenerator.getName(label), res.getName());
+        assertEquals("Mismatched label", res.getLabel(), label);
         assertEquals("Mismatched type", ExternalResourceType.WEB_SERVER.name(), res.getType());
         assertEquals("Mismatched host", uri.getHost(), res.getHost());
         assertEquals("Mismatched port", HttpExternalResourceAnalyzer.resolvePort(uri), res.getPort());
         assertEquals("Mismatched direction", Boolean.FALSE, Boolean.valueOf(res.isIncoming()));
+        assertNull("Mismatched vendor", res.getVendor());
     }
 
-    static Frame createFrame (Frame parent, URI uri) {
+    static Frame createFrame(Frame parent, URI uri) {
         return createFrame(parent, uri.toString());
     }
 
-    static Frame createFrame (Frame parent, String uri) {
-    	Operation op = new Operation().type(HttpClientDefinitions.TYPE);
+    static Frame createFrame(Frame parent, String uri) {
+        Operation op = new Operation().type(HttpClientDefinitions.TYPE);
         op.createMap("request").put(OperationFields.URI, uri);
-        
+
         return new SimpleFrame(FrameId.valueOf(String.valueOf(frameIdGenerator.incrementAndGet())),
-                               parent,
-                               op,
-                               TimeRange.milliTimeRange(0, 1),
-                               Collections.<Frame>emptyList());
+                parent,
+                op,
+                TimeRange.milliTimeRange(0, 1),
+                Collections.<Frame> emptyList());
     }
-    
-    static Trace createTrace (Frame root) {
+
+    static Trace createTrace(Frame root) {
         return new Trace(ServerName.valueOf("fake-server"),
-                         ApplicationName.valueOf("fake-app"),
-                         new Date(System.currentTimeMillis()),
-                         TraceId.valueOf("fake-id"),
-                         root);
+                ApplicationName.valueOf("fake-app"),
+                new Date(System.currentTimeMillis()),
+                TraceId.valueOf("fake-id"),
+                root);
     }
 }

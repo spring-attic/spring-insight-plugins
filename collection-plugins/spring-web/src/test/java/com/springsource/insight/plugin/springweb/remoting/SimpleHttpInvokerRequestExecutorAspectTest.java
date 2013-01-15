@@ -52,21 +52,20 @@ import com.springsource.insight.util.ArrayUtil;
 import com.springsource.insight.util.ClassUtil;
 import com.springsource.insight.util.StringUtil;
 
-
 /**
  * 
  */
 public class SimpleHttpInvokerRequestExecutorAspectTest
-		extends HttpInvokerRequestOperationCollectionTestSupport {
-    private static final Log	logger=LogFactory.getLog(SimpleHttpInvokerRequestExecutorAspectTest.class);
-    private static Server    SERVER;
+extends HttpInvokerRequestOperationCollectionTestSupport {
+    private static final Log logger = LogFactory.getLog(SimpleHttpInvokerRequestExecutorAspectTest.class);
+    private static Server SERVER;
 
-	public SimpleHttpInvokerRequestExecutorAspectTest() {
-		super();
-	}
+    public SimpleHttpInvokerRequestExecutorAspectTest() {
+        super();
+    }
 
     @BeforeClass
-    public static void startEmbeddedServer () throws Exception {
+    public static void startEmbeddedServer() throws Exception {
         SERVER = new Server(TEST_PORT);
         SERVER.setHandler(new TestHandler());
         logger.info("Starting embedded server on port " + TEST_PORT);
@@ -75,85 +74,85 @@ public class SimpleHttpInvokerRequestExecutorAspectTest
     }
 
     @AfterClass
-    public static void stopEmbeddedServer () throws Exception {
+    public static void stopEmbeddedServer() throws Exception {
         if (SERVER != null) {
-        	logger.info("Stopping embedded server");
+            logger.info("Stopping embedded server");
             SERVER.stop();
             logger.info("Server stopped");
         }
     }
 
-	@Test
-	public void testSimpleHttpInvokerRequestExecutor () throws Exception {
-		RemoteInvocation	invocation=
-				new RemoteInvocation("testSimpleHttpInvokerRequestExecutor", new Class[] { Long.class }, new Object[] { Long.valueOf(System.nanoTime()) });
-		TestingSimpleHttpInvokerRequestExecutor	executor=new TestingSimpleHttpInvokerRequestExecutor(invocation.getMethodName());
-		HttpInvokerClientConfiguration			config=createMockConfiguration(executor.getColor(), ArrayUtil.EMPTY_STRINGS);
-    	RemoteInvocationResult					result=executor.executeRequest(config, invocation);
-		Object									value=result.getValue();
-		assertNotNull("No result value", value);
-		assertTrue("Bad result value type: " + value.getClass().getSimpleName(), value instanceof RemoteInvocation);
+    @Test
+    public void testSimpleHttpInvokerRequestExecutor() throws Exception {
+        RemoteInvocation invocation =
+                new RemoteInvocation("testSimpleHttpInvokerRequestExecutor", new Class[] { Long.class }, new Object[] { Long.valueOf(System.nanoTime()) });
+        TestingSimpleHttpInvokerRequestExecutor executor = new TestingSimpleHttpInvokerRequestExecutor(invocation.getMethodName());
+        HttpInvokerClientConfiguration config = createMockConfiguration(executor.getColor(), ArrayUtil.EMPTY_STRINGS);
+        RemoteInvocationResult result = executor.executeRequest(config, invocation);
+        Object value = result.getValue();
+        assertNotNull("No result value", value);
+        assertTrue("Bad result value type: " + value.getClass().getSimpleName(), value instanceof RemoteInvocation);
 
-		RemoteInvocation	resultValue=(RemoteInvocation) value;
-		assertEquals("Mismatched result method", invocation.getMethodName(), resultValue.getMethodName());
-		assertArrayEquals("Mismatched result signature", invocation.getParameterTypes(), resultValue.getParameterTypes());
-		assertArrayEquals("Mismatched result arguments", invocation.getArguments(), resultValue.getArguments());
+        RemoteInvocation resultValue = (RemoteInvocation) value;
+        assertEquals("Mismatched result method", invocation.getMethodName(), resultValue.getMethodName());
+        assertArrayEquals("Mismatched result signature", invocation.getParameterTypes(), resultValue.getParameterTypes());
+        assertArrayEquals("Mismatched result arguments", invocation.getArguments(), resultValue.getArguments());
 
-		Operation	op=assertRemotingOperation(config);
-		assertEquals("Mismatched request method", executor.getMethod(), op.get("method", String.class));
+        Operation op = assertRemotingOperation(config);
+        assertEquals("Mismatched request method", executor.getMethod(), op.get("method", String.class));
 
-		ExternalResourceDescriptor	desc=assertExternalResource(op);
-		assertNotNull("No external resource generated", desc);
-	}
+        ExternalResourceDescriptor desc = assertExternalResource(op);
+        assertNotNull("No external resource generated", desc);
+    }
 
-	@Override
-	public SimpleHttpInvokerRequestExecutorAspect getAspect() {
-		return SimpleHttpInvokerRequestExecutorAspect.aspectOf();
-	}
+    @Override
+    public SimpleHttpInvokerRequestExecutorAspect getAspect() {
+        return SimpleHttpInvokerRequestExecutorAspect.aspectOf();
+    }
 
-	static class TestingSimpleHttpInvokerRequestExecutor extends SimpleHttpInvokerRequestExecutor {
-		private final String	color;
+    static class TestingSimpleHttpInvokerRequestExecutor extends SimpleHttpInvokerRequestExecutor {
+        private final String color;
 
-		TestingSimpleHttpInvokerRequestExecutor (String colorValue) {
-			if (StringUtil.isEmpty(colorValue)) {
-				throw new IllegalArgumentException("No color value specified");
-			}
-			
-			color = colorValue;
-			
-			setBeanClassLoader(ClassUtil.getDefaultClassLoader(getClass()));
-		}
+        TestingSimpleHttpInvokerRequestExecutor(String colorValue) {
+            if (StringUtil.isEmpty(colorValue)) {
+                throw new IllegalArgumentException("No color value specified");
+            }
 
-		String getColor () {
-			return color;
-		}
+            color = colorValue;
 
-		String getMethod () {
-			return HTTP_METHOD_POST;
-		}
+            setBeanClassLoader(ClassUtil.getDefaultClassLoader(getClass()));
+        }
 
-		@Override
-		protected void prepareConnection(HttpURLConnection connection, int contentLength) throws IOException {
-			InterceptConfiguration	config=InterceptConfiguration.getInstance();
-	    	FrameBuilder			builder=config.getFrameBuilder();
-	        @SuppressWarnings("unchecked")
-			List<Color>			colors=builder.getHint(Color.TOKEN_NAME, List.class);
-	        if (colors == null) {
-	        	colors = new ArrayList<Color>();
-	        	builder.setHint(Color.TOKEN_NAME, colors);
-	        }
-	        colors.add(new Color(null, getColor(), getClass().getSimpleName(), "prepareConnection"));
+        String getColor() {
+            return color;
+        }
 
-			super.prepareConnection(connection, contentLength);
-		}
-		
-	}
+        String getMethod() {
+            return HTTP_METHOD_POST;
+        }
+
+        @Override
+        protected void prepareConnection(HttpURLConnection connection, int contentLength) throws IOException {
+            InterceptConfiguration config = InterceptConfiguration.getInstance();
+            FrameBuilder builder = config.getFrameBuilder();
+            @SuppressWarnings("unchecked")
+            List<Color> colors = builder.getHint(Color.TOKEN_NAME, List.class);
+            if (colors == null) {
+                colors = new ArrayList<Color>();
+                builder.setHint(Color.TOKEN_NAME, colors);
+            }
+            colors.add(new Color(null, getColor(), getClass().getSimpleName(), "prepareConnection"));
+
+            super.prepareConnection(connection, contentLength);
+        }
+
+    }
 
     static class TestHandler implements Handler {
-        private Server  server;
+        private Server server;
         private boolean started;
 
-        protected TestHandler () {
+        protected TestHandler() {
             super();
         }
 
@@ -169,10 +168,10 @@ public class SimpleHttpInvokerRequestExecutorAspectTest
             if (!started) {
                 throw new IllegalStateException("Not started");
             }
-            
+
             started = false;
         }
-        
+
         public void start() throws Exception {
             if (started) {
                 throw new IllegalStateException("Double start");
@@ -180,31 +179,31 @@ public class SimpleHttpInvokerRequestExecutorAspectTest
 
             started = true;
         }
-        
+
         public boolean isStopping() {
             return true;
         }
-        
+
         public boolean isStopped() {
             return !started;
         }
-        
+
         public boolean isStarting() {
             return true;
         }
-        
+
         public boolean isStarted() {
             return started;
         }
-        
+
         public boolean isRunning() {
             return started;
         }
-        
+
         public boolean isFailed() {
             return false;
         }
-        
+
         public Server getServer() {
             return this.server;
         }
@@ -212,43 +211,42 @@ public class SimpleHttpInvokerRequestExecutorAspectTest
         public void setServer(Server s) {
             this.server = s;
         }
-        
-        public void handle (String target, HttpServletRequest request, HttpServletResponse response, int dispatch)
-                        throws IOException, ServletException {
-            ObjectInputStream	reqStream=new ObjectInputStream(request.getInputStream());
-            RemoteInvocation	invocation;
+
+        public void handle(String target, HttpServletRequest request, HttpServletResponse response, int dispatch)
+                throws IOException, ServletException {
+            ObjectInputStream reqStream = new ObjectInputStream(request.getInputStream());
+            RemoteInvocation invocation;
             try {
-            	invocation = (RemoteInvocation) reqStream.readObject();
-            } catch(ClassNotFoundException e) {
-            	throw new ServletException("Failed to load invocation class: " + e.getMessage(), e);
+                invocation = (RemoteInvocation) reqStream.readObject();
+            } catch (ClassNotFoundException e) {
+                throw new ServletException("Failed to load invocation class: " + e.getMessage(), e);
             } finally {
-            	reqStream.close();
+                reqStream.close();
             }
 
             System.out.println("Invocation: " + invocation + " - args=" + Arrays.toString(invocation.getArguments()));
             assertEquals("Mismatched target value", "/" + invocation.getMethodName(), target);
 
-            String	color=request.getHeader(Color.TOKEN_NAME);
+            String color = request.getHeader(Color.TOKEN_NAME);
             assertFalse("No color provided", StringUtil.isEmpty(color));
 
-            RemoteInvocationResult	result=new RemoteInvocationResult(invocation);
+            RemoteInvocationResult result = new RemoteInvocationResult(invocation);
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType(AbstractHttpInvokerRequestExecutor.CONTENT_TYPE_SERIALIZED_OBJECT);
-            
-            ObjectOutputStream	rspStream=new ObjectOutputStream(response.getOutputStream());
+
+            ObjectOutputStream rspStream = new ObjectOutputStream(response.getOutputStream());
             try {
-            	rspStream.writeObject(result);
+                rspStream.writeObject(result);
             } finally {
-            	rspStream.close();
+                rspStream.close();
             }
 
             Request baseRequest = (request instanceof Request)
                     ? (Request) request
-                    : HttpConnection.getCurrentConnection().getRequest()
-                    ;
-            baseRequest.setHandled(true);
+                            : HttpConnection.getCurrentConnection().getRequest();
+                    baseRequest.setHandled(true);
         }
-        
+
         public void destroy() {
             if (this.server != null)
                 this.server = null;

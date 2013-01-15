@@ -41,88 +41,90 @@ import com.springsource.insight.util.StringUtil;
  * 
  */
 public class HttpInvokerRequestExecutorExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-	public static final OperationType	HTTP_INVOKER=OperationType.valueOf("http_invoker");
-	/**
-	 * Special attribute used to indicate whether the HTTP invocation was
-	 * executed using core Java classes (e.g. {@link java.net.HttpURLConnection} only
-	 * or via a framework (e.g., <A HREF="http://hc.apache.org/httpclient-3.x/">Apache client</A>).
-	 * We generate an external resource only for the <U>core</U> classes
-	 * invocation and rely on the other plugins for the alternative frameworks.
-	 * This is done in order to avoid ambiguity if both the HTTP invoker aspect
-	 * and the framework plugin are applied to the same trace, and thus may
-	 * generate equivalent (though not same) external resource descriptors
-	 * @see org.springframework.remoting.httpinvoker.SimpleHttpInvokerRequestExecutor
-	 */
-	public static final String	DIRECT_CALL_ATTR="directInvocationCall";
-	public static final int	IPPORT_HTTP=80;
-	private static final HttpInvokerRequestExecutorExternalResourceAnalyzer	INSTANCE=new HttpInvokerRequestExecutorExternalResourceAnalyzer();
+    public static final OperationType HTTP_INVOKER = OperationType.valueOf("http_invoker");
+    /**
+     * Special attribute used to indicate whether the HTTP invocation was
+     * executed using core Java classes (e.g. {@link java.net.HttpURLConnection}
+     * only or via a framework (e.g., <A
+     * HREF="http://hc.apache.org/httpclient-3.x/">Apache client</A>). We
+     * generate an external resource only for the <U>core</U> classes invocation
+     * and rely on the other plugins for the alternative frameworks. This is
+     * done in order to avoid ambiguity if both the HTTP invoker aspect and the
+     * framework plugin are applied to the same trace, and thus may generate
+     * equivalent (though not same) external resource descriptors
+     * 
+     * @see org.springframework.remoting.httpinvoker.SimpleHttpInvokerRequestExecutor
+     */
+    public static final String DIRECT_CALL_ATTR = "directInvocationCall";
+    public static final int IPPORT_HTTP = 80;
+    private static final HttpInvokerRequestExecutorExternalResourceAnalyzer INSTANCE = new HttpInvokerRequestExecutorExternalResourceAnalyzer();
 
-	private HttpInvokerRequestExecutorExternalResourceAnalyzer () {
-		super(HTTP_INVOKER);
-	}
+    private HttpInvokerRequestExecutorExternalResourceAnalyzer() {
+        super(HTTP_INVOKER);
+    }
 
-	public static final HttpInvokerRequestExecutorExternalResourceAnalyzer getInstance() {
-		return INSTANCE;
-	}
+    public static final HttpInvokerRequestExecutorExternalResourceAnalyzer getInstance() {
+        return INSTANCE;
+    }
 
-	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> externalFrames) {
-		if (ListUtil.size(externalFrames) <= 0) {
-			return Collections.emptyList();
-		}
+    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> externalFrames) {
+        if (ListUtil.size(externalFrames) <= 0) {
+            return Collections.emptyList();
+        }
 
-		Set<ExternalResourceDescriptor>	descs=new HashSet<ExternalResourceDescriptor>(externalFrames.size());
-		for (Frame frame : externalFrames) {
-			ExternalResourceDescriptor	extDesc=extractExternalResourceDescriptor(frame);
-			if (extDesc == null) {
-				continue;
-			}
-			
-			if (!descs.add(extDesc)) {
-				continue;	// debug breakpoint
-			}
-		}
+        Set<ExternalResourceDescriptor> descs = new HashSet<ExternalResourceDescriptor>(externalFrames.size());
+        for (Frame frame : externalFrames) {
+            ExternalResourceDescriptor extDesc = extractExternalResourceDescriptor(frame);
+            if (extDesc == null) {
+                continue;
+            }
 
-		return descs;
-	}
+            if (!descs.add(extDesc)) {
+                continue; // debug breakpoint
+            }
+        }
 
-	ExternalResourceDescriptor extractExternalResourceDescriptor (Frame frame) {
-		Operation	op=frame.getOperation();
-		Boolean		directCall=op.get(DIRECT_CALL_ATTR, Boolean.class);
-		if ((directCall == null) || (!directCall.booleanValue())) {
-			return null;
-		}
+        return descs;
+    }
 
-		String		url=op.get(OperationFields.URI, String.class);
-		if (StringUtil.isEmpty(url)) {
-			return null;
-		}
-		
-		try {
-			URI		uri=new URI(url);
-			String	host=uri.getHost();
-			int		port=uri.getPort();
-			if (port <= 0) {
-				port = IPPORT_HTTP;
-			}
+    ExternalResourceDescriptor extractExternalResourceDescriptor(Frame frame) {
+        Operation op = frame.getOperation();
+        Boolean directCall = op.get(DIRECT_CALL_ATTR, Boolean.class);
+        if ((directCall == null) || (!directCall.booleanValue())) {
+            return null;
+        }
 
-			String	color=colorManager.getColor(op);
-			String	name="http://" + host + ":" + port;
-			return new ExternalResourceDescriptor(frame,
-					  							  MD5NameGenerator.getName(name),
-					  							  url,
-					  							  ExternalResourceType.WEB_SERVER.name(),
-					  							  null,
-					  							  host,
-					  							  port,
-					  							  color,
-					  							  false);
-		} catch(URISyntaxException e) {
-			Logger	LOG=Logger.getLogger(getClass().getName());
-			if (LOG.isLoggable(Level.FINE)) {
-				LOG.fine("createExternalResourceDescriptor(" + url + "): " + e.getMessage());
-			}
-			
-			return null;
-		}
-	}
+        String url = op.get(OperationFields.URI, String.class);
+        if (StringUtil.isEmpty(url)) {
+            return null;
+        }
+
+        try {
+            URI uri = new URI(url);
+            String host = uri.getHost();
+            int port = uri.getPort();
+            if (port <= 0) {
+                port = IPPORT_HTTP;
+            }
+
+            String color = colorManager.getColor(op);
+            String lbl = host + ":" + port;
+            return new ExternalResourceDescriptor(frame,
+                    MD5NameGenerator.getName(lbl),
+                    lbl,
+                    ExternalResourceType.WEB_SERVER.name(),
+                    null,
+                    host,
+                    port,
+                    color,
+                    false);
+        } catch (URISyntaxException e) {
+            Logger LOG = Logger.getLogger(getClass().getName());
+            if (LOG.isLoggable(Level.FINE)) {
+                LOG.fine("createExternalResourceDescriptor(" + url + "): " + e.getMessage());
+            }
+
+            return null;
+        }
+    }
 }

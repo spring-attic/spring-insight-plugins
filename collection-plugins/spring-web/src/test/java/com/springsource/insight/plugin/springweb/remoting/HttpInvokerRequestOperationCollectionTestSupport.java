@@ -43,86 +43,87 @@ import com.springsource.insight.util.StringUtil;
  * 
  */
 public abstract class HttpInvokerRequestOperationCollectionTestSupport
-			extends OperationCollectionAspectTestSupport {
-	protected static final HttpInvokerRequestExecutorExternalResourceAnalyzer	extresAnalyzer=
-			HttpInvokerRequestExecutorExternalResourceAnalyzer.getInstance();
-	protected static final HttpInvokerRequestExecutorTraceErrorAnalyzer	errorsAnalyzer=
-			HttpInvokerRequestExecutorTraceErrorAnalyzer.getInstance();
-	protected static final String	TEST_HOST="localhost";
-	protected static final int	TEST_PORT=7365;
-	protected static final String	TEST_URL="http://" + TEST_HOST + ":" + TEST_PORT;
+extends OperationCollectionAspectTestSupport {
+    protected static final HttpInvokerRequestExecutorExternalResourceAnalyzer extresAnalyzer =
+            HttpInvokerRequestExecutorExternalResourceAnalyzer.getInstance();
+    protected static final HttpInvokerRequestExecutorTraceErrorAnalyzer errorsAnalyzer =
+            HttpInvokerRequestExecutorTraceErrorAnalyzer.getInstance();
+    protected static final String TEST_HOST = "localhost";
+    protected static final int TEST_PORT = 7365;
+    protected static final String TEST_URL = "http://" + TEST_HOST + ":" + TEST_PORT;
 
-	protected HttpInvokerRequestOperationCollectionTestSupport() {
-		super();
-	}
+    protected HttpInvokerRequestOperationCollectionTestSupport() {
+        super();
+    }
 
-	protected static List<TraceError> assertTraceError (Operation op, RemoteInvocationResult result) {
-		List<TraceError>	errors=errorsAnalyzer.locateErrors(creatMockOperationTraceWrapper(op));
-		assertEquals("Mismatched number of errors", 1, ListUtil.size(errors));
+    protected static List<TraceError> assertTraceError(Operation op, RemoteInvocationResult result) {
+        List<TraceError> errors = errorsAnalyzer.locateErrors(creatMockOperationTraceWrapper(op));
+        assertEquals("Mismatched number of errors", 1, ListUtil.size(errors));
 
-		TraceError	err=errors.get(0);
-		Throwable	exc=result.getException();
-		assertEquals("Mismatched error text", StringFormatterUtils.formatStackTrace(exc), err.getMessage());
-		return errors;
-	}
+        TraceError err = errors.get(0);
+        Throwable exc = result.getException();
+        assertEquals("Mismatched error text", StringFormatterUtils.formatStackTrace(exc), err.getMessage());
+        return errors;
+    }
 
-	protected static ExternalResourceDescriptor assertExternalResource (Operation op) {
-		Frame						frame=createMockOperationWrapperFrame(op);        
-        ExternalResourceDescriptor	desc=extresAnalyzer.extractExternalResourceDescriptor(frame);
-        Boolean						directCall=op.get(HttpInvokerRequestExecutorExternalResourceAnalyzer.DIRECT_CALL_ATTR, Boolean.class);
+    protected static ExternalResourceDescriptor assertExternalResource(Operation op) {
+        Frame frame = createMockOperationWrapperFrame(op);
+        ExternalResourceDescriptor desc = extresAnalyzer.extractExternalResourceDescriptor(frame);
+        Boolean directCall = op.get(HttpInvokerRequestExecutorExternalResourceAnalyzer.DIRECT_CALL_ATTR, Boolean.class);
         if ((directCall != null) && directCall.booleanValue()) {
-	        assertNotNull("No resource", desc);
-	        assertSame("Mismatched external resource frame", frame, desc.getFrame());
-	        assertEquals("Mismatched external resource host", TEST_HOST, desc.getHost());
-	        assertEquals("Mismatched external resource port", TEST_PORT, desc.getPort());
-	        assertEquals("Mismatched external resource name", MD5NameGenerator.getName(TEST_URL), desc.getName());
-	        assertEquals("Mismatched external resource label", op.get(OperationFields.URI, String.class), desc.getLabel());
-	        assertEquals("Mismatched external resource type", ExternalResourceType.WEB_SERVER.name(), desc.getType());
-	        assertFalse("Unexpected as parent external resource", desc.isParent());
-	        assertFalse("Not outgoing external resource", desc.isIncoming());
+            String label = TEST_HOST + ":" + TEST_PORT;
+            assertNotNull("No resource", desc);
+            assertSame("Mismatched external resource frame", frame, desc.getFrame());
+            assertEquals("Mismatched external resource host", TEST_HOST, desc.getHost());
+            assertEquals("Mismatched external resource port", TEST_PORT, desc.getPort());
+            assertEquals("Mismatched external resource name", MD5NameGenerator.getName(label), desc.getName());
+            assertEquals("Mismatched external resource label", label, desc.getLabel());
+            assertEquals("Mismatched external resource type", ExternalResourceType.WEB_SERVER.name(), desc.getType());
+            assertFalse("Unexpected as parent external resource", desc.isParent());
+            assertFalse("Not outgoing external resource", desc.isIncoming());
         } else {
-        	assertNull("Unexpected external resource: " + desc, desc);
+            assertNull("Unexpected external resource: " + desc, desc);
         }
-        
+
         return desc;
-	}
+    }
 
-	protected Operation assertRemotingOperation (HttpInvokerClientConfiguration	config) {
-		Operation	op=getLastEntered();
-		assertNotNull("No operation", op);
-		assertEquals("Mismatched type", HttpInvokerRequestExecutorExternalResourceAnalyzer.HTTP_INVOKER, op.getType());
-		assertEquals("Mismatched URI", config.getServiceUrl(), op.get(OperationFields.URI, String.class));
-		assertCodebaseUrls(op.get("codebaseUrls", OperationList.class), config.getCodebaseUrl());
-		return op;
-	}
+    protected Operation assertRemotingOperation(HttpInvokerClientConfiguration config) {
+        Operation op = getLastEntered();
+        assertNotNull("No operation", op);
+        assertEquals("Mismatched type", HttpInvokerRequestExecutorExternalResourceAnalyzer.HTTP_INVOKER, op.getType());
+        assertEquals("Mismatched URI", config.getServiceUrl(), op.get(OperationFields.URI, String.class));
+        assertCodebaseUrls(op.get("codebaseUrls", OperationList.class), config.getCodebaseUrl());
+        return op;
+    }
 
-	protected static OperationList assertCodebaseUrls (OperationList list, String codebaseUrls) {
-		if (StringUtil.isEmpty(codebaseUrls)) {
-			assertNull("Unexpected encoded URL(s) list", list);
-			return null;
-		}
+    protected static OperationList assertCodebaseUrls(OperationList list, String codebaseUrls) {
+        if (StringUtil.isEmpty(codebaseUrls)) {
+            assertNull("Unexpected encoded URL(s) list", list);
+            return null;
+        }
 
-		assertNotNull("No encoded codebase URLs list", list);
-		
-		List<String>	urls=StringUtil.explode(codebaseUrls, " ", true, true);
-		assertEquals("Mismatched encoded list size", ListUtil.size(urls), list.size());
+        assertNotNull("No encoded codebase URLs list", list);
 
-		for (int	index=0; index < list.size(); index++) {
-			String	expected=urls.get(index), actual=list.get(index, String.class);
-			assertEquals("Mismatched codebase URI value at index " + index, expected, actual);
-		}
+        List<String> urls = StringUtil.explode(codebaseUrls, " ", true, true);
+        assertEquals("Mismatched encoded list size", ListUtil.size(urls), list.size());
 
-		return list;
-	}
+        for (int index = 0; index < list.size(); index++) {
+            String expected = urls.get(index), actual = list.get(index, String.class);
+            assertEquals("Mismatched codebase URI value at index " + index, expected, actual);
+        }
 
-	protected static HttpInvokerClientConfiguration createMockConfiguration (String path, String ... codebaseUrls) {
-		return createMockConfiguration(path, (ArrayUtil.length(codebaseUrls) <= 0) ? Collections.<String>emptyList() : Arrays.asList(codebaseUrls));
-	}
+        return list;
+    }
 
-	protected static HttpInvokerClientConfiguration createMockConfiguration (String path, Collection<String> codebaseUrls) {
-		HttpInvokerClientConfiguration	config=Mockito.mock(HttpInvokerClientConfiguration.class);
-		Mockito.when(config.getServiceUrl()).thenReturn(TEST_URL + "/" + path);
-		Mockito.when(config.getCodebaseUrl()).thenReturn(StringUtil.implode(codebaseUrls, " "));
-		return config;
-	}
+    protected static HttpInvokerClientConfiguration createMockConfiguration(String path, String... codebaseUrls) {
+        return createMockConfiguration(path, (ArrayUtil.length(codebaseUrls) <= 0) ? Collections.<String> emptyList() : Arrays.asList(codebaseUrls));
+    }
+
+    protected static HttpInvokerClientConfiguration createMockConfiguration(String path, Collection<String> codebaseUrls) {
+        HttpInvokerClientConfiguration config = Mockito.mock(HttpInvokerClientConfiguration.class);
+        Mockito.when(config.getServiceUrl()).thenReturn(TEST_URL + "/" + path);
+        Mockito.when(config.getCodebaseUrl()).thenReturn(StringUtil.implode(codebaseUrls, " "));
+        return config;
+    }
 }

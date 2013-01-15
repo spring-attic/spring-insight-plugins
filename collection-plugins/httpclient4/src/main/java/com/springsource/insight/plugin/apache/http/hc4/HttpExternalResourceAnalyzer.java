@@ -42,37 +42,37 @@ import com.springsource.insight.util.StringUtil;
  * 
  */
 public class HttpExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-	private static final HttpExternalResourceAnalyzer	INSTANCE=new HttpExternalResourceAnalyzer();
+    private static final HttpExternalResourceAnalyzer INSTANCE = new HttpExternalResourceAnalyzer();
 
     private HttpExternalResourceAnalyzer() {
         super(HttpClientDefinitions.TYPE);
     }
 
-    public static final HttpExternalResourceAnalyzer getInstance () {
-    	return INSTANCE;
+    public static final HttpExternalResourceAnalyzer getInstance() {
+        return INSTANCE;
     }
 
-    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame>   framesList) {
+    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> framesList) {
         if (ListUtil.size(framesList) <= 0) {
             return Collections.emptyList();
         }
 
-        Set<ExternalResourceDescriptor> resSet=new HashSet<ExternalResourceDescriptor>(framesList.size());
+        Set<ExternalResourceDescriptor> resSet = new HashSet<ExternalResourceDescriptor>(framesList.size());
         for (Frame frame : framesList) {
-            ExternalResourceDescriptor  res=extractExternalResourceDescriptor(frame);
-            if (res == null) {  // can happen if failed to parse the URI somehow
+            ExternalResourceDescriptor res = extractExternalResourceDescriptor(frame);
+            if (res == null) { // can happen if failed to parse the URI somehow
                 continue;
             }
-            
+
             if (!resSet.add(res))
-                continue;   // debug breakpoint
+                continue; // debug breakpoint
         }
-        
+
         return resSet;
     }
 
-    ExternalResourceDescriptor extractExternalResourceDescriptor (Frame frame) {
-        Operation   op=(frame == null) ? null : frame.getOperation();
+    ExternalResourceDescriptor extractExternalResourceDescriptor(Frame frame) {
+        Operation op = (frame == null) ? null : frame.getOperation();
         OperationMap requestDetails = (op == null) ? null : op.get("request", OperationMap.class);
         String uriValue = (requestDetails == null) ? null : requestDetails.get(OperationFields.URI, String.class);
         if (StringUtil.getSafeLength(uriValue) <= 0) {
@@ -81,94 +81,76 @@ public class HttpExternalResourceAnalyzer extends AbstractExternalResourceAnalyz
 
         try
         {
-            URI uri=new URI(uriValue);
+            URI uri = new URI(uriValue);
             String host = uri.getHost();
-            String server = resolveServerType(op);
+            int port = resolvePort(uri);
+
             String color = colorManager.getColor(op);
             String app = null;
             String ser = null;
-            String ep  = null;
-            
+            String ep = null;
+
             OperationMap responseDetails = (op == null) ? null : op.get("response", OperationMap.class);
-            
+
             if (responseDetails != null) {
                 OperationList headersList = responseDetails.get("headers", OperationList.class);
-                
+
                 if (headersList != null) {
-                    for(int i=0; i<headersList.size(); i++) {
+                    for (int i = 0; i < headersList.size(); i++) {
                         OperationMap map = headersList.get(i, OperationMap.class);
-                        
+
                         String headerName = map.get(OperationUtils.NAME_KEY, String.class);
                         String headerValue = map.get(OperationUtils.VALUE_KEY, String.class);
-                        
+
                         if ((app == null) && EndPointAnalyzersRegistry.APP_TOKEN_NAME.equals(headerName)) {
                             app = headerValue;
                         } else if ((ser == null) && EndPointAnalyzersRegistry.SERVER_TOKEN_NAME.equals(headerName)) {
                             ser = headerValue;
                         } else if ((ep == null) && EndPointAnalyzersRegistry.TOKEN_NAME.equals(headerName)) {
                             ep = headerValue;
-                        } 
-                        
+                        }
+
                         if ((app != null) && (ser != null) && (ep != null)) {
                             break;
                         }
                     }
                 }
             }
-            
-            String name = createName(uri, app, ser, ep);
-            
-            int port = resolvePort(uri);
+
+            String lbl = host + ":" + port;
+            String name = createName(lbl, app, ser, ep);
             return new ExternalResourceDescriptor(frame, name,
-                                                  host + ":" + port,    // label
-                                                  ExternalResourceType.WEB_SERVER.name(),
-                                                  StringUtil.isEmpty(server) ? host : server,     // vendor
-                                                  host,
-                                                  port,
-                                                  color, false, app, ser, ep, null);    
-        } catch(URISyntaxException e) {
-            Logger    logger=Logger.getLogger(getClass().getName());
+                    lbl, // label
+                    ExternalResourceType.WEB_SERVER.name(),
+                    null, // vendor
+                    host,
+                    port,
+                    color, false, app, ser, ep, null);
+        } catch (URISyntaxException e) {
+            Logger logger = Logger.getLogger(getClass().getName());
             logger.warning("Failed to parse " + uriValue + ": " + e.getMessage());
             return null;
         }
     }
-    
-    static String createName(URI uri, String app, String ser, String ep) {
-        StringBuilder sb = new StringBuilder(uri.toASCIIString());
-        
+
+    static String createName(String lbl, String app, String ser, String ep) {
+        StringBuilder sb = new StringBuilder(lbl);
+
         if (!StringUtil.isEmpty(app) && !StringUtil.isEmpty(ser) && !StringUtil.isEmpty(ep)) {
             sb.append(app);
             sb.append(ser);
             sb.append(ep);
         }
-        
+
         return MD5NameGenerator.getName(sb.toString());
     }
 
-    // look for the "Server" response header
-    static String resolveServerType (Operation op) {
-        OperationMap    responseDetails=(op == null) ? null : op.get("response", OperationMap.class);
-        OperationList   responseHeaders=(responseDetails == null) ? null : responseDetails.get("headers", OperationList.class);
-        // no headers might be available if not collecting extra information
-        int             numHeaders=(responseHeaders == null) ? 0 : responseHeaders.size();
-        for (int    index=0; index < numHeaders; index++) {
-            OperationMap    nameValuePair=responseHeaders.get(index, OperationMap.class);
-            String          name=nameValuePair.get(OperationUtils.NAME_KEY, String.class);
-            if ("Server".equalsIgnoreCase(name)) {
-                return nameValuePair.get(OperationUtils.VALUE_KEY, String.class);
-            }
-        }
-        
-        // this point is reached if no match was found
-        return null;
-    }
-
-    static int resolvePort (URI uri) {
+    static int resolvePort(URI uri) {
         if (uri == null) {
             return (-1);
         }
 
-        int port=uri.getPort();
+        int port = uri.getPort();
         if (port <= 0) {
             return 80;
         }
