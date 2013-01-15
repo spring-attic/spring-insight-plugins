@@ -17,12 +17,46 @@
     <@insight.entry name="Context" value=request.contextPath />
 </@insight.group>
 
+<@insight.group label="Request Body" if=operation.requestBody??>
+    <table class="dl">
+        <tbody>
+            <tr>
+                <td>Content</td>
+                <td>
+                    <pre>${operation.requestBody?html}</pre>
+                </td>
+            </tr>
+            <tr>
+                <td>Bytes</td>
+                <td>${operation.requestBodyBytes}</td>
+            </tr>
+        </tbody>
+    </table>
+</@insight.group>
+
 <@insight.group label="Request Parameters" if=request.queryParams?has_content collection=request.queryParams ; p>
     <@insight.entry name=p.name value=p.value required="true" />
 </@insight.group>
 
 <@insight.group label="Request Headers" if=request.headers?has_content collection=request.headers ; h>
     <@insight.entry name=h.name value=h.value required="true" />
+</@insight.group>
+
+<@insight.group label="Response Body" if=operation.responseBody??>
+    <table class="dl">
+        <tbody>
+            <tr>
+                <td>Content</td>
+                <td>
+                    <pre>${operation.responseBody?html}</pre>
+                </td>
+            </tr>
+            <tr>
+                <td>Bytes</td>
+                <td>${operation.responseBodyBytes}</td>
+            </tr>
+        </tbody>
+    </table>
 </@insight.group>
 
 <@insight.group label="Response Headers" if=response.headers?has_content collection=response.headers ; h>
