@@ -147,7 +147,6 @@ public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollec
         private BasicProperties props;
         private byte[] body;
         
-        @SuppressWarnings("hiding")
         public MockChannel(Envelope envelope, BasicProperties props, byte[] body) {
             this.envelope = envelope;
             this.props = props;

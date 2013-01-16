@@ -31,21 +31,11 @@ public abstract class AbstractRabbitMQMetricsGeneratorTest extends AbstractMetri
 	@Override
 	protected void validateMetricsBags(List<MetricsBag> mbs) {
 		AbstractRabbitMetricsGenerator genRabbit = (AbstractRabbitMetricsGenerator)gen;
-		assertEquals(3, mbs.size());
+		assertEquals(2, mbs.size());
 		assertExternalResourceMetricBag(genRabbit, mbs.get(0));
 		assertExternalResourceMetricBag(genRabbit, mbs.get(1));
 
-		List<String> keys;
-		List<IDataPoint> points;
-		MetricsBag mb = mbs.get(2);
-		assertEquals("epName", mb.getResourceKey().getName());
-		keys = mb.getMetricKeys();
-		assertEquals(1, keys.size());
-
-		assertTrue(keys.get(0).equals(genRabbit.createMetricKey()));        
-		points = mb.getPoints(genRabbit.createMetricKey());
-		assertEquals(1, points.size());
-		assertEquals(2d , points.get(0).getValue(), 0);
+		
 	}
 
 	private void assertExternalResourceMetricBag(AbstractRabbitMetricsGenerator genRabbit, MetricsBag mb) {

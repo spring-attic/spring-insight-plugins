@@ -37,17 +37,6 @@ public abstract class AbstractRabbitMetricsGenerator extends AbstractExternalRes
 	}
 
 	@Override
-    protected Collection<MetricsBag> addExtraEndPointMetrics(Trace trace, ResourceKey resourceKey, Collection<Frame> externalFrames) {
-        if (ListUtil.size(externalFrames) <= 0) {
-            return Collections.emptyList();
-        }
-
-        MetricsBag    mb=MetricsBag.create(resourceKey, trace.getRange());
-        addCounterMetricToBag(trace, mb, createMetricKey(), externalFrames.size());
-        return Collections.singletonList(mb);
-	}
-
-	@Override
 	protected void addExtraFrameMetrics(Trace trace,  Frame opTypeFrame, MetricsBag mb) {
 		addCounterMetricToBag(trace, mb, createMetricKey(), 1);
 	}
