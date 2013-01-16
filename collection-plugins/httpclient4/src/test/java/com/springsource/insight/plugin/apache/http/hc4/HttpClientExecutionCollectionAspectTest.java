@@ -59,7 +59,7 @@ import org.mortbay.jetty.Request;
 import org.mortbay.jetty.Server;
 
 import com.springsource.insight.collection.ObscuredValueSetMarker;
-import com.springsource.insight.collection.http.HttpHeadersObfuscator;
+import com.springsource.insight.collection.http.HttpObfuscator;
 import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
@@ -79,7 +79,7 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
     private static final int    TEST_PORT=7365;
     private static final String TEST_URI="http://localhost:" + TEST_PORT + "/";
     private static Server    SERVER;
-    private HttpHeadersObfuscator	originalObfuscator;
+    private HttpObfuscator	originalObfuscator;
     private final ObscuredValueSetMarker	marker=new ObscuredValueSetMarker();
 
     public HttpClientExecutionCollectionAspectTest() {
@@ -113,7 +113,7 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
     	HttpClientExecutionCollectionAspect	aspectInstance=getAspect();
     	originalObfuscator = aspectInstance.getHttpHeadersObfuscator();
     	marker.clear();
-    	aspectInstance.setHttpHeadersObfuscator(new HttpHeadersObfuscator(marker));
+    	aspectInstance.setHttpHeadersObfuscator(new HttpObfuscator(marker));
     }
 
     @After
@@ -171,7 +171,7 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
 
     @Test
     public void testDefaultObfuscatedHeaders () throws Exception {
-        runHeadersObfuscationTest("testDefaultObfuscatedHeaders", HttpHeadersObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST, true);
+        runHeadersObfuscationTest("testDefaultObfuscatedHeaders", HttpObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST, true);
     }
 
     @Test
@@ -249,15 +249,15 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
         }
 
     	HttpClientExecutionCollectionAspect	aspectInstance=getAspect();
-    	HttpHeadersObfuscator				obfuscator=aspectInstance.getHttpHeadersObfuscator();
+    	HttpObfuscator				obfuscator=aspectInstance.getHttpHeadersObfuscator();
     	if (!defaultHeaders) {
-    		for (String name : HttpHeadersObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST) {
+    		for (String name : HttpObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST) {
     			if ("WWW-Authenticate".equalsIgnoreCase(name)) {
     				continue;	// this is a response header
     			}
     			request.setHeader(name, name);
     		}
-    		obfuscator.incrementalUpdate(HttpHeadersObfuscator.OBFUSCATED_HEADERS_SETTING, StringUtil.implode(headerSet, ","));
+    		obfuscator.incrementalUpdate(HttpObfuscator.OBFUSCATED_HEADERS_SETTING, StringUtil.implode(headerSet, ","));
     	}
 
         HttpResponse        response=httpClient.execute(request);
@@ -284,7 +284,7 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
         }
 
     	if (!defaultHeaders) {
-    		for (String name : HttpHeadersObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST) {
+    		for (String name : HttpObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST) {
                 assertFalse("Un-necessarily obscured value of " + name, obscuredValues.contains(name));
     		}
     	}

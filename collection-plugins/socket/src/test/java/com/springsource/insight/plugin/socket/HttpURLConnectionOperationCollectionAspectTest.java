@@ -36,7 +36,7 @@ import org.mortbay.jetty.Request;
 import org.mortbay.jetty.Server;
 
 import com.springsource.insight.collection.ObscuredValueSetMarker;
-import com.springsource.insight.collection.http.HttpHeadersObfuscator;
+import com.springsource.insight.collection.http.HttpObfuscator;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
@@ -48,7 +48,7 @@ import com.springsource.insight.util.io.Base64;
  * 
  */
 public class HttpURLConnectionOperationCollectionAspectTest
-        extends SocketOperationCollectionAspectTestSupport {
+extends SocketOperationCollectionAspectTestSupport {
     private static final String TEST_URI="http://" + TEST_HOST + ":" + TEST_PORT + "/";
     private static Server    SERVER;
 
@@ -76,7 +76,7 @@ public class HttpURLConnectionOperationCollectionAspectTest
 
     @Test
     public void testConnect () throws IOException {
-    	final String		METHOD="GET";
+        final String		METHOD="GET";
         HttpURLConnection   conn=createConnection(METHOD, "testConnect");
         try {
             conn.connect();
@@ -91,14 +91,14 @@ public class HttpURLConnectionOperationCollectionAspectTest
 
         URL url=conn.getURL();
         assertEquals("Mismatched URL", url.toExternalForm(), op.get(OperationFields.URI, String.class));
-        
+
         runExternalResourceAnalyzer(op, ExternalResourceType.WEB_SERVER, TEST_HOST, TEST_PORT);
     }
 
     @Test
     public void testDefaultObscuredHeaders () throws IOException {
         ObscuredValueSetMarker    marker=
-                setupObscuredTest(HttpHeadersObfuscator.OBFUSCATED_HEADERS_SETTING, HttpHeadersObfuscator.DEFAULT_OBFUSCATED_HEADERS_VALUES);
+                setupObscuredTest(HttpObfuscator.OBFUSCATED_HEADERS_SETTING, HttpObfuscator.DEFAULT_OBFUSCATED_HEADERS_VALUES);
         HttpURLConnection   		conn=createConnection("POST", "testDefaultObscuredHeaders");
         Map<String,List<String>>	propsMap;
         try {
@@ -112,18 +112,18 @@ public class HttpURLConnectionOperationCollectionAspectTest
             conn.disconnect();
         }
 
-        for (String hdrName : HttpHeadersObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST) {
-        	if ("WWW-Authenticate".equals(hdrName)) {
-        		continue;	// this is a response header and we do not intercept them
-        	}
+        for (String hdrName : HttpObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST) {
+            if ("WWW-Authenticate".equals(hdrName)) {
+                continue;	// this is a response header and we do not intercept them
+            }
 
-        	// see http://stackoverflow.com/questions/2864062/getrequestpropertyauthorization-always-returns-null
-        	List<String>	values=propsMap.get(hdrName);
-        	if (ListUtil.size(values) <= 0) {
-        		continue;
-        	}
+            // see http://stackoverflow.com/questions/2864062/getrequestpropertyauthorization-always-returns-null
+            List<String>	values=propsMap.get(hdrName);
+            if (ListUtil.size(values) <= 0) {
+                continue;
+            }
 
-        	assertEquals("Mismatched num. of values for " + hdrName, 1, values.size());
+            assertEquals("Mismatched num. of values for " + hdrName, 1, values.size());
             assertObscureTestResults(marker, hdrName, values.get(0), true);
         }
     }
@@ -131,7 +131,7 @@ public class HttpURLConnectionOperationCollectionAspectTest
     @Test
     public void testObscuredHeaders () throws IOException {
         final String            	hdrName="TestObscuredHeaders", hdrValue=String.valueOf(System.nanoTime());
-        ObscuredValueSetMarker		marker=setupObscuredTest(HttpHeadersObfuscator.OBFUSCATED_HEADERS_SETTING, hdrName);
+        ObscuredValueSetMarker marker = setupObscuredTest(HttpObfuscator.OBFUSCATED_HEADERS_SETTING, hdrName);
         HttpURLConnection   		conn=createConnection("POST", hdrName);
         Map<String,List<String>>	propsMap;
         try {
@@ -149,14 +149,14 @@ public class HttpURLConnectionOperationCollectionAspectTest
         assertObscureTestResults(marker, hdrName, hdrValue, true);
         assertObscureTestResults(marker, hdrName, "X-Dummy-Value", false);
 
-        for (String defName : HttpHeadersObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST) {
-        	// see http://stackoverflow.com/questions/2864062/getrequestpropertyauthorization-always-returns-null
-        	List<String>	values=propsMap.get(defName);
-        	if (ListUtil.size(values) <= 0) {
-        		continue;
-        	}
+        for (String defName : HttpObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST) {
+            // see http://stackoverflow.com/questions/2864062/getrequestpropertyauthorization-always-returns-null
+            List<String>	values=propsMap.get(defName);
+            if (ListUtil.size(values) <= 0) {
+                continue;
+            }
 
-        	assertEquals("Mismatched num. of values for " + defName, 1, values.size());
+            assertEquals("Mismatched num. of values for " + defName, 1, values.size());
             assertObscureTestResults(marker, defName, values.get(0), false);
         }
     }
@@ -167,21 +167,21 @@ public class HttpURLConnectionOperationCollectionAspectTest
     }
 
     protected HttpURLConnection createConnection (final String method, final String testName)
-                throws IOException {
+            throws IOException {
         URL               testURL=new URL(createTestUri(testName));
         HttpURLConnection conn=(HttpURLConnection) testURL.openConnection();
         conn.setConnectTimeout((int) TimeUnit.SECONDS.toMillis(15L));
         conn.setReadTimeout((int) TimeUnit.SECONDS.toMillis(15L));
         if ("POST".equalsIgnoreCase(method)) {
-        	conn.setDoOutput(true);
+            conn.setDoOutput(true);
         }
         conn.setRequestMethod(method);
-        
-		final String	authToken=Base64.encode(getClass().getSimpleName() + ":" + testName);
+
+        final String	authToken=Base64.encode(getClass().getSimpleName() + ":" + testName);
         conn.setRequestProperty("Authentication-Info", "Blah");
         conn.setRequestProperty("Authorization", "Basic " + authToken);
         conn.setRequestProperty("Proxy-Authenticate", "Base64 " + authToken);
-        conn.setRequestProperty("Proxy-Authorization", "Basic " + authToken); 
+        conn.setRequestProperty("Proxy-Authorization", "Basic " + authToken);
         return conn;
     }
 
@@ -205,7 +205,7 @@ public class HttpURLConnectionOperationCollectionAspectTest
             if (!started) {
                 throw new IllegalStateException("Not started");
             }
-            
+
             started = false;
         }
 
@@ -224,31 +224,31 @@ public class HttpURLConnectionOperationCollectionAspectTest
 
             started = true;
         }
-        
+
         public boolean isStopping() {
             return true;
         }
-        
+
         public boolean isStopped() {
             return !started;
         }
-        
+
         public boolean isStarting() {
             return true;
         }
-        
+
         public boolean isStarted() {
             return started;
         }
-        
+
         public boolean isRunning() {
             return started;
         }
-        
+
         public boolean isFailed() {
             return false;
         }
-        
+
         public Server getServer() {
             return this.server;
         }
@@ -256,9 +256,9 @@ public class HttpURLConnectionOperationCollectionAspectTest
         public void setServer(Server serverInstance) {
             this.server = serverInstance;
         }
-        
+
         public void handle (String target, HttpServletRequest request,
-                            HttpServletResponse response, int dispatch)
+                HttpServletResponse response, int dispatch)
                         throws IOException, ServletException {
             int     namePos=target.lastIndexOf('/');
             String  testName=target.substring(namePos + 1);
@@ -276,11 +276,11 @@ public class HttpURLConnectionOperationCollectionAspectTest
 
             Request baseRequest = (request instanceof Request)
                     ? (Request) request
-                    : HttpConnection.getCurrentConnection().getRequest()
-                    ;
-            baseRequest.setHandled(true);
+                            : HttpConnection.getCurrentConnection().getRequest()
+                            ;
+                    baseRequest.setHandled(true);
         }
-        
+
         public void destroy() {
             if (this.server != null)
                 this.server = null;

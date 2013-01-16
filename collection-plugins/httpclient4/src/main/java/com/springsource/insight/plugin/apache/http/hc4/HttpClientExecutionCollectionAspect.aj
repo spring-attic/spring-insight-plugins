@@ -35,7 +35,7 @@ import org.aspectj.lang.annotation.SuppressAjWarnings;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.collection.OperationCollector;
-import com.springsource.insight.collection.http.HttpHeadersObfuscator;
+import com.springsource.insight.collection.http.HttpObfuscator;
 import com.springsource.insight.intercept.InterceptConfiguration;
 import com.springsource.insight.intercept.color.ColorManager.ColorParams;
 import com.springsource.insight.intercept.operation.Operation;
@@ -51,7 +51,7 @@ import com.springsource.insight.util.ArrayUtil;
  */
 public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAspectSupport {
     private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
-	private HttpHeadersObfuscator	obfuscator=HttpHeadersObfuscator.getInstance();
+	private HttpObfuscator	obfuscator=HttpObfuscator.getInstance();
 
 	public HttpClientExecutionCollectionAspect () {
         super();
@@ -65,11 +65,11 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
        || execution(* org.apache.http.client.HttpClient.execute(HttpHost,HttpRequest,HttpContext))
         ;
 
-    HttpHeadersObfuscator getHttpHeadersObfuscator () {
+    HttpObfuscator getHttpHeadersObfuscator () {
     	return obfuscator;
     }
 
-    void setHttpHeadersObfuscator (HttpHeadersObfuscator obfs) {
+    void setHttpHeadersObfuscator (HttpObfuscator obfs) {
     	obfuscator = obfs;
     }
 
@@ -261,7 +261,7 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
             return headers;
         }
 
-        HttpHeadersObfuscator obfs=getHttpHeadersObfuscator();
+        HttpObfuscator obfs=getHttpHeadersObfuscator();
         for (Header h : hdrs) {
             String  name=h.getName(), value=h.getValue();
             OperationUtils.addNameValuePair(headers, name, value);

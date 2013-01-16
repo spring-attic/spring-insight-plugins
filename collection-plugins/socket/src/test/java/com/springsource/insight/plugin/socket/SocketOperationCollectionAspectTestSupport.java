@@ -26,7 +26,7 @@ import org.junit.Before;
 import com.springsource.insight.collection.ObscuredValueSetMarker;
 import com.springsource.insight.collection.OperationCollector;
 import com.springsource.insight.collection.OperationListCollector;
-import com.springsource.insight.collection.http.HttpHeadersObfuscator;
+import com.springsource.insight.collection.http.HttpObfuscator;
 import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.operation.Operation;
@@ -47,7 +47,7 @@ import com.springsource.insight.util.time.TimeRange;
  * 
  */
 public abstract class SocketOperationCollectionAspectTestSupport
-            extends OperationCollectionAspectTestSupport {
+extends OperationCollectionAspectTestSupport {
     protected static final int    TEST_PORT=7365;
     protected static final String TEST_HOST="localhost";
     private SocketCollectOperationContext	originalContext;
@@ -60,37 +60,37 @@ public abstract class SocketOperationCollectionAspectTestSupport
     @Before
     @Override
     public void setUp () {
-    	super.setUp();
+        super.setUp();
 
-    	SocketOperationCollectionAspectSupport  aspectInstance=(SocketOperationCollectionAspectSupport) getAspect();
-    	originalContext = aspectInstance.getSocketCollectOperationContext();
-    	marker.clear();
-    	aspectInstance.setSocketCollectOperationContext(new SocketCollectOperationContext(new HttpHeadersObfuscator(marker)));
+        SocketOperationCollectionAspectSupport  aspectInstance=(SocketOperationCollectionAspectSupport) getAspect();
+        originalContext = aspectInstance.getSocketCollectOperationContext();
+        marker.clear();
+        aspectInstance.setSocketCollectOperationContext(new SocketCollectOperationContext(new HttpObfuscator(marker)));
     }
 
     @After
     @Override
     public void restore () {
-    	SocketOperationCollectionAspectSupport  aspectInstance=(SocketOperationCollectionAspectSupport) getAspect();
-    	aspectInstance.setSocketCollectOperationContext(originalContext);
-    	marker.clear();	// make sure again
+        SocketOperationCollectionAspectSupport  aspectInstance=(SocketOperationCollectionAspectSupport) getAspect();
+        aspectInstance.setSocketCollectOperationContext(originalContext);
+        marker.clear();	// make sure again
     }
 
-	@Override
-	protected OperationCollector createSpiedOperationCollector(OperationCollector originalCollector) {
-		return new OperationListCollector();
-	}
+    @Override
+    protected OperationCollector createSpiedOperationCollector(OperationCollector originalCollector) {
+        return new OperationListCollector();
+    }
 
-	@Override
-	protected Operation getLastEnteredOperation(OperationCollector spiedCollector) {
-		OperationListCollector	collector=(OperationListCollector) spiedCollector;
-		List<Operation>			ops=collector.getCollectedOperations();
-		if (ListUtil.size(ops) > 0) {
-			return ops.get(ops.size() - 1);
-		} else {
-			return null;
-		}
-	}
+    @Override
+    protected Operation getLastEnteredOperation(OperationCollector spiedCollector) {
+        OperationListCollector	collector=(OperationListCollector) spiedCollector;
+        List<Operation>			ops=collector.getCollectedOperations();
+        if (ListUtil.size(ops) > 0) {
+            return ops.get(ops.size() - 1);
+        } else {
+            return null;
+        }
+    }
 
     protected Operation assertSocketOperation (String action, String addr, int port) {
         Operation   op=getLastEntered();
@@ -104,13 +104,13 @@ public abstract class SocketOperationCollectionAspectTestSupport
 
     protected Operation runExternalResourceAnalyzer (Operation op, ExternalResourceType expType, String expAddress, int expPort) {
         Frame       frame=new SimpleFrame(FrameId.valueOf("1"), null, op,
-                                          TimeRange.milliTimeRange(0, 1L),
-                                          Collections.<Frame>emptyList());
+                TimeRange.milliTimeRange(0, 1L),
+                Collections.<Frame>emptyList());
         Trace       trace=new Trace(ServerName.valueOf("fake-server"),
-                                    ApplicationName.valueOf("fake-app"),
-                                    new Date(System.currentTimeMillis()),
-                                    TraceId.valueOf("fake-id"),
-                                    frame);
+                ApplicationName.valueOf("fake-app"),
+                new Date(System.currentTimeMillis()),
+                TraceId.valueOf("fake-id"),
+                frame);
         SocketExternalResourceAnalyzer          analyzer=SocketExternalResourceAnalyzer.getInstance();
         Collection<ExternalResourceDescriptor>  results=analyzer.locateExternalResourceName(trace);
         assertEquals("Mismatched number of results: " + results, 1, ListUtil.size(results));
@@ -124,7 +124,7 @@ public abstract class SocketOperationCollectionAspectTestSupport
         assertEquals("Mismatched host", expAddress, desc.getHost());
         assertEquals("Mismatched port", TEST_PORT, desc.getPort());
         assertEquals("Mismatched direction", Boolean.FALSE, Boolean.valueOf(desc.isIncoming()));
-        
+
         return op;
     }
 
@@ -137,15 +137,15 @@ public abstract class SocketOperationCollectionAspectTestSupport
     }
 
     protected void assertObscureTestResults (ObscuredValueSetMarker   markedValues,
-                                             String                   pattern,
-                                             String                   value,
-                                             boolean                  shouldObscure) {
+            String                   pattern,
+            String                   value,
+            boolean                  shouldObscure) {
         if (shouldObscure) {
             assertTrue("assertObscureTestResults(" + pattern + ") value not obscured: " + value,
-                       markedValues.contains(value));
+                    markedValues.contains(value));
         } else {
             assertFalse("assertObscureTestResults(" + pattern + ") value un-necessarily obscured",
-            			markedValues.contains(value));
+                    markedValues.contains(value));
         }
     }
 }
