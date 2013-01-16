@@ -38,7 +38,6 @@ import com.springsource.insight.collection.OperationCollectionUtil;
 import com.springsource.insight.intercept.color.ColorManager.ColorParams;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
-import com.springsource.insight.intercept.operation.SourceCodeLocation;
 import com.springsource.insight.util.ArrayUtil;
 import com.springsource.insight.util.ClassUtil;
 import com.springsource.insight.util.ExtraReflectionUtils;

@@ -22,9 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.springsource.insight.intercept.color.ColorManager;
-import com.springsource.insight.intercept.endpoint.AbstractSingleTypeEndpointAnalyzer;
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
-import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.metrics.AbstractMetricsGenerator;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
@@ -37,9 +35,7 @@ import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.StringUtil;
 
-public abstract class AbstractRabbitMQResourceAnalyzer
-			extends AbstractSingleTypeEndpointAnalyzer
-			implements ExternalResourceAnalyzer {
+public abstract class AbstractRabbitMQResourceAnalyzer implements ExternalResourceAnalyzer {
 	public static final String RABBIT = "RabbitMQ";	
 	/**
 	 * Placeholder string used if no exchange name specified
@@ -62,14 +58,9 @@ public abstract class AbstractRabbitMQResourceAnalyzer
 	private final RabbitPluginOperationType operationType;
 	private final boolean isIncoming;
 
-	protected AbstractRabbitMQResourceAnalyzer(RabbitPluginOperationType type, boolean incoming) {
-		super(type.getOperationType());
+	protected AbstractRabbitMQResourceAnalyzer(RabbitPluginOperationType type, boolean incoming) {		
 		this.operationType = type;
 		this.isIncoming = incoming;
-	}
-
-	public final OperationType getOperationType() {
-		return getSingleOperationType();
 	}
 
 	public final boolean isIncomingResource () {
@@ -83,21 +74,9 @@ public abstract class AbstractRabbitMQResourceAnalyzer
 	protected abstract String getExchange(Operation op);
 
 	protected abstract String getRoutingKey(Operation op);
-
-	@Override
-	protected int getDefaultScore(int depth) {
-		return DEFAULT_SCORE;
-	}
-
-	@Override
-	protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
-		Operation op = frame.getOperation();
-		String label = buildLabel(getFinalExchangeName(getExchange(op)), getFinalRoutingKey(getRoutingKey(op)));
-		String endPointLabel = buildEndPointLabel(label);
-		String example = buildExample(label);
-		EndPointName endPointName = EndPointName.valueOf(label);
-
-		return new EndPointAnalysis(endPointName, endPointLabel, example, getOperationScore(op, depth), op);
+	
+	public OperationType getOperationType(){
+		return operationType.getOperationType();
 	}
 
 	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
@@ -105,7 +84,7 @@ public abstract class AbstractRabbitMQResourceAnalyzer
 	}
 
 	public Collection<Frame> locateFrames(Trace trace) {
-		return AbstractMetricsGenerator.locateDefaultMetricsFrames(trace, getSingleOperationType());
+		return AbstractMetricsGenerator.locateDefaultMetricsFrames(trace, getOperationType());
 	}
 
 	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> queueFrames) {
@@ -179,15 +158,6 @@ public abstract class AbstractRabbitMQResourceAnalyzer
 		}
 		return routingKey;
 	}
-
-	public static String buildEndPointLabel(String label){
-		return RABBIT + "-" + label; 
-	}
-
-	public String buildExample(String label) {
-		return operationType.getEndPointPrefix() + label;
-	}
-
 
 	public static String buildExternalResourceName (String finalExchange, String finalRoutingKey, boolean useRoutingKey, String host, int port) {
 

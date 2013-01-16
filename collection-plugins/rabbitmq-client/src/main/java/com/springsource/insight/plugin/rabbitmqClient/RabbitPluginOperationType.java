@@ -28,7 +28,6 @@ enum RabbitPluginOperationType {
     private String label;
     private String endPointPrefix;
     
-    @SuppressWarnings("hiding")
     private RabbitPluginOperationType(String operationTypeName, String label, String endPointPrefix) {
         this.operationType = OperationType.valueOf(operationTypeName);
         this.label = label;

@@ -23,7 +23,6 @@ import org.junit.Test;
 
 import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.application.ApplicationName;
-import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
@@ -51,14 +50,6 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends AbstractColle
 	}
 
 	@Test
-	public void testExchangeLocateEndPoint() {
-		Operation op = createOperation();
-		KeyValPair<String,String> props = addOperationProps(op, false, true, Boolean.FALSE);
-		Trace trace = createValidTrace(op);
-		assertEndPointAnalysisResult(trace, props);
-	}
-
-	@Test
 	public void testExchangeLocateExternalResourceName() {
 		Operation op = createOperation();   	
 		KeyValPair<String,String> props = addOperationProps(op, false, true, Boolean.FALSE);
@@ -67,27 +58,11 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends AbstractColle
 	}
 
 	@Test
-	public void testRoutingKeyLocateEndPoint() {
-		Operation op = createOperation();
-		KeyValPair<String,String> props = addOperationProps(op, true, false, Boolean.FALSE);
-		Trace trace = createValidTrace(op);
-		assertEndPointAnalysisResult(trace, props);
-	}
-
-	@Test
 	public void testRoutingKeyExternalResourceName() {
 		Operation op = createOperation();   	
 		KeyValPair<String,String> props = addOperationProps(op, true, false, Boolean.FALSE);
 		Trace trace = createValidTrace(op);
 		assertTwoExternalResourceDescriptors(trace, props, op, false);
-	}
-
-	@Test
-	public void testBothLocateEndPoint() {
-		Operation op = createOperation();
-		KeyValPair<String,String> props = addOperationProps(op, true, true, Boolean.FALSE);
-		Trace trace = createValidTrace(op);
-		assertEndPointAnalysisResult(trace, props);
 	}
 
 	@Test
@@ -164,17 +139,6 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends AbstractColle
 	// Assertion methods
 	/////////////////////
 
-	private void assertEndPointAnalysisResult(Trace trace, KeyValPair<String,String> props) {
-		EndPointAnalysis	analysis=analyzer.locateEndPoint(trace);
-		assertNotNull("No endpoint analysis located", analysis);
-
-		String label = AbstractRabbitMQResourceAnalyzer.buildLabel(props.getKey(), props.getValue());
-
-		assertEquals("Mismatched endpoint name", label, analysis.getEndPointName().getName());
-		assertEquals("Mismatched example", analyzer.buildExample(label), analysis.getExample());
-		assertEquals("Mismatched resource label", AbstractRabbitMQResourceAnalyzer.buildEndPointLabel(label), analysis.getResourceLabel());
-		assertEquals("Mismatched score", AbstractRabbitMQResourceAnalyzer.DEFAULT_SCORE, analysis.getScore());
-	}
 	
 	void assertTwoExternalResourceDescriptors(Trace trace, KeyValPair<String,String> props, Operation op, boolean isChildDummyResource) {
 		Collection<ExternalResourceDescriptor> externalResourceDescriptors=analyzer.locateExternalResourceName(trace);
