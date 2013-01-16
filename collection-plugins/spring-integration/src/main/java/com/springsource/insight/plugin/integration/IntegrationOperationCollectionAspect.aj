@@ -31,8 +31,10 @@ import org.springframework.integration.MessageHeaders;
 import org.springframework.integration.context.IntegrationObjectSupport;
 import org.springframework.integration.core.MessageHandler;
 import org.springframework.integration.handler.ExpressionEvaluatingMessageProcessor;
+import org.springframework.integration.handler.MessageProcessor;
 import org.springframework.integration.handler.ServiceActivatingHandler;
 import org.springframework.integration.splitter.MethodInvokingSplitter;
+import org.springframework.integration.transformer.ExpressionEvaluatingTransformer;
 import org.springframework.integration.transformer.MessageTransformingHandler;
 import org.springframework.integration.transformer.Transformer;
 
@@ -47,7 +49,7 @@ import com.springsource.insight.util.StringUtil;
  * message handlers, and transformers are supported.
  *
  */
-public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOperationCollectionAspect {	
+public privileged aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOperationCollectionAspect {	
 
 	private Map<String, Operation> opCache = new ConcurrentHashMap<String, Operation>();
 	private Map<String, MessageHandlerProps> messageHandlerPropsCache = new ConcurrentHashMap<String, MessageHandlerProps>();
@@ -114,20 +116,7 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 
 		Object arg = thisJoinPoint.getArgs()[0];
 		if (arg instanceof ExpressionEvaluatingMessageProcessor){
-			ExpressionEvaluatingMessageProcessor processor = (ExpressionEvaluatingMessageProcessor)arg;
-
-			String expressionString = "unknown";
-
-			// TALYA: it would be better to simply make the aspect 'privileged' and access the 'expression' field directly
-			// but for some reason this causes the following exception from AspectJ:
-			// java.lang.NoSuchMethodError: 
-			// org.springframework.integration.handler.ExpressionEvaluatingMessageProcessor.ajc$get$expression
-			// (Lorg/springframework/integration/handler/ExpressionEvaluatingMessageProcessor;)Lorg/springframework/expression/Expression;
-			// Log and code sent to Andy..
-			if (expressionField != null){
-				Expression expression = ExtraReflectionUtils.getFieldValue(expressionField, processor, Expression.class);
-				expressionString = expression.getExpressionString();
-			}
+			String expressionString = extractExpressionString((ExpressionEvaluatingMessageProcessor)arg);
 
 			MessageHandlerProps serviceActivatingHandlerProps = 
 					new MessageHandlerProps("(expression='" + expressionString + "')");			
@@ -135,14 +124,44 @@ public aspect IntegrationOperationCollectionAspect extends AbstractIntegrationOp
 
 		}
 	}
-
+	
 	@SuppressAjWarnings
 	after (Transformer transformer, MessageTransformingHandler transformerHandler) :
 		execution(public MessageTransformingHandler+.new(Transformer)) && args(transformer) && target(transformerHandler){
-
-		MessageHandlerProps messageHandlerProps = new MessageHandlerProps(transformer.getClass().getSimpleName());
+		
+		String expressionString = null;
+		
+		if (transformer instanceof ExpressionEvaluatingTransformer){
+			MessageProcessor processor = ((ExpressionEvaluatingTransformer)transformer).messageProcessor;
+			if (processor instanceof ExpressionEvaluatingMessageProcessor){
+				expressionString = extractExpressionString((ExpressionEvaluatingMessageProcessor)processor);
+			}
+		}
+		
+		String simpleName = transformer.getClass().getSimpleName();
+		if (expressionString != null){
+			simpleName += "(expression='" + expressionString + "')";
+		}
+		MessageHandlerProps messageHandlerProps = new MessageHandlerProps(simpleName);
 		messageHandlerPropsCache.put(SpringIntegrationDefinitions.getObjectKey(transformerHandler), messageHandlerProps);
 	}
+
+	private String extractExpressionString(ExpressionEvaluatingMessageProcessor processor) {
+		String expressionString = "unknown";
+
+		// TALYA: it would be better to simply make the aspect 'privileged' and access the 'expression' field directly
+		// but for some reason this causes the following exception from AspectJ:
+		// java.lang.NoSuchMethodError: 
+		// org.springframework.integration.handler.ExpressionEvaluatingMessageProcessor.ajc$get$expression
+		// (Lorg/springframework/integration/handler/ExpressionEvaluatingMessageProcessor;)Lorg/springframework/expression/Expression;
+		// Log and code sent to Andy..
+		if (expressionField != null){
+			Expression expression = ExtraReflectionUtils.getFieldValue(expressionField, processor, Expression.class);
+			expressionString = expression.getExpressionString();
+		}
+		return expressionString;
+	}
+
 	
 	private static class MessageHandlerProps{
 		private String methodName;
