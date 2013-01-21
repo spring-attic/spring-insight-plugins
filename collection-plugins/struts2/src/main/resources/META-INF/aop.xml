@@ -1,0 +1,9 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.struts2.ResultOperationCollectionAspect" requires="org.apache.struts2.dispatcher.ServletDispatcherResult"/>
+        <aspect name="com.springsource.insight.plugin.struts2.InterceptOperationCollectionAspect" requires="com.opensymphony.xwork2.interceptor.Interceptor" />
+        <aspect name="com.springsource.insight.plugin.struts2.StartOperationCollectionAspect" requires="com.opensymphony.xwork2.ActionProxy" />
+        <aspect name="com.springsource.insight.plugin.struts2.ActionOperationCollectionAspect" requires="com.opensymphony.xwork2.ActionSupport" />
+    </aspects>
+</aspectj>
+

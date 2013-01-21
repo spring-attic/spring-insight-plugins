@@ -1,0 +1,10 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.neo4j.FindOperationCollectionAspect" requires="org.springframework.data.neo4j.support.Neo4jTemplate"/>
+        <aspect name="com.springsource.insight.plugin.neo4j.InitOperationCollectionAspect" requires="org.springframework.data.neo4j.support.Neo4jTemplate"/>
+        <aspect name="com.springsource.insight.plugin.neo4j.LookupOperationCollectionAspect" requires="org.springframework.data.neo4j.support.Neo4jTemplate"/>
+        <aspect name="com.springsource.insight.plugin.neo4j.QueryOperationCollectionAspect" requires="org.springframework.data.neo4j.support.Neo4jTemplate"/>
+        <aspect name="com.springsource.insight.plugin.neo4j.TraverseOperationCollectionAspect" requires="org.springframework.data.neo4j.support.Neo4jTemplate"/>
+    </aspects>
+</aspectj>
+

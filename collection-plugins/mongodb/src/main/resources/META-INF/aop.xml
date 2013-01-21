@@ -1,0 +1,8 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.mongodb.MongoCollectionOperationCollectionAspect" requires="com.mongodb.DBCollection" />
+        <aspect name="com.springsource.insight.plugin.mongodb.MongoCursorOperationCollectionAspect" requires="com.mongodb.DBCursor" />
+        <aspect name="com.springsource.insight.plugin.mongodb.MongoDbOperationCollectionAspect" requires="com.mongodb.DB" />
+    </aspects>
+</aspectj>
+

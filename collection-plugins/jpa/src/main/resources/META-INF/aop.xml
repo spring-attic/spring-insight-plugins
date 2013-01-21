@@ -1,0 +1,9 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.jpa.JpaEntityManagerLifecycleAspect" requires="javax.persistence.EntityManager" />
+        <aspect name="com.springsource.insight.plugin.jpa.JpaEntityManagerDomainObjectAspect" requires="javax.persistence.EntityManager" />
+        <aspect name="com.springsource.insight.plugin.jpa.JpaEntityManagerCollectionAspect" requires="javax.persistence.EntityManager" />
+        <aspect name="com.springsource.insight.plugin.jpa.EntityTransactionCollectionAspect" requires="javax.persistence.EntityTransaction" />
+    </aspects>
+</aspectj>
+

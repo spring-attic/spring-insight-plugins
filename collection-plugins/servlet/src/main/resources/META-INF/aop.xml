@@ -1,0 +1,8 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.servlet.FilterOperationCollectionAspect" requires="javax.servlet.Filter" />
+        <aspect name="com.springsource.insight.plugin.servlet.ServletContextListenerOperationDestroyedCollectionAspect" requires="javax.servlet.ServletContextListener" />
+        <aspect name="com.springsource.insight.plugin.servlet.ServletContextListenerOperationInitializedCollectionAspect" requires="javax.servlet.ServletContextListener" />
+    </aspects>
+</aspectj>
+

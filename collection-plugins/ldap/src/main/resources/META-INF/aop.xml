@@ -1,0 +1,7 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.ldap.DirContextSearchCollectionAspect" requires="javax.naming.directory.DirContext" />
+        <aspect name="com.springsource.insight.plugin.ldap.LdapOperationCollectionAspectSupport" requires="javax.naming.Context" />
+    </aspects>
+</aspectj>
+

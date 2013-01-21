@@ -1,0 +1,9 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.jta.TransactionOperationCollectionAspect" requires="javax.transaction.Transaction" />
+        <aspect name="com.springsource.insight.plugin.jta.JtaOperationCollectionAspect" />
+        <aspect name="com.springsource.insight.plugin.jta.TransactionManagerOperationCollectionAspect" requires="javax.transaction.TransactionManager" />
+        <aspect name="com.springsource.insight.plugin.jta.UserTransactionOperationCollectionAspect" requires="javax.transaction.UserTransaction" />
+    </aspects>
+</aspectj>
+

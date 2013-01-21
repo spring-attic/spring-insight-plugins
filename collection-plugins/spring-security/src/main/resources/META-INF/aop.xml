@@ -1,0 +1,9 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.spring.security.UserDetailsManagerCollectionAspect" requires="org.springframework.security.provisioning.UserDetailsManager"/>
+        <aspect name="com.springsource.insight.plugin.spring.security.AuthenticationManagerCollectionAspect" requires="org.springframework.security.authentication.AuthenticationManager"/>
+        <aspect name="com.springsource.insight.plugin.spring.security.AbstractAuthenticationCollectionAspect" />
+        <aspect name="com.springsource.insight.plugin.spring.security.AuthenticationProviderCollectionAspect" requires="org.springframework.security.authentication.AuthenticationProvider" />
+    </aspects>
+</aspectj>
+

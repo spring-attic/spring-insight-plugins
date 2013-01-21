@@ -1,0 +1,7 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.akka.ActorRefOperationCollectionAspect" requires="akka.actor.ActorRef"/>
+        <aspect name="com.springsource.insight.plugin.akka.UntypedActorOperationCollectionAspect" requires="akka.actor.UntypedActor" />
+    </aspects>
+</aspectj>
+

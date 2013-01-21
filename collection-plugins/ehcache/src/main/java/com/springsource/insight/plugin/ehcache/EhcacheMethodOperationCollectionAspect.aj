@@ -48,9 +48,9 @@ public abstract aspect EhcacheMethodOperationCollectionAspect extends MethodOper
 
     Operation initCommonFields(final Operation op, final Ehcache cache, final String method, final Object key) {
         op.type(EhcacheDefinitions.CACHE_OPERATION)
-          .put(EhcacheDefinitions.METHOD_ATTRIBUTE, method)
-          .putAnyNonEmpty(EhcacheDefinitions.KEY_ATTRIBUTE, (key != null) ? key.getClass().getSimpleName() : null)
-          .putAnyNonEmpty(EhcacheDefinitions.NAME_ATTRIBUTE, cache.getName());
+        .put(EhcacheDefinitions.METHOD_ATTRIBUTE, method)
+        .putAnyNonEmpty(EhcacheDefinitions.KEY_ATTRIBUTE, (key != null) ? key.getClass().getSimpleName() : null)
+        .putAnyNonEmpty(EhcacheDefinitions.NAME_ATTRIBUTE, cache.getName());
 
         final String keyValue = op.get(EhcacheDefinitions.KEY_ATTRIBUTE, String.class);
         if (StringUtil.isEmpty(keyValue)) {

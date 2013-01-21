@@ -1,0 +1,12 @@
+<aspectj>
+    <aspects>
+        <aspect name="org.axonframework.insight.plugin.axon.EventHandlerOperationCollectionAspect" requires="org.axonframework.eventhandling.EventListener" />
+        <aspect name="org.axonframework.insight.plugin.axon.EventBus20PublishOperationCollectionAspect" requires="org.axonframework.eventhandling.EventBus" />
+        <aspect name="org.axonframework.insight.plugin.axon.CommandBus1xDispatchOperationCollectionAspect" requires="org.axonframework.commandhandling.CommandBus" />
+        <aspect name="org.axonframework.insight.plugin.axon.CommandHandlerOperationCollectionAspect" requires="org.axonframework.commandhandling.CommandHandler" />
+        <aspect name="org.axonframework.insight.plugin.axon.SagaOperationCollectionAspect" requires="org.axonframework.saga.Saga" />
+        <aspect name="org.axonframework.insight.plugin.axon.EventBus1xPublishOperationCollectionAspect" requires="org.axonframework.eventhandling.EventBus" />
+        <aspect name="org.axonframework.insight.plugin.axon.CommandBus20DispatchOperationCollectionAspect" requires="org.axonframework.commandhandling.CommandBus" />
+    </aspects>
+</aspectj>
+

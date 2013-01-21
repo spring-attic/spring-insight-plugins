@@ -1,5 +1,11 @@
 <aspectj>
-    <!-- -verbose -showWeaveInfo  -->
-    <weaver options="-Xlint:ignore">
-    </weaver>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.jcr.QueryOperationCollectionAspect" requires="javax.jcr.query.Query" />
+        <aspect name="com.springsource.insight.plugin.jcr.GetNodeOperationCollectionAspect" requires="javax.jcr.Node" />
+        <aspect name="com.springsource.insight.plugin.jcr.ItemOperationCollectionAspect" requires="javax.jcr.Node" />
+        <aspect name="com.springsource.insight.plugin.jcr.LoginOperationCollectionAspect" requires="javax.jcr.Repository" />
+        <aspect name="com.springsource.insight.plugin.jcr.SaveOperationCollectionAspect" requires="javax.jcr.Item" />
+        <aspect name="com.springsource.insight.plugin.jcr.WorkspaceOperationCollectionAspect" requires="javax.jcr.Workspace" />
+    </aspects>
 </aspectj>
+

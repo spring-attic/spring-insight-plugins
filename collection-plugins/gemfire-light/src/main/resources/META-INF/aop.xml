@@ -1,0 +1,9 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.gemfire.GemFireRemoteOperationCollectionAspect" requires="com.gemstone.gemfire.cache.query.Query" />
+        <aspect name="com.springsource.insight.plugin.gemfire.GemFireLightPointcuts" requires="com.gemstone.gemfire.cache.query.Query" />
+        <aspect name="com.springsource.insight.plugin.gemfire.GemFireQueryCollectionAspect" requires="com.gemstone.gemfire.cache.query.Query" />
+        <aspect name="com.springsource.insight.plugin.gemfire.AbstractGemFireCollectionAspect" requires="com.gemstone.gemfire.cache.query.Query" />
+    </aspects>
+</aspectj>
+

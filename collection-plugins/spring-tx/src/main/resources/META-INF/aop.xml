@@ -1,0 +1,7 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.springtx.TransactionPointcuts" requires="org.springframework.transaction.PlatformTransactionManager" />
+        <aspect name="com.springsource.insight.plugin.springtx.TransactionOperationCollectionAspect" requires="org.springframework.transaction.PlatformTransactionManager" />
+    </aspects>
+</aspectj>
+

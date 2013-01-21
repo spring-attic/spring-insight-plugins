@@ -1,0 +1,30 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.springweb.view.resolver.ViewResolverOperationCollectionAspect" requires="org.springframework.web.servlet.ViewResolver" />
+        <aspect name="com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport" />
+        <aspect name="com.springsource.insight.plugin.springweb.modelattribute.ModelAttributeOperationCollectionAspect" requires="org.springframework.web.bind.annotation.ModelAttribute" />
+        <aspect name="com.springsource.insight.plugin.springweb.rest.RestDeleteOperationCollectionAspect" requires="org.springframework.web.client.RestOperations" />
+        <aspect name="com.springsource.insight.plugin.springweb.request.WebRequestOperationCollectionAspect" requires="org.springframework.web.servlet.DispatcherServlet" />
+        <aspect name="com.springsource.insight.plugin.springweb.http.ClientHttpRequestCollectionOperationAspect" requires="org.springframework.http.client.ClientHttpRequest" />
+        <aspect name="com.springsource.insight.plugin.springweb.binder.InitBinderOperationCollectionAspect" requires="org.springframework.web.bind.annotation.InitBinder" />
+        <aspect name="com.springsource.insight.plugin.springweb.rest.RestExecuteOperationCollectionAspect" requires="org.springframework.web.client.RestOperations" />
+        <aspect name="com.springsource.insight.plugin.springweb.rest.RestOperationCollectionSupport" />
+        <aspect name="com.springsource.insight.plugin.springweb.remoting.HttpInvokerRequestExecutorOperationCollectionAspect" requires="org.springframework.remoting.httpinvoker.HttpInvokerRequestExecutor" />
+        <aspect name="com.springsource.insight.plugin.springweb.rest.RestHeadOperationCollectionAspect" requires="org.springframework.web.client.RestOperations" />
+        <aspect name="com.springsource.insight.plugin.springweb.rest.RestOptionsOperationCollectionAspect" requires="org.springframework.web.client.RestOperations" />
+        <aspect name="com.springsource.insight.plugin.springweb.view.render.ViewRenderOperationCollectionAspect" requires="org.springframework.web.servlet.View" />
+        <aspect name="com.springsource.insight.plugin.springweb.remoting.SimpleHttpInvokerRequestExecutorAspect" requires="org.springframework.remoting.httpinvoker.SimpleHttpInvokerRequestExecutor" />
+        <aspect name="com.springsource.insight.plugin.springweb.rest.RestIndirectOperationCollectionSupport" />
+        <aspect name="com.springsource.insight.plugin.springweb.rest.RestPostOperationCollectionAspect" requires="org.springframework.web.client.RestOperations" />
+        <aspect name="com.springsource.insight.plugin.springweb.controller.ControllerOperationCollectionAspect" requires="com.springsource.insight.plugin.springweb.controller" />
+        <aspect name="com.springsource.insight.plugin.springweb.http.SimpleClientHttpRequestFactoryCollectionAspect" requires="org.springframework.http.client.SimpleClientHttpRequestFactory" />
+        <aspect name="com.springsource.insight.plugin.springweb.rest.RestExchangeOperationCollectionAspect" requires="org.springframework.web.client.RestOperations" />
+        <aspect name="com.springsource.insight.plugin.springweb.rest.RestGetOperationCollectionAspect" requires="org.springframework.web.client.RestOperations" />
+        <aspect name="com.springsource.insight.plugin.springweb.SpringWebPointcuts" requires="org.springframework.web.servlet.DispatcherServlet" />
+        <aspect name="com.springsource.insight.plugin.springweb.validation.ValidationOperationCollectionAspect" requires="org.springframework.validation.Validator" />
+        <aspect name="com.springsource.insight.plugin.springweb.controller.LegacyControllerOperationCollectionAspect" requires="org.springframework.web.servlet.mvc.Controller" />
+        <aspect name="com.springsource.insight.plugin.springweb.rest.RestPutOperationCollectionAspect" requires="org.springframework.web.client.RestOperations" />
+        <aspect name="com.springsource.insight.plugin.springweb.controller.AbstractControllerOperationCollectionAspect" />
+    </aspects>
+</aspectj>
+

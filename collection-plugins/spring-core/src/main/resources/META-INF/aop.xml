@@ -1,0 +1,16 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.springcore.SpringLifecycleMethodOperationCollectionAspect" />
+        <aspect name="com.springsource.insight.plugin.springcore.ApplicationListenerMethodOperationCollectionAspect" requires="org.springframework.context.ApplicationListener" />
+        <aspect name="com.springsource.insight.plugin.springcore.InitializingBeanOperationCollectionAspect" requires="org.springframework.beans.factory.InitializingBean" />
+        <aspect name="com.springsource.insight.plugin.springcore.ComponentMethodOperationCollectionAspect" requires="org.springframework.stereotype.Component" />
+        <aspect name="com.springsource.insight.plugin.springcore.StereotypedSpringBeanMethodOperationCollectionAspectSupport" />
+        <aspect name="com.springsource.insight.plugin.springcore.ServiceMethodOperationCollectionAspect" requires="org.springframework.stereotype.Service" />
+        <aspect name="com.springsource.insight.plugin.springcore.SpringEventReferenceCollectionAspect" requires="org.springframework.context.ApplicationContext" />
+        <aspect name="com.springsource.insight.plugin.springcore.EventPublisingOperationCollectionAspect" requires="org.springframework.context.ApplicationEvent" />
+        <aspect name="com.springsource.insight.plugin.springcore.RepositoryMethodOperationCollectionAspect" requires="org.springframework.stereotype.Repository" />
+        <aspect name="com.springsource.insight.plugin.springcore.ClassPathScanOperationCollectionAspect" requires="org.springframework.core.io.support.PathMatchingResourcePatternResolver" />
+        <aspect name="com.springsource.insight.plugin.springcore.SpringCoreOperationCollectionAspect" />
+    </aspects>
+</aspectj>
+

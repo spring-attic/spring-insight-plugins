@@ -1,0 +1,9 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.eclipse.persistence.DatabaseSessionOperationCollectionAspect" requires="org.eclipse.persistence.sessions.Session" />
+        <aspect name="com.springsource.insight.plugin.eclipse.persistence.TransactionOperationCollectionAspect" requires="org.eclipse.persistence.sessions.Session" />
+        <aspect name="com.springsource.insight.plugin.eclipse.persistence.SessionQueryOperationCollectionAspect" requires="org.eclipse.persistence.sessions.Session" />
+        <aspect name="com.springsource.insight.plugin.eclipse.persistence.EclipsePersistenceCollectionAspect" />
+    </aspects>
+</aspectj>
+

@@ -1,0 +1,10 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.portlet.RenderOperationCollectionAspect" requires="javax.portlet.Portlet" />
+        <aspect name="com.springsource.insight.plugin.portlet.ResourceOperationCollectionAspect" requires="javax.portlet.ResourceServingPortlet" />
+        <aspect name="com.springsource.insight.plugin.portlet.GenericOperationCollectionAspect" requires="javax.portlet.ResourceServingPortlet" />
+        <aspect name="com.springsource.insight.plugin.portlet.EventOperationCollectionAspect" requires="javax.portlet.EventPortlet" />
+        <aspect name="com.springsource.insight.plugin.portlet.ActionOperationCollectionAspect" requires="javax.portlet.Portlet" />
+    </aspects>
+</aspectj>
+

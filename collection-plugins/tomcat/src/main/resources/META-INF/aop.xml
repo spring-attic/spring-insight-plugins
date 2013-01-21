@@ -1,0 +1,6 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.tomcat.jsp.JspCompilerOperationCollectionAspect" requires="org.apache.jasper.compiler.Compiler" />
+    </aspects>
+</aspectj>
+

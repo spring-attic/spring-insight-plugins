@@ -1,0 +1,15 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.integration.AbstractIntegrationOperationCollectionAspect" requires="org.springframework.integration.Message" />
+        <aspect name="com.springsource.insight.plugin.integration.IntegrationOperationCollectionAspect" requires="org.springframework.integration.context.IntegrationObjectSupport" />
+        <aspect name="com.springsource.insight.plugin.integration.gateway.HasMethodAspect" />
+        <aspect name="com.springsource.insight.plugin.integration.amqp.AmqpInboundChannelAdapterMessageListenerProps" requires="org.springframework.integration.context.IntegrationObjectSupport" />
+        <aspect name="com.springsource.insight.plugin.integration.gateway.GatewayOperationCollectionAspect" requires="org.springframework.integration.gateway.MessagingGatewaySupport" />
+        <aspect name="com.springsource.insight.plugin.integration.gateway.GatewayMethodInboundMessageMapperAspect" requires="org.springframework.integration.gateway.GatewayMethodInboundMessageMapper" />
+        <aspect name="com.springsource.insight.plugin.integration.amqp.MessageListenerOperationCollectionAspect" requires="org.springframework.amqp.core.MessageListener" />
+        <aspect name="com.springsource.insight.plugin.integration.gateway.HasRequestMapperAspect" />
+        <aspect name="com.springsource.insight.plugin.integration.tcp.TcpConnectionOperationCollectionAspect" requires="org.springframework.integration.ip.tcp.connection.ConnectionFactory" />
+        <aspect name="com.springsource.insight.plugin.integration.gateway.InboundMessageMapperAspect" requires="org.springframework.integration.gateway.MessagingGatewaySupport" />
+    </aspects>
+</aspectj>
+

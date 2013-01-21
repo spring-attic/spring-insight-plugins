@@ -1,32 +1,9 @@
 <aspectj>
-    <!-- -verbose -showWeaveInfo  -->
-    <weaver options="-Xlint:ignore">
-        <!--
-            Whitelist only these given DBs, which allows AspectJ to do fast
-            matching:
-            
-            NOTE:  This is currently not working.  The aop.xml within the main collection jar does an
-            include within="*" with specific excludes, thus there is no possibility of whitelisting.
-            Andy Clement has some features brewing (though a ways off, as of 1.6.8) which will support
-            some scoping for the aspects, but we are not using it.
-
-        <include within="com.ibm.db2.jdbc..*" />
-        <include within="org.apache.derby..*" />
-        <include within="org.h2.jdbc..*" />
-        <include within="org.hsqldb.jdbc..*" />
-        <include within="com.informix.jdbc..*" />
-        <include within="com.microsoft.jdbc..*" />
-        <include within="com.mysql.jdbc..*" />
-        <include within="oracle.jdbc..*" />
-        <include within="org.postgresql..*" />
-        <include within="com.sybase..*" />
-        <include within="net.sourceforge.jtds..*" />
-        <include within="com.sap.dbtech.jdbc..*" />
-        <include within="com.pointbase.jdbc..*" />
-        <include within="com.mckoi..*" />
-        <include within="org.firebirdsql.jdbc..*" />
-        <include within="sun.jdbc.odbc..*" />
-        -->
-        
-    </weaver>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.logging.LoggingMethodOperationCollectionAspect" />
+        <aspect name="com.springsource.insight.plugin.logging.CommonsLoggingOperationCollectionAspect" requires="org.apache.commons.logging.Log" />
+        <aspect name="com.springsource.insight.plugin.logging.Log4jLoggingOperationCollectionAspect" requires="org.apache.log4j.Category" />
+        <aspect name="com.springsource.insight.plugin.logging.Slf4jLoggingOperationCollectionAspect" requires="org.slf4j.Logger" />
+    </aspects>
 </aspectj>
+

@@ -1,0 +1,9 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.hadoop.ReduceOperationCollectionAspect" requires="org.apache.hadoop.mapred.Reducer" />
+        <aspect name="com.springsource.insight.plugin.hadoop.JobOperationCollectionAspect" requires="org.apache.hadoop.mapreduce.Job" />
+        <aspect name="com.springsource.insight.plugin.hadoop.MapOperationCollectionAspect" requires="org.apache.hadoop.mapreduce.Mapper" />
+        <aspect name="com.springsource.insight.plugin.hadoop.JobClientOperationCollectionAspect" requires="org.apache.hadoop.mapred.JobClient" />
+    </aspects>
+</aspectj>
+

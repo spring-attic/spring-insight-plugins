@@ -1,0 +1,6 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.springdata.RepositoryMethodOperationCollectionAspect" requires="org.springframework.data.repository.Repository" />
+    </aspects>
+</aspectj>
+

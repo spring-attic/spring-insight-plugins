@@ -6,28 +6,40 @@
     <name>com.springsource.insight.plugins:jws</name>
     <version>1.9.2-CI-SNAPSHOT</version>
     <packaging>jar</packaging>
-    
-	<parent>
-		<groupId>com.springsource.insight</groupId>
-		<artifactId>community-plugins</artifactId>
-		<version>1.9.2-CI-SNAPSHOT</version>
-		<relativePath>..</relativePath>
-	</parent>
+
+    <parent>
+        <groupId>com.springsource.insight</groupId>
+        <artifactId>community-plugins</artifactId>
+        <version>1.9.2-CI-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
 
     <properties>
         <spring.ws.version>2.0.4.RELEASE</spring.ws.version>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>jdk5</id>
+            <activation>
+                <jdk>1.5</jdk>
+            </activation>
+            <dependencies>
+                <!-- NOTE: this dependency is only required as long as J2SE 1.5
+                 version is used. In 1.6+ it is built-in -->
+                <dependency>
+                    <groupId>javax.jws</groupId>
+                    <artifactId>jsr181-api</artifactId>
+                    <version>1.0-MR1</version>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
     <dependencies>
-            <!-- NOTE: this dependency is only required as long as
-                J2SE 1.5 version is used. In 1.6+ it is built-in -->
-        <dependency>
-            <groupId>javax.jws</groupId>
-            <artifactId>jsr181-api</artifactId>
-            <version>1.0-MR1</version>
-            <scope>provided</scope>
-        </dependency>
-                <!-- Spring web services -->
+
+        <!-- Spring web services -->
         <dependency>
             <groupId>org.springframework.ws</groupId>
             <artifactId>spring-ws-core</artifactId>
@@ -52,10 +64,8 @@
                 </exclusion>
             </exclusions>
         </dependency>
-                <!-- required by spring-ws directly or indirectly
-                we specify them explicitly to ensure that we use the
-                same spring version as the other components
-                -->
+        <!-- required by spring-ws directly or indirectly we specify them explicitly to ensure 
+        that we use the same spring version as the other components -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
@@ -91,7 +101,7 @@
             <artifactId>spring-webmvc</artifactId>
             <scope>provided</scope>
         </dependency>
-       
+
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -122,11 +132,11 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <archive>
-                    	<manifest>
-                    		<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                    	</manifest>
-                        <manifestEntries>                            
-							<Insight-Plugin-Descriptor>com.springsource.insight.plugin.jws.JwsPluginRuntimeDescriptor</Insight-Plugin-Descriptor>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Insight-Plugin-Descriptor>com.springsource.insight.plugin.jws.JwsPluginRuntimeDescriptor</Insight-Plugin-Descriptor>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -140,5 +150,5 @@
             </plugin>
         </plugins>
     </build>
-    
+
 </project>

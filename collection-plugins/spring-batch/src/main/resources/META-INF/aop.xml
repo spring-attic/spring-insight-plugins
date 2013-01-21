@@ -1,0 +1,12 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.springbatch.StepOperationCollectionAspect" requires="org.springframework.batch.core.Step" />
+        <aspect name="com.springsource.insight.plugin.springbatch.SpringBatchOperationCollectionAspect" requires="org.springframework.batch.core.JobInstance" />
+        <aspect name="com.springsource.insight.plugin.springbatch.FlowExecutorCollectionAspect" requires="org.springframework.batch.core.job.flow.FlowExecutor" />
+        <aspect name="com.springsource.insight.plugin.springbatch.FlowOperationCollectionAspect" requires="org.springframework.batch.core.job.flow.Flow" />
+        <aspect name="com.springsource.insight.plugin.springbatch.JobOperationCollectionAspect" requires="org.springframework.batch.core.Job" />
+        <aspect name="com.springsource.insight.plugin.springbatch.TaskletCollectionAspect" requires="org.springframework.batch.core.step.tasklet.Tasklet" />
+        <aspect name="com.springsource.insight.plugin.springbatch.JobLauncherCollectionAspect" requires="org.springframework.batch.core.launch.JobLauncher" />
+    </aspects>
+</aspectj>
+

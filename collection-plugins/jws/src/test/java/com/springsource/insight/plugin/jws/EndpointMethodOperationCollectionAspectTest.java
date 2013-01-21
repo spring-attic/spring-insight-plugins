@@ -15,6 +15,7 @@
  */
 package com.springsource.insight.plugin.jws;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 
@@ -27,17 +28,17 @@ import com.springsource.insight.intercept.operation.OperationType;
 /**
  * 
  */
-public class EndpointMethodOperationCollectionAspectTest
-        extends OperationCollectionAspectTestSupport {
+public class EndpointMethodOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
     public EndpointMethodOperationCollectionAspectTest() {
         super();
     }
 
     @Test
+    @Ignore
     public void testEndpointCollection() {
         ExampleEndpoint endpoint=new ExampleEndpoint();
         endpoint.perform();
-        
+
         Operation op=getLastEntered();
         assertNotNull("No operation captured", op);
         assertEquals("Mismatched operation type", OperationType.METHOD, op.getType());
@@ -48,7 +49,7 @@ public class EndpointMethodOperationCollectionAspectTest
     public OperationCollectionAspectSupport getAspect() {
         return AnnotationDrivenMethodOperationCollectionAspect.aspectOf();
     }
-    
+
     @Endpoint
     private static class ExampleEndpoint {
         ExampleEndpoint () { /* ignored */ }

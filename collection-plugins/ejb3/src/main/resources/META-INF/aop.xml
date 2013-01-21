@@ -1,0 +1,7 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.ejb3.Ejb3LocalServiceOperationCollectionAspect" requires="javax.ejb.Local" />
+        <aspect name="com.springsource.insight.collection.method.TrailingMethodOperationCollectionAspect" />
+    </aspects>
+</aspectj>
+

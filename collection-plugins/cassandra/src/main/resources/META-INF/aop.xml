@@ -1,0 +1,13 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.cassandra.OperationUtils" requires="org.apache.thrift.transport.TTransport" />
+        <aspect name="com.springsource.insight.plugin.cassandra.SystemOperationCollectionAspect" requires="org.apache.cassandra.thrift.Cassandra.Client" />
+        <aspect name="com.springsource.insight.plugin.cassandra.AbstractCassandraOperationCollectionAspect" />
+        <aspect name="com.springsource.insight.plugin.cassandra.GetOperationCollectionAspect" requires="org.apache.cassandra.thrift.Cassandra.Client" />
+        <aspect name="com.springsource.insight.plugin.cassandra.RemoveOperationCollectionAspect" requires="org.apache.cassandra.thrift.Cassandra.Client" />
+        <aspect name="com.springsource.insight.plugin.cassandra.ConnectOperationCollectionAspect" requires="org.apache.cassandra.thrift.Cassandra.Client" />
+        <aspect name="com.springsource.insight.plugin.cassandra.CQLOperationCollectionAspect" requires="org.apache.cassandra.thrift.Cassandra.Client" />
+        <aspect name="com.springsource.insight.plugin.cassandra.UpdateOperationCollectionAspect" requires="org.apache.cassandra.thrift.Cassandra.Client" />
+    </aspects>
+</aspectj>
+

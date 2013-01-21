@@ -1,0 +1,10 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.webflow.StateOperationCollectionAspect" requires="org.springframework.webflow.engine.impl.FlowExecutionImpl" />
+        <aspect name="com.springsource.insight.plugin.webflow.TransitionOperationCollectionAspect" requires="org.springframework.webflow.engine.Transition" />
+        <aspect name="com.springsource.insight.plugin.webflow.ActionOperationCollectionAspect" requires="org.springframework.webflow.execution.ActionExecutor" />
+        <aspect name="com.springsource.insight.plugin.webflow.StartOperationCollectionAspect" requires="org.springframework.webflow.engine.impl.FlowExecutionImpl" />
+        <aspect name="com.springsource.insight.plugin.webflow.OperationCollectionUtils" requires="org.springframework.webflow.execution.Action" />
+    </aspects>
+</aspectj>
+

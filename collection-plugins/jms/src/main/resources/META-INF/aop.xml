@@ -1,0 +1,9 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.jms.JMSProducerCollectionAspect" requires="javax.jms.MessageProducer" />
+        <aspect name="com.springsource.insight.plugin.jms.AbstractJMSCollectionAspect" />
+        <aspect name="com.springsource.insight.plugin.jms.JMSConsumerCollectionAspect" requires="javax.jms.MessageConsumer" />
+        <aspect name="com.springsource.insight.plugin.jms.JMSMessageListenerCollectionAspect" requires="javax.jms.MessageListener" />
+    </aspects>
+</aspectj>
+

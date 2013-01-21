@@ -1,0 +1,7 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.rabbitmqClient.RabbitMQConsumerCollectionAspect" requires="com.rabbitmq.client.Consumer" />
+        <aspect name="com.springsource.insight.plugin.rabbitmqClient.RabbitMQPublishCollectionAspect" requires="com.rabbitmq.client.Channel" />
+    </aspects>
+</aspectj>
+

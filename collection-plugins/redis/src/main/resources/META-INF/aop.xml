@@ -1,0 +1,9 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.redis.RedisCollectionOperationAspect" requires="org.springframework.data.redis.support.collections.AbstractRedisCollection" />
+        <aspect name="com.springsource.insight.plugin.redis.RedisMapOperationCollectionAspect" requires="org.springframework.data.redis.support.collections.RedisMap" />
+        <aspect name="com.springsource.insight.plugin.redis.RedisClientAspect" requires="redis.clients.jedis.Jedis" />
+        <aspect name="com.springsource.insight.plugin.redis.RedisConnectionFactoryOperationCollectionAspect" requires="org.springframework.data.redis.connection.RedisConnectionFactory" />
+    </aspects>
+</aspectj>
+

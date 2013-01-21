@@ -1,0 +1,9 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.grails.GrailsControllerPointcuts" requires="org.codehaus.groovy.grails.web.servlet.mvc.GrailsControllerHelper" />
+        <aspect name="com.springsource.insight.plugin.grails.GrailsControllerClassAspect" requires="org.codehaus.groovy.grails.web.servlet.mvc.GrailsControllerHelper" />
+        <aspect name="com.springsource.insight.plugin.grails.GrailsControllerInstanceAspect" requires="org.codehaus.groovy.grails.web.servlet.mvc.GrailsControllerHelper" />
+        <aspect name="com.springsource.insight.plugin.grails.GrailsControllerOperationCollectionAspect" requires="org.codehaus.groovy.grails.web.servlet.mvc.GrailsControllerHelper" />
+    </aspects>
+</aspectj>
+

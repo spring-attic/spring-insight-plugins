@@ -77,9 +77,9 @@
     <dependencies>
         <!-- Provided dependencies (part of Insight) -->
         <dependency>
-           <groupId>org.aspectj</groupId>
-           <artifactId>aspectjrt</artifactId>
-           <scope>compile</scope>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -112,6 +112,7 @@
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
+
         
         <!-- Test dependencies -->
         <dependency>
@@ -142,11 +143,12 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
-
+        
         <dependency>
-           <groupId>org.aspectj</groupId>
-           <artifactId>aspectjweaver</artifactId>
-           <scope>test</scope>
+            <groupId>com.springsource.insight</groupId>
+            <artifactId>insight-weaver</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -193,14 +195,8 @@
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-surefire-plugin</artifactId>
                <configuration>
-                    <systemProperties>
-                        <property>
-                            <name>aspectj.overweaving</name>
-                            <value>true</value>
-                        </property>
-                    </systemProperties>
                     <argLine>
-                        -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+                        -javaagent:"${settings.localRepository}/com/springsource/insight/insight-weaver/${project.version}/insight-weaver-${project.version}.jar" -Daspectj.overweaving=true -Dorg.aspectj.tracing.debug=false -Dorg.aspectj.tracing.enabled=false -Dorg.aspectj.tracing.factory=default
                     </argLine>
                </configuration>
 			</plugin>

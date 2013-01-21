@@ -1,0 +1,8 @@
+<aspectj>
+    <aspects>
+        <aspect name="com.springsource.insight.plugin.jndi.JndiOperationCollectionSupport" />
+        <aspect name="com.springsource.insight.plugin.jndi.JndiBindOperationCollectionAspect" requires="javax.naming.Context" />
+        <aspect name="com.springsource.insight.plugin.jndi.JndiLookupOperationCollectionAspect" requires="javax.naming.Context" />
+    </aspects>
+</aspectj>
+

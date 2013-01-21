@@ -1014,7 +1014,7 @@
 					<configuration>
 						<source>1.5</source>
 						<target>1.5</target>
-						<outxml>true</outxml>
+						<outxml>false</outxml>
 					</configuration>
  					<executions>
 						<execution>
