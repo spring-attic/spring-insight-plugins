@@ -27,7 +27,7 @@
          <include within="org.firebirdsql.jdbc..*" />
          <include within="sun.jdbc.odbc..*" />
          -->
-    
+    </weaver>
     <aspects>
         <aspect name="com.springsource.insight.plugin.jdbc.JdbcDriverConnectOperationCollectionAspect" />
         <aspect name="com.springsource.insight.plugin.jdbc.JdbcConnectionCloseOperationCollectionAspect" />
