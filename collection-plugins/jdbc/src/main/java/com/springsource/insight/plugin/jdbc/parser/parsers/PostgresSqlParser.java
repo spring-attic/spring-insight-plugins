@@ -39,7 +39,7 @@ public class PostgresSqlParser extends AbstractSqlPatternParser {
 	/**
 	 * Defines a non-capturing group for postgres or edb
 	 */
-	private static final String VENDOR_LIST  =  JDBC_PREFIX + ":(?:postgres|edb)";
+	private static final String VENDOR_LIST  =  JDBC_PREFIX + ":(?:postgresql|edb)";
 	
 	/**
 	 * Defines a group for IPv6, IPv4 IPs and host names<br/>

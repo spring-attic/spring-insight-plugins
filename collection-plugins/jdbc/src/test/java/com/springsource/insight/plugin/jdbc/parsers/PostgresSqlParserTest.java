@@ -26,7 +26,7 @@ import com.springsource.insight.plugin.jdbc.parser.parsers.PostgresSqlParser;
 public class PostgresSqlParserTest extends SqlParserTestImpl<PostgresSqlParser> {
 	public PostgresSqlParserTest () {
 		super(DatabaseType.POSTGRESQL, new PostgresSqlParser(),
-		  new SqlTestEntry("jdbc:postgres:database",
+		  new SqlTestEntry("jdbc:postgresql:database",
 				 JdbcUrlParser.DEFAULT_HOST,
 				 PostgresSqlParser.DEFAULT_CONNECTION_PORT,
 				 "database")
@@ -36,7 +36,7 @@ public class PostgresSqlParserTest extends SqlParserTestImpl<PostgresSqlParser> 
 				 PostgresSqlParser.DEFAULT_CONNECTION_PORT,
 				 "database")
 		,
-		new SqlTestEntry("jdbc:postgres:data123",
+		new SqlTestEntry("jdbc:postgresql:data123",
 				JdbcUrlParser.DEFAULT_HOST,
 				PostgresSqlParser.DEFAULT_CONNECTION_PORT,
 				"data123")
@@ -46,7 +46,7 @@ public class PostgresSqlParserTest extends SqlParserTestImpl<PostgresSqlParser> 
 				PostgresSqlParser.DEFAULT_CONNECTION_PORT,
 				"data123")
 		,
-		new SqlTestEntry("jdbc:postgres://[::1]/database",
+		new SqlTestEntry("jdbc:postgresql://[::1]/database",
 				"::1",
 				PostgresSqlParser.DEFAULT_CONNECTION_PORT,
 				"database")
@@ -56,7 +56,7 @@ public class PostgresSqlParserTest extends SqlParserTestImpl<PostgresSqlParser> 
 				PostgresSqlParser.DEFAULT_CONNECTION_PORT,
 				"database")
 		,
-		new SqlTestEntry("jdbc:postgres://[2001:0db8:85a3:0042:1000:8a2e:0370:7334]/database",
+		new SqlTestEntry("jdbc:postgresql://[2001:0db8:85a3:0042:1000:8a2e:0370:7334]/database",
 				"2001:0db8:85a3:0042:1000:8a2e:0370:7334",
 				PostgresSqlParser.DEFAULT_CONNECTION_PORT,
 				"database")
@@ -71,7 +71,7 @@ public class PostgresSqlParserTest extends SqlParserTestImpl<PostgresSqlParser> 
 				PostgresSqlParser.DEFAULT_CONNECTION_PORT,
 				"database")
 		,
-		new SqlTestEntry("jdbc:postgres://myhost/database",
+		new SqlTestEntry("jdbc:postgresql://myhost/database",
 				"myhost",
 				PostgresSqlParser.DEFAULT_CONNECTION_PORT,
 				"database")
@@ -81,7 +81,7 @@ public class PostgresSqlParserTest extends SqlParserTestImpl<PostgresSqlParser> 
 				PostgresSqlParser.DEFAULT_CONNECTION_PORT,
 				"database")
 		,
-		new SqlTestEntry("jdbc:postgres://10.23.197.110/database",
+		new SqlTestEntry("jdbc:postgresql://10.23.197.110/database",
 				"10.23.197.110",
 				PostgresSqlParser.DEFAULT_CONNECTION_PORT,
 				"database")
@@ -96,7 +96,7 @@ public class PostgresSqlParserTest extends SqlParserTestImpl<PostgresSqlParser> 
 				PostgresSqlParser.DEFAULT_CONNECTION_PORT,
 				"database")
 		,
-		new SqlTestEntry("jdbc:postgres://[::1]:9090/database",
+		new SqlTestEntry("jdbc:postgresql://[::1]:9090/database",
 				"::1",
 				9090,
 				"database")
@@ -106,7 +106,7 @@ public class PostgresSqlParserTest extends SqlParserTestImpl<PostgresSqlParser> 
 				9090,
 				"database")
 		,
-		new SqlTestEntry("jdbc:postgres://[2001:0db8:85a3:0042:1000:8a2e:0370:7334]:9090/database",
+		new SqlTestEntry("jdbc:postgresql://[2001:0db8:85a3:0042:1000:8a2e:0370:7334]:9090/database",
 				"2001:0db8:85a3:0042:1000:8a2e:0370:7334",
 				9090,
 				"database")
@@ -121,7 +121,7 @@ public class PostgresSqlParserTest extends SqlParserTestImpl<PostgresSqlParser> 
 				9090,
 				"database")
 		,
-		new SqlTestEntry("jdbc:postgres://myhost:8080/database",
+		new SqlTestEntry("jdbc:postgresql://myhost:8080/database",
 				"myhost",
 				8080,
 				"database")
@@ -131,7 +131,7 @@ public class PostgresSqlParserTest extends SqlParserTestImpl<PostgresSqlParser> 
 				8080,
 				"database")
 		,
-		new SqlTestEntry("jdbc:postgres://10.23.197.110:8080/database",
+		new SqlTestEntry("jdbc:postgresql://10.23.197.110:8080/database",
 				"10.23.197.110",
 				8080,
 				"database")
