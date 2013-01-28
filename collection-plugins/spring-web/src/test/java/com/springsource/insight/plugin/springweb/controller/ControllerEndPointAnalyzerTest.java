@@ -45,9 +45,9 @@ public class ControllerEndPointAnalyzerTest extends Assert {
     private static final String	TEST_CLASS_NAME="MyClass", TEST_METHOD_NAME="method";
     private static final String	TEST_CLASS_PATH="com.class." + TEST_CLASS_NAME, TEST_SIGNATURE=TEST_METHOD_NAME + "()";
 
-	public ControllerEndPointAnalyzerTest () {
-		super();
-	}
+    public ControllerEndPointAnalyzerTest () {
+        super();
+    }
 
     @Test
     public void testDefaultAnalysis() {
@@ -67,10 +67,10 @@ public class ControllerEndPointAnalyzerTest extends Assert {
 
     @Test
     public void testAnalyzeNoHttpFrame() {
-    	Operation	op=createControllerOperation(false);
-    	Frame		frame=new SimpleFrame(FrameId.valueOf("3777347"), null, op, new TimeRange(1L, 10L), Collections.<Frame>emptyList());
-    	Trace		trace=Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
-    	EndPointAnalysis	analysis=analyzer.locateEndPoint(trace);
+        Operation	op=createControllerOperation(false);
+        Frame		frame=new SimpleFrame(FrameId.valueOf("3777347"), null, op, new TimeRange(1L, 10L), Collections.<Frame>emptyList());
+        Trace		trace=Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
+        EndPointAnalysis	analysis=analyzer.locateEndPoint(trace);
         assertNotNull("No analysis result", analysis);
         assertEquals("Mismatched example", op.getLabel(), analysis.getExample());
     }
@@ -80,30 +80,30 @@ public class ControllerEndPointAnalyzerTest extends Assert {
         Operation httpOp = new Operation().type(OperationType.HTTP);
         httpOp.createMap("request").put(OperationFields.URI, "/foo");
 
-        Trace trace = mock(Trace.class);        
+        Trace trace = mock(Trace.class);
         SimpleFrameBuilder builder = new SimpleFrameBuilder();
         builder.enter(httpOp);
         Frame root = builder.exit();
         when(trace.getRootFrame()).thenReturn(root);
         when(trace.getAppName()).thenReturn(ApplicationName.valueOf("app"));
-        
+
         EndPointAnalysis analysis=analyzer.locateEndPoint(trace);
         assertNull("Unexpected result: " + analysis, analysis);
     }
 
     private static EndPointAnalysis assertEndPointAnalysis (String testName, EndPointAnalysis analysis, Frame scoreFrame) {
         assertNotNull(testName + ": No analysis result", analysis);
-        assertEquals(testName + ": Mismatched example", TEST_VERB + " " + TEST_PATH, analysis.getExample());        
+        assertEquals(testName + ": Mismatched example", TEST_VERB + " " + TEST_PATH, analysis.getExample());
         assertEquals(testName + ": Mismatched endpoint", EndPointName.valueOf(TEST_CLASS_PATH + "#" + TEST_SIGNATURE), analysis.getEndPointName());
         assertEquals(testName + ": Mismatched label", TEST_CLASS_NAME + "#" + TEST_METHOD_NAME, analysis.getResourceLabel());
 
         Operation	op=scoreFrame.getOperation();
         Boolean		legacy=op.get(ControllerEndPointAnalyzer.LEGACY_PROPNAME, Boolean.class);
-		if ((legacy != null) && legacy.booleanValue()) {
-			assertEquals(testName + ": Mismatched legacy score", ControllerEndPointAnalyzer.LEGACY_SCORE, analysis.getScore());
-		} else {
-			assertEquals(testName + ": Mismatched default score", EndPointAnalysis.depth2score(FrameUtil.getDepth(scoreFrame)), analysis.getScore());
-		}
+        if ((legacy != null) && legacy.booleanValue()) {
+            assertEquals(testName + ": Mismatched legacy score", ControllerEndPointAnalyzer.LEGACY_SCORE, analysis.getScore());
+        } else {
+            assertEquals(testName + ": Mismatched default score", ControllerEndPointAnalyzer.DEFAULT_CONTROLLER_SCORE, analysis.getScore());
+        }
         return analysis;
     }
 
@@ -111,8 +111,8 @@ public class ControllerEndPointAnalyzerTest extends Assert {
         SimpleFrameBuilder builder = new SimpleFrameBuilder();
         Operation httpOp = new Operation().type(OperationType.HTTP);
         httpOp.createMap("request")
-            .put(OperationFields.URI, TEST_PATH)
-            .put("method", TEST_VERB);
+        .put(OperationFields.URI, TEST_PATH)
+        .put("method", TEST_VERB);
         builder.enter(httpOp);
         builder.enter(createControllerOperation(legacy));
         builder.exit();
@@ -121,12 +121,12 @@ public class ControllerEndPointAnalyzerTest extends Assert {
     }
 
     private static Operation createControllerOperation (boolean legacy) {
-    	return new Operation()
-    			.type(ControllerEndPointAnalyzer.CONTROLLER_METHOD_TYPE)
-                .label(TEST_CLASS_NAME + "#" + TEST_METHOD_NAME)
-                .put(OperationFields.CLASS_NAME, TEST_CLASS_PATH)
-                .put(OperationFields.METHOD_SIGNATURE, TEST_SIGNATURE)
-                .put(ControllerEndPointAnalyzer.LEGACY_PROPNAME, legacy)
-                ;
+        return new Operation()
+        .type(ControllerEndPointAnalyzer.CONTROLLER_METHOD_TYPE)
+        .label(TEST_CLASS_NAME + "#" + TEST_METHOD_NAME)
+        .put(OperationFields.CLASS_NAME, TEST_CLASS_PATH)
+        .put(OperationFields.METHOD_SIGNATURE, TEST_SIGNATURE)
+        .put(ControllerEndPointAnalyzer.LEGACY_PROPNAME, legacy)
+        ;
     }
 }

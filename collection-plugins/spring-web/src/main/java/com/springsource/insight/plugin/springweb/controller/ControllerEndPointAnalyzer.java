@@ -27,9 +27,9 @@ import com.springsource.insight.plugin.springweb.AbstractSpringWebEndPointAnalyz
  * 
  * For a trace to be analyzed, it must be of the following format:
  * 
- * - HttpOperation 
- *    .. 
- *    .. (arbitrary nesting) 
+ * - HttpOperation
+ *    ..
+ *    .. (arbitrary nesting)
  *      .. ControllerMethodOperation
  */
 public class ControllerEndPointAnalyzer extends AbstractSpringWebEndPointAnalyzer {
@@ -43,23 +43,29 @@ public class ControllerEndPointAnalyzer extends AbstractSpringWebEndPointAnalyze
      * above that of a servlet and/or queue operation
      */
     public static final int	LEGACY_SCORE=EndPointAnalysis.CEILING_LAYER_SCORE + 1;
+    public static final int DEFAULT_CONTROLLER_SCORE = 0;
     private static final ControllerEndPointAnalyzer	INSTANCE=new ControllerEndPointAnalyzer();
 
     private ControllerEndPointAnalyzer () {
-    	super(CONTROLLER_METHOD_TYPE);
+        super(CONTROLLER_METHOD_TYPE);
     }
 
     public static final ControllerEndPointAnalyzer getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override
     protected int getOperationScore(Operation op, int depth) {
-    	Boolean	legacyFlag=op.get(LEGACY_PROPNAME, Boolean.class);
-    	if ((legacyFlag != null) && legacyFlag.booleanValue()) {
-    		return LEGACY_SCORE;
-    	} else {
-    		return super.getOperationScore(op, depth);
-    	}
+        Boolean	legacyFlag=op.get(LEGACY_PROPNAME, Boolean.class);
+        if ((legacyFlag != null) && legacyFlag.booleanValue()) {
+            return LEGACY_SCORE;
+        } else {
+            return super.getOperationScore(op, depth);
+        }
+    }
+
+    @Override
+    protected int getDefaultScore(int depth) {
+        return DEFAULT_CONTROLLER_SCORE;
     }
 }
