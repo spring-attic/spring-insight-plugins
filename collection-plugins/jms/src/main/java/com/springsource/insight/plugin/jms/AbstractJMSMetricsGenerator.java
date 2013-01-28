@@ -15,15 +15,10 @@
  */
 package com.springsource.insight.plugin.jms;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import com.springsource.insight.intercept.metrics.AbstractExternalResourceMetricsGenerator;
 import com.springsource.insight.intercept.metrics.MetricsBag;
-import com.springsource.insight.intercept.resource.ResourceKey;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
-import com.springsource.insight.util.ListUtil;
 
 public abstract class AbstractJMSMetricsGenerator extends AbstractExternalResourceMetricsGenerator {
 	private static final String JMS_COUNT_SUFFIX = ":type=counter";
@@ -39,17 +34,7 @@ public abstract class AbstractJMSMetricsGenerator extends AbstractExternalResour
 	public final JMSPluginOperationType getJMSPluginOperationType () {
 		return jmsType;
 	}
-
-	@Override
-    protected Collection<MetricsBag> addExtraEndPointMetrics(Trace trace, ResourceKey endpointResourceKey, Collection<Frame> externalFrames) {
-		if (ListUtil.size(externalFrames) <= 0) {
-		    return Collections.emptyList();
-		}
-
-		MetricsBag    mb=MetricsBag.create(endpointResourceKey, trace.getRange());
-		addCounterMetricToBag(trace, mb, createMetricKey(), externalFrames.size());
-		return Collections.singletonList(mb);
-	}
+	
 
 	@Override
 	protected void addExtraFrameMetrics(Trace trace, Frame opTypeFrame, MetricsBag mb) {
