@@ -81,31 +81,6 @@ public abstract class AbstractJMSResourceAnalyzerTest extends Assert {
     }
 
     @Test
-    public void testLocateEndPoint() {
-        Trace trace = createValidTrace();
-        String label = "Queue#test.queue";
-
-        assertEndPoint(trace, label);
-    }
-
-    @Test
-    public void testLocateEndPointTemporaryQueue() {
-        Trace trace = createValidTrace(DestinationType.TemporaryQueue);
-        String typeLabel = DestinationType.TemporaryQueue.getLabel();
-
-        assertEndPoint(trace, typeLabel);
-    }
-
-    private void assertEndPoint(Trace trace, String typeLabel) {
-        EndPointAnalysis analysis = analyzer.locateEndPoint(trace);
-        assertNotNull("No analysis located", analysis);
-        assertEquals("Mismatched example", operationType.getEndPointPrefix() + typeLabel, analysis.getExample());
-        assertEquals("Mismatached endpoint", EndPointName.valueOf(typeLabel), analysis.getEndPointName());
-        assertEquals("Mismatched label", "JMS-" + typeLabel, analysis.getResourceLabel());
-        assertEquals("Mismatched score", AbstractJMSResourceAnalyzer.DEFAULT_SCORE, analysis.getScore());
-    }
-
-    @Test
     public void testLocateExternalResourceName() {
         Trace trace = createValidTrace();
         String label = "Queue#test.queue";
@@ -202,7 +177,7 @@ public abstract class AbstractJMSResourceAnalyzerTest extends Assert {
         .put("port", INTTEST_PORT);
 
         final Frame TEST_FRAME = new SimpleFrame(FrameId.valueOf("7365"), null, BASE_OP, new TimeRange(1L, 10L), Collections.<Frame> emptyList());
-        final Trace TEST_TRACE = new Trace(ServerName.valueOf("7.3.6.5"), INTTEST_APP, new Date(System.currentTimeMillis()), TraceId.valueOf("3777347"), TEST_FRAME);
+        //final Trace TEST_TRACE = new Trace(ServerName.valueOf("7.3.6.5"), INTTEST_APP, new Date(System.currentTimeMillis()), TraceId.valueOf("3777347"), TEST_FRAME);
         final ColorManager colorManager = ColorManager.getInstance();
 
         for (DestinationType destType : DestinationType.values()) {
@@ -218,8 +193,8 @@ public abstract class AbstractJMSResourceAnalyzerTest extends Assert {
             assertNotNull("No descriptor for " + destType + "[" + destName + "]", desc);
             System.out.append('\t').append(destType.name()).append('[').append(destName).append("]: ").println(desc);
 
-            EndPointAnalysis analysis = analyzer.locateEndPoint(TEST_TRACE);
-            assertNotNull("No analysis for " + destType + "[" + destName + "]", analysis);
+            //EndPointAnalysis analysis = analyzer.locateEndPoint(TEST_TRACE);
+            //assertNotNull("No analysis for " + destType + "[" + destName + "]", analysis);
         }
     }
 

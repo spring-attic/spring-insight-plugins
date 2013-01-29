@@ -29,22 +29,10 @@ public abstract class AbstractJMSMetricsGeneratorTest extends AbstractMetricsGen
     
 	@Override
 	protected void validateMetricsBags(List<MetricsBag> mbs) {
-		assertEquals(3, mbs.size());
+		assertEquals(2, mbs.size());
 		assertExternalResourceMetricBag(mbs.get(0));
 		assertExternalResourceMetricBag(mbs.get(1));
 
-		List<String> keys;
-		List<IDataPoint> points;
-		MetricsBag mb = mbs.get(2);
-		assertEquals("epName", mb.getResourceKey().getName());
-		keys = mb.getMetricKeys();
-		assertEquals(1, keys.size());
-
-		AbstractJMSMetricsGenerator	jmsGenerator=(AbstractJMSMetricsGenerator) gen;
-		assertTrue(keys.get(0).equals(jmsGenerator.createMetricKey()));        
-		points = mb.getPoints(jmsGenerator.createMetricKey());
-		assertEquals(1, points.size());
-		assertEquals(2d , points.get(0).getValue(), 0);
 	}
 
 	private void assertExternalResourceMetricBag(MetricsBag mb) {

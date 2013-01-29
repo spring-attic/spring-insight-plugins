@@ -25,10 +25,7 @@ import com.springsource.insight.util.ArrayUtil;
 public class JmsPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "jms";
     private static final JmsPluginRuntimeDescriptor	INSTANCE=new JmsPluginRuntimeDescriptor();
-    private static final List<? extends EndPointAnalyzer>	epAnalyzers=
-    		ArrayUtil.asUnmodifiableList(JMSConsumerResourceAnalyzer.getInstance(),
-             	   						 JMSMessageListenerResourceAnalyzer.getInstance(),
-             	   						 JMSProducerResourceAnalyzer.getInstance());
+    
 
     private JmsPluginRuntimeDescriptor () {
     	super();
@@ -36,11 +33,6 @@ public class JmsPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
 
     public static final JmsPluginRuntimeDescriptor getInstance() {
     	return INSTANCE;
-    }
-
-    @Override
-    public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
-        return epAnalyzers;
     }
 
     @Override
