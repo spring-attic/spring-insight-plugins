@@ -3,14 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.springsource.insight.plugins</groupId>
 	<artifactId>insight-plugin-spring-web</artifactId>
-	<version>1.9.2-CI-SNAPSHOT</version>
+	<version>1.9.2.RC1</version>
 	<name>com.springsource.insight.plugins:spring-web</name>
 	<packaging>jar</packaging>
 	
 	<parent>
 		<groupId>com.springsource.insight</groupId>
 		<artifactId>community-plugins</artifactId>
-		<version>1.9.2-CI-SNAPSHOT</version>
+		<version>1.9.2.RC1</version>
 		<relativePath>..</relativePath>
 	</parent>
 	

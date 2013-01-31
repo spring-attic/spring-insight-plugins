@@ -12,7 +12,7 @@
 	<parent>
 		<groupId>com.springsource.insight</groupId>
 		<artifactId>community-plugins</artifactId>
-		<version>1.9.2-CI-SNAPSHOT</version>
+		<version>1.9.2.RC1</version>
 		<relativePath>..</relativePath>
 	</parent>
 
