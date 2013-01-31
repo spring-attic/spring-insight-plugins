@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.springsource.insight</groupId>
     <artifactId>community</artifactId>
-    <version>1.9.2-CI-SNAPSHOT</version>
+    <version>1.9.3-CI-SNAPSHOT</version>
     <name>com.springsource.insight:parent</name>
     <description>Spring Insight parent project. Defines dependencies and common configuration for the build process.</description>
     <packaging>pom</packaging>

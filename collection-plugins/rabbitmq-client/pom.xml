@@ -4,13 +4,13 @@
 	<groupId>com.springsource.insight.plugins</groupId>
 	<artifactId>insight-plugin-rabbitmq-client</artifactId>
 	<name>com.springsource.insight.plugins:rabbitmq-client</name>
-	<version>1.9.2-CI-SNAPSHOT</version>
+	<version>1.9.3-CI-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>com.springsource.insight</groupId>
 		<artifactId>community-plugins</artifactId>
-		<version>1.9.2-CI-SNAPSHOT</version>
+		<version>1.9.3-CI-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
