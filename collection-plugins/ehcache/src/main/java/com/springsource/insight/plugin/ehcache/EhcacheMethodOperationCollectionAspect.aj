@@ -15,8 +15,6 @@
  */
 package com.springsource.insight.plugin.ehcache;
 
-import java.util.logging.Logger;
-
 import net.sf.ehcache.Ehcache;
 
 import com.springsource.insight.collection.DefaultOperationCollector;
@@ -29,9 +27,6 @@ import com.springsource.insight.util.StringUtil;
  *
  */
 public abstract aspect EhcacheMethodOperationCollectionAspect extends MethodOperationCollectionAspect {
-
-    protected final Logger logger = Logger.getLogger(getClass().getName());
-
     protected EhcacheMethodOperationCollectionAspect() {
         this(new DefaultOperationCollector());
     }
