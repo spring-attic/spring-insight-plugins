@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Logger;
 
 import org.eclipse.persistence.descriptors.ClassDescriptor;
 import org.eclipse.persistence.descriptors.partitioning.PartitioningPolicy;
@@ -58,12 +57,13 @@ import org.eclipse.persistence.sessions.UnitOfWork;
 import org.eclipse.persistence.sessions.coordination.CommandManager;
 import org.eclipse.persistence.sessions.factories.ReferenceMode;
 
+import com.springsource.insight.util.logging.AbstractLoggingClass;
+
 /**
  * 
  */
 @SuppressWarnings({ "rawtypes", "deprecation" }) 
-public class MockDatabaseSession implements DatabaseSession {
-    private final Logger    logger=Logger.getLogger(getClass().getName());
+public class MockDatabaseSession extends AbstractLoggingClass implements DatabaseSession {
     private Login   login;
 
     public MockDatabaseSession() {
@@ -180,7 +180,7 @@ public class MockDatabaseSession implements DatabaseSession {
     }
 
     public Object executeQuery(String queryName, Class domainClass, List argumentValues) {
-        logger.info("executeQuery(" + queryName + ")[" + domainClass.getName() + "]: " + argumentValues);
+        _logger.info("executeQuery(" + queryName + ")[" + domainClass.getName() + "]: " + argumentValues);
         return queryName;
     }
 
@@ -340,7 +340,7 @@ public class MockDatabaseSession implements DatabaseSession {
 
     public Object handleException(RuntimeException exception)
             throws RuntimeException {
-        logger.warning("handleException(" + exception.getClass().getSimpleName() + ")"
+        _logger.warning("handleException(" + exception.getClass().getSimpleName() + ")"
                      + ": " + exception.getMessage());
         throw exception;
     }
@@ -406,11 +406,11 @@ public class MockDatabaseSession implements DatabaseSession {
     }
 
     public void log(SessionLogEntry entry) {
-        logger.info("log(" + entry.getNameSpace() + ")[" + entry.getLevel() + "]: " + entry.getMessage());
+        _logger.info("log(" + entry.getNameSpace() + ")[" + entry.getLevel() + "]: " + entry.getMessage());
     }
 
     public void logMessage(String message) {
-        logger.info("logMessage() " + message);
+        _logger.info("logMessage() " + message);
     }
 
     public Vector readAllObjects(Class domainClass) throws DatabaseException {
@@ -450,7 +450,7 @@ public class MockDatabaseSession implements DatabaseSession {
     }
 
     public void release() {
-        logger.info("release()");
+        _logger.info("release()");
     }
 
     public void removeProperty(String property) {
@@ -519,7 +519,7 @@ public class MockDatabaseSession implements DatabaseSession {
 
     public Object handleSevere(RuntimeException exception)
             throws RuntimeException {
-        logger.severe("handleSevere(" + exception.getClass().getSimpleName() + ")"
+        _logger.severe("handleSevere(" + exception.getClass().getSimpleName() + ")"
                 + ": " + exception.getMessage());
         throw exception;
     }
@@ -557,11 +557,11 @@ public class MockDatabaseSession implements DatabaseSession {
     }
 
     public void beginTransaction() throws DatabaseException {
-        logger.info("beginTransaction()");
+        _logger.info("beginTransaction()");
     }
 
     public void commitTransaction() throws DatabaseException {
-        logger.info("commitTransaction()");
+        _logger.info("commitTransaction()");
     }
 
     public void deleteAllObjects(Collection domainObjects) {
@@ -603,11 +603,11 @@ public class MockDatabaseSession implements DatabaseSession {
 
     public void login(String userName, String password)
             throws DatabaseException {
-        logger.info("login(" + userName + ")[" + password + "]");
+        _logger.info("login(" + userName + ")[" + password + "]");
     }
 
     public void logout() throws DatabaseException {
-        logger.info("logout()");
+        _logger.info("logout()");
     }
 
     public Object refreshAndLockObject(Object object) {
@@ -619,7 +619,7 @@ public class MockDatabaseSession implements DatabaseSession {
     }
 
     public void rollbackTransaction() throws DatabaseException {
-        logger.info("rollbackTransaction()");
+        _logger.info("rollbackTransaction()");
     }
 
     public void setExternalTransactionController(ExternalTransactionController etc) {
