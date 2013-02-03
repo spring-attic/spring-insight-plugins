@@ -449,9 +449,8 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
             return this.server;
         }
 
-        @SuppressWarnings("hiding")
-        public void setServer(Server server) {
-            this.server = server;
+        public void setServer(Server serverInstance) {
+            this.server = serverInstance;
         }
 
         public void handle (String target, HttpServletRequest request,

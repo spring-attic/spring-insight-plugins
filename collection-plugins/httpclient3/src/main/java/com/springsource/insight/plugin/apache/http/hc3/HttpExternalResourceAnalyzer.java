@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzersRegistry;
 import com.springsource.insight.intercept.operation.Operation;
@@ -129,8 +128,7 @@ public class HttpExternalResourceAnalyzer extends AbstractExternalResourceAnalyz
                     color, false,
                     app, ser, ep, null);
         } catch (URISyntaxException e) {
-            Logger logger = Logger.getLogger(getClass().getName());
-            logger.warning("Failed to parse " + uriValue + ": " + e.getMessage());
+            _logger.warning("Failed to parse " + uriValue + ": " + e.getMessage());
             return null;
         }
     }
