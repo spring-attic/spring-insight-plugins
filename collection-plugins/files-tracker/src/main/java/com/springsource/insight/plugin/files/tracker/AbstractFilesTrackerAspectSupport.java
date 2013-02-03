@@ -23,7 +23,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.aspectj.lang.JoinPoint;
 
@@ -38,6 +37,8 @@ import com.springsource.insight.intercept.plugin.CollectionSettingsUpdateListene
 import com.springsource.insight.intercept.trace.FrameBuilder;
 import com.springsource.insight.util.StringFormatterUtils;
 import com.springsource.insight.util.StringUtil;
+import com.springsource.insight.util.logging.InsightLogManager;
+import com.springsource.insight.util.logging.InsightLogger;
 
 /**
  * 
@@ -71,7 +72,7 @@ public abstract class AbstractFilesTrackerAspectSupport extends OperationCollect
         registry.addListener(new CollectionSettingsUpdateListener() {
             @SuppressWarnings("synthetic-access")
             public void incrementalUpdate (CollectionSettingName name, Serializable value) {
-                Logger  LOG=Logger.getLogger(AbstractFilesTrackerAspectSupport.class.getName());
+                InsightLogger  LOG=InsightLogManager.getLogger(AbstractFilesTrackerAspectSupport.class.getName());
                 if (MAX_TRACKED_FILES_SETTING.equals(name)) {
                     int newCapacity=CollectionSettingsRegistry.getIntegerSettingValue(value);
                     if (newCapacity <= 0) {
@@ -91,7 +92,6 @@ public abstract class AbstractFilesTrackerAspectSupport extends OperationCollect
         });
     }
 
-    protected final Logger  logger=Logger.getLogger(getClass().getName()); 
     protected AbstractFilesTrackerAspectSupport () {
         super();
     }
@@ -180,8 +180,8 @@ public abstract class AbstractFilesTrackerAspectSupport extends OperationCollect
         }
 
         String  prev=trackedFilesMap.put(k, filePath);
-        if ((logLevel != null) && (!Level.OFF.equals(logLevel)) && logger.isLoggable(logLevel)) {
-            logger.log(logLevel, "mapOpenedFile(" + filePath + ")[" + mode + "]@" + k + " => " + prev);
+        if ((logLevel != null) && (!Level.OFF.equals(logLevel)) && _logger.isLoggable(logLevel)) {
+            _logger.log(logLevel, "mapOpenedFile(" + filePath + ")[" + mode + "]@" + k + " => " + prev);
         }
 
         return prev;
@@ -199,8 +199,8 @@ public abstract class AbstractFilesTrackerAspectSupport extends OperationCollect
         }
 
         String    filePath=trackedFilesMap.remove(k);
-        if ((logLevel != null) && (!Level.OFF.equals(logLevel)) && logger.isLoggable(logLevel)) {
-            logger.log(logLevel, "unmapClosedFile(" + k + "): " + filePath);
+        if ((logLevel != null) && (!Level.OFF.equals(logLevel)) && _logger.isLoggable(logLevel)) {
+            _logger.log(logLevel, "unmapClosedFile(" + k + "): " + filePath);
         }
 
         return filePath;
@@ -235,18 +235,18 @@ public abstract class AbstractFilesTrackerAspectSupport extends OperationCollect
         private static final long serialVersionUID = 1034264756856652293L;
 
         private volatile int   maxCapacity;
-        public FilesCache(@SuppressWarnings("hiding") int maxCapacity) {
-            super(maxCapacity);
-            this.maxCapacity = maxCapacity;
+        public FilesCache(int maxCapacityValue) {
+            super(maxCapacityValue);
+            this.maxCapacity = maxCapacityValue;
         }
 
         public int getMaxCapacity () {
             return this.maxCapacity;
         }
 
-        public int updateMaxCapacity (@SuppressWarnings("hiding") int maxCapacity) {
+        public int updateMaxCapacity (int maxCapacityValue) {
             int prev=this.maxCapacity;
-            this.maxCapacity = maxCapacity;
+            this.maxCapacity = maxCapacityValue;
             return prev;
         }
 
