@@ -21,7 +21,6 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.aspectj.lang.JoinPoint;
 
@@ -35,6 +34,7 @@ import com.springsource.insight.util.ArrayUtil;
 import com.springsource.insight.util.ExtraReflectionUtils;
 import com.springsource.insight.util.ReflectionUtils;
 import com.springsource.insight.util.StringUtil;
+import com.springsource.insight.util.logging.InsightLogManager;
 
 
 public aspect GemFireRemoteOperationCollectionAspect extends AbstractGemFireCollectionAspect {
@@ -145,18 +145,18 @@ public aspect GemFireRemoteOperationCollectionAspect extends AbstractGemFireColl
             Field field = ExtraReflectionUtils.getAccessibleField(AbstractOp.class, "msg");
             
             if (field == null) {
-                logger().warning("Unable to find AbstractOp#msg field");
+	            InsightLogManager.getLogger(GemFireRemoteOperationCollectionAspect.class.getName())
+								 .warning("Unable to find AbstractOp#msg field")
+								 ;
             }
             
             return field;
         } catch (Exception e) {
-            logger().log(Level.SEVERE, "Failed to find AbstractOp#msg field", e);
+        	InsightLogManager.getLogger(GemFireRemoteOperationCollectionAspect.class.getName())
+        					 .log(Level.SEVERE, "Failed to find AbstractOp#msg field", e)
+        					 ;
             return null;
         }
-    }
-    
-    private static Logger logger() {
-        return Logger.getLogger(GemFireRemoteOperationCollectionAspect.class.getName());
     }
     
 }
