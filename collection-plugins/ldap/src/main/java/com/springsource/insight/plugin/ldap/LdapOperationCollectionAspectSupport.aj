@@ -16,12 +16,12 @@
 package com.springsource.insight.plugin.ldap;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -48,6 +48,7 @@ import com.springsource.insight.intercept.trace.FrameBuilder;
 import com.springsource.insight.intercept.trace.ObscuredValueMarker;
 import com.springsource.insight.util.StringFormatterUtils;
 import com.springsource.insight.util.StringUtil;
+import com.springsource.insight.util.logging.InsightLogManager;
 
 /**
  * 
@@ -63,7 +64,6 @@ public abstract aspect LdapOperationCollectionAspectSupport
 
     protected final Class<? extends Context> contextClass;
     protected final String  action;
-    protected final Logger  logger=Logger.getLogger(getClass().getName());
     protected ObscuredValueMarker obscuredMarker =
             new FrameBuilderHintObscuredValueMarker(configuration.getFrameBuilder());
 
@@ -82,35 +82,38 @@ public abstract aspect LdapOperationCollectionAspectSupport
     // register a collection setting update listener to update the obfuscated properties
     static {
         CollectionSettingsRegistry registry = CollectionSettingsRegistry.getInstance();
-        registry.register(LDAP_OPERATIONS_LOG_SETTING, DEFAULT_LEVEL);
         registry.addListener(new CollectionSettingsUpdateListener() {
                 @SuppressWarnings("synthetic-access")
                 public void incrementalUpdate (CollectionSettingName name, Serializable value) {
-                    Logger   LOG=Logger.getLogger(LdapOperationCollectionAspectSupport.class.getName());
                     if (OBFUSCATED_PROPERTIES_SETTING.equals(name) && (value instanceof String)) {
-                       if (OBFUSCATED_PROPERTIES.size() > 0) { // check if replacing or populating
-                           LOG.info("incrementalUpdate(" + name + ")" + OBFUSCATED_PROPERTIES + " => [" + value + "]");
-                           OBFUSCATED_PROPERTIES.clear();
+                       Collection<String>	newNames=StringUtil.explode((String) value, ",");
+                       if ((newNames.size() != OBFUSCATED_PROPERTIES.size())
+                    	|| (!OBFUSCATED_PROPERTIES.containsAll(newNames))) {
+                    	   InsightLogManager.getLogger(LdapOperationCollectionAspectSupport.class.getName())
+   	   										.info("incrementalUpdate(" + name + ")" + OBFUSCATED_PROPERTIES + " => [" + value + "]")
+   	   										;
+                    	   OBFUSCATED_PROPERTIES.clear();
+                    	   OBFUSCATED_PROPERTIES.addAll(newNames);
                        }
-
-                       OBFUSCATED_PROPERTIES.addAll(StringUtil.explode((String) value, ","));
                     } else if (LDAP_OPERATIONS_LOG_SETTING.equals(name)) {
                         Level newValue=CollectionSettingsRegistry.getLogLevelSetting(value);
-                        LOG.info("incrementalUpdate(" + name + ") " + logLevel + " => " + newValue);
-                        logLevel = newValue;
-                    } else if (LOG.isLoggable(Level.FINE)) {
-                        LOG.fine("incrementalUpdate(" + name + ")[" + value + "] ignored");
+                        if (newValue != logLevel) {
+                        	InsightLogManager.getLogger(LdapOperationCollectionAspectSupport.class.getName())
+                        					 .info("incrementalUpdate(" + name + ") " + logLevel + " => " + newValue)
+                        					 ;
+                        	logLevel = newValue;
+                        }
                     }
                 }
             });
+        registry.register(LDAP_OPERATIONS_LOG_SETTING, DEFAULT_LEVEL);
         // NOTE: this also populates the initial set
         registry.register(OBFUSCATED_PROPERTIES_SETTING, DEFAULT_OBFUSCATED_PROPERTIES_LIST);
     }
 
-    @SuppressWarnings("hiding")
-    protected LdapOperationCollectionAspectSupport (Class<? extends Context> contextClass,  String action) {
-        this.contextClass = contextClass;
-        this.action = action;
+    protected LdapOperationCollectionAspectSupport (Class<? extends Context> ldapContextClass, String ldapAction) {
+        contextClass = ldapContextClass;
+        action = ldapAction;
     }
 
     void setSensitiveValueMarker(ObscuredValueMarker marker) {
@@ -198,7 +201,7 @@ public abstract aspect LdapOperationCollectionAspectSupport
     }
 
     boolean isLoggingEnabled () {
-        return (logLevel != null) && (!Level.OFF.equals(logLevel)) && logger.isLoggable(logLevel);
+        return (logLevel != null) && (!Level.OFF.equals(logLevel)) && _logger.isLoggable(logLevel);
     }
 
     String log (String msg) {
@@ -207,9 +210,9 @@ public abstract aspect LdapOperationCollectionAspectSupport
 
     String log (String msg, Throwable thrown) {
         if (thrown == null) {
-            logger.log(logLevel, msg);
+            _logger.log(logLevel, msg);
         } else {
-            logger.log(logLevel, msg, thrown);
+            _logger.log(logLevel, msg, thrown);
         }
         
         return msg;

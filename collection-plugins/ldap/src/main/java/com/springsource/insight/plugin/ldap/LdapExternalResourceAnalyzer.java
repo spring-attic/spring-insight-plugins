@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
@@ -90,8 +89,7 @@ public class LdapExternalResourceAnalyzer extends AbstractExternalResourceAnalyz
                             resolvePort(uri),
                             color, false);    
         } catch(URISyntaxException e) {
-        	 Logger    logger=Logger.getLogger(getClass().getName());
-			 logger.warning("Failed to parse " + uriValue + ": " + e.getMessage());
+			_logger.warning("Failed to parse " + uriValue + ": " + e.getMessage());
             return null;
         }
     }
