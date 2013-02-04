@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.aspectj.lang.JoinPoint;
 
@@ -290,16 +289,16 @@ public abstract class AbstractRabbitMQCollectionAspect extends OperationCollecti
     			return clazz;
         	} catch(Exception e) {
         		if (!(e instanceof ClassNotFoundException)) {
-        			Logger	LOG=Logger.getLogger(anchor.getName());
-        			LOG.warning("Failed (" + e.getClass().getSimpleName() + ")"
-        				      + " to load class=" + className
-        				      + ": " + e.getMessage()); 
+        			InsightLogManager.getLogger(anchor.getName())
+        							 .warning("Failed (" + e.getClass().getSimpleName() + ")"
+        									+ " to load class=" + className
+        									+ ": " + e.getMessage()); 
         		}
         	}
     	}
 
-		Logger	LOG=Logger.getLogger(anchor.getName());
-		LOG.warning("getLongStringClass(" + anchor.getSimpleName() + ") no match found");
+    	InsightLogManager.getLogger(anchor.getName())
+    					 .warning("getLongStringClass(" + anchor.getSimpleName() + ") no match found");
 		longStringClassHolder.set(String.class);	// avoid repeated load attempts and use an incompatible class
 		return null;
 	}
