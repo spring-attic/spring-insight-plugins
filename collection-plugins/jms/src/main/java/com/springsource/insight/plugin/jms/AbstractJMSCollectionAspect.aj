@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.logging.Logger;
 
 import javax.jms.Destination;
 import javax.jms.JMSException;
@@ -42,6 +41,7 @@ import com.springsource.insight.intercept.plugin.CollectionSettingsUpdateListene
 import com.springsource.insight.intercept.trace.ObscuredValueMarker;
 import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.StringUtil;
+import com.springsource.insight.util.logging.InsightLogManager;
 
 public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAspectSupport {
     private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
@@ -75,9 +75,10 @@ public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAs
             return;
         }
 
-        Logger	LOG=Logger.getLogger(AbstractJMSCollectionAspect.class.getName());
         if (nameSet.size() > 0) {
-            LOG.info("updateObscuredSettings(" + name + ")" + nameSet + " => [" + value + "]");
+            InsightLogManager.getLogger(AbstractJMSCollectionAspect.class.getName())
+            				 .info("updateObscuredSettings(" + name + ")" + nameSet + " => [" + value + "]")
+            				 ;
             nameSet.clear();
         }
 

@@ -16,7 +16,6 @@
 package com.springsource.insight.plugin.jms;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -26,13 +25,10 @@ import org.junit.Test;
 
 import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.color.ColorManager;
-import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
-import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationType;
-import com.springsource.insight.intercept.server.ServerName;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;

@@ -22,8 +22,8 @@ enum DeliveryModeType {
     
     private String label;
     
-    DeliveryModeType(@SuppressWarnings("hiding") String label) {
-        this.label = label;
+    DeliveryModeType(String labelValue) {
+        this.label = labelValue;
     }
 
     public String getLabel() {

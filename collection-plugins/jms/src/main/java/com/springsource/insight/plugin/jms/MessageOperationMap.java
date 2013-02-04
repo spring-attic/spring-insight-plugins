@@ -53,11 +53,11 @@ class MessageOperationMap {
     /**
      * Create a map with a given limit
      * 
-     * @param limit map size limit
+     * @param mapLimit map size limit
      */
-    MessageOperationMap(@SuppressWarnings("hiding") int limit) {
+    MessageOperationMap(int mapLimit) {
         this.map = Collections.synchronizedMap(new HashMap<MessageWrapper, Operation>());
-        this.limit = limit;
+        this.limit = mapLimit;
         this.semaphore = new Semaphore(1);
     }
     

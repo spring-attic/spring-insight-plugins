@@ -26,11 +26,10 @@ enum JMSPluginOperationType {
     private String label;
     private String endPointPrefix;
     
-    @SuppressWarnings("hiding")
-    private JMSPluginOperationType(String operationTypeName, String label, String endPointPrefix) {
-        this.operationType = OperationType.valueOf(operationTypeName);
-        this.label = label;
-        this.endPointPrefix = endPointPrefix;
+    private JMSPluginOperationType(String operationTypeName, String labelValue, String epPrefix) {
+        operationType = OperationType.valueOf(operationTypeName);
+        label = labelValue;
+        endPointPrefix = epPrefix;
     }
     
     public OperationType getOperationType() {
