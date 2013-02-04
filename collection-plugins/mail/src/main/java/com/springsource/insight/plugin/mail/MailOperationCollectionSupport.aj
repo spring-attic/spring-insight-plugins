@@ -16,8 +16,6 @@
 
 package com.springsource.insight.plugin.mail;
 
-import java.util.logging.Logger;
-
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -67,8 +65,7 @@ public abstract aspect MailOperationCollectionSupport extends MethodOperationCol
 	        		 .put("size", msg.getSize())
 	        		 ;
     	} catch(MessagingException e) {
-        	Logger    logger=Logger.getLogger(getClass().getName());
-            logger.warning(e.getClass().getSimpleName() + " while add message details " + e.getMessage());
+            _logger.warning(e.getClass().getSimpleName() + " while add message details " + e.getMessage());
     		return op;
     	}
     }
@@ -85,15 +82,13 @@ public abstract aspect MailOperationCollectionSupport extends MethodOperationCol
         try {
             addAddresses(op.createList(MailDefinitions.SEND_SENDERS), msg.getFrom());
         } catch(MessagingException e) {
-        	Logger    logger=Logger.getLogger(getClass().getName());
-            logger.warning(e.getClass().getSimpleName() + " while get senders: " + e.getMessage());
+        	_logger.warning(e.getClass().getSimpleName() + " while get senders: " + e.getMessage());
         }
 
         try {
         	addAddresses(op.createList(MailDefinitions.SEND_RECIPS), msg.getAllRecipients());
         } catch(MessagingException e) {
-        	Logger    logger=Logger.getLogger(getClass().getName());
-            logger.warning(e.getClass().getSimpleName() + " while get recipients: " + e.getMessage());
+        	_logger.warning(e.getClass().getSimpleName() + " while get recipients: " + e.getMessage());
         }
         
         return op;
