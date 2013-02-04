@@ -17,7 +17,6 @@ package com.springsource.insight.plugin.runexec;
 
 import java.lang.reflect.Field;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
@@ -27,7 +26,6 @@ import org.aspectj.lang.annotation.SuppressAjWarnings;
  */
 public aspect ThreadStartCollectionAspect extends ExecuteMethodCollectionAspect {
     private Field targetField;  // TODO check what happens if JDK version changes
-    protected final Logger  logger=Logger.getLogger(getClass().getName());
 
     public ThreadStartCollectionAspect () {
         try {
@@ -36,10 +34,10 @@ public aspect ThreadStartCollectionAspect extends ExecuteMethodCollectionAspect 
                 targetField.setAccessible(true);
             }
         } catch(Exception e) {
-            logger.log(Level.SEVERE,
-                       "Failed (" + e.getClass().getSimpleName()
-                        + " to extract thread target field: " + e.getMessage(),
-                       e);
+            _logger.log(Level.SEVERE,
+                        "Failed (" + e.getClass().getSimpleName()
+                      + " to extract thread target field: " + e.getMessage(),
+                        e);
             targetField = null;
         }
     }
@@ -99,9 +97,9 @@ public aspect ThreadStartCollectionAspect extends ExecuteMethodCollectionAspect 
         try {
             return (Runnable) targetField.get(thread);
         } catch(Exception e) {
-            logger.log(Level.SEVERE,
+            _logger.log(Level.SEVERE,
                         "Failed (" + e.getClass().getSimpleName()
-                         + " to extract thread target value: " + e.getMessage(),
+                      + " to extract thread target value: " + e.getMessage(),
                         e);
             return null;
         }

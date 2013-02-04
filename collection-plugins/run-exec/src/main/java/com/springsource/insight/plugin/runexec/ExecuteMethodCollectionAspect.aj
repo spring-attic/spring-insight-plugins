@@ -65,11 +65,11 @@ public abstract aspect ExecuteMethodCollectionAspect
     }
 
     RunnableResolver getRunnableResolver () {
-        return this.resolver;
+        return resolver;
     }
 
-    void setRunnableResolver (@SuppressWarnings("hiding") RunnableResolver resolver) {
-        if ((this.resolver=resolver) == null) {
+    void setRunnableResolver (RunnableResolver resolverInstance) {
+        if ((resolver=resolverInstance) == null) {
             throw new IllegalStateException("No resolver set");
         }
     }
