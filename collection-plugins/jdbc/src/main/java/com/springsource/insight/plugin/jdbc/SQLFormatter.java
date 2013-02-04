@@ -121,30 +121,30 @@ public class SQLFormatter {
     }
 
     /**
-     * If true, then try to parse multi-line SQL statements.
+     * @param asMultiLine If true, then try to parse multi-line SQL statements.
      */
-    public void setMultiLine(@SuppressWarnings("hiding") boolean multiLine) {
-        this.multiLine = multiLine;
+    public void setMultiLine(boolean asMultiLine) {
+        this.multiLine = asMultiLine;
     }
 
     /**
-     * If true, then try to parse multi-line SQL statements.
+     * @return If true, then try to parse multi-line SQL statements.
      */
-    public boolean getMultiLine() {
+    public boolean isMultiLine() {
         return this.multiLine;
     }
 
     /**
-     * If true, then output two lines after multi-line statements.
+     * @param useDoubleSpace If true, then output two lines after multi-line statements.
      */
-    public void setDoubleSpace(@SuppressWarnings("hiding") boolean doubleSpace) {
-        this.doubleSpace = doubleSpace;
+    public void setDoubleSpace(boolean useDoubleSpace) {
+        this.doubleSpace = useDoubleSpace;
     }
 
     /**
-     * If true, then output two lines after multi-line statements.
+     * @return If true, then output two lines after multi-line statements.
      */
-    public boolean getDoubleSpace() {
+    public boolean isDoubleSpace() {
         return this.doubleSpace;
     }
 
@@ -169,7 +169,7 @@ public class SQLFormatter {
                 sql.delete(0, line.length());
 
                 buf.append(prettyPrintLine(line));
-                for (int i = 0; i < 1 + (getDoubleSpace() ? 1 : 0); i++)
+                for (int i = 0; i < 1 + (isDoubleSpace() ? 1 : 0); i++)
                     buf.append(newline);
             }
 

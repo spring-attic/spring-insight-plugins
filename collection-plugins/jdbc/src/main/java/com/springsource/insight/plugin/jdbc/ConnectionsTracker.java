@@ -25,7 +25,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.aspectj.lang.JoinPoint;
 
@@ -35,13 +34,14 @@ import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.plugin.CollectionSettingName;
 import com.springsource.insight.intercept.plugin.CollectionSettingsRegistry;
 import com.springsource.insight.intercept.plugin.CollectionSettingsUpdateListener;
+import com.springsource.insight.util.logging.AbstractLoggingClass;
 
 /**
  * A rather simplistic LRU cache that tracks {@link Connection}-s created
  * by a JDBC {@link java.sql.Driver} so that we can mark the {@link Connection#close()}
  * operation with the URL that was to open it.
  */
-class ConnectionsTracker implements CollectionSettingsUpdateListener {
+class ConnectionsTracker extends AbstractLoggingClass implements CollectionSettingsUpdateListener {
     /**
      * Default initial LRU capacity
      */
@@ -66,7 +66,6 @@ class ConnectionsTracker implements CollectionSettingsUpdateListener {
                         return size() > getMaxCapacity();
                     }
             });
-    private final Logger    logger=Logger.getLogger(getClass().getName());
     private static final ConnectionsTracker INSTANCE=new ConnectionsTracker();
 
     protected static final CollectionSettingName    MAX_TRACKED_CONNECTIONS_SETTING =
@@ -108,8 +107,8 @@ class ConnectionsTracker implements CollectionSettingsUpdateListener {
     String startTracking (Connection conn, String url) {
         CacheKey    key=new CacheKey(conn);
         String      prev=trackedMap.put(key, (url == null) ? "" : url);
-        if ((logLevel != null) && (!Level.OFF.equals(logLevel)) && logger.isLoggable(logLevel)) {
-            logger.log(logLevel, "startTracking(" + key + ")[" + url + "] => " + prev);
+        if ((logLevel != null) && (!Level.OFF.equals(logLevel)) && _logger.isLoggable(logLevel)) {
+            _logger.log(logLevel, "startTracking(" + key + ")[" + url + "] => " + prev);
         }
         return prev;
     }
@@ -122,8 +121,8 @@ class ConnectionsTracker implements CollectionSettingsUpdateListener {
     String stopTracking (Connection conn) {
         CacheKey    key=new CacheKey(conn);
         String      url=trackedMap.remove(key);
-        if ((logLevel != null) && (!Level.OFF.equals(logLevel)) && logger.isLoggable(logLevel)) {
-            logger.log(logLevel, "stopTracking(" + key + ") => " + url);
+        if ((logLevel != null) && (!Level.OFF.equals(logLevel)) && _logger.isLoggable(logLevel)) {
+            _logger.log(logLevel, "stopTracking(" + key + ") => " + url);
         }
         return url;
     }
@@ -188,13 +187,13 @@ class ConnectionsTracker implements CollectionSettingsUpdateListener {
             
             int oldCapacity=maxCapacity;
             maxCapacity = newCapacity;
-            logger.info("incrementalUpdate(" + name + ") " + oldCapacity + " => " + maxCapacity);
+            _logger.info("incrementalUpdate(" + name + ") " + oldCapacity + " => " + maxCapacity);
         } else if (CONNECTION_TRACKING_LOGGING_SETTING.equals(name)) {
             Level   oldLevel=logLevel;
             logLevel = CollectionSettingsRegistry.getLogLevelSetting(value);
-            logger.info("incrementalUpdate(" + name + ") " + oldLevel + " => " + logLevel);
-        } else if (logger.isLoggable(Level.FINE)) {
-            logger.fine("incrementalUpdate(" + name + ")[" + value + "] ignored");
+            _logger.info("incrementalUpdate(" + name + ") " + oldLevel + " => " + logLevel);
+        } else if (_logger.isLoggable(Level.FINE)) {
+            _logger.fine("incrementalUpdate(" + name + ")[" + value + "] ignored");
         }
     }
 

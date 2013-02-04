@@ -24,7 +24,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.aspectj.lang.JoinPoint;
 
@@ -41,6 +40,8 @@ import com.springsource.insight.intercept.trace.FrameBuilder;
 import com.springsource.insight.intercept.trace.ObscuredValueMarker;
 import com.springsource.insight.util.MapUtil;
 import com.springsource.insight.util.StringUtil;
+import com.springsource.insight.util.logging.InsightLogManager;
+import com.springsource.insight.util.logging.InsightLogger;
 
 /**
  * Captures the calls to {@link Driver#connect(String, java.util.Properties)}
@@ -69,7 +70,7 @@ public aspect JdbcDriverConnectOperationCollectionAspect extends AbstractOperati
         CollectionSettingsRegistry registry = CollectionSettingsRegistry.getInstance();
         registry.addListener(new CollectionSettingsUpdateListener() {
                 public void incrementalUpdate (CollectionSettingName name, Serializable value) {
-                   Logger   LOG=Logger.getLogger(JdbcDriverConnectOperationCollectionAspect.class.getName());
+                   InsightLogger   LOG=InsightLogManager.getLogger(JdbcDriverConnectOperationCollectionAspect.class.getName());
                    if (OBFUSCATED_PROPERTIES_SETTING.equals(name) && (value instanceof String)) {
                        if (OBFUSCATED_PROPERTIES.size() > 0) { // check if replacing or populating
                            LOG.info("incrementalUpdate(" + name + ")" + OBFUSCATED_PROPERTIES + " => [" + value + "]");
