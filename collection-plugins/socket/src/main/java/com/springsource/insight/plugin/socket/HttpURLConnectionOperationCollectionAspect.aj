@@ -86,8 +86,8 @@ public aspect HttpURLConnectionOperationCollectionAspect
 
                 OperationUtils.addNameValuePair(headers, name, value);
 
-                if (context.updateObscuredHeaderValue(name, value) && logger.isLoggable(Level.FINE)) {
-                   logger.fine("fillInMessageHeaders(" + name + ") obscured: " + value);
+                if (context.updateObscuredHeaderValue(name, value) && _logger.isLoggable(Level.FINE)) {
+                   _logger.fine("fillInMessageHeaders(" + name + ") obscured: " + value);
                 }
             }
         }

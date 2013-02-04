@@ -20,13 +20,14 @@ import java.net.Socket;
 import java.nio.channels.SocketChannel;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.aspectj.lang.JoinPoint;
 
 import com.springsource.insight.collection.DefaultOperationCollector;
 import com.springsource.insight.collection.OperationCollector;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.util.logging.InsightLogManager;
+import com.springsource.insight.util.logging.InsightLogger;
 
 /**
  * A &quot;replacement&quot; for the {@link OperationCollector} used by the
@@ -37,7 +38,7 @@ import com.springsource.insight.intercept.operation.Operation;
  */
 public class SocketAcceptOperationCollector extends DefaultOperationCollector {
     private final SocketCollectOperationContext    collectionContext;
-    private final Logger logger=Logger.getLogger(getClass().getName());
+    private final InsightLogger logger=InsightLogManager.getLogger(getClass().getName());
     public SocketAcceptOperationCollector (SocketCollectOperationContext context) {
         collectionContext = context;
     }

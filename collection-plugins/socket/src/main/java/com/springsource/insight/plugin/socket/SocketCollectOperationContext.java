@@ -16,7 +16,6 @@
 package com.springsource.insight.plugin.socket;
 
 import java.io.Serializable;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,6 +25,7 @@ import com.springsource.insight.intercept.plugin.CollectionSettingsRegistry;
 import com.springsource.insight.intercept.plugin.CollectionSettingsUpdateListener;
 import com.springsource.insight.intercept.trace.ObscuredValueMarker;
 import com.springsource.insight.util.StringUtil;
+import com.springsource.insight.util.logging.InsightLogManager;
 
 /**
  * Need it as a separate class mainly due to testing issues - but it is also more convenient
@@ -60,16 +60,16 @@ class SocketCollectOperationContext implements CollectionSettingsUpdateListener 
 
     public void incrementalUpdate(CollectionSettingName name, Serializable value) {
         if (OBSCURED_ADDRESSES_PATTERN_SETTING.equals(name)) {
-            Logger  	LOG=Logger.getLogger(getClass().getName());
             String		curValue=(obscuredAddressesPattern == null) ? NO_PATTERN_VALUE : obscuredAddressesPattern.pattern();
             String		newValue=StringUtil.safeToString(value);
             if (StringUtil.safeCompare(curValue, newValue) != 0) {
                 Pattern  	newPattern=(StringUtil.isEmpty(newValue) || NO_PATTERN_VALUE.equalsIgnoreCase(newValue))
-                        ? null
+                        		? null
                                 : CollectionSettingsRegistry.getPatternSettingValue(value)
                                 ;
-                LOG.info("incrementalUpdate(" + name + "): " + curValue + " => " + newValue);
-                obscuredAddressesPattern = newPattern;
+            	InsightLogManager.getLogger(getClass().getName())
+            				 	 .info("incrementalUpdate(" + name + "): " + curValue + " => " + newValue);
+            	obscuredAddressesPattern = newPattern;
             }
         } else if (HttpObfuscator.OBFUSCATED_HEADERS_SETTING.equals(name)) {
             obfuscator.incrementalUpdate(name, value);	// make sure change is propagated

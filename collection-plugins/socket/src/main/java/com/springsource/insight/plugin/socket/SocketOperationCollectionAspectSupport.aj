@@ -16,7 +16,6 @@
 package com.springsource.insight.plugin.socket;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
 import com.springsource.insight.intercept.InterceptConfiguration;
@@ -30,7 +29,6 @@ public abstract aspect SocketOperationCollectionAspectSupport
                 extends MethodOperationCollectionAspect {
     private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
     private SocketCollectOperationContext collectContext=new SocketCollectOperationContext();
-    protected final Logger  logger=Logger.getLogger(getClass().getName());
 
     protected SocketOperationCollectionAspectSupport() {
         super();
@@ -47,8 +45,8 @@ public abstract aspect SocketOperationCollectionAspectSupport
     protected Operation createOperation (Operation op, String action, String addr, int port) {
     	SocketCollectOperationContext	context=getSocketCollectOperationContext();
         if (context.updateObscuredAddressValue(addr)) {
-            if (logger.isLoggable(Level.FINE)) {
-                logger.fine("createOperation(" + action + ") obscured: " + addr);
+            if (_logger.isLoggable(Level.FINE)) {
+                _logger.fine("createOperation(" + action + ") obscured: " + addr);
             }
         }
 
