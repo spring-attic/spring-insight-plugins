@@ -15,8 +15,6 @@
  */
 package com.springsource.insight.plugin.mail;
 
-import java.util.logging.Logger;
-
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -53,8 +51,7 @@ public aspect MessageSendOperationCollectionAspect extends MailOperationCollecti
             try {
                 addAddresses(op.createList(MailDefinitions.SEND_SENDERS), msg.getFrom());
             } catch(MessagingException e) {
-            	Logger    logger=Logger.getLogger(getClass().getName());
-                logger.warning(e.getClass().getSimpleName() + " while get senders: " + e.getMessage());
+                _logger.warning(e.getClass().getSimpleName() + " while get senders: " + e.getMessage());
             }
 
             // TODO consider using getRecipients(RecipientType) call instead
