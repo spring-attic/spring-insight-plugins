@@ -18,12 +18,12 @@ package com.springsource.insight.plugin.jdbc;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.Driver;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Level;
 
 import org.aspectj.lang.JoinPoint;
 
@@ -70,19 +70,19 @@ public aspect JdbcDriverConnectOperationCollectionAspect extends AbstractOperati
         CollectionSettingsRegistry registry = CollectionSettingsRegistry.getInstance();
         registry.addListener(new CollectionSettingsUpdateListener() {
                 public void incrementalUpdate (CollectionSettingName name, Serializable value) {
-                   InsightLogger   LOG=InsightLogManager.getLogger(JdbcDriverConnectOperationCollectionAspect.class.getName());
                    if (OBFUSCATED_PROPERTIES_SETTING.equals(name) && (value instanceof String)) {
-                       if (OBFUSCATED_PROPERTIES.size() > 0) { // check if replacing or populating
+                       Collection<String>	newValues=StringUtil.explode((String) value, ",", true, true);
+                       if ((OBFUSCATED_PROPERTIES.size() != newValues.size())
+                        || (!OBFUSCATED_PROPERTIES.containsAll(newValues))) {
+                           InsightLogger   LOG=InsightLogManager.getLogger(JdbcDriverConnectOperationCollectionAspect.class.getName());
                            LOG.info("incrementalUpdate(" + name + ")" + OBFUSCATED_PROPERTIES + " => [" + value + "]");
                            OBFUSCATED_PROPERTIES.clear();
+                    	   OBFUSCATED_PROPERTIES.addAll(newValues);
                        }
-
-                       OBFUSCATED_PROPERTIES.addAll(StringUtil.explode((String) value, ","));
-                   } else if (LOG.isLoggable(Level.FINE)) {
-                       LOG.fine("incrementalUpdate(" + name + ")[" + value + "] ignored");
                    }
                 }
             });
+        registry.register(OBFUSCATED_PROPERTIES_SETTING, DEFAULT_OBFUSCATED_PROPERTIES_LIST);
     }
 
     private ObscuredValueMarker obscuredMarker =
