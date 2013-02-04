@@ -75,14 +75,14 @@ public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAs
             return;
         }
 
-        if (nameSet.size() > 0) {
+        Set<String>	newNames=toHeaderNameSet((String) value);
+        if ((nameSet.size() != newNames.size()) || (!nameSet.containsAll(newNames))) {
             InsightLogManager.getLogger(AbstractJMSCollectionAspect.class.getName())
-            				 .info("updateObscuredSettings(" + name + ")" + nameSet + " => [" + value + "]")
-            				 ;
+			 				 .info("updateObscuredSettings(" + name + ")" + nameSet + " => [" + value + "]")
+			 				 ;
             nameSet.clear();
+            nameSet.addAll(newNames);
         }
-
-        nameSet.addAll(toHeaderNameSet((String) value));
     }
 
     static Set<String> toHeaderNameSet (String value) {
