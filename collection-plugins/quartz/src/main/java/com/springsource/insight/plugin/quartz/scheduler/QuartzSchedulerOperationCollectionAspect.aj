@@ -16,7 +16,6 @@
 package com.springsource.insight.plugin.quartz.scheduler;
 
 import java.util.Date;
-import java.util.logging.Logger;
 
 import org.aspectj.lang.JoinPoint;
 
@@ -33,7 +32,6 @@ import com.springsource.insight.util.StringUtil;
  */
 public aspect QuartzSchedulerOperationCollectionAspect extends MethodOperationCollectionAspect {
     private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
-    private final Logger	logger=Logger.getLogger(getClass().getName());
 
     public QuartzSchedulerOperationCollectionAspect () {
     	super();
@@ -60,15 +58,15 @@ public aspect QuartzSchedulerOperationCollectionAspect extends MethodOperationCo
 	          .putAnyNonEmpty("nextFireTime", safeCloneDate(contextAccessor.getNextFireTime(context)))
 	          ;
     	} catch(Error e) {
-    		logger.warning("Failed (" + e.getClass().getSimpleName() + ")"
-    				     + " to populate context values: " + e.getMessage());
+    		_logger.warning("Failed (" + e.getClass().getSimpleName() + ")"
+    				      + " to populate context values: " + e.getMessage());
     	}
 
         Object	jobDetail=contextAccessor.getJobDetail(context);
         try {
         	createOperationJobDetail(op, jobDetail);
     	} catch(Error e) {
-    		logger.warning("Failed (" + e.getClass().getSimpleName() + ")"
+    		_logger.warning("Failed (" + e.getClass().getSimpleName() + ")"
     				     + " to populate job details values: " + e.getMessage());
     	}
 
@@ -76,8 +74,8 @@ public aspect QuartzSchedulerOperationCollectionAspect extends MethodOperationCo
             try {
             	createOperationTrigger(op, contextAccessor.getTrigger(context), jobDetail);
         	} catch(Error e) {
-        		logger.warning("Failed (" + e.getClass().getSimpleName() + ")"
-        				     + " to populate trigger values: " + e.getMessage());
+        		_logger.warning("Failed (" + e.getClass().getSimpleName() + ")"
+        				      + " to populate trigger values: " + e.getMessage());
         	}
         }
 

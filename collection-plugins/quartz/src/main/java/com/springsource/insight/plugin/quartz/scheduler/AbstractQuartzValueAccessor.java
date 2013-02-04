@@ -15,15 +15,15 @@
  */
 package com.springsource.insight.plugin.quartz.scheduler;
 
-import java.util.logging.Logger;
-
+import com.springsource.insight.util.logging.InsightLogManager;
+import com.springsource.insight.util.logging.InsightLogger;
 import com.springsource.insight.util.props.BeanPropertiesSource;
 
 /**
  * 
  */
 public abstract class AbstractQuartzValueAccessor extends BeanPropertiesSource {
-	protected final Logger	logger=Logger.getLogger(getClass().getName());
+	protected final InsightLogger	logger=InsightLogManager.getLogger(getClass().getName());
 	protected AbstractQuartzValueAccessor (String beanClass) {
 		super(beanClass, QuartzSchedulerDefinitions.class, true);
 	}
