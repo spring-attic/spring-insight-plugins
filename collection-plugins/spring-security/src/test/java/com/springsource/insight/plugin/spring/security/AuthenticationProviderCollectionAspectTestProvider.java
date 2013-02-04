@@ -31,8 +31,8 @@ import org.springframework.security.core.GrantedAuthority;
 public class AuthenticationProviderCollectionAspectTestProvider implements AuthenticationProvider {
     private final Logger    logger=Logger.getLogger(getClass().getName());
     private final boolean   useAuthCopy;
-    public AuthenticationProviderCollectionAspectTestProvider(@SuppressWarnings("hiding") final boolean useAuthCopy) {
-        this.useAuthCopy = useAuthCopy;
+    public AuthenticationProviderCollectionAspectTestProvider(final boolean copyAuth) {
+        useAuthCopy = copyAuth;
     }
 
     public Authentication authenticate(Authentication authentication)

@@ -29,8 +29,8 @@ import org.springframework.security.core.AuthenticationException;
 public class AuthenticationTestManager implements AuthenticationManager {
     private final Logger    logger=Logger.getLogger(getClass().getName());
     private final boolean   useAuthCopy;
-    public AuthenticationTestManager(@SuppressWarnings("hiding") final boolean useAuthCopy) {
-        this.useAuthCopy = useAuthCopy;
+    public AuthenticationTestManager(final boolean copyAuth) {
+        useAuthCopy = copyAuth;
     }
 
     public Authentication authenticate(Authentication authentication)

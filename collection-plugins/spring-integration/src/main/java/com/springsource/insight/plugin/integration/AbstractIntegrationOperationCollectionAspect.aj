@@ -19,7 +19,6 @@ package com.springsource.insight.plugin.integration;
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.springframework.integration.Message;
 import org.springframework.integration.MessageHeaders;
@@ -30,6 +29,7 @@ import com.springsource.insight.intercept.color.ColorManager.ColorParams;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.util.ExtraReflectionUtils;
 import com.springsource.insight.util.ReflectionUtils;
+import com.springsource.insight.util.logging.InsightLogManager;
 
 /**
  * 
@@ -38,8 +38,9 @@ public abstract aspect AbstractIntegrationOperationCollectionAspect extends Abst
 	private static final Field	headersMapField;
 	static {
 		if ((headersMapField=ExtraReflectionUtils.getAccessibleField(MessageHeaders.class, "headers", Map.class)) == null) {
-			Logger	logger=Logger.getLogger(AbstractIntegrationOperationCollectionAspect.class.getName());
-			logger.warning("Cannot find message headers field");
+			InsightLogManager.getLogger(AbstractIntegrationOperationCollectionAspect.class.getName())
+							 .warning("Cannot find message headers field")
+							 ;
 		}
 	}
 
@@ -64,20 +65,19 @@ public abstract aspect AbstractIntegrationOperationCollectionAspect extends Abst
 				}
 
 				try {
+					@SuppressWarnings("unchecked")
 					Map<String, Object>	map=(Map<String, Object>) ReflectionUtils.getField(headersMapField, hdrs);
 					Object				prev=map.put(key, value);
 					if (prev != null) {
-						Logger	logger=Logger.getLogger(AbstractIntegrationOperationCollectionAspect.class.getName());
-						if (logger.isLoggable(Level.FINE)) {
-							logger.fine("colorForward(" + key + ")[" + prev + "] => " + value);
+						if (_logger.isLoggable(Level.FINE)) {
+							_logger.fine("colorForward(" + key + ")[" + prev + "] => " + value);
 						}
 					}
 				} catch(RuntimeException e) {
-					Logger	logger=Logger.getLogger(AbstractIntegrationOperationCollectionAspect.class.getName());
-					if (logger.isLoggable(Level.FINE)) {
-						logger.fine("colorForward(" + key + ")[" + value + "]"
-								+ " failed (" + e.getClass().getSimpleName() + ")"
-								+ " to access headers field: " + e.getMessage());
+					if (_logger.isLoggable(Level.FINE)) {
+						_logger.fine("colorForward(" + key + ")[" + value + "]"
+								   + " failed (" + e.getClass().getSimpleName() + ")"
+								   + " to access headers field: " + e.getMessage());
 					}
 				}
 			}
