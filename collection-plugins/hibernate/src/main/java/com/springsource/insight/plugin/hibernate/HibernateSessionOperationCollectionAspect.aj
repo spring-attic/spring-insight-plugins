@@ -17,7 +17,6 @@ package com.springsource.insight.plugin.hibernate;
 
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Logger;
 
 import org.aspectj.lang.JoinPoint;
 import org.hibernate.Session;
@@ -115,8 +114,7 @@ public aspect HibernateSessionOperationCollectionAspect
             boolean	newValue=CollectionSettingsRegistry.getBooleanSettingValue(value);
             boolean	prevValue=collectStatistics.getAndSet(newValue);
             if (prevValue != newValue) {
-            	Logger	logger=Logger.getLogger(getClass().getName());
-            	logger.info("incrementalUpdate(" + name + ") " + prevValue + " => " + newValue);
+            	_logger.info("incrementalUpdate(" + name + ") " + prevValue + " => " + newValue);
             }
         }
    }
