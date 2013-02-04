@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
@@ -100,9 +99,8 @@ public class ClientHttpRequestExternalResourceAnalyzer extends AbstractExternalR
 					  							  color,
 					  							  false);
 		} catch(URISyntaxException e) {
-			Logger	LOG=Logger.getLogger(getClass().getName());
-			if (LOG.isLoggable(Level.FINE)) {
-				LOG.fine("createExternalResourceDescriptor(" + url + "): " + e.getMessage());
+			if (_logger.isLoggable(Level.FINE)) {
+				_logger.fine("createExternalResourceDescriptor(" + url + "): " + e.getMessage());
 			}
 			
 			return null;
