@@ -70,26 +70,30 @@ public abstract class AbstractFilesTrackerAspectSupport extends OperationCollect
     static {
         CollectionSettingsRegistry registry = CollectionSettingsRegistry.getInstance();
         registry.addListener(new CollectionSettingsUpdateListener() {
-            @SuppressWarnings("synthetic-access")
-            public void incrementalUpdate (CollectionSettingName name, Serializable value) {
-                InsightLogger  LOG=InsightLogManager.getLogger(AbstractFilesTrackerAspectSupport.class.getName());
-                if (MAX_TRACKED_FILES_SETTING.equals(name)) {
-                    int newCapacity=CollectionSettingsRegistry.getIntegerSettingValue(value);
-                    if (newCapacity <= 0) {
-                        throw new IllegalArgumentException("Negative capacity N/A: " + value);
-                    }
-                    
-                    int     prevCapacity=filesCache.updateMaxCapacity(newCapacity);
-                    LOG.info("incrementalUpdate(" + name + ") " + prevCapacity + " => " + newCapacity);
-                } else if (MAPPINGS_TRACKER_LOG_SETTING.equals(name)) {
-                    Level newValue=CollectionSettingsRegistry.getLogLevelSetting(value);
-                    LOG.info("incrementalUpdate(" + name + ") " + logLevel + " => " + newValue);
-                    logLevel = newValue;
-                } else if (LOG.isLoggable(Level.FINE)) {
-                    LOG.fine("incrementalUpdate(" + name + ")[" + value + "] ignored");
-                }
-            }
-        });
+	            @SuppressWarnings("synthetic-access")
+	            public void incrementalUpdate (CollectionSettingName name, Serializable value) {
+	                InsightLogger  LOG=InsightLogManager.getLogger(AbstractFilesTrackerAspectSupport.class.getName());
+	                if (MAX_TRACKED_FILES_SETTING.equals(name)) {
+	                    int newCapacity=CollectionSettingsRegistry.getIntegerSettingValue(value);
+	                    if (newCapacity <= 0) {
+	                        throw new IllegalArgumentException("Negative capacity N/A: " + value);
+	                    }
+	                    
+	                    int     prevCapacity=filesCache.updateMaxCapacity(newCapacity);
+	                    if (prevCapacity != newCapacity) {
+	                    	LOG.info("incrementalUpdate(" + name + ") " + prevCapacity + " => " + newCapacity);
+	                    }
+	                } else if (MAPPINGS_TRACKER_LOG_SETTING.equals(name)) {
+	                    Level newValue=CollectionSettingsRegistry.getLogLevelSetting(value);
+	                    if (newValue != logLevel) {
+	                        LOG.info("incrementalUpdate(" + name + ") " + logLevel + " => " + newValue);
+	                    }
+	                    logLevel = newValue;
+	                }
+	            }
+	        });
+        registry.register(MAX_TRACKED_FILES_SETTING, Integer.valueOf(DEFAULT_FILE_CACHE_SIZE));
+        registry.register(MAPPINGS_TRACKER_LOG_SETTING, DEFAULT_LEVEL);
     }
 
     protected AbstractFilesTrackerAspectSupport () {
