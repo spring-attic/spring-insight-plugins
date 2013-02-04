@@ -22,7 +22,7 @@
         <spring.data.commons.version>1.1.0.RELEASE</spring.data.commons.version>
         <aspectj.version>1.7.1</aspectj.version>
         <junit.version>4.10</junit.version>
-        <mockito.version>1.9.0</mockito.version>
+        <mockito.version>1.9.5</mockito.version>
         <commons.logging.version>1.1.1</commons.logging.version>
         <log4j.version>1.2.17</log4j.version>
         <commons.math.version>2.1</commons.math.version>
