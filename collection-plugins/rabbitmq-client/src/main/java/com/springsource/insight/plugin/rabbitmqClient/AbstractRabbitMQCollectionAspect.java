@@ -43,6 +43,7 @@ import com.springsource.insight.util.ClassUtil;
 import com.springsource.insight.util.ExtraReflectionUtils;
 import com.springsource.insight.util.MapUtil;
 import com.springsource.insight.util.ReflectionUtils;
+import com.springsource.insight.util.logging.InsightLogManager;
 
 public abstract class AbstractRabbitMQCollectionAspect extends OperationCollectionAspectSupport {
     private static final AtomicReference<Field> messageHeadersField=new AtomicReference<Field>(null);
@@ -55,7 +56,6 @@ public abstract class AbstractRabbitMQCollectionAspect extends OperationCollecti
     						"com.rabbitmq.client.impl.LongString",
     						"com.rabbitmq.client.LongString"));
 
-    protected final Logger  _logger = Logger.getLogger(getClass().getName());
     protected final RabbitPluginOperationType	pluginOpType;
     protected AbstractRabbitMQCollectionAspect (RabbitPluginOperationType rabbitOpType) {
     	if ((pluginOpType=rabbitOpType) == null) {
@@ -257,8 +257,9 @@ public abstract class AbstractRabbitMQCollectionAspect extends OperationCollecti
     	}
     	
         if ((method=ExtraReflectionUtils.getAccessibleMethod(longStringClass, "getBytes")) == null) {
-    		Logger	LOG=Logger.getLogger(anchor.getName());
-    		LOG.warning("getBytesRetrievalMethod(" + anchor.getSimpleName() + ") no match found");
+    		InsightLogManager.getLogger(anchor.getName())
+    						 .warning("getBytesRetrievalMethod(" + anchor.getSimpleName() + ") no match found")
+    						 ;
     		bytesMethodHolder.set(Boolean.FALSE);	// avoid repeated calls
     		return null;
         }
