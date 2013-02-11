@@ -9,7 +9,9 @@ Insight is a VMware® Web application that gives you real-time visibility into a
 
 See more at "http://www.springsource.org/insight":http://www.springsource.org/insight
 
-Download from "here":http://devedition-downloader.cloudfoundry.com/download/maven.springframework.org/snapshot/1.9.3-CI-SNAPSHOT 
+h2. Download Insight Developer Edition
+
+Download Insight Developer Edition from "here":http://devedition-downloader.cloudfoundry.com/download/maven.springframework.org/snapshot/1.9.3-CI-SNAPSHOT
 
 h2. Installing and Using Plugins
 
