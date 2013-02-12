@@ -15,6 +15,35 @@
 	</parent>
 
     <dependencies>
+            <!-- Test dependencies -->
+        <dependency>    <!--  for IDK tests -->
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>    <!--  for IDK tests -->
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+            <!-- Replacement of commons-logging with a native slf4j 
+                 - Required by Spring framework (and others) -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <scope>test</scope>
+        </dependency>       
+            
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

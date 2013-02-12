@@ -10,11 +10,6 @@
     <insight:operation-view operation="javax-naming-lookup" template="com/springsource/insight/plugin/jndi/javax-naming-lookup.ftl"/>
     <insight:operation-view operation="javax-naming-bind" template="com/springsource/insight/plugin/jndi/javax-naming-bind.ftl"/>
     
-    <bean id="jndiPluginEndpointAnalyzer"
-          class="com.springsource.insight.plugin.jndi.JndiEndpointAnalyzer"
-          factory-method="getInstance"
-          lazy-init="true"
-        />
     <bean id="jndiPluginRuntimeDescriptor"
           class="com.springsource.insight.plugin.jndi.JndiPluginRuntimeDescriptor"
           factory-method="getInstance"
