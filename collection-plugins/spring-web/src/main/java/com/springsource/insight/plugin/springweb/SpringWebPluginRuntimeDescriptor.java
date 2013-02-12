@@ -22,15 +22,13 @@ import java.util.List;
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 import com.springsource.insight.plugin.springweb.controller.ControllerEndPointAnalyzer;
-import com.springsource.insight.plugin.springweb.validation.ValidationEndPointAnalyzer;
 import com.springsource.insight.util.ArrayUtil;
 
 public class SpringWebPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "spring-web";
     private static final SpringWebPluginRuntimeDescriptor	INSTANCE=new SpringWebPluginRuntimeDescriptor();
     private static final List<? extends EndPointAnalyzer>	epAnalyzers=
-    		ArrayUtil.asUnmodifiableList(ControllerEndPointAnalyzer.getInstance(),
-     			   						 ValidationEndPointAnalyzer.getInstance());
+    		ArrayUtil.asUnmodifiableList(ControllerEndPointAnalyzer.getInstance());
 
     private SpringWebPluginRuntimeDescriptor () {
         super();

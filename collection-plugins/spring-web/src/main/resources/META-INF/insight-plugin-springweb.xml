@@ -52,11 +52,6 @@
           factory-method="getInstance"
           lazy-init="true"
         />
-    <bean id="springWebPluginValidationEndPointAnalyzer"
-          class="com.springsource.insight.plugin.springweb.validation.ValidationEndPointAnalyzer"
-          factory-method="getInstance"
-          lazy-init="true"
-        />
     <bean id="springWebPluginValidationErrorsMetricsGenerato"
           class="com.springsource.insight.plugin.springweb.validation.ValidationErrorsMetricsGenerator"
           factory-method="getInstance"

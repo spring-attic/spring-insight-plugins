@@ -25,7 +25,6 @@ import com.springsource.insight.plugin.springweb.http.ClientHttpRequestExternalR
 import com.springsource.insight.plugin.springweb.http.ClientHttpRequestTraceErrorAnalyzer;
 import com.springsource.insight.plugin.springweb.remoting.HttpInvokerRequestExecutorExternalResourceAnalyzer;
 import com.springsource.insight.plugin.springweb.remoting.HttpInvokerRequestExecutorTraceErrorAnalyzer;
-import com.springsource.insight.plugin.springweb.validation.ValidationEndPointAnalyzer;
 import com.springsource.insight.plugin.springweb.validation.ValidationErrorsMetricsGenerator;
 
 /**
@@ -39,7 +38,6 @@ public class ExposedSpringWebPluginSpringBeanTest
      * tests if one bean is missing
      */
 	@Autowired(required=false) protected ControllerEndPointAnalyzer	controllerEndPointAnalyzer;
-	@Autowired(required=false) protected ValidationEndPointAnalyzer	validationEndPointAnalyzer;
 	@Autowired(required=false) protected ValidationErrorsMetricsGenerator	validationErrorsMetricsGenerator;
 	@Autowired(required=false) protected SpringWebPluginRuntimeDescriptor	springWebPluginRuntimeDescriptor;
 	@Autowired(required=false) protected HttpInvokerRequestExecutorExternalResourceAnalyzer httpInvokerRequestExecutorExternalResourceAnalyzer;
