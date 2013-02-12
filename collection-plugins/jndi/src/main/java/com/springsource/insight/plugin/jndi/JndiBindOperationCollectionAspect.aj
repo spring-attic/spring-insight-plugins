@@ -31,7 +31,7 @@ import com.springsource.insight.util.StringUtil;
  */
 public aspect JndiBindOperationCollectionAspect extends JndiOperationCollectionSupport {
 	public JndiBindOperationCollectionAspect () {
-		super(JndiEndpointAnalyzer.BIND);
+		super(JndiPluginRuntimeDescriptor.BIND);
 	}
     /*
      * Using call instead of execution since usually JDK core classes are used

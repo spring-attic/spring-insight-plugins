@@ -24,7 +24,7 @@ import javax.naming.Name;
  */
 public aspect JndiLookupOperationCollectionAspect extends JndiOperationCollectionSupport {
 	public JndiLookupOperationCollectionAspect () {
-		super(JndiEndpointAnalyzer.LOOKUP);
+		super(JndiPluginRuntimeDescriptor.LOOKUP);
 	}
 
     /*

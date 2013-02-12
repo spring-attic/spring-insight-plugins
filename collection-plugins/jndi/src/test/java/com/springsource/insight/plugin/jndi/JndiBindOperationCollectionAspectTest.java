@@ -32,7 +32,7 @@ import com.springsource.insight.util.StringUtil;
  */
 public class JndiBindOperationCollectionAspectTest extends JndiOperationCollectionAspectTestSupport {
 	public JndiBindOperationCollectionAspectTest() {
-		super(JndiEndpointAnalyzer.BIND);
+		super(JndiPluginRuntimeDescriptor.BIND);
 	}
 
 	@Test
@@ -110,7 +110,6 @@ public class JndiBindOperationCollectionAspectTest extends JndiOperationCollecti
 			assertEquals(action + "[" + name + "] mismatched value", expected, actual);
 		}
 		assertCollectedEnvironment(op, context);
-		assertEndPointAnalysis(op);
 		return op;
 	}
 

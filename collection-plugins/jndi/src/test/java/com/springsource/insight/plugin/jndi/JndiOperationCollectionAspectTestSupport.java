@@ -30,12 +30,9 @@ import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.OperationCollector;
 import com.springsource.insight.collection.OperationListCollector;
 import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
-import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
-import com.springsource.insight.intercept.endpoint.EndPointName;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationType;
-import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.MapUtil;
 
@@ -46,7 +43,6 @@ public abstract class JndiOperationCollectionAspectTestSupport
 			extends OperationCollectionAspectTestSupport {
 
     protected final OperationType	type;
-    protected final JndiEndpointAnalyzer	analyzer=JndiEndpointAnalyzer.getInstance();
     private final JndiTestContext	testContext=new JndiTestContext();
 
 	protected JndiOperationCollectionAspectTestSupport(OperationType opType) {
@@ -60,16 +56,6 @@ public abstract class JndiOperationCollectionAspectTestSupport
 	public void setUp() {
 		super.setUp();
 		testContext.clear();
-	}
-
-	protected EndPointAnalysis assertEndPointAnalysis (Operation op) {
-		Frame				frame=createMockOperationWrapperFrame(op, true);
-		EndPointAnalysis	analysis=analyzer.locateEndPoint(frame, 0);
-		assertSame("Mismatched source operation for " + op.getLabel(), op, analysis.getSourceOperation());
-		assertEquals("Mismatched endpoint for " + op.getLabel(), EndPointName.valueOf(op), analysis.getEndPointName());
-		assertNotNull("No analysis for " + op.getLabel(), analysis);
-		assertEquals("Mismatched score for " + op.getLabel(), JndiEndpointAnalyzer.DEFAULT_SCORE, analysis.getScore());
-		return analysis;
 	}
 
 	protected Operation assertCollectedOperation (String action, String name) {

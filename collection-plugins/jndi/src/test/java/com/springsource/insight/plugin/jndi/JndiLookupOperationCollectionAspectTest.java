@@ -30,7 +30,7 @@ import com.springsource.insight.intercept.operation.Operation;
  */
 public class JndiLookupOperationCollectionAspectTest extends JndiOperationCollectionAspectTestSupport {
 	public JndiLookupOperationCollectionAspectTest() {
-		super(JndiEndpointAnalyzer.LOOKUP);
+		super(JndiPluginRuntimeDescriptor.LOOKUP);
 	}
 
 	@Test
@@ -77,7 +77,6 @@ public class JndiLookupOperationCollectionAspectTest extends JndiOperationCollec
 		Object			expected=values.get(name);
 		assertEquals("Mismatched value for " + action + "[" + name + "]", expected, actual);
 		assertCollectedEnvironment(op, context);
-		assertEndPointAnalysis(op);
 		return op;
 	}
 

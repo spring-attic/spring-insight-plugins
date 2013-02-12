@@ -16,20 +16,18 @@
 
 package com.springsource.insight.plugin.jndi;
 
-import java.util.Collection;
-import java.util.List;
-
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
+import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
-import com.springsource.insight.util.ArrayUtil;
 
 /**
  * 
  */
 public class JndiPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "javax-naming-jndi";
+	public static final OperationType	LOOKUP=OperationType.valueOf("javax-naming-lookup");
+	public static final OperationType	BIND=OperationType.valueOf("javax-naming-bind");
+
     private static final JndiPluginRuntimeDescriptor	INSTANCE=new JndiPluginRuntimeDescriptor();
-    private static final List<? extends EndPointAnalyzer>	epAnalyzers=ArrayUtil.asUnmodifiableList(JndiEndpointAnalyzer.getInstance());
 
 	private JndiPluginRuntimeDescriptor () {
 		super();
@@ -38,11 +36,6 @@ public class JndiPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
 	public static final JndiPluginRuntimeDescriptor getInstance() {
 		return INSTANCE;
 	}
-
-    @Override
-    public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
-        return epAnalyzers;
-    }
 
 	@Override
 	public String getPluginName() {
