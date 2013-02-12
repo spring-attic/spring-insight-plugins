@@ -25,7 +25,7 @@ import com.springsource.insight.collection.method.AnnotationDrivenMethodOperatio
 
 public aspect ApplicationListenerMethodOperationCollectionAspect extends SpringEventReferenceCollectionAspect {
     public ApplicationListenerMethodOperationCollectionAspect() {
-        super(SpringLifecycleMethodEndPointAnalyzer.APP_LISTENER_TYPE);
+        super(SpringCorePluginRuntimeDescriptor.APP_LISTENER_TYPE);
     }
 
     public pointcut appListener()

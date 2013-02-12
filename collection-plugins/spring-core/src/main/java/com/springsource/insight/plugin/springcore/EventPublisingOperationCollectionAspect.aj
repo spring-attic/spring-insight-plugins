@@ -32,7 +32,7 @@ public aspect EventPublisingOperationCollectionAspect extends SpringEventReferen
 	public static final String	ACTION_ATTR="actionType", ACTION_SUFFIX="Event";
 
 	public EventPublisingOperationCollectionAspect () {
-		super(SpringLifecycleMethodEndPointAnalyzer.EVENT_PUBLISH_TYPE);
+		super(SpringCorePluginRuntimeDescriptor.EVENT_PUBLISH_TYPE);
 	}
 
 	public pointcut publishingPoint ()

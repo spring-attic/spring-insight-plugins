@@ -24,7 +24,7 @@ import com.springsource.insight.collection.method.AnnotationDrivenMethodOperatio
 
 public aspect InitializingBeanOperationCollectionAspect extends SpringLifecycleMethodOperationCollectionAspect {
     public InitializingBeanOperationCollectionAspect() {
-        super(SpringLifecycleMethodEndPointAnalyzer.BEAN_LIFECYLE_TYPE);
+        super(SpringCorePluginRuntimeDescriptor.BEAN_LIFECYLE_TYPE);
     }
 
     public pointcut afterPropertiesSet()

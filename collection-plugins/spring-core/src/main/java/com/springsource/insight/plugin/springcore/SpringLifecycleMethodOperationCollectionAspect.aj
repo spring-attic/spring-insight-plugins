@@ -18,7 +18,6 @@ package com.springsource.insight.plugin.springcore;
 
 import org.aspectj.lang.JoinPoint;
 
-import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.util.ArrayUtil;
@@ -42,7 +41,6 @@ public abstract aspect SpringLifecycleMethodOperationCollectionAspect
 	protected Operation createOperation(JoinPoint jp) {
 		Operation	op=super.createOperation(jp)
 							.type(operationType)
-							.put(EndPointAnalysis.SCORE_FIELD, SpringLifecycleMethodEndPointAnalyzer.LIFECYCLE_SCORE)
 							;
 		return updateEventData(op, jp);
 	}

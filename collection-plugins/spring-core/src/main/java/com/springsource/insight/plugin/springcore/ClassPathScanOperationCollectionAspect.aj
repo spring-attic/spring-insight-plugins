@@ -24,7 +24,7 @@ import com.springsource.insight.util.StringUtil;
 
 public privileged aspect ClassPathScanOperationCollectionAspect extends SpringLifecycleMethodOperationCollectionAspect {
     public ClassPathScanOperationCollectionAspect() {
-        super(SpringLifecycleMethodEndPointAnalyzer.CLASSPATH_SCAN_TYPE);
+        super(SpringCorePluginRuntimeDescriptor.CLASSPATH_SCAN_TYPE);
     }
 
     public pointcut findPathMatchingResources()

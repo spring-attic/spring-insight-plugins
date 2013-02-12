@@ -120,7 +120,7 @@ public class ApplicationListenerMethodOperationCollectionAspectTest extends Oper
     		op.finalizeConstruction();
     	}
 
-    	assertEquals("Mismatched operation type", SpringLifecycleMethodEndPointAnalyzer.APP_LISTENER_TYPE, op.getType());
+    	assertEquals("Mismatched operation type", SpringCorePluginRuntimeDescriptor.APP_LISTENER_TYPE, op.getType());
     	String		shortName=op.get(OperationFields.SHORT_CLASS_NAME, String.class);
     	Class<?>	matchingClass=null;
     	for (Class<?> clazz : beanTypes) {

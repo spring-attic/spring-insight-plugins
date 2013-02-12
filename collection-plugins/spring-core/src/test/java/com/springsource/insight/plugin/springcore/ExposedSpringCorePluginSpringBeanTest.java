@@ -32,7 +32,6 @@ public class ExposedSpringCorePluginSpringBeanTest
      * tests if one bean is missing
      */
 	@Autowired(required=false) protected SpringCorePluginRuntimeDescriptor	springCorePluginRuntimeDescriptor;
-	@Autowired(required=false) protected SpringLifecycleMethodEndPointAnalyzer	springLifecycleMethodEndPointAnalyzer;
 
 	public ExposedSpringCorePluginSpringBeanTest () {
 		super(SpringCorePluginRuntimeDescriptor.class);

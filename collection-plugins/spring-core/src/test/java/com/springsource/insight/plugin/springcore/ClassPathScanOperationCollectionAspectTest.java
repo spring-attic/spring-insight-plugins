@@ -68,7 +68,7 @@ public class ClassPathScanOperationCollectionAspectTest extends OperationCollect
 
     protected Operation assertScanOperation (Operation op) {
     	assertNotNull("No operation", op);
-        assertEquals("Mismatched operation type", SpringLifecycleMethodEndPointAnalyzer.CLASSPATH_SCAN_TYPE, op.getType());
+        assertEquals("Mismatched operation type", SpringCorePluginRuntimeDescriptor.CLASSPATH_SCAN_TYPE, op.getType());
 
         String	compType=op.get(StereotypedSpringBeanMethodOperationCollectionAspectSupport.COMP_TYPE_ATTR, String.class);
         // make sure not intercepted by one of the stereotyped beans aspects

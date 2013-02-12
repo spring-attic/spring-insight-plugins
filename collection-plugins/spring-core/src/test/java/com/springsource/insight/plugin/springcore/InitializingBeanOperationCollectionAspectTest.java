@@ -53,7 +53,7 @@ public class InitializingBeanOperationCollectionAspectTest extends OperationColl
     private Operation assertInitMethod (String methodName) {
         Operation op = getLastEntered();
         assertNotNull("No operation", op);
-        assertEquals("Mismatched operation type", SpringLifecycleMethodEndPointAnalyzer.BEAN_LIFECYLE_TYPE, op.getType());
+        assertEquals("Mismatched operation type", SpringCorePluginRuntimeDescriptor.BEAN_LIFECYLE_TYPE, op.getType());
 
         String	compType=op.get(StereotypedSpringBeanMethodOperationCollectionAspectSupport.COMP_TYPE_ATTR, String.class);
         // make sure not intercepted by one of the stereotyped beans aspects

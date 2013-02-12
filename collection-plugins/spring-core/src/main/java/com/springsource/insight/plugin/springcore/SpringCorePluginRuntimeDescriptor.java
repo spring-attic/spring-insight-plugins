@@ -16,18 +16,17 @@
 
 package com.springsource.insight.plugin.springcore;
 
-import java.util.Collection;
-import java.util.List;
-
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
+import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
-import com.springsource.insight.util.ArrayUtil;
 
 public class SpringCorePluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "spring-core";
-    public static final SpringCorePluginRuntimeDescriptor	INSTANCE=new SpringCorePluginRuntimeDescriptor();
-    private static final List<? extends EndPointAnalyzer>	epAnalyzers=
-    		ArrayUtil.asUnmodifiableList(SpringLifecycleMethodEndPointAnalyzer.getInstance());
+	public static final OperationType	APP_LISTENER_TYPE=OperationType.valueOf("spring_app_listener");
+	public static final OperationType	CLASSPATH_SCAN_TYPE=OperationType.valueOf("spring_classpath_scan");
+	public static final OperationType	EVENT_PUBLISH_TYPE=OperationType.valueOf("spring_event_publish");
+	public static final OperationType	BEAN_LIFECYLE_TYPE=OperationType.valueOf("spring_bean_lifecycle");
+
+	private static final SpringCorePluginRuntimeDescriptor	INSTANCE=new SpringCorePluginRuntimeDescriptor();
 
     private SpringCorePluginRuntimeDescriptor () {
         super();
@@ -36,11 +35,6 @@ public class SpringCorePluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final SpringCorePluginRuntimeDescriptor getInstance () {
     	return INSTANCE;
     }
-
-    @Override
-	public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
-		return epAnalyzers;
-	}
 
 	@Override
     public String getPluginName() {
