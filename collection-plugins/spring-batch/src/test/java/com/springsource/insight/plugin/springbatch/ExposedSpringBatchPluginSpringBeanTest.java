@@ -31,7 +31,7 @@ public class ExposedSpringBatchPluginSpringBeanTest
      * to have specific tests for each and we don't want to fail ALL the
      * tests if one bean is missing
      */
-	@Autowired(required=false) protected SpringBatchPluginRuntimeDescriptor	springCorePluginRuntimeDescriptor;
+	@Autowired(required=false) protected SpringBatchPluginRuntimeDescriptor	springBatchPluginRuntimeDescriptor;
 
 	public ExposedSpringBatchPluginSpringBeanTest() {
 		super(SpringBatchPluginRuntimeDescriptor.class);
