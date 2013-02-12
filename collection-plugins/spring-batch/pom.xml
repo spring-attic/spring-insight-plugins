@@ -28,6 +28,16 @@
 		</dependency>
 
         <!-- Test dependencies -->
+        <dependency>    <!--  for IDK tests -->
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>    <!--  for IDK tests -->
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <scope>test</scope>
+        </dependency>
 			<!-- Replacement of commons-logging with a native slf4j 
                  - Required by Spring framework (and others) -->
         <dependency>
@@ -59,7 +69,7 @@
                     		<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                     	</manifest>
 						<manifestEntries>
-							<Insight-Plugin-Descriptor></Insight-Plugin-Descriptor>
+							<Insight-Plugin-Descriptor>com.springsource.insight.plugin.springbatch.SpringBatchPluginRuntimeDescriptor</Insight-Plugin-Descriptor>
 						</manifestEntries>
 					</archive>
 				</configuration>
