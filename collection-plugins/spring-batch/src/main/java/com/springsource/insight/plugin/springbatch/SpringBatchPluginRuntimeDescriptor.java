@@ -16,17 +16,11 @@
 
 package com.springsource.insight.plugin.springbatch;
 
-import java.util.Collection;
-import java.util.List;
-
-import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
-import com.springsource.insight.util.ArrayUtil;
 
 public class SpringBatchPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "spring-batch";
     private static final SpringBatchPluginRuntimeDescriptor	INSTANCE=new SpringBatchPluginRuntimeDescriptor();
-    private static final List<? extends EndPointAnalyzer>	epAnalyzers=ArrayUtil.asUnmodifiableList(SpringBatchEndPointAnalyzer.getInstance());
 
     private SpringBatchPluginRuntimeDescriptor () {
         super();
@@ -34,11 +28,6 @@ public class SpringBatchPluginRuntimeDescriptor extends PluginRuntimeDescriptor 
 
     public static final SpringBatchPluginRuntimeDescriptor getInstance() {
     	return INSTANCE;
-    }
-
-    @Override
-    public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
-        return epAnalyzers;
     }
 
     @Override
