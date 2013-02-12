@@ -30,9 +30,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"/test-context.xml"})
+@ContextConfiguration(OperationCollectionAspectTests.TEST_CONTEXT)
 @Transactional
 public class OperationCollectionAspectTests {
+	public static final String	TEST_CONTEXT="classpath:META-INF/spring-neo4j-plugin-test-context.xml";
+
 	@Autowired Neo4jTemplate template;
 	
 	public OperationCollectionAspectTests () {
