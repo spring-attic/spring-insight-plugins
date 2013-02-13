@@ -23,13 +23,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
-import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"/test-context.xml"})
+@ContextConfiguration(OperationCollectionAspectTests.TEST_CONTEXT)
 @Transactional
-public class InitOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
+public class InitOperationCollectionAspectTest extends AbstractNeo4jCollectionAspectTestSupport {
 	@Autowired
 	OperationCollectionAspectTests tests;
 	
