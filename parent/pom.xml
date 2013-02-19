@@ -50,7 +50,6 @@
 		<surefire.plugin.version>2.13</surefire.plugin.version>
         <injection.plugin.version>1.0.2</injection.plugin.version>
         <vfabric.license.client.version>1.0.0.M8</vfabric.license.client.version>
-        <aspectj.maven.version>1.2</aspectj.maven.version>
         <rabbitmq.version>2.5.1</rabbitmq.version>
         <shade.plugin.version>2.0</shade.plugin.version>
         <jackson.version>1.9.9</jackson.version>
