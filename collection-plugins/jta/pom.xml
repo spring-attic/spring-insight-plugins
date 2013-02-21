@@ -3,7 +3,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.springsource.insight.plugins</groupId>
 	<artifactId>insight-plugin-jta</artifactId>
-	<version>1.9.3-CI-SNAPSHOT</version>
 	<name>com.springsource.insight.plugins:jta</name>
 	<packaging>jar</packaging>
 	
@@ -48,5 +47,4 @@
 		    </plugin>
 		</plugins>
 	</build>
-	
 </project>

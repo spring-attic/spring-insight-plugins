@@ -3,7 +3,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.springsource.insight.samples</groupId>
 	<artifactId>payme-insight-plugin</artifactId>
-	<version>1.9.3-CI-SNAPSHOT</version>
 	<name>com.springsource.insight.samples:payme-insight-plugin</name>
 	<packaging>jar</packaging>
 
@@ -16,6 +15,12 @@
 
 	<dependencies>
 		<!-- Provided dependencies (part of Insight) -->
+        <dependency>
+           <groupId>org.aspectj</groupId>
+           <artifactId>aspectjrt</artifactId>
+           <scope>compile</scope>
+        </dependency>
+
 		<dependency>
 			<groupId>com.springsource.insight</groupId>
 			<artifactId>insight-idk</artifactId>

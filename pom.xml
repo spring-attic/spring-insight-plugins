@@ -3,7 +3,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.springsource.insight</groupId>
 	<artifactId>community-build</artifactId>
-	<version>1.9.3-CI-SNAPSHOT</version>
 	<name>com.springsource.insight:community</name>
 	<packaging>pom</packaging>
 

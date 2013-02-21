@@ -4,7 +4,6 @@
 	<groupId>com.springsource.insight.plugins</groupId>
 	<artifactId>insight-plugin-redis</artifactId>
 	<name>com.springsource.insight.plugins:redis</name>
-	<version>1.9.3-CI-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	
 	<parent>

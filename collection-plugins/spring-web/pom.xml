@@ -3,7 +3,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.springsource.insight.plugins</groupId>
 	<artifactId>insight-plugin-spring-web</artifactId>
-	<version>1.9.3-CI-SNAPSHOT</version>
 	<name>com.springsource.insight.plugins:spring-web</name>
 	<packaging>jar</packaging>
 	
@@ -89,6 +88,5 @@
                 </configuration>
             </plugin>
 		</plugins>
-	</build>
-	
+	</build>	
 </project>
