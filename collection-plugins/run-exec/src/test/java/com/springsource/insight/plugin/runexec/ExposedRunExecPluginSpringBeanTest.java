@@ -35,7 +35,6 @@ public class ExposedRunExecPluginSpringBeanTest
      * tests if one bean is missing
      */
 	@Autowired(required=false) protected RunExecPluginRuntimeDescriptor	runExecPluginRuntimeDescriptor;
-	@Autowired(required=false) protected RunExecEndPointAnalyzer	runExecEndPointAnalyzer;
 
 	public ExposedRunExecPluginSpringBeanTest() {
 		super(RunExecPluginRuntimeDescriptor.class);
