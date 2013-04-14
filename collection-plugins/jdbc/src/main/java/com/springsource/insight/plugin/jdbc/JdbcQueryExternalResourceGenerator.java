@@ -45,7 +45,8 @@ public final class JdbcQueryExternalResourceGenerator extends AbstractLoggingCla
     private final AtomicBoolean active=new AtomicBoolean();
 
     private static final class LazyFieldHolder {
-        static final JdbcQueryExternalResourceGenerator INSTANCE = new JdbcQueryExternalResourceGenerator();
+        @SuppressWarnings("synthetic-access")
+		static final JdbcQueryExternalResourceGenerator INSTANCE = new JdbcQueryExternalResourceGenerator();
     }
 
     public static final JdbcQueryExternalResourceGenerator getInstance() {

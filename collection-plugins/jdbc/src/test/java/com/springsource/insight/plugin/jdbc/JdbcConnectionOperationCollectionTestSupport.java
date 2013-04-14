@@ -79,6 +79,18 @@ public abstract class JdbcConnectionOperationCollectionTestSupport
             connectProps.put("password", password);
     }
 
+    protected void startTracking(Connection conn, String url) {
+    	tracker.startTracking(conn, url);
+    }
+
+    protected Operation assertCloseDetails (String url) {
+        return assertConnectDetails(url, "close");
+    }
+    
+    protected Operation assertCloseDetails (Operation op, String url) {
+        return assertConnectDetails(op, url, "close");
+    }
+
     protected Operation assertConnectDetails (String url, String action) {
         return assertConnectDetails(getLastEntered(), url, action);
     }
