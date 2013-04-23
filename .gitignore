@@ -14,3 +14,4 @@ Servers
 .idea/
 _ajdump
 dependency-reduced-pom.xml
+hs_err*
