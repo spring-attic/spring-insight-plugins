@@ -1052,6 +1052,7 @@
 	                            <Implementation-Vendor>Insight</Implementation-Vendor>
 	                               <!-- NOTE: this name must match the one used in InsightVersion class -->
 	                            <Release-Timestamp>${buildtimestamp}</Release-Timestamp>
+								<Maven-Version>${maven.version}</Maven-Version>
 	                        </manifestEntries>
 	                    </archive>
                     </configuration>
@@ -1164,6 +1165,20 @@
 					</rules>
 				</configuration>
 			</plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>maven-version</id>
+                        <phase>initialize</phase>
+                        <goals>
+                          <goal>maven-version</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.groovy.maven</groupId>
                 <artifactId>gmaven-plugin</artifactId>
@@ -1311,6 +1326,7 @@
 							<Implementation-Version>${project.version}</Implementation-Version>
 							<Implementation-Vendor>Insight</Implementation-Vendor>
 							<Release-Timestamp>${buildtimestamp}</Release-Timestamp>
+                            <Maven-Version>${maven.version}</Maven-Version>
 						</manifestEntries>
                     </archive>
                     <excludes>
