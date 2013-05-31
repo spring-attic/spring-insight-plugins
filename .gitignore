@@ -2,9 +2,6 @@
 target
 Servers
 .metadata
-.settings
-.project
-.classpath
 .springBeans
 .externalToolBuilders
 .svn
