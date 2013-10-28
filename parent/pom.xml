@@ -51,7 +51,7 @@
         <injection.plugin.version>1.0.2</injection.plugin.version>
         <vfabric.license.client.version>1.0.0.M8</vfabric.license.client.version>
         <rabbitmq.version>2.5.1</rabbitmq.version>
-        <shade.plugin.version>2.0</shade.plugin.version>
+        <shade.plugin.version>2.1</shade.plugin.version>
         <jackson.version>1.9.9</jackson.version>
         <org.springframework.amqp.version>1.0.0.RELEASE</org.springframework.amqp.version>
         <commons.codec.version>1.5</commons.codec.version>
@@ -68,7 +68,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<excluded.tests.group>com.springsource.insight.util.test.MicroBenchmark</excluded.tests.group>
-		
+
 		<snapshot.repo.id>spring-snapshot</snapshot.repo.id>
         <snapshot.repo.name>Spring Snapshot Repository</snapshot.repo.name>
 		<snapshot.repo.url>http://private.maven.springsource.com/snapshot</snapshot.repo.url>
@@ -100,7 +100,7 @@
 						<configuration>
 							<skip>false</skip>
 						</configuration>
-					</plugin>            
+					</plugin>
 				</plugins>
 			</build>
 		</profile>
@@ -121,7 +121,7 @@
 									<exclude>**/jdk16/*.java</exclude>
 								</testExcludes>
 							</configuration>
-						</plugin>            
+						</plugin>
 						<plugin>
 							<groupId>org.apache.maven.plugins</groupId>
 							<artifactId>maven-surefire-plugin</artifactId>
@@ -130,7 +130,7 @@
 									<exclude>**/jdk16/*.java</exclude>
 								</excludes>
 							</configuration>
-						</plugin>            
+						</plugin>
 						<plugin>
 							<groupId>org.codehaus.mojo</groupId>
 							<artifactId>aspectj-maven-plugin</artifactId>
@@ -140,7 +140,7 @@
 									<exclude>**/jdk16/*.aj</exclude>
 								</excludes>
 							</configuration>
-						</plugin>            
+						</plugin>
 					</plugins>
 				</pluginManagement>
 			</build>
@@ -422,7 +422,7 @@
 				<groupId>commons-dbcp</groupId>
 				<artifactId>commons-dbcp</artifactId>
 				<version>${commons.dbcp.version}</version>
-			</dependency>       
+			</dependency>
 			<dependency>
 				<groupId>commons-logging</groupId>
 				<artifactId>commons-logging</artifactId>
@@ -499,7 +499,7 @@
 				<artifactId>slf4j-api</artifactId>
 				<version>${slf4j.version}</version>
 			</dependency>
-				<!-- Replacement of commons-logging with a native slf4j 
+				<!-- Replacement of commons-logging with a native slf4j
 					 - Required by Spring framework (and others) -->
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -590,7 +590,7 @@
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-core</artifactId>
 				<version>${hibernate.version}</version>
-			</dependency>        
+			</dependency>
 
 			<dependency>
 				<groupId>org.springframework</groupId>
@@ -602,7 +602,7 @@
 						<artifactId>xml-apis</artifactId>
 					</exclusion>
 						<!-- excluded since we provide our
-							own dependencies versions for them - 
+							own dependencies versions for them -
 							usually jcl-over-slf4j	-->
 					<exclusion>
 						<groupId>commons-logging</groupId>
@@ -765,7 +765,7 @@
 						<artifactId>aspectjrt</artifactId>
 					</exclusion>
 						<!-- excluded since we provide our
-							own dependencies versions for them - 
+							own dependencies versions for them -
 							usually jcl-over-slf4j	-->
 					<exclusion>
 						<groupId>commons-logging</groupId>
@@ -831,7 +831,7 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-		
+
     <build>
         <extensions>
             <extension>
@@ -842,7 +842,7 @@
         </extensions>
         <pluginManagement>
             <plugins>
-                <!--This plugin's configuration is used to store Eclipse 
+                <!--This plugin's configuration is used to store Eclipse
                     m2e settings only. It has no influence on the Maven build itself. -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
@@ -1221,7 +1221,7 @@
 										return
                                     }
                                 }
-                                
+
                                 System.err.println("Failed to detected Insight root dir")
 							]]>
                             </source>
@@ -1388,7 +1388,7 @@
 				<configuration>
 					<skip>true</skip>
 				</configuration>
-			</plugin>            
+			</plugin>
         </plugins>
     </build>
 
@@ -1424,7 +1424,7 @@
             <id>insight-releases</id>
             <name>Spring Insight Releases Repository</name>
             <url>http://localhost:8081/artifactory/libs-releases-local</url>
-        </repository>    
+        </repository>
         <snapshotRepository>
             <id>insight-snapshots</id>
             <name>Spring Insight Snapshots Repository</name>
