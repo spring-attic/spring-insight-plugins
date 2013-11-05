@@ -54,9 +54,9 @@ public privileged aspect OperationUtils {
 			else {
 				TCustomSocket lsocket=(TCustomSocket)trans;
 				
-				host=lsocket.host_;
-				port=lsocket.port_;
-				socket=lsocket.socket_;
+				host=lsocket.host;
+				port=lsocket.port;
+				socket=lsocket.socket;
 			}
 			
 			if (host!=null) {

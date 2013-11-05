@@ -22,7 +22,7 @@ import java.util.Set;
 
 import org.apache.cassandra.config.DatabaseDescriptor;
 import org.apache.cassandra.io.util.FileUtils;
-import org.apache.cassandra.thrift.CassandraDaemon;
+import org.apache.cassandra.service.CassandraDaemon;
 
 /**
  * An in-memory Cassandra storage service that listens to the thrift interface.
