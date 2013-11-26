@@ -15,11 +15,21 @@
  */
 package com.springsource.insight.plugin.mail;
 
+import java.util.Collection;
+import java.util.List;
+
+import com.springsource.insight.intercept.metrics.MetricsGenerator;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
+import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
+import com.springsource.insight.util.ArrayUtil;
 
 public class MailPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "javax-mail";
     private static final MailPluginRuntimeDescriptor	INSTANCE=new MailPluginRuntimeDescriptor();
+    private static final List<? extends ExternalResourceAnalyzer>	extResAnalyzers=
+       		ArrayUtil.asUnmodifiableList(MailSendExternalResourceAnalyzer.getInstance());
+    private static final List<? extends MetricsGenerator>	mGenerators=
+	    	ArrayUtil.asUnmodifiableList(MailSendMetricsGenerator.getInstance());
     
     private MailPluginRuntimeDescriptor () {
     	super();
@@ -32,5 +42,14 @@ public class MailPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;
+    }
+    @Override
+    public Collection<? extends ExternalResourceAnalyzer> getExternalResourceAnalyzers() {
+    	return extResAnalyzers;
+    }
+    
+    @Override
+    public Collection<? extends MetricsGenerator> getMetricsGenerators() {
+    	return mGenerators;
     }
 }

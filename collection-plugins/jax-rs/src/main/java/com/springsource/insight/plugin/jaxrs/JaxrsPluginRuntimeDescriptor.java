@@ -20,13 +20,15 @@ import java.util.List;
 
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
+import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
 import com.springsource.insight.util.ArrayUtil;
 
 public class JaxrsPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "jax-rs";
     private static final JaxrsPluginRuntimeDescriptor	INSTANCE=new JaxrsPluginRuntimeDescriptor();
     private static final List<? extends EndPointAnalyzer>	epAnalyzers=ArrayUtil.asUnmodifiableList(JaxrsEndPointAnalyzer.getInstance());
-
+    private static final List<? extends ExternalResourceAnalyzer>	extResAnalyzers=
+       		ArrayUtil.asUnmodifiableList(JaxrsExternalResourceAnalyzer.getInstance());
     private JaxrsPluginRuntimeDescriptor () {
     	super();
     }
@@ -39,7 +41,12 @@ public class JaxrsPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
         return epAnalyzers;
     }
-
+    
+    @Override
+    public Collection<? extends ExternalResourceAnalyzer> getExternalResourceAnalyzers() {
+    	return extResAnalyzers;
+    }
+    
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;

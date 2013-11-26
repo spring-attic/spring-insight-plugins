@@ -15,12 +15,19 @@
  */
 package com.springsource.insight.plugin.mongodb;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
+import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
+import com.springsource.insight.util.ArrayUtil;
 
 public class MongoDBPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "mongodb";
     private static final MongoDBPluginRuntimeDescriptor	INSTANCE=new MongoDBPluginRuntimeDescriptor();
-
+    private static final List<? extends ExternalResourceAnalyzer>	extResAnalyzers=
+       		ArrayUtil.asUnmodifiableList(MongoDBCollectionExternalResourceAnalyzer.getInstance(), 
+       				MongoDBOperationExternalResourceAnalyzer.getInstance());
     private MongoDBPluginRuntimeDescriptor () {
     	super();
     }
@@ -32,6 +39,11 @@ public class MongoDBPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;
+    }
+    
+    @Override
+    public Collection<? extends ExternalResourceAnalyzer> getExternalResourceAnalyzers() {
+    	return extResAnalyzers;
     }
     
     @Override
