@@ -20,15 +20,13 @@ import java.util.List;
 
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
-import com.springsource.insight.intercept.trace.TraceSourceAnalyzer;
 import com.springsource.insight.util.ArrayUtil;
 
 public class QuartzPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "quartz-scheduler";
     private static final QuartzPluginRuntimeDescriptor	INSTANCE=new QuartzPluginRuntimeDescriptor();
     private static final List<? extends EndPointAnalyzer>	epAnalyzers=ArrayUtil.asUnmodifiableList(QuartzSchedulerEndPointAnalyzer.getInstance());
-    private static final List<? extends TraceSourceAnalyzer>	tsAnalyzers=
-    		ArrayUtil.asUnmodifiableList(QuartzTraceSourceAnalyzer.getInstance());
+
     private QuartzPluginRuntimeDescriptor () {
     	super();
     }
@@ -40,11 +38,6 @@ public class QuartzPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     @Override
     public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
         return epAnalyzers;
-    }
-    
-    @Override
-    public Collection<? extends TraceSourceAnalyzer> getTraceSourceAnalyzers() {
-        return tsAnalyzers;
     }
 
     @Override

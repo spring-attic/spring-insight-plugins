@@ -15,25 +15,11 @@
  */
 package com.springsource.insight.plugin.cassandra;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
-import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
-import com.springsource.insight.intercept.trace.TraceErrorAnalyzer;
-import com.springsource.insight.util.ArrayUtil;
 
 public class CassandraPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "cassandra";
     private static final CassandraPluginRuntimeDescriptor	INSTANCE=new CassandraPluginRuntimeDescriptor();
-    private static final List<? extends ExternalResourceAnalyzer>	extResAnalyzers=
-    		ArrayUtil.asUnmodifiableList(CassandraConnectExternalResourceAnalyzer.getInstance(), 
-    				CassandraCQLExternalResourceAnalyzer.getInstance(), 
-    				CassandraGetExternalResourceAnalyzer.getInstance(), 
-    				CassandraRemoveExternalResourceAnalyzer.getInstance(),
-    				CassandraSystemExternalResourceAnalyzer.getInstance(),
-    				CassandraUpdateExternalResourceAnalyzer.getInstance());
     
     private CassandraPluginRuntimeDescriptor() {
     	super();
@@ -43,10 +29,6 @@ public class CassandraPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     	return INSTANCE;
     }
 
-    @Override
-    public Collection<? extends ExternalResourceAnalyzer> getExternalResourceAnalyzers() {
-    	return extResAnalyzers;
-    }
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;

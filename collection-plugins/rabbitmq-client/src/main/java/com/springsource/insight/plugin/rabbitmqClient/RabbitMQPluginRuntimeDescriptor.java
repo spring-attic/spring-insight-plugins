@@ -15,27 +15,12 @@
  */
 package com.springsource.insight.plugin.rabbitmqClient;
 
-import java.util.Collection;
-import java.util.List;
-
-import com.springsource.insight.intercept.metrics.MetricsGenerator;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
-import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
-import com.springsource.insight.intercept.trace.TraceSourceAnalyzer;
-import com.springsource.insight.util.ArrayUtil;
 
 public class RabbitMQPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "rabbitmq-client";
     private static final RabbitMQPluginRuntimeDescriptor	INSTANCE=new RabbitMQPluginRuntimeDescriptor();
-    private static final List<? extends ExternalResourceAnalyzer>	extResAnalyzers=
-       		ArrayUtil.asUnmodifiableList(RabbitMQConsumerResourceAnalyzer.getInstance(),
-       				RabbitMQPublishResourceAnalyzer.getInstance());
-    private static final List<? extends TraceSourceAnalyzer>	tsAnalyzers=
-    		ArrayUtil.asUnmodifiableList(RabbitTraceSourceAnalyzer.getInstance());
-    private static final List<? extends MetricsGenerator>	mGenerators=
-	    	ArrayUtil.asUnmodifiableList(RabbitMQConsumerMetricsGenerator.getInstance(),
-	    			RabbitMQPublishMetricsGenerator.getInstance());
-    
+ 
     private RabbitMQPluginRuntimeDescriptor () {
     	super();
     }
@@ -47,20 +32,5 @@ public class RabbitMQPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;
-    }
-    
-    @Override
-    public Collection<? extends TraceSourceAnalyzer> getTraceSourceAnalyzers() {
-        return tsAnalyzers;
-    }
-    
-    @Override
-    public Collection<? extends ExternalResourceAnalyzer> getExternalResourceAnalyzers() {
-    	return extResAnalyzers;
-    }
-    
-    @Override
-    public Collection<? extends MetricsGenerator> getMetricsGenerators() {
-    	return mGenerators;
     }
 }

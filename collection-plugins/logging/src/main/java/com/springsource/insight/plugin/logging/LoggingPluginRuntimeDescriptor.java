@@ -15,19 +15,11 @@
  */
 package com.springsource.insight.plugin.logging;
 
-import java.util.Collection;
-import java.util.List;
-
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
-import com.springsource.insight.intercept.trace.TraceErrorAnalyzer;
-import com.springsource.insight.util.ArrayUtil;
 
 public class LoggingPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "logging";
     private static final LoggingPluginRuntimeDescriptor	INSTANCE=new LoggingPluginRuntimeDescriptor();
-    
-    private static final List<? extends TraceErrorAnalyzer>	errAnalyzers=
-    		ArrayUtil.asUnmodifiableList(LoggingTraceErrorAnalyzer.getInstance());
 
     private LoggingPluginRuntimeDescriptor () {
     	super();
@@ -36,12 +28,7 @@ public class LoggingPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final LoggingPluginRuntimeDescriptor getInstance() {
     	return INSTANCE;
     }
-    
-    @Override
-    public Collection<? extends TraceErrorAnalyzer> getTraceErrorAnalyzers() {
-        return errAnalyzers;
-    }
-    
+
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;

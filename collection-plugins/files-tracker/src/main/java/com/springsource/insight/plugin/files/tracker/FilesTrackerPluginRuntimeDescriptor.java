@@ -15,18 +15,12 @@
  */
 package com.springsource.insight.plugin.files.tracker;
 
-import java.util.Collection;
-import java.util.List;
-
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
-import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
-import com.springsource.insight.util.ArrayUtil;
 
 public class FilesTrackerPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "files-tracker";
     private static final FilesTrackerPluginRuntimeDescriptor	INSTANCE=new FilesTrackerPluginRuntimeDescriptor();
-    private static final List<? extends ExternalResourceAnalyzer>	extResAnalyzers=
-       		ArrayUtil.asUnmodifiableList(FilesTrackerExternalResourceAnalyzer.getInstance());
+
     private FilesTrackerPluginRuntimeDescriptor () {
         super();
     }
@@ -35,11 +29,6 @@ public class FilesTrackerPluginRuntimeDescriptor extends PluginRuntimeDescriptor
     	return INSTANCE;
     }
 
-    @Override
-    public Collection<? extends ExternalResourceAnalyzer> getExternalResourceAnalyzers() {
-    	return extResAnalyzers;
-    }
-    
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;

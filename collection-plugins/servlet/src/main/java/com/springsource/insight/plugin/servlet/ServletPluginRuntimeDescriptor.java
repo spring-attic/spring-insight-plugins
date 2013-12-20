@@ -19,10 +19,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
-import com.springsource.insight.intercept.metrics.MetricsGenerator;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
-import com.springsource.insight.intercept.trace.TraceErrorAnalyzer;
-import com.springsource.insight.intercept.trace.TraceSourceAnalyzer;
 import com.springsource.insight.util.ArrayUtil;
 
 public class ServletPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
@@ -32,12 +29,6 @@ public class ServletPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     		ArrayUtil.asUnmodifiableList(LifecycleEndPointAnalyzer.getInstance(),
              	   						 RequestDispatchEndPointAnalyzer.getInstance(),
              	   						 ServletEndPointAnalyzer.getInstance());
-    private static final List<? extends TraceErrorAnalyzer>	errAnalyzers=
-    		ArrayUtil.asUnmodifiableList(HttpStatusTraceErrorAnalyzer.getInstance());
-    private static final List<? extends TraceSourceAnalyzer>	tsAnalyzers=
-    		ArrayUtil.asUnmodifiableList(HttpTraceSourceAnalyzer.getInstance());
-    private static final List<? extends MetricsGenerator>	mGenerators=
-	    	ArrayUtil.asUnmodifiableList(RequestResponseSizeMetricsGenerator.getInstance());
 
     private ServletPluginRuntimeDescriptor () {
     	super();
@@ -52,21 +43,6 @@ public class ServletPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
         return epAnalyzers;
     }
 
-    @Override
-    public Collection<? extends TraceErrorAnalyzer> getTraceErrorAnalyzers() {
-        return errAnalyzers;
-    }
-    
-    @Override
-    public Collection<? extends TraceSourceAnalyzer> getTraceSourceAnalyzers() {
-        return tsAnalyzers;
-    }
-    
-    @Override
-    public Collection<? extends MetricsGenerator> getMetricsGenerators() {
-    	return mGenerators;
-    }
-    
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;

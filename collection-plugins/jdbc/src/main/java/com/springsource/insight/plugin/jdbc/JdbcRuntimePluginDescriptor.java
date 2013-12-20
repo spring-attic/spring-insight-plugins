@@ -15,19 +15,12 @@
  */
 package com.springsource.insight.plugin.jdbc;
 
-import java.util.Collection;
-import java.util.List;
-
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
-import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
-import com.springsource.insight.util.ArrayUtil;
 
 public class JdbcRuntimePluginDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "jdbc";
     private static final JdbcRuntimePluginDescriptor	INSTANCE=new JdbcRuntimePluginDescriptor();
-    private static final List<? extends ExternalResourceAnalyzer>	extResAnalyzers=
-       		ArrayUtil.asUnmodifiableList(JdbcDriverExternalResourceAnalyzer.getInstance(),
-       				JdbcOperationExternalResourceAnalyzer.getInstance());
+    
     private JdbcRuntimePluginDescriptor () {
     	super();
     }
@@ -36,11 +29,6 @@ public class JdbcRuntimePluginDescriptor extends PluginRuntimeDescriptor {
     	return INSTANCE;
     }
 
-    @Override
-    public Collection<? extends ExternalResourceAnalyzer> getExternalResourceAnalyzers() {
-    	return extResAnalyzers;
-    }
-    
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;

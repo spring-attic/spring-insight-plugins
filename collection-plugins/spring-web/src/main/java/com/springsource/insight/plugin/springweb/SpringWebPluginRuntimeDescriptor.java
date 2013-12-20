@@ -20,16 +20,8 @@ import java.util.Collection;
 import java.util.List;
 
 import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
-import com.springsource.insight.intercept.metrics.MetricsGenerator;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
-import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
-import com.springsource.insight.intercept.trace.TraceErrorAnalyzer;
 import com.springsource.insight.plugin.springweb.controller.ControllerEndPointAnalyzer;
-import com.springsource.insight.plugin.springweb.http.ClientHttpRequestExternalResourceAnalyzer;
-import com.springsource.insight.plugin.springweb.http.ClientHttpRequestTraceErrorAnalyzer;
-import com.springsource.insight.plugin.springweb.remoting.HttpInvokerRequestExecutorExternalResourceAnalyzer;
-import com.springsource.insight.plugin.springweb.remoting.HttpInvokerRequestExecutorTraceErrorAnalyzer;
-import com.springsource.insight.plugin.springweb.validation.ValidationErrorsMetricsGenerator;
 import com.springsource.insight.util.ArrayUtil;
 
 public class SpringWebPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
@@ -37,15 +29,7 @@ public class SpringWebPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     private static final SpringWebPluginRuntimeDescriptor	INSTANCE=new SpringWebPluginRuntimeDescriptor();
     private static final List<? extends EndPointAnalyzer>	epAnalyzers=
     		ArrayUtil.asUnmodifiableList(ControllerEndPointAnalyzer.getInstance());
-    private static final List<? extends TraceErrorAnalyzer>	errAnalyzers=
-    		ArrayUtil.asUnmodifiableList(ClientHttpRequestTraceErrorAnalyzer.getInstance(),
-    				HttpInvokerRequestExecutorTraceErrorAnalyzer.getInstance());
-    private static final List<? extends ExternalResourceAnalyzer>	extResAnalyzers=
-       		ArrayUtil.asUnmodifiableList(ClientHttpRequestExternalResourceAnalyzer.getInstance(),
-       				HttpInvokerRequestExecutorExternalResourceAnalyzer.getInstance());
-    private static final List<? extends MetricsGenerator>	mGenerators=
-	    	ArrayUtil.asUnmodifiableList(ValidationErrorsMetricsGenerator.getInstance());
-    
+
     private SpringWebPluginRuntimeDescriptor () {
         super();
     }
@@ -53,27 +37,12 @@ public class SpringWebPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final SpringWebPluginRuntimeDescriptor getInstance() {
     	return INSTANCE;
     }
-    
-    @Override
-    public Collection<? extends ExternalResourceAnalyzer> getExternalResourceAnalyzers() {
-    	return extResAnalyzers;
-    }
-    
+
     @Override
     public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
         return epAnalyzers;
     }
-    
-    @Override
-    public Collection<? extends TraceErrorAnalyzer> getTraceErrorAnalyzers() {
-        return errAnalyzers;
-    }
-    
-    @Override
-    public Collection<? extends MetricsGenerator> getMetricsGenerators() {
-    	return mGenerators;
-    }
-    
+
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;
