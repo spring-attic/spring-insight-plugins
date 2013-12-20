@@ -4,13 +4,13 @@
 	<groupId>com.springsource.insight.plugins</groupId>
 	<artifactId>insight-plugin-redis</artifactId>
 	<name>com.springsource.insight.plugins:redis</name>
-	<version>1.8.3.RELEASE</version>
+	<version>1.8.3.SR1</version>
 	<packaging>jar</packaging>
 	
 	<parent>
 		<groupId>com.springsource.insight</groupId>
 		<artifactId>community</artifactId>
-		<version>1.8.3.RELEASE</version>
+		<version>1.8.3.SR1</version>
 		<relativePath>../../parent</relativePath>
 	</parent>
 	

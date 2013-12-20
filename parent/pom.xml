@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.springsource.insight</groupId>
     <artifactId>community</artifactId>
-    <version>1.8.3.RELEASE</version>
+    <version>1.8.3.SR1</version>
     <name>com.springsource.insight:parent</name>
     <description>Spring Insight parent project. Defines dependencies and common configuration for the build process.
     </description>
