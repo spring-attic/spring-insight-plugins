@@ -8,7 +8,7 @@
 	<packaging>jar</packaging>
 	
 	<properties>
-		<insight.version>1.8.3.RELEASE</insight.version>
+		<insight.version>1.8.3.SR1</insight.version>
 		<aspectj.version>1.6.12.M2</aspectj.version>
 		<spring.framework.version>3.0.5.RELEASE</spring.framework.version>
 		<junit.version>4.5</junit.version>
