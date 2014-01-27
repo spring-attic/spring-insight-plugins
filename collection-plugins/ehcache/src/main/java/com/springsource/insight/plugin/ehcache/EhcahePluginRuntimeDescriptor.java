@@ -17,15 +17,19 @@ package com.springsource.insight.plugin.ehcache;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
+import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
 import com.springsource.insight.intercept.trace.collapse.CollapsingFrameHelperRegistrar;
+import com.springsource.insight.util.ArrayUtil;
 
 public class EhcahePluginRuntimeDescriptor extends PluginRuntimeDescriptor {
 	private static final EhcahePluginRuntimeDescriptor	INSTANCE=new EhcahePluginRuntimeDescriptor();
     private final Collection<CollapsingFrameHelperRegistrar> frameHelperRegistrars = Collections.singleton(CollapsingFrameHelperRegistrar.of(EhcacheDefinitions.CACHE_OPERATION)
                                                                                                                                          .with(EhcacheCollapsingFrameHelper.getInstance()));
-
+    private static final List<? extends ExternalResourceAnalyzer>	extResAnalyzers=
+       		ArrayUtil.asUnmodifiableList(EhcacheExternalResourceAnalyzer.getInstance());
 	private EhcahePluginRuntimeDescriptor () {
 		super();
 	}
@@ -38,7 +42,12 @@ public class EhcahePluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public String getPluginName() {
         return EhcacheDefinitions.PLUGIN_NAME;
     }
-
+    
+    @Override
+    public Collection<? extends ExternalResourceAnalyzer> getExternalResourceAnalyzers() {
+    	return extResAnalyzers;
+    }
+    
     @Override
     public Collection<CollapsingFrameHelperRegistrar> getCollapsingFrameHelperRegistrars() {
         return frameHelperRegistrars;

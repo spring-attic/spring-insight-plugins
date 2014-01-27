@@ -15,12 +15,18 @@
  */
 package com.springsource.insight.plugin.redis;
 
+import java.util.Collection;
+import java.util.List;
+
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
+import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
+import com.springsource.insight.util.ArrayUtil;
 
 public class RedisPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "redis";
     private static final RedisPluginRuntimeDescriptor	INSTANCE=new RedisPluginRuntimeDescriptor();
-
+    private static final List<? extends ExternalResourceAnalyzer>	extResAnalyzers=
+       		ArrayUtil.asUnmodifiableList(RedisExternalResourceAnalyzer.getInstance());
     private RedisPluginRuntimeDescriptor () {
     	super();
     }
@@ -32,5 +38,9 @@ public class RedisPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;
+    }
+    @Override
+    public Collection<? extends ExternalResourceAnalyzer> getExternalResourceAnalyzers() {
+    	return extResAnalyzers;
     }
 }
