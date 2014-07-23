@@ -3,14 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.springsource.insight.samples</groupId>
 	<artifactId>payme-insight-plugin</artifactId>
-	<version>1.9.2.SR4</version>
+	<version>1.9.2.SR5</version>
 	<name>com.springsource.insight.samples:payme-insight-plugin</name>
 	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>com.springsource.insight.samples</groupId>
 		<artifactId>sample-modules</artifactId>
-		<version>1.9.2.SR4</version>
+		<version>1.9.2.SR5</version>
 		<relativePath>..</relativePath>
 	</parent>
 
