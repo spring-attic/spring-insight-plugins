@@ -89,9 +89,6 @@
     <profiles>
 		<profile>
 			<id>force-deploy-artifacts</id>
-			<activation>
-				<jdk>1.5</jdk>
-			</activation>
 			<build>
 				<plugins>
 					<plugin>
@@ -105,48 +102,6 @@
 				</plugins>
 			</build>
 		</profile>
-
-        <profile>
-            <id>jdk15</id>
-            <activation>
-                <jdk>1.5</jdk>
-            </activation>
-			<build>
-				<pluginManagement>
-					<plugins>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-compiler-plugin</artifactId>
-							<configuration>
-								<testExcludes>
-									<exclude>**/jdk16/*.java</exclude>
-								</testExcludes>
-							</configuration>
-						</plugin>            
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-surefire-plugin</artifactId>
-							<configuration>
-								<excludes>
-									<exclude>**/jdk16/*.java</exclude>
-								</excludes>
-							</configuration>
-						</plugin>            
-						<plugin>
-							<groupId>org.codehaus.mojo</groupId>
-							<artifactId>aspectj-maven-plugin</artifactId>
-							<configuration>
-								<excludes>
-									<exclude>**/jdk16/*.java</exclude>
-									<exclude>**/jdk16/*.aj</exclude>
-								</excludes>
-							</configuration>
-						</plugin>            
-					</plugins>
-				</pluginManagement>
-			</build>
-        </profile>
-
 		<profile>
 			<id>with-micro-benchmarks</id>
 			<properties>
