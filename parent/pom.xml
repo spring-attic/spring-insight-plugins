@@ -36,7 +36,7 @@
         <cglib.version>2.2</cglib.version>
         <activemq.version>5.4.2</activemq.version>
         <xbean.version>3.5</xbean.version>
-        <catalina.version>6.0.18</catalina.version>
+        <catalina.version>6.0.41</catalina.version>
         <h2.version>1.2.147</h2.version>
         <hsqldb.version>1.8.0.10</hsqldb.version>
         <hibernate.version>3.6.0.Final</hibernate.version>
