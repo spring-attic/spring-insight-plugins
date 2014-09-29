@@ -14,8 +14,8 @@
 	</parent>
 
     <properties>
-        <spring.data.commons.version>1.1.0.RELEASE</spring.data.commons.version>
-        <spring.data.jpa.version>1.0.3.RELEASE</spring.data.jpa.version>
+        <spring.data.commons.version>1.9.0.RELEASE</spring.data.commons.version>
+        <spring.data.jpa.version>1.7.0.RELEASE</spring.data.jpa.version>
     </properties>	
 
 	<dependencies>

@@ -30,6 +30,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.ResponseExtractor;
@@ -309,6 +310,16 @@ public abstract class RestOperationCollectionTestSupport extends OperationCollec
 			assertFalse("No location specified", StringUtil.isEmpty(location));
 			assertNull(location + ": Multiple locations: " + uri, uri);
 			uri = location;
+		}
+
+		public <T> ResponseEntity<T> exchange(RequestEntity<?> requestEntity,
+				Class<T> responseType) throws RestClientException {
+				return null;
+		}
+
+		public <T> ResponseEntity<T> exchange(RequestEntity<?> requestEntity,
+				ParameterizedTypeReference<T> responseType) {
+			return null;
 		}
 	}
 }

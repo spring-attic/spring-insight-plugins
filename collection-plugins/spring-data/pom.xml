@@ -20,13 +20,13 @@
             a MongoDB test for the repository collection 
          -->
     <properties>
-        <spring.data.jpa.version>1.0.3.RELEASE</spring.data.jpa.version>
+        <spring.data.jpa.version>1.7.0.RELEASE</spring.data.jpa.version>
     </properties>	
 
 	<dependencies>
         <dependency>
             <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-commons-core</artifactId>
+            <artifactId>spring-data-commons</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>

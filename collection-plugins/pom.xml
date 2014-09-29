@@ -25,7 +25,9 @@
 				<module>cassandra</module>
 				<module>hadoop</module>
 				<module>redis</module>
+<!-- Temporarily Disable neo4j plugin 
 				<module>spring-neo4j</module>
+-->
 			</modules>
 		</profile>
     </profiles>
