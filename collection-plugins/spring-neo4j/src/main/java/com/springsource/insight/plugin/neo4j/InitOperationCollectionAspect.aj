@@ -32,7 +32,7 @@ public privileged aspect InitOperationCollectionAspect extends AbstractOperation
         super();
     }
 
-    public pointcut collectionPoint() : execution(* Neo4jTemplate+.updateDependencies()));
+    public pointcut collectionPoint() : execution(* Neo4jTemplate+.setInfrastructure(MappingInfrastructure));
 
 	@Override
     protected Operation createOperation(JoinPoint jp) {
