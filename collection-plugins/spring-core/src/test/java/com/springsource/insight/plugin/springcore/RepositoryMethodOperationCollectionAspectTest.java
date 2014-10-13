@@ -23,27 +23,27 @@ import com.foo.example.ExampleRepository;
 import com.springsource.insight.plugin.springcore.beans.InsightRepository;
 
 public class RepositoryMethodOperationCollectionAspectTest extends StereotypeOperationCollectionAspectTestSupport {
-	public RepositoryMethodOperationCollectionAspectTest () {
-		super(Repository.class);
-	}
+    public RepositoryMethodOperationCollectionAspectTest() {
+        super(Repository.class);
+    }
 
     @Test
     public void testNonInsightComponentCollected() {
         assertStereotypeOperation(new ExampleRepository(), true);
     }
 
-	@Test
-	public void testInsightComponentNotCollected () {
-		assertStereotypeOperation(new InsightRepository(), false);
-	}
+    @Test
+    public void testInsightComponentNotCollected() {
+        assertStereotypeOperation(new InsightRepository(), false);
+    }
 
-	@Test
-	public void testLifecycleMethodsNotCollected() throws Exception {
-		assertLifecycleMethodsNotIntercepted(new ExampleRepository());
-	}
+    @Test
+    public void testLifecycleMethodsNotCollected() throws Exception {
+        assertLifecycleMethodsNotIntercepted(new ExampleRepository());
+    }
 
-	@Override
-	public RepositoryMethodOperationCollectionAspect getAspect() {
-		return RepositoryMethodOperationCollectionAspect.aspectOf();
-	}
+    @Override
+    public RepositoryMethodOperationCollectionAspect getAspect() {
+        return RepositoryMethodOperationCollectionAspect.aspectOf();
+    }
 }

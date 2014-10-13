@@ -28,42 +28,42 @@ import com.springsource.insight.intercept.operation.Operation;
  * that makes more sense...
  */
 public aspect JpaEntityManagerDomainObjectAspect extends JpaEntityManagerCollectionAspect {
-    public JpaEntityManagerDomainObjectAspect () {
+    public JpaEntityManagerDomainObjectAspect() {
         super(JpaDefinitions.DOMAIN_GROUP);
     }
 
     // NOTE: matches 1.0 and 2.0
-    public pointcut refresh () : execution(* EntityManager+.refresh(..));
-    public pointcut objLock () : execution(* EntityManager+.lock(..));
+    public pointcut refresh(): execution(* EntityManager+.refresh(..));
+    public pointcut objLock(): execution(* EntityManager+.lock(..));
 
     public pointcut collectionPoint()
-        : execution(* EntityManager+.persist(Object))
-       || execution(* EntityManager+.merge(..))
-       || execution(* EntityManager+.remove(Object))
-       // need the cflowbelow just in case one method delegates to another...
-       || (objLock() && (!cflowbelow(objLock())))
-       || (refresh() && (!cflowbelow(refresh())))
-        ;
+            : execution(* EntityManager+.persist(Object))
+            || execution(* EntityManager+.merge(..))
+            || execution(* EntityManager+.remove(Object))
+            // need the cflowbelow just in case one method delegates to another...
+            || (objLock() && (!cflowbelow(objLock())))
+            || (refresh() && (!cflowbelow(refresh())))
+            ;
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Object[]    args=jp.getArgs();
-        Class<?>    domainClass=resolveDomainClass(args);
+        Object[] args = jp.getArgs();
+        Class<?> domainClass = resolveDomainClass(args);
         return super.createOperation(jp)
-                    .put(JpaDefinitions.DOMAIN_CLASS_ATTR, domainClass.getName())
-                    ;
+                .put(JpaDefinitions.DOMAIN_CLASS_ATTR, domainClass.getName())
+                ;
     }
-    
-    static Class<?> resolveDomainClass (Object ... args) {
+
+    static Class<?> resolveDomainClass(Object... args) {
         if ((args == null) || (args.length <= 0)) {
             return void.class;
         }
-        
-        Object  domainObject=args[0];
+
+        Object domainObject = args[0];
         if (domainObject == null) {
             return void.class;
         }
-        
+
         return domainObject.getClass();
     }
 }

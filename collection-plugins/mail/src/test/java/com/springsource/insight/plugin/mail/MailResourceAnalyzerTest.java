@@ -30,62 +30,62 @@ import com.springsource.insight.intercept.trace.SimpleFrameBuilder;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
 
-public class MailResourceAnalyzerTest extends AbstractCollectionTestSupport  {
-    private static final String PROTOCOL="POP3";
-    private static final Integer    PORT=MailDefinitions.protocolToPortMap.get(PROTOCOL);
-    private final MailSendExternalResourceAnalyzer analyzer=MailSendExternalResourceAnalyzer.getInstance();
+public class MailResourceAnalyzerTest extends AbstractCollectionTestSupport {
+    private static final String PROTOCOL = "POP3";
+    private static final Integer PORT = MailDefinitions.protocolToPortMap.get(PROTOCOL);
+    private final MailSendExternalResourceAnalyzer analyzer = MailSendExternalResourceAnalyzer.getInstance();
 
-    public MailResourceAnalyzerTest () {
-    	super();
+    public MailResourceAnalyzerTest() {
+        super();
     }
 
     @Test
-	public void testLocateExternalResourceName() {
-        final String HOST="test.example.com";
-		Trace trace = createValidTrace(HOST);
-		List<ExternalResourceDescriptor> externalResourceDescriptors =
-				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
+    public void testLocateExternalResourceName() {
+        final String HOST = "test.example.com";
+        Trace trace = createValidTrace(HOST);
+        List<ExternalResourceDescriptor> externalResourceDescriptors =
+                (List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
 
-		assertEquals("Mismatched number of descriptors", 1, externalResourceDescriptors.size());        
-		ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);
+        assertEquals("Mismatched number of descriptors", 1, externalResourceDescriptors.size());
+        ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);
 
-		assertSame("Mismatched root frame", trace.getRootFrame(), descriptor.getFrame());
-		assertDescriptorContents("testLocateExternalResourceName", HOST, descriptor);
-	}
-    
+        assertSame("Mismatched root frame", trace.getRootFrame(), descriptor.getFrame());
+        assertDescriptorContents("testLocateExternalResourceName", HOST, descriptor);
+    }
+
     @Test
-	public void testExactlyTwoDifferentExternalResourceNames() {
-        final String    HOST1="op1.example.com", HOST2="op2.example.com";
-		Operation op1 = createOperation(HOST1);
-		Operation op2 = createOperation(HOST2);
+    public void testExactlyTwoDifferentExternalResourceNames() {
+        final String HOST1 = "op1.example.com", HOST2 = "op2.example.com";
+        Operation op1 = createOperation(HOST1);
+        Operation op2 = createOperation(HOST2);
 
-		SimpleFrameBuilder builder = new SimpleFrameBuilder();
-		builder.enter(new Operation().type(OperationType.HTTP));
-		builder.enter(op2);
-		builder.exit();
-		builder.enter(new Operation().type(OperationType.METHOD));
-		builder.enter(op1);
-		builder.exit();
-		builder.exit();
-		Frame frame = builder.exit();
-		Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
+        SimpleFrameBuilder builder = new SimpleFrameBuilder();
+        builder.enter(new Operation().type(OperationType.HTTP));
+        builder.enter(op2);
+        builder.exit();
+        builder.enter(new Operation().type(OperationType.METHOD));
+        builder.enter(op1);
+        builder.exit();
+        builder.exit();
+        Frame frame = builder.exit();
+        Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
 
-		List<ExternalResourceDescriptor> externalResourceDescriptors =
-				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
-		assertEquals("Mismatched number of descriptors", 2, externalResourceDescriptors.size());        
+        List<ExternalResourceDescriptor> externalResourceDescriptors =
+                (List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
+        assertEquals("Mismatched number of descriptors", 2, externalResourceDescriptors.size());
 
-		ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);  
-		assertSame("Mismatched 2nd operation instance", op2, descriptor.getFrame().getOperation());
-		assertDescriptorContents(HOST2, HOST2, descriptor);
-		
-		descriptor = externalResourceDescriptors.get(1);
-		assertSame("Mismatched 1st operation instance", op1, descriptor.getFrame().getOperation());
+        ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);
+        assertSame("Mismatched 2nd operation instance", op2, descriptor.getFrame().getOperation());
+        assertDescriptorContents(HOST2, HOST2, descriptor);
+
+        descriptor = externalResourceDescriptors.get(1);
+        assertSame("Mismatched 1st operation instance", op1, descriptor.getFrame().getOperation());
         assertDescriptorContents(HOST1, HOST1, descriptor);
-	}
+    }
 
-    private ExternalResourceDescriptor assertDescriptorContents (
+    private ExternalResourceDescriptor assertDescriptorContents(
             String testName, String host, ExternalResourceDescriptor descriptor) {
-        String  label=PROTOCOL + ":" + host + ":" + PORT;
+        String label = PROTOCOL + ":" + host + ":" + PORT;
         assertNotNull(testName + ": No descriptor", descriptor);
         assertEquals(testName + ": Mismatched label", label, descriptor.getLabel());
         assertEquals(testName + ": Mismatched type", MailSendExternalResourceAnalyzer.RESOURCE_TYPE, descriptor.getType());
@@ -93,7 +93,7 @@ public class MailResourceAnalyzerTest extends AbstractCollectionTestSupport  {
         assertEquals(testName + ": Mismatched host", host, descriptor.getHost());
         assertEquals(testName + ": Mismatched port", PORT.intValue(), descriptor.getPort());
         assertEquals(testName + ": Mismatched direction", Boolean.FALSE, Boolean.valueOf(descriptor.isIncoming()));
-        
+
 
         String expectedHash = MD5NameGenerator.getName(label);
         assertEquals(testName + ": Mismatched name", PROTOCOL + ":" + expectedHash, descriptor.getName());
@@ -103,20 +103,20 @@ public class MailResourceAnalyzerTest extends AbstractCollectionTestSupport  {
     private Trace createValidTrace(String host) {
         SimpleFrameBuilder builder = new SimpleFrameBuilder();
         Operation op = createOperation(host);
-        
+
         builder.enter(op);
-        
+
         Frame frame = builder.exit();
         return Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
     }
 
-	private Operation createOperation(String host) {
-		return new Operation()
-		        .type(MailDefinitions.SEND_OPERATION)
-		        .put(MailDefinitions.SEND_HOST, host)
-		        .put(MailDefinitions.SEND_PORT, PORT.intValue())
-		        .put(MailDefinitions.SEND_PROTOCOL, PROTOCOL)
-		        ;
-	}
+    private Operation createOperation(String host) {
+        return new Operation()
+                .type(MailDefinitions.SEND_OPERATION)
+                .put(MailDefinitions.SEND_HOST, host)
+                .put(MailDefinitions.SEND_PORT, PORT.intValue())
+                .put(MailDefinitions.SEND_PROTOCOL, PROTOCOL)
+                ;
+    }
 
 }

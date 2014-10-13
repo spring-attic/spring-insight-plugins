@@ -25,20 +25,20 @@ import com.springsource.insight.util.KeyValPair;
 public final class GrailsControllerStateKeeper {
     private static final ThreadLocal<State> localData = new ThreadLocal<State>();
 
-    private GrailsControllerStateKeeper () {
+    private GrailsControllerStateKeeper() {
         throw new UnsupportedOperationException("No instance");
     }
 
     public static void setThreadLocalController(String shortName, String fullName) {
-        State state = getState();        
+        State state = getState();
         state.shortControllerName = shortName;
         state.fullControllerName = fullName;
     }
-    
+
     public static void setThreadLocalActionParams(List<KeyValPair<String, String>> params) {
         getState().actionParams = params;
     }
-    
+
     public static void setThreadLocalWebRequest(GrailsWebRequest request) {
         getState().request = request;
     }
@@ -51,17 +51,17 @@ public final class GrailsControllerStateKeeper {
         }
         return state;
     }
-    
+
     public static State getAndDestroyThreadLocalState() {
         State res = localData.get();
         localData.remove();
         return res;
     }
-    
+
     public static class State {
         String shortControllerName;
         String fullControllerName;
-        List<KeyValPair<String, String>>actionParams;
+        List<KeyValPair<String, String>> actionParams;
         GrailsWebRequest request;
     }
 }

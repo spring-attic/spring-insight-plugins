@@ -23,16 +23,16 @@ import com.springsource.insight.intercept.operation.Operation;
 
 public aspect GemFireQueryCollectionAspect extends AbstractGemFireCollectionAspect {
     public GemFireQueryCollectionAspect() {
-		super(GemFireDefenitions.TYPE_QUERY);
-	}
+        super(GemFireDefenitions.TYPE_QUERY);
+    }
 
     public pointcut collectionPoint(): execution(* Query.execute*(..));
-    
+
     @Override
     protected Operation createOperation(final JoinPoint jp) {
-    	Operation op = createBasicOperation(jp);
-   
-    	Query query = (Query) jp.getThis();
+        Operation op = createBasicOperation(jp);
+
+        Query query = (Query) jp.getThis();
         op.put(GemFireDefenitions.FIELD_QUERY, query.getQueryString());
         return op;
     }

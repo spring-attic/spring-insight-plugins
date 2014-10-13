@@ -31,44 +31,44 @@ import com.springsource.insight.util.ArrayUtil;
 
 
 public abstract class SqlParserTestImpl<P extends JdbcUrlParser> extends Assert {
-	protected final P parser;
-	protected final DatabaseType	databaseType;
-	private final Collection<SqlTestEntry> testCases;
+    protected final P parser;
+    protected final DatabaseType databaseType;
+    private final Collection<SqlTestEntry> testCases;
 
-	protected SqlParserTestImpl(DatabaseType dbType, P parserInstance, SqlTestEntry ... testEntries) {
-		this(dbType, parserInstance, (ArrayUtil.length(testEntries) <= 0) ? Collections.<SqlTestEntry>emptyList() : Arrays.asList(testEntries));
-	}
+    protected SqlParserTestImpl(DatabaseType dbType, P parserInstance, SqlTestEntry... testEntries) {
+        this(dbType, parserInstance, (ArrayUtil.length(testEntries) <= 0) ? Collections.<SqlTestEntry>emptyList() : Arrays.asList(testEntries));
+    }
 
-	protected SqlParserTestImpl(DatabaseType dbType, P parserInstance, Collection<SqlTestEntry> testEntries) {
-		if ((databaseType=dbType) == null) {
-			throw new IllegalStateException("No database type specified");
-		}
+    protected SqlParserTestImpl(DatabaseType dbType, P parserInstance, Collection<SqlTestEntry> testEntries) {
+        if ((databaseType = dbType) == null) {
+            throw new IllegalStateException("No database type specified");
+        }
 
-		if ((parser=parserInstance) == null) {
-			throw new IllegalStateException("No parser instance provided");
-		}
+        if ((parser = parserInstance) == null) {
+            throw new IllegalStateException("No parser instance provided");
+        }
 
-		assertEquals("Mismatched vendor name for " + dbType, dbType.getVendorName(), parserInstance.getVendorName());
-		testCases = (testEntries == null) ? Collections.<SqlTestEntry>emptyList() : testEntries;
-	}
+        assertEquals("Mismatched vendor name for " + dbType, dbType.getVendorName(), parserInstance.getVendorName());
+        testCases = (testEntries == null) ? Collections.<SqlTestEntry>emptyList() : testEntries;
+    }
 
-	@Test
-	public void testTestCases () throws Exception {
-		final String	vendorName=databaseType.getVendorName();
-		for (SqlTestEntry testEntry : testCases) {			
-			final String connectionUrl = testEntry.getConnectionUrl();
-			final List<JdbcUrlMetaData> metaDataList = parser.parse(connectionUrl, vendorName);
-			assertNotNull("No result for " + connectionUrl, metaDataList);
-			assertEquals("Multiple results for " + connectionUrl + ": " + metaDataList, 1, metaDataList.size());
+    @Test
+    public void testTestCases() throws Exception {
+        final String vendorName = databaseType.getVendorName();
+        for (SqlTestEntry testEntry : testCases) {
+            final String connectionUrl = testEntry.getConnectionUrl();
+            final List<JdbcUrlMetaData> metaDataList = parser.parse(connectionUrl, vendorName);
+            assertNotNull("No result for " + connectionUrl, metaDataList);
+            assertEquals("Multiple results for " + connectionUrl + ": " + metaDataList, 1, metaDataList.size());
 
-			JdbcUrlMetaData	actual=metaDataList.get(0);
-			JdbcUrlMetaData expected=new SimpleJdbcUrlMetaData(testEntry.getHost(),
-															   testEntry.getPort(),
-															   testEntry.getDbname(),
-															   connectionUrl,
-															   vendorName);		
+            JdbcUrlMetaData actual = metaDataList.get(0);
+            JdbcUrlMetaData expected = new SimpleJdbcUrlMetaData(testEntry.getHost(),
+                    testEntry.getPort(),
+                    testEntry.getDbname(),
+                    connectionUrl,
+                    vendorName);
 
-			assertEquals("Mismatched results for " + connectionUrl, expected, actual);
-		}
-	}
+            assertEquals("Mismatched results for " + connectionUrl, expected, actual);
+        }
+    }
 }

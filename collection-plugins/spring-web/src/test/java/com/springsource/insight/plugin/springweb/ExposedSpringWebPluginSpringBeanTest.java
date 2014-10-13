@@ -28,24 +28,31 @@ import com.springsource.insight.plugin.springweb.remoting.HttpInvokerRequestExec
 import com.springsource.insight.plugin.springweb.validation.ValidationErrorsMetricsGenerator;
 
 /**
- * Makes sure that the exposed singletons are indeed visible 
+ * Makes sure that the exposed singletons are indeed visible
  */
-@ContextConfiguration(locations={ "classpath:META-INF/insight-plugin-springweb.xml" })
+@ContextConfiguration(locations = {"classpath:META-INF/insight-plugin-springweb.xml"})
 public class ExposedSpringWebPluginSpringBeanTest
-		extends AbstractExposedIdkPuginsTestSupport<SpringWebPluginRuntimeDescriptor> {
+        extends AbstractExposedIdkPuginsTestSupport<SpringWebPluginRuntimeDescriptor> {
     /* NOTE: all beans are autowired with required=false since we want
      * to have specific tests for each and we don't want to fail ALL the
      * tests if one bean is missing
      */
-	@Autowired(required=false) protected ControllerEndPointAnalyzer	controllerEndPointAnalyzer;
-	@Autowired(required=false) protected ValidationErrorsMetricsGenerator	validationErrorsMetricsGenerator;
-	@Autowired(required=false) protected SpringWebPluginRuntimeDescriptor	springWebPluginRuntimeDescriptor;
-	@Autowired(required=false) protected HttpInvokerRequestExecutorExternalResourceAnalyzer httpInvokerRequestExecutorExternalResourceAnalyzer;
-	@Autowired(required=false) protected HttpInvokerRequestExecutorTraceErrorAnalyzer	httpInvokerRequestExecutorTraceErrorAnalyzer;
-	@Autowired(required=false) protected ClientHttpRequestTraceErrorAnalyzer	clientHttpRequestTraceErrorAnalyzer;
-	@Autowired(required=false) protected ClientHttpRequestExternalResourceAnalyzer	clientHttpRequestExternalResourceAnalyzer;
+    @Autowired(required = false)
+    protected ControllerEndPointAnalyzer controllerEndPointAnalyzer;
+    @Autowired(required = false)
+    protected ValidationErrorsMetricsGenerator validationErrorsMetricsGenerator;
+    @Autowired(required = false)
+    protected SpringWebPluginRuntimeDescriptor springWebPluginRuntimeDescriptor;
+    @Autowired(required = false)
+    protected HttpInvokerRequestExecutorExternalResourceAnalyzer httpInvokerRequestExecutorExternalResourceAnalyzer;
+    @Autowired(required = false)
+    protected HttpInvokerRequestExecutorTraceErrorAnalyzer httpInvokerRequestExecutorTraceErrorAnalyzer;
+    @Autowired(required = false)
+    protected ClientHttpRequestTraceErrorAnalyzer clientHttpRequestTraceErrorAnalyzer;
+    @Autowired(required = false)
+    protected ClientHttpRequestExternalResourceAnalyzer clientHttpRequestExternalResourceAnalyzer;
 
-	public ExposedSpringWebPluginSpringBeanTest() {
-		super(SpringWebPluginRuntimeDescriptor.class);
-	}
+    public ExposedSpringWebPluginSpringBeanTest() {
+        super(SpringWebPluginRuntimeDescriptor.class);
+    }
 }

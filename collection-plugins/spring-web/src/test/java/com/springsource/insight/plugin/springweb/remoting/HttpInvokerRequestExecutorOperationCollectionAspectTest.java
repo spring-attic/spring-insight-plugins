@@ -35,123 +35,123 @@ import com.springsource.insight.util.MapUtil;
 import com.springsource.insight.util.StringFormatterUtils;
 
 /**
- * 
+ *
  */
 public class HttpInvokerRequestExecutorOperationCollectionAspectTest
-		extends HttpInvokerRequestOperationCollectionTestSupport {
+        extends HttpInvokerRequestOperationCollectionTestSupport {
 
-	public HttpInvokerRequestExecutorOperationCollectionAspectTest() {
-		super();
-	}
+    public HttpInvokerRequestExecutorOperationCollectionAspectTest() {
+        super();
+    }
 
-	@Test
-	public void testSuccessfulRemoteInvocation() throws Exception {
-		TestInvoker			invoker=new TestInvoker(Long.valueOf(System.currentTimeMillis()));
-		RemoteInvocation	invocation=invoker.createRemoteInvocation("testSuccessfulRemoteInvocation");
-		invocation.setAttributes(Collections.singletonMap("testSuccessfulRemoteInvocation", (Serializable) Long.valueOf(System.currentTimeMillis())));
+    @Test
+    public void testSuccessfulRemoteInvocation() throws Exception {
+        TestInvoker invoker = new TestInvoker(Long.valueOf(System.currentTimeMillis()));
+        RemoteInvocation invocation = invoker.createRemoteInvocation("testSuccessfulRemoteInvocation");
+        invocation.setAttributes(Collections.singletonMap("testSuccessfulRemoteInvocation", (Serializable) Long.valueOf(System.currentTimeMillis())));
 
-		HttpInvokerClientConfiguration	config=
-				createMockConfiguration(invocation.getMethodName(), "http://hello/world", "http://here/testSuccessfulRemoteInvocation");
-		RemoteInvocationResult			result=invoker.executeRequest(config, invocation);
-		Operation						op=assertRemotingOperation(config, invocation, result);
-		ExternalResourceDescriptor		desc=assertExternalResource(op);
-		assertNull("Unexpected external descriptor: " + desc, desc);
-	}
+        HttpInvokerClientConfiguration config =
+                createMockConfiguration(invocation.getMethodName(), "http://hello/world", "http://here/testSuccessfulRemoteInvocation");
+        RemoteInvocationResult result = invoker.executeRequest(config, invocation);
+        Operation op = assertRemotingOperation(config, invocation, result);
+        ExternalResourceDescriptor desc = assertExternalResource(op);
+        assertNull("Unexpected external descriptor: " + desc, desc);
+    }
 
-	@Test
-	public void testFailedRemoteInvocation() throws Exception {
-		TestInvoker			invoker=new TestInvoker(new UnsupportedOperationException("testFailedRemoteInvocation"));
-		RemoteInvocation	invocation=invoker.createRemoteInvocation("testFailedRemoteInvocation");
-		invocation.setAttributes(Collections.singletonMap("testFailedRemoteInvocation", (Serializable) Long.valueOf(System.currentTimeMillis())));
+    @Test
+    public void testFailedRemoteInvocation() throws Exception {
+        TestInvoker invoker = new TestInvoker(new UnsupportedOperationException("testFailedRemoteInvocation"));
+        RemoteInvocation invocation = invoker.createRemoteInvocation("testFailedRemoteInvocation");
+        invocation.setAttributes(Collections.singletonMap("testFailedRemoteInvocation", (Serializable) Long.valueOf(System.currentTimeMillis())));
 
-		HttpInvokerClientConfiguration	config=
-				createMockConfiguration(invocation.getMethodName(), "http://goodbye/world", "http://there/testFailedRemoteInvocation");
-		RemoteInvocationResult			result=invoker.executeRequest(config, invocation);
-		Operation						op=assertRemotingOperation(config, invocation, result);
-		ExternalResourceDescriptor		desc=assertExternalResource(op);
-		assertNull("Unexpected external descriptor: " + desc, desc);
-		assertTraceError(op, result);
-	}
+        HttpInvokerClientConfiguration config =
+                createMockConfiguration(invocation.getMethodName(), "http://goodbye/world", "http://there/testFailedRemoteInvocation");
+        RemoteInvocationResult result = invoker.executeRequest(config, invocation);
+        Operation op = assertRemotingOperation(config, invocation, result);
+        ExternalResourceDescriptor desc = assertExternalResource(op);
+        assertNull("Unexpected external descriptor: " + desc, desc);
+        assertTraceError(op, result);
+    }
 
-	protected Operation assertRemotingOperation (HttpInvokerClientConfiguration	config,
-												 RemoteInvocation				invocation,
-												 RemoteInvocationResult			result) {
-		Operation	op=assertRemotingOperation(config);
-		assertRemoteInvocation(op, invocation);
-		assertRemoteResult(op, result);
-		return op;
-	}
+    protected Operation assertRemotingOperation(HttpInvokerClientConfiguration config,
+                                                RemoteInvocation invocation,
+                                                RemoteInvocationResult result) {
+        Operation op = assertRemotingOperation(config);
+        assertRemoteInvocation(op, invocation);
+        assertRemoteResult(op, result);
+        return op;
+    }
 
-	protected static Operation assertRemoteResult (Operation op, RemoteInvocationResult result) {
-		Throwable	remoteError=result.getException();
-		if (remoteError != null) {
-			assertEquals("Mismatched remote error",
-						 StringFormatterUtils.formatStackTrace(remoteError),
-						 op.get(HttpInvokerRequestExecutorOperationCollector.REMOTE_EXCEPTION, String.class));
-		} else {
-			assertEquals("Mismatched remote value",
-						 StringFormatterUtils.formatObject(result.getValue()),
-						 op.get(OperationFields.RETURN_VALUE, String.class));
-		}
-		
-		return op;
-	}
+    protected static Operation assertRemoteResult(Operation op, RemoteInvocationResult result) {
+        Throwable remoteError = result.getException();
+        if (remoteError != null) {
+            assertEquals("Mismatched remote error",
+                    StringFormatterUtils.formatStackTrace(remoteError),
+                    op.get(HttpInvokerRequestExecutorOperationCollector.REMOTE_EXCEPTION, String.class));
+        } else {
+            assertEquals("Mismatched remote value",
+                    StringFormatterUtils.formatObject(result.getValue()),
+                    op.get(OperationFields.RETURN_VALUE, String.class));
+        }
 
-	protected static Operation assertRemoteInvocation (Operation op, RemoteInvocation invocation) {
-		assertEquals("Mismatched full class name", TestInvoker.class.getName(), op.get(OperationFields.CLASS_NAME, String.class));
-		assertEquals("Mismatched short class name", TestInvoker.class.getSimpleName(), op.get(OperationFields.SHORT_CLASS_NAME, String.class));
+        return op;
+    }
 
-		String	remoteLocation=JoinPointBreakDown.getMethodStringFromArgs(invocation.getMethodName(), invocation.getParameterTypes());
-		assertEquals("Mismatched remote method label", remoteLocation, op.getLabel());
-		assertEquals("Mismatched remote method signature", remoteLocation, op.get("remoteMethodSignature", String.class));
-		assertRemoteInvocationAttrs(op.get("remoteInvocationAttrs", OperationMap.class), invocation.getAttributes());
-		return op;
-	}
+    protected static Operation assertRemoteInvocation(Operation op, RemoteInvocation invocation) {
+        assertEquals("Mismatched full class name", TestInvoker.class.getName(), op.get(OperationFields.CLASS_NAME, String.class));
+        assertEquals("Mismatched short class name", TestInvoker.class.getSimpleName(), op.get(OperationFields.SHORT_CLASS_NAME, String.class));
 
-	protected static OperationMap assertRemoteInvocationAttrs (OperationMap map, Map<String,?> attrs) {
-		assertNotNull("No invocation attributes", map);
-		assertEquals("Mismatched attributes map size", MapUtil.size(attrs), map.size());
+        String remoteLocation = JoinPointBreakDown.getMethodStringFromArgs(invocation.getMethodName(), invocation.getParameterTypes());
+        assertEquals("Mismatched remote method label", remoteLocation, op.getLabel());
+        assertEquals("Mismatched remote method signature", remoteLocation, op.get("remoteMethodSignature", String.class));
+        assertRemoteInvocationAttrs(op.get("remoteInvocationAttrs", OperationMap.class), invocation.getAttributes());
+        return op;
+    }
 
-		if (map.size() > 0) {
-			for (Map.Entry<String,?> ae : attrs.entrySet()) {
-				String	key=ae.getKey();
-				Object	expected=ae.getValue(), actual=map.get(key, expected.getClass());
-				assertEquals("Mismatched value for attribute=" + key, expected, actual);
-			}
-		}
+    protected static OperationMap assertRemoteInvocationAttrs(OperationMap map, Map<String, ?> attrs) {
+        assertNotNull("No invocation attributes", map);
+        assertEquals("Mismatched attributes map size", MapUtil.size(attrs), map.size());
 
-		return map;
-	}
+        if (map.size() > 0) {
+            for (Map.Entry<String, ?> ae : attrs.entrySet()) {
+                String key = ae.getKey();
+                Object expected = ae.getValue(), actual = map.get(key, expected.getClass());
+                assertEquals("Mismatched value for attribute=" + key, expected, actual);
+            }
+        }
 
-	@Override
-	public HttpInvokerRequestExecutorOperationCollectionAspect getAspect() {
-		return HttpInvokerRequestExecutorOperationCollectionAspect.aspectOf();
-	}
+        return map;
+    }
 
-	static class TestInvoker implements HttpInvokerRequestExecutor {
-		final Object	returnValue;
+    @Override
+    public HttpInvokerRequestExecutorOperationCollectionAspect getAspect() {
+        return HttpInvokerRequestExecutorOperationCollectionAspect.aspectOf();
+    }
 
-		TestInvoker (Object retval) {
-			if ((returnValue=retval) == null) {
-				throw new IllegalStateException("No return value provided");
-			}
-		}
+    static class TestInvoker implements HttpInvokerRequestExecutor {
+        final Object returnValue;
 
-		RemoteInvocation createRemoteInvocation (String methodName) {
-			if (returnValue instanceof Throwable) {
-				return new RemoteInvocation(methodName, new Class[] { Object.class }, new Object[] { Void.class });
-			} else {
-				return new RemoteInvocation(methodName, new Class[] { returnValue.getClass() }, new Object[] { returnValue });
-			}
-		}
+        TestInvoker(Object retval) {
+            if ((returnValue = retval) == null) {
+                throw new IllegalStateException("No return value provided");
+            }
+        }
 
-		public RemoteInvocationResult executeRequest(HttpInvokerClientConfiguration config, RemoteInvocation invocation)
-				throws Exception {
-			if (returnValue instanceof Throwable) {
-				return new RemoteInvocationResult((Throwable) returnValue);
-			} else {
-				return new RemoteInvocationResult(returnValue);
-			}
-		}		
-	}
+        RemoteInvocation createRemoteInvocation(String methodName) {
+            if (returnValue instanceof Throwable) {
+                return new RemoteInvocation(methodName, new Class[]{Object.class}, new Object[]{Void.class});
+            } else {
+                return new RemoteInvocation(methodName, new Class[]{returnValue.getClass()}, new Object[]{returnValue});
+            }
+        }
+
+        public RemoteInvocationResult executeRequest(HttpInvokerClientConfiguration config, RemoteInvocation invocation)
+                throws Exception {
+            if (returnValue instanceof Throwable) {
+                return new RemoteInvocationResult((Throwable) returnValue);
+            } else {
+                return new RemoteInvocationResult(returnValue);
+            }
+        }
+    }
 }

@@ -36,7 +36,7 @@ import com.springsource.insight.util.StringFormatterUtils;
 import com.springsource.insight.util.StringUtil;
 
 public class JdbcOperationFinalizer {
-    public static final String	PARAMS_VALUES="params";
+    public static final String PARAMS_VALUES = "params";
 
     /**
      * The keys in these maps should be strongly referenced in the frame stack; so they should not
@@ -45,8 +45,8 @@ public class JdbcOperationFinalizer {
     private static final WeakKeyHashMap<Operation, Map<String, Object>> mappedParamStorage = new WeakKeyHashMap<Operation, Map<String, Object>>();
     private static final WeakKeyHashMap<Operation, List<Object>> indexedParamStorage = new WeakKeyHashMap<Operation, List<Object>>();
 
-    private JdbcOperationFinalizer () {
-    	throw new UnsupportedOperationException("No instance");
+    private JdbcOperationFinalizer() {
+        throw new UnsupportedOperationException("No instance");
     }
 
     public static void addParam(Operation operation, String key, Object param) {
@@ -59,10 +59,10 @@ public class JdbcOperationFinalizer {
             params.put(key, param);
         }
     }
-    
+
     public static void addParam(Operation operation, int paramIndex, Object param) {
         // JDBC indexes are 1-based, so let's adjust it to the modern world first!
-        int index=paramIndex - 1;
+        int index = paramIndex - 1;
         synchronized (indexedParamStorage) {
             List<Object> params = indexedParamStorage.get(operation);
             if (params == null) {
@@ -76,22 +76,22 @@ public class JdbcOperationFinalizer {
             params.set(index, param);
         }
     }
-    
+
     public static Operation finalize(Operation operation) {
-        Map<String, Object>	mappedValues;
-        synchronized(mappedParamStorage) {
-        	mappedValues = mappedParamStorage.remove(operation);
+        Map<String, Object> mappedValues;
+        synchronized (mappedParamStorage) {
+            mappedValues = mappedParamStorage.remove(operation);
         }
 
-        List<Object>	indexedValues;
-        synchronized(indexedParamStorage) {
-        	indexedValues = indexedParamStorage.remove(operation);
+        List<Object> indexedValues;
+        synchronized (indexedParamStorage) {
+            indexedValues = indexedParamStorage.remove(operation);
         }
 
         // make sure we start with a clean slate
-        Serializable	prev=operation.remove(PARAMS_VALUES);
+        Serializable prev = operation.remove(PARAMS_VALUES);
         if (prev != null) {
-        	prev = null;	// debug breakpoint
+            prev = null;    // debug breakpoint
         }
 
         if (mappedValues != null) {
@@ -105,42 +105,43 @@ public class JdbcOperationFinalizer {
                 params.add(StringFormatterUtils.formatObjectAndTrim(param));
             }
         }
-        
+
         return operation;
     }
 
-    private static final Collection<Map.Entry<String,String>>	stmtsList=
-    		Collections.unmodifiableMap(new TreeMap<String,String>(String.CASE_INSENSITIVE_ORDER) {
-				private static final long serialVersionUID = 1L;
+    private static final Collection<Map.Entry<String, String>> stmtsList =
+            Collections.unmodifiableMap(new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER) {
+                private static final long serialVersionUID = 1L;
 
-				{
-    				put("SELECT", " FROM ");
-    				put("INSERT", " INTO ");
-    				put("DELETE", " FROM ");
-    				put("UPDATE", "UPDATE ");
-    				put("CREATE TABLE", " TABLE ");
-    				put("ALTER TABLE", " TABLE ");
-    				put("DROP TABLE", " TABLE ");
-    				put("CREATE INDEX", " INDEX ");
-    				put("CREATE UNIQUE INDEX", " INDEX ");
-    				put("DROP INDEX", " INDEX ");
-    				put("CALL", "CALL ");
-    			}
-    		}).entrySet();
+                {
+                    put("SELECT", " FROM ");
+                    put("INSERT", " INTO ");
+                    put("DELETE", " FROM ");
+                    put("UPDATE", "UPDATE ");
+                    put("CREATE TABLE", " TABLE ");
+                    put("ALTER TABLE", " TABLE ");
+                    put("DROP TABLE", " TABLE ");
+                    put("CREATE INDEX", " INDEX ");
+                    put("CREATE UNIQUE INDEX", " INDEX ");
+                    put("DROP INDEX", " INDEX ");
+                    put("CALL", "CALL ");
+                }
+            }).entrySet();
+
     public static String createLabel(String sql) {
         if (StringUtil.isEmpty(sql)) {
             return "JDBC";
         }
 
         String upperSql = sql.toUpperCase().trim();
-        for (Map.Entry<String,String> stmt : stmtsList) {
-        	String	kwd=stmt.getKey();
-        	if (!upperSql.startsWith(kwd)) {
-        		continue;
-        	}
+        for (Map.Entry<String, String> stmt : stmtsList) {
+            String kwd = stmt.getKey();
+            if (!upperSql.startsWith(kwd)) {
+                continue;
+            }
 
-        	String	argPos=stmt.getValue();
-        	return appendArgumentValue("JDBC " + kwd, captureWordAfter(upperSql, argPos));
+            String argPos = stmt.getValue();
+            return appendArgumentValue("JDBC " + kwd, captureWordAfter(upperSql, argPos));
         }
 
         // some special extra statements 
@@ -153,16 +154,17 @@ public class JdbcOperationFinalizer {
         }
     }
 
-    private static String appendArgumentValue (String prefix, String agrValue) {
-    	if (StringUtil.isEmpty(agrValue)) {
-    		return prefix;
-    	} else {
-    		return prefix + " (" + agrValue + ")";
-    	}
+    private static String appendArgumentValue(String prefix, String agrValue) {
+        if (StringUtil.isEmpty(agrValue)) {
+            return prefix;
+        } else {
+            return prefix + " (" + agrValue + ")";
+        }
     }
 
-    private static final Set<Character> WORD_DELIMS=
-        Collections.unmodifiableSet(ListUtil.asSet(Character.valueOf(' '), Character.valueOf('(')));
+    private static final Set<Character> WORD_DELIMS =
+            Collections.unmodifiableSet(ListUtil.asSet(Character.valueOf(' '), Character.valueOf('(')));
+
     private static String captureWordAfter(String source, String delim) {
         if (delim.charAt(delim.length() - 1) != ' ') {
             throw new IllegalArgumentException("Last char must be a ' '");
@@ -178,7 +180,7 @@ public class JdbcOperationFinalizer {
         if (wordIdx < 0) {
             return null;
         } else if (wordIdx > 0) {
-        	strAfterDelim = strAfterDelim.substring(wordIdx);
+            strAfterDelim = strAfterDelim.substring(wordIdx);
         }
 
         int wordEndIdx = StringUtil.indexOfIn(strAfterDelim, WORD_DELIMS);

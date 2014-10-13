@@ -38,7 +38,7 @@ import org.aspectj.lang.annotation.SuppressAjWarnings;
  */
 
 public aspect TimerTaskScheduleCollectionAspect extends ExecuteMethodCollectionAspect {
-    public TimerTaskScheduleCollectionAspect () {
+    public TimerTaskScheduleCollectionAspect() {
         super();
     }
 
@@ -46,60 +46,60 @@ public aspect TimerTaskScheduleCollectionAspect extends ExecuteMethodCollectionA
      * NOTE: we need to use 'call' since Timer is a core class
      */
 
-    public pointcut delayedSchedule () : call(* Timer.schedule(TimerTask,long));
-    public pointcut periodicDelayedSchedule () : call(* Timer.schedule(TimerTask,long,long));
+    public pointcut delayedSchedule(): call(* Timer.schedule(TimerTask,long));
+    public pointcut periodicDelayedSchedule(): call(* Timer.schedule(TimerTask,long,long));
 
-    public pointcut datedSchedule () : call(* Timer.schedule(TimerTask,Date));
-    public pointcut periodicDatedSchedule () : call(* Timer.schedule(TimerTask,Date,long));
-    
-    public pointcut delayedFixedRateSchedule () : call(* Timer.scheduleAtFixedRate(TimerTask,long,long));
-    public pointcut datedFixedRateSchedule () : call(* Timer.scheduleAtFixedRate(TimerTask,Date,long));
-    
-    public pointcut collectionPoint ()
-        : delayedSchedule() || periodicDelayedSchedule()
-       || datedSchedule() || periodicDatedSchedule()
-       || delayedFixedRateSchedule() || datedFixedRateSchedule()
-        ;
+    public pointcut datedSchedule(): call(* Timer.schedule(TimerTask,Date));
+    public pointcut periodicDatedSchedule(): call(* Timer.schedule(TimerTask,Date,long));
+
+    public pointcut delayedFixedRateSchedule(): call(* Timer.scheduleAtFixedRate(TimerTask,long,long));
+    public pointcut datedFixedRateSchedule(): call(* Timer.scheduleAtFixedRate(TimerTask,Date,long));
+
+    public pointcut collectionPoint()
+            : delayedSchedule() || periodicDelayedSchedule()
+            || datedSchedule() || periodicDatedSchedule()
+            || delayedFixedRateSchedule() || datedFixedRateSchedule()
+            ;
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     Object around(TimerTask task, long delayTime)
-        : delayedSchedule() && args(task, delayTime) {
-        TimerTask   effectiveTask=resolveTimerTask(task, thisJoinPointStaticPart);
+            : delayedSchedule() && args(task, delayTime) {
+        TimerTask effectiveTask = resolveTimerTask(task, thisJoinPointStaticPart);
         return proceed(effectiveTask, delayTime);
     }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     Object around(TimerTask task, long delayTime, long period)
-        : periodicDelayedSchedule() && args(task, delayTime, period) {
-        TimerTask   effectiveTask=resolveTimerTask(task, thisJoinPointStaticPart);
+            : periodicDelayedSchedule() && args(task, delayTime, period) {
+        TimerTask effectiveTask = resolveTimerTask(task, thisJoinPointStaticPart);
         return proceed(effectiveTask, delayTime, period);
     }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     Object around(TimerTask task, Date startTime)
-        : datedSchedule() && args(task, startTime) {
-        TimerTask   effectiveTask=resolveTimerTask(task, thisJoinPointStaticPart);
+            : datedSchedule() && args(task, startTime) {
+        TimerTask effectiveTask = resolveTimerTask(task, thisJoinPointStaticPart);
         return proceed(effectiveTask, startTime);
     }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     Object around(TimerTask task, Date startTime, long period)
-        : periodicDatedSchedule() && args(task, startTime, period) {
-        TimerTask   effectiveTask=resolveTimerTask(task, thisJoinPointStaticPart);
+            : periodicDatedSchedule() && args(task, startTime, period) {
+        TimerTask effectiveTask = resolveTimerTask(task, thisJoinPointStaticPart);
         return proceed(effectiveTask, startTime, period);
     }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     Object around(TimerTask task, long delayTime, long period)
-        : delayedFixedRateSchedule() && args(task, delayTime, period) {
-        TimerTask   effectiveTask=resolveTimerTask(task, thisJoinPointStaticPart);
+            : delayedFixedRateSchedule() && args(task, delayTime, period) {
+        TimerTask effectiveTask = resolveTimerTask(task, thisJoinPointStaticPart);
         return proceed(effectiveTask, delayTime, period);
     }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     Object around(TimerTask task, Date startTime, long period)
-        : datedFixedRateSchedule() && args(task, startTime, period) {
-        TimerTask   effectiveTask=resolveTimerTask(task, thisJoinPointStaticPart);
+            : datedFixedRateSchedule() && args(task, startTime, period) {
+        TimerTask effectiveTask = resolveTimerTask(task, thisJoinPointStaticPart);
         return proceed(effectiveTask, startTime, period);
     }
 }

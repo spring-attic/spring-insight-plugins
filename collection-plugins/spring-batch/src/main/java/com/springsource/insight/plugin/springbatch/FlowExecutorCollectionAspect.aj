@@ -26,38 +26,38 @@ import org.springframework.batch.core.job.flow.FlowExecutor;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public aspect FlowExecutorCollectionAspect extends SpringBatchOperationCollectionAspect {
-    public FlowExecutorCollectionAspect () {
+    public FlowExecutorCollectionAspect() {
         super(FlowExecutor.class);
     }
 
     public pointcut collectionPoint()
-        : execution(* FlowExecutor+.executeStep(Step))
-       || execution(* FlowExecutor+.abandonStepExecution())
-        ;
+            : execution(* FlowExecutor+.executeStep(Step))
+            || execution(* FlowExecutor+.abandonStepExecution())
+            ;
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Signature       sig=jp.getSignature();
-        String          action=sig.getName();
-        FlowExecutor    executor=(FlowExecutor) jp.getTarget();
-        JobExecution    jobExecution=executor.getJobExecution();
-        Operation       op;
+        Signature sig = jp.getSignature();
+        String action = sig.getName();
+        FlowExecutor executor = (FlowExecutor) jp.getTarget();
+        JobExecution jobExecution = executor.getJobExecution();
+        Operation op;
         if ("executeStep".equals(action)) {
-            Object[]    args=jp.getArgs();
-            Step        step=(Step) args[0];
-            String      stepName=step.getName();
+            Object[] args = jp.getArgs();
+            Step step = (Step) args[0];
+            String stepName = step.getName();
             op = createOperation(jp, stepName).put(SpringBatchDefinitions.STEPNAME_ATTR, stepName);
         } else if ("abandonStepExecution".equals(action)) {
-            StepExecution   stepExecution=executor.getStepExecution();
-            String          stepName=(stepExecution == null) /* can happen if no current step */ ? null : stepExecution.getStepName();
+            StepExecution stepExecution = executor.getStepExecution();
+            String stepName = (stepExecution == null) /* can happen if no current step */ ? null : stepExecution.getStepName();
             if ((stepName == null) || (stepName.length() <= 0)) {
                 stepName = SpringBatchDefinitions.UNKNOWN_VALUE;
             }
 
-            op= createOperation(jp, stepName);
+            op = createOperation(jp, stepName);
             if (stepExecution != null) {
                 op = fillStepExecutionDetails(op, stepExecution);
             }

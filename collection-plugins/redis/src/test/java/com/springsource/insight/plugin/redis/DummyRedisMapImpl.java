@@ -26,46 +26,46 @@ import org.springframework.data.redis.support.collections.RedisMap;
 /**
  * Dummy implementation of RedisMap
  */
-public class DummyRedisMapImpl<K,V> extends ConcurrentHashMap<K,V> implements RedisMap<K, V> {
-	private static final long serialVersionUID = 3994606419128106022L;
+public class DummyRedisMapImpl<K, V> extends ConcurrentHashMap<K, V> implements RedisMap<K, V> {
+    private static final long serialVersionUID = 3994606419128106022L;
 
-	@Override
-	public V put(K key, V value) {
+    @Override
+    public V put(K key, V value) {
         return null;
     }
 
     @Override
-	public V putIfAbsent(K key, V value) {
+    public V putIfAbsent(K key, V value) {
         return null;
     }
 
     @Override
-	public void putAll(Map<? extends K, ? extends V> map) {
-    	// ignored
+    public void putAll(Map<? extends K, ? extends V> map) {
+        // ignored
     }
 
     @Override
-	public V replace(K key, V value) {
+    public V replace(K key, V value) {
         return null;
     }
 
     @Override
-	public boolean replace(K key, V oldValue, V newValue) {
+    public boolean replace(K key, V oldValue, V newValue) {
         return false;
     }
 
     @Override
-	public V get(Object key) {
+    public V get(Object key) {
         return null;
     }
 
     @Override
-	public V remove(Object key) {
+    public V remove(Object key) {
         return null;
     }
 
     @Override
-	public boolean remove(Object key, Object value) {
+    public boolean remove(Object key, Object value) {
         return false;
     }
 
@@ -73,7 +73,7 @@ public class DummyRedisMapImpl<K,V> extends ConcurrentHashMap<K,V> implements Re
         return null;
     }
 
-    public org.springframework.data.redis.core.RedisOperations<java.lang.String,?> getOperations() {
+    public org.springframework.data.redis.core.RedisOperations<java.lang.String, ?> getOperations() {
         return null;
     }
 
@@ -102,6 +102,6 @@ public class DummyRedisMapImpl<K,V> extends ConcurrentHashMap<K,V> implements Re
     }
 
     public void rename(String k) {
-    	// ignored
+        // ignored
     }
 }

@@ -4,10 +4,10 @@
 <@insight.group label="JDBC Query">
     <@insight.entry name="Label" value=operation.label />
     <@insight.entry name="SQL">
-        <code>${springBeans.sqlToHtml.toHtml(operation.sql, 'sql-keyword')}</code>
+    <code>${springBeans.sqlToHtml.toHtml(operation.sql, 'sql-keyword')}</code>
     </@insight.entry>
     <@insight.entry name="Parameters" if=operation.params??>
-        <!-- jdbc parameters can be indexed or mapped -->
+    <!-- jdbc parameters can be indexed or mapped -->
         <#if operation.params?is_enumerable>
             <@insight.list type="ordered" collection=operation.params />
         <#elseif operation.params?is_hash>

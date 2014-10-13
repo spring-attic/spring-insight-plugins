@@ -26,18 +26,18 @@ import org.springframework.transaction.PlatformTransactionManager;
  *
  */
 public aspect TransactionPointcuts {
-    public pointcut transactionBegin(TransactionDefinition txDefinition) 
-        : execution(* PlatformTransactionManager.getTransaction(TransactionDefinition)) 
-          && args(txDefinition);
-        
+    public pointcut transactionBegin(TransactionDefinition txDefinition)
+            : execution(* PlatformTransactionManager.getTransaction(TransactionDefinition))
+            && args(txDefinition);
+
     public pointcut transactionRollback(TransactionStatus txStatus)
-        : execution(* PlatformTransactionManager.rollback(TransactionStatus)) 
-          && args(txStatus);
-    
+            : execution(* PlatformTransactionManager.rollback(TransactionStatus))
+            && args(txStatus);
+
     public pointcut transactionCommit(TransactionStatus txStatus)
-        : execution(* PlatformTransactionManager.commit(TransactionStatus)) 
-          && args(txStatus);
-    
-    public pointcut transactionalExecution() : 
-        execution(@Transactional * *(..)) || execution(* (@Transactional *).*(..));
+            : execution(* PlatformTransactionManager.commit(TransactionStatus))
+            && args(txStatus);
+
+    public pointcut transactionalExecution():
+            execution(@Transactional * *(..)) || execution(* (@Transactional *).*(..));
 }

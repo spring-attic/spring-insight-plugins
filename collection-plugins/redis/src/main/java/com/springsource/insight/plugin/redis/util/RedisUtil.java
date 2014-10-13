@@ -25,10 +25,10 @@ public class RedisUtil {
 
     public final static String objectToString(Object obj) {
         String result = "null";
-        if(obj != null) {
+        if (obj != null) {
             String str = obj.toString();
             int len = str.length();
-            if(len > MAX_CHARS) {
+            if (len > MAX_CHARS) {
                 len = MAX_CHARS;
             }
             result = obj.toString().substring(0, len);

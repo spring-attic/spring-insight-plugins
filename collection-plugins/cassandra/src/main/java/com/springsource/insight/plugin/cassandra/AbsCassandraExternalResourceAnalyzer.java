@@ -31,43 +31,42 @@ import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.ListUtil;
 
 public abstract class AbsCassandraExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-	public AbsCassandraExternalResourceAnalyzer(OperationType type) {
-	    super(type);
-	}
+    public AbsCassandraExternalResourceAnalyzer(OperationType type) {
+        super(type);
+    }
 
-	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> frames) {
-		if (ListUtil.size(frames) <= 0) {
-		    return Collections.emptyList();
-		}
+    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> frames) {
+        if (ListUtil.size(frames) <= 0) {
+            return Collections.emptyList();
+        }
 
-		List<ExternalResourceDescriptor> queueDescriptors = new ArrayList<ExternalResourceDescriptor>(frames.size());
-		for (Frame cacheFrame : frames) {
-			Operation op = cacheFrame.getOperation();
-			String server = op.get("server", String.class, "");
-			
-			int port=0;
-			String host=server;
-			int indx=server.lastIndexOf(":");
-			if (indx>0) {
-				host=server.substring(0,indx);
-				try {
-					port=Integer.parseInt(server.substring(indx+1));
-				}
-				catch(Exception e) {
-					// invalid port
-				}
-			}
+        List<ExternalResourceDescriptor> queueDescriptors = new ArrayList<ExternalResourceDescriptor>(frames.size());
+        for (Frame cacheFrame : frames) {
+            Operation op = cacheFrame.getOperation();
+            String server = op.get("server", String.class, "");
 
-			String hashString = MD5NameGenerator.getName(server);
+            int port = 0;
+            String host = server;
+            int indx = server.lastIndexOf(":");
+            if (indx > 0) {
+                host = server.substring(0, indx);
+                try {
+                    port = Integer.parseInt(server.substring(indx + 1));
+                } catch (Exception e) {
+                    // invalid port
+                }
+            }
+
+            String hashString = MD5NameGenerator.getName(server);
             String color = colorManager.getColor(op);
-            
-			ExternalResourceDescriptor descriptor =
-			        new ExternalResourceDescriptor(cacheFrame, "server:" + hashString, server,
-                       			                   ExternalResourceType.DATABASE.name(), "Cassandra",
-                       			                   host, port, color, false);
-			queueDescriptors.add(descriptor);            
-		}
 
-		return queueDescriptors;
-	}
+            ExternalResourceDescriptor descriptor =
+                    new ExternalResourceDescriptor(cacheFrame, "server:" + hashString, server,
+                            ExternalResourceType.DATABASE.name(), "Cassandra",
+                            host, port, color, false);
+            queueDescriptors.add(descriptor);
+        }
+
+        return queueDescriptors;
+    }
 }

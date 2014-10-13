@@ -55,62 +55,56 @@ public privileged aspect StateOperationCollectionAspect extends AbstractOperatio
         super();
     }
 
-    public pointcut collectionPoint() 
-    	: execution(void org.springframework.webflow.engine.impl.FlowExecutionImpl.setCurrentState(State, RequestContext));
+    public pointcut collectionPoint()
+            : execution(void org.springframework.webflow.engine.impl.FlowExecutionImpl.setCurrentState(State, RequestContext));
 
-	@Override
+    @Override
     @SuppressWarnings("unchecked")
-	protected Operation createOperation(JoinPoint jp) {
-    	Object[] args = jp.getArgs();
-    	
-		ActionList actions=null;
-		ActionList exitActions=null;
-		BinderConfiguration bindConfig=null;
-		String view=null;
-		
-		String stateType="FlowState";
-		State state=(State)args[0];
-		if (state instanceof TransitionableState) {
-			exitActions=((TransitionableState)state).getExitActionList();
-			
-			if (state instanceof DecisionState) {
-				stateType="DecisionState";
-			}
-			else
-			if (state instanceof ActionState) {
-				stateType="ActionState";
-				actions=((ActionState)state).getActionList();
-			}
-			else
-			if (state instanceof ViewState) {
-				stateType="ViewState";
-				actions=((ViewState)state).getRenderActionList();
-				// get view
-				ViewFactory viewFactoryInterface=((ViewState)state).getViewFactory();
-				if (viewFactoryInterface instanceof AbstractMvcViewFactory) {
-					AbstractMvcViewFactory viewFactory=(AbstractMvcViewFactory)viewFactoryInterface;
-					view=viewFactory.viewId.toString();
-					bindConfig=viewFactory.binderConfiguration;
-				}
-			}
-		}
-		else
-		if (state instanceof EndState) {
-			stateType="EndState";
-		}
-		
-		Operation operation = new Operation().type(OperationCollectionTypes.STATE_TYPE.type)
-											.label(OperationCollectionTypes.STATE_TYPE.label+stateType+" ["+state.getId()+"]")
-	    									.sourceCodeLocation(getSourceCodeLocation(jp));
-		operation.put("stateType",stateType)
-				.put("stateId",state.getId());
-		if (view!=null) {
-			operation.put("view",view);
-		}
-		
-		if (!state.getAttributes().isEmpty()) {
-			operation.createMap("attribs").putAnyAll(state.getAttributes().asMap());
-		}
+    protected Operation createOperation(JoinPoint jp) {
+        Object[] args = jp.getArgs();
+
+        ActionList actions = null;
+        ActionList exitActions = null;
+        BinderConfiguration bindConfig = null;
+        String view = null;
+
+        String stateType = "FlowState";
+        State state = (State) args[0];
+        if (state instanceof TransitionableState) {
+            exitActions = ((TransitionableState) state).getExitActionList();
+
+            if (state instanceof DecisionState) {
+                stateType = "DecisionState";
+            } else if (state instanceof ActionState) {
+                stateType = "ActionState";
+                actions = ((ActionState) state).getActionList();
+            } else if (state instanceof ViewState) {
+                stateType = "ViewState";
+                actions = ((ViewState) state).getRenderActionList();
+                // get view
+                ViewFactory viewFactoryInterface = ((ViewState) state).getViewFactory();
+                if (viewFactoryInterface instanceof AbstractMvcViewFactory) {
+                    AbstractMvcViewFactory viewFactory = (AbstractMvcViewFactory) viewFactoryInterface;
+                    view = viewFactory.viewId.toString();
+                    bindConfig = viewFactory.binderConfiguration;
+                }
+            }
+        } else if (state instanceof EndState) {
+            stateType = "EndState";
+        }
+
+        Operation operation = new Operation().type(OperationCollectionTypes.STATE_TYPE.type)
+                .label(OperationCollectionTypes.STATE_TYPE.label + stateType + " [" + state.getId() + "]")
+                .sourceCodeLocation(getSourceCodeLocation(jp));
+        operation.put("stateType", stateType)
+                .put("stateId", state.getId());
+        if (view != null) {
+            operation.put("view", view);
+        }
+
+        if (!state.getAttributes().isEmpty()) {
+            operation.createMap("attribs").putAnyAll(state.getAttributes().asMap());
+        }
 		
 		/*List<TransitionExecutingFlowExecutionExceptionHandler> excepts=state.getExceptionHandlerSet().exceptionHandlers;
 		if (!excepts.isEmpty()) {
@@ -122,53 +116,53 @@ public privileged aspect StateOperationCollectionAspect extends AbstractOperatio
 				}
 			}
 		}*/
-		
-		// actions
-		if (state.getEntryActionList().size()>0) {
-			OperationList entryActionsOp = operation.createList("entryActions");
-			entryActionsOp.addAll(actionList(state.getEntryActionList()));
-		}
-		
-		if (actions!=null && actions.size()>0) {
-			OperationList actionsOp = operation.createList("actions");
-			actionsOp.addAll(actionList(actions));
-		}
-		
-		if (exitActions!=null && exitActions.size()>0) {
-			OperationList exitActionsOp = operation.createList("exitActions");
-			exitActionsOp.addAll(actionList(exitActions));
-		}
-		
-		if (bindConfig!=null) {
-			OperationList binds = operation.createList("binds");
-			for(Binding bind: (Set<Binding>)bindConfig.getBindings()) {
-				String conv=bind.getConverter();
-				binds.add(bind.getProperty()+(conv!=null?" ("+conv+")":""));
-			}
-		}
-        
+
+        // actions
+        if (state.getEntryActionList().size() > 0) {
+            OperationList entryActionsOp = operation.createList("entryActions");
+            entryActionsOp.addAll(actionList(state.getEntryActionList()));
+        }
+
+        if (actions != null && actions.size() > 0) {
+            OperationList actionsOp = operation.createList("actions");
+            actionsOp.addAll(actionList(actions));
+        }
+
+        if (exitActions != null && exitActions.size() > 0) {
+            OperationList exitActionsOp = operation.createList("exitActions");
+            exitActionsOp.addAll(actionList(exitActions));
+        }
+
+        if (bindConfig != null) {
+            OperationList binds = operation.createList("binds");
+            for (Binding bind : (Set<Binding>) bindConfig.getBindings()) {
+                String conv = bind.getConverter();
+                binds.add(bind.getProperty() + (conv != null ? " (" + conv + ")" : ""));
+            }
+        }
+
         return operation;
     }
-    
-	/**
-	 * Return collection of actions
-	 * @param ActionList
-	 * @return Collection<? extends Object>
-	 */
-	@SuppressWarnings("unchecked")
-	private static Collection<?> actionList(ActionList actions) {
-	    if (actions == null) {
-	        return Collections.emptyList();
-	    }
 
-	    List<String> actionList=new ArrayList<String>(actions.size());
-	    for(Iterator<? extends Action> iterator=actions.iterator(); iterator.hasNext(); ) {
-	        String expression=OperationCollectionUtils.getActionExpression(iterator.next());
-	        actionList.add(expression);
-	    }
+    /**
+     * Return collection of actions
+     * @param ActionList
+     * @return Collection<? extends Object>
+     */
+    @SuppressWarnings("unchecked")
+    private static Collection<?> actionList(ActionList actions) {
+        if (actions == null) {
+            return Collections.emptyList();
+        }
 
-		return actionList;
-	}
+        List<String> actionList = new ArrayList<String>(actions.size());
+        for (Iterator<? extends Action> iterator = actions.iterator(); iterator.hasNext(); ) {
+            String expression = OperationCollectionUtils.getActionExpression(iterator.next());
+            actionList.add(expression);
+        }
+
+        return actionList;
+    }
 
     @Override
     public String getPluginName() {

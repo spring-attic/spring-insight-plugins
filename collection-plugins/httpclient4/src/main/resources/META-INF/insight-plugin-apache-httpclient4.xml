@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:insight="http://www.springframework.org/schema/insight-idk"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:insight="http://www.springframework.org/schema/insight-idk"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
-	<insight:plugin name="apache-httpclient4" version="${project.version}" publisher="SpringSource" />
+    <insight:plugin name="apache-httpclient4" version="${project.version}" publisher="SpringSource"/>
 
-	<insight:operation-view operation="apache-hc4" template="com/springsource/insight/plugin/apache/http/hc4/hc4.ftl"/>
-	
-	<insight:operation-group group="Web" operation="apache-hc4" />
+    <insight:operation-view operation="apache-hc4" template="com/springsource/insight/plugin/apache/http/hc4/hc4.ftl"/>
+
+    <insight:operation-group group="Web" operation="apache-hc4"/>
 
     <bean id="hc4HttpStatusTraceErrorAnalyzer"
           class="com.springsource.insight.plugin.apache.http.hc4.HttpStatusTraceErrorAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
-    
+            />
+
     <bean id="hc4HttpExternalResourceAnalyzer"
           class="com.springsource.insight.plugin.apache.http.hc4.HttpExternalResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
-    
+            />
+
     <bean id="hc4PluginRuntimeDescriptor"
           class="com.springsource.insight.plugin.apache.http.hc4.HC4PluginRuntimeDescriptor"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
 
 </beans>

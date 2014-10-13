@@ -35,18 +35,18 @@ public privileged aspect ActionOperationCollectionAspect extends AbstractOperati
         super();
     }
 
-    public pointcut collectionPoint() 
-    	: execution(Event org.springframework.webflow.execution.ActionExecutor.execute(Action, RequestContext));
+    public pointcut collectionPoint()
+            : execution(Event org.springframework.webflow.execution.ActionExecutor.execute(Action, RequestContext));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-    	Object[] args = jp.getArgs();
-    	String expression=OperationCollectionUtils.getActionExpression((AnnotatedAction)args[0]);
-        
-    	return new Operation().type(OperationCollectionTypes.ACTION_TYPE.type)
-    						.label(OperationCollectionTypes.ACTION_TYPE.label+" ["+expression+"]")
-    						.sourceCodeLocation(getSourceCodeLocation(jp))
-            	            .put("action", expression);
+        Object[] args = jp.getArgs();
+        String expression = OperationCollectionUtils.getActionExpression((AnnotatedAction) args[0]);
+
+        return new Operation().type(OperationCollectionTypes.ACTION_TYPE.type)
+                .label(OperationCollectionTypes.ACTION_TYPE.label + " [" + expression + "]")
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .put("action", expression);
     }
 
     @Override

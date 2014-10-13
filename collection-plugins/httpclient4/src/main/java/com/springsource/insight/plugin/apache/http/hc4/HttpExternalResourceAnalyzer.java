@@ -38,7 +38,7 @@ import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.StringUtil;
 
 /**
- * 
+ *
  */
 public class HttpExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
     private static final HttpExternalResourceAnalyzer INSTANCE = new HttpExternalResourceAnalyzer();
@@ -78,8 +78,7 @@ public class HttpExternalResourceAnalyzer extends AbstractExternalResourceAnalyz
             return null;
         }
 
-        try
-        {
+        try {
             URI uri = new URI(uriValue);
             String host = uri.getHost();
             int port = resolvePort(uri);

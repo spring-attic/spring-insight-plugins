@@ -25,26 +25,25 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
 
 public aspect ValidationOperationCollectionAspect extends AbstractSpringWebAspectSupport {
-	private final ValidationJoinPointFinalizer	finalizer;
+    private final ValidationJoinPointFinalizer finalizer;
 
-	public ValidationOperationCollectionAspect () {
-		finalizer = ValidationJoinPointFinalizer.getInstance();
-	}
+    public ValidationOperationCollectionAspect() {
+        finalizer = ValidationJoinPointFinalizer.getInstance();
+    }
 
-    public pointcut collectionPoint() : execution(* Validator+.validate(Object, Errors));
-
-    @Override
-	public boolean isMetricsGenerator() {
-		return true; // This provides an end point
-	}
+    public pointcut collectionPoint(): execution(* Validator+.validate(Object, Errors));
 
     @Override
-	protected Operation createOperation(JoinPoint jp) {
+    public boolean isMetricsGenerator() {
+        return true; // This provides an end point
+    }
+
+    @Override
+    protected Operation createOperation(JoinPoint jp) {
         Operation op = new Operation()
-        				.type(ValidationErrorsMetricsGenerator.TYPE)
-        				.sourceCodeLocation(getSourceCodeLocation(jp))
-        				.put(EndPointAnalysis.SCORE_FIELD, EndPointAnalysis.CEILING_LAYER_SCORE)
-        				;
+                .type(ValidationErrorsMetricsGenerator.TYPE)
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .put(EndPointAnalysis.SCORE_FIELD, EndPointAnalysis.CEILING_LAYER_SCORE);
         return finalizer.registerWithSelf(op, jp);
-	}
+    }
 }

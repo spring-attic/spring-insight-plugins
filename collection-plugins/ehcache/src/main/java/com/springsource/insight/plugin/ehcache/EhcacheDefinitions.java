@@ -19,23 +19,24 @@ package com.springsource.insight.plugin.ehcache;
 import com.springsource.insight.intercept.operation.OperationType;
 
 /**
- * 
+ *
  */
 public final class EhcacheDefinitions {
     private EhcacheDefinitions() {
         // no instance
     }
+
     public static final String PLUGIN_NAME = "ehcache";
-    public static final OperationType   CACHE_OPERATION = OperationType.valueOf("ehcache-operation");
+    public static final OperationType CACHE_OPERATION = OperationType.valueOf("ehcache-operation");
     public static final String VENDOR_NAME = PLUGIN_NAME;
 
     // various names of fields and values used in cache operation encoding
-    public static final String  KEY_ATTRIBUTE="key",
-                                VALUE_ATTRIBUTE="value",
-                                NAME_ATTRIBUTE="name",
-                                METHOD_ATTRIBUTE="method",  
-                                    GET_METHOD="Ehcache Get",
-                                    PUT_METHOD="Ehcache Put",
-                                    REM_METHOD="Ehcache Remove",
-                                    RPL_METHOD="Ehcache Replace";
+    public static final String KEY_ATTRIBUTE = "key",
+            VALUE_ATTRIBUTE = "value",
+            NAME_ATTRIBUTE = "name",
+            METHOD_ATTRIBUTE = "method",
+            GET_METHOD = "Ehcache Get",
+            PUT_METHOD = "Ehcache Put",
+            REM_METHOD = "Ehcache Remove",
+            RPL_METHOD = "Ehcache Replace";
 }

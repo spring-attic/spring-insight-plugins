@@ -38,62 +38,54 @@ public privileged aspect SystemOperationCollectionAspect extends AbstractCassand
         super();
     }
 
-    public pointcut collectionPoint() : execution(public String org.apache.cassandra.thrift.Cassandra.Client.system_*(..)) ||
-    									execution(public void org.apache.cassandra.thrift.Cassandra.Client.set_keyspace(String)) ||
-    									execution(public void org.apache.cassandra.thrift.Cassandra.Client.login(AuthenticationRequest));
+    public pointcut collectionPoint(): execution(public String org.apache.cassandra.thrift.Cassandra.Client.system_*(..)) ||
+            execution(public void org.apache.cassandra.thrift.Cassandra.Client.set_keyspace(String)) ||
+            execution(public void org.apache.cassandra.thrift.Cassandra.Client.login(AuthenticationRequest));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-    	Object[] args = jp.getArgs();
-    	String method=jp.getSignature().getName(); //method name
-    	
-		Operation operation = OperationUtils.createOperation(OperationCollectionTypes.SYSTEM_TYPE, method, getSourceCodeLocation(jp)); 
-		// get transport info
-		OperationUtils.putTransportInfo(operation, ((Cassandra.Client)jp.getTarget()).getInputProtocol());
+        Object[] args = jp.getArgs();
+        String method = jp.getSignature().getName(); //method name
 
-		if ((args[0] instanceof CfDef) && (args[0]!=null)) {
-			CfDef cfdef=(CfDef)args[0];
-			operation.put("keyspace", OperationUtils.getText(cfdef.getKeyspace()));
-			
-			OperationMap opMap=operation.createMap("columnFamilyDef");
-			opMap.put("name", cfdef.getName());
-			opMap.put("type", cfdef.getColumn_type());
-			opMap.putAnyNonEmpty("class", cfdef.getKey_validation_class());
-			 
-			if (cfdef.getColumn_metadata()!=null) {
-				OperationList cols=opMap.createList("columnsDef");
-				for (ColumnDef col: cfdef.getColumn_metadata()) {
-					cols.add(OperationUtils.getText(col.getName())+":"+col.getValidation_class());
-				}
-			}
-		}
-		else
-		if ((args[0] instanceof KsDef) && (args[0]!=null)) {
-			KsDef ksdef=(KsDef)args[0];
-			operation.put("keyspace", OperationUtils.getText(ksdef.getName()));
-			operation.put("class", OperationUtils.getText(ksdef.getStrategy_class()));
-		}
-		else
-		if (method.endsWith("drop_keyspace") || method.equals("set_keyspace")) {
-			operation.put("keyspace", OperationUtils.getText((String)args[0]));
-		}
-		else
-		if (method.endsWith("drop_column_family")) {
-			operation.put("columnFamily", OperationUtils.getText((String)args[0]));
-		}
-		else
-		if (method.equals("login")) {
-			if (args[0]!=null) {
-				OperationMap map=operation.createMap("credentials");
-				map.putAnyAll(((AuthenticationRequest)args[0]).getCredentials());
-			}		
-		}
-		
-		return operation;
+        Operation operation = OperationUtils.createOperation(OperationCollectionTypes.SYSTEM_TYPE, method, getSourceCodeLocation(jp));
+        // get transport info
+        OperationUtils.putTransportInfo(operation, ((Cassandra.Client) jp.getTarget()).getInputProtocol());
+
+        if ((args[0] instanceof CfDef) && (args[0] != null)) {
+            CfDef cfdef = (CfDef) args[0];
+            operation.put("keyspace", OperationUtils.getText(cfdef.getKeyspace()));
+
+            OperationMap opMap = operation.createMap("columnFamilyDef");
+            opMap.put("name", cfdef.getName());
+            opMap.put("type", cfdef.getColumn_type());
+            opMap.putAnyNonEmpty("class", cfdef.getKey_validation_class());
+
+            if (cfdef.getColumn_metadata() != null) {
+                OperationList cols = opMap.createList("columnsDef");
+                for (ColumnDef col : cfdef.getColumn_metadata()) {
+                    cols.add(OperationUtils.getText(col.getName()) + ":" + col.getValidation_class());
+                }
+            }
+        } else if ((args[0] instanceof KsDef) && (args[0] != null)) {
+            KsDef ksdef = (KsDef) args[0];
+            operation.put("keyspace", OperationUtils.getText(ksdef.getName()));
+            operation.put("class", OperationUtils.getText(ksdef.getStrategy_class()));
+        } else if (method.endsWith("drop_keyspace") || method.equals("set_keyspace")) {
+            operation.put("keyspace", OperationUtils.getText((String) args[0]));
+        } else if (method.endsWith("drop_column_family")) {
+            operation.put("columnFamily", OperationUtils.getText((String) args[0]));
+        } else if (method.equals("login")) {
+            if (args[0] != null) {
+                OperationMap map = operation.createMap("credentials");
+                map.putAnyAll(((AuthenticationRequest) args[0]).getCredentials());
+            }
+        }
+
+        return operation;
     }
-    
-	@Override
+
+    @Override
     public String getPluginName() {
-		return CassandraPluginRuntimeDescriptor.PLUGIN_NAME;
-	}
+        return CassandraPluginRuntimeDescriptor.PLUGIN_NAME;
+    }
 }

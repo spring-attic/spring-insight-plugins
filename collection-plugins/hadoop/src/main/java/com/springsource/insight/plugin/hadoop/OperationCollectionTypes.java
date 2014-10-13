@@ -19,23 +19,23 @@ package com.springsource.insight.plugin.hadoop;
 import com.springsource.insight.intercept.operation.OperationType;
 
 /**
- * Collection operations types for Hadoop 
+ * Collection operations types for Hadoop
  */
 public enum OperationCollectionTypes {
-	JOB_TYPE("hdp-job", "Hadoop Job: Start"),
-	MAP_TYPE("hdp-mapper", "Hadoop Mapper"),
-	REDUCE_TYPE("hdp-reducer", "Hadoop Reducer");
+    JOB_TYPE("hdp-job", "Hadoop Job: Start"),
+    MAP_TYPE("hdp-mapper", "Hadoop Mapper"),
+    REDUCE_TYPE("hdp-reducer", "Hadoop Reducer");
 
 
-	final public OperationType type;
-	final public String label;
+    final public OperationType type;
+    final public String label;
 
-	private OperationCollectionTypes(String typeId, String labelValue) {
-		this.type=OperationType.valueOf(typeId);
-		this.label = labelValue;
-	}
-	
-	public String getValue() {
-		return type.getName();
-	}
+    private OperationCollectionTypes(String typeId, String labelValue) {
+        this.type = OperationType.valueOf(typeId);
+        this.label = labelValue;
+    }
+
+    public String getValue() {
+        return type.getName();
+    }
 }

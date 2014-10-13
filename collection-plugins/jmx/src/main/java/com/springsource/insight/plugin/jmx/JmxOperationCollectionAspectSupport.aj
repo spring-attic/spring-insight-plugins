@@ -29,36 +29,36 @@ import com.springsource.insight.util.ArrayUtil;
  * Serves as base class for all JMX instrumentation aspects
  */
 public abstract aspect JmxOperationCollectionAspectSupport extends MethodOperationCollectionAspect {
-	protected JmxOperationCollectionAspectSupport() {
-		super();
-	}
-	
-	protected JmxOperationCollectionAspectSupport(OperationCollector collector) {
-		super(collector);
-	}
+    protected JmxOperationCollectionAspectSupport() {
+        super();
+    }
 
-	protected Operation createBeanOperation(JoinPoint jp, ObjectName name) {
-		Operation	op=super.createOperation(jp);
-		putObjectName(op, name);
-		return op;
-	}
+    protected JmxOperationCollectionAspectSupport(OperationCollector collector) {
+        super(collector);
+    }
 
-	protected String putObjectName(Operation op, ObjectName name) {
-		String	canonName=(name == null) ? null : name.getCanonicalName();
-		op.putAnyNonEmpty(JmxPluginRuntimeDescriptor.BEAN_NAME_PROP, canonName);
-		return canonName;
-	}
+    protected Operation createBeanOperation(JoinPoint jp, ObjectName name) {
+        Operation op = super.createOperation(jp);
+        putObjectName(op, name);
+        return op;
+    }
 
-	protected ObjectName getObjectName(JoinPoint jp) {
-		return getObjectName(jp.getArgs());
-	}
-	
-	protected ObjectName getObjectName(Object...args) {
-		return ArrayUtil.findFirstInstanceOf(ObjectName.class, args);
-	}
+    protected String putObjectName(Operation op, ObjectName name) {
+        String canonName = (name == null) ? null : name.getCanonicalName();
+        op.putAnyNonEmpty(JmxPluginRuntimeDescriptor.BEAN_NAME_PROP, canonName);
+        return canonName;
+    }
 
-	@Override
-	public final String getPluginName() {
-		return JmxPluginRuntimeDescriptor.PLUGIN_NAME;
-	}
+    protected ObjectName getObjectName(JoinPoint jp) {
+        return getObjectName(jp.getArgs());
+    }
+
+    protected ObjectName getObjectName(Object... args) {
+        return ArrayUtil.findFirstInstanceOf(ObjectName.class, args);
+    }
+
+    @Override
+    public final String getPluginName() {
+        return JmxPluginRuntimeDescriptor.PLUGIN_NAME;
+    }
 }

@@ -33,52 +33,52 @@ import com.springsource.insight.util.time.TimeRange;
 
 public abstract class AbstractDatabaseJDBCURIAnalyzerTest extends AbstractCollectionTestSupport {
 
-	protected AbstractDatabaseJDBCURIAnalyzerTest() {
-		super();
-	}
+    protected AbstractDatabaseJDBCURIAnalyzerTest() {
+        super();
+    }
 
-	protected Operation createJdbcOperation(String jdbcUri) {
-		Operation op = TestJDBCURIAnalyzer.createOperation();
-		op.put(OperationFields.CONNECTION_URL, jdbcUri);
-		return op;
-	}
+    protected Operation createJdbcOperation(String jdbcUri) {
+        Operation op = TestJDBCURIAnalyzer.createOperation();
+        op.put(OperationFields.CONNECTION_URL, jdbcUri);
+        return op;
+    }
 
-	protected Frame createJdbcFrame(Operation op) {
-		Frame frame = new SimpleFrame(FrameId.valueOf("0"),
-				null,
-				op,
-				TimeRange.milliTimeRange(0, 1),
-				Collections.<Frame>emptyList());
-		return frame;
-	}
+    protected Frame createJdbcFrame(Operation op) {
+        Frame frame = new SimpleFrame(FrameId.valueOf("0"),
+                null,
+                op,
+                TimeRange.milliTimeRange(0, 1),
+                Collections.<Frame>emptyList());
+        return frame;
+    }
 
-	protected Trace createJdbcTrace(Frame frame) {
-		Trace trace = new Trace(ServerName.valueOf("fake-server"),
-				ApplicationName.valueOf("fake-app"),
-				new Date(),
-				TraceId.valueOf("fake-id"),
-				frame);
-		return trace;
-	}
+    protected Trace createJdbcTrace(Frame frame) {
+        Trace trace = new Trace(ServerName.valueOf("fake-server"),
+                ApplicationName.valueOf("fake-app"),
+                new Date(),
+                TraceId.valueOf("fake-id"),
+                frame);
+        return trace;
+    }
 
-	protected static class TestJDBCURIAnalyzer extends DatabaseJDBCURIAnalyzer {
-	    static final OperationType TYPE=OperationType.valueOf("analyzer-test");
-	    
-	    TestJDBCURIAnalyzer () {
+    protected static class TestJDBCURIAnalyzer extends DatabaseJDBCURIAnalyzer {
+        static final OperationType TYPE = OperationType.valueOf("analyzer-test");
+
+        TestJDBCURIAnalyzer() {
             this(TYPE);
-	    }
+        }
 
         TestJDBCURIAnalyzer(OperationType type) {
             super(type);
         }
 
-	    static Operation createOperation () {
-	        return createOperation(new Operation());
-	    }
+        static Operation createOperation() {
+            return createOperation(new Operation());
+        }
 
-	    static Operation createOperation (Operation op) {
-	        return op.type(TYPE);
-	    }
-	}
+        static Operation createOperation(Operation op) {
+            return op.type(TYPE);
+        }
+    }
 
 }

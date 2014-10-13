@@ -39,59 +39,59 @@ public class AkkaRouterConfigHelperTest {
 
     private static final String TEST_DISPATCHER = "test-dispatcher";
     private static final Map<String, String> ROUTER_CONFIG_KEY_VALUE = Collections.singletonMap("test-key",
-	    "test-value");
+            "test-value");
     private AkkaRouterConfigHelper tested;
 
     public AkkaRouterConfigHelperTest() {
-    	super();
+        super();
     }
 
     @Before
     public void setUp() {
-	tested = AkkaRouterConfigHelper.getInstance();
-	Field field = ExtraReflectionUtils.getAccessibleField(AkkaRouterConfigHelper.class, "routerConfigExtractors");
-	ReflectionUtils.setField(field, tested,
-		Collections.singletonMap(CustomRouterConfig.class, new RouterConfigDataExtractor() {
+        tested = AkkaRouterConfigHelper.getInstance();
+        Field field = ExtraReflectionUtils.getAccessibleField(AkkaRouterConfigHelper.class, "routerConfigExtractors");
+        ReflectionUtils.setField(field, tested,
+                Collections.singletonMap(CustomRouterConfig.class, new RouterConfigDataExtractor() {
 
-		    @SuppressWarnings("synthetic-access")
-			public Map<String, String> extract(RouterConfig routerConfig) {
-			return ROUTER_CONFIG_KEY_VALUE;
-		    }
-		}));
+                    @SuppressWarnings("synthetic-access")
+                    public Map<String, String> extract(RouterConfig routerConfig) {
+                        return ROUTER_CONFIG_KEY_VALUE;
+                    }
+                }));
     }
 
     @Test
     public void testGetRouterConfigInformation() {
-	Map<String, String> result = tested.getRouterConfigInformation(new TestCustomRouterConfig());
-	Map<String, String> expected = createdExpected();
-	assertEquals("extracted values", expected, result);
+        Map<String, String> result = tested.getRouterConfigInformation(new TestCustomRouterConfig());
+        Map<String, String> expected = createdExpected();
+        assertEquals("extracted values", expected, result);
     }
 
     private Map<String, String> createdExpected() {
-	Map<String, String> expected = new HashMap<String, String>();
-	expected.put("Router", TestCustomRouterConfig.class.getSimpleName());
-	expected.put("Router Dispatcher", TEST_DISPATCHER);
-	expected.putAll(ROUTER_CONFIG_KEY_VALUE);
-	return expected;
+        Map<String, String> expected = new HashMap<String, String>();
+        expected.put("Router", TestCustomRouterConfig.class.getSimpleName());
+        expected.put("Router Dispatcher", TEST_DISPATCHER);
+        expected.putAll(ROUTER_CONFIG_KEY_VALUE);
+        return expected;
     }
 
     private static final class TestCustomRouterConfig extends CustomRouterConfig {
-    public TestCustomRouterConfig() {
-    	super();
-    }
+        public TestCustomRouterConfig() {
+            super();
+        }
 
-	public SupervisorStrategy supervisorStrategy() {
-	    return null;
-	}
+        public SupervisorStrategy supervisorStrategy() {
+            return null;
+        }
 
-	public String routerDispatcher() {
-	    return TEST_DISPATCHER;
-	}
+        public String routerDispatcher() {
+            return TEST_DISPATCHER;
+        }
 
-	@Override
-	public CustomRoute createCustomRoute(Props arg0, RouteeProvider arg1) {
-	    return null;
-	}
+        @Override
+        public CustomRoute createCustomRoute(Props arg0, RouteeProvider arg1) {
+            return null;
+        }
     }
 
 }

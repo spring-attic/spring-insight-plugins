@@ -23,32 +23,32 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 
 /**
- * 
+ *
  */
 public class TcpConnectionOperationCollector extends DefaultOperationCollector {
-	public static final String	HOST_ADDRESS_ATTR = "hostAddress",
-								PORT_ATTR = "port",
-								CONNID_ATTR = "connectionId",
-								SERVER_ATTR = "serverMode";
+    public static final String HOST_ADDRESS_ATTR = "hostAddress",
+            PORT_ATTR = "port",
+            CONNID_ATTR = "connectionId",
+            SERVER_ATTR = "serverMode";
 
-	public TcpConnectionOperationCollector() {
-		super();
-	}
+    public TcpConnectionOperationCollector() {
+        super();
+    }
 
-	@Override
-	protected void processNormalExit(Operation op, Object returnValue) {
-		if (!(returnValue instanceof TcpConnection)) {
-			return; // not expecting anything else, but let's no belabor the
-					// point...
-		}
+    @Override
+    protected void processNormalExit(Operation op, Object returnValue) {
+        if (!(returnValue instanceof TcpConnection)) {
+            return; // not expecting anything else, but let's no belabor the
+            // point...
+        }
 
-		TcpConnection 	conn = (TcpConnection) returnValue;
-		String			host = conn.getHostAddress();
-		int				port = conn.getPort();
-		op.put(HOST_ADDRESS_ATTR, host)
-		  .put(PORT_ATTR, port)
-		  .put(OperationFields.URI, "tcp://" + host + ":" + port)
-		  .putAnyNonEmpty(CONNID_ATTR, conn.getConnectionId())
-		  .put(SERVER_ATTR, conn.isServer());
-	}
+        TcpConnection conn = (TcpConnection) returnValue;
+        String host = conn.getHostAddress();
+        int port = conn.getPort();
+        op.put(HOST_ADDRESS_ATTR, host)
+                .put(PORT_ATTR, port)
+                .put(OperationFields.URI, "tcp://" + host + ":" + port)
+                .putAnyNonEmpty(CONNID_ATTR, conn.getConnectionId())
+                .put(SERVER_ATTR, conn.isServer());
+    }
 }

@@ -32,40 +32,40 @@ import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.ListUtil;
 
 /**
- * 
+ *
  */
 public abstract class AbstractMongoDBExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-	public static final String	MONGODB_VENDOR="MongoDB";
+    public static final String MONGODB_VENDOR = "MongoDB";
 
-	protected AbstractMongoDBExternalResourceAnalyzer(OperationType type) {
-		super(type);
-	}
-	
-	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> dbFrames) {
-		if (ListUtil.size(dbFrames) <= 0) {
-		    return Collections.emptyList();
-		}
+    protected AbstractMongoDBExternalResourceAnalyzer(OperationType type) {
+        super(type);
+    }
 
-		List<ExternalResourceDescriptor>	dbDescriptors = new ArrayList<ExternalResourceDescriptor>(dbFrames.size());
-		for (Frame dbFrame : dbFrames) {
-			Operation op = dbFrame.getOperation();
-			String host = op.get("host", String.class);           
-			int	port = op.getInt("port", (-1));
-			String dbName = op.get("dbName", String.class);
-			
-			String mongoHash = MD5NameGenerator.getName(dbName+host+port);
-			String color = colorManager.getColor(op);
-			dbDescriptors.add(new ExternalResourceDescriptor(dbFrame,
-					"mongo:" + mongoHash,
-					dbName,
-					ExternalResourceType.DATABASE.name(),
-					MONGODB_VENDOR,
-					host,
-					port,
-                    color, false) );			
-		}
-		
-		return dbDescriptors;
-	}
+    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> dbFrames) {
+        if (ListUtil.size(dbFrames) <= 0) {
+            return Collections.emptyList();
+        }
+
+        List<ExternalResourceDescriptor> dbDescriptors = new ArrayList<ExternalResourceDescriptor>(dbFrames.size());
+        for (Frame dbFrame : dbFrames) {
+            Operation op = dbFrame.getOperation();
+            String host = op.get("host", String.class);
+            int port = op.getInt("port", (-1));
+            String dbName = op.get("dbName", String.class);
+
+            String mongoHash = MD5NameGenerator.getName(dbName + host + port);
+            String color = colorManager.getColor(op);
+            dbDescriptors.add(new ExternalResourceDescriptor(dbFrame,
+                    "mongo:" + mongoHash,
+                    dbName,
+                    ExternalResourceType.DATABASE.name(),
+                    MONGODB_VENDOR,
+                    host,
+                    port,
+                    color, false));
+        }
+
+        return dbDescriptors;
+    }
 
 }

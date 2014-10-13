@@ -36,41 +36,41 @@ public abstract class AbstractAkkaOperationCollectionAspectTestSupport extends O
 
     @Before
     public final void initAkka() {
-	actorSystem = ActorSystem.create(TEST_SYSTEM_NAME);
+        actorSystem = ActorSystem.create(TEST_SYSTEM_NAME);
     }
 
     @After
     public final void closeAkka() {
-	actorSystem.shutdown();
+        actorSystem.shutdown();
     }
 
     protected final ActorRef createActorRef() {
-	actorRef = actorSystem.actorOf(new Props(SimpleUntypedActor.class), TEST_ACTOR_NAME);
-	return actorRef;
+        actorRef = actorSystem.actorOf(new Props(SimpleUntypedActor.class), TEST_ACTOR_NAME);
+        return actorRef;
     }
 
     protected final Class<? extends Actor> getUntypedActorClass() {
-	return SimpleUntypedActor.class;
+        return SimpleUntypedActor.class;
     }
 
     protected String getSystemPath() {
-	return AKKA_PREFIX + TEST_SYSTEM_NAME;
+        return AKKA_PREFIX + TEST_SYSTEM_NAME;
     }
 
     protected String getDeadLettersPath() {
-	return getSystemPath() + "/deadLetters";
+        return getSystemPath() + "/deadLetters";
     }
 
     protected String getActorRefPath() {
-	return getSystemPath() + "/user/" + TEST_ACTOR_NAME;
+        return getSystemPath() + "/user/" + TEST_ACTOR_NAME;
     }
 
     public static final class SimpleUntypedActor extends UntypedActor {
 
-	@Override
-	public void onReceive(Object o) throws Exception {
-	    // do nothing
-	}
+        @Override
+        public void onReceive(Object o) throws Exception {
+            // do nothing
+        }
 
     }
 

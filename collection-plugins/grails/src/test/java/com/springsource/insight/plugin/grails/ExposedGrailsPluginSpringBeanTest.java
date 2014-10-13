@@ -22,19 +22,21 @@ import org.springframework.test.context.ContextConfiguration;
 import com.springsource.insight.idk.test.AbstractExposedIdkPuginsTestSupport;
 
 /**
- * Makes sure that the exposed singletons are indeed visible 
+ * Makes sure that the exposed singletons are indeed visible
  */
-@ContextConfiguration(locations={ "classpath:META-INF/insight-plugin-grails.xml" })
-public class ExposedGrailsPluginSpringBeanTest 
-		extends AbstractExposedIdkPuginsTestSupport<GrailsPluginRuntimeDescriptor>{
+@ContextConfiguration(locations = {"classpath:META-INF/insight-plugin-grails.xml"})
+public class ExposedGrailsPluginSpringBeanTest
+        extends AbstractExposedIdkPuginsTestSupport<GrailsPluginRuntimeDescriptor> {
     /* NOTE: all beans are autowired with required=false since we want
      * to have specific tests for each and we don't want to fail ALL the
      * tests if one bean is missing
      */
-	@Autowired(required=false) protected GrailsPluginRuntimeDescriptor	grailsPluginRuntimeDescriptor;
-	@Autowired(required=false) protected GrailsControllerMethodEndPointAnalyzer	grailsControllerMethodEndPointAnalyzer;
+    @Autowired(required = false)
+    protected GrailsPluginRuntimeDescriptor grailsPluginRuntimeDescriptor;
+    @Autowired(required = false)
+    protected GrailsControllerMethodEndPointAnalyzer grailsControllerMethodEndPointAnalyzer;
 
-	public ExposedGrailsPluginSpringBeanTest() {
-		super(GrailsPluginRuntimeDescriptor.class);
-	}
+    public ExposedGrailsPluginSpringBeanTest() {
+        super(GrailsPluginRuntimeDescriptor.class);
+    }
 }

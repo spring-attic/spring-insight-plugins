@@ -39,71 +39,70 @@ public privileged aspect JobOperationCollectionAspect extends AbstractOperationC
         super();
     }
 
-    public pointcut collectionPoint() : execution(public boolean org.apache.hadoop.mapreduce.Job.waitForCompletion(boolean));
+    public pointcut collectionPoint(): execution(public boolean org.apache.hadoop.mapreduce.Job.waitForCompletion(boolean));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-    	Job job=(Job)jp.getTarget();
-    	
-		Operation operation = new Operation().type(OperationCollectionTypes.JOB_TYPE.type)
-    						.label(OperationCollectionTypes.JOB_TYPE.label)
-    						.sourceCodeLocation(getSourceCodeLocation(jp));
+        Job job = (Job) jp.getTarget();
 
-		operation.put("jobName", job.getJobName());
-		
-		try {
-			operation.putAnyNonEmpty("mapper", getClassName(job.getMapperClass()));
-			operation.putAnyNonEmpty("reducer", getClassName(job.getReducerClass()));
-		
-			operation.putAnyNonEmpty("outputFormat", getClassName(job.getOutputFormatClass()));
-			operation.putAnyNonEmpty("inputFormat", getClassName(job.getInputFormatClass()));
-		}
-		catch (ClassNotFoundException e) {
-			// ignore
-		}
-		
-		Path[] inPaths=FileInputFormat.getInputPaths(job);
-		if (ArrayUtil.length(inPaths) > 0) {
-			OperationList list=operation.createList("inputPath");
-			for (Path path: inPaths) {
-				list.add(path.getName());
-			}
-		}
+        Operation operation = new Operation().type(OperationCollectionTypes.JOB_TYPE.type)
+                .label(OperationCollectionTypes.JOB_TYPE.label)
+                .sourceCodeLocation(getSourceCodeLocation(jp));
 
-		Path outPath=FileOutputFormat.getOutputPath(job);
-		if (outPath!=null) {
-			operation.put("outputPath", outPath.getName());
-		}
-		
-		operation.putAnyNonEmpty("mapperOutKey", getClassName(job.getMapOutputKeyClass()));
-		operation.putAnyNonEmpty("mapperOutValue", getClassName(job.getMapOutputValueClass()));
-		
-		operation.putAnyNonEmpty("reducerOutKey", getClassName(job.getOutputKeyClass()));
-		operation.putAnyNonEmpty("reducerOutValue", getClassName(job.getOutputValueClass()));
+        operation.put("jobName", job.getJobName());
 
-		// set configuration data
-		Iterator<Map.Entry<String,String>> params=job.getConfiguration().iterator();
-		if (params.hasNext()) {
-			OperationMap confMap=operation.createMap("config");
-			while(params.hasNext()) {
-				Map.Entry<String,String> prop=params.next();
-				confMap.put(prop.getKey(), prop.getValue());
-			}
-		}
-		
-		return operation;
+        try {
+            operation.putAnyNonEmpty("mapper", getClassName(job.getMapperClass()));
+            operation.putAnyNonEmpty("reducer", getClassName(job.getReducerClass()));
+
+            operation.putAnyNonEmpty("outputFormat", getClassName(job.getOutputFormatClass()));
+            operation.putAnyNonEmpty("inputFormat", getClassName(job.getInputFormatClass()));
+        } catch (ClassNotFoundException e) {
+            // ignore
+        }
+
+        Path[] inPaths = FileInputFormat.getInputPaths(job);
+        if (ArrayUtil.length(inPaths) > 0) {
+            OperationList list = operation.createList("inputPath");
+            for (Path path : inPaths) {
+                list.add(path.getName());
+            }
+        }
+
+        Path outPath = FileOutputFormat.getOutputPath(job);
+        if (outPath != null) {
+            operation.put("outputPath", outPath.getName());
+        }
+
+        operation.putAnyNonEmpty("mapperOutKey", getClassName(job.getMapOutputKeyClass()));
+        operation.putAnyNonEmpty("mapperOutValue", getClassName(job.getMapOutputValueClass()));
+
+        operation.putAnyNonEmpty("reducerOutKey", getClassName(job.getOutputKeyClass()));
+        operation.putAnyNonEmpty("reducerOutValue", getClassName(job.getOutputValueClass()));
+
+        // set configuration data
+        Iterator<Map.Entry<String, String>> params = job.getConfiguration().iterator();
+        if (params.hasNext()) {
+            OperationMap confMap = operation.createMap("config");
+            while (params.hasNext()) {
+                Map.Entry<String, String> prop = params.next();
+                confMap.put(prop.getKey(), prop.getValue());
+            }
+        }
+
+        return operation;
     }
-    
+
     private String getClassName(Class<?> claz) {
-    	if (claz==null) {
-    		return null;
-    	}
+        if (claz == null) {
+            return null;
+        }
 
-    	return claz.getName();
+        return claz.getName();
     }
-    
-	@Override
+
+    @Override
     public String getPluginName() {
-		return HadoopPluginRuntimeDescriptor.PLUGIN_NAME;
-	}
+        return HadoopPluginRuntimeDescriptor.PLUGIN_NAME;
+    }
 }

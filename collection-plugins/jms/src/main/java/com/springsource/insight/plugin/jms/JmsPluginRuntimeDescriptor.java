@@ -26,44 +26,44 @@ import com.springsource.insight.util.ArrayUtil;
 
 public class JmsPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "jms";
-    private static final JmsPluginRuntimeDescriptor	INSTANCE=new JmsPluginRuntimeDescriptor();
-    private static final List<? extends ExternalResourceAnalyzer>	extResAnalyzers=
-       		ArrayUtil.asUnmodifiableList(JMSConsumerResourceAnalyzer.getInstance(), 
-       				JMSMessageListenerResourceAnalyzer.getInstance(),
-       				JMSProducerResourceAnalyzer.getInstance());
-    private static final List<? extends TraceSourceAnalyzer>	tsAnalyzers=
-    		ArrayUtil.asUnmodifiableList(JmsTraceSourceAnalyzer.getInstance());
-    private static final List<? extends MetricsGenerator>	mGenerators=
-	    	ArrayUtil.asUnmodifiableList(JMSListenerReceiveMetricsGenerator.getInstance(),
-	    			JMSReceiveMetricsGenerator.getInstance(),
-	    			JMSSendMetricsGenerator.getInstance());
-    
-    private JmsPluginRuntimeDescriptor () {
-    	super();
+    private static final JmsPluginRuntimeDescriptor INSTANCE = new JmsPluginRuntimeDescriptor();
+    private static final List<? extends ExternalResourceAnalyzer> extResAnalyzers =
+            ArrayUtil.asUnmodifiableList(JMSConsumerResourceAnalyzer.getInstance(),
+                    JMSMessageListenerResourceAnalyzer.getInstance(),
+                    JMSProducerResourceAnalyzer.getInstance());
+    private static final List<? extends TraceSourceAnalyzer> tsAnalyzers =
+            ArrayUtil.asUnmodifiableList(JmsTraceSourceAnalyzer.getInstance());
+    private static final List<? extends MetricsGenerator> mGenerators =
+            ArrayUtil.asUnmodifiableList(JMSListenerReceiveMetricsGenerator.getInstance(),
+                    JMSReceiveMetricsGenerator.getInstance(),
+                    JMSSendMetricsGenerator.getInstance());
+
+    private JmsPluginRuntimeDescriptor() {
+        super();
     }
 
     public static final JmsPluginRuntimeDescriptor getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;
     }
-    
+
     @Override
     public Collection<? extends ExternalResourceAnalyzer> getExternalResourceAnalyzers() {
-    	return extResAnalyzers;
+        return extResAnalyzers;
     }
-    
+
     @Override
     public Collection<? extends TraceSourceAnalyzer> getTraceSourceAnalyzers() {
         return tsAnalyzers;
     }
-    
+
     @Override
     public Collection<? extends MetricsGenerator> getMetricsGenerators() {
-    	return mGenerators;
+        return mGenerators;
     }
-    
+
 }

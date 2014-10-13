@@ -41,22 +41,22 @@ import com.springsource.insight.intercept.trace.FrameBuilder;
 import com.springsource.insight.util.ArrayUtil;
 
 /**
- * 
+ *
  */
 public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAspectSupport {
-	private static final InterceptConfiguration	configuration=InterceptConfiguration.getInstance();
-	private HttpObfuscator	obfuscator=HttpObfuscator.getInstance();
+    private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
+    private HttpObfuscator obfuscator = HttpObfuscator.getInstance();
 
-    public HttpClientExecutionCollectionAspect () {
+    public HttpClientExecutionCollectionAspect() {
         super();
     }
 
-    HttpObfuscator getHttpHeadersObfuscator () {
-    	return obfuscator;
+    HttpObfuscator getHttpHeadersObfuscator() {
+        return obfuscator;
     }
 
-    void setHttpHeadersObfuscator (HttpObfuscator obfs) {
-    	obfuscator = obfs;
+    void setHttpHeadersObfuscator(HttpObfuscator obfs) {
+        obfuscator = obfs;
     }
 
     @Override
@@ -64,68 +64,63 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
         return HC3PluginRuntimeDescriptor.PLUGIN_NAME;
     }
 
-    public pointcut clientExecutionFlow ()
-        : execution(* org.apache.commons.httpclient.HttpClient.executeMethod(HttpMethod))
-       || execution(* org.apache.commons.httpclient.HttpClient.executeMethod(HostConfiguration,HttpMethod))
-       || execution(* org.apache.commons.httpclient.HttpClient.executeMethod(HostConfiguration,HttpMethod,HttpState))
-       ;
+    public pointcut clientExecutionFlow()
+            : execution(* org.apache.commons.httpclient.HttpClient.executeMethod(HttpMethod))
+            || execution(* org.apache.commons.httpclient.HttpClient.executeMethod(HostConfiguration,HttpMethod))
+            || execution(* org.apache.commons.httpclient.HttpClient.executeMethod(HostConfiguration,HttpMethod,HttpState))
+            ;
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
-    int around () throws IOException
-        : clientExecutionFlow()
-       && (!cflowbelow(clientExecutionFlow()))
-       && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart)) {
-        final Operation   op=enterOperation(thisJoinPointStaticPart);
-        final HttpMethod  method=HttpPlaceholderMethod.resolveHttpMethod(thisJoinPoint.getArgs());
+    int around ()throws IOException
+            : clientExecutionFlow()
+            && (!cflowbelow(clientExecutionFlow()))
+            && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart)) {
+        final Operation op = enterOperation(thisJoinPointStaticPart);
+        final HttpMethod method = HttpPlaceholderMethod.resolveHttpMethod(thisJoinPoint.getArgs());
 
         colorForward(new ColorParams() {
-			public void setColor(String key, String value) {
-				method.addRequestHeader(key, value);
-			}
+            public void setColor(String key, String value) {
+                method.addRequestHeader(key, value);
+            }
 
             public Operation getOperation() {
-				return op;
-			}
-		});
+                return op;
+            }
+        });
 
-        try
-        {
-            int statusCode=proceed();
+        try {
+            int statusCode = proceed();
             exitOperation(op, method, statusCode, null);
             return statusCode;
-        }
-        catch(IOException e)
-        {
+        } catch (IOException e) {
             exitOperation(op, method, HttpClientDefinitions.FAILED_CALL_STATUS_CODE, e);
             throw e;
-        }
-        catch(RuntimeException e)
-        {
+        } catch (RuntimeException e) {
             exitOperation(op, method, HttpClientDefinitions.FAILED_CALL_STATUS_CODE, e);
             throw e;
         }
     }
-        
+
     /* -------------------------------------------------------------------- */
 
-    Operation enterOperation (JoinPoint.StaticPart staticPart) {
-        Operation           op=createOperation(staticPart);
-        OperationCollector  collector=getCollector();
+    Operation enterOperation(JoinPoint.StaticPart staticPart) {
+        Operation op = createOperation(staticPart);
+        OperationCollector collector = getCollector();
         collector.enter(op);
         return op;
     }
 
-    Operation createOperation (JoinPoint.StaticPart staticPart) {
+    Operation createOperation(JoinPoint.StaticPart staticPart) {
         return new Operation()
-            .type(HttpClientDefinitions.TYPE)
-            .sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(staticPart))
-            ;
+                .type(HttpClientDefinitions.TYPE)
+                .sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(staticPart))
+                ;
     }
 
-    Operation exitOperation (Operation op, HttpMethod method, int statusCode, Throwable e) {
+    Operation exitOperation(Operation op, HttpMethod method, int statusCode, Throwable e) {
         fillInOperation(op, method, statusCode);
 
-        OperationCollector  collector=getCollector();
+        OperationCollector collector = getCollector();
         if (e == null)
             collector.exitNormal(Integer.valueOf(statusCode));
         else
@@ -134,7 +129,7 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
         return op;
     }
 
-    Operation fillInOperation (Operation op, HttpMethod method, int statusCode) {
+    Operation fillInOperation(Operation op, HttpMethod method, int statusCode) {
         op.label(method.getName() + " " + getUri(method));
 
         boolean collectExtra = collectExtraInformation();
@@ -143,7 +138,7 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
         return op;
     }
 
-    OperationMap fillInRequestDetails (OperationMap op, HttpMethod method, boolean collectExtra) {
+    OperationMap fillInRequestDetails(OperationMap op, HttpMethod method, boolean collectExtra) {
         fillInRequestNetworkDetails(op, method, collectExtra);
         if (collectExtra) {
             fillInMethodHeaders(op.createList("headers"), method, true);
@@ -151,9 +146,9 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
         return op;
     }
 
-    OperationMap fillInRequestNetworkDetails (OperationMap op, HttpMethod method, boolean collectExtra) {
+    OperationMap fillInRequestNetworkDetails(OperationMap op, HttpMethod method, boolean collectExtra) {
         op.put("method", method.getName())
-          .put(OperationFields.URI, getUri(method));
+                .put(OperationFields.URI, getUri(method));
 
         if (collectExtra) {
             op.putAnyNonEmpty("protocol", createVersionValue(method));
@@ -162,20 +157,20 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
         return op;
     }
 
-    static String createVersionValue (HttpMethod method) {
-        StatusLine  line=method.getStatusLine();
-        
+    static String createVersionValue(HttpMethod method) {
+        StatusLine line = method.getStatusLine();
+
         if (line != null) {
-        	return line.getHttpVersion();
+            return line.getHttpVersion();
         } else {
-        	return null;
+            return null;
         }
     }
 
-    static String getUri (HttpMethod method) {
+    static String getUri(HttpMethod method) {
         try {
             return String.valueOf(method.getURI());
-        } catch(URIException e) {
+        } catch (URIException e) {
             throw new RuntimeException("Failed to get URI of " + method, e);
         }
     }
@@ -184,41 +179,41 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
         op.put(HttpStatusTraceErrorAnalyzer.STATUS_CODE_ATTR, statusCode);
 
         if (collectExtra) {
-        	StatusLine statusLine = method.getStatusLine();
-        	
-        	if (statusLine != null) {
-        		op.putAnyNonEmpty(HttpStatusTraceErrorAnalyzer.REASON_PHRASE_ATTR, statusLine.getReasonPhrase());
-        	}
-        	
+            StatusLine statusLine = method.getStatusLine();
+
+            if (statusLine != null) {
+                op.putAnyNonEmpty(HttpStatusTraceErrorAnalyzer.REASON_PHRASE_ATTR, statusLine.getReasonPhrase());
+            }
+
             fillInMethodHeaders(op.createList("headers"), method, false);
         }
 
         return op;
     }
 
-    OperationList fillInMethodHeaders (OperationList headers, HttpMethod method, boolean useRequestHeaders) {
-        Header[]    hdrs=useRequestHeaders ? method.getRequestHeaders() : method.getResponseHeaders(); 
+    OperationList fillInMethodHeaders(OperationList headers, HttpMethod method, boolean useRequestHeaders) {
+        Header[] hdrs = useRequestHeaders ? method.getRequestHeaders() : method.getResponseHeaders();
         if (ArrayUtil.length(hdrs) <= 0) {
             return headers;
         }
 
-        HttpObfuscator obfs=getHttpHeadersObfuscator();
+        HttpObfuscator obfs = getHttpHeadersObfuscator();
         for (Header h : hdrs) {
-            String  name=h.getName(), value=h.getValue();
+            String name = h.getName(), value = h.getValue();
 
             OperationUtils.addNameValuePair(headers, name, value);
             if (obfs.processHeader(name, value)) {
-            	continue;	// debug breakpoint
+                continue;    // debug breakpoint
             }
         }
 
         return headers;
     }
 
-    boolean collectExtraInformation () {
+    boolean collectExtraInformation() {
         return FrameBuilder.OperationCollectionLevel.HIGH.equals(configuration.getCollectionLevel());
     }
-    
+
     @Override
     public boolean isMetricsGenerator() {
         return true; // This provides an external resource

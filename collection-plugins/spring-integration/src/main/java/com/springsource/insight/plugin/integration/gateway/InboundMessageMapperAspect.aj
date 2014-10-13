@@ -19,19 +19,19 @@ package com.springsource.insight.plugin.integration.gateway;
 import org.springframework.integration.gateway.MessagingGatewaySupport;
 
 /**
- * 
+ *
  */
 public aspect InboundMessageMapperAspect {
 
-	declare parents: org.springframework.integration.gateway.MessagingGatewaySupport+ implements HasRequestMapper;
+    declare parents:org.springframework.integration.gateway.MessagingGatewaySupport+implements HasRequestMapper;
 
-	after(MessagingGatewaySupport gateway)
-		: execution(public void MessagingGatewaySupport+.setRequestMapper(..))
-	  && target(gateway) {
-	    
-	    if (gateway instanceof HasRequestMapper) {
-	    	Object[]	args=thisJoinPoint.getArgs();
-	        ((HasRequestMapper)gateway).__setRequestMapper(args[0]);
-	    }
-	}
+    after(MessagingGatewaySupport gateway)
+            : execution(public void MessagingGatewaySupport+.setRequestMapper(..))
+            && target(gateway) {
+
+        if (gateway instanceof HasRequestMapper) {
+            Object[] args = thisJoinPoint.getArgs();
+            ((HasRequestMapper) gateway).__setRequestMapper(args[0]);
+        }
+    }
 }

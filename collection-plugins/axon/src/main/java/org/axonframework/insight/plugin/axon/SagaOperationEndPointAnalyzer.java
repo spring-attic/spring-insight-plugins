@@ -28,29 +28,29 @@ import com.springsource.insight.intercept.trace.Frame;
 
 /**
  * Analyzer for Axon Saga operations.
- * 
+ *
  * @author Joris Kuipers
  * @since 2.0
  */
 public class SagaOperationEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
-	
-	private SagaOperationEndPointAnalyzer() {
-		super(AxonOperationType.SAGA);
-	}
 
-	private static final SagaOperationEndPointAnalyzer INSTANCE = new SagaOperationEndPointAnalyzer();
-
-	public static final SagaOperationEndPointAnalyzer getInstance() {
-    	return INSTANCE;
+    private SagaOperationEndPointAnalyzer() {
+        super(AxonOperationType.SAGA);
     }
-	
-	@Override
-	protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
-		Operation op = frame.getOperation();
-		String example = "SAGA: " + op.get(SHORT_CLASS_NAME);
-		EndPointName endPointName = EndPointName.valueOf(op.get(CLASS_NAME) + "#" + op.get(METHOD_NAME));
 
-		return new EndPointAnalysis(endPointName, op.getLabel(), example, getOperationScore(op, depth), op);
-	}
+    private static final SagaOperationEndPointAnalyzer INSTANCE = new SagaOperationEndPointAnalyzer();
+
+    public static final SagaOperationEndPointAnalyzer getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
+    protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
+        Operation op = frame.getOperation();
+        String example = "SAGA: " + op.get(SHORT_CLASS_NAME);
+        EndPointName endPointName = EndPointName.valueOf(op.get(CLASS_NAME) + "#" + op.get(METHOD_NAME));
+
+        return new EndPointAnalysis(endPointName, op.getLabel(), example, getOperationScore(op, depth), op);
+    }
 
 }

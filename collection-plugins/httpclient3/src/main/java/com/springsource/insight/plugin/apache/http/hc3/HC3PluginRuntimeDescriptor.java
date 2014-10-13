@@ -25,27 +25,30 @@ import com.springsource.insight.util.ArrayUtil;
 
 public class HC3PluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "apache-httpclient3";
-    private static final HC3PluginRuntimeDescriptor	INSTANCE=new HC3PluginRuntimeDescriptor();
-    private static final List<? extends TraceErrorAnalyzer>	errAnalyzers=
-    		ArrayUtil.asUnmodifiableList(HttpStatusTraceErrorAnalyzer.getInstance());
-    private static final List<? extends ExternalResourceAnalyzer>	extResAnalyzers=
-       		ArrayUtil.asUnmodifiableList(HttpExternalResourceAnalyzer.getInstance());
-    private HC3PluginRuntimeDescriptor () {
-    	super();
+    private static final HC3PluginRuntimeDescriptor INSTANCE = new HC3PluginRuntimeDescriptor();
+    private static final List<? extends TraceErrorAnalyzer> errAnalyzers =
+            ArrayUtil.asUnmodifiableList(HttpStatusTraceErrorAnalyzer.getInstance());
+    private static final List<? extends ExternalResourceAnalyzer> extResAnalyzers =
+            ArrayUtil.asUnmodifiableList(HttpExternalResourceAnalyzer.getInstance());
+
+    private HC3PluginRuntimeDescriptor() {
+        super();
     }
 
-    public static final HC3PluginRuntimeDescriptor getInstance () {
-    	return INSTANCE;
+    public static final HC3PluginRuntimeDescriptor getInstance() {
+        return INSTANCE;
     }
-    
+
     @Override
     public Collection<? extends TraceErrorAnalyzer> getTraceErrorAnalyzers() {
         return errAnalyzers;
     }
+
     @Override
     public Collection<? extends ExternalResourceAnalyzer> getExternalResourceAnalyzers() {
-    	return extResAnalyzers;
+        return extResAnalyzers;
     }
+
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;

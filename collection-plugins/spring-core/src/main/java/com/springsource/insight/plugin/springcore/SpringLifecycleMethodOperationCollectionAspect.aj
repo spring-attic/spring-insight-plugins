@@ -24,38 +24,37 @@ import com.springsource.insight.util.ArrayUtil;
 
 
 /**
- * 
+ *
  */
 public abstract aspect SpringLifecycleMethodOperationCollectionAspect
-			extends SpringCoreOperationCollectionAspect {
-	public static final String EVENT_ATTR="eventInfo";
-	protected final OperationType	operationType;
+        extends SpringCoreOperationCollectionAspect {
+    public static final String EVENT_ATTR = "eventInfo";
+    protected final OperationType operationType;
 
-	protected SpringLifecycleMethodOperationCollectionAspect (OperationType opType) {
-		if ((operationType=opType) == null) {
-			throw new IllegalStateException("No operation type provided");
-		}
-	}
+    protected SpringLifecycleMethodOperationCollectionAspect(OperationType opType) {
+        if ((operationType = opType) == null) {
+            throw new IllegalStateException("No operation type provided");
+        }
+    }
 
-	@Override
-	protected Operation createOperation(JoinPoint jp) {
-		Operation	op=super.createOperation(jp)
-							.type(operationType)
-							;
-		return updateEventData(op, jp);
-	}
+    @Override
+    protected Operation createOperation(JoinPoint jp) {
+        Operation op = super.createOperation(jp)
+                .type(operationType);
+        return updateEventData(op, jp);
+    }
 
-	protected Operation updateEventData (Operation op, JoinPoint jp) {
-		return updateEventDataFromArgs(op, jp.getArgs());
-	}
-	
-	protected Operation updateEventDataFromArgs (Operation op, Object ... args) {
-		return updateEventData(op, (ArrayUtil.length(args) <= 0) ? null : args[0]);
-	}
+    protected Operation updateEventData(Operation op, JoinPoint jp) {
+        return updateEventDataFromArgs(op, jp.getArgs());
+    }
 
-	protected Operation updateEventData (Operation op, Object event) {
-		return op.putAnyNonEmpty(EVENT_ATTR, resolveEventData(event));
-	}
-    
-    protected abstract String resolveEventData (Object event);
+    protected Operation updateEventDataFromArgs(Operation op, Object... args) {
+        return updateEventData(op, (ArrayUtil.length(args) <= 0) ? null : args[0]);
+    }
+
+    protected Operation updateEventData(Operation op, Object event) {
+        return op.putAnyNonEmpty(EVENT_ATTR, resolveEventData(event));
+    }
+
+    protected abstract String resolveEventData(Object event);
 }

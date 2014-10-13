@@ -20,13 +20,13 @@ import com.springsource.insight.intercept.trace.AbstractTraceSourceAnalyzer;
 import com.springsource.insight.intercept.trace.TraceSource;
 
 public class HttpTraceSourceAnalyzer extends AbstractTraceSourceAnalyzer {
-	private static final HttpTraceSourceAnalyzer INSTANCE = new HttpTraceSourceAnalyzer();
-	
-	private HttpTraceSourceAnalyzer() {
-		super(TraceSource.HTTP, OperationType.HTTP);
-	}
-	
-	public static final HttpTraceSourceAnalyzer getInstance() {
-		return INSTANCE;
-	}
+    private static final HttpTraceSourceAnalyzer INSTANCE = new HttpTraceSourceAnalyzer();
+
+    private HttpTraceSourceAnalyzer() {
+        super(TraceSource.HTTP, OperationType.HTTP);
+    }
+
+    public static final HttpTraceSourceAnalyzer getInstance() {
+        return INSTANCE;
+    }
 }

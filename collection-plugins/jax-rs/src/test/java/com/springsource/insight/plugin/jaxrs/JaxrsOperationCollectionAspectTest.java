@@ -39,34 +39,34 @@ import com.springsource.insight.intercept.trace.TraceId;
 /**
  */
 public class JaxrsOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-    private final RestServiceInstance   _testService;
+    private final RestServiceInstance _testService;
     private final JaxrsExternalResourceAnalyzer analyzer = JaxrsExternalResourceAnalyzer.getInstance();
-    
+
     public JaxrsOperationCollectionAspectTest() {
         _testService = new RestServiceInstance();
     }
 
     @Test
-    public void testRootPath () {
+    public void testRootPath() {
         runTestRestService(_testService, RestServiceDefinitions.ROOT_PATH);
     }
 
     @Test
-    public void testYesterdayPath () {
+    public void testYesterdayPath() {
         runTestRestService(_testService, RestServiceDefinitions.YESTERDAY_PATH);
     }
 
     @Test
-    public void testTomorrowPath () {
+    public void testTomorrowPath() {
         runTestRestService(_testService, RestServiceDefinitions.TOMORROW_PATH);
     }
 
-    private Operation runTestRestService (final RestServiceInstance testService, final String pathDefinition) {
+    private Operation runTestRestService(final RestServiceInstance testService, final String pathDefinition) {
         testService.initialize();
 
         try {
-            final Date  expDate, actDate;
-            final long  now=System.currentTimeMillis();
+            final Date expDate, actDate;
+            final long now = System.currentTimeMillis();
             if (RestServiceDefinitions.ROOT_PATH.equals(pathDefinition)) {
                 expDate = testService.getCurrentDate();
                 actDate = new Date(now);
@@ -90,58 +90,57 @@ public class JaxrsOperationCollectionAspectTest extends OperationCollectionAspec
                 op.finalizeConstruction();
             }
 
-            final long  valsDiff=Math.abs(expDate.getTime() - actDate.getTime());
+            final long valsDiff = Math.abs(expDate.getTime() - actDate.getTime());
             assertTrue("Mismatched call return values", valsDiff < 5000L);
 
-            final String    expTemplate=RestServiceDefinitions.ROOT_PATH.equals(pathDefinition)
-                                ? RestServiceDefinitions.ROOT_PATH
-                                : RestServiceDefinitions.ROOT_PATH + "/" + pathDefinition
-                                ;
-            final String    actTemplate=op.get("requestTemplate", String.class);
+            final String expTemplate = RestServiceDefinitions.ROOT_PATH.equals(pathDefinition)
+                    ? RestServiceDefinitions.ROOT_PATH
+                    : RestServiceDefinitions.ROOT_PATH + "/" + pathDefinition;
+            final String actTemplate = op.get("requestTemplate", String.class);
             assertEquals("Mismatched request template", expTemplate, actTemplate);
-            
+
             if (!RestServiceDefinitions.ROOT_PATH.equals(pathDefinition)) {
-                final OperationList opList=op.get("pathParams", OperationList.class);
+                final OperationList opList = op.get("pathParams", OperationList.class);
                 assertNotNull("Missing path parameters list", opList);
                 assertEquals("Unexpected number of path parameters", 1, opList.size());
-                
-                final OperationMap  opMap=opList.get(0, OperationMap.class);
+
+                final OperationMap opMap = opList.get(0, OperationMap.class);
                 assertNotNull("Missing path parameters map", opMap);
                 assertEquals("Unexpected number of mapped path parameters", 3, opMap.size());
 
-                final String    paramName=opMap.get("name", String.class);
+                final String paramName = opMap.get("name", String.class);
                 assertEquals("Mismatched path param name", RestServiceDefinitions.NOW_PARAM_NAME, paramName);
 
-                final Long  paramValue=opMap.get("value", Long.class);
+                final Long paramValue = opMap.get("value", Long.class);
                 assertNotNull("Missing path parameter value", paramValue);
                 assertEquals("Mismatched path parameter value", now, paramValue.longValue());
 
-                final String    paramType=opMap.get("type", String.class);
+                final String paramType = opMap.get("type", String.class);
                 assertEquals("Mismatched path param type", PathParam.class.getSimpleName(), paramType);
 
-                final JaxrsParamType    enumType=JaxrsParamType.fromTypeName(paramType);
+                final JaxrsParamType enumType = JaxrsParamType.fromTypeName(paramType);
                 assertEquals("Mismatched path param enum", JaxrsParamType.PATH, enumType);
             }
-            
+
             //test external resources
             SimpleFrameBuilder builder = new SimpleFrameBuilder();
-            builder.enter(op);           
+            builder.enter(op);
             Frame frame = builder.exit();
             Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
-            
+
             List<ExternalResourceDescriptor> externalResourceDescriptors = (List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
             assertNotNull("No descriptors extracted", externalResourceDescriptors);
-            ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);        
-    		assertSame("Mismatched operation instance", op, descriptor.getFrame().getOperation());
-    		assertDescriptorContents("testExactlyTwoDifferentExternalResourceNames", expTemplate, descriptor);
-            
+            ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);
+            assertSame("Mismatched operation instance", op, descriptor.getFrame().getOperation());
+            assertDescriptorContents("testExactlyTwoDifferentExternalResourceNames", expTemplate, descriptor);
+
             return op;
         } finally {
             testService.destroy();
         }
     }
-    
-    private static ExternalResourceDescriptor assertDescriptorContents (String testName, String path, ExternalResourceDescriptor descriptor) {
+
+    private static ExternalResourceDescriptor assertDescriptorContents(String testName, String path, ExternalResourceDescriptor descriptor) {
         assertEquals(testName + ": Mismatched label", path, descriptor.getLabel());
         assertEquals(testName + ": Mismatched type", ExternalResourceType.WEB_SERVICE.name(), descriptor.getType());
 

@@ -24,34 +24,34 @@ import org.junit.Test;
 
 
 /**
- * 
+ *
  */
 public class RestDeleteOperationCollectionAspectTest extends RestOperationCollectionTestSupport {
-	public RestDeleteOperationCollectionAspectTest() {
-		super();
-	}
+    public RestDeleteOperationCollectionAspectTest() {
+        super();
+    }
 
-	@Test
-	public void testDeleteNoArgs() throws Exception {
-		opsInstance.delete(new URI(createTestURI("testDeleteNoArgs")));
-		assertRestOperationResult(opsInstance);
-	}
+    @Test
+    public void testDeleteNoArgs() throws Exception {
+        opsInstance.delete(new URI(createTestURI("testDeleteNoArgs")));
+        assertRestOperationResult(opsInstance);
+    }
 
-	@Test
-	public void testDeleteVarArgs() throws Exception {
-		opsInstance.delete(createTestURI("testDeleteVarArgs"), new Date());
-		assertRestOperationResult(opsInstance);
-	}
+    @Test
+    public void testDeleteVarArgs() throws Exception {
+        opsInstance.delete(createTestURI("testDeleteVarArgs"), new Date());
+        assertRestOperationResult(opsInstance);
+    }
 
-	@Test
-	public void testDeleteArgsMap() throws Exception {
-		opsInstance.delete(createTestURI("testDeleteArgsMap"), Collections.singletonMap("now", new Date()));
-		assertRestOperationResult(opsInstance);
-	}
+    @Test
+    public void testDeleteArgsMap() throws Exception {
+        opsInstance.delete(createTestURI("testDeleteArgsMap"), Collections.singletonMap("now", new Date()));
+        assertRestOperationResult(opsInstance);
+    }
 
-	@Override
-	public RestDeleteOperationCollectionAspect getAspect() {
-		return RestDeleteOperationCollectionAspect.aspectOf();
-	}
+    @Override
+    public RestDeleteOperationCollectionAspect getAspect() {
+        return RestDeleteOperationCollectionAspect.aspectOf();
+    }
 
 }

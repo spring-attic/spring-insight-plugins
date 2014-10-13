@@ -14,6 +14,6 @@
     <bean id="graphDatabaseService" class="org.springframework.data.neo4j.rest.SpringRestGraphDatabase">
         <constructor-arg index="0" value="http://localhost:7474/db/data" />
     </bean-->
-    
+
     <bean id="tests" class="com.springsource.insight.plugin.neo4j.OperationCollectionAspectTests"/>
 </beans>

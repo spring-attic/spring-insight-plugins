@@ -28,36 +28,36 @@ import com.springsource.insight.intercept.operation.SourceCodeLocation;
 /**
  * Creates an operation for implementors of the Spring MVC Controller
  * interface (pre annotated MVC).
- * 
+ *
  * This class does something slightly different than the other controller
  * methods. Since there are several base classes which implement Controller, and
  * we do not want to handle them all, we simply identify the class as the target 
  * class that is being invoked (not the class which contains the handleRequest method).
- * 
+ *
  * This means that the source code location may not actually point at the real file
  * which houses handleRequest, but should point at the user's code, which will have the
  * real handler implementation (albeit with a likely different name)
  */
 public aspect LegacyControllerOperationCollectionAspect extends AbstractControllerOperationCollectionAspect {
-	public LegacyControllerOperationCollectionAspect () {
-		super(true);
-	}
+    public LegacyControllerOperationCollectionAspect() {
+        super(true);
+    }
 
-    public pointcut collectionPoint() : execution(* Controller+.handleRequest(..));
+    public pointcut collectionPoint(): execution(* Controller+.handleRequest(..));
 
     @Override
-	public Operation createOperation(JoinPoint jp) {
-		return super.createOperation(jp)
-				    .put(EndPointAnalysis.SCORE_FIELD, ControllerEndPointAnalyzer.LEGACY_SCORE)
-				    ;
-	}
+    public Operation createOperation(JoinPoint jp) {
+        return super.createOperation(jp)
+                .put(EndPointAnalysis.SCORE_FIELD, ControllerEndPointAnalyzer.LEGACY_SCORE)
+                ;
+    }
 
-	@Override
+    @Override
     public SourceCodeLocation getSourceCodeLocation(JoinPoint jp) {
         MethodSignature mSig = (MethodSignature) jp.getSignature();
-        Object		target=jp.getTarget();
-        Class<?>	targetClass=target.getClass();
-        SourceLocation	jpSource=jp.getSourceLocation();
+        Object target = jp.getTarget();
+        Class<?> targetClass = target.getClass();
+        SourceLocation jpSource = jp.getSourceLocation();
         return new SourceCodeLocation(targetClass.getName(), mSig.getName(), jpSource.getLine());
     }
 }

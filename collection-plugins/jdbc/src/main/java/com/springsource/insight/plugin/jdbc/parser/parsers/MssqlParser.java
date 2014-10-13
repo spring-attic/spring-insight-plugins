@@ -18,12 +18,12 @@ package com.springsource.insight.plugin.jdbc.parser.parsers;
 import com.springsource.insight.plugin.jdbc.parser.AbstractSqlPatternParser;
 
 public class MssqlParser extends AbstractSqlPatternParser {
-	private static final String EXTRA_PATTERN = "//(.+)?:([^;]+)?;.*[Dd]atabaseName=([^;]+)?.*";
-	public static final int	DEFAULT_CONNECTION_PORT=1433;
-	public static final String	VENDOR="microsoft", SUB_TYPE="sqlserver";
+    private static final String EXTRA_PATTERN = "//(.+)?:([^;]+)?;.*[Dd]atabaseName=([^;]+)?.*";
+    public static final int DEFAULT_CONNECTION_PORT = 1433;
+    public static final String VENDOR = "microsoft", SUB_TYPE = "sqlserver";
 
     public MssqlParser() {
         super(VENDOR, DEFAULT_CONNECTION_PORT, create(VENDOR, SUB_TYPE, EXTRA_PATTERN, 1, 2, 3)
-        		                             , create(JDBC_PREFIX + ":" + SUB_TYPE + ":" + EXTRA_PATTERN, 1, 2, 3));
+                , create(JDBC_PREFIX + ":" + SUB_TYPE + ":" + EXTRA_PATTERN, 1, 2, 3));
     }
 }

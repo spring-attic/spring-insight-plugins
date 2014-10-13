@@ -26,35 +26,35 @@ import com.springsource.insight.util.StringUtil;
  * is specified as an extra argument
  */
 public abstract aspect RestIndirectOperationCollectionSupport extends RestOperationCollectionSupport {
-	protected RestIndirectOperationCollectionSupport (String accessType) {
-		super(accessType);
-	}
-	
-	@Override
-	protected String resolveOperationMethod(JoinPoint jp) {
-		Object[]	args=jp.getArgs();
-		Object		method=args[1];	// all exchange methods have the method as the 2nd argument
-		if (method instanceof HttpMethod) {
-			return ((HttpMethod) method).name();
-		} else {
-			return super.resolveOperationMethod(jp);
-		}
-	}
-	
-	@Override
-	protected String resolveOperationLabel(String method, String uri, JoinPoint jp) {
-		return createIndirectLabel(getMethod(), method, super.resolveOperationLabel(method, uri, jp));
-	}
-	
-	static String createIndirectLabel (String aspectMethod, String opMethod, String orgLabel) {
-		if (StringUtil.safeCompare(aspectMethod, opMethod, false) == 0) {
-			return orgLabel;
-		} else {
-			return new StringBuilder(StringUtil.getSafeLength(aspectMethod) + 2 + StringUtil.getSafeLength(orgLabel))
-						.append(aspectMethod)
-						.append(": ")
-						.append(orgLabel)
-					.toString();
-		}
-	}
+    protected RestIndirectOperationCollectionSupport(String accessType) {
+        super(accessType);
+    }
+
+    @Override
+    protected String resolveOperationMethod(JoinPoint jp) {
+        Object[] args = jp.getArgs();
+        Object method = args[1];    // all exchange methods have the method as the 2nd argument
+        if (method instanceof HttpMethod) {
+            return ((HttpMethod) method).name();
+        } else {
+            return super.resolveOperationMethod(jp);
+        }
+    }
+
+    @Override
+    protected String resolveOperationLabel(String method, String uri, JoinPoint jp) {
+        return createIndirectLabel(getMethod(), method, super.resolveOperationLabel(method, uri, jp));
+    }
+
+    static String createIndirectLabel(String aspectMethod, String opMethod, String orgLabel) {
+        if (StringUtil.safeCompare(aspectMethod, opMethod, false) == 0) {
+            return orgLabel;
+        } else {
+            return new StringBuilder(StringUtil.getSafeLength(aspectMethod) + 2 + StringUtil.getSafeLength(orgLabel))
+                    .append(aspectMethod)
+                    .append(": ")
+                    .append(orgLabel)
+                    .toString();
+        }
+    }
 }

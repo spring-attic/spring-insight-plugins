@@ -45,37 +45,38 @@ import com.springsource.insight.util.ReflectionUtils;
 import com.springsource.insight.util.logging.InsightLogManager;
 
 public abstract class AbstractRabbitMQCollectionAspect extends OperationCollectionAspectSupport {
-    private static final AtomicReference<Field> messageHeadersField=new AtomicReference<Field>(null);
-    private static final AtomicReference<Class<?>>	longStringClassHolder=new AtomicReference<Class<?>>(null);
-    private static final AtomicReference<Object>	bytesMethodHolder=new AtomicReference<Object>(null);
+    private static final AtomicReference<Field> messageHeadersField = new AtomicReference<Field>(null);
+    private static final AtomicReference<Class<?>> longStringClassHolder = new AtomicReference<Class<?>>(null);
+    private static final AtomicReference<Object> bytesMethodHolder = new AtomicReference<Object>(null);
 
-    static final List<String>	LONG_STRING_CLASSES=
-    		Collections.unmodifiableList(
-    				Arrays.asList(
-    						"com.rabbitmq.client.impl.LongString",
-    						"com.rabbitmq.client.LongString"));
+    static final List<String> LONG_STRING_CLASSES =
+            Collections.unmodifiableList(
+                    Arrays.asList(
+                            "com.rabbitmq.client.impl.LongString",
+                            "com.rabbitmq.client.LongString"));
 
-    protected final RabbitPluginOperationType	pluginOpType;
-    protected AbstractRabbitMQCollectionAspect (RabbitPluginOperationType rabbitOpType) {
-    	if ((pluginOpType=rabbitOpType) == null) {
-    		throw new IllegalStateException("No plugin operation type specified");
-    	}
+    protected final RabbitPluginOperationType pluginOpType;
+
+    protected AbstractRabbitMQCollectionAspect(RabbitPluginOperationType rabbitOpType) {
+        if ((pluginOpType = rabbitOpType) == null) {
+            throw new IllegalStateException("No plugin operation type specified");
+        }
     }
 
     @Override
-	public String getPluginName() {
-    	return RabbitMQPluginRuntimeDescriptor.PLUGIN_NAME;
-   	}
+    public String getPluginName() {
+        return RabbitMQPluginRuntimeDescriptor.PLUGIN_NAME;
+    }
 
     protected Operation createOperation(JoinPoint jp) {
         return new Operation()
-                    .type(pluginOpType.getOperationType())
-                    .label(pluginOpType.getLabel())
-                    .sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(jp))
-                    ;
+                .type(pluginOpType.getOperationType())
+                .label(pluginOpType.getLabel())
+                .sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(jp))
+                ;
     }
 
-	protected void applyPropertiesData(Operation op, BasicProperties props) {
+    protected void applyPropertiesData(Operation op, BasicProperties props) {
         OperationMap map = op.createMap("props");
 
         map.putAnyNonEmpty("Type", props.getType());
@@ -96,171 +97,171 @@ public abstract class AbstractRabbitMQCollectionAspect extends OperationCollecti
         updateHeadersMap(op, props.getHeaders());
     }
 
-	protected OperationMap updateHeadersMap (Operation op, Map<String,?> headers) {
+    protected OperationMap updateHeadersMap(Operation op, Map<String, ?> headers) {
         return updateHeadersMap(op.createMap("headers"), headers);
-	}
+    }
 
-	protected OperationMap updateHeadersMap (OperationMap headersMap, Map<String,?> headers) {
+    protected OperationMap updateHeadersMap(OperationMap headersMap, Map<String, ?> headers) {
         if (MapUtil.size(headers) <= 0) {
-        	return headersMap;
+            return headersMap;
         }
 
-        Class<?> longStringClass=getLongStringClass(getClass());
+        Class<?> longStringClass = getLongStringClass(getClass());
         if (longStringClass == null) {
-        	return headersMap;
+            return headersMap;
         }
 
-        Method	bytesMethod=getBytesRetrievalMethod(getClass());
+        Method bytesMethod = getBytesRetrievalMethod(getClass());
         if (bytesMethod == null) {
-        	return headersMap;
+            return headersMap;
         }
 
         for (Map.Entry<String, ?> entry : headers.entrySet()) {
-        	String	key = entry.getKey();
-        	Object 	value = entry.getValue();
-        	if (value == null) {
-        		continue;
-        	}
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if (value == null) {
+                continue;
+            }
 
-        	Class<?>	valueType = value.getClass();
-        	if (!valueType.isAssignableFrom(longStringClass)) {
-        		continue;
-        	}
+            Class<?> valueType = value.getClass();
+            if (!valueType.isAssignableFrom(longStringClass)) {
+                continue;
+            }
 
-        	final byte[] bytes;
-        	try {
-        		bytes = (byte[]) bytesMethod.invoke(value);
-        		if (ArrayUtil.length(bytes) <= 0) {
-        			continue;
-        		}
-        	} catch (Exception e) {
-        		if (_logger.isLoggable(Level.FINE)) {
-        			_logger.fine("Failed (" + e.getClass().getSimpleName() + ")"
-        					+ " to get bytes of " + valueType.getName()
-        					+ " instance for key=" + key + ": " + e.getMessage());
-        		}
-        		continue;
-        	}
+            final byte[] bytes;
+            try {
+                bytes = (byte[]) bytesMethod.invoke(value);
+                if (ArrayUtil.length(bytes) <= 0) {
+                    continue;
+                }
+            } catch (Exception e) {
+                if (_logger.isLoggable(Level.FINE)) {
+                    _logger.fine("Failed (" + e.getClass().getSimpleName() + ")"
+                            + " to get bytes of " + valueType.getName()
+                            + " instance for key=" + key + ": " + e.getMessage());
+                }
+                continue;
+            }
 
-        	headersMap.put(key, new String(bytes));
+            headersMap.put(key, new String(bytes));
         }
 
         return headersMap;
-	}
+    }
 
     protected void applyConnectionData(Operation op, Connection conn) {
-        InetAddress	address = conn.getAddress();
-        String		host = address.getHostAddress();
-        int			port = conn.getPort();
+        InetAddress address = conn.getAddress();
+        String host = address.getHostAddress();
+        int port = conn.getPort();
         final String connectionUrl;
         if (conn instanceof AMQConnection) {
             connectionUrl = conn.toString();
         } else {
-            connectionUrl = "amqp://" + host + ":" + port; 
+            connectionUrl = "amqp://" + host + ":" + port;
         }
-        
+
         op.put("host", host);
         op.put("port", port);
         op.put("connectionUrl", connectionUrl);
-        
+
         //try to extract server version
         String serverVersion = getVersion(conn.getServerProperties());
         op.putAnyNonEmpty("serverVersion", serverVersion);
-        
+
         //try to extract client version
-        String	clientVersion = getVersion(conn.getClientProperties());
+        String clientVersion = getVersion(conn.getClientProperties());
         op.putAnyNonEmpty("clientVersion", clientVersion);
     }
 
-    static String getVersion(Map<String,?> properties) {
+    static String getVersion(Map<String, ?> properties) {
         if (MapUtil.size(properties) <= 0) {
-        	return null;
+            return null;
         }
-        
+
         Object obj = properties.get("version");
         if (obj != null) {
-        	return String.valueOf(obj); 
+            return String.valueOf(obj);
         } else {
-        	return null;
+            return null;
         }
     }
-    
+
     protected BasicProperties colorForward(BasicProperties orgProps, final Operation op) {
-    	Field	headersField=getMessageHeadersField();
-    	BasicProperties	props=orgProps;
-    	if (headersField == null) {
-    		return props;
-    	}
+        Field headersField = getMessageHeadersField();
+        BasicProperties props = orgProps;
+        if (headersField == null) {
+            return props;
+        }
 
         try {
             final Map<String, Object> map = new HashMap<String, Object>();
             Map<String, Object> old = (props != null) ? props.getHeaders() : null;
             if (MapUtil.size(old) > 0) {
-            	map.putAll(old);
+                map.putAll(old);
             }
 
             colorForward(new ColorParams() {
-                    public void setColor(String key, String value) {
-                        map.put(key, value);
-                    }
-                    
-                    public Operation getOperation() {
-                        return op;
-                    }
-                });
-            
+                public void setColor(String key, String value) {
+                    map.put(key, value);
+                }
+
+                public Operation getOperation() {
+                    return op;
+                }
+            });
+
             if (props == null) {
                 BasicProperties.Builder builder = new BasicProperties.Builder();
                 props = builder.build();
             }
-            
-            Map<String, Object>	hdrsMap=Collections.unmodifiableMap(map);
+
+            Map<String, Object> hdrsMap = Collections.unmodifiableMap(map);
             ReflectionUtils.setField(headersField, props, hdrsMap);
             return props;
         } catch (Exception e) {
             if (_logger.isLoggable(Level.FINE)) {
-            	_logger.fine("colorForward(" + op + ")"
-            			   + " failed (" + e.getClass().getSimpleName() + ")"
-	            		   + " to append color: " + e.getMessage());
+                _logger.fine("colorForward(" + op + ")"
+                        + " failed (" + e.getClass().getSimpleName() + ")"
+                        + " to append color: " + e.getMessage());
             }
 
-    		return props;
+            return props;
         }
     }
 
-    static Field getMessageHeadersField () {
-    	// kind of a D.C.L. but works...
-    	Field	field=messageHeadersField.get();
-    	if (field == null) {
-    		if ((field=ExtraReflectionUtils.getAccessibleField(BasicProperties.class, "headers")) != null) {
-    			messageHeadersField.set(field);
-    		}
-    	}
+    static Field getMessageHeadersField() {
+        // kind of a D.C.L. but works...
+        Field field = messageHeadersField.get();
+        if (field == null) {
+            if ((field = ExtraReflectionUtils.getAccessibleField(BasicProperties.class, "headers")) != null) {
+                messageHeadersField.set(field);
+            }
+        }
 
-    	return field;
+        return field;
     }
 
-    static Method getBytesRetrievalMethod (Class<?> anchor) {
-    	Object		method=bytesMethodHolder.get();
-    	if (method != null) {
-    		if (method instanceof Boolean) {
-    			return null;
-    		} else {
-    			return (Method) method;
-    		}
-    	}
+    static Method getBytesRetrievalMethod(Class<?> anchor) {
+        Object method = bytesMethodHolder.get();
+        if (method != null) {
+            if (method instanceof Boolean) {
+                return null;
+            } else {
+                return (Method) method;
+            }
+        }
 
-    	Class<?>	longStringClass=getLongStringClass(anchor);
-    	if (longStringClass == null) {
-    		return null;
-    	}
-    	
-        if ((method=ExtraReflectionUtils.getAccessibleMethod(longStringClass, "getBytes")) == null) {
-    		InsightLogManager.getLogger(anchor.getName())
-    						 .warning("getBytesRetrievalMethod(" + anchor.getSimpleName() + ") no match found")
-    						 ;
-    		bytesMethodHolder.set(Boolean.FALSE);	// avoid repeated calls
-    		return null;
+        Class<?> longStringClass = getLongStringClass(anchor);
+        if (longStringClass == null) {
+            return null;
+        }
+
+        if ((method = ExtraReflectionUtils.getAccessibleMethod(longStringClass, "getBytes")) == null) {
+            InsightLogManager.getLogger(anchor.getName())
+                    .warning("getBytesRetrievalMethod(" + anchor.getSimpleName() + ") no match found")
+            ;
+            bytesMethodHolder.set(Boolean.FALSE);    // avoid repeated calls
+            return null;
         }
 
         bytesMethodHolder.set(method);
@@ -268,43 +269,43 @@ public abstract class AbstractRabbitMQCollectionAspect extends OperationCollecti
     }
 
     static Class<?> getLongStringClass(Class<?> anchor) {
-    	Class<?>	clazz=longStringClassHolder.get();
-    	if (clazz != null) {
-    		// check if placeholder used
-        	if (clazz == String.class) {
-        		return null;
-        	} else {
-        		return clazz;
-        	}
-    	}
+        Class<?> clazz = longStringClassHolder.get();
+        if (clazz != null) {
+            // check if placeholder used
+            if (clazz == String.class) {
+                return null;
+            } else {
+                return clazz;
+            }
+        }
 
-    	ClassLoader cl = ClassUtil.getDefaultClassLoader(anchor);
-    	for (String	className : LONG_STRING_CLASSES) {
-        	try {
-    			if ((clazz=ClassUtil.loadClassByName(cl, className)) == null) {
-    				throw new IllegalStateException("Failed to load present class");
-    			}
+        ClassLoader cl = ClassUtil.getDefaultClassLoader(anchor);
+        for (String className : LONG_STRING_CLASSES) {
+            try {
+                if ((clazz = ClassUtil.loadClassByName(cl, className)) == null) {
+                    throw new IllegalStateException("Failed to load present class");
+                }
 
-    			longStringClassHolder.set(clazz);
-    			return clazz;
-        	} catch(Exception e) {
-        		if (!(e instanceof ClassNotFoundException)) {
-        			InsightLogManager.getLogger(anchor.getName())
-        							 .warning("Failed (" + e.getClass().getSimpleName() + ")"
-        									+ " to load class=" + className
-        									+ ": " + e.getMessage()); 
-        		}
-        	}
-    	}
+                longStringClassHolder.set(clazz);
+                return clazz;
+            } catch (Exception e) {
+                if (!(e instanceof ClassNotFoundException)) {
+                    InsightLogManager.getLogger(anchor.getName())
+                            .warning("Failed (" + e.getClass().getSimpleName() + ")"
+                                    + " to load class=" + className
+                                    + ": " + e.getMessage());
+                }
+            }
+        }
 
-    	InsightLogManager.getLogger(anchor.getName())
-    					 .warning("getLongStringClass(" + anchor.getSimpleName() + ") no match found");
-		longStringClassHolder.set(String.class);	// avoid repeated load attempts and use an incompatible class
-		return null;
-	}
-    
+        InsightLogManager.getLogger(anchor.getName())
+                .warning("getLongStringClass(" + anchor.getSimpleName() + ") no match found");
+        longStringClassHolder.set(String.class);    // avoid repeated load attempts and use an incompatible class
+        return null;
+    }
+
     @Override
-    public boolean isMetricsGenerator(){
+    public boolean isMetricsGenerator() {
         return true; // This provides an endpoint and external resource
     }
 }

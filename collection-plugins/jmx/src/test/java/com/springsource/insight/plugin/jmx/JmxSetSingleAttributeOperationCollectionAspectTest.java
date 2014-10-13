@@ -33,53 +33,54 @@ import com.springsource.insight.util.StringFormatterUtils;
 
 
 /**
- * 
+ *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(JmxOperationCollectionTestSupport.TEST_CONTEXT)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class JmxSetSingleAttributeOperationCollectionAspectTest extends JmxSingleAttributeOperationTestSupport {
-	public JmxSetSingleAttributeOperationCollectionAspectTest() {
-		super(JmxPluginRuntimeDescriptor.SET_ACTION);
-	}
+    public JmxSetSingleAttributeOperationCollectionAspectTest() {
+        super(JmxPluginRuntimeDescriptor.SET_ACTION);
+    }
 
-	@Test
-	public void testSetDirectSingleAttributeValue() throws Exception {
-		testSetSingleAttributeValue(mbeanServer);
-	}
+    @Test
+    public void testSetDirectSingleAttributeValue() throws Exception {
+        testSetSingleAttributeValue(mbeanServer);
+    }
 
-	@Test	// make sure that cflowbelow is activated
-	public void testSetDelegatedSingleAttributeValue() throws Exception {
-		testSetSingleAttributeValue(new DelegatingMBeanServer(mbeanServer));
-	}
+    @Test    // make sure that cflowbelow is activated
+    public void testSetDelegatedSingleAttributeValue() throws Exception {
+        testSetSingleAttributeValue(new DelegatingMBeanServer(mbeanServer));
+    }
 
-	private void testSetSingleAttributeValue(MBeanServer server) throws Exception {
-		ObjectName	name=new ObjectName(SpringMBeanComponent.RESOURCE_NAME);
-		Object[]	valPairs={
-				"StringValue", getClass().getSimpleName()
-							 + "#testSetSingleAttributeValue("
-							 + server.getClass().getSimpleName()
-							 + "@" + System.identityHashCode(server)
-							 + ")",
-				"NumberValue", Long.valueOf(System.nanoTime())
-			};
+    private void testSetSingleAttributeValue(MBeanServer server) throws Exception {
+        ObjectName name = new ObjectName(SpringMBeanComponent.RESOURCE_NAME);
+        Object[] valPairs = {
+                "StringValue", getClass().getSimpleName()
+                + "#testSetSingleAttributeValue("
+                + server.getClass().getSimpleName()
+                + "@" + System.identityHashCode(server)
+                + ")",
+                "NumberValue", Long.valueOf(System.nanoTime())
+        };
 
-		for (int	index=0; index < valPairs.length; index += 2) {
-			String	attrName=String.valueOf(valPairs[index]);
-			Object	attrValue=valPairs[index+1];
-			server.setAttribute(name, new Attribute(attrName, attrValue));
+        for (int index = 0; index < valPairs.length; index += 2) {
+            String attrName = String.valueOf(valPairs[index]);
+            Object attrValue = valPairs[index + 1];
+            server.setAttribute(name, new Attribute(attrName, attrValue));
 
-			Operation	op=assertAttributeOperation(name, attrName);
-			Object		opValue=op.get(JmxPluginRuntimeDescriptor.ATTR_VALUE_PROP);
-			assertEquals("Mismatched attribute value for " + name.getCanonicalName() + "[" + attrName + "]",
-					 	 StringFormatterUtils.formatObject(attrValue),
-					 	 StringFormatterUtils.formatObject(opValue));
-			Mockito.reset(spiedOperationCollector);
-		}
-	}
-	@Override
-	public JmxSetSingleAttributeOperationCollectionAspect getAspect() {
-		return JmxSetSingleAttributeOperationCollectionAspect.aspectOf();
-	}
+            Operation op = assertAttributeOperation(name, attrName);
+            Object opValue = op.get(JmxPluginRuntimeDescriptor.ATTR_VALUE_PROP);
+            assertEquals("Mismatched attribute value for " + name.getCanonicalName() + "[" + attrName + "]",
+                    StringFormatterUtils.formatObject(attrValue),
+                    StringFormatterUtils.formatObject(opValue));
+            Mockito.reset(spiedOperationCollector);
+        }
+    }
+
+    @Override
+    public JmxSetSingleAttributeOperationCollectionAspect getAspect() {
+        return JmxSetSingleAttributeOperationCollectionAspect.aspectOf();
+    }
 
 }

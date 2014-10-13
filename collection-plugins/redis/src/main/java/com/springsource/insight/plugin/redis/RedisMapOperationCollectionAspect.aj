@@ -37,27 +37,27 @@ public aspect RedisMapOperationCollectionAspect extends AbstractOperationCollect
     protected static final OperationType TYPE = OperationType.valueOf("redis-map");
 
     public pointcut redisMapPut()
-        : execution(* RedisMap.put*(..));
+            : execution(* RedisMap.put*(..));
 
     public pointcut redisMapReplace()
-        : execution(* RedisMap.replace(..));
+            : execution(* RedisMap.replace(..));
 
     public pointcut redisMapGet()
-        : execution(* RedisMap.get(..));
+            : execution(* RedisMap.get(..));
 
     public pointcut redisMapRemove()
-        : execution(* RedisMap.remove(..));
+            : execution(* RedisMap.remove(..));
 
     public pointcut collectionPoint()
-        : redisMapPut() || redisMapReplace() || redisMapGet() || redisMapRemove();
+            : redisMapPut() || redisMapReplace() || redisMapGet() || redisMapRemove();
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
         String method = jp.getSignature().getName();
         Operation op = new Operation()
-            .type(TYPE)
-            .put("method", method);
-        RedisMap<?,?> map = (RedisMap<?,?>)jp.getTarget();
+                .type(TYPE)
+                .put("method", method);
+        RedisMap<?, ?> map = (RedisMap<?, ?>) jp.getTarget();
         String mapKey = map.getKey();
         if (StringUtil.isEmpty(mapKey)) {
             mapKey = "?";
@@ -66,41 +66,37 @@ public aspect RedisMapOperationCollectionAspect extends AbstractOperationCollect
         op.label("RedisMap: " + mapKey + "." + method + "()");
         op.sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(jp));
         Object[] args = jp.getArgs();
-        if(args != null) {
+        if (args != null) {
             int argLen = args.length;
             op.put("arglen", argLen);
 
-            if(argLen == 1) {
-                if(StringUtil.safeCompare(method, "putAll") == 0) {
-                    op.put("size", ((Map<?,?>)args[0]).size());
-                }
-                else if(StringUtil.safeCompare(method, "get") == 0) {
+            if (argLen == 1) {
+                if (StringUtil.safeCompare(method, "putAll") == 0) {
+                    op.put("size", ((Map<?, ?>) args[0]).size());
+                } else if (StringUtil.safeCompare(method, "get") == 0) {
+                    op.put("key", objectToString(args[0]));
+                } else if (StringUtil.safeCompare(method, "remove") == 0) {
                     op.put("key", objectToString(args[0]));
                 }
-                else if(StringUtil.safeCompare(method, "remove") == 0) {
-                    op.put("key", objectToString(args[0]));
-                }
-            }
-            else if(argLen == 2) {
-                if(StringUtil.safeCompare(method, "put") == 0 ||
-                   StringUtil.safeCompare(method, "putIfAbsent") == 0) {
+            } else if (argLen == 2) {
+                if (StringUtil.safeCompare(method, "put") == 0 ||
+                        StringUtil.safeCompare(method, "putIfAbsent") == 0) {
                     op.put("key", objectToString(args[0]));
                     op.put("value", objectToString(args[1]));
                 }
                 // -- not supported by Spring Redis 1.0.0.M4
-                else if(StringUtil.safeCompare(method, "replace") == 0) {
+                else if (StringUtil.safeCompare(method, "replace") == 0) {
                     op.put("key", objectToString(args[0]));
                     op.put("value", objectToString(args[1]));
                 }
                 // -- not supported by Spring Redis 1.0.0.M4
-                else if(StringUtil.safeCompare(method, "remove") == 0) {
+                else if (StringUtil.safeCompare(method, "remove") == 0) {
                     op.put("key", objectToString(args[0]));
                     op.put("value", objectToString(args[1]));
                 }
-            }
-            else if(argLen == 3) {
+            } else if (argLen == 3) {
                 // -- not supported by Spring Redis 1.0.0.M4
-                if(StringUtil.safeCompare(method, "replace") == 0) {
+                if (StringUtil.safeCompare(method, "replace") == 0) {
                     op.put("key", objectToString(args[0]));
                     op.put("value", objectToString(args[1]));
                     op.put("newValue", objectToString(args[2]));

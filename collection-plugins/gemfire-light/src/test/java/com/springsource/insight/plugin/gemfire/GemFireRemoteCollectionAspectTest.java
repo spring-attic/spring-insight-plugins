@@ -44,96 +44,100 @@ import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.util.ExceptionUtils;
 
 public class GemFireRemoteCollectionAspectTest extends GemFireAspectTestSupport {
-    
+
     private static final String TEST_ADDRESS = "10.10.10.10";
-    private static final int    TEST_PORT    = 6677;
-    
-    @Mock private Connection con;
-    @Mock private Socket sock;
-    @Mock private ServerLocation location;
-    @Mock private LogWriterI18n logWriter;
-    
+    private static final int TEST_PORT = 6677;
+
+    @Mock
+    private Connection con;
+    @Mock
+    private Socket sock;
+    @Mock
+    private ServerLocation location;
+    @Mock
+    private LogWriterI18n logWriter;
+
     @SuppressWarnings("boxing")
-	public GemFireRemoteCollectionAspectTest () {
-    	MockitoAnnotations.initMocks(this);
-    	
-    	InetSocketAddress address = new InetSocketAddress(TEST_ADDRESS, TEST_PORT);
-    	
-    	Mockito.when(location.getHostName()).thenReturn(TEST_ADDRESS);
-    	Mockito.when(location.getPort()).thenReturn(TEST_PORT);
-    	
-    	Mockito.when(sock.getRemoteSocketAddress()).thenReturn(address);
+    public GemFireRemoteCollectionAspectTest() {
+        MockitoAnnotations.initMocks(this);
+
+        InetSocketAddress address = new InetSocketAddress(TEST_ADDRESS, TEST_PORT);
+
+        Mockito.when(location.getHostName()).thenReturn(TEST_ADDRESS);
+        Mockito.when(location.getPort()).thenReturn(TEST_PORT);
+
+        Mockito.when(sock.getRemoteSocketAddress()).thenReturn(address);
     }
-    
-    @Test(expected=WantedButNotInvoked.class)
+
+    @Test(expected = WantedButNotInvoked.class)
     public void testWithoutQuery() throws Exception {
         MockOp op = new MockOp(logWriter, MessageType.PUT, 0);
-        
+
         Mockito.when(con.getServer()).thenReturn(location);
         Mockito.when(con.getSocket()).thenReturn(null);
-        
+
         assertNull("Getting socket from connection", con.getSocket());
-        
+
         op.sendMessage(con);
-        
+
         Operation lastOperation = getLastEntered();
-        
+
         assertOperation(lastOperation, MessageType.PUT);
     }
-    
+
     @Test
     public void testLocationFromServerLocation() throws Exception {
         MockQuery op = new MockQuery(logWriter, MessageType.PUT, 0, con);
-        
+
         Mockito.when(con.getServer()).thenReturn(location);
         Mockito.when(con.getSocket()).thenReturn(null);
-        
+
         assertNull("Getting socket from connection", con.getSocket());
-        
+
         op.execute();
-        
+
         Operation lastOperation = getLastEntered();
-        
+
         assertOperation(lastOperation, MessageType.PUT);
     }
-    
+
     @Test
     public void testLocationFromSocket() throws Exception {
         MockQuery op = new MockQuery(logWriter, MessageType.QUERY, 0, con);
-        
+
         Mockito.when(con.getServer()).thenReturn(null);
         Mockito.when(con.getSocket()).thenReturn(sock);
-        
+
         assertNull("Getting server location from connection", con.getServer());
-        
+
         op.execute();
-        
+
         Operation lastOperation = getLastEntered();
-        
+
         assertOperation(lastOperation, MessageType.QUERY);
     }
-        
-	private void assertOperation(Operation lastOperation, int msgType) {
-	    String hostname    = lastOperation.get(GemFireDefenitions.FIELD_HOST, String.class);
-	    Number port       = lastOperation.get(GemFireDefenitions.FIELD_PORT, Number.class);
-	    assertNotNull("Missing port value", port);
 
-	    String messageType = lastOperation.get(GemFireDefenitions.FIELD_MESSAGE_TYPE, String.class);
-	    String messageLbl  = lastOperation.getLabel();
-	    OperationType type = lastOperation.getType();
-	    
-	    assertEquals("GemFire remote operation host", TEST_ADDRESS, hostname);
-	    assertEquals("GemFire remote operation port", TEST_PORT, port.intValue(), 0);
-	    assertEquals("GemFire remote operation messageType", MessageType.getString(msgType), messageType);
-	    assertEquals("GemFire remote operation label", GemFireRemoteOperationCollectionAspect.LABEL, messageLbl);
-	    assertEquals("GemFire remote operation type", GemFireDefenitions.TYPE_REMOTE.getType(), type);
+    private void assertOperation(Operation lastOperation, int msgType) {
+        String hostname = lastOperation.get(GemFireDefenitions.FIELD_HOST, String.class);
+        Number port = lastOperation.get(GemFireDefenitions.FIELD_PORT, Number.class);
+        assertNotNull("Missing port value", port);
+
+        String messageType = lastOperation.get(GemFireDefenitions.FIELD_MESSAGE_TYPE, String.class);
+        String messageLbl = lastOperation.getLabel();
+        OperationType type = lastOperation.getType();
+
+        assertEquals("GemFire remote operation host", TEST_ADDRESS, hostname);
+        assertEquals("GemFire remote operation port", TEST_PORT, port.intValue(), 0);
+        assertEquals("GemFire remote operation messageType", MessageType.getString(msgType), messageType);
+        assertEquals("GemFire remote operation label", GemFireRemoteOperationCollectionAspect.LABEL, messageLbl);
+        assertEquals("GemFire remote operation type", GemFireDefenitions.TYPE_REMOTE.getType(), type);
     }
 
     @Override
-	public OperationCollectionAspectSupport getAspect() {
-		return GemFireRemoteOperationCollectionAspect.aspectOf();
-	}
-    
+    public OperationCollectionAspectSupport getAspect() {
+        return GemFireRemoteOperationCollectionAspect.aspectOf();
+    }
+
     private static final class MockQuery extends MockOp implements Query {
 
         private Connection con;
@@ -145,20 +149,20 @@ public class GemFireRemoteCollectionAspectTest extends GemFireAspectTestSupport 
 
         @Deprecated
         public void compile() throws TypeMismatchException, NameResolutionException {
-        	// ignored
+            // ignored
         }
 
         public Object execute() throws FunctionDomainException,
                 TypeMismatchException, NameResolutionException,
                 QueryInvocationTargetException {
-            
+
             try {
                 super.sendMessage(con);
             } catch (Exception e) {
                 e.printStackTrace();
                 ExceptionUtils.toRuntimeException(e);
             }
-            
+
             return "test-object";
         }
 
@@ -183,12 +187,12 @@ public class GemFireRemoteCollectionAspectTest extends GemFireAspectTestSupport 
 
         @Override
         protected void endAttempt(ConnectionStats arg0, long arg1) {
-        	// ignored
+            // ignored
         }
 
         @Override
         protected void endSendAttempt(ConnectionStats arg0, long arg1) {
-        	// ignored
+            // ignored
         }
 
         @Override
@@ -206,13 +210,13 @@ public class GemFireRemoteCollectionAspectTest extends GemFireAspectTestSupport 
             return 0L;
         }
     }
-	
-	private static class MockOp extends AbstractOp {
+
+    private static class MockOp extends AbstractOp {
 
         protected MockOp(LogWriterI18n lw, int msgType, int msgParts) {
             super(lw, msgType, msgParts);
         }
-        
+
         @Override
         protected void sendMessage(Connection conn) throws Exception {
             System.out.println("MockOp sending message to connection: " + conn);
@@ -220,12 +224,12 @@ public class GemFireRemoteCollectionAspectTest extends GemFireAspectTestSupport 
 
         @Override
         protected void endAttempt(ConnectionStats arg0, long arg1) {
-        	// ignored
+            // ignored
         }
 
         @Override
         protected void endSendAttempt(ConnectionStats arg0, long arg1) {
-        	// ignored
+            // ignored
         }
 
         @Override
@@ -242,5 +246,5 @@ public class GemFireRemoteCollectionAspectTest extends GemFireAspectTestSupport 
         protected long startAttempt(ConnectionStats arg0) {
             return 0L;
         }
-	}
+    }
 }

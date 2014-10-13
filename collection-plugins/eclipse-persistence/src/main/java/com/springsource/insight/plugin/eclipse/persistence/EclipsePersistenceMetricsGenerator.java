@@ -32,7 +32,7 @@ import com.springsource.insight.util.StringUtil;
 import com.springsource.insight.util.time.TimeRange;
 
 /**
- * 
+ *
  */
 public abstract class EclipsePersistenceMetricsGenerator extends AbstractMetricsGenerator {
     protected EclipsePersistenceMetricsGenerator(OperationType type) {
@@ -41,59 +41,59 @@ public abstract class EclipsePersistenceMetricsGenerator extends AbstractMetrics
 
     @Override
     protected Collection<MetricsBag> addExtraEndPointMetrics(Trace trace, ResourceKey endpointResourceKey, Collection<Frame> frames) {
-    	if (ListUtil.size(frames) <= 0) {
-    		return Collections.emptyList();
-    	}
+        if (ListUtil.size(frames) <= 0) {
+            return Collections.emptyList();
+        }
 
-    	Collection<MetricsBag>	mbList=null;
-    	TimeRange				traceRange=trace.getRange();
-    	for (Frame frame : frames) {
-    		Operation	op=frame.getOperation();
-    		String		actionName=op.get(EclipsePersistenceDefinitions.ACTION_ATTR, String.class);
-    		if (StringUtil.isEmpty(actionName)) {
-    			continue;
-    		}
-    		
-    		String	baseMetricName=getBaseMetricName(actionName);
-    		if (StringUtil.isEmpty(baseMetricName)) {
-    			continue;
-    		}
-    		
-    		MetricsBag mb = MetricsBag.create(endpointResourceKey, traceRange);
-    		addCounterMetricToBag(frame, mb, baseMetricName + "." + INVOCATION_COUNT, 1);
-    		addGaugeMetricToBag(frame, mb, baseMetricName + "." + EXECUTION_TIME);
-    		
-    		if (mbList == null) {
-    			mbList = new ArrayList<MetricsBag>(frames.size());
-    		}
-    		mbList.add(mb);
-    	}
+        Collection<MetricsBag> mbList = null;
+        TimeRange traceRange = trace.getRange();
+        for (Frame frame : frames) {
+            Operation op = frame.getOperation();
+            String actionName = op.get(EclipsePersistenceDefinitions.ACTION_ATTR, String.class);
+            if (StringUtil.isEmpty(actionName)) {
+                continue;
+            }
 
-    	if (mbList == null) {
-    		return Collections.emptyList();
-    	} else {
-    		return  mbList;
-    	}
+            String baseMetricName = getBaseMetricName(actionName);
+            if (StringUtil.isEmpty(baseMetricName)) {
+                continue;
+            }
+
+            MetricsBag mb = MetricsBag.create(endpointResourceKey, traceRange);
+            addCounterMetricToBag(frame, mb, baseMetricName + "." + INVOCATION_COUNT, 1);
+            addGaugeMetricToBag(frame, mb, baseMetricName + "." + EXECUTION_TIME);
+
+            if (mbList == null) {
+                mbList = new ArrayList<MetricsBag>(frames.size());
+            }
+            mbList.add(mb);
+        }
+
+        if (mbList == null) {
+            return Collections.emptyList();
+        } else {
+            return mbList;
+        }
     }
-    
+
     //because this class inherits from  AbstractMetricsGenerator and we don't want to generate the default metrics on the endpoint (only the extras)
     //this should be changed sometime (the AbstractMetricsGenerator shouldn't be directly inheritable)
     @Override
-    protected Collection<MetricsBag> generateFramesMetrics (Trace trace, ResourceKey endpointResourceKey, Collection<Frame> frames) {
-    	return new ArrayList<MetricsBag>();
-	}
+    protected Collection<MetricsBag> generateFramesMetrics(Trace trace, ResourceKey endpointResourceKey, Collection<Frame> frames) {
+        return new ArrayList<MetricsBag>();
+    }
 
 
-    protected String getBaseMetricName (String actionName) {
-		if (StringUtil.isEmpty(actionName)) {
-			return null;
-		}
+    protected String getBaseMetricName(String actionName) {
+        if (StringUtil.isEmpty(actionName)) {
+            return null;
+        }
 
-    	return new StringBuilder(EclipsePersistenceDefinitions.ACTION_ATTR.length() + actionName.length() + 1)
-    					.append(EclipsePersistenceDefinitions.ACTION_ATTR)
-    					.append('.')
-    					.append(actionName)
-    					.toString()
-    					;
+        return new StringBuilder(EclipsePersistenceDefinitions.ACTION_ATTR.length() + actionName.length() + 1)
+                .append(EclipsePersistenceDefinitions.ACTION_ATTR)
+                .append('.')
+                .append(actionName)
+                .toString()
+                ;
     }
 }

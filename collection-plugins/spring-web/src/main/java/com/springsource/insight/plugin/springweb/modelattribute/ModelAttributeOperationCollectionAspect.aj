@@ -28,18 +28,18 @@ public aspect ModelAttributeOperationCollectionAspect extends AbstractSpringWebA
     public ModelAttributeOperationCollectionAspect() {
         super(new ModelAttributeOperationCollector());
     }
-    
-    public pointcut collectionPoint() : execution(@ModelAttribute !@RequestMapping !void *(..));
-    
+
+    public pointcut collectionPoint(): execution(@ModelAttribute !@RequestMapping !void *(..));
+
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        MethodSignature sig = (MethodSignature)jp.getSignature();
+        MethodSignature sig = (MethodSignature) jp.getSignature();
         String methodString = sig.getDeclaringType().getSimpleName() + "#" + sig.getName();
         return new Operation()
-            .label("@ModelAttribute " + methodString)
-            .type(ModelAttributeOperationCollector.TYPE)
-            .sourceCodeLocation(getSourceCodeLocation(jp))
-            .put(ModelAttributeOperationCollector.MODEL_ATTR_NAME, ModelAttributeOperationCollector.extractModelAttributeName(jp))
-            ;
+                .label("@ModelAttribute " + methodString)
+                .type(ModelAttributeOperationCollector.TYPE)
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .put(ModelAttributeOperationCollector.MODEL_ATTR_NAME, ModelAttributeOperationCollector.extractModelAttributeName(jp))
+                ;
     }
 }

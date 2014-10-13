@@ -17,7 +17,7 @@
 package il.co.springsource.insight;
 
 public class MyEventSource {
-	public MyEventSource () {
-		super();
-	}
+    public MyEventSource() {
+        super();
+    }
 }

@@ -30,8 +30,8 @@ public class LifecycleEndPointAnalyzerTest extends Assert {
     private static final ApplicationName app = ApplicationName.valueOf("app");
     private static final LifecycleEndPointAnalyzer analyzer = LifecycleEndPointAnalyzer.getInstance();
 
-    public LifecycleEndPointAnalyzerTest () {
-    	super();
+    public LifecycleEndPointAnalyzerTest() {
+        super();
     }
 
     @Test
@@ -43,25 +43,25 @@ public class LifecycleEndPointAnalyzerTest extends Assert {
         assertEquals("Mismatched example", "start", analysis.getExample());
         assertEquals("Mismatched score", LifecycleEndPointAnalyzer.ANALYSIS_SCORE, analysis.getScore());
     }
-    
+
     @Test
     public void locateEndPoint_noHttp() {
         Trace trace = createNonLifecycleTrace();
-        EndPointAnalysis	result=analyzer.locateEndPoint(trace);
+        EndPointAnalysis result = analyzer.locateEndPoint(trace);
         assertNull("Unexpected analysis result: " + result, result);
     }
-    
+
     private Trace createNonLifecycleTrace() {
         SimpleFrameBuilder builder = new SimpleFrameBuilder();
         builder.enter(new Operation());
         Frame topLevelFrame = builder.exit();
         return Trace.newInstance(app, TraceId.valueOf("0"), topLevelFrame);
     }
-    
+
     private Trace createLifecycleEndPointTrace() {
         Operation operation = new Operation()
-            .type(LifecycleEndPointAnalyzer.SERVLET_LISTENER_TYPE)
-            .put("event", "start");
+                .type(LifecycleEndPointAnalyzer.SERVLET_LISTENER_TYPE)
+                .put("event", "start");
         SimpleFrameBuilder builder = new SimpleFrameBuilder();
         builder.enter(operation);
         Frame httpFrame = builder.exit();

@@ -25,22 +25,22 @@ import com.springsource.insight.plugin.integration.AbstractIntegrationOperationC
 
 
 /**
- * 
+ *
  */
 public aspect TcpConnectionOperationCollectionAspect extends AbstractIntegrationOperationCollectionAspect {
-	public TcpConnectionOperationCollectionAspect () {
-		super(new TcpConnectionOperationCollector());
-	}
+    public TcpConnectionOperationCollectionAspect() {
+        super(new TcpConnectionOperationCollector());
+    }
 
-	public pointcut collectionPoint() : execution(* ConnectionFactory+.getConnection());
+    public pointcut collectionPoint(): execution(* ConnectionFactory+.getConnection());
 
-	@Override
-	protected Operation createOperation(JoinPoint jp) {
-		Object		target=jp.getTarget();
-		Signature	sig=jp.getSignature();
-		return new Operation().type(TcpConnectionExternalResourceAnalyzer.TYPE)
-				.sourceCodeLocation(getSourceCodeLocation(jp))
-				.label(target.getClass().getSimpleName() + "#" + sig.getName())
-				;
-	}
+    @Override
+    protected Operation createOperation(JoinPoint jp) {
+        Object target = jp.getTarget();
+        Signature sig = jp.getSignature();
+        return new Operation().type(TcpConnectionExternalResourceAnalyzer.TYPE)
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .label(target.getClass().getSimpleName() + "#" + sig.getName())
+                ;
+    }
 }

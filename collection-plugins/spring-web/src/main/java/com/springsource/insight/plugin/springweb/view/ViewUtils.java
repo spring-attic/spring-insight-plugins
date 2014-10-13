@@ -22,7 +22,7 @@ import org.springframework.web.servlet.view.AbstractUrlBasedView;
 public class ViewUtils {
     public static String getViewDescription(View view) {
         if (view instanceof AbstractUrlBasedView) {
-            return  "\"" + ((AbstractUrlBasedView)view).getUrl() + "\"";
+            return "\"" + ((AbstractUrlBasedView) view).getUrl() + "\"";
         } else {
             return view.getClass().getSimpleName();
         }

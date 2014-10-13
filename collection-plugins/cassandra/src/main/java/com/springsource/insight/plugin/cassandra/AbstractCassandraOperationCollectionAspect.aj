@@ -18,16 +18,16 @@ package com.springsource.insight.plugin.cassandra;
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 
 
-public abstract aspect AbstractCassandraOperationCollectionAspect  extends AbstractOperationCollectionAspect{
-	
-	@Override
-    public boolean isMetricsGenerator(){
+public abstract aspect AbstractCassandraOperationCollectionAspect extends AbstractOperationCollectionAspect {
+
+    @Override
+    public boolean isMetricsGenerator() {
         return true; // This provides an external resource
     }
-	
-	@Override
+
+    @Override
     public String getPluginName() {
-		return CassandraPluginRuntimeDescriptor.PLUGIN_NAME;
-	}
+        return CassandraPluginRuntimeDescriptor.PLUGIN_NAME;
+    }
 
 }

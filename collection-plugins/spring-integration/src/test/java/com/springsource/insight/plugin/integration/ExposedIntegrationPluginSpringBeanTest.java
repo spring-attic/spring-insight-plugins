@@ -23,20 +23,23 @@ import com.springsource.insight.idk.test.AbstractExposedIdkPuginsTestSupport;
 import com.springsource.insight.plugin.integration.tcp.TcpConnectionExternalResourceAnalyzer;
 
 /**
- * Makes sure that the exposed singletons are indeed visible 
+ * Makes sure that the exposed singletons are indeed visible
  */
-@ContextConfiguration(locations={ "classpath:META-INF/insight-plugin-spring-integration.xml" })
+@ContextConfiguration(locations = {"classpath:META-INF/insight-plugin-spring-integration.xml"})
 public class ExposedIntegrationPluginSpringBeanTest
-	   extends AbstractExposedIdkPuginsTestSupport<IntegrationPluginRuntimeDescriptor> {
+        extends AbstractExposedIdkPuginsTestSupport<IntegrationPluginRuntimeDescriptor> {
     /* NOTE: all beans are autowired with required=false since we want
      * to have specific tests for each and we don't want to fail ALL the
      * tests if one bean is missing
      */
-	@Autowired(required=false) protected IntegrationPluginRuntimeDescriptor	integrationPluginRuntimeDescriptor;
-	@Autowired(required=false) protected IntegrationEndPointAnalyzer	integrationEndPointAnalyzer;
-	@Autowired(required=false) protected TcpConnectionExternalResourceAnalyzer	tcpConnectionExternalResourceAnalyzer;
+    @Autowired(required = false)
+    protected IntegrationPluginRuntimeDescriptor integrationPluginRuntimeDescriptor;
+    @Autowired(required = false)
+    protected IntegrationEndPointAnalyzer integrationEndPointAnalyzer;
+    @Autowired(required = false)
+    protected TcpConnectionExternalResourceAnalyzer tcpConnectionExternalResourceAnalyzer;
 
-	public ExposedIntegrationPluginSpringBeanTest() {
-		super(IntegrationPluginRuntimeDescriptor.class);
-	}
+    public ExposedIntegrationPluginSpringBeanTest() {
+        super(IntegrationPluginRuntimeDescriptor.class);
+    }
 }

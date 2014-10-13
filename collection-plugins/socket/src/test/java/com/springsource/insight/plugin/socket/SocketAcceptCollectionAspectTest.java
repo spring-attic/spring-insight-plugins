@@ -22,7 +22,7 @@ import java.net.Socket;
 import org.junit.Test;
 
 /**
- * 
+ *
  */
 public class SocketAcceptCollectionAspectTest
         extends SocketAcceptCollectionAspectTestSupport {
@@ -32,7 +32,7 @@ public class SocketAcceptCollectionAspectTest
     }
 
     @Test
-    public void testBasicFunctionality () throws IOException, InterruptedException {
+    public void testBasicFunctionality() throws IOException, InterruptedException {
         runAcceptorTest("testBasicFunctionality", new ServerSocketAcceptor(7365));
     }
 
@@ -42,8 +42,9 @@ public class SocketAcceptCollectionAspectTest
     }
 
     static class ServerSocketAcceptor extends SocketAcceptorHelper<Socket> {
-        private final ServerSocket  socket;
-        public ServerSocketAcceptor (int port) throws IOException {
+        private final ServerSocket socket;
+
+        public ServerSocketAcceptor(int port) throws IOException {
             super(port);
             socket = new ServerSocket(port, 5);
         }

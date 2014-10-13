@@ -27,10 +27,10 @@ import org.aspectj.lang.annotation.SuppressAjWarnings;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public privileged aspect FileOutputCollectionAspect extends FileOpenTrackerAspectSupport {
-    public FileOutputCollectionAspect () {
+    public FileOutputCollectionAspect() {
         super();
     }
     /*
@@ -41,69 +41,69 @@ public privileged aspect FileOutputCollectionAspect extends FileOpenTrackerAspec
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after (File f) returning(Closeable r)
-        : (call(FileOutputStream+.new(File))
-        || call(FileWriter+.new(File))
-        || call(PrintWriter+.new(File))
-        || call(PrintStream+.new(File)))
-        && args(f)
-        && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
-    {
-        registerOpenOperation(thisJoinPointStaticPart, r, f, "w");
-    }
+            : (call(FileOutputStream+.new(File))
+            || call(FileWriter+.new(File))
+            || call(PrintWriter+.new(File))
+            || call(PrintStream+.new(File)))
+            && args(f)
+            && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
+            {
+                registerOpenOperation(thisJoinPointStaticPart, r, f, "w");
+            }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after (String f) returning(Closeable r)
-        : (call(FileOutputStream+.new(String))
-        || call(FileWriter+.new(String))
-        || call(PrintWriter+.new(String))
-        || call(PrintStream+.new(String)))
-        && args(f)
-        && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
-    {
-        registerOpenOperation(thisJoinPointStaticPart, r, f, "w");
-    }
+            : (call(FileOutputStream+.new(String))
+            || call(FileWriter+.new(String))
+            || call(PrintWriter+.new(String))
+            || call(PrintStream+.new(String)))
+            && args(f)
+            && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
+            {
+                registerOpenOperation(thisJoinPointStaticPart, r, f, "w");
+            }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after (File f, boolean appendMode) returning(Closeable r)
-        : (call(FileOutputStream+.new(File,boolean)) || call(FileWriter+.new(File,boolean)))
-        && args(f,appendMode)
-        && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
-    {
-        registerOpenOperation(thisJoinPointStaticPart, r, f, resolveWriteMode(appendMode));
-    }
+            : (call(FileOutputStream+.new(File,boolean)) || call(FileWriter+.new(File,boolean)))
+            && args(f,appendMode)
+            && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
+            {
+                registerOpenOperation(thisJoinPointStaticPart, r, f, resolveWriteMode(appendMode));
+            }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after (String f, boolean appendMode) returning(Closeable r)
-        : (call(FileOutputStream+.new(String,boolean)) || call(FileWriter+.new(String,boolean)))
-        && args(f,appendMode)
-        && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
-    {
-        registerOpenOperation(thisJoinPointStaticPart, r, f, resolveWriteMode(appendMode));
-    }
+            : (call(FileOutputStream+.new(String,boolean)) || call(FileWriter+.new(String,boolean)))
+            && args(f,appendMode)
+            && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
+            {
+                registerOpenOperation(thisJoinPointStaticPart, r, f, resolveWriteMode(appendMode));
+            }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after (File f, String csn) returning(Closeable r)
-        : (call(PrintWriter+.new(File,String)) || call(PrintStream+.new(File,String)))
-        && args(f,csn)
-        && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
-    {
-        Operation   op=registerOpenOperation(thisJoinPointStaticPart, r, f, "w");
-        if (op != null)
-            op.putAnyNonEmpty("charset", csn);
-    }
+            : (call(PrintWriter+.new(File,String)) || call(PrintStream+.new(File,String)))
+            && args(f,csn)
+            && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
+            {
+                Operation op = registerOpenOperation(thisJoinPointStaticPart, r, f, "w");
+                if (op != null)
+                    op.putAnyNonEmpty("charset", csn);
+            }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after (String f, String csn) returning(Closeable r)
-        : (call(PrintWriter+.new(String,String)) || call(PrintStream+.new(String,String)))
-        && args(f,csn)
-        && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
-    {
-        Operation   op=registerOpenOperation(thisJoinPointStaticPart, r, f, "w");
-        if (op != null)
-            op.putAnyNonEmpty("charset", csn);
-    }
+            : (call(PrintWriter+.new(String,String)) || call(PrintStream+.new(String,String)))
+            && args(f,csn)
+            && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
+            {
+                Operation op = registerOpenOperation(thisJoinPointStaticPart, r, f, "w");
+                if (op != null)
+                    op.putAnyNonEmpty("charset", csn);
+            }
 
-    static final String resolveWriteMode (boolean appendMode) {
+    static final String resolveWriteMode(boolean appendMode) {
         if (appendMode) {
             return "w+";
         } else {

@@ -29,33 +29,33 @@ import com.springsource.insight.intercept.operation.Operation;
 @ContextConfiguration(OperationCollectionAspectTests.TEST_CONTEXT)
 @Transactional
 public class InitOperationCollectionAspectTest extends AbstractNeo4jCollectionAspectTestSupport {
-	@Autowired
-	OperationCollectionAspectTests tests;
-	
-	
-	public InitOperationCollectionAspectTest () {
-		super();
-	}
+    @Autowired
+    OperationCollectionAspectTests tests;
 
-	@Override
-	public OperationCollectionAspectSupport getAspect() {
-		return InitOperationCollectionAspect.aspectOf();
-	}
-	
-	@Test
-	public void testRun() throws Exception {
-		// Step 1: Execute test
-		tests.test_Init();
 
-		// Step 2:  Get the Operation that was just created by our aspect
-		Operation op = getLastEntered();
-		assertNotNull("No Neo4J.Init operation data is intercepted",op);
+    public InitOperationCollectionAspectTest() {
+        super();
+    }
 
-		// Step 3:  Validate
-		assertEquals("Invalid operation type", OperationCollectionTypes.INIT_TYPE.type, op.getType());
-		
-		assertEquals("Invalid Label", OperationCollectionTypes.INIT_TYPE.label, op.getLabel());
-		
-		assertNotNull("Parameter 'service' does not exists", op.get("service"));
-	}
+    @Override
+    public OperationCollectionAspectSupport getAspect() {
+        return InitOperationCollectionAspect.aspectOf();
+    }
+
+    @Test
+    public void testRun() throws Exception {
+        // Step 1: Execute test
+        tests.test_Init();
+
+        // Step 2:  Get the Operation that was just created by our aspect
+        Operation op = getLastEntered();
+        assertNotNull("No Neo4J.Init operation data is intercepted", op);
+
+        // Step 3:  Validate
+        assertEquals("Invalid operation type", OperationCollectionTypes.INIT_TYPE.type, op.getType());
+
+        assertEquals("Invalid Label", OperationCollectionTypes.INIT_TYPE.label, op.getLabel());
+
+        assertNotNull("Parameter 'service' does not exists", op.get("service"));
+    }
 }

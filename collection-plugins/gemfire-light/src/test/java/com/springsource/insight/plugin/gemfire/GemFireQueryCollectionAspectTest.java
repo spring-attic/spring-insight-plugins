@@ -24,31 +24,31 @@ import com.springsource.insight.intercept.operation.Operation;
 
 public class GemFireQueryCollectionAspectTest extends GemFireAspectTestSupport {
 
-    public GemFireQueryCollectionAspectTest () {
-    	super();
+    public GemFireQueryCollectionAspectTest() {
+        super();
     }
-	
+
     @Test
     public void putOperationCollection() throws Exception {
-    	testInGemfire(new GemFireCallback() {			
-			public void doInGemfire(Region r) {
-				try {
-					r.query("/test.size > 1");
-				} catch (Exception e) {
-					e.printStackTrace();
-					org.junit.Assert.fail();
-				}
-			}
-		}, new TestCallback() {			
-			public void doTest(Operation operation) {
-				assertEquals("select * from /test this where /test.size > 1", operation.get(GemFireDefenitions.FIELD_QUERY));
-			}
-		});
+        testInGemfire(new GemFireCallback() {
+            public void doInGemfire(Region r) {
+                try {
+                    r.query("/test.size > 1");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    org.junit.Assert.fail();
+                }
+            }
+        }, new TestCallback() {
+            public void doTest(Operation operation) {
+                assertEquals("select * from /test this where /test.size > 1", operation.get(GemFireDefenitions.FIELD_QUERY));
+            }
+        });
     }
-        
-	@Override
-	public OperationCollectionAspectSupport getAspect() {
-		return GemFireQueryCollectionAspect.aspectOf();
-	}
+
+    @Override
+    public OperationCollectionAspectSupport getAspect() {
+        return GemFireQueryCollectionAspect.aspectOf();
+    }
 
 }

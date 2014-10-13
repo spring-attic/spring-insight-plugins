@@ -19,16 +19,16 @@ package com.springsource.insight.plugin.jta;
 import javax.transaction.UserTransaction;
 
 /**
- * 
+ *
  */
 public aspect UserTransactionOperationCollectionAspect extends JtaOperationCollectionAspect {
-    public UserTransactionOperationCollectionAspect () {
+    public UserTransactionOperationCollectionAspect() {
         super(JtaDefinitions.USER_OP, UserTransaction.class);
     }
 
     public pointcut collectionPoint()
-        : execution(* UserTransaction+.begin())
-       || execution(* UserTransaction+.commit())
-       || execution(* UserTransaction+.rollback())
-        ;
+            : execution(* UserTransaction+.begin())
+            || execution(* UserTransaction+.commit())
+            || execution(* UserTransaction+.rollback())
+            ;
 }

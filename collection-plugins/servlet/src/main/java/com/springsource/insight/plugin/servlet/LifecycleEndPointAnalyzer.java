@@ -28,9 +28,9 @@ import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
 
 /**
- * Locates lifecycle endpoints within Traces.  
- * 
- * If a LifecycleOperation is detected in the root frame, an endpoint analysis 
+ * Locates lifecycle endpoints within Traces.
+ * <p/>
+ * If a LifecycleOperation is detected in the root frame, an endpoint analysis
  * will be returned. The score of the analysis will always be {@link LifecycleEndPointAnalyzer#ANALYSIS_SCORE}, and its endpoint
  * key/label will be based on the lifecycle event.
  */
@@ -40,6 +40,7 @@ public class LifecycleEndPointAnalyzer extends AbstractEndPointAnalyzer {
      * <B>Note:</B> we assign a rather high value since we want this endpoint
      * to &quot;trump&quot; others with high probability. However, it will
      * do so only if the <U>root</U> frame is a lifecycle one
+     *
      * @see #getScoringFrame(Trace)
      * @see #validateScoringFrame(Frame)
      */
@@ -47,48 +48,48 @@ public class LifecycleEndPointAnalyzer extends AbstractEndPointAnalyzer {
 
     public static final OperationType SERVLET_LISTENER_TYPE = OperationType.valueOf("servlet-listener");
     public static final OperationType LIFECYCLE_TYPE_TYPE = OperationType.APP_LIFECYCLE;
-    public static final EndPointName	ENDPOINT_NAME=EndPointName.valueOf("lifecycle");
-    public static final String	ENDPOINT_LABEL="Lifecycle";
-	/**
-	 * The {@link List} of {@link OperationType}-s that mark a lifecycle frame
-	 */
-    public static final List<OperationType>	OPS=Collections.unmodifiableList(Arrays.asList(SERVLET_LISTENER_TYPE, LIFECYCLE_TYPE_TYPE));
-    private static final LifecycleEndPointAnalyzer	INSTANCE=new LifecycleEndPointAnalyzer();
+    public static final EndPointName ENDPOINT_NAME = EndPointName.valueOf("lifecycle");
+    public static final String ENDPOINT_LABEL = "Lifecycle";
+    /**
+     * The {@link List} of {@link OperationType}-s that mark a lifecycle frame
+     */
+    public static final List<OperationType> OPS = Collections.unmodifiableList(Arrays.asList(SERVLET_LISTENER_TYPE, LIFECYCLE_TYPE_TYPE));
+    private static final LifecycleEndPointAnalyzer INSTANCE = new LifecycleEndPointAnalyzer();
 
-    private LifecycleEndPointAnalyzer () {
-    	super(OPS);
+    private LifecycleEndPointAnalyzer() {
+        super(OPS);
     }
 
     public static final LifecycleEndPointAnalyzer getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override
-	public Frame getScoringFrame(Trace trace) {
-    	Frame	root=trace.getRootFrame();
-    	if (validateScoringFrame(root) == null) {
-    		return null;
-    	} else {
-    		return root;
-    	}
-	}
+    public Frame getScoringFrame(Trace trace) {
+        Frame root = trace.getRootFrame();
+        if (validateScoringFrame(root) == null) {
+            return null;
+        } else {
+            return root;
+        }
+    }
 
-	@Override
-	protected int getDefaultScore(int depth) {
-		return ANALYSIS_SCORE;
-	}
+    @Override
+    protected int getDefaultScore(int depth) {
+        return ANALYSIS_SCORE;
+    }
 
-	@Override
-	protected OperationType validateScoringFrame(Frame frame) {
-		if ((frame == null) || (!frame.isRoot())) {
-			return null;
-		} else {
-			return super.validateScoringFrame(frame);
-		}
-	}
+    @Override
+    protected OperationType validateScoringFrame(Frame frame) {
+        if ((frame == null) || (!frame.isRoot())) {
+            return null;
+        } else {
+            return super.validateScoringFrame(frame);
+        }
+    }
 
-	@Override
-	protected EndPointAnalysis makeEndPoint(Frame lifecycleFrame, int depth) {
+    @Override
+    protected EndPointAnalysis makeEndPoint(Frame lifecycleFrame, int depth) {
         Operation op = lifecycleFrame.getOperation();
         String endPointExample = op.get("event", String.class);
 

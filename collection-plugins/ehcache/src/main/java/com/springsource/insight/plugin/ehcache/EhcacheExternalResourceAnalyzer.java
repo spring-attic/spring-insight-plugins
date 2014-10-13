@@ -31,44 +31,44 @@ import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.ListUtil;
 
 public class EhcacheExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-	private static final EhcacheExternalResourceAnalyzer	INSTANCE=new EhcacheExternalResourceAnalyzer();
+    private static final EhcacheExternalResourceAnalyzer INSTANCE = new EhcacheExternalResourceAnalyzer();
 
-	private EhcacheExternalResourceAnalyzer () {
-	    super(EhcacheDefinitions.CACHE_OPERATION);
-	}
+    private EhcacheExternalResourceAnalyzer() {
+        super(EhcacheDefinitions.CACHE_OPERATION);
+    }
 
-	public static final EhcacheExternalResourceAnalyzer getInstance() {
-		return INSTANCE;
-	}
+    public static final EhcacheExternalResourceAnalyzer getInstance() {
+        return INSTANCE;
+    }
 
-	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> cacheFrames) {
-		if (ListUtil.size(cacheFrames) <= 0) {
-		    return Collections.emptyList();
-		}
+    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> cacheFrames) {
+        if (ListUtil.size(cacheFrames) <= 0) {
+            return Collections.emptyList();
+        }
 
-		List<ExternalResourceDescriptor>	queueDescriptors =
-		        new ArrayList<ExternalResourceDescriptor>(cacheFrames.size());
-		for (Frame cacheFrame : cacheFrames) {
-			Operation op = cacheFrame.getOperation();
+        List<ExternalResourceDescriptor> queueDescriptors =
+                new ArrayList<ExternalResourceDescriptor>(cacheFrames.size());
+        for (Frame cacheFrame : cacheFrames) {
+            Operation op = cacheFrame.getOperation();
 
-			String label = buildLabel(op);
+            String label = buildLabel(op);
 
-			String hashString = MD5NameGenerator.getName(label);
+            String hashString = MD5NameGenerator.getName(label);
             String color = colorManager.getColor(op);
-            
-			ExternalResourceDescriptor descriptor =
-			        new ExternalResourceDescriptor(cacheFrame,
-                       			                   EhcacheDefinitions.VENDOR_NAME + ":" + hashString,
-                       			                   label,
-                       			                   ExternalResourceType.CACHE.name(),
-                       			                   EhcacheDefinitions.VENDOR_NAME, color, false);
-			queueDescriptors.add(descriptor);            
-		}
 
-		return queueDescriptors;
-	}
+            ExternalResourceDescriptor descriptor =
+                    new ExternalResourceDescriptor(cacheFrame,
+                            EhcacheDefinitions.VENDOR_NAME + ":" + hashString,
+                            label,
+                            ExternalResourceType.CACHE.name(),
+                            EhcacheDefinitions.VENDOR_NAME, color, false);
+            queueDescriptors.add(descriptor);
+        }
 
-	private String buildLabel(Operation op) {
-		return op.get(EhcacheDefinitions.NAME_ATTRIBUTE, String.class, "");
-	}
+        return queueDescriptors;
+    }
+
+    private String buildLabel(Operation op) {
+        return op.get(EhcacheDefinitions.NAME_ATTRIBUTE, String.class, "");
+    }
 }

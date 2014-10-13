@@ -22,29 +22,29 @@ import com.springsource.insight.collection.test.OperationCollectionAspectTestSup
 import com.springsource.insight.intercept.operation.Operation;
 
 public class SaveOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-	@Override
-	public OperationCollectionAspectSupport getAspect() {
-		return SaveOperationCollectionAspect.aspectOf();
-	}
-	
-	@Test
-	public void test1() throws Exception {
-		System.out.println("Running save data test..");
-		
-		// Step 1: Execute test
-		SimpleTests.getInstance().test();
-	
-		// Step 2:  Get the Operation that was just created by our aspect
-		Operation op = getLastEntered();
-		assertNotNull("No operation data is intercepted",op);
+    @Override
+    public OperationCollectionAspectSupport getAspect() {
+        return SaveOperationCollectionAspect.aspectOf();
+    }
 
-		// Step 3:  Validate
-		assertTrue("Invalid operation type: "+op.getType().getName()+", expected: "+OperationCollectionTypes.WORKSPACE_TYPE.type,
-							op.getType().equals(OperationCollectionTypes.WORKSPACE_TYPE.type));
-		
-		String path=(String)op.get("path");
-		assertTrue("Invalid save path: "+path+", expected: /", path.equals("/"));
-		
-		System.out.println("Completed save data test.\n");
-	}
+    @Test
+    public void test1() throws Exception {
+        System.out.println("Running save data test..");
+
+        // Step 1: Execute test
+        SimpleTests.getInstance().test();
+
+        // Step 2:  Get the Operation that was just created by our aspect
+        Operation op = getLastEntered();
+        assertNotNull("No operation data is intercepted", op);
+
+        // Step 3:  Validate
+        assertTrue("Invalid operation type: " + op.getType().getName() + ", expected: " + OperationCollectionTypes.WORKSPACE_TYPE.type,
+                op.getType().equals(OperationCollectionTypes.WORKSPACE_TYPE.type));
+
+        String path = (String) op.get("path");
+        assertTrue("Invalid save path: " + path + ", expected: /", path.equals("/"));
+
+        System.out.println("Completed save data test.\n");
+    }
 }

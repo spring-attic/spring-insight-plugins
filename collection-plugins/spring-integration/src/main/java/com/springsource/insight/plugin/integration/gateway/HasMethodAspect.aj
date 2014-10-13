@@ -25,10 +25,10 @@ public aspect HasMethodAspect {
     private Method HasMethod.__insightMethod;
 
     public Method HasMethod.__getInsightMethod() {
-    	return this.__insightMethod;
+        return this.__insightMethod;
     }
 
-    public void HasMethod.__setInsightMethod(Method method) { 
-    	this.__insightMethod = method;
-  	}
+    public void HasMethod.__setInsightMethod(Method method) {
+        this.__insightMethod = method;
+    }
 }

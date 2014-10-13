@@ -19,36 +19,36 @@ import java.util.regex.Pattern;
 
 public class SqlParserPattern {
 
-	private final Pattern compiledPattern;
-	private final int portIndex;
-	private final int databaseNameIndex;
-	private final int hostIndex;
+    private final Pattern compiledPattern;
+    private final int portIndex;
+    private final int databaseNameIndex;
+    private final int hostIndex;
 
-	@SuppressWarnings("hiding")
+    @SuppressWarnings("hiding")
     public SqlParserPattern(final String pattern,
-							final int hostIndex,
-							final int portIndex,
-							final int databaseNameIndex) {
-		this.compiledPattern = Pattern.compile(pattern);
-		this.portIndex = portIndex;
-		this.databaseNameIndex = databaseNameIndex;
-		this.hostIndex = hostIndex;
-	}
+                            final int hostIndex,
+                            final int portIndex,
+                            final int databaseNameIndex) {
+        this.compiledPattern = Pattern.compile(pattern);
+        this.portIndex = portIndex;
+        this.databaseNameIndex = databaseNameIndex;
+        this.hostIndex = hostIndex;
+    }
 
-	public Pattern getCompiledPattern() {
-		return compiledPattern;
-	}
+    public Pattern getCompiledPattern() {
+        return compiledPattern;
+    }
 
-	public int getPortIndex() {
-		return portIndex;
-	}
+    public int getPortIndex() {
+        return portIndex;
+    }
 
-	public int getDatabaseNameIndex() {
-		return databaseNameIndex;
-	}
+    public int getDatabaseNameIndex() {
+        return databaseNameIndex;
+    }
 
-	public int getHostIndex() {
-		return hostIndex;
-	}
+    public int getHostIndex() {
+        return hostIndex;
+    }
 
 }

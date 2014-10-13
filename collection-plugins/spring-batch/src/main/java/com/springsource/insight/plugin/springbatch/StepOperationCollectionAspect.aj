@@ -23,20 +23,20 @@ import org.springframework.batch.core.StepExecution;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public aspect StepOperationCollectionAspect extends SpringBatchOperationCollectionAspect {
-    public StepOperationCollectionAspect () {
+    public StepOperationCollectionAspect() {
         super(Step.class);
     }
-    
-    public pointcut collectionPoint() : execution(* Step+.execute(StepExecution));
+
+    public pointcut collectionPoint(): execution(* Step+.execute(StepExecution));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Step            step=(Step) jp.getTarget();
-        String          stepName=step.getName();
-        Object[]        args=jp.getArgs();
+        Step step = (Step) jp.getTarget();
+        String stepName = step.getName();
+        Object[] args = jp.getArgs();
         return fillStepExecutionDetails(createOperation(jp, stepName), (StepExecution) args[0]);
     }
 }

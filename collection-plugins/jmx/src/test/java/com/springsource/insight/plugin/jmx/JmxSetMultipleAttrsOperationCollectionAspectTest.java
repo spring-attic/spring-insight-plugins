@@ -39,64 +39,64 @@ import com.springsource.insight.intercept.operation.Operation;
 
 
 /**
- * 
+ *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(JmxOperationCollectionTestSupport.TEST_CONTEXT)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class JmxSetMultipleAttrsOperationCollectionAspectTest extends JmxMultiAttributeCollectionTestSupport {
-	public JmxSetMultipleAttrsOperationCollectionAspectTest() {
-		super(JmxPluginRuntimeDescriptor.SET_ACTION);
-	}
+    public JmxSetMultipleAttrsOperationCollectionAspectTest() {
+        super(JmxPluginRuntimeDescriptor.SET_ACTION);
+    }
 
-	@Test
-	public void testDirectSetMultipleAttributes() throws Exception {
-		testSetMultipleAttributes(mbeanServer);
-	}
+    @Test
+    public void testDirectSetMultipleAttributes() throws Exception {
+        testSetMultipleAttributes(mbeanServer);
+    }
 
-	@Test	// make sure cflowbelow is activated
-	public void testDelegatedSetMultipleAttributes() throws Exception {
-		testSetMultipleAttributes(new DelegatingMBeanServer(mbeanServer));
-	}
+    @Test    // make sure cflowbelow is activated
+    public void testDelegatedSetMultipleAttributes() throws Exception {
+        testSetMultipleAttributes(new DelegatingMBeanServer(mbeanServer));
+    }
 
-	private void testSetMultipleAttributes(MBeanServer server) throws Exception {
-		ObjectName	name=new ObjectName(SpringMBeanComponent.RESOURCE_NAME);
-		Object[]	valPairs={
-				"StringValue", getClass().getSimpleName()
-							 + "#testSetMultipleAttributes("
-							 + server.getClass().getSimpleName()
-							 + "@" + System.identityHashCode(server)
-							 + ")",
-				"NumberValue", Long.valueOf(System.nanoTime())
-			};
-		Map<String,Object>	valuesMap=new TreeMap<String, Object>();
-		for (int index=0; index < valPairs.length; index += 2) {
-			valuesMap.put(String.valueOf(valPairs[index]), valPairs[index+1]);
-		}
-		
-		List<String>	attrsNames=new ArrayList<String>(valuesMap.keySet());
-		for (int	index=0; index < Byte.SIZE; index++) {
-			Collections.shuffle(attrsNames);
-			
-			AttributeList	attrs=new AttributeList(attrsNames.size());
-			for (String n : attrsNames) {
-				Object	v=valuesMap.get(n);
-				attrs.add(new Attribute(n, v));
-			}
-			
-			try {
-				AttributeList	result=server.setAttributes(name, attrs);
-				Operation		op=assertAttributesListOperation(name, attrs);
-				assertEncodedManagedAttributes(op, name, result);
-			} finally {
-				Mockito.reset(spiedOperationCollector);
-			}
-		}
-	}
+    private void testSetMultipleAttributes(MBeanServer server) throws Exception {
+        ObjectName name = new ObjectName(SpringMBeanComponent.RESOURCE_NAME);
+        Object[] valPairs = {
+                "StringValue", getClass().getSimpleName()
+                + "#testSetMultipleAttributes("
+                + server.getClass().getSimpleName()
+                + "@" + System.identityHashCode(server)
+                + ")",
+                "NumberValue", Long.valueOf(System.nanoTime())
+        };
+        Map<String, Object> valuesMap = new TreeMap<String, Object>();
+        for (int index = 0; index < valPairs.length; index += 2) {
+            valuesMap.put(String.valueOf(valPairs[index]), valPairs[index + 1]);
+        }
 
-	@Override
-	public JmxSetMultipleAttrsOperationCollectionAspect getAspect() {
-		return JmxSetMultipleAttrsOperationCollectionAspect.aspectOf();
-	}
+        List<String> attrsNames = new ArrayList<String>(valuesMap.keySet());
+        for (int index = 0; index < Byte.SIZE; index++) {
+            Collections.shuffle(attrsNames);
+
+            AttributeList attrs = new AttributeList(attrsNames.size());
+            for (String n : attrsNames) {
+                Object v = valuesMap.get(n);
+                attrs.add(new Attribute(n, v));
+            }
+
+            try {
+                AttributeList result = server.setAttributes(name, attrs);
+                Operation op = assertAttributesListOperation(name, attrs);
+                assertEncodedManagedAttributes(op, name, result);
+            } finally {
+                Mockito.reset(spiedOperationCollector);
+            }
+        }
+    }
+
+    @Override
+    public JmxSetMultipleAttrsOperationCollectionAspect getAspect() {
+        return JmxSetMultipleAttrsOperationCollectionAspect.aspectOf();
+    }
 
 }

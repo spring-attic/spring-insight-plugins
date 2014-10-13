@@ -1,45 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:insight="http://www.springframework.org/schema/insight-idk"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:insight="http://www.springframework.org/schema/insight-idk"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                 http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
-	<insight:plugin name="gemfire" version="${project.version}" publisher="SpringSource" />
+    <insight:plugin name="gemfire" version="${project.version}" publisher="SpringSource"/>
 
-	<insight:operation-view operation="gemfire_region_operation" template="com/springsource/insight/plugin/gemfire/gemfire_region_operation.ftl" />
-	<insight:operation-group operation="gemfire_region_operation" group="GemFire" />
+    <insight:operation-view operation="gemfire_region_operation"
+                            template="com/springsource/insight/plugin/gemfire/gemfire_region_operation.ftl"/>
+    <insight:operation-group operation="gemfire_region_operation" group="GemFire"/>
 
-	<insight:operation-view operation="gemfire_query_operation" template="com/springsource/insight/plugin/gemfire/gemfire_query_operation.ftl" />
-	<insight:operation-group operation="gemfire_query_operation" group="GemFire" />
+    <insight:operation-view operation="gemfire_query_operation"
+                            template="com/springsource/insight/plugin/gemfire/gemfire_query_operation.ftl"/>
+    <insight:operation-group operation="gemfire_query_operation" group="GemFire"/>
 
-	<insight:operation-view operation="gemfire_remote_operation" template="com/springsource/insight/plugin/gemfire/gemfire_remote_operation.ftl" />
-	<insight:operation-group operation="gemfire_remote_operation" group="GemFire" />
+    <insight:operation-view operation="gemfire_remote_operation"
+                            template="com/springsource/insight/plugin/gemfire/gemfire_remote_operation.ftl"/>
+    <insight:operation-group operation="gemfire_remote_operation" group="GemFire"/>
 
-	<insight:operation-view operation="gemfire_cquery_operation" template="com/springsource/insight/plugin/gemfire/gemfire_cquery_operation.ftl" />
-	<insight:operation-group operation="gemfire_cquery_operation" group="GemFire" />
+    <insight:operation-view operation="gemfire_cquery_operation"
+                            template="com/springsource/insight/plugin/gemfire/gemfire_cquery_operation.ftl"/>
+    <insight:operation-group operation="gemfire_cquery_operation" group="GemFire"/>
 
-	<insight:operation-view operation="gemfire_execution_operation" template="com/springsource/insight/plugin/gemfire/gemfire_execution_operation.ftl" />
-	<insight:operation-group operation="gemfire_execution_operation" group="GemFire" />
-	
-	<bean id="gemfirePluginRemoteExternalResourceAnalyzer"
-	      class="com.springsource.insight.plugin.gemfire.GemFireRemoteExternalResourceAnalyzer"
+    <insight:operation-view operation="gemfire_execution_operation"
+                            template="com/springsource/insight/plugin/gemfire/gemfire_execution_operation.ftl"/>
+    <insight:operation-group operation="gemfire_execution_operation" group="GemFire"/>
+
+    <bean id="gemfirePluginRemoteExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.gemfire.GemFireRemoteExternalResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
-	<bean id="gemfirePluginRegionExternalResourceAnalyzer"
-	      class="com.springsource.insight.plugin.gemfire.GemFireRegionExternalResourceAnalyzer"
+            />
+    <bean id="gemfirePluginRegionExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.gemfire.GemFireRegionExternalResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
-	<bean id="gemfirePluginQueryExternalResourceAnalyzer"
-	      class="com.springsource.insight.plugin.gemfire.GemFireQueryExternalResourceAnalyzer"
+            />
+    <bean id="gemfirePluginQueryExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.gemfire.GemFireQueryExternalResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="gemfirePluginRuntimeDescriptor"
           class="com.springsource.insight.plugin.gemfire.GemFirePluginRuntimeDescriptor"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
 
 </beans>

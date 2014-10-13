@@ -32,28 +32,29 @@ import akka.routing.RoutedActorRef;
 public class RouterActorRefPropertyExtractorTest {
 
     private RoutedActorRef tested;
+
     public RouterActorRefPropertyExtractorTest() {
-    	super();
+        super();
     }
 
     @Before
     public void setUp() {
-	tested = mock(RoutedActorRef.class, Mockito.RETURNS_MOCKS);
+        tested = mock(RoutedActorRef.class, Mockito.RETURNS_MOCKS);
     }
 
     @Test
     public void testExtractProperties() {
-	Map<String, Object> result = RouterActorRefPropertyExtractor.INSTANCE.extractProperties(tested);
-	assertKeysExist(Arrays.asList("local", "Router Dispatcher", "Router"), result.keySet());
+        Map<String, Object> result = RouterActorRefPropertyExtractor.INSTANCE.extractProperties(tested);
+        assertKeysExist(Arrays.asList("local", "Router Dispatcher", "Router"), result.keySet());
     }
 
     private void assertKeysExist(List<String> expectedKeys, Collection<String> keys) {
 
-	for (String key : expectedKeys) {
-	    if (!keys.contains(key)) {
-		fail("key '" + key + "' doesn't exist in result " + keys);
-	    }
-	}
+        for (String key : expectedKeys) {
+            if (!keys.contains(key)) {
+                fail("key '" + key + "' doesn't exist in result " + keys);
+            }
+        }
     }
 
 }

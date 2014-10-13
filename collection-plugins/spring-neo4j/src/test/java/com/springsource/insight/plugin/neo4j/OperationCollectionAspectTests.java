@@ -33,89 +33,86 @@ import org.springframework.transaction.annotation.Transactional;
 @ContextConfiguration(OperationCollectionAspectTests.TEST_CONTEXT)
 @Transactional
 public class OperationCollectionAspectTests {
-	public static final String	TEST_CONTEXT="classpath:META-INF/spring-neo4j-plugin-test-context.xml";
+    public static final String TEST_CONTEXT = "classpath:META-INF/spring-neo4j-plugin-test-context.xml";
 
-	@Autowired Neo4jTemplate template;
-	
-	public OperationCollectionAspectTests () {
-		super();
-	}
+    @Autowired
+    Neo4jTemplate template;
 
-	public void test_Init() {
-		template.setInfrastructure(template.getInfrastructure());
-	}
-	
-	@Test
-	public void test_Find() {
-	    Movie 	movie=template.save(new Movie(1, "Forrest Gump", 1994));
-		Movie	found=template.findOne(movie.getNodeId().longValue(), Movie.class);
-		Assert.assertNotNull("Cannot re-find movie", found);
-	}
-	
-	@Test
-	public void test_Lookup1() {
-		Node thomas = template.createNode();
-		template.index("sampleIndex", thomas, "sampleField", "sampleValue");
-		
-		template.lookup("sampleIndex","sampleField:*");
-	}
-	
-	@Test
-	public void test_Lookup2() {
-		Node thomas = template.createNode();
-		template.index("sampleIndex", thomas, "sampleField", "sampleValue");
-		
-		template.lookup("sampleIndex","sampleField","sampleValue");
-	}
-	
-	@Test
-	public void test_Lookup3() {
-		try {
-			template.lookup(String.class,"sampleProperty","sampleValue");
-		}
-		catch(Exception e) {
-			// ignored
-		}
-	}
-	
-	@Test
-	public void test_Query1() {
-		template.query("start n=node(0) return n", map("paramKey", "paramValue"));
-	}
-	
-	@Test
-	public void test_Query2() {
-		try {
-			template.execute("sampleStatement", map("paramKey", "paramValue"));
-		}
-		catch(Exception e) {
-			// ignored
-		}
-	}
-	
-	@Test
-	public void test_Traverse1() {
-		try {
-			template.traverse(template.createNode(), Traversal.description());
-		}
-		catch(Exception e) {
-			// ignored
-		}
-	}
-	
-	@Test
-	public void test_Traverse2() {
-		try {
-			template.traverse("sampleEntity", String.class, Traversal.description());
-		}
-		catch(Exception e) {
-			// ignored
-		}
-	}
-	
-	private Map<String,Object> map(String key, Object value) {
-		Map<String,Object> map=new HashMap<String,Object>();
-		map.put(key, value);
-		return map;
-	}
+    public OperationCollectionAspectTests() {
+        super();
+    }
+
+    public void test_Init() {
+        template.setInfrastructure(template.getInfrastructure());
+    }
+
+    @Test
+    public void test_Find() {
+        Movie movie = template.save(new Movie(1, "Forrest Gump", 1994));
+        Movie found = template.findOne(movie.getNodeId().longValue(), Movie.class);
+        Assert.assertNotNull("Cannot re-find movie", found);
+    }
+
+    @Test
+    public void test_Lookup1() {
+        Node thomas = template.createNode();
+        template.index("sampleIndex", thomas, "sampleField", "sampleValue");
+
+        template.lookup("sampleIndex", "sampleField:*");
+    }
+
+    @Test
+    public void test_Lookup2() {
+        Node thomas = template.createNode();
+        template.index("sampleIndex", thomas, "sampleField", "sampleValue");
+
+        template.lookup("sampleIndex", "sampleField", "sampleValue");
+    }
+
+    @Test
+    public void test_Lookup3() {
+        try {
+            template.lookup(String.class, "sampleProperty", "sampleValue");
+        } catch (Exception e) {
+            // ignored
+        }
+    }
+
+    @Test
+    public void test_Query1() {
+        template.query("start n=node(0) return n", map("paramKey", "paramValue"));
+    }
+
+    @Test
+    public void test_Query2() {
+        try {
+            template.execute("sampleStatement", map("paramKey", "paramValue"));
+        } catch (Exception e) {
+            // ignored
+        }
+    }
+
+    @Test
+    public void test_Traverse1() {
+        try {
+            template.traverse(template.createNode(), Traversal.description());
+        } catch (Exception e) {
+            // ignored
+        }
+    }
+
+    @Test
+    public void test_Traverse2() {
+        try {
+            template.traverse("sampleEntity", String.class, Traversal.description());
+        } catch (Exception e) {
+            // ignored
+        }
+    }
+
+    private Map<String, Object> map(String key, Object value) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put(key, value);
+        return map;
+    }
 }

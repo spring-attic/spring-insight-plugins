@@ -31,17 +31,18 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
 import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.util.ArrayUtil;
+
 /**
- * 
+ *
  */
 public aspect JwsOperationCollectionAspect extends MethodOperationCollectionAspect {
-	public JwsOperationCollectionAspect () {
-		super();
-	}
+    public JwsOperationCollectionAspect() {
+        super();
+    }
 
-	public pointcut collectionPoint()
-        : execution(* (@WebService *).*(..))
-        ;
+    public pointcut collectionPoint()
+            : execution(* (@WebService *).*(..))
+            ;
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
@@ -58,9 +59,9 @@ public aspect JwsOperationCollectionAspect extends MethodOperationCollectionAspe
         return JwsPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 
-    protected static final Operation updateOperation (final JoinPoint jp, final Operation op) {
-        final Signature     sig=(jp == null) ? null : jp.getSignature();
-        final Class<?>      clazz=(sig == null) ? null : sig.getDeclaringType();
+    protected static final Operation updateOperation(final JoinPoint jp, final Operation op) {
+        final Signature sig = (jp == null) ? null : jp.getSignature();
+        final Class<?> clazz = (sig == null) ? null : sig.getDeclaringType();
         fillServiceInformation(op, (clazz == null) ? null : clazz.getAnnotation(WebService.class));
 
         if (sig instanceof MethodSignature) {
@@ -70,7 +71,7 @@ public aspect JwsOperationCollectionAspect extends MethodOperationCollectionAspe
         return op;  // debug breakpoint
     }
 
-    protected static final Operation fillServiceInformation (final Operation op, final WebService service)  {
+    protected static final Operation fillServiceInformation(final Operation op, final WebService service) {
         if ((op == null) || (service == null)) {
             return op;
         }
@@ -84,7 +85,7 @@ public aspect JwsOperationCollectionAspect extends MethodOperationCollectionAspe
         return op;
     }
 
-    protected static final Operation fillMethodInformation (final Operation op, final Method method, final Object ... args) {
+    protected static final Operation fillMethodInformation(final Operation op, final Method method, final Object... args) {
         if ((op == null) || (method == null)) {
             return op;
         }
@@ -94,39 +95,39 @@ public aspect JwsOperationCollectionAspect extends MethodOperationCollectionAspe
         return op;
     }
 
-    protected static final Operation fillMethodInformation (final Operation op, final WebMethod method) {
+    protected static final Operation fillMethodInformation(final Operation op, final WebMethod method) {
         if ((op == null) || (method == null)) {
             return op;
         }
-        
+
         op.putAnyNonEmpty("operationName", method.operationName());
         op.putAnyNonEmpty("action", method.action());
         return op.put("exclude", method.exclude());
     }
 
-    protected static final Operation fillMethodParamsInformation (
+    protected static final Operation fillMethodParamsInformation(
             final Operation op, final Class<?>[] paramTypes, final Annotation[][] paramAnns, final Object[] args) {
         if ((op == null)
-         || (ArrayUtil.length(paramTypes) <= 0)
-         || (ArrayUtil.length(paramAnns) <= 0)
-         || (ArrayUtil.length(args) <= 0)) {
+                || (ArrayUtil.length(paramTypes) <= 0)
+                || (ArrayUtil.length(paramAnns) <= 0)
+                || (ArrayUtil.length(args) <= 0)) {
             return op;
         }
 
-        OperationList   paramsList=op.createList("webParams");
-        for (int pIndex=0; pIndex < paramTypes.length; pIndex++) {
-            final Annotation[]  anns=paramAnns[pIndex];
+        OperationList paramsList = op.createList("webParams");
+        for (int pIndex = 0; pIndex < paramTypes.length; pIndex++) {
+            final Annotation[] anns = paramAnns[pIndex];
             if ((anns == null) || (anns.length <= 0)) {
                 continue;
             }
-            
+
             for (final Annotation a : anns) {
                 if (!(a instanceof WebParam)) {
                     continue;
                 }
 
-                final OperationMap  map=paramsList.createMap();
-                final WebParam      wp=(WebParam) a;
+                final OperationMap map = paramsList.createMap();
+                final WebParam wp = (WebParam) a;
                 map.put("header", wp.header());
                 map.putAnyNonEmpty("name", wp.name());
                 map.putAnyNonEmpty("partName", wp.partName());
@@ -134,7 +135,7 @@ public aspect JwsOperationCollectionAspect extends MethodOperationCollectionAspe
                 map.putAnyNonEmpty("mode", wp.mode());
 
                 break;  // there can be only one parameter annotation per parameter
-            }       
+            }
         }
 
         return op;

@@ -31,90 +31,90 @@ import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.util.ListUtil;
 
 /**
- * 
+ *
  */
 public abstract class StereotypeOperationCollectionAspectTestSupport
-		extends	OperationCollectionAspectTestSupport {
+        extends OperationCollectionAspectTestSupport {
 
-	protected final Class<? extends Annotation>	stereoTypeClass;
+    protected final Class<? extends Annotation> stereoTypeClass;
 
-	protected StereotypeOperationCollectionAspectTestSupport(Class<? extends Annotation> annClass) {
-		if ((stereoTypeClass=annClass) == null) {
-			throw new IllegalStateException("No stereotype class provided");
-		}
-	}
+    protected StereotypeOperationCollectionAspectTestSupport(Class<? extends Annotation> annClass) {
+        if ((stereoTypeClass = annClass) == null) {
+            throw new IllegalStateException("No stereotype class provided");
+        }
+    }
 
     @Override
-	protected OperationCollector createSpiedOperationCollector(OperationCollector originalCollector) {
+    protected OperationCollector createSpiedOperationCollector(OperationCollector originalCollector) {
         assertNotNull("No original collector", originalCollector);
-		return new OperationListCollector();
-	}
+        return new OperationListCollector();
+    }
 
-	@Override
-	protected Operation getLastEnteredOperation(OperationCollector spiedCollector) {
-        List<Operation>	opsList=((OperationListCollector) spiedCollector).getCollectedOperations();
-		if (ListUtil.size(opsList) <= 0) {
-			return null;
-		} else {
-			return opsList.get(opsList.size() - 1);
-		}
-	}
-
-	protected void assertLifecycleMethodsNotIntercepted(AbstractBean beanInstance) throws Exception {
-		OperationCollectionAspectSupport	aspectInstance=getAspect();
-		OperationCollector					orgCollector=aspectInstance.getCollector();
-		OperationListCollector				collector=new OperationListCollector();
-		aspectInstance.setCollector(collector);
-		
-		List<Operation>	collectedOps=collector.getCollectedOperations();
-		try {
-			beanInstance.afterPropertiesSet();
-			assertTrue("Unexpected invocation for 'afterPropertiesSet': " + collectedOps, collectedOps.isEmpty());
-
-			ApplicationEvent	testEvent=new TestEvent(beanInstance);
-
-			beanInstance.onApplicationEvent(testEvent);
-			assertTrue("Unexpected invocation for 'onApplicationEvent': " + collectedOps, collectedOps.isEmpty());
-
-			beanInstance.publishEvent(testEvent);
-			assertTrue("Unexpected invocation for 'publishEvent': " + collectedOps, collectedOps.isEmpty());
-
-			beanInstance.multicastEvent(testEvent);
-			assertTrue("Unexpected invocation for 'multicastEvent': " + collectedOps, collectedOps.isEmpty());
-		} finally {
-			aspectInstance.setCollector(orgCollector);
-		}
-	}
-
-	protected Operation assertStereotypeOperation (Runnable beanInstance, boolean withOperation) {
-		Class<?>	beanClass=beanInstance.getClass();
-		Annotation	ann=beanClass.getAnnotation(stereoTypeClass);
-		assertNotNull("Missing stereotype @" + stereoTypeClass.getSimpleName(), ann);
-
-		beanInstance.run();
-
-		Operation   operation=getLastEntered();
-		if (withOperation) {
-			assertStereotypeOperation(operation, beanClass, "run");
-		} else if (operation != null) {
-        	fail(beanClass.getSimpleName() + " unexpected operation: " + operation.getLabel());
+    @Override
+    protected Operation getLastEnteredOperation(OperationCollector spiedCollector) {
+        List<Operation> opsList = ((OperationListCollector) spiedCollector).getCollectedOperations();
+        if (ListUtil.size(opsList) <= 0) {
+            return null;
+        } else {
+            return opsList.get(opsList.size() - 1);
         }
-		return operation;
-	}
+    }
 
-	protected Operation assertStereotypeOperation (Operation operation, Class<?> beanClass, String beanMethod) {
+    protected void assertLifecycleMethodsNotIntercepted(AbstractBean beanInstance) throws Exception {
+        OperationCollectionAspectSupport aspectInstance = getAspect();
+        OperationCollector orgCollector = aspectInstance.getCollector();
+        OperationListCollector collector = new OperationListCollector();
+        aspectInstance.setCollector(collector);
+
+        List<Operation> collectedOps = collector.getCollectedOperations();
+        try {
+            beanInstance.afterPropertiesSet();
+            assertTrue("Unexpected invocation for 'afterPropertiesSet': " + collectedOps, collectedOps.isEmpty());
+
+            ApplicationEvent testEvent = new TestEvent(beanInstance);
+
+            beanInstance.onApplicationEvent(testEvent);
+            assertTrue("Unexpected invocation for 'onApplicationEvent': " + collectedOps, collectedOps.isEmpty());
+
+            beanInstance.publishEvent(testEvent);
+            assertTrue("Unexpected invocation for 'publishEvent': " + collectedOps, collectedOps.isEmpty());
+
+            beanInstance.multicastEvent(testEvent);
+            assertTrue("Unexpected invocation for 'multicastEvent': " + collectedOps, collectedOps.isEmpty());
+        } finally {
+            aspectInstance.setCollector(orgCollector);
+        }
+    }
+
+    protected Operation assertStereotypeOperation(Runnable beanInstance, boolean withOperation) {
+        Class<?> beanClass = beanInstance.getClass();
+        Annotation ann = beanClass.getAnnotation(stereoTypeClass);
+        assertNotNull("Missing stereotype @" + stereoTypeClass.getSimpleName(), ann);
+
+        beanInstance.run();
+
+        Operation operation = getLastEntered();
+        if (withOperation) {
+            assertStereotypeOperation(operation, beanClass, "run");
+        } else if (operation != null) {
+            fail(beanClass.getSimpleName() + " unexpected operation: " + operation.getLabel());
+        }
+        return operation;
+    }
+
+    protected Operation assertStereotypeOperation(Operation operation, Class<?> beanClass, String beanMethod) {
         assertNotNull(beanClass.getSimpleName() + " no operation", operation);
         assertEquals(beanClass.getSimpleName() + " mismatched type", OperationType.METHOD, operation.getType());
         assertEquals("Mismatched component type", stereoTypeClass.getSimpleName(), operation.get(StereotypedSpringBeanMethodOperationCollectionAspectSupport.COMP_TYPE_ATTR, String.class));
         assertEquals("Mismatched label", beanClass.getSimpleName() + "#" + beanMethod, operation.getLabel());
         return operation;
-	}
-	
-	protected static class TestEvent extends ApplicationEvent {
-		private static final long serialVersionUID = 1L;
+    }
 
-		public TestEvent(AbstractBean beanInstance) {
-			super(beanInstance);
-		}
-	}
+    protected static class TestEvent extends ApplicationEvent {
+        private static final long serialVersionUID = 1L;
+
+        public TestEvent(AbstractBean beanInstance) {
+            super(beanInstance);
+        }
+    }
 }

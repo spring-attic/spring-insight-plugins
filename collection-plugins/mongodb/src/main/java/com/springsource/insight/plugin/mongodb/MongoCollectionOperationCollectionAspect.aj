@@ -32,56 +32,56 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
 
 public aspect MongoCollectionOperationCollectionAspect extends AbstractOperationCollectionAspect {
-	public MongoCollectionOperationCollectionAspect () {
-		super();
-	}
+    public MongoCollectionOperationCollectionAspect() {
+        super();
+    }
 
-	public pointcut insertExecute(): 
-		execution(WriteResult DBCollection.insert(DBObject[], WriteConcern));
+    public pointcut insertExecute():
+            execution(WriteResult DBCollection.insert(DBObject[], WriteConcern));
 
-    public pointcut updateExecute(): 
-    	execution(WriteResult DBCollection.update(DBObject, DBObject, boolean, boolean));
+    public pointcut updateExecute():
+            execution(WriteResult DBCollection.update(DBObject, DBObject, boolean, boolean));
 
-    public pointcut removeExecute(): 
-    	execution(WriteResult DBCollection.remove(DBObject, WriteConcern));
+    public pointcut removeExecute():
+            execution(WriteResult DBCollection.remove(DBObject, WriteConcern));
 
     public pointcut saveExecute():
-    	execution(WriteResult DBCollection.save(..));
+            execution(WriteResult DBCollection.save(..));
 
-    public pointcut findExecute(): 
-    	execution(* DBCollection.find*(..));
+    public pointcut findExecute():
+            execution(* DBCollection.find*(..));
 
-    public pointcut createIndexExecute(): 
-    	execution(void DBCollection.createIndex(DBObject, DBObject));
+    public pointcut createIndexExecute():
+            execution(void DBCollection.createIndex(DBObject, DBObject));
 
-    public pointcut getCountExecute(): 
-    	execution(long DBCollection.getCount(DBObject, DBObject, long, long));
+    public pointcut getCountExecute():
+            execution(long DBCollection.getCount(DBObject, DBObject, long, long));
 
-    public pointcut groupExecute(): 
-    	execution(DBObject DBCollection.group(..));
+    public pointcut groupExecute():
+            execution(DBObject DBCollection.group(..));
 
-    public pointcut distinctExecute(): 
-    	execution(List DBCollection.distinct(String,DBObject));
+    public pointcut distinctExecute():
+            execution(List DBCollection.distinct(String,DBObject));
 
-    public pointcut mapReduceExecute(): 
-    	execution(MapReduceOutput DBCollection.mapReduce(..));
+    public pointcut mapReduceExecute():
+            execution(MapReduceOutput DBCollection.mapReduce(..));
 
-    public pointcut dropIndexExecute(): 
-    	execution(void DBCollection.dropIndexes(..));
+    public pointcut dropIndexExecute():
+            execution(void DBCollection.dropIndexes(..));
 
     public pointcut collectionPoint():
-        insertExecute() ||
-        updateExecute() ||
-        removeExecute() ||
-        (findExecute() && !cflowbelow(findExecute()))||
-        createIndexExecute() ||
-        (saveExecute()  && !cflowbelow(saveExecute())) ||
-        getCountExecute() ||
-        (groupExecute() && !cflowbelow(groupExecute()))||
-        distinctExecute() ||
-        (mapReduceExecute() && !cflowbelow(mapReduceExecute())) ||
-        dropIndexExecute()
-        ;
+            insertExecute() ||
+                    updateExecute() ||
+                    removeExecute() ||
+                    (findExecute() && !cflowbelow(findExecute()))||
+                    createIndexExecute() ||
+                    (saveExecute()  && !cflowbelow(saveExecute())) ||
+                    getCountExecute() ||
+                    (groupExecute() && !cflowbelow(groupExecute()))||
+                    distinctExecute() ||
+                    (mapReduceExecute() && !cflowbelow(mapReduceExecute())) ||
+                    dropIndexExecute()
+            ;
 
     @Override
     protected Operation createOperation(final JoinPoint joinPoint) {
@@ -90,19 +90,19 @@ public aspect MongoCollectionOperationCollectionAspect extends AbstractOperation
         Operation op = new Operation()
                 .label("MongoDB: " + collection + "." + signature.getName())
                 .type(MongoDBCollectionExternalResourceAnalyzer.TYPE)
-                 .sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(joinPoint))
+                .sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(joinPoint))
                 .put("collection", collection.getFullName());
         OperationList opList = op.createList("args");
         List<String> args = MongoArgumentUtils.toString(joinPoint.getArgs());
         for (String arg : args) {
             opList.add(arg);
         }
-        
+
         try {
-        	MongoArgumentUtils.putDatabaseDetails(op, collection.getDB());
-		} catch (Exception e) {
-			// ignored
-		}
+            MongoArgumentUtils.putDatabaseDetails(op, collection.getDB());
+        } catch (Exception e) {
+            // ignored
+        }
 
         return op;
     }
@@ -111,7 +111,7 @@ public aspect MongoCollectionOperationCollectionAspect extends AbstractOperation
     public String getPluginName() {
         return MongoDBPluginRuntimeDescriptor.PLUGIN_NAME;
     }
-    
+
     @Override
     public boolean isMetricsGenerator() {
         return true; // This provides an external resource

@@ -32,11 +32,12 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.repository.JobRestartException;
 
 /**
- * 
+ *
  */
 public class TestDummyJobRepository implements JobRepository {
-    private final Map<String,JobExecution>  execsMap=new TreeMap<String, JobExecution>();
-    private static final AtomicLong idsGenerator=new AtomicLong(1L);
+    private final Map<String, JobExecution> execsMap = new TreeMap<String, JobExecution>();
+    private static final AtomicLong idsGenerator = new AtomicLong(1L);
+
     public TestDummyJobRepository() {
         super();
     }
@@ -55,15 +56,14 @@ public class TestDummyJobRepository implements JobRepository {
     }
 
     public void update(JobExecution jobExecution) {
-        BatchStatus status=jobExecution.getStatus();
-        JobInstance instance=jobExecution.getJobInstance();
-        String      jobName=instance.getJobName();
+        BatchStatus status = jobExecution.getStatus();
+        JobInstance instance = jobExecution.getJobInstance();
+        String jobName = instance.getJobName();
         if (BatchStatus.STARTING.equals(status)) {
             Assert.assertNull("Multiple executions for job=" + jobName, execsMap.put(jobName, jobExecution));
-        }
-        else if (BatchStatus.COMPLETED.equals(status)
-              || BatchStatus.ABANDONED.equals(status)
-              || BatchStatus.FAILED.equals(status)) {
+        } else if (BatchStatus.COMPLETED.equals(status)
+                || BatchStatus.ABANDONED.equals(status)
+                || BatchStatus.FAILED.equals(status)) {
             Assert.assertNotNull("No running execution for job=" + jobName, execsMap.remove(jobName));
         }
     }
@@ -97,17 +97,17 @@ public class TestDummyJobRepository implements JobRepository {
         return execsMap.get(jobName);
     }
 
-    static JobExecution createJobExecutionInstance (String jobName) {
+    static JobExecution createJobExecutionInstance(String jobName) {
         return createJobExecutionInstance(jobName, new JobParameters());
     }
 
-    static JobExecution createJobExecutionInstance (String jobName, JobParameters jobParameters) {
+    static JobExecution createJobExecutionInstance(String jobName, JobParameters jobParameters) {
         Assert.assertNotNull("No job name specified", jobName);
         Assert.assertFalse("Empty job name", jobName.length() <= 0);
         Assert.assertNotNull("No job parameters provided", jobParameters);
 
-        Long        id=Long.valueOf(idsGenerator.incrementAndGet());
-        JobInstance instance=new JobInstance(id, jobParameters, jobName);
+        Long id = Long.valueOf(idsGenerator.incrementAndGet());
+        JobInstance instance = new JobInstance(id, jobParameters, jobName);
         return new JobExecution(instance, id);
     }
 }

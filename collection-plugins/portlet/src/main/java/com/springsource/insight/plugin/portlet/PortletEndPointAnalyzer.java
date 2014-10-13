@@ -28,29 +28,29 @@ public class PortletEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer 
      * we return a score of {@link EndPointAnalysis#CEILING_LAYER_SCORE} so as
      * to let other endpoints &quot;beat&quot; this one
      */
-	public static final int	ANALYSIS_SCORE=EndPointAnalysis.CEILING_LAYER_SCORE;
-    public static final OperationType opType=OperationCollectionTypes.RENDER_TYPE.type;
-    private static final PortletEndPointAnalyzer	INSTANCE=new PortletEndPointAnalyzer();
+    public static final int ANALYSIS_SCORE = EndPointAnalysis.CEILING_LAYER_SCORE;
+    public static final OperationType opType = OperationCollectionTypes.RENDER_TYPE.type;
+    private static final PortletEndPointAnalyzer INSTANCE = new PortletEndPointAnalyzer();
 
-    private PortletEndPointAnalyzer () {
-    	super(opType);
+    private PortletEndPointAnalyzer() {
+        super(opType);
     }
 
     public static final PortletEndPointAnalyzer getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override
     protected int getDefaultScore(int depth) {
-    	return ANALYSIS_SCORE;
+        return ANALYSIS_SCORE;
     }
 
     @Override
     protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
         Operation op = frame.getOperation();
-        String portletName=op.get("name", String.class);
+        String portletName = op.get("name", String.class);
         String endPointLabel = "Portlet: " + portletName;
-        String	example=portletName+"."+op.get("mode", String.class);
+        String example = portletName + "." + op.get("mode", String.class);
         return new EndPointAnalysis(EndPointName.valueOf(portletName), endPointLabel, example, getOperationScore(op, depth), op);
     }
 }

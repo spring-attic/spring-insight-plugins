@@ -27,21 +27,18 @@ import org.apache.cassandra.service.CassandraDaemon;
 /**
  * An in-memory Cassandra storage service that listens to the thrift interface.
  * Useful for unit testing
- * */
-public class EmbeddedCassandraService implements Runnable
-{	
+ */
+public class EmbeddedCassandraService implements Runnable {
     CassandraDaemon cassandraDaemon;
- 
-    public void init() throws Exception
-    {
-    	prepare();
-    	
+
+    public void init() throws Exception {
+        prepare();
+
         cassandraDaemon = new CassandraDaemon();
         cassandraDaemon.init(null);
     }
- 
-    public void run()
-    {
+
+    public void run() {
         cassandraDaemon.start();
     }
 
@@ -50,71 +47,76 @@ public class EmbeddedCassandraService implements Runnable
         cleanupDataDirectories();
     }
 
-      /**
-       * Creates all data dir if they don't exist and cleans them
-       * @throws IOException
-       */
-      public void prepare() throws IOException {
-    	  // Tell cassandra where the configuration files are. Use the test configuration file.
-    	  System.setProperty("storage-config", "../../test/resources");
-    	  
-          cleanupDataDirectories();
-          makeDirsIfNotExist();
-      }
-   
-      /**
-       * Deletes all data from cassandra data directories, including the commit log.
-       * @throws IOException in case of permissions error etc.
-       */
-      public void cleanupDataDirectories() throws IOException {
-          for (String s: getDataDirs()) {
-              cleanDir(s);
-          }
-      }
-      /**
-       * Creates the data directories, if they didn't exist.
-       * @throws IOException if directories cannot be created (permissions etc).
-       */
-      public void makeDirsIfNotExist() throws IOException {
-          for (String s: getDataDirs()) {
-              mkdir(s);
-          }
-      }
-   
-      /**
-       * Collects all data dirs and returns a set of String paths on the file system.
-       *
-       * @return
-       */
-      private Set<String> getDataDirs() {
-          Set<String> dirs = new HashSet<String>();
-          for (String s : DatabaseDescriptor.getAllDataFileLocations()) {
-              dirs.add(s);
-          }
-          dirs.add(DatabaseDescriptor.getCommitLogLocation());
-          dirs.add(DatabaseDescriptor.getSavedCachesLocation());
-          return dirs;
-      }
-      /**
-       * Creates a directory
-       *
-       * @param dir
-       * @throws IOException
-       */
-      private void mkdir(String dir) throws IOException {
-          FileUtils.createDirectory(dir);
-      }
-   
-      /**
-       * Removes all directory content from file the system
-       *
-       * @param dir
-       * @throws IOException
-       */
-      private void cleanDir(String dir) throws IOException {
-          File dirFile = new File(dir);
-          if (dirFile.exists() && dirFile.isDirectory()) {
-              FileUtils.deleteRecursive(dirFile);
-          }
-      }
+    /**
+     * Creates all data dir if they don't exist and cleans them
+     *
+     * @throws IOException
+     */
+    public void prepare() throws IOException {
+        // Tell cassandra where the configuration files are. Use the test configuration file.
+        System.setProperty("storage-config", "../../test/resources");
+
+        cleanupDataDirectories();
+        makeDirsIfNotExist();
+    }
+
+    /**
+     * Deletes all data from cassandra data directories, including the commit log.
+     *
+     * @throws IOException in case of permissions error etc.
+     */
+    public void cleanupDataDirectories() throws IOException {
+        for (String s : getDataDirs()) {
+            cleanDir(s);
+        }
+    }
+
+    /**
+     * Creates the data directories, if they didn't exist.
+     *
+     * @throws IOException if directories cannot be created (permissions etc).
+     */
+    public void makeDirsIfNotExist() throws IOException {
+        for (String s : getDataDirs()) {
+            mkdir(s);
+        }
+    }
+
+    /**
+     * Collects all data dirs and returns a set of String paths on the file system.
+     *
+     * @return
+     */
+    private Set<String> getDataDirs() {
+        Set<String> dirs = new HashSet<String>();
+        for (String s : DatabaseDescriptor.getAllDataFileLocations()) {
+            dirs.add(s);
+        }
+        dirs.add(DatabaseDescriptor.getCommitLogLocation());
+        dirs.add(DatabaseDescriptor.getSavedCachesLocation());
+        return dirs;
+    }
+
+    /**
+     * Creates a directory
+     *
+     * @param dir
+     * @throws IOException
+     */
+    private void mkdir(String dir) throws IOException {
+        FileUtils.createDirectory(dir);
+    }
+
+    /**
+     * Removes all directory content from file the system
+     *
+     * @param dir
+     * @throws IOException
+     */
+    private void cleanDir(String dir) throws IOException {
+        File dirFile = new File(dir);
+        if (dirFile.exists() && dirFile.isDirectory()) {
+            FileUtils.deleteRecursive(dirFile);
+        }
+    }
 }

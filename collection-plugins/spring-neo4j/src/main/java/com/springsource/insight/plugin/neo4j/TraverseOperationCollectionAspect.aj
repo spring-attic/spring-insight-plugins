@@ -30,21 +30,21 @@ public privileged aspect TraverseOperationCollectionAspect extends AbstractOpera
         super();
     }
 
-    public pointcut collectionPoint() : execution(* Neo4jTemplate+.traverse(*, TraversalDescription));
+    public pointcut collectionPoint(): execution(* Neo4jTemplate+.traverse(*, TraversalDescription));
 
-	@Override
+    @Override
     protected Operation createOperation(JoinPoint jp) {
-    	Object[] args = jp.getArgs();
-        
-    	Operation op = new Operation().type(OperationCollectionTypes.TRAVERSE_TYPE.type)
-						.label(OperationCollectionTypes.TRAVERSE_TYPE.label)
-						.sourceCodeLocation(getSourceCodeLocation(jp));
-    	
-     	TraversalDescription desc=(TraversalDescription)args[args.length-1];
-		op.put("start", args[0].toString());
-		op.put("traversalDescription", desc.toString());
-		
-		return op;
+        Object[] args = jp.getArgs();
+
+        Operation op = new Operation().type(OperationCollectionTypes.TRAVERSE_TYPE.type)
+                .label(OperationCollectionTypes.TRAVERSE_TYPE.label)
+                .sourceCodeLocation(getSourceCodeLocation(jp));
+
+        TraversalDescription desc = (TraversalDescription) args[args.length - 1];
+        op.put("start", args[0].toString());
+        op.put("traversalDescription", desc.toString());
+
+        return op;
     }
 
     @Override

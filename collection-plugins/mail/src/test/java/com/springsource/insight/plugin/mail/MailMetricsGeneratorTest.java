@@ -25,24 +25,24 @@ import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.util.IDataPoint;
 
 public class MailMetricsGeneratorTest extends AbstractMetricsGeneratorTest {
-	public MailMetricsGeneratorTest () {
-		super(MailSendMetricsGenerator.getInstance());
-	}
-    
-	@Override
-	protected void validateMetricsBags(List<MetricsBag> mbs) {
-		assertEquals(2, mbs.size());
-        
+    public MailMetricsGeneratorTest() {
+        super(MailSendMetricsGenerator.getInstance());
+    }
+
+    @Override
+    protected void validateMetricsBags(List<MetricsBag> mbs) {
+        assertEquals(2, mbs.size());
+
         MetricsBag mb = mbs.get(0);
 
         List<String> keys = mb.getMetricKeys();
         assertEquals(3, keys.size());
-        
+
         assertEquals("opExtKey", mb.getResourceKey().getName());
 
         List<IDataPoint> points = mb.getPoints(AbstractMetricsGenerator.EXECUTION_TIME);
         assertEquals(1, points.size());
-        assertEquals(160.0 , points.get(0).getValue(), .0001);
+        assertEquals(160.0, points.get(0).getValue(), .0001);
 
         points = mb.getPoints(AbstractMetricsGenerator.INVOCATION_COUNT);
         assertEquals(1, points.size());
@@ -51,16 +51,16 @@ public class MailMetricsGeneratorTest extends AbstractMetricsGeneratorTest {
         points = mb.getPoints(MailSendMetricsGenerator.MAIL_SIZE_METRIC);
         assertEquals(1, points.size());
         assertEquals(256.0, points.get(0).getValue(), 0.01);
-	}
+    }
 
-	@Override
-	protected List<Frame> makeFrame() {
-		List<Frame>	frames=super.makeFrame();
-		for (Frame frame : frames) {
-	        Operation op = frame.getOperation();
-	        op.put("size", 256);
-	    }
+    @Override
+    protected List<Frame> makeFrame() {
+        List<Frame> frames = super.makeFrame();
+        for (Frame frame : frames) {
+            Operation op = frame.getOperation();
+            op.put("size", 256);
+        }
 
-		return frames;
-	}
+        return frames;
+    }
 }

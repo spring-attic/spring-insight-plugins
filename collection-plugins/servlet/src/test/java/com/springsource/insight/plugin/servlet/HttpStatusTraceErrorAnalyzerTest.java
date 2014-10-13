@@ -31,10 +31,10 @@ import com.springsource.insight.intercept.trace.TraceError;
 import com.springsource.insight.intercept.trace.TraceId;
 
 public class HttpStatusTraceErrorAnalyzerTest extends AbstractCollectionTestSupport {
-    private final HttpStatusTraceErrorAnalyzer analyzer=HttpStatusTraceErrorAnalyzer.getInstance();
+    private final HttpStatusTraceErrorAnalyzer analyzer = HttpStatusTraceErrorAnalyzer.getInstance();
 
-    public HttpStatusTraceErrorAnalyzerTest () {
-    	super();
+    public HttpStatusTraceErrorAnalyzerTest() {
+        super();
     }
 
     @Test
@@ -46,13 +46,13 @@ public class HttpStatusTraceErrorAnalyzerTest extends AbstractCollectionTestSupp
         Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
         assertTrue(analyzer.locateErrors(trace).isEmpty());
     }
-    
+
     @Test
     public void findErrors_noErrors() {
         Trace trace = createHttpTrace(200, true);
         assertTrue(analyzer.locateErrors(trace).isEmpty());
     }
-    
+
     @Test
     public void findErrors() {
         Trace trace = createHttpTrace(503, true);
@@ -74,14 +74,14 @@ public class HttpStatusTraceErrorAnalyzerTest extends AbstractCollectionTestSupp
     Trace createHttpTrace(int statusCode, boolean available) {
         SimpleFrameBuilder builder = new SimpleFrameBuilder();
         Operation httpOp = new Operation()
-            .type(OperationType.HTTP);
+                .type(OperationType.HTTP);
         httpOp.createMap("request")
-            .put(OperationFields.URI, "/path?fuu=bar")
-            .put("method", "GET")
-            .put(OperationFields.CONTEXT_AVAILABLE, available)
-            .put("servletName", "My stuff / servlet");
+                .put(OperationFields.URI, "/path?fuu=bar")
+                .put("method", "GET")
+                .put(OperationFields.CONTEXT_AVAILABLE, available)
+                .put("servletName", "My stuff / servlet");
         httpOp.createMap("response")
-            .put("statusCode", statusCode);
+                .put("statusCode", statusCode);
         builder.enter(httpOp);
         Frame httpFrame = builder.exit();
         return Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), httpFrame);

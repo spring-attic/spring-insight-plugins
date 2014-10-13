@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.springsource.insight.plugins</groupId>
-	<artifactId>insight-plugin-spring-batch</artifactId>
-	<name>com.springsource.insight.plugins:spring-batch</name>
-	<packaging>jar</packaging>
-	
-	<parent>
-		<groupId>com.springsource.insight</groupId>
-		<artifactId>community-plugins</artifactId>
-		<version>2.0.0-CI-SNAPSHOT</version>
-		<relativePath>..</relativePath>
-	</parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.springsource.insight.plugins</groupId>
+    <artifactId>insight-plugin-spring-batch</artifactId>
+    <name>com.springsource.insight.plugins:spring-batch</name>
+    <packaging>jar</packaging>
 
-	<properties>
-		<spring.batch.version>2.1.8.RELEASE</spring.batch.version>
-	</properties>
+    <parent>
+        <groupId>com.springsource.insight</groupId>
+        <artifactId>community-plugins</artifactId>
+        <version>2.0.0-CI-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
 
-	<dependencies>
-		<!-- Provided dependencies (part of the user application) -->
-		<dependency>
-			<groupId>org.springframework.batch</groupId>
-			<artifactId>spring-batch-core</artifactId>
-			<version>${spring.batch.version}</version>
-			<scope>provided</scope>
-		</dependency>
+    <properties>
+        <spring.batch.version>2.1.8.RELEASE</spring.batch.version>
+    </properties>
+
+    <dependencies>
+        <!-- Provided dependencies (part of the user application) -->
+        <dependency>
+            <groupId>org.springframework.batch</groupId>
+            <artifactId>spring-batch-core</artifactId>
+            <version>${spring.batch.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- Test dependencies -->
         <dependency>    <!--  for IDK tests -->
@@ -42,8 +43,8 @@
             <artifactId>servlet-api</artifactId>
             <scope>test</scope>
         </dependency>
-			<!-- Replacement of commons-logging with a native slf4j 
-                 - Required by Spring framework (and others) -->
+        <!-- Replacement of commons-logging with a native slf4j
+             - Required by Spring framework (and others) -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
@@ -53,31 +54,33 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <scope>test</scope>
-        </dependency>       
-			
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
-	
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-                    	<manifest>
-                    		<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                    	</manifest>
-						<manifestEntries>
-							<Insight-Plugin-Descriptor>com.springsource.insight.plugin.springbatch.SpringBatchPluginRuntimeDescriptor</Insight-Plugin-Descriptor>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Insight-Plugin-Descriptor>
+                                com.springsource.insight.plugin.springbatch.SpringBatchPluginRuntimeDescriptor
+                            </Insight-Plugin-Descriptor>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
@@ -85,7 +88,7 @@
                     <header>../../aslHeader.txt</header>
                 </configuration>
             </plugin>
-		</plugins>
-	</build>
-	
+        </plugins>
+    </build>
+
 </project>

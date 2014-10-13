@@ -25,7 +25,7 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 
 /**
- * 
+ *
  */
 public class EndpointMethodOperationCollectionAspectTest
         extends OperationCollectionAspectTestSupport {
@@ -35,10 +35,10 @@ public class EndpointMethodOperationCollectionAspectTest
 
     @Test
     public void testEndpointCollection() {
-        ExampleEndpoint endpoint=new ExampleEndpoint();
+        ExampleEndpoint endpoint = new ExampleEndpoint();
         endpoint.perform();
-        
-        Operation op=getLastEntered();
+
+        Operation op = getLastEntered();
         assertNotNull("No operation captured", op);
         assertEquals("Mismatched operation type", OperationType.METHOD, op.getType());
         assertEquals("Mismatched captured lable", "ExampleEndpoint#perform", op.getLabel());
@@ -48,12 +48,12 @@ public class EndpointMethodOperationCollectionAspectTest
     public OperationCollectionAspectSupport getAspect() {
         return AnnotationDrivenMethodOperationCollectionAspect.aspectOf();
     }
-    
+
     @Endpoint
     private static class ExampleEndpoint {
-        ExampleEndpoint () { /* ignored */ }
+        ExampleEndpoint() { /* ignored */ }
 
-        public void perform() { /* ignored */  }
+        public void perform() { /* ignored */ }
 
     }
 }

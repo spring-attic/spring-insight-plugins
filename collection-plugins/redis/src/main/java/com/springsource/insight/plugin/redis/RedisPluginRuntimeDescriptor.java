@@ -24,23 +24,25 @@ import com.springsource.insight.util.ArrayUtil;
 
 public class RedisPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "redis";
-    private static final RedisPluginRuntimeDescriptor	INSTANCE=new RedisPluginRuntimeDescriptor();
-    private static final List<? extends ExternalResourceAnalyzer>	extResAnalyzers=
-       		ArrayUtil.asUnmodifiableList(RedisExternalResourceAnalyzer.getInstance());
-    private RedisPluginRuntimeDescriptor () {
-    	super();
+    private static final RedisPluginRuntimeDescriptor INSTANCE = new RedisPluginRuntimeDescriptor();
+    private static final List<? extends ExternalResourceAnalyzer> extResAnalyzers =
+            ArrayUtil.asUnmodifiableList(RedisExternalResourceAnalyzer.getInstance());
+
+    private RedisPluginRuntimeDescriptor() {
+        super();
     }
 
     public static final RedisPluginRuntimeDescriptor getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;
     }
+
     @Override
     public Collection<? extends ExternalResourceAnalyzer> getExternalResourceAnalyzers() {
-    	return extResAnalyzers;
+        return extResAnalyzers;
     }
 }

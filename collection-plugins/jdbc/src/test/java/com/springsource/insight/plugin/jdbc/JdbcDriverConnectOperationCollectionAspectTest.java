@@ -34,12 +34,12 @@ import com.springsource.insight.intercept.trace.ObscuredValueMarker;
 import com.springsource.insight.util.StringUtil;
 
 /**
- * 
+ *
  */
 public class JdbcDriverConnectOperationCollectionAspectTest
         extends JdbcConnectionOperationCollectionTestSupport {
     private ObscuredValueMarker originalMarker;
-    private final ObscuredValueSetMarker	replaceMarker=new ObscuredValueSetMarker();
+    private final ObscuredValueSetMarker replaceMarker = new ObscuredValueSetMarker();
 
     public JdbcDriverConnectOperationCollectionAspectTest() {
         super();
@@ -47,10 +47,10 @@ public class JdbcDriverConnectOperationCollectionAspectTest
 
     @Override
     @Before
-    public void setUp () {
+    public void setUp() {
         super.setUp();
 
-        JdbcDriverConnectOperationCollectionAspect  aspectInstance=getAspect();
+        JdbcDriverConnectOperationCollectionAspect aspectInstance = getAspect();
         originalMarker = aspectInstance.getSensitiveValueMarker();
         replaceMarker.clear();
         aspectInstance.setSensitiveValueMarker(replaceMarker);
@@ -58,30 +58,30 @@ public class JdbcDriverConnectOperationCollectionAspectTest
 
     @Override
     @After
-    public void restore () {
-        JdbcDriverConnectOperationCollectionAspect  aspectInstance=getAspect();
+    public void restore() {
+        JdbcDriverConnectOperationCollectionAspect aspectInstance = getAspect();
         aspectInstance.setSensitiveValueMarker(originalMarker);
         // restore the original obfuscation settings
-        CollectionSettingsRegistry registry=CollectionSettingsRegistry.getInstance();
+        CollectionSettingsRegistry registry = CollectionSettingsRegistry.getInstance();
         registry.set(JdbcDriverConnectOperationCollectionAspect.OBFUSCATED_PROPERTIES_SETTING,
-                     JdbcDriverConnectOperationCollectionAspect.DEFAULT_OBFUSCATED_PROPERTIES_LIST);
+                JdbcDriverConnectOperationCollectionAspect.DEFAULT_OBFUSCATED_PROPERTIES_LIST);
         super.restore();
     }
 
     @Test
-    public void testDriverConnect () throws SQLException {
-        Operation   op=runConnectionTest();
+    public void testDriverConnect() throws SQLException {
+        Operation op = runConnectionTest();
         assertObscuredProperties(op,
                 StringUtil.explode(JdbcDriverConnectOperationCollectionAspect.DEFAULT_OBFUSCATED_PROPERTIES_LIST, ","),
                 true);
     }
 
     @Test
-    public void testPropertiesObfuscation () throws SQLException {
-        CollectionSettingsRegistry registry=CollectionSettingsRegistry.getInstance();
+    public void testPropertiesObfuscation() throws SQLException {
+        CollectionSettingsRegistry registry = CollectionSettingsRegistry.getInstance();
         // make sure the defaults are overridden
         registry.set(JdbcDriverConnectOperationCollectionAspect.OBFUSCATED_PROPERTIES_SETTING, "x,y,z");
-        Operation   op=runConnectionTest();
+        Operation op = runConnectionTest();
         assertObscuredProperties(op,
                 StringUtil.explode(JdbcDriverConnectOperationCollectionAspect.DEFAULT_OBFUSCATED_PROPERTIES_LIST, ","),
                 false);
@@ -92,17 +92,17 @@ public class JdbcDriverConnectOperationCollectionAspectTest
         return JdbcDriverConnectOperationCollectionAspect.aspectOf();
     }
 
-    private Operation runConnectionTest () throws SQLException {
-        Connection  conn=connectDriver.connect(connectUrl, connectProps);
+    private Operation runConnectionTest() throws SQLException {
+        Connection conn = connectDriver.connect(connectUrl, connectProps);
         try {
-            DatabaseMetaData    metaData=conn.getMetaData();
-            String              connURL=metaData.getURL();
+            DatabaseMetaData metaData = conn.getMetaData();
+            String connURL = metaData.getURL();
             /*
              * NOTE: this is not a test failure since this is not where we expect to
              * get our data, but let's leave it here in case we detect something strange
              */
-             assertEquals("Mismatched meta-data URL(s)", connectUrl, connURL);
-             assertTrackedConnection(conn, connURL);
+            assertEquals("Mismatched meta-data URL(s)", connectUrl, connURL);
+            assertTrackedConnection(conn, connURL);
         } finally {
             conn.close();   // don't need it for anything
             assertConnectionNotTracked(conn);
@@ -111,39 +111,39 @@ public class JdbcDriverConnectOperationCollectionAspectTest
         return assertConnectDetails(connectDriver, connectUrl, connectProps);
     }
 
-    private Operation assertConnectDetails (Driver driver, String url, Properties props) {
-        Operation   op=assertConnectDetails(url, "create");
+    private Operation assertConnectDetails(Driver driver, String url, Properties props) {
+        Operation op = assertConnectDetails(url, "create");
         assertEquals("Mismatched driver class", driver.getClass().getName(), op.get("driverClass", String.class));
-        
-        OperationMap    actualParams=op.get("params", OperationMap.class);
+
+        OperationMap actualParams = op.get("params", OperationMap.class);
         if (actualParams != null) {   // OK if missing - means 'collectExtraInformation' is FALSE
-            OperationMap    expectedParams=JdbcDriverConnectOperationCollectionAspect.addConnectionProperties(new Operation(), props);
+            OperationMap expectedParams = JdbcDriverConnectOperationCollectionAspect.addConnectionProperties(new Operation(), props);
             assertEquals("Mismatched parameters size", expectedParams.size(), actualParams.size());
             for (String key : expectedParams.keySet()) {
-                Object  expValue=expectedParams.get(key), actValue=actualParams.get(key);
+                Object expValue = expectedParams.get(key), actValue = actualParams.get(key);
                 assertEquals("Mismatched value for parameter=" + key, expValue, actValue);
             }
         }
-        
+
         return op;
     }
 
-    private void assertObscuredProperties (Operation op, Collection<String> obscuredKeys, boolean expectedState) {
-        OperationMap    params=op.get("params", OperationMap.class);
+    private void assertObscuredProperties(Operation op, Collection<String> obscuredKeys, boolean expectedState) {
+        OperationMap params = op.get("params", OperationMap.class);
         if (params == null)
             return;
 
-        JdbcDriverConnectOperationCollectionAspect  aspectInstance=getAspect();
-        ObscuredValueSetMarker                    	obscuredValue=(ObscuredValueSetMarker) aspectInstance.getSensitiveValueMarker();
+        JdbcDriverConnectOperationCollectionAspect aspectInstance = getAspect();
+        ObscuredValueSetMarker obscuredValue = (ObscuredValueSetMarker) aspectInstance.getSensitiveValueMarker();
         for (String key : obscuredKeys) {
-            Object  value=params.get(key);
+            Object value = params.get(key);
             if (value == null) {
                 continue;
             }
-            
+
             assertEquals("Key=" + key + " obscured state mismatch",
-                                Boolean.valueOf(expectedState),
-                                Boolean.valueOf(obscuredValue.contains(value)));
+                    Boolean.valueOf(expectedState),
+                    Boolean.valueOf(obscuredValue.contains(value)));
         }
     }
 }

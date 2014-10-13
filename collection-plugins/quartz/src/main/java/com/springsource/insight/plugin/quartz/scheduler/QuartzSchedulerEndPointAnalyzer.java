@@ -19,27 +19,27 @@ import com.springsource.insight.intercept.endpoint.AbstractSingleTypeEndpointAna
 import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 
 /**
- * 
+ *
  */
-public class QuartzSchedulerEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer{
+public class QuartzSchedulerEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
     /**
      * The <U>static</U> score value assigned to endpoints - <B>Note:</B>
      * we return a score of {@link EndPointAnalysis#CEILING_LAYER_SCORE} so as
      * to let other endpoints &quot;beat&quot; this one
      */
-	public static final int	DEFAULT_SCORE=EndPointAnalysis.CEILING_LAYER_SCORE;
-	private static final QuartzSchedulerEndPointAnalyzer	INSTANCE=new QuartzSchedulerEndPointAnalyzer();
+    public static final int DEFAULT_SCORE = EndPointAnalysis.CEILING_LAYER_SCORE;
+    private static final QuartzSchedulerEndPointAnalyzer INSTANCE = new QuartzSchedulerEndPointAnalyzer();
 
     private QuartzSchedulerEndPointAnalyzer() {
         super(QuartzSchedulerDefinitions.TYPE);
     }
 
     public static final QuartzSchedulerEndPointAnalyzer getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override
-	protected int getDefaultScore(int depth) {
-    	return DEFAULT_SCORE;
+    protected int getDefaultScore(int depth) {
+        return DEFAULT_SCORE;
     }
 }

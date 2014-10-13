@@ -35,55 +35,55 @@ import com.springsource.insight.util.ListUtil;
  * {@link ExternalResourceType#SERVER} {@link ExternalResourceDescriptor}-s
  */
 public class SocketExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-	private static final SocketExternalResourceAnalyzer	INSTANCE=new SocketExternalResourceAnalyzer();
+    private static final SocketExternalResourceAnalyzer INSTANCE = new SocketExternalResourceAnalyzer();
 
     private SocketExternalResourceAnalyzer() {
-       super(SocketDefinitions.TYPE);
+        super(SocketDefinitions.TYPE);
     }
 
     public static final SocketExternalResourceAnalyzer getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
-    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame>   framesList) {
+    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> framesList) {
         if (ListUtil.size(framesList) <= 0) {
             return Collections.emptyList();
         }
 
-        Set<ExternalResourceDescriptor> resSet=new HashSet<ExternalResourceDescriptor>(framesList.size());
+        Set<ExternalResourceDescriptor> resSet = new HashSet<ExternalResourceDescriptor>(framesList.size());
         for (Frame frame : framesList) {
-            ExternalResourceDescriptor  res=extractExternalResourceDescriptor(frame);
+            ExternalResourceDescriptor res = extractExternalResourceDescriptor(frame);
             if (res == null) {  // can happen if failed to parse the URI somehow
                 continue;
             }
-            
+
             if (!resSet.add(res))
                 continue;   // debug breakpoint
         }
-        
+
         return resSet;
     }
 
-    ExternalResourceDescriptor extractExternalResourceDescriptor (Frame frame) {
-        Operation   op=(frame == null) ? null : frame.getOperation();
-        String      action=(op == null) ? null : op.get(SocketDefinitions.ACTION_ATTR, String.class);
+    ExternalResourceDescriptor extractExternalResourceDescriptor(Frame frame) {
+        Operation op = (frame == null) ? null : frame.getOperation();
+        String action = (op == null) ? null : op.get(SocketDefinitions.ACTION_ATTR, String.class);
         if (!SocketDefinitions.CONNECT_ACTION.equals(action)) {
             return null;
         }
 
-        String  addr=op.get(SocketDefinitions.ADDRESS_ATTR, String.class);
-        int     port=op.getInt(SocketDefinitions.PORT_ATTR, (-1));
-        String  uri=op.get(OperationFields.URI,String.class);
-        ExternalResourceType    type=(uri == null) ? ExternalResourceType.SERVER : ExternalResourceType.WEB_SERVER;
+        String addr = op.get(SocketDefinitions.ADDRESS_ATTR, String.class);
+        int port = op.getInt(SocketDefinitions.PORT_ATTR, (-1));
+        String uri = op.get(OperationFields.URI, String.class);
+        ExternalResourceType type = (uri == null) ? ExternalResourceType.SERVER : ExternalResourceType.WEB_SERVER;
         String color = colorManager.getColor(op);
-        
+
         return new ExternalResourceDescriptor(frame,
-        									  MD5NameGenerator.getName(addr + ":" + port),
-                                              op.getLabel(),
-                                              type.name(),
-                                              null,
-                                              addr,
-                                              port,
-                                              color, false);
+                MD5NameGenerator.getName(addr + ":" + port),
+                op.getLabel(),
+                type.name(),
+                null,
+                addr,
+                port,
+                color, false);
     }
 }

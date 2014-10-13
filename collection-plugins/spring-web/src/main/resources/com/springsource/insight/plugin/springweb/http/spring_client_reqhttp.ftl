@@ -17,7 +17,7 @@
 </@insight.group>
 
 <#if operation.exception??>
-	<@insight.group label="Exception Details">
-		<@insight.entry name="Exception" value=operation.exception/>
-	</@insight.group>
+    <@insight.group label="Exception Details">
+        <@insight.entry name="Exception" value=operation.exception/>
+    </@insight.group>
 </#if>

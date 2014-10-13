@@ -21,5 +21,5 @@ import javax.ejb.Local;
 
 @Local
 public interface ExampleEjb3LocalService {
-    void invokeMe (Date dtVal);
+    void invokeMe(Date dtVal);
 }

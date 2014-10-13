@@ -17,13 +17,13 @@ package com.springsource.insight.plugin.cassandra;
 
 
 public class CassandraCQLExternalResourceAnalyzer extends AbsCassandraExternalResourceAnalyzer {
-	private static final CassandraCQLExternalResourceAnalyzer	INSTANCE=new CassandraCQLExternalResourceAnalyzer();
+    private static final CassandraCQLExternalResourceAnalyzer INSTANCE = new CassandraCQLExternalResourceAnalyzer();
 
-	private CassandraCQLExternalResourceAnalyzer () {
-	    super(OperationCollectionTypes.CQL_TYPE.type);
-	}
+    private CassandraCQLExternalResourceAnalyzer() {
+        super(OperationCollectionTypes.CQL_TYPE.type);
+    }
 
-	public static final CassandraCQLExternalResourceAnalyzer getInstance() {
-		return INSTANCE;
-	}
+    public static final CassandraCQLExternalResourceAnalyzer getInstance() {
+        return INSTANCE;
+    }
 }

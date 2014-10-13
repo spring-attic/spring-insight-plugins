@@ -18,36 +18,36 @@ package com.springsource.insight.plugin.jdbc.parsers;
 
 
 public class SqlTestEntry {
-	private final String connectionUrl;
-	private final String host;
-	private final int port;
-	private final String dbname;
+    private final String connectionUrl;
+    private final String host;
+    private final int port;
+    private final String dbname;
 
-	public SqlTestEntry(String url, String dbHost, int dbPort, String dbName) {
-		this.connectionUrl = url;
-		this.host = dbHost;
-		this.port = dbPort;
-		this.dbname = dbName;
-	}
+    public SqlTestEntry(String url, String dbHost, int dbPort, String dbName) {
+        this.connectionUrl = url;
+        this.host = dbHost;
+        this.port = dbPort;
+        this.dbname = dbName;
+    }
 
-	public String getConnectionUrl() {
-		return connectionUrl;
-	}
+    public String getConnectionUrl() {
+        return connectionUrl;
+    }
 
-	public int getPort() {
-		return port;
-	}
+    public int getPort() {
+        return port;
+    }
 
-	public String getHost() {
-		return host;
-	}
+    public String getHost() {
+        return host;
+    }
 
-	public String getDbname() {
-		return dbname;
-	}
+    public String getDbname() {
+        return dbname;
+    }
 
-	@Override
-	public String toString() {
-		return getConnectionUrl();
-	}
+    @Override
+    public String toString() {
+        return getConnectionUrl();
+    }
 }

@@ -47,52 +47,52 @@ import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class RabbitMQPublishCollectionAspectTest extends AbstractRabbitMQCollectionAspectTestSupport {
-    public RabbitMQPublishCollectionAspectTest () {
-    	super(RabbitPluginOperationType.PUBLISH);
+    public RabbitMQPublishCollectionAspectTest() {
+        super(RabbitPluginOperationType.PUBLISH);
     }
 
     @Test
     public void testPublish() throws IOException {
-        
+
         String exchange = "exchange";
         String routingKey = "routingKey";
         boolean mandatory = false;
-        boolean immediate = false; 
+        boolean immediate = false;
         BasicProperties props = create();
         byte[] body = new byte[25];
-        
+
         MockChannel channel = new MockChannel();
-        
+
         channel.basicPublish(exchange, routingKey, mandatory, immediate, props, body);
-        
+
         Operation op = assertBasicOperation(props, body, AbstractRabbitMQResourceAnalyzer.RABBIT + "-" + "Published to " + exchange + "#" + routingKey);
         assertEquals("Mismatched exchange", exchange, op.get("exchange", String.class));
         assertEquals("Mismatched routing key", routingKey, op.get("routingKey", String.class));
         assertEquals("Mismatched mandatory value", Boolean.valueOf(mandatory), op.get("mandatory", Boolean.class));
         assertEquals("Mismatched immediate value", Boolean.valueOf(immediate), op.get("immediate", Boolean.class));
     }
-    
+
     private BasicProperties create() {
         BasicProperties.Builder builder = new BasicProperties.Builder();
-        
+
         builder.appId("RabbitMQ")
-               .contentEncoding("UTF-8")
-               .contentType("TEXT")
-               .correlationId("None")
-               .deliveryMode(Integer.valueOf(3))
-               .expiration("Never")
-               .messageId("Message-1")
-               .priority(Integer.valueOf(4))
-               .timestamp(new Date());
-        
+                .contentEncoding("UTF-8")
+                .contentType("TEXT")
+                .correlationId("None")
+                .deliveryMode(Integer.valueOf(3))
+                .expiration("Never")
+                .messageId("Message-1")
+                .priority(Integer.valueOf(4))
+                .timestamp(new Date());
+
         return builder.build();
     }
-    
+
     @Override
     public OperationCollectionAspectSupport getAspect() {
         return RabbitMQPublishCollectionAspect.aspectOf();
     }
-    
+
     static final class MockChannel implements Channel {
         public void addShutdownListener(ShutdownListener arg0) {
             // do nothing
@@ -145,13 +145,13 @@ public class RabbitMQPublishCollectionAspectTest extends AbstractRabbitMQCollect
         }
 
         public String basicConsume(String arg0, boolean arg1, String arg2,
-                Consumer arg3) throws IOException {
+                                   Consumer arg3) throws IOException {
             return null;
         }
 
         public String basicConsume(String arg0, boolean arg1, String arg2,
-                boolean arg3, boolean arg4, Map<String, Object> arg5,
-                Consumer arg6) throws IOException {
+                                   boolean arg3, boolean arg4, Map<String, Object> arg5,
+                                   Consumer arg6) throws IOException {
             return null;
         }
 
@@ -166,12 +166,12 @@ public class RabbitMQPublishCollectionAspectTest extends AbstractRabbitMQCollect
         }
 
         public void basicPublish(String arg0, String arg1,
-                BasicProperties arg2, byte[] arg3) throws IOException {
+                                 BasicProperties arg2, byte[] arg3) throws IOException {
             // do nothing
         }
 
         public void basicPublish(String arg0, String arg1, boolean arg2,
-                boolean arg3, BasicProperties arg4, byte[] arg5)
+                                 boolean arg3, BasicProperties arg4, byte[] arg5)
                 throws IOException {
             // do nothing
         }
@@ -219,7 +219,7 @@ public class RabbitMQPublishCollectionAspectTest extends AbstractRabbitMQCollect
         }
 
         public BindOk exchangeBind(String arg0, String arg1, String arg2,
-                Map<String, Object> arg3) throws IOException {
+                                   Map<String, Object> arg3) throws IOException {
             return null;
         }
 
@@ -234,14 +234,14 @@ public class RabbitMQPublishCollectionAspectTest extends AbstractRabbitMQCollect
         }
 
         public DeclareOk exchangeDeclare(String arg0, String arg1,
-                boolean arg2, boolean arg3, Map<String, Object> arg4)
+                                         boolean arg2, boolean arg3, Map<String, Object> arg4)
                 throws IOException {
             return null;
         }
 
         public DeclareOk exchangeDeclare(String arg0, String arg1,
-                boolean arg2, boolean arg3, boolean arg4,
-                Map<String, Object> arg5) throws IOException {
+                                         boolean arg2, boolean arg3, boolean arg4,
+                                         Map<String, Object> arg5) throws IOException {
             return null;
         }
 
@@ -264,7 +264,7 @@ public class RabbitMQPublishCollectionAspectTest extends AbstractRabbitMQCollect
         }
 
         public UnbindOk exchangeUnbind(String arg0, String arg1, String arg2,
-                Map<String, Object> arg3) throws IOException {
+                                       Map<String, Object> arg3) throws IOException {
             return null;
         }
 
@@ -305,12 +305,12 @@ public class RabbitMQPublishCollectionAspectTest extends AbstractRabbitMQCollect
         }
 
         public com.rabbitmq.client.AMQP.Queue.BindOk queueBind(String arg0,
-                String arg1, String arg2) throws IOException {
+                                                               String arg1, String arg2) throws IOException {
             return null;
         }
 
         public com.rabbitmq.client.AMQP.Queue.BindOk queueBind(String arg0,
-                String arg1, String arg2, Map<String, Object> arg3)
+                                                               String arg1, String arg2, Map<String, Object> arg3)
                 throws IOException {
             return null;
         }
@@ -337,7 +337,7 @@ public class RabbitMQPublishCollectionAspectTest extends AbstractRabbitMQCollect
         }
 
         public com.rabbitmq.client.AMQP.Queue.DeleteOk queueDelete(String arg0,
-                boolean arg1, boolean arg2) throws IOException {
+                                                                   boolean arg1, boolean arg2) throws IOException {
             return null;
         }
 
@@ -346,12 +346,12 @@ public class RabbitMQPublishCollectionAspectTest extends AbstractRabbitMQCollect
         }
 
         public com.rabbitmq.client.AMQP.Queue.UnbindOk queueUnbind(String arg0,
-                String arg1, String arg2) throws IOException {
+                                                                   String arg1, String arg2) throws IOException {
             return null;
         }
 
         public com.rabbitmq.client.AMQP.Queue.UnbindOk queueUnbind(String arg0,
-                String arg1, String arg2, Map<String, Object> arg3)
+                                                                   String arg1, String arg2, Map<String, Object> arg3)
                 throws IOException {
             return null;
         }

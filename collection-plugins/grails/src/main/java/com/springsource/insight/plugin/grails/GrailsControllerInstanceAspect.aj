@@ -28,18 +28,18 @@ import groovy.lang.GroovyObject;
 
 /**
  * This aspect works in combination with the GrailsControllerMetricCollectionAspect.  
- * 
+ *
  * This aspect steals off the action parameters before the handler method would be invoked.
  */
 public aspect GrailsControllerInstanceAspect {
-	public GrailsControllerInstanceAspect() {
-		super();
-	}
+    public GrailsControllerInstanceAspect() {
+        super();
+    }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
-    before(GroovyObject controllerInstance) : GrailsControllerPointcuts.getControllerInstanceMethod(controllerInstance) {
-        GrailsParameterMap paramsMap = (GrailsParameterMap)controllerInstance.getProperty("params");
-        List<KeyValPair<String, String>>params = StringFormatterUtils.formatMapAsSorted(paramsMap);
+    before(GroovyObject controllerInstance): GrailsControllerPointcuts.getControllerInstanceMethod(controllerInstance) {
+        GrailsParameterMap paramsMap = (GrailsParameterMap) controllerInstance.getProperty("params");
+        List<KeyValPair<String, String>> params = StringFormatterUtils.formatMapAsSorted(paramsMap);
         GrailsControllerStateKeeper.setThreadLocalActionParams(params);
     }
 }

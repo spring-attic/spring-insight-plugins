@@ -27,7 +27,7 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.SourceCodeLocation;
 
 public class InitializingBeanOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-    public InitializingBeanOperationCollectionAspectTest () {
+    public InitializingBeanOperationCollectionAspectTest() {
         super();
     }
 
@@ -50,30 +50,30 @@ public class InitializingBeanOperationCollectionAspectTest extends OperationColl
         return InitializingBeanOperationCollectionAspect.aspectOf();
     }
 
-    private Operation assertInitMethod (String methodName) {
+    private Operation assertInitMethod(String methodName) {
         Operation op = getLastEntered();
         assertNotNull("No operation", op);
         assertEquals("Mismatched operation type", SpringCorePluginRuntimeDescriptor.BEAN_LIFECYLE_TYPE, op.getType());
 
-        String	compType=op.get(StereotypedSpringBeanMethodOperationCollectionAspectSupport.COMP_TYPE_ATTR, String.class);
+        String compType = op.get(StereotypedSpringBeanMethodOperationCollectionAspectSupport.COMP_TYPE_ATTR, String.class);
         // make sure not intercepted by one of the stereotyped beans aspects
         assertNull("Unexpected stereotyped bean method collection: " + compType, compType);
 
-        SourceCodeLocation	scl=op.getSourceCodeLocation();
+        SourceCodeLocation scl = op.getSourceCodeLocation();
         assertEquals("Mismatched method", methodName, scl.getMethodName());
         return op;
     }
 
     static class MyInitializingBean implements InitializingBean {
         public void afterPropertiesSet() {
-        	// do nothing
+            // do nothing
         }
     }
 
     static class PostConstructBean {
         @PostConstruct
         public void postConstruct() {
-        	// do nothing
+            // do nothing
         }
     }
 }

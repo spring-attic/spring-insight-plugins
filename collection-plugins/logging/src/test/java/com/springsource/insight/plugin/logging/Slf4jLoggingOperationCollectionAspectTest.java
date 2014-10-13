@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public class Slf4jLoggingOperationCollectionAspectTest
         extends LoggingMethodOperationCollectionAspectTestSupport {
@@ -32,45 +32,45 @@ public class Slf4jLoggingOperationCollectionAspectTest
     }
 
     @Test
-    public void testLogErrorMessage () {
-       String   msg="testLogErrorMessage";
-       Logger   logger=LoggerFactory.getLogger(getClass());
-       logger.error(msg);
-       assertLoggingOperation(logger, "ERROR", msg, null);
+    public void testLogErrorMessage() {
+        String msg = "testLogErrorMessage";
+        Logger logger = LoggerFactory.getLogger(getClass());
+        logger.error(msg);
+        assertLoggingOperation(logger, "ERROR", msg, null);
     }
 
     @Test
-    public void testLogErrorMessageWithException () {
-       String       msg="testLogErrorMessageWithException";
-       Logger       logger=LoggerFactory.getLogger(getClass());
-       Throwable    t=new IllegalArgumentException(msg);
-       logger.error(msg, t);
-       assertLoggingOperation(logger, "ERROR", msg, t);
+    public void testLogErrorMessageWithException() {
+        String msg = "testLogErrorMessageWithException";
+        Logger logger = LoggerFactory.getLogger(getClass());
+        Throwable t = new IllegalArgumentException(msg);
+        logger.error(msg, t);
+        assertLoggingOperation(logger, "ERROR", msg, t);
     }
 
     @Test
-    public void testLogFormatError () {
-       String   msg="testLogFormatError: %d";
-       Logger   logger=LoggerFactory.getLogger(getClass());
-       logger.error(msg, Integer.valueOf((int) System.nanoTime()));
-       assertLoggingOperation(logger, "ERROR", msg, null);
+    public void testLogFormatError() {
+        String msg = "testLogFormatError: %d";
+        Logger logger = LoggerFactory.getLogger(getClass());
+        logger.error(msg, Integer.valueOf((int) System.nanoTime()));
+        assertLoggingOperation(logger, "ERROR", msg, null);
     }
 
     @Test
-    public void testLogFormatErrorWith2Values () {
-       String   msg="testLogFormatErrorWith2Values: %d/%d";
-       Logger   logger=LoggerFactory.getLogger(getClass());
-       logger.error(msg, Integer.valueOf((int) System.currentTimeMillis()), Integer.valueOf((int) System.nanoTime()));
-       assertLoggingOperation(logger, "ERROR", msg, null);
+    public void testLogFormatErrorWith2Values() {
+        String msg = "testLogFormatErrorWith2Values: %d/%d";
+        Logger logger = LoggerFactory.getLogger(getClass());
+        logger.error(msg, Integer.valueOf((int) System.currentTimeMillis()), Integer.valueOf((int) System.nanoTime()));
+        assertLoggingOperation(logger, "ERROR", msg, null);
     }
 
     @Test
-    public void testLogFormatErrorWithArray () {
-       String   msg="testLogFormatErrorWithArray: %d/%d";
-       Logger   logger=LoggerFactory.getLogger(getClass());
-       Object[] args={ Integer.valueOf((int) System.currentTimeMillis()), Integer.valueOf((int) System.nanoTime()) };
-       logger.error(msg, args);
-       assertLoggingOperation(logger, "ERROR", msg, null);
+    public void testLogFormatErrorWithArray() {
+        String msg = "testLogFormatErrorWithArray: %d/%d";
+        Logger logger = LoggerFactory.getLogger(getClass());
+        Object[] args = {Integer.valueOf((int) System.currentTimeMillis()), Integer.valueOf((int) System.nanoTime())};
+        logger.error(msg, args);
+        assertLoggingOperation(logger, "ERROR", msg, null);
     }
 
     @Override
@@ -78,8 +78,8 @@ public class Slf4jLoggingOperationCollectionAspectTest
         return Slf4jLoggingOperationCollectionAspect.aspectOf();
     }
 
-    private Operation assertLoggingOperation (Logger logger, String level, String msg, Throwable t) {
-        Operation   op=assertLoggingOperation(Logger.class, level, msg, t);
+    private Operation assertLoggingOperation(Logger logger, String level, String msg, Throwable t) {
+        Operation op = assertLoggingOperation(Logger.class, level, msg, t);
         assertEquals("Mismatched logger name", logger.getName(), op.get(LoggingDefinitions.NAME_ATTR));
         return op;
     }

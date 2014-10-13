@@ -38,44 +38,44 @@ public class Ejb3LocalServiceOperationCollectionAspectTest extends OperationColl
     }
 
     @Test
-    public void testEjb3StatefulLocalServiceAction () throws Exception {
+    public void testEjb3StatefulLocalServiceAction() throws Exception {
         runEjb3LocalServiceAction(new ExampleStatefulEjb3LocalServiceAction(), Stateful.class);
     }
 
     @Test
-    public void testEjb3StatelessLocalServiceAction () throws Exception {
+    public void testEjb3StatelessLocalServiceAction() throws Exception {
         runEjb3LocalServiceAction(new ExampleStatelessEjb3LocalServiceAction(), Stateless.class);
     }
 
-    private <C extends ExampleEjb3LocalService & SessionSynchronization> void runEjb3LocalServiceAction (
+    private <C extends ExampleEjb3LocalService & SessionSynchronization> void runEjb3LocalServiceAction(
             final C testedService, final Class<? extends Annotation> annClass)
-                throws Exception {
-        final Class<?>  testedServiceClass=testedService.getClass();
+            throws Exception {
+        final Class<?> testedServiceClass = testedService.getClass();
         assertNotNull("Missing " + annClass.getSimpleName() + " annotation", testedServiceClass.getAnnotation(annClass));
 
         testedService.afterBegin();
 
-        final Date[]    invocationArgs={ new Date(System.currentTimeMillis()) };
+        final Date[] invocationArgs = {new Date(System.currentTimeMillis())};
         testedService.beforeCompletion();
         testedService.invokeMe(invocationArgs[0]);
         testedService.afterCompletion(true);
 
-        final Operation op=getLastEntered();
+        final Operation op = getLastEntered();
         assertNotNull("No operation extracted", op);
         assertEquals("Mismatched " + annClass.getSimpleName() + " EJB operation type(s)", Ejb3LocalServiceDefinitions.TYPE, op.getType());
 
         // see JoinPointBreakDownSourceCodeLocationFinalizer#populateOperation
         assertEquals("Mismatched " + annClass.getSimpleName() + " class name", testedServiceClass.getName(), op.get(OperationFields.CLASS_NAME, String.class));
         assertEquals("Mismatched " + annClass.getSimpleName() + " invocation method", "invokeMe", op.get("methodName", String.class));
-        
-        final OperationList argsList=op.get(OperationFields.ARGUMENTS, OperationList.class);
+
+        final OperationList argsList = op.get(OperationFields.ARGUMENTS, OperationList.class);
         assertNotNull("Missing " + annClass.getSimpleName() + " invocation arguments", argsList);
         assertEquals("Mismatched " + annClass.getSimpleName() + " num. of invocation arguments", invocationArgs.length, argsList.size());
 
-        for (int    aIndex=0; aIndex < invocationArgs.length; aIndex++) {
-            final Object    expArg=invocationArgs[aIndex], actArg=argsList.get(aIndex);
-            final String    expStr=StringFormatterUtils.formatObject(expArg),
-                            actStr=StringFormatterUtils.formatObject(actArg);
+        for (int aIndex = 0; aIndex < invocationArgs.length; aIndex++) {
+            final Object expArg = invocationArgs[aIndex], actArg = argsList.get(aIndex);
+            final String expStr = StringFormatterUtils.formatObject(expArg),
+                    actStr = StringFormatterUtils.formatObject(actArg);
             assertEquals("Mismatched " + annClass.getSimpleName() + " invocation arguments #" + aIndex, expStr, actStr);
         }
     }

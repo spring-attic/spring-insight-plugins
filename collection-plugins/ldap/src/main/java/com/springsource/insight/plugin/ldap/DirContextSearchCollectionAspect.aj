@@ -32,21 +32,22 @@ import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.util.StringUtil;
 
 /**
- * 
+ *
  */
 public aspect DirContextSearchCollectionAspect
         extends LdapOperationCollectionAspectSupport {
-    static final Map<Integer,String>    scopes=
-        Collections.unmodifiableMap(new HashMap<Integer, String>() {
-            private static final long serialVersionUID = 1L;
-            {
-                put(Integer.valueOf(SearchControls.OBJECT_SCOPE), "Object");
-                put(Integer.valueOf(SearchControls.ONELEVEL_SCOPE), "OneLevel");
-                put(Integer.valueOf(SearchControls.SUBTREE_SCOPE), "SubTree");
-            }
-        });
+    static final Map<Integer, String> scopes =
+            Collections.unmodifiableMap(new HashMap<Integer, String>() {
+                private static final long serialVersionUID = 1L;
 
-    public DirContextSearchCollectionAspect () {
+                {
+                    put(Integer.valueOf(SearchControls.OBJECT_SCOPE), "Object");
+                    put(Integer.valueOf(SearchControls.ONELEVEL_SCOPE), "OneLevel");
+                    put(Integer.valueOf(SearchControls.SUBTREE_SCOPE), "SubTree");
+                }
+            });
+
+    public DirContextSearchCollectionAspect() {
         super(DirContext.class, "search");
     }
 
@@ -54,54 +55,54 @@ public aspect DirContextSearchCollectionAspect
      * Using call instead of execution since usually JDK core classes are used
      * - e.g., InitialDirContext, LdapDirContext - and we cannot instrument them
      */
-    public pointcut searchPoint ()
-        : call(* DirContext+.search(Name,Attributes,String[]))
-       || call(* DirContext+.search(String,Attributes,String[]))
-       || call(* DirContext+.search(Name,Attributes))
-       || call(* DirContext+.search(String,Attributes))
-       || call(* DirContext+.search(Name,String,SearchControls))
-       || call(* DirContext+.search(String,String,SearchControls))
-       || call(* DirContext+.search(Name,String,Object[],SearchControls))
-       || call(* DirContext+.search(String,String,Object[],SearchControls))
-        ;
+    public pointcut searchPoint()
+            : call(* DirContext+.search(Name,Attributes,String[]))
+            || call(* DirContext+.search(String,Attributes,String[]))
+            || call(* DirContext+.search(Name,Attributes))
+            || call(* DirContext+.search(String,Attributes))
+            || call(* DirContext+.search(Name,String,SearchControls))
+            || call(* DirContext+.search(String,String,SearchControls))
+            || call(* DirContext+.search(Name,String,Object[],SearchControls))
+            || call(* DirContext+.search(String,String,Object[],SearchControls))
+            ;
 
     // NOTE: we use cflowbelow because the methods might delegate to one another
     public pointcut collectionPoint()
-        : searchPoint() && (!cflowbelow(searchPoint()))
-        ;
+            : searchPoint() && (!cflowbelow(searchPoint()))
+            ;
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Operation   op=super.createOperation(jp);
+        Operation op = super.createOperation(jp);
         if (op != null) {
-            Object[]    args=jp.getArgs();
-            String      filterValue=getFilterValue(args);
+            Object[] args = jp.getArgs();
+            String filterValue = getFilterValue(args);
             op.label(op.getLabel() + " " + filterValue)
-              .put(LdapDefinitions.LOOKUP_FILTER_ATTR, filterValue)
-              ;
+                    .put(LdapDefinitions.LOOKUP_FILTER_ATTR, filterValue)
+            ;
             if (collectExtraInformation()) {
                 extractSearchControls(op.createMap("searchControls"), findLastArgument(SearchControls.class, args));
             }
         }
-        
+
         return op;
     }
 
-    static OperationMap extractSearchControls (OperationMap op, SearchControls sc) {
+    static OperationMap extractSearchControls(OperationMap op, SearchControls sc) {
         if (sc == null) {
             return op;
         }
-        
-        op.put("searchScope", resolveScope(sc))
-          .put("countLimit", sc.getCountLimit())
-          .put("derefLinkFlag", sc.getDerefLinkFlag())
-          .put("returningObjFlag", sc.getReturningObjFlag())
-          .put("timeLimit", sc.getTimeLimit())
-          ;
 
-        String[]    retAttrs=sc.getReturningAttributes();
+        op.put("searchScope", resolveScope(sc))
+                .put("countLimit", sc.getCountLimit())
+                .put("derefLinkFlag", sc.getDerefLinkFlag())
+                .put("returningObjFlag", sc.getReturningObjFlag())
+                .put("timeLimit", sc.getTimeLimit())
+        ;
+
+        String[] retAttrs = sc.getReturningAttributes();
         if ((retAttrs != null) && (retAttrs.length > 0)) {
-            OperationList   attrs=op.createList("returningAttributes");
+            OperationList attrs = op.createList("returningAttributes");
             for (String attrName : retAttrs) {
                 attrs.add(attrName);
             }
@@ -116,22 +117,22 @@ public aspect DirContextSearchCollectionAspect
      * arguments, then returns its string value - {@link LdapDefinitions#UNKNOWN_FILTER_VALUE}
      * otherwise
      */
-    static String getFilterValue (Object ... args) {
+    static String getFilterValue(Object... args) {
         if ((args == null) || (args.length <= 2)) {
             return LdapDefinitions.UNKNOWN_FILTER_VALUE;
         }
-        
-        Object  arg1=args[1];
+
+        Object arg1 = args[1];
         if (arg1 instanceof String) {
             return (String) arg1;
         }
-        
+
         return LdapDefinitions.UNKNOWN_FILTER_VALUE;    // none of the above
     }
-    
-    static String resolveScope (SearchControls sc) {
-        int     scopeValue=sc.getSearchScope();
-        String  scope=scopes.get(Integer.valueOf(scopeValue));
+
+    static String resolveScope(SearchControls sc) {
+        int scopeValue = sc.getSearchScope();
+        String scope = scopes.get(Integer.valueOf(scopeValue));
         if (StringUtil.isEmpty(scope)) {
             return String.valueOf(scopeValue);
         } else {

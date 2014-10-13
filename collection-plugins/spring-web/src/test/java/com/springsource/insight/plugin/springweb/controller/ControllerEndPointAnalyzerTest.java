@@ -41,36 +41,36 @@ import com.springsource.insight.util.time.TimeRange;
 
 public class ControllerEndPointAnalyzerTest extends Assert {
     private static final ControllerEndPointAnalyzer analyzer = ControllerEndPointAnalyzer.getInstance();
-    private static final String	TEST_VERB="GET", TEST_PATH="/path?fuu=bar";
-    private static final String	TEST_CLASS_NAME="MyClass", TEST_METHOD_NAME="method";
-    private static final String	TEST_CLASS_PATH="com.class." + TEST_CLASS_NAME, TEST_SIGNATURE=TEST_METHOD_NAME + "()";
+    private static final String TEST_VERB = "GET", TEST_PATH = "/path?fuu=bar";
+    private static final String TEST_CLASS_NAME = "MyClass", TEST_METHOD_NAME = "method";
+    private static final String TEST_CLASS_PATH = "com.class." + TEST_CLASS_NAME, TEST_SIGNATURE = TEST_METHOD_NAME + "()";
 
-    public ControllerEndPointAnalyzerTest () {
+    public ControllerEndPointAnalyzerTest() {
         super();
     }
 
     @Test
     public void testDefaultAnalysis() {
-        Trace 	trace=createValidTrace(false);
-        Frame	scoreFrame=analyzer.getScoringFrame(trace);
+        Trace trace = createValidTrace(false);
+        Frame scoreFrame = analyzer.getScoringFrame(trace);
         assertEndPointAnalysis("traceAnalysis", analyzer.locateEndPoint(trace), scoreFrame);
         assertEndPointAnalysis("frameAnalysis", analyzer.locateEndPoint(scoreFrame, FrameUtil.getDepth(scoreFrame)), scoreFrame);
     }
 
     @Test
     public void testLegacyAnalysis() {
-        Trace 	trace=createValidTrace(false);
-        Frame	scoreFrame=analyzer.getScoringFrame(trace);
+        Trace trace = createValidTrace(false);
+        Frame scoreFrame = analyzer.getScoringFrame(trace);
         assertEndPointAnalysis("traceAnalysis", analyzer.locateEndPoint(trace), scoreFrame);
         assertEndPointAnalysis("frameAnalysis", analyzer.locateEndPoint(scoreFrame, FrameUtil.getDepth(scoreFrame)), scoreFrame);
     }
 
     @Test
     public void testAnalyzeNoHttpFrame() {
-        Operation	op=createControllerOperation(false);
-        Frame		frame=new SimpleFrame(FrameId.valueOf("3777347"), null, op, new TimeRange(1L, 10L), Collections.<Frame>emptyList());
-        Trace		trace=Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
-        EndPointAnalysis	analysis=analyzer.locateEndPoint(trace);
+        Operation op = createControllerOperation(false);
+        Frame frame = new SimpleFrame(FrameId.valueOf("3777347"), null, op, new TimeRange(1L, 10L), Collections.<Frame>emptyList());
+        Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
+        EndPointAnalysis analysis = analyzer.locateEndPoint(trace);
         assertNotNull("No analysis result", analysis);
         assertEquals("Mismatched example", op.getLabel(), analysis.getExample());
     }
@@ -87,18 +87,18 @@ public class ControllerEndPointAnalyzerTest extends Assert {
         when(trace.getRootFrame()).thenReturn(root);
         when(trace.getAppName()).thenReturn(ApplicationName.valueOf("app"));
 
-        EndPointAnalysis analysis=analyzer.locateEndPoint(trace);
+        EndPointAnalysis analysis = analyzer.locateEndPoint(trace);
         assertNull("Unexpected result: " + analysis, analysis);
     }
 
-    private static EndPointAnalysis assertEndPointAnalysis (String testName, EndPointAnalysis analysis, Frame scoreFrame) {
+    private static EndPointAnalysis assertEndPointAnalysis(String testName, EndPointAnalysis analysis, Frame scoreFrame) {
         assertNotNull(testName + ": No analysis result", analysis);
         assertEquals(testName + ": Mismatched example", TEST_VERB + " " + TEST_PATH, analysis.getExample());
         assertEquals(testName + ": Mismatched endpoint", EndPointName.valueOf(TEST_CLASS_PATH + "#" + TEST_SIGNATURE), analysis.getEndPointName());
         assertEquals(testName + ": Mismatched label", TEST_CLASS_NAME + "#" + TEST_METHOD_NAME, analysis.getResourceLabel());
 
-        Operation	op=scoreFrame.getOperation();
-        Boolean		legacy=op.get(ControllerEndPointAnalyzer.LEGACY_PROPNAME, Boolean.class);
+        Operation op = scoreFrame.getOperation();
+        Boolean legacy = op.get(ControllerEndPointAnalyzer.LEGACY_PROPNAME, Boolean.class);
         if ((legacy != null) && legacy.booleanValue()) {
             assertEquals(testName + ": Mismatched legacy score", ControllerEndPointAnalyzer.LEGACY_SCORE, analysis.getScore());
         } else {
@@ -111,8 +111,8 @@ public class ControllerEndPointAnalyzerTest extends Assert {
         SimpleFrameBuilder builder = new SimpleFrameBuilder();
         Operation httpOp = new Operation().type(OperationType.HTTP);
         httpOp.createMap("request")
-        .put(OperationFields.URI, TEST_PATH)
-        .put("method", TEST_VERB);
+                .put(OperationFields.URI, TEST_PATH)
+                .put("method", TEST_VERB);
         builder.enter(httpOp);
         builder.enter(createControllerOperation(legacy));
         builder.exit();
@@ -120,13 +120,13 @@ public class ControllerEndPointAnalyzerTest extends Assert {
         return Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), httpFrame);
     }
 
-    private static Operation createControllerOperation (boolean legacy) {
+    private static Operation createControllerOperation(boolean legacy) {
         return new Operation()
-        .type(ControllerEndPointAnalyzer.CONTROLLER_METHOD_TYPE)
-        .label(TEST_CLASS_NAME + "#" + TEST_METHOD_NAME)
-        .put(OperationFields.CLASS_NAME, TEST_CLASS_PATH)
-        .put(OperationFields.METHOD_SIGNATURE, TEST_SIGNATURE)
-        .put(ControllerEndPointAnalyzer.LEGACY_PROPNAME, legacy)
-        ;
+                .type(ControllerEndPointAnalyzer.CONTROLLER_METHOD_TYPE)
+                .label(TEST_CLASS_NAME + "#" + TEST_METHOD_NAME)
+                .put(OperationFields.CLASS_NAME, TEST_CLASS_PATH)
+                .put(OperationFields.METHOD_SIGNATURE, TEST_SIGNATURE)
+                .put(ControllerEndPointAnalyzer.LEGACY_PROPNAME, legacy)
+                ;
     }
 }

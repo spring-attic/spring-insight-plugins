@@ -52,14 +52,14 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
 
 public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollectionAspectTestSupport {
-    public RabbitMQConsumerCollectionAspectTest () {
-    	super(RabbitPluginOperationType.CONSUME);
+    public RabbitMQConsumerCollectionAspectTest() {
+        super(RabbitPluginOperationType.CONSUME);
     }
 
     @Test
     public void testHandleDelivery() throws IOException {
         MockConsumer consumer = new MockConsumer();
-        
+
         String consumerTag = "1";
         Envelope envelope = new Envelope(1l, false, "exchange", "routingKey");
         BasicProperties props = create();
@@ -69,14 +69,14 @@ public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollec
         assertTrue(RabbitMQConsumerCollectionAspect.opHolder.isEmpty());
         assertOperation(envelope, props, body, AbstractRabbitMQResourceAnalyzer.RABBIT + "-" + RabbitMQConsumerCollectionAspect.LABEL_PREFIX + "null (exchange#routingKey)");
     }
-    
+
     @Test
     public void testBasicGet() throws IOException {
-        
+
         Envelope envelope = new Envelope(1l, false, "exchange", "routingKey");
         BasicProperties props = create();
         byte[] body = new byte[25];
-        
+
         MockChannel channel = new MockChannel(envelope, props, body);
         assertTrue(RabbitMQConsumerCollectionAspect.opHolder.isEmpty());
         channel.basicGet("rk", false);
@@ -86,30 +86,30 @@ public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollec
 
     void assertOperation(Envelope envelope, BasicProperties props, byte[] body, String opLabel) {
         Operation op = assertBasicOperation(props, body, opLabel);
-        
+
         OperationMap envMap = op.get("envelope", OperationMap.class);
         assertNotNull("No envelope", envMap);
         assertEquals("Mismatched delivery tag", Long.valueOf(envelope.getDeliveryTag()), envMap.get("deliveryTag", Long.class));
-        assertEquals("Mismatched exchange", envelope.getExchange() , envMap.get("exchange", String.class));
-        assertEquals("Mismatched routing key", envelope.getRoutingKey() , envMap.get("routingKey", String.class));
+        assertEquals("Mismatched exchange", envelope.getExchange(), envMap.get("exchange", String.class));
+        assertEquals("Mismatched routing key", envelope.getRoutingKey(), envMap.get("routingKey", String.class));
     }
-    
+
     private BasicProperties create() {
         BasicProperties.Builder builder = new BasicProperties.Builder();
-        
+
         builder.appId("RabbitMQ")
-               .contentEncoding("UTF-8")
-               .contentType("TEXT")
-               .correlationId("None")
-               .deliveryMode(Integer.valueOf(3))
-               .expiration("Never")
-               .messageId("Message-1")
-               .priority(Integer.valueOf(4))
-               .timestamp(new Date());
-        
+                .contentEncoding("UTF-8")
+                .contentType("TEXT")
+                .correlationId("None")
+                .deliveryMode(Integer.valueOf(3))
+                .expiration("Never")
+                .messageId("Message-1")
+                .priority(Integer.valueOf(4))
+                .timestamp(new Date());
+
         return builder.build();
     }
-    
+
     @Override
     public OperationCollectionAspectSupport getAspect() {
         return RabbitMQConsumerCollectionAspect.aspectOf();
@@ -129,7 +129,7 @@ public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollec
         }
 
         public void handleDelivery(String consumerTag, Envelope envelope,
-                BasicProperties props, byte[] body) throws IOException {
+                                   BasicProperties props, byte[] body) throws IOException {
             // do nothing
         }
 
@@ -141,12 +141,12 @@ public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollec
             // do nothing
         }
     }
-    
+
     private static final class MockChannel implements Channel {
         private Envelope envelope;
         private BasicProperties props;
         private byte[] body;
-        
+
         public MockChannel(Envelope envelope, BasicProperties props, byte[] body) {
             this.envelope = envelope;
             this.props = props;
@@ -204,13 +204,13 @@ public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollec
         }
 
         public String basicConsume(String arg0, boolean arg1, String arg2,
-                Consumer arg3) throws IOException {
+                                   Consumer arg3) throws IOException {
             return null;
         }
 
         public String basicConsume(String arg0, boolean arg1, String arg2,
-                boolean arg3, boolean arg4, Map<String, Object> arg5,
-                Consumer arg6) throws IOException {
+                                   boolean arg3, boolean arg4, Map<String, Object> arg5,
+                                   Consumer arg6) throws IOException {
             return null;
         }
 
@@ -221,7 +221,7 @@ public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollec
             when(resp.getBody()).thenReturn(body);
             when(resp.getEnvelope()).thenReturn(envelope);
             when(resp.getProps()).thenReturn(props);
-            
+
             return resp;
         }
 
@@ -231,12 +231,12 @@ public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollec
         }
 
         public void basicPublish(String arg0, String arg1,
-                BasicProperties arg2, byte[] arg3) throws IOException {
+                                 BasicProperties arg2, byte[] arg3) throws IOException {
             // do nothing
         }
 
         public void basicPublish(String arg0, String arg1, boolean arg2,
-                boolean arg3, BasicProperties arg4, byte[] arg5)
+                                 boolean arg3, BasicProperties arg4, byte[] arg5)
                 throws IOException {
             // do nothing
         }
@@ -284,7 +284,7 @@ public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollec
         }
 
         public BindOk exchangeBind(String arg0, String arg1, String arg2,
-                Map<String, Object> arg3) throws IOException {
+                                   Map<String, Object> arg3) throws IOException {
             return null;
         }
 
@@ -299,14 +299,14 @@ public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollec
         }
 
         public DeclareOk exchangeDeclare(String arg0, String arg1,
-                boolean arg2, boolean arg3, Map<String, Object> arg4)
+                                         boolean arg2, boolean arg3, Map<String, Object> arg4)
                 throws IOException {
             return null;
         }
 
         public DeclareOk exchangeDeclare(String arg0, String arg1,
-                boolean arg2, boolean arg3, boolean arg4,
-                Map<String, Object> arg5) throws IOException {
+                                         boolean arg2, boolean arg3, boolean arg4,
+                                         Map<String, Object> arg5) throws IOException {
             return null;
         }
 
@@ -329,7 +329,7 @@ public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollec
         }
 
         public UnbindOk exchangeUnbind(String arg0, String arg1, String arg2,
-                Map<String, Object> arg3) throws IOException {
+                                       Map<String, Object> arg3) throws IOException {
             return null;
         }
 
@@ -370,12 +370,12 @@ public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollec
         }
 
         public com.rabbitmq.client.AMQP.Queue.BindOk queueBind(String arg0,
-                String arg1, String arg2) throws IOException {
+                                                               String arg1, String arg2) throws IOException {
             return null;
         }
 
         public com.rabbitmq.client.AMQP.Queue.BindOk queueBind(String arg0,
-                String arg1, String arg2, Map<String, Object> arg3)
+                                                               String arg1, String arg2, Map<String, Object> arg3)
                 throws IOException {
             return null;
         }
@@ -402,7 +402,7 @@ public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollec
         }
 
         public com.rabbitmq.client.AMQP.Queue.DeleteOk queueDelete(String arg0,
-                boolean arg1, boolean arg2) throws IOException {
+                                                                   boolean arg1, boolean arg2) throws IOException {
             return null;
         }
 
@@ -411,12 +411,12 @@ public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollec
         }
 
         public com.rabbitmq.client.AMQP.Queue.UnbindOk queueUnbind(String arg0,
-                String arg1, String arg2) throws IOException {
+                                                                   String arg1, String arg2) throws IOException {
             return null;
         }
 
         public com.rabbitmq.client.AMQP.Queue.UnbindOk queueUnbind(String arg0,
-                String arg1, String arg2, Map<String, Object> arg3)
+                                                                   String arg1, String arg2, Map<String, Object> arg3)
                 throws IOException {
             return null;
         }

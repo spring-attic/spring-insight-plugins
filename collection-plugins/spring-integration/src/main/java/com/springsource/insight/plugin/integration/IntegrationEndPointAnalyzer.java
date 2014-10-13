@@ -30,32 +30,31 @@ import com.springsource.insight.intercept.trace.Frame;
 /**
  * {@link EndPointAnalyzer} for Spring Integration traces.
  * Integration 'Transformer' operations are never considered.
- *
  */
-public class IntegrationEndPointAnalyzer extends AbstractEndPointAnalyzer {	
-	// NOTE - order matters here!
-	// the first ServiceActivator frame beats the first Gateway frame which beats the first Channel frame
-	public static final List<OperationType>	SI_OPS=Collections.unmodifiableList(Arrays.asList(
-			SpringIntegrationDefinitions.SI_OP_SERVICE_ACTIVATOR_TYPE, SpringIntegrationDefinitions.SI_OP_GATEWAY_TYPE, 
-			SpringIntegrationDefinitions.SI_OP_CHANNEL_TYPE));
-	private static final IntegrationEndPointAnalyzer INSTANCE = new IntegrationEndPointAnalyzer();
-	public static final int ANALYSIS_SCORE = EndPointAnalysis.CEILING_LAYER_SCORE + 2;
+public class IntegrationEndPointAnalyzer extends AbstractEndPointAnalyzer {
+    // NOTE - order matters here!
+    // the first ServiceActivator frame beats the first Gateway frame which beats the first Channel frame
+    public static final List<OperationType> SI_OPS = Collections.unmodifiableList(Arrays.asList(
+            SpringIntegrationDefinitions.SI_OP_SERVICE_ACTIVATOR_TYPE, SpringIntegrationDefinitions.SI_OP_GATEWAY_TYPE,
+            SpringIntegrationDefinitions.SI_OP_CHANNEL_TYPE));
+    private static final IntegrationEndPointAnalyzer INSTANCE = new IntegrationEndPointAnalyzer();
+    public static final int ANALYSIS_SCORE = EndPointAnalysis.CEILING_LAYER_SCORE + 2;
 
-	private IntegrationEndPointAnalyzer () {
-		super(SI_OPS);
-	}
+    private IntegrationEndPointAnalyzer() {
+        super(SI_OPS);
+    }
 
-	public static final IntegrationEndPointAnalyzer getInstance() {
-		return INSTANCE;
-	}
-	
-	@Override
-	protected EndPointAnalysis makeEndPoint(Frame si, int depth) {
-		Operation op = si.getOperation();
-		String exampleRequest = op.get(SpringIntegrationDefinitions.SI_COMPONENT_TYPE_ATTR, String.class);
-		String opLabel = op.getLabel();
-		EndPointName name = EndPointName.valueOf(opLabel);
-		String label = name.getName();
-		return new EndPointAnalysis(name, label, exampleRequest, ANALYSIS_SCORE, op);
-	}
+    public static final IntegrationEndPointAnalyzer getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
+    protected EndPointAnalysis makeEndPoint(Frame si, int depth) {
+        Operation op = si.getOperation();
+        String exampleRequest = op.get(SpringIntegrationDefinitions.SI_COMPONENT_TYPE_ATTR, String.class);
+        String opLabel = op.getLabel();
+        EndPointName name = EndPointName.valueOf(opLabel);
+        String label = name.getName();
+        return new EndPointAnalysis(name, label, exampleRequest, ANALYSIS_SCORE, op);
+    }
 }

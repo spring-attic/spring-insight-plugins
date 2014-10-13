@@ -21,31 +21,31 @@ enum JMSPluginOperationType {
     SEND("jms-send", "JMS Send", "Send to "),
     RECEIVE("jms-receive", "JMS Receive", "Receive from "),
     LISTENER_RECEIVE("jms-listener-receive", "JMS Listener Receive", "Receive from ");
-    
+
     private OperationType operationType;
     private String label;
     private String endPointPrefix;
-    
+
     private JMSPluginOperationType(String operationTypeName, String labelValue, String epPrefix) {
         operationType = OperationType.valueOf(operationTypeName);
         label = labelValue;
         endPointPrefix = epPrefix;
     }
-    
+
     public OperationType getOperationType() {
         return operationType;
     }
-    
+
     public String getLabel() {
         return label;
     }
-    
+
     public String getEndPointPrefix() {
         return endPointPrefix;
     }
 
     public static JMSPluginOperationType getType(OperationType type) {
-        for(JMSPluginOperationType otype : JMSPluginOperationType.values()) {
+        for (JMSPluginOperationType otype : JMSPluginOperationType.values()) {
             if (otype.operationType == type) {
                 return otype;
             }

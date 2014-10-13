@@ -19,15 +19,15 @@ package com.springsource.insight.plugin.jta;
 import com.springsource.insight.intercept.operation.OperationType;
 
 /**
- * 
+ *
  */
 public final class JtaDefinitions {
-   private JtaDefinitions() {
+    private JtaDefinitions() {
         throw new UnsupportedOperationException("N/A");
     }
 
-   public static final OperationType    TX_OP=OperationType.valueOf("jta-tx-op"),
-                                        MGR_OP=OperationType.valueOf("jta-tx-mgr"),
-                                        USER_OP=OperationType.valueOf("jta-tx-user");
-   public static final String   ACTION_ATTR="action";
+    public static final OperationType TX_OP = OperationType.valueOf("jta-tx-op"),
+            MGR_OP = OperationType.valueOf("jta-tx-mgr"),
+            USER_OP = OperationType.valueOf("jta-tx-user");
+    public static final String ACTION_ATTR = "action";
 }

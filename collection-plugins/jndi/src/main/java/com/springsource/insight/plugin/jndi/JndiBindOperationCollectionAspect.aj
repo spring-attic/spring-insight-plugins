@@ -27,43 +27,43 @@ import com.springsource.insight.util.StringFormatterUtils;
 import com.springsource.insight.util.StringUtil;
 
 /**
- * 
+ *
  */
 public aspect JndiBindOperationCollectionAspect extends JndiOperationCollectionSupport {
-	public JndiBindOperationCollectionAspect () {
-		super(JndiPluginRuntimeDescriptor.BIND);
-	}
+    public JndiBindOperationCollectionAspect() {
+        super(JndiPluginRuntimeDescriptor.BIND);
+    }
     /*
      * Using call instead of execution since usually JDK core classes are used
      * - e.g., InitialDirContext - and we cannot instrument them
      */
-	public pointcut bindCalls ()
-		: call(* Context+.bind(String,Object))
-	   || call(* Context+.bind(Name,Object))
-	   || call(* Context+.rebind(String,Object))
-	   || call(* Context+.rebind(Name,Object))
-	   || call(* Context+.unbind(String))
-	   || call(* Context+.unbind(Name))
-		;
+    public pointcut bindCalls()
+            : call(* Context+.bind(String,Object))
+            || call(* Context+.bind(Name,Object))
+            || call(* Context+.rebind(String,Object))
+            || call(* Context+.rebind(Name,Object))
+            || call(* Context+.unbind(String))
+            || call(* Context+.unbind(Name))
+            ;
 
-	// NOTE: we use cflowbelow because the methods might delegate to one another
-	public pointcut collectionPoint()
-		: bindCalls() && (!cflowbelow(bindCalls()))
-		;
+    // NOTE: we use cflowbelow because the methods might delegate to one another
+    public pointcut collectionPoint()
+            : bindCalls() && (!cflowbelow(bindCalls()))
+            ;
 
-	@Override
-	protected Operation createOperation(JoinPoint jp) {
-		Operation	op=super.createOperation(jp);
-		if (op == null) {
-			return null;
-		}
+    @Override
+    protected Operation createOperation(JoinPoint jp) {
+        Operation op = super.createOperation(jp);
+        if (op == null) {
+            return null;
+        }
 
-		Object[]	args=jp.getArgs();
-		if (ArrayUtil.length(args) > 1) {
-			Object	value=args[1];
-			op.put("value", StringUtil.chopTailAndEllipsify(StringUtil.safeToString(value), StringFormatterUtils.MAX_PARAM_LENGTH));
-		}
+        Object[] args = jp.getArgs();
+        if (ArrayUtil.length(args) > 1) {
+            Object value = args[1];
+            op.put("value", StringUtil.chopTailAndEllipsify(StringUtil.safeToString(value), StringFormatterUtils.MAX_PARAM_LENGTH));
+        }
 
-		return op;
-	}
+        return op;
+    }
 }

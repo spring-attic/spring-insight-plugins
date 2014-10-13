@@ -24,28 +24,29 @@ import com.springsource.insight.util.ArrayUtil;
 
 public class MongoDBPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "mongodb";
-    private static final MongoDBPluginRuntimeDescriptor	INSTANCE=new MongoDBPluginRuntimeDescriptor();
-    private static final List<? extends ExternalResourceAnalyzer>	extResAnalyzers=
-       		ArrayUtil.asUnmodifiableList(MongoDBCollectionExternalResourceAnalyzer.getInstance(), 
-       				MongoDBOperationExternalResourceAnalyzer.getInstance());
-    private MongoDBPluginRuntimeDescriptor () {
-    	super();
+    private static final MongoDBPluginRuntimeDescriptor INSTANCE = new MongoDBPluginRuntimeDescriptor();
+    private static final List<? extends ExternalResourceAnalyzer> extResAnalyzers =
+            ArrayUtil.asUnmodifiableList(MongoDBCollectionExternalResourceAnalyzer.getInstance(),
+                    MongoDBOperationExternalResourceAnalyzer.getInstance());
+
+    private MongoDBPluginRuntimeDescriptor() {
+        super();
     }
 
     public static final MongoDBPluginRuntimeDescriptor getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;
     }
-    
+
     @Override
     public Collection<? extends ExternalResourceAnalyzer> getExternalResourceAnalyzers() {
-    	return extResAnalyzers;
+        return extResAnalyzers;
     }
-    
+
     @Override
     public String getPublisher() {
         return "Stephen Harrison (stephen@harrison.org) and the Insight Team";

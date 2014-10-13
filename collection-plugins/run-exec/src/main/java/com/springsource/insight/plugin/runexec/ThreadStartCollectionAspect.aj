@@ -27,17 +27,17 @@ import org.aspectj.lang.annotation.SuppressAjWarnings;
 public aspect ThreadStartCollectionAspect extends ExecuteMethodCollectionAspect {
     private Field targetField;  // TODO check what happens if JDK version changes
 
-    public ThreadStartCollectionAspect () {
+    public ThreadStartCollectionAspect() {
         try {
             targetField = Thread.class.getDeclaredField("target");
             if (!targetField.isAccessible()) {
                 targetField.setAccessible(true);
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             _logger.log(Level.SEVERE,
-                        "Failed (" + e.getClass().getSimpleName()
-                      + " to extract thread target field: " + e.getMessage(),
-                        e);
+                    "Failed (" + e.getClass().getSimpleName()
+                            + " to extract thread target field: " + e.getMessage(),
+                    e);
             targetField = null;
         }
     }
@@ -45,46 +45,46 @@ public aspect ThreadStartCollectionAspect extends ExecuteMethodCollectionAspect 
     /*
      * NOTE: we need to use 'call' since Thread is a core class
      */
-    public pointcut collectionPoint () : call(* Thread+.start());
+    public pointcut collectionPoint(): call(* Thread+.start());
 
     // intercept all the constructors so we can wrap their Runnable targets
     @SuppressAjWarnings({"adviceDidNotMatch"})
     Thread around(Runnable runner)
-        : call(Thread+.new(Runnable))
-       && args(runner) {
-        Runnable    effectiveRunner=resolveRunner(runner, thisJoinPointStaticPart);
+            : call(Thread+.new(Runnable))
+            && args(runner) {
+        Runnable effectiveRunner = resolveRunner(runner, thisJoinPointStaticPart);
         return proceed(effectiveRunner);
     }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     Thread around(ThreadGroup group, Runnable runner)
-        : call(Thread+.new(ThreadGroup,Runnable))
-       && args(group,runner) {
-        Runnable    effectiveRunner=resolveRunner(runner, thisJoinPointStaticPart);
+            : call(Thread+.new(ThreadGroup,Runnable))
+            && args(group,runner) {
+        Runnable effectiveRunner = resolveRunner(runner, thisJoinPointStaticPart);
         return proceed(group, effectiveRunner);
     }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     Thread around(Runnable runner, String name)
-        : call(Thread+.new(Runnable,String))
-       && args(runner,name) {
-        Runnable    effectiveRunner=resolveRunner(runner, thisJoinPointStaticPart);
+            : call(Thread+.new(Runnable,String))
+            && args(runner,name) {
+        Runnable effectiveRunner = resolveRunner(runner, thisJoinPointStaticPart);
         return proceed(effectiveRunner, name);
     }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     Thread around(ThreadGroup group, Runnable runner, String name)
-        : call(Thread+.new(ThreadGroup,Runnable,String))
-       && args(group,runner,name) {
-        Runnable    effectiveRunner=resolveRunner(runner, thisJoinPointStaticPart);
+            : call(Thread+.new(ThreadGroup,Runnable,String))
+            && args(group,runner,name) {
+        Runnable effectiveRunner = resolveRunner(runner, thisJoinPointStaticPart);
         return proceed(group, effectiveRunner, name);
     }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     Thread around(ThreadGroup group, Runnable runner, String name, long stackSize)
-        : call(Thread+.new(ThreadGroup,Runnable,String,long))
-       && args(group,runner,name,stackSize) {
-        Runnable    effectiveRunner=resolveRunner(runner, thisJoinPointStaticPart);
+            : call(Thread+.new(ThreadGroup,Runnable,String,long))
+            && args(group,runner,name,stackSize) {
+        Runnable effectiveRunner = resolveRunner(runner, thisJoinPointStaticPart);
         return proceed(group, effectiveRunner, name, stackSize);
     }
 
@@ -93,14 +93,14 @@ public aspect ThreadStartCollectionAspect extends ExecuteMethodCollectionAspect 
         return extractThreadTarget((Thread) jp.getTarget());
     }
 
-    Runnable extractThreadTarget (Thread thread) {
+    Runnable extractThreadTarget(Thread thread) {
         try {
             return (Runnable) targetField.get(thread);
-        } catch(Exception e) {
+        } catch (Exception e) {
             _logger.log(Level.SEVERE,
-                        "Failed (" + e.getClass().getSimpleName()
-                      + " to extract thread target value: " + e.getMessage(),
-                        e);
+                    "Failed (" + e.getClass().getSimpleName()
+                            + " to extract thread target value: " + e.getMessage(),
+                    e);
             return null;
         }
     }

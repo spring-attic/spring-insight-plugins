@@ -25,65 +25,65 @@ import com.springsource.insight.intercept.operation.OperationList;
 import com.springsource.insight.util.ArrayUtil;
 
 /**
- * 
+ *
  */
 class InitBinderOperationFinalizer extends JoinPointFinalizer {
     private static final InitBinderOperationFinalizer INSTANCE = new InitBinderOperationFinalizer();
 
-    public static final String	TARGET_TYPE="targetType", UNKNOWN_TARGET_TYPE="unknown";
-    public static final String	OBJECT_NAME="objectName";
+    public static final String TARGET_TYPE = "targetType", UNKNOWN_TARGET_TYPE = "unknown";
+    public static final String OBJECT_NAME = "objectName";
     /**
      * Name of the {@link OperationList} containing the allowed fields names
      */
-    public static final String	ALLOWED_FIELDS_LIST="allowedFields";
+    public static final String ALLOWED_FIELDS_LIST = "allowedFields";
     /**
      * Name of the {@link OperationList} containing the disallowed fields names
      */
-    public static final String	DISALLOWED_FIELDS_LIST="disallowedFields";
+    public static final String DISALLOWED_FIELDS_LIST = "disallowedFields";
     /**
      * Name of the {@link OperationList} containing the required fields names
      */
-    public static final String	REQUIRED_FIELDS_LIST="requiredFields";
+    public static final String REQUIRED_FIELDS_LIST = "requiredFields";
 
-    private InitBinderOperationFinalizer () {
-    	super();
+    private InitBinderOperationFinalizer() {
+        super();
     }
 
-    public static final InitBinderOperationFinalizer getInstance () {
-    	return INSTANCE;
+    public static final InitBinderOperationFinalizer getInstance() {
+        return INSTANCE;
     }
 
-    public void registerBinderOperation (Operation op, JoinPoint jp) {
-    	registerWithSelf(op, jp);
+    public void registerBinderOperation(Operation op, JoinPoint jp) {
+        registerWithSelf(op, jp);
     }
 
-	@Override
-	protected void populateOperation(Operation op, JoinPoint jp) {
-		super.populateOperation(op, jp);
+    @Override
+    protected void populateOperation(Operation op, JoinPoint jp) {
+        super.populateOperation(op, jp);
 
         DataBinder binder = extractDataBinderArg(jp);
         if (binder == null) {
-        	return;
+            return;
         }
 
         String objectName = binder.getObjectName();
         op.label("Init Binder " + objectName)
-           .put(OBJECT_NAME, objectName);
+                .put(OBJECT_NAME, objectName);
 
         Object target = binder.getTarget();
         if (target == null) {
-        	// Target object may be null according to WebDataBinder docs
-        	op.put(TARGET_TYPE, UNKNOWN_TARGET_TYPE);
+            // Target object may be null according to WebDataBinder docs
+            op.put(TARGET_TYPE, UNKNOWN_TARGET_TYPE);
         } else {
-        	op.put(TARGET_TYPE, target.getClass().getName());
+            op.put(TARGET_TYPE, target.getClass().getName());
         }
 
         fromArray(op.createList(ALLOWED_FIELDS_LIST), binder.getAllowedFields());
         fromArray(op.createList(DISALLOWED_FIELDS_LIST), binder.getDisallowedFields());
         fromArray(op.createList(REQUIRED_FIELDS_LIST), binder.getRequiredFields());
     }
-    
-    private static OperationList fromArray(OperationList operationList, String ... array) {
+
+    private static OperationList fromArray(OperationList operationList, String... array) {
         if (ArrayUtil.length(array) <= 0) {
             return operationList;
         }
@@ -94,19 +94,19 @@ class InitBinderOperationFinalizer extends JoinPointFinalizer {
 
         return operationList;
     }
-    
+
     private static DataBinder extractDataBinderArg(JoinPoint jp) {
-    	return extractDataBinderArg(jp.getArgs());
+        return extractDataBinderArg(jp.getArgs());
     }
 
-    private static DataBinder extractDataBinderArg(Object ... args) {
+    private static DataBinder extractDataBinderArg(Object... args) {
         if (ArrayUtil.length(args) <= 0) {
-        	return null;
+            return null;
         }
 
         for (Object arg : args) {
             if (arg instanceof DataBinder) {
-                return (DataBinder)arg;
+                return (DataBinder) arg;
             }
         }
         return null;

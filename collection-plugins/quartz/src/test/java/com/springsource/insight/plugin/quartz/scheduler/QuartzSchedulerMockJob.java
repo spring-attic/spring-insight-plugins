@@ -23,7 +23,7 @@ import org.quartz.JobExecutionException;
 
 // NOTE: class must be public so the scheduler can access it
 public class QuartzSchedulerMockJob implements Job {
-    public QuartzSchedulerMockJob () {
+    public QuartzSchedulerMockJob() {
         System.out.append('\t').println(getClass().getSimpleName() + " initialized at " + new Date(System.currentTimeMillis()));
     }
 

@@ -2,7 +2,7 @@
 <#import "/insight-1.0.ftl" as insight />
 
 <@insight.title>
-    Redis Client
+Redis Client
 </@insight.title>
 
 <@insight.group>

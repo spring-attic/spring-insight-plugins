@@ -24,42 +24,43 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 
 /**
- * 
+ *
  */
 public abstract class GenericOperationCollectionTestSupport extends OperationCollectionAspectTestSupport {
-	protected static ExamplePortletTester tester;
-	protected GenericOperationCollectionTestSupport () {
-		super();
-	}
-	
-	@BeforeClass
+    protected static ExamplePortletTester tester;
+
+    protected GenericOperationCollectionTestSupport() {
+        super();
+    }
+
+    @BeforeClass
     public static void setUpClass() throws Exception {
         // Code executed before the first test method
-		tester=new ExamplePortletTester();
-		tester.setUp();
+        tester = new ExamplePortletTester();
+        tester.setUp();
     }
-	
-	@AfterClass
+
+    @AfterClass
     public static void tearDownClass() throws Exception {
         // Code executed after the last test method
-		tester.tearDown();
+        tester.tearDown();
     }
 
-	protected Operation validate(OperationCollectionTypes collType, String mode) {
-		// Step 2:  Get the Operation that was just created by our aspect
-		Operation op = getLastEntered();
-		assertNotNull("No operation data is intercepted",op);
+    protected Operation validate(OperationCollectionTypes collType, String mode) {
+        // Step 2:  Get the Operation that was just created by our aspect
+        Operation op = getLastEntered();
+        assertNotNull("No operation data is intercepted", op);
 
-		assertEquals("Invalid operation type", collType.type, op.getType());
+        assertEquals("Invalid operation type", collType.type, op.getType());
 
-		String portletName=op.get("name", String.class);
-		assertEquals("Invalid portlet name", ExamplePortlet.NAME, portletName);
-		
-		String portletMode=op.get("mode", String.class);
-		assertEquals("Invalid portlet mode", mode, portletMode);
+        String portletName = op.get("name", String.class);
+        assertEquals("Invalid portlet name", ExamplePortlet.NAME, portletName);
 
-		String	uri=op.get(OperationFields.URI, String.class);
-		assertEquals("Mismatched URI", ExamplePortletTester.TEST_URL, uri);
-		return op;
-	}
+        String portletMode = op.get("mode", String.class);
+        assertEquals("Invalid portlet mode", mode, portletMode);
+
+        String uri = op.get(OperationFields.URI, String.class);
+        assertEquals("Mismatched URI", ExamplePortletTester.TEST_URL, uri);
+        return op;
+    }
 }

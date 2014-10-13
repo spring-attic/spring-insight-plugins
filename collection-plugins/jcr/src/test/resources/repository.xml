@@ -17,8 +17,8 @@
 -->
 
 <!DOCTYPE Repository
-          PUBLIC "-//The Apache Software Foundation//DTD Jackrabbit 2.0//EN"
-          "http://jackrabbit.apache.org/dtd/repository-2.0.dtd">
+        PUBLIC "-//The Apache Software Foundation//DTD Jackrabbit 2.0//EN"
+        "http://jackrabbit.apache.org/dtd/repository-2.0.dtd">
 
 <!-- Example Repository Configuration File
      Used by
@@ -66,14 +66,14 @@
         </AccessManager>
 
         <LoginModule class="org.apache.jackrabbit.core.security.authentication.DefaultLoginModule">
-           <!-- 
-              anonymous user name ('anonymous' is the default value)
-            -->
-           <param name="anonymousId" value="anonymous"/>
-           <!--
-              administrator user id (default value if param is missing is 'admin')
-            -->
-           <param name="adminId" value="admin"/>
+            <!--
+               anonymous user name ('anonymous' is the default value)
+             -->
+            <param name="anonymousId" value="anonymous"/>
+            <!--
+               administrator user id (default value if param is missing is 'admin')
+             -->
+            <param name="adminId" value="admin"/>
         </LoginModule>
     </Security>
 
@@ -93,7 +93,7 @@
         <FileSystem class="org.apache.jackrabbit.core.fs.local.LocalFileSystem">
             <param name="path" value="${wsp.home}"/>
         </FileSystem>
-        
+
         <!--
             persistence manager of the workspace:
             class: FQN of class implementing the PersistenceManager interface
@@ -101,7 +101,7 @@
         <PersistenceManager class="org.apache.jackrabbit.core.persistence.mem.InMemPersistenceManager">
             <param name="persistent" value="false"/>
         </PersistenceManager>
-        
+
         <!--
             Search index and the file system it uses.
             class: FQN of class implementing the QueryHandler interface

@@ -23,31 +23,31 @@ import javax.jcr.Workspace;
 import com.springsource.insight.util.ArrayUtil;
 
 public final class JCRCollectionUtils {
-	private JCRCollectionUtils () {
-		throw new UnsupportedOperationException("No instance");
-	}
+    private JCRCollectionUtils() {
+        throw new UnsupportedOperationException("No instance");
+    }
 
-	public static String getWorkspaceName(Object targ) {
-		try {
-			if (targ instanceof Item) {
-				return getWorkspaceName(((Item)targ).getSession());
-			} else if (targ instanceof Session) {
-				return getWorkspaceName(((Session)targ).getWorkspace());
-			} else if (targ instanceof Workspace) {
-		    	return ((Workspace)targ).getName();
-			}
-		} catch (RepositoryException e) {
-			//ignore
-		}
-		
-		return null;
-	}
-	
-	public static String safeToString (char ... chars) {
-		if (ArrayUtil.length(chars) <= 0) {
-			return "";
-		} else {
-			return new String(chars);
-		}
-	}
+    public static String getWorkspaceName(Object targ) {
+        try {
+            if (targ instanceof Item) {
+                return getWorkspaceName(((Item) targ).getSession());
+            } else if (targ instanceof Session) {
+                return getWorkspaceName(((Session) targ).getWorkspace());
+            } else if (targ instanceof Workspace) {
+                return ((Workspace) targ).getName();
+            }
+        } catch (RepositoryException e) {
+            //ignore
+        }
+
+        return null;
+    }
+
+    public static String safeToString(char... chars) {
+        if (ArrayUtil.length(chars) <= 0) {
+            return "";
+        } else {
+            return new String(chars);
+        }
+    }
 }

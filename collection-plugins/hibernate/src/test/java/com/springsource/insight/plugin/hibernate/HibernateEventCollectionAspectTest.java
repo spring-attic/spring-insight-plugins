@@ -24,13 +24,13 @@ import com.springsource.insight.collection.test.OperationCollectionAspectTestSup
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 
-public class HibernateEventCollectionAspectTest 
-			extends OperationCollectionAspectTestSupport {
+public class HibernateEventCollectionAspectTest
+        extends OperationCollectionAspectTestSupport {
 
-	public HibernateEventCollectionAspectTest () {
-		super();
-	}
-	
+    public HibernateEventCollectionAspectTest() {
+        super();
+    }
+
     @Test
     public void onDirtyAndCollect() {
         DummyDirtyCheckListenerImpl listener = new DummyDirtyCheckListenerImpl();
@@ -50,10 +50,10 @@ public class HibernateEventCollectionAspectTest
         return HibernateEventCollectionAspect.aspectOf();
     }
 
-	private void standardAsserts(String method) {
+    private void standardAsserts(String method) {
         Operation op = getLastEntered();
         assertNotNull(op);
         assertEquals("Hibernate " + method, op.getLabel());
         assertEquals(OperationType.METHOD, op.getType());
-	}
+    }
 }

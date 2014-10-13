@@ -24,14 +24,14 @@ import org.aspectj.lang.JoinPoint;
  * Intercepts calls to {@link Socket#connect(SocketAddress)} and {@link Socket#connect(SocketAddress, int)}
  */
 public aspect SocketConnectCollectionAspect extends SocketConnectCollectionAspectSupport {
-    public SocketConnectCollectionAspect () {
+    public SocketConnectCollectionAspect() {
         super();
     }
 
-    public pointcut collectionPoint() : call(* Socket+.connect(..));
+    public pointcut collectionPoint(): call(* Socket+.connect(..));
 
     @Override
-    protected SocketAddress resolveConnectAddress (JoinPoint jp) {
+    protected SocketAddress resolveConnectAddress(JoinPoint jp) {
         return (SocketAddress) jp.getArgs()[0];
     }
 }

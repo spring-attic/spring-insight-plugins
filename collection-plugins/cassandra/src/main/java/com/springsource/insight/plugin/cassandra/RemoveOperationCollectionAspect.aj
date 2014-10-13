@@ -35,44 +35,43 @@ public privileged aspect RemoveOperationCollectionAspect extends AbstractCassand
         super();
     }
 
-    public pointcut collectionPoint() : 
-    	execution(public void org.apache.cassandra.thrift.Cassandra.Client.remove_counter(ByteBuffer, ColumnPath, ConsistencyLevel)) ||
-    	execution(public void org.apache.cassandra.thrift.Cassandra.Client.remove(ByteBuffer, ColumnPath, long, ConsistencyLevel)) ||
-    	execution(public void org.apache.cassandra.thrift.Cassandra.Client.truncate(String));
+    public pointcut collectionPoint():
+            execution(public void org.apache.cassandra.thrift.Cassandra.Client.remove_counter(ByteBuffer, ColumnPath, ConsistencyLevel)) ||
+                    execution(public void org.apache.cassandra.thrift.Cassandra.Client.remove(ByteBuffer, ColumnPath, long, ConsistencyLevel)) ||
+                    execution(public void org.apache.cassandra.thrift.Cassandra.Client.truncate(String));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-    	String method=jp.getSignature().getName(); //method name
-    	Object[] args = jp.getArgs();
-    	
-		Operation operation = OperationUtils.createOperation(OperationCollectionTypes.REMOVE_TYPE, method, getSourceCodeLocation(jp)); 
-		// get transport info
-		OperationUtils.putTransportInfo(operation, ((Cassandra.Client)jp.getTarget()).getInputProtocol());
+        String method = jp.getSignature().getName(); //method name
+        Object[] args = jp.getArgs();
 
-		if (!method.equals("truncate")) {
-			operation.put("key", OperationUtils.getText((ByteBuffer)args[0]));
-			
-			ColumnPath colPath=(ColumnPath)args[1];
-			if (colPath!=null) {
-				operation.put("columnFamily", OperationUtils.getText(colPath.getColumn_family()));
-				operation.putAnyNonEmpty("superColumn", OperationUtils.getString(colPath.getSuper_column()));
-				operation.putAnyNonEmpty("colName", OperationUtils.getString(colPath.getColumn()));
-			}
-			operation.putAnyNonEmpty("consistLevel", (args[args.length-1]!=null)?((ConsistencyLevel)args[args.length-1]).name():null);
-			
-			if (method.equals("remove")) {
-				operation.put("timestamp", ((Number)args[2]).longValue());
-			}
-		}
-		else {
-			operation.put("columnFamily", OperationUtils.getText((String)args[0]));
-		}		
-		
-		return operation;
+        Operation operation = OperationUtils.createOperation(OperationCollectionTypes.REMOVE_TYPE, method, getSourceCodeLocation(jp));
+        // get transport info
+        OperationUtils.putTransportInfo(operation, ((Cassandra.Client) jp.getTarget()).getInputProtocol());
+
+        if (!method.equals("truncate")) {
+            operation.put("key", OperationUtils.getText((ByteBuffer) args[0]));
+
+            ColumnPath colPath = (ColumnPath) args[1];
+            if (colPath != null) {
+                operation.put("columnFamily", OperationUtils.getText(colPath.getColumn_family()));
+                operation.putAnyNonEmpty("superColumn", OperationUtils.getString(colPath.getSuper_column()));
+                operation.putAnyNonEmpty("colName", OperationUtils.getString(colPath.getColumn()));
+            }
+            operation.putAnyNonEmpty("consistLevel", (args[args.length - 1] != null) ? ((ConsistencyLevel) args[args.length - 1]).name() : null);
+
+            if (method.equals("remove")) {
+                operation.put("timestamp", ((Number) args[2]).longValue());
+            }
+        } else {
+            operation.put("columnFamily", OperationUtils.getText((String) args[0]));
+        }
+
+        return operation;
     }
-    
-	@Override
+
+    @Override
     public String getPluginName() {
-		return CassandraPluginRuntimeDescriptor.PLUGIN_NAME;
-	}
+        return CassandraPluginRuntimeDescriptor.PLUGIN_NAME;
+    }
 }

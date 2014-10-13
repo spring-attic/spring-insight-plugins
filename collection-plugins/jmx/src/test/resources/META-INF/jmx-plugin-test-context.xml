@@ -8,11 +8,11 @@
 
     <context:component-scan base-package="com.springsource.insight.plugin.jmx"/>
 
-        <!-- Initialize JMX MBean(s) server -->
+    <!-- Initialize JMX MBean(s) server -->
     <bean id="collectorMbeanServer" class="org.springframework.jmx.support.MBeanServerFactoryBean"
-            p:locateExistingServerIfPossible="true"
-            p:defaultDomain="insight-jmx-plugin" />
-    <context:mbean-export   server="collectorMbeanServer"
-                            default-domain="com.springsource.insight.plugin.jmx"
-                            registration="replaceExisting"/>
+          p:locateExistingServerIfPossible="true"
+          p:defaultDomain="insight-jmx-plugin"/>
+    <context:mbean-export server="collectorMbeanServer"
+                          default-domain="com.springsource.insight.plugin.jmx"
+                          registration="replaceExisting"/>
 </beans>

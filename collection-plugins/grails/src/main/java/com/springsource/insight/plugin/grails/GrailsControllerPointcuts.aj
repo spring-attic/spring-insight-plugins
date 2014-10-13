@@ -30,16 +30,16 @@ import org.springframework.web.servlet.ModelAndView;
 
 public aspect GrailsControllerPointcuts {
 
-    public pointcut getControllerClassMethod() 
-        : execution(GrailsControllerClass
-                    (GrailsControllerHelper || org.codehaus.groovy.grails.web.servlet.mvc.AbstractGrailsControllerHelper)+.getControllerClassByURI(String));
-                                              
+    public pointcut getControllerClassMethod()
+            : execution(GrailsControllerClass
+            (GrailsControllerHelper || org.codehaus.groovy.grails.web.servlet.mvc.AbstractGrailsControllerHelper)+.getControllerClassByURI(String));
+
     public pointcut handleURIMethod()
-        : execution(ModelAndView
-                    (GrailsControllerHelper || org.codehaus.groovy.grails.web.servlet.mvc.AbstractGrailsControllerHelper)+.handleURI(String, GrailsWebRequest, Map));
+            : execution(ModelAndView
+            (GrailsControllerHelper || org.codehaus.groovy.grails.web.servlet.mvc.AbstractGrailsControllerHelper)+.handleURI(String, GrailsWebRequest, Map));
 
     public pointcut getControllerInstanceMethod(GroovyObject controllerInstance)
-        : execution(Object
-                    (GrailsControllerHelper || org.codehaus.groovy.grails.web.servlet.mvc.AbstractGrailsControllerHelper)+.handleAction(GroovyObject, *, HttpServletRequest, HttpServletResponse, Map))
+            : execution(Object
+            (GrailsControllerHelper || org.codehaus.groovy.grails.web.servlet.mvc.AbstractGrailsControllerHelper)+.handleAction(GroovyObject, *, HttpServletRequest, HttpServletResponse, Map))
             && args(controllerInstance, *, HttpServletRequest, HttpServletResponse, Map);
 }

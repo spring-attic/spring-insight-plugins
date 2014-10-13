@@ -64,12 +64,12 @@ import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.util.MathUtil;
 
 public class JMSPluginUtilsTest extends AbstractCollectionTestSupport {
-    public JMSPluginUtilsTest () {
+    public JMSPluginUtilsTest() {
         super();
     }
 
     @Test
-    public void testAddDestinationDetailsToMapIfNeeded() throws JMSException{
+    public void testAddDestinationDetailsToMapIfNeeded() throws JMSException {
         Queue queue = mock(Queue.class);
         when(queue.getQueueName()).thenReturn("mock-queue");
 
@@ -78,8 +78,8 @@ public class JMSPluginUtilsTest extends AbstractCollectionTestSupport {
 
         addDestinationDetailsToMapIfNeeded(queue, map, null, Collections.<String>emptyList(), "test");
 
-        String type = map.get("test"+TYPE, String.class);
-        String name = map.get("test"+NAME, String.class);
+        String type = map.get("test" + TYPE, String.class);
+        String name = map.get("test" + NAME, String.class);
 
         assertNotNull(type);
         assertNotNull(name);
@@ -92,8 +92,8 @@ public class JMSPluginUtilsTest extends AbstractCollectionTestSupport {
         map = op.createMap("test-map");
 
         addDestinationDetailsToMapIfNeeded(queue, map, null, Collections.<String>emptyList(), "test");
-        type = map.get("test"+TYPE, String.class);
-        name = map.get("test"+NAME, String.class);
+        type = map.get("test" + TYPE, String.class);
+        name = map.get("test" + NAME, String.class);
 
         assertNull(type);
         assertNull(name);
@@ -110,14 +110,14 @@ public class JMSPluginUtilsTest extends AbstractCollectionTestSupport {
         assertAttributes(mockMap, op);
     }
 
-    static OperationMap assertAttributes(final Map<String,?> mockMap, Operation op) {
+    static OperationMap assertAttributes(final Map<String, ?> mockMap, Operation op) {
         OperationMap opMap = op.get(MESSAGE_PROPERTIES, OperationMap.class);
         assertNotNull("Missing " + MESSAGE_PROPERTIES + " map", opMap);
 
-        for(String key : mockMap.keySet()) {
-            Object	mockValue=mockMap.get(key);
+        for (String key : mockMap.keySet()) {
+            Object mockValue = mockMap.get(key);
             if (mockValue instanceof Number) {
-                Number	opValue=opMap.get(key, Number.class);
+                Number opValue = opMap.get(key, Number.class);
                 assertNotNull("Missing number value for key=" + key, opValue);
                 if (MathUtil.isIntegralNumber(opValue)) {
                     assertEquals("Mismatched integral value for key=" + key, ((Number) mockValue).longValue(), opValue.longValue());
@@ -141,6 +141,7 @@ public class JMSPluginUtilsTest extends AbstractCollectionTestSupport {
 
         when(message.getPropertyNames()).thenReturn(new Enumeration<String>() {
             Iterator<String> iter = mockMap.keySet().iterator();
+
             public boolean hasMoreElements() {
                 return iter.hasNext();
             }
@@ -237,6 +238,7 @@ public class JMSPluginUtilsTest extends AbstractCollectionTestSupport {
 
         when(mapMessage.getMapNames()).thenReturn(new Enumeration<String>() {
             Iterator<String> iter = mockMap.keySet().iterator();
+
             public boolean hasMoreElements() {
                 return iter.hasNext();
             }
@@ -354,7 +356,7 @@ public class JMSPluginUtilsTest extends AbstractCollectionTestSupport {
     public void testGetMessage() {
         Message message = mock(Message.class);
 
-        Object[] args = new Object[] {message};
+        Object[] args = new Object[]{message};
 
         Message fromUtil = getMessage(args);
 

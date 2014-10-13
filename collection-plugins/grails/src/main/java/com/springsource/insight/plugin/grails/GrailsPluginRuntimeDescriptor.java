@@ -26,24 +26,24 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class GrailsPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "grails";
-    private static final GrailsPluginRuntimeDescriptor	INSTANCE=new GrailsPluginRuntimeDescriptor();
-    public static final List<EndPointAnalyzer>	epAnalyzers=
-    		Collections.unmodifiableList(Arrays.asList((EndPointAnalyzer) GrailsControllerMethodEndPointAnalyzer.getInstance()));
+    private static final GrailsPluginRuntimeDescriptor INSTANCE = new GrailsPluginRuntimeDescriptor();
+    public static final List<EndPointAnalyzer> epAnalyzers =
+            Collections.unmodifiableList(Arrays.asList((EndPointAnalyzer) GrailsControllerMethodEndPointAnalyzer.getInstance()));
 
-    private GrailsPluginRuntimeDescriptor () {
-    	super();
+    private GrailsPluginRuntimeDescriptor() {
+        super();
     }
 
     public static final GrailsPluginRuntimeDescriptor getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override
-	public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
-		return epAnalyzers;
-	}
+    public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
+        return epAnalyzers;
+    }
 
-	@Override
+    @Override
     public String getPluginName() {
         return PLUGIN_NAME;
     }

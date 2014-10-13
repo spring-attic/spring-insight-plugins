@@ -22,7 +22,7 @@ import java.sql.Statement;
 
 public class StoredProcedureExample {
     public static int testSp(Connection conn, String owner) throws SQLException {
-        Statement stmt = conn.createStatement(); 
+        Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery("select count(*) from appointment where owner = '" + owner + "'");
         try {
             rs.next();
@@ -33,7 +33,7 @@ public class StoredProcedureExample {
             rs.close();
             stmt.close();
         }
-        
+
         return -1;
     }
 }

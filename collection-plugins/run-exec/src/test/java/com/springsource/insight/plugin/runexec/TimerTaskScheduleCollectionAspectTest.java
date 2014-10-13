@@ -22,16 +22,17 @@ import org.junit.Test;
 
 
 /**
- * 
+ *
  */
 public class TimerTaskScheduleCollectionAspectTest
         extends ExecutionCollectionAspectTestSupport {
     private Timer TEST_TIMER;
+
     public TimerTaskScheduleCollectionAspectTest() {
         super();
     }
 
-    
+
     @Override
     public void setUp() {
         assertNull("Previous timer not cleared", TEST_TIMER);
@@ -48,51 +49,51 @@ public class TimerTaskScheduleCollectionAspectTest
     }
 
     @Test
-    public void testDelayedSchedule () throws InterruptedException {
-        SignallingRunnable   task=new SignallingRunnable("testDelayedSchedule");
+    public void testDelayedSchedule() throws InterruptedException {
+        SignallingRunnable task = new SignallingRunnable("testDelayedSchedule");
         TEST_TIMER.schedule(task, 155L);
         assertLastExecutionOperation(task);
         assertCurrentThreadExecution();
     }
 
     @Test
-    public void testDatedSchedule () throws InterruptedException {
-        SignallingRunnable   task=new SignallingRunnable("testDatedSchedule");
+    public void testDatedSchedule() throws InterruptedException {
+        SignallingRunnable task = new SignallingRunnable("testDatedSchedule");
         TEST_TIMER.schedule(task, new Date(System.currentTimeMillis() + 155L));
         assertLastExecutionOperation(task);
         assertCurrentThreadExecution();
     }
 
     @Test
-    public void testPeriodicDelayedSchedule () throws InterruptedException {
-        SignallingRunnable   task=new SignallingRunnable("testPeriodicDelayedSchedule");
+    public void testPeriodicDelayedSchedule() throws InterruptedException {
+        SignallingRunnable task = new SignallingRunnable("testPeriodicDelayedSchedule");
         TEST_TIMER.schedule(task, 155L, 250L);
         runPeriodicTest(task);
     }
 
     @Test
-    public void testPeriodicDatedSchedule () throws InterruptedException {
-        SignallingRunnable   task=new SignallingRunnable("testPeriodicDatedSchedule");
+    public void testPeriodicDatedSchedule() throws InterruptedException {
+        SignallingRunnable task = new SignallingRunnable("testPeriodicDatedSchedule");
         TEST_TIMER.schedule(task, new Date(System.currentTimeMillis() + 155L), 250L);
         runPeriodicTest(task);
     }
 
     @Test
-    public void testDelayedFixedRateSchedule () throws InterruptedException {
-        SignallingRunnable   task=new SignallingRunnable("testDelayedFixedRateSchedule");
+    public void testDelayedFixedRateSchedule() throws InterruptedException {
+        SignallingRunnable task = new SignallingRunnable("testDelayedFixedRateSchedule");
         TEST_TIMER.scheduleAtFixedRate(task, 155L, 250L);
         runPeriodicTest(task);
     }
 
     @Test
-    public void testDatedFixedRateSchedule () throws InterruptedException {
-        SignallingRunnable   task=new SignallingRunnable("testDatedFixedRateSchedule");
+    public void testDatedFixedRateSchedule() throws InterruptedException {
+        SignallingRunnable task = new SignallingRunnable("testDatedFixedRateSchedule");
         TEST_TIMER.scheduleAtFixedRate(task, new Date(System.currentTimeMillis() + 155L), 250L);
         runPeriodicTest(task);
     }
 
-    private void runPeriodicTest (SignallingRunnable task) throws InterruptedException {
-        Thread  thread=iterateRunner(task);
+    private void runPeriodicTest(SignallingRunnable task) throws InterruptedException {
+        Thread thread = iterateRunner(task);
         TEST_TIMER.cancel();
         assertCurrentThreadExecution();
         assertLastExecutionOperation(thread);

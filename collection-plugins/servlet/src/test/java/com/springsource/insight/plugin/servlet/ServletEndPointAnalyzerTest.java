@@ -32,9 +32,9 @@ import com.springsource.insight.intercept.trace.TraceId;
 public class ServletEndPointAnalyzerTest extends AbstractCollectionTestSupport {
     private final ApplicationName appKey = ApplicationName.valueOf("app");
     private final ServletEndPointAnalyzer analyzer = ServletEndPointAnalyzer.getInstance();
-    
-    public ServletEndPointAnalyzerTest () {
-    	super();
+
+    public ServletEndPointAnalyzerTest() {
+        super();
     }
 
     @Test
@@ -45,28 +45,29 @@ public class ServletEndPointAnalyzerTest extends AbstractCollectionTestSupport {
         assertEquals("Mismatched end point", EndPointName.valueOf("My stuff _ servlet"), analysis.getEndPointName());
         assertEquals("Mismatched example", "GET /path?fuu=bar", analysis.getExample());
     }
-    
+
     @Test
     public void testLocateEndPointNoHttp() {
         Trace trace = createNonHttpTrace();
         EndPointAnalysis analysis = analyzer.locateEndPoint(trace);
         assertNull("Unexpected success: " + analysis, analysis);
     }
-    
+
     private Trace createNonHttpTrace() {
         SimpleFrameBuilder builder = new SimpleFrameBuilder();
         builder.enter(new Operation());
         Frame topLevelFrame = builder.exit();
         return Trace.newInstance(appKey, TraceId.valueOf("0"), topLevelFrame);
-        
+
     }
+
     private Trace createServletEndPointTrace() {
         SimpleFrameBuilder builder = new SimpleFrameBuilder();
         Operation httpOp = new Operation().type(OperationType.HTTP);
         httpOp.createMap("request")
-            .put(OperationFields.URI, "/path?fuu=bar")
-            .put("method", "GET")
-            .put("servletName", "My stuff / servlet");
+                .put(OperationFields.URI, "/path?fuu=bar")
+                .put("method", "GET")
+                .put("servletName", "My stuff / servlet");
         builder.enter(httpOp);
         Frame httpFrame = builder.exit();
         return Trace.newInstance(appKey, TraceId.valueOf("0"), httpFrame);

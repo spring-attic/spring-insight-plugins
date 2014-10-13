@@ -25,45 +25,45 @@ import org.junit.Test;
 
 
 /**
- * 
+ *
  */
 public class RestGetOperationCollectionAspectTest extends RestOperationCollectionTestSupport {
-	public RestGetOperationCollectionAspectTest() {
-		super();
-	}
+    public RestGetOperationCollectionAspectTest() {
+        super();
+    }
 
-	@Test
-	public void testGetForEntityNoArgs () throws Exception {
-		assertRestOperationResult(opsInstance.getForEntity(new URI(createTestURI("testGetForEntityNoArgs")), Serializable.class));
-	}
+    @Test
+    public void testGetForEntityNoArgs() throws Exception {
+        assertRestOperationResult(opsInstance.getForEntity(new URI(createTestURI("testGetForEntityNoArgs")), Serializable.class));
+    }
 
-	@Test
-	public void testGetForEntityVarArgs () throws Exception {
-		assertRestOperationResult(opsInstance.getForEntity(createTestURI("testGetForEntityVarArgs"), Serializable.class, new Date()));
-	}
+    @Test
+    public void testGetForEntityVarArgs() throws Exception {
+        assertRestOperationResult(opsInstance.getForEntity(createTestURI("testGetForEntityVarArgs"), Serializable.class, new Date()));
+    }
 
-	@Test
-	public void testGetForEntityMappedVars () throws Exception {
-		assertRestOperationResult(opsInstance.getForEntity(createTestURI("testGetForEntityMappedVars"), Serializable.class, Collections.singletonMap("now",  new Date())));
-	}
+    @Test
+    public void testGetForEntityMappedVars() throws Exception {
+        assertRestOperationResult(opsInstance.getForEntity(createTestURI("testGetForEntityMappedVars"), Serializable.class, Collections.singletonMap("now", new Date())));
+    }
 
-	@Test
-	public void testGetForObjectNoArgs () throws Exception {
-		assertRestOperationResult(opsInstance.getForObject(new URI(createTestURI("testGetForObjectNoArgs")), Serializable.class));
-	}
+    @Test
+    public void testGetForObjectNoArgs() throws Exception {
+        assertRestOperationResult(opsInstance.getForObject(new URI(createTestURI("testGetForObjectNoArgs")), Serializable.class));
+    }
 
-	@Test
-	public void testGetForObjectVarArgs () throws Exception {
-		assertRestOperationResult(opsInstance.getForObject(createTestURI("testGetForObjectVarArgs"), Serializable.class, new Date()));
-	}
+    @Test
+    public void testGetForObjectVarArgs() throws Exception {
+        assertRestOperationResult(opsInstance.getForObject(createTestURI("testGetForObjectVarArgs"), Serializable.class, new Date()));
+    }
 
-	@Test
-	public void testGetForObjectMappedVars () throws Exception {
-		assertRestOperationResult(opsInstance.getForObject(createTestURI("testGetForObjectMappedVars"), Serializable.class, Collections.singletonMap("now",  new Date())));
-	}
+    @Test
+    public void testGetForObjectMappedVars() throws Exception {
+        assertRestOperationResult(opsInstance.getForObject(createTestURI("testGetForObjectMappedVars"), Serializable.class, Collections.singletonMap("now", new Date())));
+    }
 
-	@Override
-	public RestGetOperationCollectionAspect getAspect() {
-		return RestGetOperationCollectionAspect.aspectOf();
-	}
+    @Override
+    public RestGetOperationCollectionAspect getAspect() {
+        return RestGetOperationCollectionAspect.aspectOf();
+    }
 }

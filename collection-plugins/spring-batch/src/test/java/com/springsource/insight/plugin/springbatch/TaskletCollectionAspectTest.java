@@ -29,7 +29,7 @@ import com.springsource.insight.intercept.operation.Operation;
 
 
 /**
- * 
+ *
  */
 public class TaskletCollectionAspectTest
         extends SpringBatchOperationCollectionAspectTestSupport {
@@ -38,22 +38,22 @@ public class TaskletCollectionAspectTest
     }
 
     @Test
-    public void testExecute () throws Exception {
-        Tasklet tasklet=new Tasklet() {
+    public void testExecute() throws Exception {
+        Tasklet tasklet = new Tasklet() {
             public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
                 return RepeatStatus.FINISHED;
             }
         };
-        StepContribution    contribution=Mockito.mock(StepContribution.class);
-        StepExecution       stepExecution=createStepExecution("testExecuteJob", "testExecuteStep");
-        StepContext         stepContext=Mockito.mock(StepContext.class);
+        StepContribution contribution = Mockito.mock(StepContribution.class);
+        StepExecution stepExecution = createStepExecution("testExecuteJob", "testExecuteStep");
+        StepContext stepContext = Mockito.mock(StepContext.class);
         Mockito.when(stepContext.getStepExecution()).thenReturn(stepExecution);
 
-        ChunkContext        chunkContext=Mockito.mock(ChunkContext.class);
+        ChunkContext chunkContext = Mockito.mock(ChunkContext.class);
         Mockito.when(chunkContext.getStepContext()).thenReturn(stepContext);
         tasklet.execute(contribution, chunkContext);
-        
-        Operation   op=assertOperationDetails(getFirstEntered(), "execute", stepExecution.getStepName());
+
+        Operation op = assertOperationDetails(getFirstEntered(), "execute", stepExecution.getStepName());
         assertOperationPath(op, stepExecution);
     }
 

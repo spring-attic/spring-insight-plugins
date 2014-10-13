@@ -22,11 +22,11 @@ import com.foo.example.AbstractBean;
 
 @Service
 public class InsightService extends AbstractBean {
-	public InsightService() {
-		super();
-	}
+    public InsightService() {
+        super();
+    }
 
-	public void run () {
-		logger.info("run(" + getClass().getSimpleName() + ")");
-	}
+    public void run() {
+        logger.info("run(" + getClass().getSimpleName() + ")");
+    }
 }

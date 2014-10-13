@@ -45,7 +45,7 @@ public class DummySessionImpl implements Session {
     protected static final int DUMMY_COLLECTION_COUNT = -1;
     protected static final FlushMode DUMMY_FLUSH_MODE = FlushMode.MANUAL;
 
-    public DummySessionImpl () {
+    public DummySessionImpl() {
         super();
     }
 
@@ -54,11 +54,11 @@ public class DummySessionImpl implements Session {
     }
 
     public void cancelQuery() throws HibernateException {
-    	// ignored
+        // ignored
     }
 
     public void clear() {
-    	// ignored
+        // ignored
     }
 
     public Connection close() throws HibernateException {
@@ -74,7 +74,7 @@ public class DummySessionImpl implements Session {
     }
 
     @SuppressWarnings("rawtypes")
-	public Criteria createCriteria(Class arg0) {
+    public Criteria createCriteria(Class arg0) {
         return null;
     }
 
@@ -104,15 +104,15 @@ public class DummySessionImpl implements Session {
     }
 
     public void delete(Object arg0) throws HibernateException {
-    	// ignored
+        // ignored
     }
 
     public void delete(String arg0, Object arg1) throws HibernateException {
-    	// ignored
+        // ignored
     }
 
     public void disableFilter(String arg0) {
-    	// ignored
+        // ignored
     }
 
     public Connection disconnect() throws HibernateException {
@@ -124,11 +124,11 @@ public class DummySessionImpl implements Session {
     }
 
     public void evict(Object arg0) throws HibernateException {
-    	// ignored
+        // ignored
     }
 
     public void flush() throws HibernateException {
-    	// ignored
+        // ignored
     }
 
     @SuppressWarnings("rawtypes")
@@ -190,13 +190,13 @@ public class DummySessionImpl implements Session {
     }
 
     public SessionStatistics getStatistics() {
-        return  new SessionStatistics() {
+        return new SessionStatistics() {
             public int getCollectionCount() {
                 return DUMMY_COLLECTION_COUNT;
             }
 
             @SuppressWarnings("rawtypes")
-			public Set getCollectionKeys() {
+            public Set getCollectionKeys() {
                 return null;
             }
 
@@ -237,7 +237,7 @@ public class DummySessionImpl implements Session {
     }
 
     public void load(Object arg0, Serializable arg1) throws HibernateException {
-    	// ignored
+        // ignored
     }
 
     @SuppressWarnings("rawtypes")
@@ -250,11 +250,11 @@ public class DummySessionImpl implements Session {
     }
 
     public void lock(Object arg0, LockMode arg1) throws HibernateException {
-    	// ignored
+        // ignored
     }
 
     public void lock(String arg0, Object arg1, LockMode arg2) throws HibernateException {
-    	// ignored
+        // ignored
     }
 
     public Object merge(Object arg0) throws HibernateException {
@@ -266,35 +266,35 @@ public class DummySessionImpl implements Session {
     }
 
     public void persist(Object arg0) throws HibernateException {
-    	// ignored
+        // ignored
     }
 
     public void persist(String arg0, Object arg1) throws HibernateException {
-    	// ignored
+        // ignored
     }
 
     public void reconnect() throws HibernateException {
-    	// ignored
+        // ignored
     }
 
     public void reconnect(Connection arg0) throws HibernateException {
-    	// ignored
+        // ignored
     }
 
     public void refresh(Object arg0) throws HibernateException {
-    	// ignored
+        // ignored
     }
 
     public void refresh(Object arg0, LockMode arg1) throws HibernateException {
-    	// ignored
+        // ignored
     }
 
     public void replicate(Object arg0, ReplicationMode arg1) throws HibernateException {
-    	// ignored
+        // ignored
     }
 
     public void replicate(String arg0, Object arg1, ReplicationMode arg2) throws HibernateException {
-    	// ignored
+        // ignored
     }
 
     public Serializable save(Object arg0) throws HibernateException {
@@ -306,31 +306,31 @@ public class DummySessionImpl implements Session {
     }
 
     public void saveOrUpdate(Object arg0) throws HibernateException {
-    	// ignored
+        // ignored
     }
 
     public void saveOrUpdate(String arg0, Object arg1) throws HibernateException {
-    	// ignored
+        // ignored
     }
 
     public void setCacheMode(CacheMode arg0) {
-    	// ignored
+        // ignored
     }
 
     public void setFlushMode(FlushMode arg0) {
-    	// ignored
+        // ignored
     }
 
     public void setReadOnly(Object arg0, boolean arg1) {
-    	// ignored
+        // ignored
     }
 
     public void update(Object arg0) throws HibernateException {
-    	// ignored
+        // ignored
     }
 
     public void update(String arg0, Object arg1) throws HibernateException {
-    	// ignored
+        // ignored
     }
 
     public boolean isDefaultReadOnly() {
@@ -338,7 +338,7 @@ public class DummySessionImpl implements Session {
     }
 
     public void setDefaultReadOnly(boolean readOnly) {
-    	// ignored
+        // ignored
     }
 
     @SuppressWarnings("rawtypes")
@@ -348,7 +348,7 @@ public class DummySessionImpl implements Session {
     }
 
     public Object load(String entityName, Serializable id, LockOptions lockOptions)
-    		throws HibernateException {
+            throws HibernateException {
         return null;
     }
 
@@ -358,7 +358,7 @@ public class DummySessionImpl implements Session {
 
     public void refresh(Object object, LockOptions lockOptions)
             throws HibernateException {
-    	// ignored
+        // ignored
     }
 
     @SuppressWarnings("rawtypes")
@@ -368,7 +368,7 @@ public class DummySessionImpl implements Session {
     }
 
     public Object get(String entityName, Serializable id, LockOptions lockOptions)
-    		throws HibernateException {
+            throws HibernateException {
         return null;
     }
 
@@ -377,7 +377,7 @@ public class DummySessionImpl implements Session {
     }
 
     public void doWork(Work work) throws HibernateException {
-    	// ignored
+        // ignored
     }
 
     public boolean isFetchProfileEnabled(String name)
@@ -386,11 +386,11 @@ public class DummySessionImpl implements Session {
     }
 
     public void enableFetchProfile(String name) throws UnknownProfileException {
-    	// ignored
+        // ignored
     }
 
     public void disableFetchProfile(String name) throws UnknownProfileException {
-    	// ignored
+        // ignored
     }
 
     public TypeHelper getTypeHelper() {

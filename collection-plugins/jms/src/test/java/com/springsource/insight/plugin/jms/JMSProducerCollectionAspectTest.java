@@ -33,7 +33,7 @@ import org.junit.Test;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class JMSProducerCollectionAspectTest extends AbstractJMSCollectionAspectTestSupport {
-    public JMSProducerCollectionAspectTest () {
+    public JMSProducerCollectionAspectTest() {
         super();
     }
 
@@ -48,7 +48,7 @@ public class JMSProducerCollectionAspectTest extends AbstractJMSCollectionAspect
     }
 
     @Test
-    public void testObscuredProducerAtttributes () throws JMSException {
+    public void testObscuredProducerAtttributes() throws JMSException {
         runProducerTest(true);
     }
 
@@ -62,7 +62,7 @@ public class JMSProducerCollectionAspectTest extends AbstractJMSCollectionAspect
         return JMSProducerCollectionAspect.aspectOf();
     }
 
-    private void runProducerTest (boolean obscureAttrs) throws JMSException {
+    private void runProducerTest(boolean obscureAttrs) throws JMSException {
         Queue queue = mock(Queue.class);
         DestinationType type = DestinationType.Queue;
 
@@ -83,7 +83,7 @@ public class JMSProducerCollectionAspectTest extends AbstractJMSCollectionAspect
         Map<String, Object> msgAttributesMap = JMSPluginUtilsTest.mockAttributes(_mockMessage);
         JMSPluginUtilsTest.mockHeaders(_mockMessage);
 
-        MockProducer 	producer = new MockProducer(queue);
+        MockProducer producer = new MockProducer(queue);
         if (obscureAttrs) {
             AbstractJMSCollectionAspect.OBFUSCATED_PROPERTIES.addAll(msgAttributesMap.keySet());
         }
@@ -105,7 +105,7 @@ public class JMSProducerCollectionAspectTest extends AbstractJMSCollectionAspect
         final Queue queue;
 
         public MockProducer(Queue q) throws JMSException {
-            if ((this.queue=q) == null) {
+            if ((this.queue = q) == null) {
                 throw new JMSException("No queue");
             }
         }

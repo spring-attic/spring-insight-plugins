@@ -39,119 +39,117 @@ import com.springsource.insight.util.MapUtil;
 import com.springsource.insight.util.StringUtil;
 
 /**
- * 
+ *
  */
 public aspect HttpInvokerRequestExecutorOperationCollectionAspect extends AbstractSpringWebAspectSupport {
-	private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
+    private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
 
-	public HttpInvokerRequestExecutorOperationCollectionAspect () {
-		super(new HttpInvokerRequestExecutorOperationCollector());
-	}
+    public HttpInvokerRequestExecutorOperationCollectionAspect() {
+        super(new HttpInvokerRequestExecutorOperationCollector());
+    }
 
-	public pointcut collectionPoint ()
-	: execution(* HttpInvokerRequestExecutor+.executeRequest(HttpInvokerClientConfiguration,RemoteInvocation));
+    public pointcut collectionPoint()
+            : execution(* HttpInvokerRequestExecutor+.executeRequest(HttpInvokerClientConfiguration,RemoteInvocation));
 
-	@Override
-	protected Operation createOperation(JoinPoint jp) {
-		Object[]						args=jp.getArgs();
-		HttpInvokerClientConfiguration	config=(HttpInvokerClientConfiguration) args[0];
-		RemoteInvocation				invocation=(RemoteInvocation) args[1];
-		Operation						op=OperationCollectionUtil.methodOperation(
-				new Operation().type(HttpInvokerRequestExecutorExternalResourceAnalyzer.HTTP_INVOKER), jp)
-				.put(HttpInvokerRequestExecutorExternalResourceAnalyzer.DIRECT_CALL_ATTR, false)
-				;
+    @Override
+    protected Operation createOperation(JoinPoint jp) {
+        Object[] args = jp.getArgs();
+        HttpInvokerClientConfiguration config = (HttpInvokerClientConfiguration) args[0];
+        RemoteInvocation invocation = (RemoteInvocation) args[1];
+        Operation op = OperationCollectionUtil.methodOperation(
+                new Operation().type(HttpInvokerRequestExecutorExternalResourceAnalyzer.HTTP_INVOKER), jp)
+                .put(HttpInvokerRequestExecutorExternalResourceAnalyzer.DIRECT_CALL_ATTR, false);
 
-		encodeInvocationConfig(op, config);
-		encodeRemoteInvocation(op, invocation);
-		return op;
-	}
+        encodeInvocationConfig(op, config);
+        encodeRemoteInvocation(op, invocation);
+        return op;
+    }
 
-	protected Operation encodeInvocationConfig (Operation op, HttpInvokerClientConfiguration config) {
-		if (config instanceof HttpInvokerProxyFactoryBean) {
-			Class<?> serviceInterface = ((HttpInvokerProxyFactoryBean)config).getServiceInterface();
-			if (serviceInterface != null) {
-				op.put("serviceInterface", serviceInterface.getName());
-			}
-		}
+    protected Operation encodeInvocationConfig(Operation op, HttpInvokerClientConfiguration config) {
+        if (config instanceof HttpInvokerProxyFactoryBean) {
+            Class<?> serviceInterface = ((HttpInvokerProxyFactoryBean) config).getServiceInterface();
+            if (serviceInterface != null) {
+                op.put("serviceInterface", serviceInterface.getName());
+            }
+        }
 
-		op.put(OperationFields.URI, config.getServiceUrl());
+        op.put(OperationFields.URI, config.getServiceUrl());
 
-		if (collectExtraInformation()) {
-			encodeCodebaseUrls(op.createList("codebaseUrls"), config.getCodebaseUrl());
-		}
+        if (collectExtraInformation()) {
+            encodeCodebaseUrls(op.createList("codebaseUrls"), config.getCodebaseUrl());
+        }
 
-		return op;
-	}
+        return op;
+    }
 
-	protected OperationList encodeCodebaseUrls(OperationList list, String urlsString) {
-		Collection<String>	urls=StringUtil.explode(urlsString, " ", true, true);
-		if (ListUtil.size(urls) <= 0) {
-			return list;
-		}
+    protected OperationList encodeCodebaseUrls(OperationList list, String urlsString) {
+        Collection<String> urls = StringUtil.explode(urlsString, " ", true, true);
+        if (ListUtil.size(urls) <= 0) {
+            return list;
+        }
 
-		for (String url : urls) {
-			list.add(url);
-		}
+        for (String url : urls) {
+            list.add(url);
+        }
 
-		return list;
-	}
+        return list;
+    }
 
-	protected Operation encodeRemoteInvocation (Operation op, RemoteInvocation invocation) {
-		String	methodName=invocation.getMethodName();
-		String	remoteLocation=JoinPointBreakDown.getMethodStringFromArgs(methodName, invocation.getParameterTypes());
+    protected Operation encodeRemoteInvocation(Operation op, RemoteInvocation invocation) {
+        String methodName = invocation.getMethodName();
+        String remoteLocation = JoinPointBreakDown.getMethodStringFromArgs(methodName, invocation.getParameterTypes());
 
-		op.label(generateLabel(op, remoteLocation)).put("remoteMethodSignature", remoteLocation);
+        op.label(generateLabel(op, remoteLocation)).put("remoteMethodSignature", remoteLocation);
 
-		if (collectExtraInformation()) {
-			encodeInvocationAttributes(op.createMap("remoteInvocationAttrs"), invocation.getAttributes());
-		}
+        if (collectExtraInformation()) {
+            encodeInvocationAttributes(op.createMap("remoteInvocationAttrs"), invocation.getAttributes());
+        }
 
-		return op;
-	}
+        return op;
+    }
 
-	protected String generateLabel(Operation op, String remoteLocation) {
-		String simpleServiceInterface = null;
-		String serviceInterface = op.get("serviceInterface", String.class);
+    protected String generateLabel(Operation op, String remoteLocation) {
+        String simpleServiceInterface = null;
+        String serviceInterface = op.get("serviceInterface", String.class);
 
-		StringBuilder builder;
-		if (!StringUtil.isEmpty(serviceInterface)) {
-			int lastIndex = serviceInterface.lastIndexOf('.');
-			simpleServiceInterface = serviceInterface.substring(lastIndex+1, serviceInterface.length());
+        StringBuilder builder;
+        if (!StringUtil.isEmpty(serviceInterface)) {
+            int lastIndex = serviceInterface.lastIndexOf('.');
+            simpleServiceInterface = serviceInterface.substring(lastIndex + 1, serviceInterface.length());
 
-			builder = new StringBuilder(simpleServiceInterface.length() + remoteLocation.length() + 1);
-			builder.append(simpleServiceInterface).append('#');
+            builder = new StringBuilder(simpleServiceInterface.length() + remoteLocation.length() + 1);
+            builder.append(simpleServiceInterface).append('#');
 
-		} else {
-			builder = new StringBuilder(remoteLocation.length());
-		}
+        } else {
+            builder = new StringBuilder(remoteLocation.length());
+        }
 
-		builder.append(remoteLocation);
+        builder.append(remoteLocation);
 
-		return builder.toString();
+        return builder.toString();
 
-	}
+    }
 
-	protected OperationMap encodeInvocationAttributes(OperationMap map, Map<String,?> attrs) {
-		if (MapUtil.size(attrs) <= 0) {
-			return map;
-		}
+    protected OperationMap encodeInvocationAttributes(OperationMap map, Map<String, ?> attrs) {
+        if (MapUtil.size(attrs) <= 0) {
+            return map;
+        }
 
-		for (Map.Entry<String,?> ae : attrs.entrySet()) {
-			String	key=ae.getKey();
-			Object	value=ae.getValue();
-			map.putAnyNonEmpty(key, value);
-		}
+        for (Map.Entry<String, ?> ae : attrs.entrySet()) {
+            String key = ae.getKey();
+            Object value = ae.getValue();
+            map.putAnyNonEmpty(key, value);
+        }
 
-		return map;
-	}
+        return map;
+    }
 
-	boolean collectExtraInformation ()
-	{
-		return FrameBuilder.OperationCollectionLevel.HIGH.equals(configuration.getCollectionLevel());
-	}
+    boolean collectExtraInformation() {
+        return FrameBuilder.OperationCollectionLevel.HIGH.equals(configuration.getCollectionLevel());
+    }
 
-	@Override
-	public boolean isMetricsGenerator() {
-		return true; // This provides an external resource
-	}
+    @Override
+    public boolean isMetricsGenerator() {
+        return true; // This provides an external resource
+    }
 }

@@ -24,19 +24,20 @@ import org.springframework.test.context.ContextConfiguration;
 import com.springsource.insight.idk.test.AbstractExposedIdkPuginsTestSupport;
 
 /**
- * Makes sure that the exposed singletons are indeed visible 
+ * Makes sure that the exposed singletons are indeed visible
  */
-@ContextConfiguration(locations={ "classpath:META-INF/insight-plugin-run-exec.xml" })
+@ContextConfiguration(locations = {"classpath:META-INF/insight-plugin-run-exec.xml"})
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ExposedRunExecPluginSpringBeanTest
-		extends AbstractExposedIdkPuginsTestSupport<RunExecPluginRuntimeDescriptor>{
+        extends AbstractExposedIdkPuginsTestSupport<RunExecPluginRuntimeDescriptor> {
     /* NOTE: all beans are autowired with required=false since we want
      * to have specific tests for each and we don't want to fail ALL the
      * tests if one bean is missing
      */
-	@Autowired(required=false) protected RunExecPluginRuntimeDescriptor	runExecPluginRuntimeDescriptor;
+    @Autowired(required = false)
+    protected RunExecPluginRuntimeDescriptor runExecPluginRuntimeDescriptor;
 
-	public ExposedRunExecPluginSpringBeanTest() {
-		super(RunExecPluginRuntimeDescriptor.class);
-	}
+    public ExposedRunExecPluginSpringBeanTest() {
+        super(RunExecPluginRuntimeDescriptor.class);
+    }
 }

@@ -22,58 +22,58 @@ import java.sql.SQLException;
 import com.springsource.insight.plugin.jdbc.helpers.AbstractDatabaseMetaData;
 
 /**
- * 
+ *
  */
 public class Jdk16DatabaseMetaData extends AbstractDatabaseMetaData {
-	public Jdk16DatabaseMetaData() {
-		super();
-	}
+    public Jdk16DatabaseMetaData() {
+        super();
+    }
 
-	public <T> T unwrap(Class<T> iface) throws SQLException {
-		return null;
-	}
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        return null;
+    }
 
-	public boolean isWrapperFor(Class<?> iface) throws SQLException {
-		return false;
-	}
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        return false;
+    }
 
-	public RowIdLifetime getRowIdLifetime() throws SQLException {
-		return null;
-	}
+    public RowIdLifetime getRowIdLifetime() throws SQLException {
+        return null;
+    }
 
-	public ResultSet getSchemas(String catalog, String schemaPattern) throws SQLException {
-		return null;
-	}
+    public ResultSet getSchemas(String catalog, String schemaPattern) throws SQLException {
+        return null;
+    }
 
-	public boolean supportsStoredFunctionsUsingCallSyntax() throws SQLException {
-		return false;
-	}
+    public boolean supportsStoredFunctionsUsingCallSyntax() throws SQLException {
+        return false;
+    }
 
-	public boolean autoCommitFailureClosesAllResultSets() throws SQLException {
-		return false;
-	}
+    public boolean autoCommitFailureClosesAllResultSets() throws SQLException {
+        return false;
+    }
 
-	public ResultSet getClientInfoProperties() throws SQLException {
-		return null;
-	}
+    public ResultSet getClientInfoProperties() throws SQLException {
+        return null;
+    }
 
-	public ResultSet getFunctions(String catalog, String schemaPattern, String functionNamePattern)
-			throws SQLException {
-		return null;
-	}
+    public ResultSet getFunctions(String catalog, String schemaPattern, String functionNamePattern)
+            throws SQLException {
+        return null;
+    }
 
-	public ResultSet getFunctionColumns(String catalog, String schemaPattern, String functionNamePattern, String columnNamePattern)
-			throws SQLException {
-		return null;
-	}
+    public ResultSet getFunctionColumns(String catalog, String schemaPattern, String functionNamePattern, String columnNamePattern)
+            throws SQLException {
+        return null;
+    }
 
-	public ResultSet getPseudoColumns(String catalog, String schemaPattern,
-			String tableNamePattern, String columnNamePattern)
-			throws SQLException {
-		return null;
-	}
+    public ResultSet getPseudoColumns(String catalog, String schemaPattern,
+                                      String tableNamePattern, String columnNamePattern)
+            throws SQLException {
+        return null;
+    }
 
-	public boolean generatedKeyAlwaysReturned() throws SQLException {
-		return false;
-	}
+    public boolean generatedKeyAlwaysReturned() throws SQLException {
+        return false;
+    }
 }

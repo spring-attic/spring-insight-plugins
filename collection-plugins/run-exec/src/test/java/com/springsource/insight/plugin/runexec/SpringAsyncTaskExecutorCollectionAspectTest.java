@@ -26,7 +26,7 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 
 
 /**
- * 
+ *
  */
 public class SpringAsyncTaskExecutorCollectionAspectTest
         extends ExecutionCollectionAspectTestSupport {
@@ -35,9 +35,9 @@ public class SpringAsyncTaskExecutorCollectionAspectTest
     }
 
     @Test
-    public void testExecutionMethod () throws InterruptedException {
-        AsyncTaskExecutor   executor=new SimpleAsyncTaskExecutor("tTestExecutionMethod");
-        SignallingRunnable  runner=new SignallingRunnable("testExecutionMethod");
+    public void testExecutionMethod() throws InterruptedException {
+        AsyncTaskExecutor executor = new SimpleAsyncTaskExecutor("tTestExecutionMethod");
+        SignallingRunnable runner = new SignallingRunnable("testExecutionMethod");
         executor.execute(runner, 125L);
 
         assertLastExecutionOperation(runner);
@@ -45,15 +45,15 @@ public class SpringAsyncTaskExecutorCollectionAspectTest
     }
 
     @Test
-    public void testSubmissionMethod () throws InterruptedException, ExecutionException, TimeoutException {
-        AsyncTaskExecutor   executor=new SimpleAsyncTaskExecutor("testSubmissionMethod");
-        SignallingRunnable  runner=new SignallingRunnable("testSubmissionMethod");
-        Future<?>           future=executor.submit(runner);
-        Object              result=future.get(5L, TimeUnit.SECONDS);
+    public void testSubmissionMethod() throws InterruptedException, ExecutionException, TimeoutException {
+        AsyncTaskExecutor executor = new SimpleAsyncTaskExecutor("testSubmissionMethod");
+        SignallingRunnable runner = new SignallingRunnable("testSubmissionMethod");
+        Future<?> future = executor.submit(runner);
+        Object result = future.get(5L, TimeUnit.SECONDS);
 
         assertLastExecutionOperation(runner);
         assertCurrentThreadExecution();
-        
+
         assertNull("Unexpected future result", result);
         assertTrue("Future not done", future.isDone());
     }

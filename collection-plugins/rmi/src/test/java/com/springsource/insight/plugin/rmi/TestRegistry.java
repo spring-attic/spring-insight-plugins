@@ -29,44 +29,44 @@ import com.springsource.insight.util.ListUtil;
 
 /**
  */
-public class TestRegistry extends HashMap<String,Remote> implements Registry {
-	private static final long serialVersionUID = 7667773694972670028L;
+public class TestRegistry extends HashMap<String, Remote> implements Registry {
+    private static final long serialVersionUID = 7667773694972670028L;
 
-	public TestRegistry () {
-		super();
-	}
+    public TestRegistry() {
+        super();
+    }
 
-	public Remote lookup(String name) throws RemoteException,
-			NotBoundException, AccessException {
-		// TODO Auto-generated method stub
-		return get(name);
-	}
+    public Remote lookup(String name) throws RemoteException,
+            NotBoundException, AccessException {
+        // TODO Auto-generated method stub
+        return get(name);
+    }
 
-	public void bind(String name, Remote obj) throws RemoteException, AlreadyBoundException, AccessException {
-		if (containsKey(name)) {
-			throw new AlreadyBoundException(name);
-		}
-		
-		put(name, obj);
-	}
+    public void bind(String name, Remote obj) throws RemoteException, AlreadyBoundException, AccessException {
+        if (containsKey(name)) {
+            throw new AlreadyBoundException(name);
+        }
 
-	public void unbind(String name) throws RemoteException, NotBoundException, AccessException {
-		Remote	rem=remove(name);
-		if (rem == null) {
-			throw new NotBoundException(name);
-		}
-	}
+        put(name, obj);
+    }
 
-	public void rebind(String name, Remote obj) throws RemoteException, AccessException {
-		put(name, obj);
-	}
+    public void unbind(String name) throws RemoteException, NotBoundException, AccessException {
+        Remote rem = remove(name);
+        if (rem == null) {
+            throw new NotBoundException(name);
+        }
+    }
 
-	public String[] list() throws RemoteException, AccessException {
-		Collection<String>	keys=keySet();
-		if (ListUtil.size(keys) <= 0) {
-			return new String[0];
-		} else {
-			return keys.toArray(new String[keys.size()]);
-		}
-	}
+    public void rebind(String name, Remote obj) throws RemoteException, AccessException {
+        put(name, obj);
+    }
+
+    public String[] list() throws RemoteException, AccessException {
+        Collection<String> keys = keySet();
+        if (ListUtil.size(keys) <= 0) {
+            return new String[0];
+        } else {
+            return keys.toArray(new String[keys.size()]);
+        }
+    }
 }

@@ -56,21 +56,21 @@ import java.util.Locale;
  * @since 1.8.0
  */
 public class DatabaseURL {
-	
-	static int SC_DEFAULT_HSQL_SERVER_PORT  = 9001;
-	static int SC_DEFAULT_HSQLS_SERVER_PORT = 554;
-	static int SC_DEFAULT_HTTP_SERVER_PORT  = 80;
-	static int SC_DEFAULT_HTTPS_SERVER_PORT = 443;
 
-    static final String        S_DOT        = ".";
-    public static final String S_MEM        = "mem:";
-    public static final String S_FILE       = "file:";
-    public static final String S_RES        = "res:";
-    public static final String S_ALIAS      = "alias:";
-    public static final String S_HSQL       = "hsql://";
-    public static final String S_HSQLS      = "hsqls://";
-    public static final String S_HTTP       = "http://";
-    public static final String S_HTTPS      = "https://";
+    static int SC_DEFAULT_HSQL_SERVER_PORT = 9001;
+    static int SC_DEFAULT_HSQLS_SERVER_PORT = 554;
+    static int SC_DEFAULT_HTTP_SERVER_PORT = 80;
+    static int SC_DEFAULT_HTTPS_SERVER_PORT = 443;
+
+    static final String S_DOT = ".";
+    public static final String S_MEM = "mem:";
+    public static final String S_FILE = "file:";
+    public static final String S_RES = "res:";
+    public static final String S_ALIAS = "alias:";
+    public static final String S_HSQL = "hsql://";
+    public static final String S_HSQLS = "hsqls://";
+    public static final String S_HTTP = "http://";
+    public static final String S_HTTPS = "https://";
     public static final String S_URL_PREFIX = "jdbc:hsqldb:";
 
     /**
@@ -101,9 +101,9 @@ public class DatabaseURL {
     /**
      * Parses the url into components that are returned in a properties
      * object. <p>
-     *
+     * <p/>
      * The following components are isolated: <p>
-     *
+     * <p/>
      * <ul>
      * url: the original url<p>
      * connection_type: a static string that indicate the protocol. If the
@@ -121,19 +121,19 @@ public class DatabaseURL {
      * for each protocol if port number is not in the url<p>
      * Additional connection properties specified as key/value pairs.
      * </ul>
+     *
      * @return null returned if the part that should represent the port is not
      * an integer or the part for database name is empty.
      * Empty HsqlProperties returned if if url does not begin with valid
      * protocol and could refer to another JDBC driver.
-     *
      */
     public static HsqlProperties parseURL(String url, boolean hasPrefix) {
 
-        String         urlImage   = url.toLowerCase(Locale.ENGLISH);
-        HsqlProperties props      = new HsqlProperties();
+        String urlImage = url.toLowerCase(Locale.ENGLISH);
+        HsqlProperties props = new HsqlProperties();
         HsqlProperties extraProps = null;
-        String         arguments  = null;
-        int            pos        = 0;
+        String arguments = null;
+        int pos = 0;
 
         if (hasPrefix) {
             if (urlImage.startsWith(S_URL_PREFIX)) {
@@ -143,11 +143,11 @@ public class DatabaseURL {
             }
         }
 
-        String  type = null;
-        String  host;
-        int     port = 0;
-        String  database;
-        String  path;
+        String type = null;
+        String host;
+        int port = 0;
+        String database;
+        String path;
         boolean isNetwork = false;
 
         props.setProperty("url", url);
@@ -176,20 +176,20 @@ public class DatabaseURL {
         } else if (urlImage.startsWith(S_ALIAS, pos)) {
             type = S_ALIAS;
         } else if (urlImage.startsWith(S_HSQL, pos)) {
-            type      = S_HSQL;
-            port      = SC_DEFAULT_HSQL_SERVER_PORT;
+            type = S_HSQL;
+            port = SC_DEFAULT_HSQL_SERVER_PORT;
             isNetwork = true;
         } else if (urlImage.startsWith(S_HSQLS, pos)) {
-            type      = S_HSQLS;
-            port      = SC_DEFAULT_HSQLS_SERVER_PORT;
+            type = S_HSQLS;
+            port = SC_DEFAULT_HSQLS_SERVER_PORT;
             isNetwork = true;
         } else if (urlImage.startsWith(S_HTTP, pos)) {
-            type      = S_HTTP;
-            port      = SC_DEFAULT_HTTP_SERVER_PORT;
+            type = S_HTTP;
+            port = SC_DEFAULT_HTTP_SERVER_PORT;
             isNetwork = true;
         } else if (urlImage.startsWith(S_HTTPS, pos)) {
-            type      = S_HTTPS;
-            port      = SC_DEFAULT_HTTPS_SERVER_PORT;
+            type = S_HTTPS;
+            port = SC_DEFAULT_HTTPS_SERVER_PORT;
             isNetwork = true;
         }
 
@@ -219,7 +219,7 @@ public class DatabaseURL {
             } else {
                 try {
                     port = Integer.parseInt(url.substring(colonpos + 1,
-                                                          slashpos));
+                            slashpos));
                 } catch (NumberFormatException e) {
                     return null;
                 }
@@ -230,13 +230,13 @@ public class DatabaseURL {
             int secondslashpos = url.lastIndexOf('/', semicolpos);
 
             if (secondslashpos < pos) {
-                path     = "/";
+                path = "/";
                 database = "";
             } else if (secondslashpos == slashpos) {
-                path     = "/";
+                path = "/";
                 database = urlImage.substring(secondslashpos + 1, semicolpos);
             } else {
-                path     = url.substring(slashpos, secondslashpos);
+                path = url.substring(slashpos, secondslashpos);
                 database = urlImage.substring(secondslashpos + 1, semicolpos);
             }
 

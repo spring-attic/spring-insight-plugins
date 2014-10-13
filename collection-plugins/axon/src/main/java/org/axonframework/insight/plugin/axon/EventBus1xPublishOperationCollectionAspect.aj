@@ -42,7 +42,7 @@ public aspect EventBus1xPublishOperationCollectionAspect extends AbstractOperati
                 .put("eventType", eventType);
         return op;
     }
-    
+
     @Override
     public final String getPluginName() {
         return AxonPluginRuntimeDescriptor.PLUGIN_NAME;

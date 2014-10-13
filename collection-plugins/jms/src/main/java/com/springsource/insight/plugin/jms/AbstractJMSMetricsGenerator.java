@@ -21,27 +21,27 @@ import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
 
 public abstract class AbstractJMSMetricsGenerator extends AbstractExternalResourceMetricsGenerator {
-	private static final String JMS_COUNT_SUFFIX = ":type=counter";
-	private final String   jmsMetricKey;
-	private final JMSPluginOperationType	jmsType;
+    private static final String JMS_COUNT_SUFFIX = ":type=counter";
+    private final String jmsMetricKey;
+    private final JMSPluginOperationType jmsType;
 
-	protected AbstractJMSMetricsGenerator(JMSPluginOperationType type) {
-		super(type.getOperationType());
-		jmsType = type;
-		jmsMetricKey = type.getOperationType().getName() + JMS_COUNT_SUFFIX;
-	}
+    protected AbstractJMSMetricsGenerator(JMSPluginOperationType type) {
+        super(type.getOperationType());
+        jmsType = type;
+        jmsMetricKey = type.getOperationType().getName() + JMS_COUNT_SUFFIX;
+    }
 
-	public final JMSPluginOperationType getJMSPluginOperationType () {
-		return jmsType;
-	}
-	
+    public final JMSPluginOperationType getJMSPluginOperationType() {
+        return jmsType;
+    }
 
-	@Override
-	protected void addExtraFrameMetrics(Trace trace, Frame opTypeFrame, MetricsBag mb) {
-		addCounterMetricToBag(trace, mb, createMetricKey(), 1);
-	}
-	
-	final String createMetricKey () {
-	    return jmsMetricKey;
-	}
+
+    @Override
+    protected void addExtraFrameMetrics(Trace trace, Frame opTypeFrame, MetricsBag mb) {
+        addCounterMetricToBag(trace, mb, createMetricKey(), 1);
+    }
+
+    final String createMetricKey() {
+        return jmsMetricKey;
+    }
 }

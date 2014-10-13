@@ -6,11 +6,11 @@
         <@insight.list type="ordered" collection=operation.args />
     </@insight.entry>
     <@insight.entry name="Return">
-    	${operation.returnValue?html}
+    ${operation.returnValue?html}
     </@insight.entry>
     <@insight.entry name="Query">
-    	${operation.query?html}
-    </@insight.entry>    
+    ${operation.query?html}
+    </@insight.entry>
     <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
 </@insight.group>
 

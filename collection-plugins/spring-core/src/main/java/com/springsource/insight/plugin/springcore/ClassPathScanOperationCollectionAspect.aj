@@ -28,23 +28,23 @@ public privileged aspect ClassPathScanOperationCollectionAspect extends SpringLi
     }
 
     public pointcut findPathMatchingResources()
-        : execution(* PathMatchingResourcePatternResolver+.findPathMatchingResources(String));
+            : execution(* PathMatchingResourcePatternResolver+.findPathMatchingResources(String));
 
     public pointcut findCandidateComponents()
-        : execution(* ClassPathScanningCandidateComponentProvider+.findCandidateComponents(String));
+            : execution(* ClassPathScanningCandidateComponentProvider+.findCandidateComponents(String));
 
     public pointcut collectionPoint()
-    	: findPathMatchingResources()
-       || findCandidateComponents()
-    	;
+            : findPathMatchingResources()
+            || findCandidateComponents()
+            ;
 
-	@Override
-	protected String resolveEventData (Object event) {
-		String	location=StringUtil.safeToString(event);
-		if (StringUtil.isEmpty(location)) {
-			return "<unknown>";
-		} else {
-			return location;
-		}
-	}
+    @Override
+    protected String resolveEventData(Object event) {
+        String location = StringUtil.safeToString(event);
+        if (StringUtil.isEmpty(location)) {
+            return "<unknown>";
+        } else {
+            return location;
+        }
+    }
 }

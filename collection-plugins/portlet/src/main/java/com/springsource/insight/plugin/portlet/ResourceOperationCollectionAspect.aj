@@ -29,21 +29,21 @@ import com.springsource.insight.intercept.operation.Operation;
  * @type: portlet-resource
  */
 public privileged aspect ResourceOperationCollectionAspect extends GenericOperationCollectionAspect {
-	public ResourceOperationCollectionAspect () {
-		super();
-	}
+    public ResourceOperationCollectionAspect() {
+        super();
+    }
 
-    public pointcut collectionPoint() : execution(void javax.portlet.ResourceServingPortlet+.serveResource(ResourceRequest, ResourceResponse));
+    public pointcut collectionPoint(): execution(void javax.portlet.ResourceServingPortlet+.serveResource(ResourceRequest, ResourceResponse));
 
-	@Override
-	protected Operation createOperation(JoinPoint jp) {
-		Object[] 		args=jp.getArgs();
-		ResourceRequest req=(ResourceRequest)args[0];
-        
-		return createOperation(jp, OperationCollectionTypes.RESOURCE_TYPE)
-				.putAnyNonEmpty("ETag", req.getETag())
-				.putAnyNonEmpty("resourceCacheability", req.getCacheability())
-	            .putAnyNonEmpty("resourcePhase", req.getParameter(PortletRequest.RESOURCE_PHASE))
-	            ;
-	}
+    @Override
+    protected Operation createOperation(JoinPoint jp) {
+        Object[] args = jp.getArgs();
+        ResourceRequest req = (ResourceRequest) args[0];
+
+        return createOperation(jp, OperationCollectionTypes.RESOURCE_TYPE)
+                .putAnyNonEmpty("ETag", req.getETag())
+                .putAnyNonEmpty("resourceCacheability", req.getCacheability())
+                .putAnyNonEmpty("resourcePhase", req.getParameter(PortletRequest.RESOURCE_PHASE))
+                ;
+    }
 }

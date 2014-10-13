@@ -22,21 +22,21 @@ import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
 
 public abstract class AbstractRabbitMetricsGenerator extends AbstractExternalResourceMetricsGenerator {
-	public static final String RABBIT_COUNT_SUFFIX = ":type=counter";
+    public static final String RABBIT_COUNT_SUFFIX = ":type=counter";
 
-	private final String   rabbitMetricKey;
+    private final String rabbitMetricKey;
 
-	protected AbstractRabbitMetricsGenerator(RabbitPluginOperationType rabbitOpType) {
-		super(rabbitOpType.getOperationType());
-		rabbitMetricKey = rabbitOpType.getOperationType().getName() + RABBIT_COUNT_SUFFIX;
-	}
+    protected AbstractRabbitMetricsGenerator(RabbitPluginOperationType rabbitOpType) {
+        super(rabbitOpType.getOperationType());
+        rabbitMetricKey = rabbitOpType.getOperationType().getName() + RABBIT_COUNT_SUFFIX;
+    }
 
-	@Override
-	protected void addExtraFrameMetrics(Trace trace,  Frame opTypeFrame, MetricsBag mb) {
-		addCounterMetricToBag(trace, mb, createMetricKey(), 1);
-	}
+    @Override
+    protected void addExtraFrameMetrics(Trace trace, Frame opTypeFrame, MetricsBag mb) {
+        addCounterMetricToBag(trace, mb, createMetricKey(), 1);
+    }
 
-	final String createMetricKey() {
-		return rabbitMetricKey;
-	}
+    final String createMetricKey() {
+        return rabbitMetricKey;
+    }
 }

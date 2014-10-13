@@ -20,10 +20,10 @@ import com.springsource.insight.intercept.trace.TraceSource;
 
 public class RabbitTraceSourceAnalyzerTest extends AbstractTraceSourceAnalyzerTestSupport {
 
-	public RabbitTraceSourceAnalyzerTest() {
-		super(RabbitTraceSourceAnalyzer.getInstance(), TraceSource.MESSAGE_BUS, RabbitPluginOperationType.CONSUME.getOperationType(), 
-                                                                                RabbitPluginOperationType.PUBLISH.getOperationType());
-	}
+    public RabbitTraceSourceAnalyzerTest() {
+        super(RabbitTraceSourceAnalyzer.getInstance(), TraceSource.MESSAGE_BUS, RabbitPluginOperationType.CONSUME.getOperationType(),
+                RabbitPluginOperationType.PUBLISH.getOperationType());
+    }
 
 
 }

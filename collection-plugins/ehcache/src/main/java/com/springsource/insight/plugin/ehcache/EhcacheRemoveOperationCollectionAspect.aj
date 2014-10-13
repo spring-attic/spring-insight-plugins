@@ -24,19 +24,19 @@ import org.aspectj.lang.JoinPoint;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public aspect EhcacheRemoveOperationCollectionAspect extends EhcacheMethodOperationCollectionAspect {
-	public EhcacheRemoveOperationCollectionAspect () {
-		super();
-	}
+    public EhcacheRemoveOperationCollectionAspect() {
+        super();
+    }
 
-    public pointcut ehcacheCollectionPoint ()
-        : execution(* Ehcache+.remove(..))
-       || execution(* Ehcache+.removeQuiet(..))
-       || execution(* Ehcache+.removeWithWriter(Object))
-       || execution(* Ehcache+.removeElement(Element))
-        ;
+    public pointcut ehcacheCollectionPoint()
+            : execution(* Ehcache+.remove(..))
+            || execution(* Ehcache+.removeQuiet(..))
+            || execution(* Ehcache+.removeWithWriter(Object))
+            || execution(* Ehcache+.removeElement(Element))
+            ;
 
 
     @Override
@@ -44,8 +44,8 @@ public aspect EhcacheRemoveOperationCollectionAspect extends EhcacheMethodOperat
         return createRemoveOperation(super.createOperation(jp), (Ehcache) jp.getTarget(), jp.getArgs()[0]);
     }
 
-    Operation createRemoveOperation (Operation op, Ehcache cache, Object obj) {
-        Object key=(obj instanceof Element) ? ((Element) obj).getObjectKey() : obj;
+    Operation createRemoveOperation(Operation op, Ehcache cache, Object obj) {
+        Object key = (obj instanceof Element) ? ((Element) obj).getObjectKey() : obj;
         return initCommonFields(op, cache, EhcacheDefinitions.REM_METHOD, key);
     }
 

@@ -18,18 +18,18 @@ package com.springsource.insight.plugin.logging;
 import com.springsource.insight.intercept.operation.OperationType;
 
 /**
- * 
+ *
  */
 public final class LoggingDefinitions {
     private LoggingDefinitions() {
         // no instance
     }
 
-    public static final OperationType   TYPE=OperationType.valueOf("logging");
+    public static final OperationType TYPE = OperationType.valueOf("logging");
     // a fully qualified path of the framework logger class
-    public static final String  FRAMEWORK_ATTR="logFramework",
-                                NAME_ATTR="logName",
-                                LEVEL_ATTR="logLevel",
-                                MESSAGE_ATTR="logMessage",
-                                EXCEPTION_ATTR="logException";
+    public static final String FRAMEWORK_ATTR = "logFramework",
+            NAME_ATTR = "logName",
+            LEVEL_ATTR = "logLevel",
+            MESSAGE_ATTR = "logMessage",
+            EXCEPTION_ATTR = "logException";
 }

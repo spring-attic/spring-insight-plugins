@@ -36,28 +36,28 @@ import com.springsource.insight.intercept.operation.OperationFields;
  * <P>Intercepts execution of queries via {@link PreparedStatement}s or
  * {@link CallableStatement}s. The expected usage model of the aspect is:</P></BR>
  * <UL>
- * 
+ *
  * 		<LI>
  * 		A {@link PreparedStatement} or {@link CallableStatement} is created via
  * 		call(s) to {@link Connection#prepareStatement(String)}s or
- * 		{@link Connection#prepareCall(String)}s.
+ *        {@link Connection#prepareCall(String)}s.
  * 		</LI>
- * 
+ *
  * 		<LI>
  * 		The statement is initialized via calls to <code>setXXX</code> parameter
  * 		calls.
  * 		</LI>
- * 
+ *
  * 		</LI>
  * 		The <code>execute</code> method is called
  * 		</LI>
- * 
+ *
  * 		<LI>
  * 		The last 2 steps are repeated several times before the statement is <code>close</code>-d
  * </UL
  */
 public aspect JdbcPreparedStatementOperationCollectionAspect
-    extends OperationCollectionAspectSupport {
+        extends OperationCollectionAspectSupport {
     /**
      * A {@link Map} of the prepared statements &quot;templates&quot;
      */
@@ -65,15 +65,15 @@ public aspect JdbcPreparedStatementOperationCollectionAspect
     /**
      * A {@link Map} of the currently entered statements
      */
-    private final Map<PreparedStatement, Operation>	entered =
-    		Collections.synchronizedMap(new WeakHashMap<PreparedStatement, Operation>());
+    private final Map<PreparedStatement, Operation> entered =
+            Collections.synchronizedMap(new WeakHashMap<PreparedStatement, Operation>());
 
-    public JdbcPreparedStatementOperationCollectionAspect () {
-    	super();
+    public JdbcPreparedStatementOperationCollectionAspect() {
+        super();
     }
 
-    public pointcut metaDataRetrieval() : execution(* java.sql.Connection.getMetaData());
-    public pointcut fetchDatabaseUrl() : execution(* java.sql.DatabaseMetaData.getURL());
+    public pointcut metaDataRetrieval(): execution(* java.sql.Connection.getMetaData());
+    public pointcut fetchDatabaseUrl(): execution(* java.sql.DatabaseMetaData.getURL());
 
     /* Select PreparedStatement's execute(), executeUpdate(), and executeQuery()
      * methods -- none of them take any parameters. Although, PreparedStatement
@@ -82,62 +82,62 @@ public aspect JdbcPreparedStatementOperationCollectionAspect
      * therefore, we treat them as plain Statement and select them in 
      * JdbcStatementMetricCollectionAspect.
      */
-    public pointcut execute() 
-        :  execution(* java.sql.PreparedStatement.execute*())
-        && collect();
+    public pointcut execute()
+            :  execution(* java.sql.PreparedStatement.execute*())
+            && collect();
 
     public pointcut collect()
-        :  if (strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
-   // avoid collecting SQL queries due to meta-data retrieval since it would cause infinite recursion
-     && (!cflow(metaDataRetrieval()))
-     && (!cflow(fetchDatabaseUrl()))
-        ;
+            :  if (strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
+            // avoid collecting SQL queries due to meta-data retrieval since it would cause infinite recursion
+            && (!cflow(metaDataRetrieval()))
+            && (!cflow(fetchDatabaseUrl()))
+            ;
 
-    pointcut preparedStatementCreation(String sql) 
-        : collect()
-        && ((execution(PreparedStatement Connection.prepareStatement(String, ..))
-          || execution(CallableStatement Connection.prepareCall(String, ..)))
-        && args(sql, ..))
-         ;
+    pointcut preparedStatementCreation(String sql)
+            : collect()
+            && ((execution(PreparedStatement Connection.prepareStatement(String, ..))
+            || execution(CallableStatement Connection.prepareCall(String, ..)))
+            && args(sql, ..))
+            ;
 
     pointcut preparedStatementSetParameter(PreparedStatement statement, int index, Object parameter)
-        : collect()
-       && execution(public void PreparedStatement.set*(int, *))
-       && this(statement)
-       && args(index, parameter)
-        ;
-    
+            : collect()
+            && execution(public void PreparedStatement.set*(int, *))
+            && this(statement)
+            && args(index, parameter)
+            ;
+
     pointcut callableStatementSetParameter(CallableStatement statement, String key, Object parameter)
-        : collect()
-       && execution(public void CallableStatement.set*(String, *))
-       && this(statement)
-       && args(key, parameter)
-       ;
+            : collect()
+            && execution(public void CallableStatement.set*(String, *))
+            && this(statement)
+            && args(key, parameter)
+            ;
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
-    after(String sql) returning(PreparedStatement statement) : preparedStatementCreation(sql) {
+    after(String sql) returning(PreparedStatement statement): preparedStatementCreation(sql) {
         createOperationForStatement(thisJoinPoint, statement, sql);
     }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after(PreparedStatement statement, int index, Object parameter) returning
-        : preparedStatementSetParameter(statement, index, parameter) 
-    {
-        Operation operation = storage.get(statement);
-        if (operation != null) {
-            JdbcOperationFinalizer.addParam(operation, index, parameter);
-        }
-    }
+            : preparedStatementSetParameter(statement, index, parameter)
+            {
+                Operation operation = storage.get(statement);
+                if (operation != null) {
+                    JdbcOperationFinalizer.addParam(operation, index, parameter);
+                }
+            }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after(PreparedStatement statement, String parameterName, Object parameter) returning
-        : callableStatementSetParameter(statement, parameterName, parameter) 
-    {
-        Operation operation = storage.get(statement);
-        if (operation != null) {
-            JdbcOperationFinalizer.addParam(operation, parameterName, parameter);
-        }
-    }
+            : callableStatementSetParameter(statement, parameterName, parameter)
+            {
+                Operation operation = storage.get(statement);
+                if (operation != null) {
+                    JdbcOperationFinalizer.addParam(operation, parameterName, parameter);
+                }
+            }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     before(): execute() {
@@ -150,9 +150,9 @@ public aspect JdbcPreparedStatementOperationCollectionAspect
         if (template != null) {
             JdbcOperationFinalizer.finalize(template);
 
-            Operation op = new Operation().cloneFrom(template);            
+            Operation op = new Operation().cloneFrom(template);
             entered.put(thisStatement, op);
-            
+
             getCollector().enter(op);
         } else {
             // stmt.execute() called, but stmt was never returned via a prepareStatement().
@@ -187,28 +187,27 @@ public aspect JdbcPreparedStatementOperationCollectionAspect
                 .type(JdbcOperationExternalResourceAnalyzer.TYPE)
                 .sourceCodeLocation(getSourceCodeLocation(jp))
                 .label(JdbcOperationFinalizer.createLabel(sql))
-                .put("sql", sql)
-                ;
-    	storage.put(statement, operation);
+                .put("sql", sql);
+        storage.put(statement, operation);
 
         // always return an operation
         try {
-            Connection	connection = statement.getConnection();
-            DatabaseMetaData	metaData = connection.getMetaData();
+            Connection connection = statement.getConnection();
+            DatabaseMetaData metaData = connection.getMetaData();
             operation.putAnyNonEmpty(OperationFields.CONNECTION_URL, metaData.getURL());
-        } catch(SQLException e) {
+        } catch (SQLException e) {
             // ignore, possibly expected
         } catch (Throwable t) {
             CollectionErrors.markCollectionError(this, t);
         }
         return operation;
     }
-    
+
     @Override
     public String getPluginName() {
         return JdbcRuntimePluginDescriptor.PLUGIN_NAME;
     }
-    
+
     @Override
     public boolean isMetricsGenerator() {
         return true; // This provides an external resource

@@ -25,12 +25,12 @@ import com.springsource.insight.util.ArrayUtil;
 import com.springsource.insight.util.StringFormatterUtils;
 
 /**
- * 
+ *
  */
 public aspect JmxSetSingleAttributeOperationCollectionAspect extends JmxSingleAttributeOperationCollectionSupport {
-	public JmxSetSingleAttributeOperationCollectionAspect() {
-		super(JmxPluginRuntimeDescriptor.SET_ACTION);
-	}
+    public JmxSetSingleAttributeOperationCollectionAspect() {
+        super(JmxPluginRuntimeDescriptor.SET_ACTION);
+    }
 
 	/* We use cflowbelow in case calls are delegated - theoretically, one
 	 * might make a case against the cflowbelow - e.g., if the server accesses
@@ -38,21 +38,21 @@ public aspect JmxSetSingleAttributeOperationCollectionAspect extends JmxSingleAt
 	 * (a) highly unlikely, (b) not really useful information and (c) considerable
 	 * trace size increase
 	 */
-	public pointcut collectionPoint()
-		: setAttributeValue()
-	   && (!cflowbelow(setAttributeValue()))
-	   && (!cflowbelow(setAttributesList()))
-	    ;
+    public pointcut collectionPoint()
+            : setAttributeValue()
+            && (!cflowbelow(setAttributeValue()))
+            && (!cflowbelow(setAttributesList()))
+            ;
 
-	@Override
-	protected Operation createOperation(JoinPoint jp) {
-		Object[]	args=jp.getArgs();
-		Attribute	attr=ArrayUtil.findFirstInstanceOf(Attribute.class, args);
-		String		name=(attr == null) ? null : attr.getName();
-		Object		value=(attr == null) ? null : attr.getValue();
-		return createAttributeOperation(jp, getObjectName(args), name)
-					.putAnyNonEmpty(JmxPluginRuntimeDescriptor.ATTR_VALUE_PROP, StringFormatterUtils.formatObject(value))
-					;
-	}
+    @Override
+    protected Operation createOperation(JoinPoint jp) {
+        Object[] args = jp.getArgs();
+        Attribute attr = ArrayUtil.findFirstInstanceOf(Attribute.class, args);
+        String name = (attr == null) ? null : attr.getName();
+        Object value = (attr == null) ? null : attr.getValue();
+        return createAttributeOperation(jp, getObjectName(args), name)
+                .putAnyNonEmpty(JmxPluginRuntimeDescriptor.ATTR_VALUE_PROP, StringFormatterUtils.formatObject(value))
+                ;
+    }
 
 }

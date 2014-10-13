@@ -23,7 +23,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * 
+ *
  */
 public class HttpPlaceholderMethodTest extends Assert {
     public HttpPlaceholderMethodTest() {
@@ -31,38 +31,38 @@ public class HttpPlaceholderMethodTest extends Assert {
     }
 
     @Test
-    public void testPlaceholderMethodContents () throws URIException {
+    public void testPlaceholderMethodContents() throws URIException {
         assertEquals("Mismatched method",
-                     HttpClientDefinitions.PLACEHOLDER_METHOD_NAME,
-                     HttpPlaceholderMethod.PLACEHOLDER.getName());
+                HttpClientDefinitions.PLACEHOLDER_METHOD_NAME,
+                HttpPlaceholderMethod.PLACEHOLDER.getName());
         assertEquals("Mismatched URI",
-                     HttpClientDefinitions.PLACEHOLDER_URI_VALUE,
-                     String.valueOf(HttpPlaceholderMethod.PLACEHOLDER.getURI()));
-        
-        StatusLine  statusLine=HttpPlaceholderMethod.PLACEHOLDER.getStatusLine();
+                HttpClientDefinitions.PLACEHOLDER_URI_VALUE,
+                String.valueOf(HttpPlaceholderMethod.PLACEHOLDER.getURI()));
+
+        StatusLine statusLine = HttpPlaceholderMethod.PLACEHOLDER.getStatusLine();
         assertEquals("Mismatched HTTP version", "HTTP/1.1", statusLine.getHttpVersion());
         assertEquals("Mismatched status code", 500, statusLine.getStatusCode());
     }
 
     @Test
-    public void testResolveHttpMethodOnNullOrEmptyArgs () {
+    public void testResolveHttpMethodOnNullOrEmptyArgs() {
         assertSame("Mismatched result for null",
-                    HttpPlaceholderMethod.PLACEHOLDER,
-                    HttpPlaceholderMethod.resolveHttpMethod((Object[]) null));
+                HttpPlaceholderMethod.PLACEHOLDER,
+                HttpPlaceholderMethod.resolveHttpMethod((Object[]) null));
         assertSame("Mismatched result for empty",
                 HttpPlaceholderMethod.PLACEHOLDER,
-                HttpPlaceholderMethod.resolveHttpMethod(new Object[] { }));
+                HttpPlaceholderMethod.resolveHttpMethod(new Object[]{}));
     }
 
     @Test
-    public void testResolveHttpMethodOnNoMethod () {
+    public void testResolveHttpMethodOnNoMethod() {
         assertSame(HttpPlaceholderMethod.PLACEHOLDER,
-                   HttpPlaceholderMethod.resolveHttpMethod("1234", Long.valueOf(System.currentTimeMillis())));
+                HttpPlaceholderMethod.resolveHttpMethod("1234", Long.valueOf(System.currentTimeMillis())));
     }
 
     @Test
-    public void testResolveHttpMethodOnExistingMethod () {
-        HttpMethod  method=new GetMethod("http://localhost");
+    public void testResolveHttpMethodOnExistingMethod() {
+        HttpMethod method = new GetMethod("http://localhost");
         assertSame(method, HttpPlaceholderMethod.resolveHttpMethod("1234", method, Long.valueOf(System.currentTimeMillis())));
     }
 

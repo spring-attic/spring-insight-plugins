@@ -25,29 +25,30 @@ import com.springsource.insight.intercept.trace.collapse.CollapsingFrameHelperRe
 import com.springsource.insight.util.ArrayUtil;
 
 public class EhcahePluginRuntimeDescriptor extends PluginRuntimeDescriptor {
-	private static final EhcahePluginRuntimeDescriptor	INSTANCE=new EhcahePluginRuntimeDescriptor();
+    private static final EhcahePluginRuntimeDescriptor INSTANCE = new EhcahePluginRuntimeDescriptor();
     private final Collection<CollapsingFrameHelperRegistrar> frameHelperRegistrars = Collections.singleton(CollapsingFrameHelperRegistrar.of(EhcacheDefinitions.CACHE_OPERATION)
-                                                                                                                                         .with(EhcacheCollapsingFrameHelper.getInstance()));
-    private static final List<? extends ExternalResourceAnalyzer>	extResAnalyzers=
-       		ArrayUtil.asUnmodifiableList(EhcacheExternalResourceAnalyzer.getInstance());
-	private EhcahePluginRuntimeDescriptor () {
-		super();
-	}
+            .with(EhcacheCollapsingFrameHelper.getInstance()));
+    private static final List<? extends ExternalResourceAnalyzer> extResAnalyzers =
+            ArrayUtil.asUnmodifiableList(EhcacheExternalResourceAnalyzer.getInstance());
 
-	public static final EhcahePluginRuntimeDescriptor getInstance() {
-		return INSTANCE;
-	}
+    private EhcahePluginRuntimeDescriptor() {
+        super();
+    }
+
+    public static final EhcahePluginRuntimeDescriptor getInstance() {
+        return INSTANCE;
+    }
 
     @Override
     public String getPluginName() {
         return EhcacheDefinitions.PLUGIN_NAME;
     }
-    
+
     @Override
     public Collection<? extends ExternalResourceAnalyzer> getExternalResourceAnalyzers() {
-    	return extResAnalyzers;
+        return extResAnalyzers;
     }
-    
+
     @Override
     public Collection<CollapsingFrameHelperRegistrar> getCollapsingFrameHelperRegistrars() {
         return frameHelperRegistrars;

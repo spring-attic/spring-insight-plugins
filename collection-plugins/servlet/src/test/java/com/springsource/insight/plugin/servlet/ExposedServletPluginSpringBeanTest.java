@@ -21,23 +21,30 @@ import org.springframework.test.context.ContextConfiguration;
 
 import com.springsource.insight.idk.test.AbstractExposedIdkPuginsTestSupport;
 
-@ContextConfiguration(locations={ "classpath:META-INF/insight-plugin-servlet.xml" })
+@ContextConfiguration(locations = {"classpath:META-INF/insight-plugin-servlet.xml"})
 public class ExposedServletPluginSpringBeanTest
-		extends AbstractExposedIdkPuginsTestSupport<ServletPluginRuntimeDescriptor> {
-	    /* NOTE: all beans are autowired with required=false since we want
-	     * to have specific tests for each and we don't want to fail ALL the
-	     * tests if one bean is missing
-	     */
-	@Autowired(required=false) protected ServletPluginRuntimeDescriptor	servletPluginRuntimeDescriptor;
-	@Autowired(required=false) protected LifecycleEndPointAnalyzer	lifecycleEndPointAnalyzer;
-	@Autowired(required=false) protected RequestDispatchEndPointAnalyzer	requestDispatchEndPointAnalyzer;
-	@Autowired(required=false) protected ServletEndPointAnalyzer	servletEndPointAnalyzer;
-	@Autowired(required=false) protected RequestResponseSizeMetricsGenerator	requestResponseSizeMetricsGenerator;
-	@Autowired(required=false) protected HttpStatusTraceErrorAnalyzer	httpStatusTraceErrorAnalyzer;
-	@Autowired(required=false) protected HttpTraceSourceAnalyzer httpTraceSourceAnalyzer;
-	
-	
-	public ExposedServletPluginSpringBeanTest() {
-		super(ServletPluginRuntimeDescriptor.class);
-	}
+        extends AbstractExposedIdkPuginsTestSupport<ServletPluginRuntimeDescriptor> {
+    /* NOTE: all beans are autowired with required=false since we want
+     * to have specific tests for each and we don't want to fail ALL the
+     * tests if one bean is missing
+     */
+    @Autowired(required = false)
+    protected ServletPluginRuntimeDescriptor servletPluginRuntimeDescriptor;
+    @Autowired(required = false)
+    protected LifecycleEndPointAnalyzer lifecycleEndPointAnalyzer;
+    @Autowired(required = false)
+    protected RequestDispatchEndPointAnalyzer requestDispatchEndPointAnalyzer;
+    @Autowired(required = false)
+    protected ServletEndPointAnalyzer servletEndPointAnalyzer;
+    @Autowired(required = false)
+    protected RequestResponseSizeMetricsGenerator requestResponseSizeMetricsGenerator;
+    @Autowired(required = false)
+    protected HttpStatusTraceErrorAnalyzer httpStatusTraceErrorAnalyzer;
+    @Autowired(required = false)
+    protected HttpTraceSourceAnalyzer httpTraceSourceAnalyzer;
+
+
+    public ExposedServletPluginSpringBeanTest() {
+        super(ServletPluginRuntimeDescriptor.class);
+    }
 }

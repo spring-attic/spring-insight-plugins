@@ -47,63 +47,58 @@ import com.springsource.insight.intercept.trace.FrameBuilder;
 import com.springsource.insight.util.ArrayUtil;
 
 /**
- * 
+ *
  */
 public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAspectSupport {
     private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
-	private HttpObfuscator	obfuscator=HttpObfuscator.getInstance();
+    private HttpObfuscator obfuscator = HttpObfuscator.getInstance();
 
-	public HttpClientExecutionCollectionAspect () {
+    public HttpClientExecutionCollectionAspect() {
         super();
     }
 
 
     public pointcut withResponseExecution()
-        : execution(* org.apache.http.client.HttpClient.execute(HttpUriRequest))
-       || execution(* org.apache.http.client.HttpClient.execute(HttpUriRequest,HttpContext))
-       || execution(* org.apache.http.client.HttpClient.execute(HttpHost,HttpRequest))
-       || execution(* org.apache.http.client.HttpClient.execute(HttpHost,HttpRequest,HttpContext))
-        ;
+            : execution(* org.apache.http.client.HttpClient.execute(HttpUriRequest))
+            || execution(* org.apache.http.client.HttpClient.execute(HttpUriRequest,HttpContext))
+            || execution(* org.apache.http.client.HttpClient.execute(HttpHost,HttpRequest))
+            || execution(* org.apache.http.client.HttpClient.execute(HttpHost,HttpRequest,HttpContext))
+            ;
 
-    HttpObfuscator getHttpHeadersObfuscator () {
-    	return obfuscator;
+    HttpObfuscator getHttpHeadersObfuscator() {
+        return obfuscator;
     }
 
-    void setHttpHeadersObfuscator (HttpObfuscator obfs) {
-    	obfuscator = obfs;
+    void setHttpHeadersObfuscator(HttpObfuscator obfs) {
+        obfuscator = obfs;
     }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
-    HttpResponse around () throws IOException
+    HttpResponse around ()throws IOException
             : withResponseExecution()
-           && (!cflowbelow(withResponseExecution()))
-           && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart)) {
-        final Operation    op=enterOperation(thisJoinPointStaticPart);
-        final HttpRequest  request=HttpPlaceholderRequest.resolveHttpRequest(thisJoinPoint.getArgs());
-        
+            && (!cflowbelow(withResponseExecution()))
+            && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart)) {
+        final Operation op = enterOperation(thisJoinPointStaticPart);
+        final HttpRequest request = HttpPlaceholderRequest.resolveHttpRequest(thisJoinPoint.getArgs());
+
         colorForward(new ColorParams() {
-			public void setColor(String key, String value) {
-				request.addHeader(key, value);
-				}
+            public void setColor(String key, String value) {
+                request.addHeader(key, value);
+            }
 
-			public Operation getOperation() {
-				return op;
-			}
-		});
+            public Operation getOperation() {
+                return op;
+            }
+        });
 
-        try
-        {
-            HttpResponse    response=proceed();
+        try {
+            HttpResponse response = proceed();
             exitOperation(op, request, response, null);
             return response;
-        }
-        catch(IOException e)
-        {
+        } catch (IOException e) {
             exitOperation(op, request, null, e);
             throw e;
-        }
-        catch(RuntimeException e)
-        {
+        } catch (RuntimeException e) {
             exitOperation(op, request, null, e);
             throw e;
         }
@@ -111,61 +106,56 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
 
     /* -------------------------------------------------------------------- */
 
-    public pointcut withResponseHandlerExecutionFlow ()
-        : execution(* org.apache.http.client.HttpClient.execute(..,ResponseHandler,..))
-        ;
+    public pointcut withResponseHandlerExecutionFlow()
+            : execution(* org.apache.http.client.HttpClient.execute(..,ResponseHandler,..))
+            ;
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
-    Object around (ResponseHandler<?> handler) throws IOException
+    Object around (ResponseHandler<?> handler)throws IOException
             : withResponseHandlerExecutionFlow()
-           && (!cflowbelow(withResponseHandlerExecutionFlow()))
-           && args(handler)
-           && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart)) {
-        final Operation     op=enterOperation(thisJoinPointStaticPart);
-        Object[]            args=thisJoinPoint.getArgs();
-        final HttpRequest   request=HttpPlaceholderRequest.resolveHttpRequest(args);
+            && (!cflowbelow(withResponseHandlerExecutionFlow()))
+            && args(handler)
+            && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart)) {
+        final Operation op = enterOperation(thisJoinPointStaticPart);
+        Object[] args = thisJoinPoint.getArgs();
+        final HttpRequest request = HttpPlaceholderRequest.resolveHttpRequest(args);
 
         colorForward(new ColorParams() {
-			public void setColor(String key, String value) {
-				request.addHeader(key, value);
-			}
+            public void setColor(String key, String value) {
+                request.addHeader(key, value);
+            }
 
             public Operation getOperation() {
-				return op;
-			}
-		});
+                return op;
+            }
+        });
 
         // must be final or the anonymous class cannot reference it...
-        final AtomicReference<HttpResponse> rspRef=new AtomicReference<HttpResponse>(null);
-        final ResponseHandler<?>            rspHandler=handler;
+        final AtomicReference<HttpResponse> rspRef = new AtomicReference<HttpResponse>(null);
+        final ResponseHandler<?> rspHandler = handler;
         // if resolution yielded the placeholder no need to create a wrapper
-        ResponseHandler<?>                  wrapper=(request == HttpPlaceholderRequest.PLACEHOLDER)
+        ResponseHandler<?> wrapper = (request == HttpPlaceholderRequest.PLACEHOLDER)
                 ? handler : new ResponseHandler<Object>() {
-                        public Object handleResponse(HttpResponse response) throws IOException {
-                            HttpResponse    prevValue=rspRef.getAndSet(response);
-                            if (prevValue != null) {
-                                throw new IllegalStateException("Multiple responses: current=" + response + "/previous=" + prevValue);
-                            }
-                            return rspHandler.handleResponse(response);
-                        }
-                    };
-        try
-        {
-            Object          returnValue=proceed(wrapper);
-            HttpResponse    response=rspRef.get();
+            public Object handleResponse(HttpResponse response) throws IOException {
+                HttpResponse prevValue = rspRef.getAndSet(response);
+                if (prevValue != null) {
+                    throw new IllegalStateException("Multiple responses: current=" + response + "/previous=" + prevValue);
+                }
+                return rspHandler.handleResponse(response);
+            }
+        };
+        try {
+            Object returnValue = proceed(wrapper);
+            HttpResponse response = rspRef.get();
             if (response == null) {
                 throw new IllegalStateException("No response provided during handler invocation");
             }
             exitOperation(op, request, response, null);
             return returnValue;
-        }
-        catch(IOException e)
-        {
+        } catch (IOException e) {
             exitOperation(op, request, null, e);
             throw e;
-        }
-        catch(RuntimeException e)
-        {
+        } catch (RuntimeException e) {
             exitOperation(op, request, null, e);
             throw e;
         }
@@ -173,24 +163,24 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
 
     /* -------------------------------------------------------------------- */
 
-    Operation enterOperation (JoinPoint.StaticPart staticPart) {
-        Operation           op=createOperation(staticPart);
-        OperationCollector  collector=getCollector();
+    Operation enterOperation(JoinPoint.StaticPart staticPart) {
+        Operation op = createOperation(staticPart);
+        OperationCollector collector = getCollector();
         collector.enter(op);
         return op;
     }
 
-    Operation createOperation (JoinPoint.StaticPart staticPart) {
+    Operation createOperation(JoinPoint.StaticPart staticPart) {
         return new Operation()
-            .type(HttpClientDefinitions.TYPE)
-            .sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(staticPart))
-            ;
+                .type(HttpClientDefinitions.TYPE)
+                .sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(staticPart))
+                ;
     }
 
-    Operation exitOperation (Operation op, HttpRequest request, HttpResponse response, Throwable e) {
+    Operation exitOperation(Operation op, HttpRequest request, HttpResponse response, Throwable e) {
         fillInOperation(op, request, response);
 
-        OperationCollector  collector=getCollector();
+        OperationCollector collector = getCollector();
         if (e == null)
             collector.exitNormal(response);
         else
@@ -199,11 +189,11 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
         return op;
     }
 
-    Operation fillInOperation (Operation op, HttpRequest request, HttpResponse response) {
-        RequestLine     reqLine=request.getRequestLine();
+    Operation fillInOperation(Operation op, HttpRequest request, HttpResponse response) {
+        RequestLine reqLine = request.getRequestLine();
         op.label(reqLine.getMethod() + " " + reqLine.getUri());
 
-        boolean         collectExtra = collectExtraInformation();
+        boolean collectExtra = collectExtraInformation();
         fillInRequestDetails(op.createMap("request"), request, collectExtra);
         if (response != null) {
             fillInResponseDetails(op.createMap("response"), response, collectExtra);
@@ -211,7 +201,7 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
         return op;
     }
 
-    OperationMap fillInRequestDetails (OperationMap op, HttpRequest request, boolean collectExtra) {
+    OperationMap fillInRequestDetails(OperationMap op, HttpRequest request, boolean collectExtra) {
         fillInRequestNetworkDetails(op, request, collectExtra);
         if (collectExtra) {
             fillInMessageHeaders(op.createList("headers"), request);
@@ -219,10 +209,10 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
         return op;
     }
 
-    OperationMap fillInRequestNetworkDetails (OperationMap op, HttpRequest request, boolean collectExtra) {
-        RequestLine     reqLine=request.getRequestLine();
+    OperationMap fillInRequestNetworkDetails(OperationMap op, HttpRequest request, boolean collectExtra) {
+        RequestLine reqLine = request.getRequestLine();
         op.put("method", reqLine.getMethod())
-          .put(OperationFields.URI, reqLine.getUri());
+                .put(OperationFields.URI, reqLine.getUri());
 
         if (collectExtra) {
             op.putAnyNonEmpty("protocol", createVersionValue(reqLine.getProtocolVersion()));
@@ -231,49 +221,49 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
         return op;
     }
 
-    static String createVersionValue (ProtocolVersion protoVersion) {
-    	if (protoVersion == null) {
-    		return null;
-    	}
-    	
+    static String createVersionValue(ProtocolVersion protoVersion) {
+        if (protoVersion == null) {
+            return null;
+        }
+
         return protoVersion.getProtocol() + "/" + String.valueOf(protoVersion.getMajor()) + "." + String.valueOf(protoVersion.getMinor());
     }
 
     OperationMap fillInResponseDetails(OperationMap op, HttpResponse response, boolean collectExtra) {
         StatusLine statusLine = response.getStatusLine();
-        
+
         if (statusLine != null) {
-			op.put("statusCode", statusLine.getStatusCode());
-		}
-		if (collectExtra) {
+            op.put("statusCode", statusLine.getStatusCode());
+        }
+        if (collectExtra) {
             if (statusLine != null) {
-				op.putAnyNonEmpty("reasonPhrase", statusLine.getReasonPhrase());
-			}
-			fillInMessageHeaders(op.createList("headers"), response);
+                op.putAnyNonEmpty("reasonPhrase", statusLine.getReasonPhrase());
+            }
+            fillInMessageHeaders(op.createList("headers"), response);
         }
 
         return op;
     }
 
-    OperationList fillInMessageHeaders (OperationList headers, HttpMessage msg) {
-        Header[]    hdrs=msg.getAllHeaders();
+    OperationList fillInMessageHeaders(OperationList headers, HttpMessage msg) {
+        Header[] hdrs = msg.getAllHeaders();
         if (ArrayUtil.length(hdrs) <= 0) {
             return headers;
         }
 
-        HttpObfuscator obfs=getHttpHeadersObfuscator();
+        HttpObfuscator obfs = getHttpHeadersObfuscator();
         for (Header h : hdrs) {
-            String  name=h.getName(), value=h.getValue();
+            String name = h.getName(), value = h.getValue();
             OperationUtils.addNameValuePair(headers, name, value);
             if (obfs.processHeader(name, value)) {
-            	continue;	// debug breakpoint
+                continue;    // debug breakpoint
             }
         }
 
         return headers;
     }
 
-    boolean collectExtraInformation () {
+    boolean collectExtraInformation() {
         return FrameBuilder.OperationCollectionLevel.HIGH.equals(configuration.getCollectionLevel());
     }
 
@@ -281,7 +271,7 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
     public String getPluginName() {
         return HC4PluginRuntimeDescriptor.PLUGIN_NAME;
     }
-    
+
     @Override
     public boolean isMetricsGenerator() {
         return true; // This provides an external resource

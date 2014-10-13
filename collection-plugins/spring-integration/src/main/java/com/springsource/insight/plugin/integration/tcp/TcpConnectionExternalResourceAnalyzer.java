@@ -39,24 +39,24 @@ import com.springsource.insight.util.StringUtil;
  */
 public class TcpConnectionExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
     public static final OperationType TYPE = OperationType.valueOf("integration_tcpconn");
-    private static final TcpConnectionExternalResourceAnalyzer	INSTANCE=new TcpConnectionExternalResourceAnalyzer();
+    private static final TcpConnectionExternalResourceAnalyzer INSTANCE = new TcpConnectionExternalResourceAnalyzer();
 
-	private TcpConnectionExternalResourceAnalyzer() {
-		super(TYPE);
-	}
+    private TcpConnectionExternalResourceAnalyzer() {
+        super(TYPE);
+    }
 
-	public static final TcpConnectionExternalResourceAnalyzer getInstance() {
-		return INSTANCE;
-	}
+    public static final TcpConnectionExternalResourceAnalyzer getInstance() {
+        return INSTANCE;
+    }
 
-	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> externalFrames) {
+    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> externalFrames) {
         if (ListUtil.size(externalFrames) <= 0) {
             return Collections.emptyList();
         }
 
-        Set<ExternalResourceDescriptor> resSet=new HashSet<ExternalResourceDescriptor>(externalFrames.size());
+        Set<ExternalResourceDescriptor> resSet = new HashSet<ExternalResourceDescriptor>(externalFrames.size());
         for (Frame frame : externalFrames) {
-            ExternalResourceDescriptor  res=extractExternalResourceDescriptor(frame);
+            ExternalResourceDescriptor res = extractExternalResourceDescriptor(frame);
             if (res == null) {  // can happen if failed to parse the URI somehow
                 continue;
             }
@@ -65,29 +65,29 @@ public class TcpConnectionExternalResourceAnalyzer extends AbstractExternalResou
                 continue;   // debug breakpoint
             }
         }
-        
+
         return resSet;
     }
 
-    ExternalResourceDescriptor extractExternalResourceDescriptor (Frame frame) {
-        Operation   op=(frame == null) ? null : frame.getOperation();
-        String      addr=(op == null) ? null : op.get(TcpConnectionOperationCollector.HOST_ADDRESS_ATTR, String.class);
+    ExternalResourceDescriptor extractExternalResourceDescriptor(Frame frame) {
+        Operation op = (frame == null) ? null : frame.getOperation();
+        String addr = (op == null) ? null : op.get(TcpConnectionOperationCollector.HOST_ADDRESS_ATTR, String.class);
         if (StringUtil.isEmpty(addr)) {
             return null;
         }
 
-        int     port=op.getInt(TcpConnectionOperationCollector.PORT_ATTR, (-1));
-        String	uri=op.get(OperationFields.URI, String.class);
-        String	color=colorManager.getColor(op);
+        int port = op.getInt(TcpConnectionOperationCollector.PORT_ATTR, (-1));
+        String uri = op.get(OperationFields.URI, String.class);
+        String color = colorManager.getColor(op);
         return new ExternalResourceDescriptor(frame,
-        									  MD5NameGenerator.getName(uri),
-                                              op.getLabel() + " " + uri,
-                                              ExternalResourceType.SERVER.name(),
-                                              null,
-                                              addr,
-                                              port,
-                                              color,
-                                              false);
+                MD5NameGenerator.getName(uri),
+                op.getLabel() + " " + uri,
+                ExternalResourceType.SERVER.name(),
+                null,
+                addr,
+                port,
+                color,
+                false);
     }
 
 }

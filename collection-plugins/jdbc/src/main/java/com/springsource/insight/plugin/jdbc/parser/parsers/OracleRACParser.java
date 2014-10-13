@@ -28,15 +28,15 @@ import com.springsource.insight.util.ArrayUtil;
 import com.springsource.insight.util.StringUtil;
 
 public class OracleRACParser extends AbstractSqlParser {
-	public static final int	DEFAULT_CONNECTION_PORT=1521;
-	public static final String DEFAULT_CONNECTION_PORT_STRING=String.valueOf(DEFAULT_CONNECTION_PORT);
-	public static final String	VENDOR="oracle";
+    public static final int DEFAULT_CONNECTION_PORT = 1521;
+    public static final String DEFAULT_CONNECTION_PORT_STRING = String.valueOf(DEFAULT_CONNECTION_PORT);
+    public static final String VENDOR = "oracle";
 
-	public OracleRACParser() {
+    public OracleRACParser() {
         super(VENDOR, DEFAULT_CONNECTION_PORT);
     }
 
-    public static final String	HOST_ATTRIBUTE="HOST", PORT_ATTRIBUTE="PORT", SERVICE_ATTRIBUTE="SERVICE_NAME";
+    public static final String HOST_ATTRIBUTE = "HOST", PORT_ATTRIBUTE = "PORT", SERVICE_ATTRIBUTE = "SERVICE_NAME";
     public static final Pattern ORACLE_RAC_HOST_PATTERN = createDefaultAttributePattern(HOST_ATTRIBUTE);
     public static final Pattern ORACLE_RAC_PORT_PATTERN = createDefaultAttributePattern(PORT_ATTRIBUTE);
     public static final Pattern ORACLE_RAC_SERVICE_PATTERN = createDefaultAttributePattern(SERVICE_ATTRIBUTE);
@@ -52,18 +52,18 @@ public class OracleRACParser extends AbstractSqlParser {
          * address and as such contains no useful information
          */
         if (ArrayUtil.length(addressParts) <= 1) {
-        	return Collections.emptyList();
+            return Collections.emptyList();
         }
 
-        String	dbName = resolveAttributeValue(SERVICE_ATTRIBUTE, ORACLE_RAC_SERVICE_PATTERN, connectionUrl, null);
+        String dbName = resolveAttributeValue(SERVICE_ATTRIBUTE, ORACLE_RAC_SERVICE_PATTERN, connectionUrl, null);
         List<JdbcUrlMetaData> parsedUrls = new ArrayList<JdbcUrlMetaData>(addressParts.length - 1);
-        for (int	index=1; index < addressParts.length; index++) {
-        	String part = addressParts[index];
-        	String host = resolveAttributeValue(HOST_ATTRIBUTE, ORACLE_RAC_HOST_PATTERN, part, getDefaultHost());
-        	String portValue = resolveAttributeValue(PORT_ATTRIBUTE, ORACLE_RAC_PORT_PATTERN, part, DEFAULT_CONNECTION_PORT_STRING);
-        	int    port = getDefaultPort();
+        for (int index = 1; index < addressParts.length; index++) {
+            String part = addressParts[index];
+            String host = resolveAttributeValue(HOST_ATTRIBUTE, ORACLE_RAC_HOST_PATTERN, part, getDefaultHost());
+            String portValue = resolveAttributeValue(PORT_ATTRIBUTE, ORACLE_RAC_PORT_PATTERN, part, DEFAULT_CONNECTION_PORT_STRING);
+            int port = getDefaultPort();
             if (portValue != DEFAULT_CONNECTION_PORT_STRING) {
-            	port = parsePort(connectionUrl, portValue);
+                port = parsePort(connectionUrl, portValue);
             }
 
             parsedUrls.add(new SimpleJdbcUrlMetaData(host, port, dbName, connectionUrl, vendorName));
@@ -72,29 +72,29 @@ public class OracleRACParser extends AbstractSqlParser {
         return parsedUrls;
     }
 
-    static String resolveAttributeValue (String attrName, Pattern pattern, String part, String defaultValue) {
-    	if (StringUtil.isEmpty(part) || (!part.contains(attrName))) {
-    		return defaultValue;
-    	}
+    static String resolveAttributeValue(String attrName, Pattern pattern, String part, String defaultValue) {
+        if (StringUtil.isEmpty(part) || (!part.contains(attrName))) {
+            return defaultValue;
+        }
 
-    	Matcher	attrMat=pattern.matcher(part);
-    	if (attrMat.find()) {
-    		String	attrValue=attrMat.group(1);
-    		if (attrValue != null) {
-    			attrValue = attrValue.trim();
-    		}
+        Matcher attrMat = pattern.matcher(part);
+        if (attrMat.find()) {
+            String attrValue = attrMat.group(1);
+            if (attrValue != null) {
+                attrValue = attrValue.trim();
+            }
 
-    		if (StringUtil.isEmpty(attrValue)) {
-    			return defaultValue;
-    		} else {
-    			return attrValue;
-    		}
-    	} else {
-    		return defaultValue;
-    	}
+            if (StringUtil.isEmpty(attrValue)) {
+                return defaultValue;
+            } else {
+                return attrValue;
+            }
+        } else {
+            return defaultValue;
+        }
     }
 
-    static final Pattern createDefaultAttributePattern (String attrName) {
-    	return Pattern.compile(attrName +  "\\s*=\\s*([^)]+)");	
+    static final Pattern createDefaultAttributePattern(String attrName) {
+        return Pattern.compile(attrName + "\\s*=\\s*([^)]+)");
     }
 }

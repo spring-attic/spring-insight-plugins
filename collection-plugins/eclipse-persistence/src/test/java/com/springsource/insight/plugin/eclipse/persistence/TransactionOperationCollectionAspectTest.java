@@ -25,7 +25,7 @@ import com.springsource.insight.intercept.operation.Operation;
 
 
 /**
- * 
+ *
  */
 public class TransactionOperationCollectionAspectTest
         extends EclipsePersistenceCollectionTestSupport {
@@ -48,30 +48,30 @@ public class TransactionOperationCollectionAspectTest
         return TransactionOperationCollectionAspect.aspectOf();
     }
 
-    protected Operation assertTransactionOperation (String testName, String action) {
+    protected Operation assertTransactionOperation(String testName, String action) {
         return assertPersistenceOperation(testName, EclipsePersistenceDefinitions.TX, action);
     }
 
     static enum TransactionOperationAction {
         BEGIN {
             @Override
-            public void executeAction (DatabaseSession session) throws DatabaseException {
+            public void executeAction(DatabaseSession session) throws DatabaseException {
                 session.beginTransaction();
             }
         },
         COMMIT {
             @Override
-            public void executeAction (DatabaseSession session) throws DatabaseException {
+            public void executeAction(DatabaseSession session) throws DatabaseException {
                 session.commitTransaction();
             }
         },
         ROLLBACK {
             @Override
-            public void executeAction (DatabaseSession session) throws DatabaseException {
+            public void executeAction(DatabaseSession session) throws DatabaseException {
                 session.rollbackTransaction();
             }
         };
-        
-        public abstract void executeAction (DatabaseSession session) throws DatabaseException;
+
+        public abstract void executeAction(DatabaseSession session) throws DatabaseException;
     }
 }

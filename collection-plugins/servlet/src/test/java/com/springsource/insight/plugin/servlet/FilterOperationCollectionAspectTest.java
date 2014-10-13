@@ -33,9 +33,9 @@ import com.springsource.insight.intercept.operation.Operation;
 /**
  */
 public class FilterOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-	public FilterOperationCollectionAspectTest () {
-		super();
-	}
+    public FilterOperationCollectionAspectTest() {
+        super();
+    }
 
     @Test
     public void testCached() throws Exception {
@@ -62,9 +62,13 @@ public class FilterOperationCollectionAspectTest extends OperationCollectionAspe
 
     public static class DummyFilterConfig implements FilterConfig {
 
-        public String getFilterName() { return "DummyFilter"; }
+        public String getFilterName() {
+            return "DummyFilter";
+        }
 
-        public ServletContext getServletContext() { return null;}
+        public ServletContext getServletContext() {
+            return null;
+        }
 
         public String getInitParameter(String name) {
             if (name.equals("punk")) return "seattle's";

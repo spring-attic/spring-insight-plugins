@@ -29,23 +29,23 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class PaymentController {
     private Random rand = new Random();
-    private static final String    DEFAULT_DELAY="50";
+    private static final String DEFAULT_DELAY = "50";
 
-    public PaymentController () {
+    public PaymentController() {
         super();
     }
 
     @RequestMapping("/")
-	public ModelAndView paymentHandler(@RequestParam(value="delay", defaultValue=DEFAULT_DELAY) int maxDelay) {
+    public ModelAndView paymentHandler(@RequestParam(value = "delay", defaultValue = DEFAULT_DELAY) int maxDelay) {
         int randomPayment = getRandomPaymentAmount();
         return backdoor(randomPayment, maxDelay);
-	}
+    }
 
     /**
      * Mapping used to help us create specific error conditions within the insight plugin
      */
     @RequestMapping("/backdoor")
-    public ModelAndView backdoor(@RequestParam(value="amount", defaultValue="-999") int amount, @RequestParam(value="delay", defaultValue=DEFAULT_DELAY) int maxDelay) {
+    public ModelAndView backdoor(@RequestParam(value = "amount", defaultValue = "-999") int amount, @RequestParam(value = "delay", defaultValue = DEFAULT_DELAY) int maxDelay) {
         ModelAndView paymentAmount = new ModelAndView("gotpaid");
         FakeAccount account = getAccount();
         account.setMaxDelay(maxDelay);
@@ -58,12 +58,12 @@ public class PaymentController {
         return paymentAmount;
     }
 
-	
-	private int getRandomPaymentAmount() {
-	    return rand.nextInt(1000) + 30;
-	}
-	
-	private FakeAccount getAccount() {
-	    return new FakeAccount();
-	}
+
+    private int getRandomPaymentAmount() {
+        return rand.nextInt(1000) + 30;
+    }
+
+    private FakeAccount getAccount() {
+        return new FakeAccount();
+    }
 }

@@ -22,21 +22,25 @@ import org.springframework.test.context.ContextConfiguration;
 import com.springsource.insight.idk.test.AbstractExposedIdkPuginsTestSupport;
 
 /**
- * Makes sure that the exposed singletons are indeed visible 
+ * Makes sure that the exposed singletons are indeed visible
  */
-@ContextConfiguration(locations={ "classpath:META-INF/insight-plugin-axon.xml" })
+@ContextConfiguration(locations = {"classpath:META-INF/insight-plugin-axon.xml"})
 public class ExposedAxonPluginSpringBeanTest
-	   extends AbstractExposedIdkPuginsTestSupport<AxonPluginRuntimeDescriptor> {
+        extends AbstractExposedIdkPuginsTestSupport<AxonPluginRuntimeDescriptor> {
     /* NOTE: all beans are autowired with required=false since we want
      * to have specific tests for each and we don't want to fail ALL the
      * tests if one bean is missing
      */
-	@Autowired(required=false) protected AxonPluginRuntimeDescriptor axonPluginRuntimeDescriptor;
-	@Autowired(required=false) protected CommandHandlerEndPointAnalyzer commandHandlerEndPointAnalyzer;
-	@Autowired(required=false) protected EventHandlerEndPointAnalyzer eventHandlerEndPointAnalyzer;
-	@Autowired(required=false) protected SagaOperationEndPointAnalyzer sagaOperationEndPointAnalyzer;
+    @Autowired(required = false)
+    protected AxonPluginRuntimeDescriptor axonPluginRuntimeDescriptor;
+    @Autowired(required = false)
+    protected CommandHandlerEndPointAnalyzer commandHandlerEndPointAnalyzer;
+    @Autowired(required = false)
+    protected EventHandlerEndPointAnalyzer eventHandlerEndPointAnalyzer;
+    @Autowired(required = false)
+    protected SagaOperationEndPointAnalyzer sagaOperationEndPointAnalyzer;
 
-	public ExposedAxonPluginSpringBeanTest() {
-		super(AxonPluginRuntimeDescriptor.class);
-	}
+    public ExposedAxonPluginSpringBeanTest() {
+        super(AxonPluginRuntimeDescriptor.class);
+    }
 }

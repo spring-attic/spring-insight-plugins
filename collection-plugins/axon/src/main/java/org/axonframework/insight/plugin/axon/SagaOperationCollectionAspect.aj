@@ -31,17 +31,17 @@ import com.springsource.insight.intercept.operation.OperationMap;
  */
 public aspect SagaOperationCollectionAspect extends MethodOperationCollectionAspect {
 
-    public pointcut collectionPoint(): 
-        execution(@org.axonframework.saga.annotation.SagaEventHandler * *(*, ..)) ||
-            (execution(void org.axonframework.saga.Saga.handle(*))
-                    && !within(org.axonframework.saga.annotation.AbstractAnnotatedSaga));
+    public pointcut collectionPoint():
+            execution(@org.axonframework.saga.annotation.SagaEventHandler * *(*, ..)) ||
+                    (execution(void org.axonframework.saga.Saga.handle(*))
+                            && !within(org.axonframework.saga.annotation.AbstractAnnotatedSaga));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
         Saga saga = (Saga) jp.getTarget();
         Operation operation = super.createOperation(jp)
-                                   .type(AxonOperationType.SAGA)
-                                   .put("id", saga.getSagaIdentifier());
+                .type(AxonOperationType.SAGA)
+                .put("id", saga.getSagaIdentifier());
         OperationMap values = operation.createMap("associationValues");
         for (AssociationValue value : saga.getAssociationValues()) {
             values.put(value.getKey(), value.getValue());
@@ -56,7 +56,7 @@ public aspect SagaOperationCollectionAspect extends MethodOperationCollectionAsp
         operation.put("eventType", event.getClass().getName());
         return operation;
     }
-    
+
     @Override
     public final String getPluginName() {
         return AxonPluginRuntimeDescriptor.PLUGIN_NAME;

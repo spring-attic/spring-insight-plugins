@@ -30,21 +30,21 @@ public privileged aspect FindOperationCollectionAspect extends AbstractOperation
         super();
     }
 
-    public pointcut collectionPoint() : execution(* Neo4jTemplate+.find*(.., Class));
+    public pointcut collectionPoint(): execution(* Neo4jTemplate+.find*(.., Class));
 
-	@Override
+    @Override
     protected Operation createOperation(JoinPoint jp) {
-    	Object[] args = jp.getArgs();
-        Operation op=new Operation()
-        				.type(OperationCollectionTypes.FIND_TYPE.type)
-        				.label(OperationCollectionTypes.FIND_TYPE.label+jp.getSignature().getName())
-        				.sourceCodeLocation(getSourceCodeLocation(jp))
-        				.put("entityClass", ((Class<?>)args[args.length-1]).getName());
-        
-        if (args.length==2) {
-        	op.put("entityId", ((Number)args[0]).longValue());
+        Object[] args = jp.getArgs();
+        Operation op = new Operation()
+                .type(OperationCollectionTypes.FIND_TYPE.type)
+                .label(OperationCollectionTypes.FIND_TYPE.label + jp.getSignature().getName())
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .put("entityClass", ((Class<?>) args[args.length - 1]).getName());
+
+        if (args.length == 2) {
+            op.put("entityId", ((Number) args[0]).longValue());
         }
-        
+
         return op;
     }
 

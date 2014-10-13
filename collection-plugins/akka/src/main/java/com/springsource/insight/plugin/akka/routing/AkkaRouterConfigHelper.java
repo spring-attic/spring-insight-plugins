@@ -28,36 +28,36 @@ public final class AkkaRouterConfigHelper {
     private static final AkkaRouterConfigHelper INSTANCE = new AkkaRouterConfigHelper();
 
     public static final AkkaRouterConfigHelper getInstance() {
-	return INSTANCE;
+        return INSTANCE;
     }
 
     private Map<Class<? extends RouterConfig>, RouterConfigDataExtractor> routerConfigExtractors = new HashMap<Class<? extends RouterConfig>, RouterConfigDataExtractor>();
 
     private AkkaRouterConfigHelper() {
-	routerConfigExtractors.put(RoundRobinRouter.class, RoundRobinRouterDataExtractor.INSTANCE);
+        routerConfigExtractors.put(RoundRobinRouter.class, RoundRobinRouterDataExtractor.INSTANCE);
 
     }
 
     public Map<String, String> getRouterConfigInformation(RouterConfig routerConfig) {
-	Map<String, String> result = new HashMap<String, String>();
-	result.put("Router", routerConfig.getClass().getSimpleName());
-	String routerDispatcher = routerConfig.routerDispatcher();
-	result.put("Router Dispatcher", routerDispatcher);
-	result.putAll(extract(routerConfig));
-	return result;
+        Map<String, String> result = new HashMap<String, String>();
+        result.put("Router", routerConfig.getClass().getSimpleName());
+        String routerDispatcher = routerConfig.routerDispatcher();
+        result.put("Router Dispatcher", routerDispatcher);
+        result.putAll(extract(routerConfig));
+        return result;
     }
 
     private Map<String, String> extract(RouterConfig routerConfig) {
-	Class<?> searchClass = routerConfig.getClass();
-	while (!Object.class.equals(searchClass)) {
-	    RouterConfigDataExtractor extractor = routerConfigExtractors.get(searchClass);
-	    if (extractor == null) {
-		searchClass = searchClass.getSuperclass();
-	    } else {
-		return extractor.extract(routerConfig);
-	    }
-	}
-	return Collections.emptyMap();
+        Class<?> searchClass = routerConfig.getClass();
+        while (!Object.class.equals(searchClass)) {
+            RouterConfigDataExtractor extractor = routerConfigExtractors.get(searchClass);
+            if (extractor == null) {
+                searchClass = searchClass.getSuperclass();
+            } else {
+                return extractor.extract(routerConfig);
+            }
+        }
+        return Collections.emptyMap();
     }
 
 }

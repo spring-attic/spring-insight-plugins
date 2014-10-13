@@ -5,7 +5,8 @@
 <#assign response = operation.response>
 
 <@insight.title>HTTP Summary</@insight.title>
-<code class="raw http">${request.method?html} ${request.uri?html}<#if request.queryString?has_content>?${request.queryString?html}</#if> ${request.protocol?html}</code>
+<code class="raw http">${request.method?html} ${request.uri?html}<#if request.queryString?has_content>
+    ?${request.queryString?html}</#if> ${request.protocol?html}</code>
 <code class="raw http">${request.protocol?html} ${response.statusCode?html} ${response.reasonPhrase?html}</code>
 
 <@insight.group>
@@ -18,20 +19,20 @@
 </@insight.group>
 
 <@insight.group label="Request Body" if=operation.requestBody??>
-    <table class="dl">
-        <tbody>
-            <tr>
-                <td>Content</td>
-                <td>
-                    <pre>${operation.requestBody?html}</pre>
-                </td>
-            </tr>
-            <tr>
-                <td>Bytes</td>
-                <td>${operation.requestBodyBytes}</td>
-            </tr>
-        </tbody>
-    </table>
+<table class="dl">
+    <tbody>
+    <tr>
+        <td>Content</td>
+        <td>
+            <pre>${operation.requestBody?html}</pre>
+        </td>
+    </tr>
+    <tr>
+        <td>Bytes</td>
+        <td>${operation.requestBodyBytes}</td>
+    </tr>
+    </tbody>
+</table>
 </@insight.group>
 
 <@insight.group label="Request Parameters" if=request.queryParams?has_content collection=request.queryParams ; p>
@@ -43,20 +44,20 @@
 </@insight.group>
 
 <@insight.group label="Response Body" if=operation.responseBody??>
-    <table class="dl">
-        <tbody>
-            <tr>
-                <td>Content</td>
-                <td>
-                    <pre>${operation.responseBody?html}</pre>
-                </td>
-            </tr>
-            <tr>
-                <td>Bytes</td>
-                <td>${operation.responseBodyBytes}</td>
-            </tr>
-        </tbody>
-    </table>
+<table class="dl">
+    <tbody>
+    <tr>
+        <td>Content</td>
+        <td>
+            <pre>${operation.responseBody?html}</pre>
+        </td>
+    </tr>
+    <tr>
+        <td>Bytes</td>
+        <td>${operation.responseBodyBytes}</td>
+    </tr>
+    </tbody>
+</table>
 </@insight.group>
 
 <@insight.group label="Response Headers" if=response.headers?has_content collection=response.headers ; h>
@@ -64,7 +65,7 @@
 </@insight.group>
 
 <#if operation.exception??>
-	<@insight.group label="Exception Details">
-		<@insight.entry name="Exception" value=operation.exception/>
-	</@insight.group>
+    <@insight.group label="Exception Details">
+        <@insight.entry name="Exception" value=operation.exception/>
+    </@insight.group>
 </#if>

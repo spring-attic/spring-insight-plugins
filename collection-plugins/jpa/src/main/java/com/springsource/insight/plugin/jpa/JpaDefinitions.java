@@ -19,18 +19,18 @@ package com.springsource.insight.plugin.jpa;
 import com.springsource.insight.intercept.operation.OperationType;
 
 /**
- * 
+ *
  */
 public final class JpaDefinitions {
     private JpaDefinitions() {
         super();
     }
 
-    public static final OperationType   ENTITY_MGR=OperationType.valueOf("jpa-entity-manager"),
-                                        TX_ENTITY=OperationType.valueOf("jpa-tx-entity");
-    public static final String          ACTION_ATTR="action",
-                                        GROUP_ATTR="opGroup",
-                                            LIFECYCLE_GROUP="lifecycle",
-                                            DOMAIN_GROUP="domain",
-                                        DOMAIN_CLASS_ATTR="domainClass";
+    public static final OperationType ENTITY_MGR = OperationType.valueOf("jpa-entity-manager"),
+            TX_ENTITY = OperationType.valueOf("jpa-tx-entity");
+    public static final String ACTION_ATTR = "action",
+            GROUP_ATTR = "opGroup",
+            LIFECYCLE_GROUP = "lifecycle",
+            DOMAIN_GROUP = "domain",
+            DOMAIN_CLASS_ATTR = "domainClass";
 }

@@ -30,7 +30,7 @@ import com.springsource.insight.intercept.operation.Operation;
 
 
 /**
- * 
+ *
  */
 public class FlowOperationCollectionAspectTest
         extends SpringBatchOperationCollectionAspectTestSupport {
@@ -39,66 +39,66 @@ public class FlowOperationCollectionAspectTest
     }
 
     @Test
-    public void testStart () throws FlowExecutionException {
-        FlowExecutor    flowExecutor=createFlowExecutor("testStartJob", "testStartStep");
-        Flow            flow=new Flow() {
-                public String getName() {
-                    return "testStart";
-                }
-    
-                public State getState(String stateName) {
-                    return null;
-                }
-    
-                public FlowExecution start(FlowExecutor executor)
-                        throws FlowExecutionException {
-                    return null;
-                }
-    
-                public FlowExecution resume(String stateName, FlowExecutor executor)
-                        throws FlowExecutionException {
-                    throw new FlowExecutionException("Unexpected resume call");
-                }
-    
-                public Collection<State> getStates() {
-                    return Collections.emptyList();
-                }
-            };
+    public void testStart() throws FlowExecutionException {
+        FlowExecutor flowExecutor = createFlowExecutor("testStartJob", "testStartStep");
+        Flow flow = new Flow() {
+            public String getName() {
+                return "testStart";
+            }
+
+            public State getState(String stateName) {
+                return null;
+            }
+
+            public FlowExecution start(FlowExecutor executor)
+                    throws FlowExecutionException {
+                return null;
+            }
+
+            public FlowExecution resume(String stateName, FlowExecutor executor)
+                    throws FlowExecutionException {
+                throw new FlowExecutionException("Unexpected resume call");
+            }
+
+            public Collection<State> getStates() {
+                return Collections.emptyList();
+            }
+        };
         flow.start(flowExecutor);
 
-        Operation   op=assertOperationDetails(getLastEntered(), "start", flow.getName());
+        Operation op = assertOperationDetails(getLastEntered(), "start", flow.getName());
         assertOperationPath(op, flowExecutor);
     }
 
     @Test
-    public void testResume () throws FlowExecutionException {
-        FlowExecutor    flowExecutor=createFlowExecutor("testResumeJob", "testResumeStep");
-        Flow    flow=new Flow() {
-                public String getName() {
-                    return "testResume";
-                }
-    
-                public State getState(String stateName) {
-                    return null;
-                }
-    
-                public FlowExecution start(FlowExecutor executor)
-                        throws FlowExecutionException {
-                    throw new FlowExecutionException("Unexpected start call");
-                }
-    
-                public FlowExecution resume(String stateName, FlowExecutor executor)
-                        throws FlowExecutionException {
-                    return null;
-                }
-    
-                public Collection<State> getStates() {
-                    return Collections.emptyList();
-                }
-            };
+    public void testResume() throws FlowExecutionException {
+        FlowExecutor flowExecutor = createFlowExecutor("testResumeJob", "testResumeStep");
+        Flow flow = new Flow() {
+            public String getName() {
+                return "testResume";
+            }
+
+            public State getState(String stateName) {
+                return null;
+            }
+
+            public FlowExecution start(FlowExecutor executor)
+                    throws FlowExecutionException {
+                throw new FlowExecutionException("Unexpected start call");
+            }
+
+            public FlowExecution resume(String stateName, FlowExecutor executor)
+                    throws FlowExecutionException {
+                return null;
+            }
+
+            public Collection<State> getStates() {
+                return Collections.emptyList();
+            }
+        };
         flow.resume("test", flowExecutor);
 
-        Operation   op=assertOperationDetails(getLastEntered(), "resume", flow.getName());
+        Operation op = assertOperationDetails(getLastEntered(), "resume", flow.getName());
         assertEquals("Mismatched state value", "test", op.get("flowState", String.class));
         assertOperationPath(op, flowExecutor);
     }

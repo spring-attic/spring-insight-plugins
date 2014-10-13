@@ -23,6 +23,7 @@ import org.aspectj.lang.JoinPoint;
  * Resolves the actual {@link Runnable} instance to be run by and intercept call
  */
 public interface RunnableResolver {
-    Runnable resolveRunner (Runnable runner, JoinPoint.StaticPart spawnLocation);
-    TimerTask resolveTimerTask (TimerTask task, JoinPoint.StaticPart spawnLocation);
+    Runnable resolveRunner(Runnable runner, JoinPoint.StaticPart spawnLocation);
+
+    TimerTask resolveTimerTask(TimerTask task, JoinPoint.StaticPart spawnLocation);
 }

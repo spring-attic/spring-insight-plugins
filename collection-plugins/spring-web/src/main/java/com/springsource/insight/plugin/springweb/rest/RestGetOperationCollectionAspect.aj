@@ -19,15 +19,15 @@ package com.springsource.insight.plugin.springweb.rest;
 import org.springframework.web.client.RestOperations;
 
 /**
- * 
+ *
  */
 public aspect RestGetOperationCollectionAspect extends RestOperationCollectionSupport {
-	public RestGetOperationCollectionAspect () {
-		super("GET");
-	}
-	
-	public pointcut accessPoint ()
-		: execution(* RestOperations+.getForObject(..))
-	   || execution(* RestOperations+.getForEntity(..))
-	    ;
+    public RestGetOperationCollectionAspect() {
+        super("GET");
+    }
+
+    public pointcut accessPoint()
+            : execution(* RestOperations+.getForObject(..))
+            || execution(* RestOperations+.getForEntity(..))
+            ;
 }

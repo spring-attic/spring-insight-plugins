@@ -24,14 +24,14 @@ import org.codehaus.groovy.grails.commons.GrailsControllerClass;
  * particular aspect only steals off the controller name and saves it in threadlocal.
  */
 public aspect GrailsControllerClassAspect {
-	public GrailsControllerClassAspect () {
-		super();
-	}
+    public GrailsControllerClassAspect() {
+        super();
+    }
 
-	public pointcut collectionPoint() : GrailsControllerPointcuts.getControllerClassMethod();
+    public pointcut collectionPoint(): GrailsControllerPointcuts.getControllerClassMethod();
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
-    after() returning(GrailsControllerClass returnValue) : collectionPoint() {
+    after() returning(GrailsControllerClass returnValue): collectionPoint() {
         GrailsControllerStateKeeper.setThreadLocalController(returnValue.getShortName(), returnValue.getFullName());
     }
 }

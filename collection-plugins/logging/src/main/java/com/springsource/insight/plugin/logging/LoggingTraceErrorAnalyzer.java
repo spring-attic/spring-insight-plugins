@@ -21,22 +21,22 @@ import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.TraceError;
 
 /**
- * 
+ *
  */
 public class LoggingTraceErrorAnalyzer extends AbstractTraceErrorAnalyzer {
-	private static final LoggingTraceErrorAnalyzer	INSTANCE=new LoggingTraceErrorAnalyzer();
+    private static final LoggingTraceErrorAnalyzer INSTANCE = new LoggingTraceErrorAnalyzer();
 
     private LoggingTraceErrorAnalyzer() {
         super(LoggingDefinitions.TYPE);
     }
 
     public static final LoggingTraceErrorAnalyzer getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override
-	public TraceError locateFrameError(Frame frame) {
+    public TraceError locateFrameError(Frame frame) {
         Operation op = frame.getOperation();
-		return new TraceError(op.getLabel());
-	}
+        return new TraceError(op.getLabel());
+    }
 }

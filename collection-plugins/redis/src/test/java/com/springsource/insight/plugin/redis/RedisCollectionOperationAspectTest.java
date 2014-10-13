@@ -35,8 +35,8 @@ public class RedisCollectionOperationAspectTest extends OperationCollectionAspec
     private static final String kw_value = "value";
     private static final String kw_size = "size";
 
-    public RedisCollectionOperationAspectTest () {
-    	super();
+    public RedisCollectionOperationAspectTest() {
+        super();
     }
 
     @Test

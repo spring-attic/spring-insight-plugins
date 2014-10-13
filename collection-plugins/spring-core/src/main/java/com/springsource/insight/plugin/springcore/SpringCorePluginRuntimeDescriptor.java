@@ -21,22 +21,22 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class SpringCorePluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "spring-core";
-	public static final OperationType	APP_LISTENER_TYPE=OperationType.valueOf("spring_app_listener");
-	public static final OperationType	CLASSPATH_SCAN_TYPE=OperationType.valueOf("spring_classpath_scan");
-	public static final OperationType	EVENT_PUBLISH_TYPE=OperationType.valueOf("spring_event_publish");
-	public static final OperationType	BEAN_LIFECYLE_TYPE=OperationType.valueOf("spring_bean_lifecycle");
+    public static final OperationType APP_LISTENER_TYPE = OperationType.valueOf("spring_app_listener");
+    public static final OperationType CLASSPATH_SCAN_TYPE = OperationType.valueOf("spring_classpath_scan");
+    public static final OperationType EVENT_PUBLISH_TYPE = OperationType.valueOf("spring_event_publish");
+    public static final OperationType BEAN_LIFECYLE_TYPE = OperationType.valueOf("spring_bean_lifecycle");
 
-	private static final SpringCorePluginRuntimeDescriptor	INSTANCE=new SpringCorePluginRuntimeDescriptor();
+    private static final SpringCorePluginRuntimeDescriptor INSTANCE = new SpringCorePluginRuntimeDescriptor();
 
-    private SpringCorePluginRuntimeDescriptor () {
+    private SpringCorePluginRuntimeDescriptor() {
         super();
     }
 
-    public static final SpringCorePluginRuntimeDescriptor getInstance () {
-    	return INSTANCE;
+    public static final SpringCorePluginRuntimeDescriptor getInstance() {
+        return INSTANCE;
     }
 
-	@Override
+    @Override
     public String getPluginName() {
         return PLUGIN_NAME;
     }

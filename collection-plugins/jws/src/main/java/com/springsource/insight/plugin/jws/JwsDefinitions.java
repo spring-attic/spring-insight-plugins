@@ -18,12 +18,12 @@ package com.springsource.insight.plugin.jws;
 import com.springsource.insight.intercept.operation.OperationType;
 
 /**
- * 
+ *
  */
 public final class JwsDefinitions {
     private JwsDefinitions() {
         // no instance
     }
 
-    public static final OperationType   TYPE=OperationType.valueOf("jws");
+    public static final OperationType TYPE = OperationType.valueOf("jws");
 }

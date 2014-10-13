@@ -23,46 +23,45 @@ import com.springsource.insight.util.StringUtil;
 /**
  * Struts2 tests action with validation functionality
  * Acts as a controller to handle actions related to registering a user.
- *
  */
 public class RegisterValidationAction extends ActionSupport {
-	private static final long serialVersionUID = 1L;
-	private Person personBean;
+    private static final long serialVersionUID = 1L;
+    private Person personBean;
 
-	public RegisterValidationAction () {
-		super();
-	}
-	
-	@Override
-	public String execute() throws Exception {
-		
-		//call Service class to store personBean's state in database
-		
-		return SUCCESS;
-		
-	}
-	
-	@Override
-	public void validate(){
-		if (StringUtil.isEmpty(personBean.getFirstName())) {	
-			addFieldError( "personBean.firstName", "First name is required." );
-		}
-				
-		if (StringUtil.isEmpty(personBean.getEmail())) {	
-			addFieldError( "personBean.email", "Email is required." );
-		}
-		
-		if ( personBean.getAge() < 18 ){	
-			addFieldError( "personBean.age", "Age is required and must be 18 or older" );
-		}
-	}
+    public RegisterValidationAction() {
+        super();
+    }
 
-	public Person getPersonBean() {
-		return personBean;
-	}
-	
-	public void setPersonBean(Person person) {
-		personBean = person;
-	}
+    @Override
+    public String execute() throws Exception {
+
+        //call Service class to store personBean's state in database
+
+        return SUCCESS;
+
+    }
+
+    @Override
+    public void validate() {
+        if (StringUtil.isEmpty(personBean.getFirstName())) {
+            addFieldError("personBean.firstName", "First name is required.");
+        }
+
+        if (StringUtil.isEmpty(personBean.getEmail())) {
+            addFieldError("personBean.email", "Email is required.");
+        }
+
+        if (personBean.getAge() < 18) {
+            addFieldError("personBean.age", "Age is required and must be 18 or older");
+        }
+    }
+
+    public Person getPersonBean() {
+        return personBean;
+    }
+
+    public void setPersonBean(Person person) {
+        personBean = person;
+    }
 
 }

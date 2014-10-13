@@ -27,68 +27,68 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 
 /**
- * 
+ *
  */
 public class SpringEventReferenceCollectionAspectTest extends AbstractCollectionTestSupport {
-	public SpringEventReferenceCollectionAspectTest() {
-		super();
-	}
+    public SpringEventReferenceCollectionAspectTest() {
+        super();
+    }
 
-	@Test
-	public void testNonApplicationContextEvent() {
-		MyEvent	event=new MyEvent("testNonApplicationContextEvent");
-		assertNullValue("Unexpected initial context", SpringEventReferenceCollectionAspect.getApplicationContext(event));
-		assertTrue("Event class not marked without context", SpringEventReferenceCollectionAspect.nonContextEvents.contains(event.getClass()));
-		assertNullValue("Unexpected extraction method mapping", SpringEventReferenceCollectionAspect.contextMethods.get(event.getClass()));
-	}
+    @Test
+    public void testNonApplicationContextEvent() {
+        MyEvent event = new MyEvent("testNonApplicationContextEvent");
+        assertNullValue("Unexpected initial context", SpringEventReferenceCollectionAspect.getApplicationContext(event));
+        assertTrue("Event class not marked without context", SpringEventReferenceCollectionAspect.nonContextEvents.contains(event.getClass()));
+        assertNullValue("Unexpected extraction method mapping", SpringEventReferenceCollectionAspect.contextMethods.get(event.getClass()));
+    }
 
-	@Test
-	public void testApplicationContextEvent() {
-		ApplicationContext		expected=Mockito.mock(ApplicationContext.class);
-		ContextRefreshedEvent	event=new ContextRefreshedEvent(expected);
-		ApplicationContext		actual=SpringEventReferenceCollectionAspect.getApplicationContext(event);
-		assertSame("Mismatched context instances", expected, actual);
-		assertNotNull("Missing extraction method mapping", SpringEventReferenceCollectionAspect.contextMethods.get(event.getClass()));
-		assertFalse("Event class marked as without context", SpringEventReferenceCollectionAspect.nonContextEvents.contains(event.getClass()));
-	}
+    @Test
+    public void testApplicationContextEvent() {
+        ApplicationContext expected = Mockito.mock(ApplicationContext.class);
+        ContextRefreshedEvent event = new ContextRefreshedEvent(expected);
+        ApplicationContext actual = SpringEventReferenceCollectionAspect.getApplicationContext(event);
+        assertSame("Mismatched context instances", expected, actual);
+        assertNotNull("Missing extraction method mapping", SpringEventReferenceCollectionAspect.contextMethods.get(event.getClass()));
+        assertFalse("Event class marked as without context", SpringEventReferenceCollectionAspect.nonContextEvents.contains(event.getClass()));
+    }
 
-	@Test
-	public void testStaticContextEventMethod() {
-		StaticContextMethodEvent	event=new StaticContextMethodEvent();
-		assertNullValue("Unexpected static context", SpringEventReferenceCollectionAspect.getApplicationContext(event));
-		assertTrue("Event class not marked without context", SpringEventReferenceCollectionAspect.nonContextEvents.contains(event.getClass()));
-		assertNullValue("Unexpected extraction method mapping", SpringEventReferenceCollectionAspect.contextMethods.get(event.getClass()));
-	}
+    @Test
+    public void testStaticContextEventMethod() {
+        StaticContextMethodEvent event = new StaticContextMethodEvent();
+        assertNullValue("Unexpected static context", SpringEventReferenceCollectionAspect.getApplicationContext(event));
+        assertTrue("Event class not marked without context", SpringEventReferenceCollectionAspect.nonContextEvents.contains(event.getClass()));
+        assertNullValue("Unexpected extraction method mapping", SpringEventReferenceCollectionAspect.contextMethods.get(event.getClass()));
+    }
 
-	@Test
-	public void testExceptionInContextRetrieval() {
-		ExceptionContextEvent	event=new ExceptionContextEvent();
-		assertNullValue("Unexpected initial context", SpringEventReferenceCollectionAspect.getApplicationContext(event));
-		assertTrue("Event class not marked without context", SpringEventReferenceCollectionAspect.nonContextEvents.contains(event.getClass()));
-		assertNotNull("Missing extraction method mapping", SpringEventReferenceCollectionAspect.contextMethods.get(event.getClass()));
-	}
+    @Test
+    public void testExceptionInContextRetrieval() {
+        ExceptionContextEvent event = new ExceptionContextEvent();
+        assertNullValue("Unexpected initial context", SpringEventReferenceCollectionAspect.getApplicationContext(event));
+        assertTrue("Event class not marked without context", SpringEventReferenceCollectionAspect.nonContextEvents.contains(event.getClass()));
+        assertNotNull("Missing extraction method mapping", SpringEventReferenceCollectionAspect.contextMethods.get(event.getClass()));
+    }
 
-	static class StaticContextMethodEvent extends ApplicationEvent {
-		private static final long serialVersionUID = 1L;
+    static class StaticContextMethodEvent extends ApplicationEvent {
+        private static final long serialVersionUID = 1L;
 
-		public StaticContextMethodEvent() {
-			super(Void.class);
-		}
-		
-		public static ApplicationContext getApplicationContext() {
-			return Mockito.mock(ApplicationContext.class);
-		}
-	}
-	
-	static class ExceptionContextEvent extends ApplicationEvent {
-		private static final long serialVersionUID = 1L;
+        public StaticContextMethodEvent() {
+            super(Void.class);
+        }
 
-		public ExceptionContextEvent() {
-			super(Void.class);
-		}
+        public static ApplicationContext getApplicationContext() {
+            return Mockito.mock(ApplicationContext.class);
+        }
+    }
 
-		public final ApplicationContext getApplicationContext() {
-			throw new UnsupportedOperationException("N/A");
-		}
-	}
+    static class ExceptionContextEvent extends ApplicationEvent {
+        private static final long serialVersionUID = 1L;
+
+        public ExceptionContextEvent() {
+            super(Void.class);
+        }
+
+        public final ApplicationContext getApplicationContext() {
+            throw new UnsupportedOperationException("N/A");
+        }
+    }
 }

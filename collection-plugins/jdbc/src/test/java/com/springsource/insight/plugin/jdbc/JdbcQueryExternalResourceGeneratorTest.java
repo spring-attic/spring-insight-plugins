@@ -180,17 +180,17 @@ public class JdbcQueryExternalResourceGeneratorTest extends AbstractDatabaseJDBC
             ExternalResourceType type = ExternalResourceType.valueOf(desc.getType());
 
             switch (type) {
-            case DATABASE:
-                totalDbs++;
-                break;
-            case QUERY:
-                assertQueryDescriptor(desc, sql);
-                totalQuerys++;
-                break;
-            default:
-                assertNotSame("Unexpected external resource type (should be QUERY or DATABASE)",
-                        ExternalResourceType.OTHER,
-                        type);
+                case DATABASE:
+                    totalDbs++;
+                    break;
+                case QUERY:
+                    assertQueryDescriptor(desc, sql);
+                    totalQuerys++;
+                    break;
+                default:
+                    assertNotSame("Unexpected external resource type (should be QUERY or DATABASE)",
+                            ExternalResourceType.OTHER,
+                            type);
             }
         }
 

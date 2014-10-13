@@ -29,33 +29,33 @@ import com.springsource.insight.intercept.operation.Operation;
 public aspect JMSProducerCollectionAspect extends AbstractJMSCollectionAspect {
     private static final MessageOperationMap map = new MessageOperationMap();
 
-    public JMSProducerCollectionAspect () {
+    public JMSProducerCollectionAspect() {
         super(JMSPluginOperationType.SEND);
     }
 
     public pointcut producer()
-        : execution(void javax.jms.MessageProducer+.send(..))
-       && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
-        ;
+            : execution(void javax.jms.MessageProducer+.send(..))
+            && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
+            ;
 
-	@SuppressAjWarnings({"adviceDidNotMatch"})
-    before() : producer() {
+    @SuppressAjWarnings({"adviceDidNotMatch"})
+    before(): producer() {
         try {
-            JoinPoint jp = thisJoinPoint; 
+            JoinPoint jp = thisJoinPoint;
             final Message message = JMSPluginUtils.getMessage(jp.getArgs());
             if (message != null) {
                 MessageWrapper wrapper = MessageWrapper.instance(message);
                 Operation op = map.get(wrapper);
-                
+
                 //check that we didn't enter the frame for this message
                 //if so don't enter again
                 if (op == null) {
-                
+
                     final Operation op1 = createOperation(jp);
                     applyDestinationData(jp, op1);
-                
+
                     map.put(wrapper, op1, jp.toLongString());
-                    
+
                     colorForward(new ColorParams() {
                         public void setColor(String key, String value) {
                             try {
@@ -69,7 +69,7 @@ public aspect JMSProducerCollectionAspect extends AbstractJMSCollectionAspect {
                             return op1;
                         }
                     });
-                    
+
                     getCollector().enter(op1);
                 }
             }
@@ -77,13 +77,13 @@ public aspect JMSProducerCollectionAspect extends AbstractJMSCollectionAspect {
             markException("beforeProduce", t);
         }
     }
-    
-	@SuppressAjWarnings({"adviceDidNotMatch"})
+
+    @SuppressAjWarnings({"adviceDidNotMatch"})
     after() returning : producer() {
         try {
             JoinPoint jp = thisJoinPoint;
             Message message = JMSPluginUtils.getMessage(jp.getArgs());
-        
+
             if (message != null) {
                 MessageWrapper wrapper = MessageWrapper.instance(message);
                 Operation op = map.get(wrapper);
@@ -101,27 +101,27 @@ public aspect JMSProducerCollectionAspect extends AbstractJMSCollectionAspect {
         }
     }
 
-	@SuppressAjWarnings({"adviceDidNotMatch"})
-    after() throwing(Throwable exception) : producer() {
+    @SuppressAjWarnings({"adviceDidNotMatch"})
+    after() throwing(Throwable exception): producer() {
         try {
             Message message = JMSPluginUtils.getMessage(thisJoinPoint.getArgs());
-            Operation	op = null;
+            Operation op = null;
             if (message != null) {
                 MessageWrapper wrapper = MessageWrapper.instance(message);
                 op = map.remove(wrapper);
             }
 
             if (op != null) {
-            	getCollector().exitAbnormal(exception);
+                getCollector().exitAbnormal(exception);
             }
         } catch (Throwable t) {
             markException("afterProduce[throwing]", t);
         }
     }
-    
+
     private Operation applyDestinationData(JoinPoint jp, Operation op) {
         try {
-        	MessageProducer	producer = (MessageProducer) jp.getThis(); 
+            MessageProducer producer = (MessageProducer) jp.getThis();
             Destination dest = producer.getDestination();
             applyDestinationData(dest, op);
         } catch (JMSException e) {

@@ -47,7 +47,7 @@ public aspect EventHandlerOperationCollectionAspect extends MethodOperationColle
         operation.put("eventType", event.getClass().getName());
         return operation;
     }
-    
+
     @Override
     public final String getPluginName() {
         return AxonPluginRuntimeDescriptor.PLUGIN_NAME;

@@ -16,12 +16,12 @@
 package com.springsource.insight.plugin.jms;
 
 enum DeliveryModeType {
-    NON_PERSISTENT ("Non Persistent"), 
-    PERSISTENT ("Persistent"), 
-    UNKNOWN ("Unknown");
-    
+    NON_PERSISTENT("Non Persistent"),
+    PERSISTENT("Persistent"),
+    UNKNOWN("Unknown");
+
     private String label;
-    
+
     DeliveryModeType(String labelValue) {
         this.label = labelValue;
     }

@@ -34,32 +34,32 @@ import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.StringUtil;
 
 /**
- * 
+ *
  */
 public class LdapExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-	private static final LdapExternalResourceAnalyzer	INSTANCE=new LdapExternalResourceAnalyzer();
+    private static final LdapExternalResourceAnalyzer INSTANCE = new LdapExternalResourceAnalyzer();
 
     private LdapExternalResourceAnalyzer() {
         super(LdapDefinitions.LDAP_OP);
     }
 
     public static final LdapExternalResourceAnalyzer getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> framesList) {
         if (ListUtil.size(framesList) <= 0) {
             return Collections.emptyList();
         }
-        
-        Set<ExternalResourceDescriptor>    result=
+
+        Set<ExternalResourceDescriptor> result =
                 new HashSet<ExternalResourceDescriptor>(framesList.size());
         for (Frame frame : framesList) {
-            ExternalResourceDescriptor  res=extractExternalResourceDescriptor(frame);
+            ExternalResourceDescriptor res = extractExternalResourceDescriptor(frame);
             if (res == null) {  // can happen if failed to parse the URI somehow
                 continue;
             }
-            
+
             if (!result.add(res))
                 continue;   // debug breakpoint
         }
@@ -67,39 +67,38 @@ public class LdapExternalResourceAnalyzer extends AbstractExternalResourceAnalyz
         return result;
     }
 
-    ExternalResourceDescriptor extractExternalResourceDescriptor (Frame frame) {
-        Operation   op=frame.getOperation();
-        String      uriValue=op.get(OperationFields.CONNECTION_URL, String.class);
+    ExternalResourceDescriptor extractExternalResourceDescriptor(Frame frame) {
+        Operation op = frame.getOperation();
+        String uriValue = op.get(OperationFields.CONNECTION_URL, String.class);
         if (StringUtil.getSafeLength(uriValue) <= 0) {
             return null;
         }
 
-        try
-        {
-            URI uri=new URI(uriValue);
+        try {
+            URI uri = new URI(uriValue);
             String color = colorManager.getColor(op);
-            
+
             return new ExternalResourceDescriptor(
-                            frame,
-                            MD5NameGenerator.getName(uriValue),
-                            uriValue,    // label
-                            ExternalResourceType.LDAP.name(),
-                            uriValue,     // vendor
-                            uri.getHost(),
-                            resolvePort(uri),
-                            color, false);    
-        } catch(URISyntaxException e) {
-			_logger.warning("Failed to parse " + uriValue + ": " + e.getMessage());
+                    frame,
+                    MD5NameGenerator.getName(uriValue),
+                    uriValue,    // label
+                    ExternalResourceType.LDAP.name(),
+                    uriValue,     // vendor
+                    uri.getHost(),
+                    resolvePort(uri),
+                    color, false);
+        } catch (URISyntaxException e) {
+            _logger.warning("Failed to parse " + uriValue + ": " + e.getMessage());
             return null;
         }
     }
 
-    static int resolvePort (URI uri) {
+    static int resolvePort(URI uri) {
         if (uri == null) {
             return (-1);
         }
 
-        int port=uri.getPort();
+        int port = uri.getPort();
         if (port <= 0) {
             return 389;
         }

@@ -26,27 +26,28 @@ import com.springsource.insight.util.ArrayUtil;
 
 public class CassandraPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "cassandra";
-    private static final CassandraPluginRuntimeDescriptor	INSTANCE=new CassandraPluginRuntimeDescriptor();
-    private static final List<? extends ExternalResourceAnalyzer>	extResAnalyzers=
-    		ArrayUtil.asUnmodifiableList(CassandraConnectExternalResourceAnalyzer.getInstance(), 
-    				CassandraCQLExternalResourceAnalyzer.getInstance(), 
-    				CassandraGetExternalResourceAnalyzer.getInstance(), 
-    				CassandraRemoveExternalResourceAnalyzer.getInstance(),
-    				CassandraSystemExternalResourceAnalyzer.getInstance(),
-    				CassandraUpdateExternalResourceAnalyzer.getInstance());
-    
+    private static final CassandraPluginRuntimeDescriptor INSTANCE = new CassandraPluginRuntimeDescriptor();
+    private static final List<? extends ExternalResourceAnalyzer> extResAnalyzers =
+            ArrayUtil.asUnmodifiableList(CassandraConnectExternalResourceAnalyzer.getInstance(),
+                    CassandraCQLExternalResourceAnalyzer.getInstance(),
+                    CassandraGetExternalResourceAnalyzer.getInstance(),
+                    CassandraRemoveExternalResourceAnalyzer.getInstance(),
+                    CassandraSystemExternalResourceAnalyzer.getInstance(),
+                    CassandraUpdateExternalResourceAnalyzer.getInstance());
+
     private CassandraPluginRuntimeDescriptor() {
-    	super();
+        super();
     }
 
     public static final CassandraPluginRuntimeDescriptor getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override
     public Collection<? extends ExternalResourceAnalyzer> getExternalResourceAnalyzers() {
-    	return extResAnalyzers;
+        return extResAnalyzers;
     }
+
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;

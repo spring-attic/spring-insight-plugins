@@ -25,23 +25,23 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
 
 /**
- * 
+ *
  */
 public abstract class AuthenticationCollectionAspectTestSupport
-                extends SpringSecurityCollectionTestSupport {
+        extends SpringSecurityCollectionTestSupport {
     protected AuthenticationCollectionAspectTestSupport() {
         super();
     }
 
-    protected void assertObscuredAuthValues (Authentication token, Authentication result, Collection<?> obscuredValues) {
+    protected void assertObscuredAuthValues(Authentication token, Authentication result, Collection<?> obscuredValues) {
         assertTrue("Original principal not obscured", obscuredValues.contains(token.getPrincipal()));
         assertTrue("Original credentials not obscured", obscuredValues.contains(token.getCredentials()));
         assertTrue("Result principal not obscured", obscuredValues.contains(result.getPrincipal()));
         assertTrue("Result credentials not obscured", obscuredValues.contains(result.getCredentials()));
     }
 
-    protected Operation assertOperationResult (Authentication auth, Collection<String> grants) {
-        Operation op=getLastEntered();
+    protected Operation assertOperationResult(Authentication auth, Collection<String> grants) {
+        Operation op = getLastEntered();
         assertNotNull("No operation extracted", op);
 
         assertEquals("Mismatched operation type", SpringSecurityDefinitions.AUTH_OP, op.getType());

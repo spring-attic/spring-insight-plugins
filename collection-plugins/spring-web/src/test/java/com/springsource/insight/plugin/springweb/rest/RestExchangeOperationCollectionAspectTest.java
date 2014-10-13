@@ -27,30 +27,30 @@ import org.springframework.http.HttpMethod;
 
 
 /**
- * 
+ *
  */
 public class RestExchangeOperationCollectionAspectTest extends RestOperationCollectionTestSupport {
-	public RestExchangeOperationCollectionAspectTest() {
-		super();
-	}
+    public RestExchangeOperationCollectionAspectTest() {
+        super();
+    }
 
-	@Test
-	public void testExchangeNoArgs () throws Exception {
-		assertRestOperationResult(opsInstance.exchange(new URI(createTestURI("testExchangeNoArgs")), HttpMethod.GET, HttpEntity.EMPTY, Serializable.class));
-	}
+    @Test
+    public void testExchangeNoArgs() throws Exception {
+        assertRestOperationResult(opsInstance.exchange(new URI(createTestURI("testExchangeNoArgs")), HttpMethod.GET, HttpEntity.EMPTY, Serializable.class));
+    }
 
-	@Test
-	public void testExchangeVarArgs () throws Exception {
-		assertRestOperationResult(opsInstance.exchange(createTestURI("testExchangeVarArgs"), HttpMethod.POST, HttpEntity.EMPTY, Serializable.class, new Date()));
-	}
+    @Test
+    public void testExchangeVarArgs() throws Exception {
+        assertRestOperationResult(opsInstance.exchange(createTestURI("testExchangeVarArgs"), HttpMethod.POST, HttpEntity.EMPTY, Serializable.class, new Date()));
+    }
 
-	@Test
-	public void testExchangeMappedVars () throws Exception {
-		assertRestOperationResult(opsInstance.exchange(createTestURI("testExchangeMappedVars"), HttpMethod.DELETE, HttpEntity.EMPTY, Serializable.class, Collections.singletonMap("now",  new Date())));
-	}
+    @Test
+    public void testExchangeMappedVars() throws Exception {
+        assertRestOperationResult(opsInstance.exchange(createTestURI("testExchangeMappedVars"), HttpMethod.DELETE, HttpEntity.EMPTY, Serializable.class, Collections.singletonMap("now", new Date())));
+    }
 
-	@Override
-	public RestExchangeOperationCollectionAspect getAspect() {
-		return RestExchangeOperationCollectionAspect.aspectOf();
-	}
+    @Override
+    public RestExchangeOperationCollectionAspect getAspect() {
+        return RestExchangeOperationCollectionAspect.aspectOf();
+    }
 }

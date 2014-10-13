@@ -24,29 +24,29 @@ import com.springsource.insight.plugin.springweb.AbstractSpringWebEndPointAnalyz
 /**
  * This trace analyzer simply looks at a Trace and returns a
  * ControllerEndPointAnalysis about what it found.
- * 
+ * <p/>
  * For a trace to be analyzed, it must be of the following format:
- * 
+ * <p/>
  * - HttpOperation
- *    ..
- *    .. (arbitrary nesting)
- *      .. ControllerMethodOperation
+ * ..
+ * .. (arbitrary nesting)
+ * .. ControllerMethodOperation
  */
 public class ControllerEndPointAnalyzer extends AbstractSpringWebEndPointAnalyzer {
     public static final OperationType CONTROLLER_METHOD_TYPE = OperationType.valueOf("controller_method");
     /**
      * The property used to mark legacy controller operations
      */
-    public static final String	LEGACY_PROPNAME="legacyController";
+    public static final String LEGACY_PROPNAME = "legacyController";
     /**
      * The <U>static</U> score assigned to legacy controllers - it is just slightly
      * above that of a servlet and/or queue operation
      */
-    public static final int	LEGACY_SCORE=EndPointAnalysis.CEILING_LAYER_SCORE + 1;
+    public static final int LEGACY_SCORE = EndPointAnalysis.CEILING_LAYER_SCORE + 1;
     public static final int DEFAULT_CONTROLLER_SCORE = 0;
-    private static final ControllerEndPointAnalyzer	INSTANCE=new ControllerEndPointAnalyzer();
+    private static final ControllerEndPointAnalyzer INSTANCE = new ControllerEndPointAnalyzer();
 
-    private ControllerEndPointAnalyzer () {
+    private ControllerEndPointAnalyzer() {
         super(CONTROLLER_METHOD_TYPE);
     }
 
@@ -56,7 +56,7 @@ public class ControllerEndPointAnalyzer extends AbstractSpringWebEndPointAnalyze
 
     @Override
     protected int getOperationScore(Operation op, int depth) {
-        Boolean	legacyFlag=op.get(LEGACY_PROPNAME, Boolean.class);
+        Boolean legacyFlag = op.get(LEGACY_PROPNAME, Boolean.class);
         if ((legacyFlag != null) && legacyFlag.booleanValue()) {
             return LEGACY_SCORE;
         } else {

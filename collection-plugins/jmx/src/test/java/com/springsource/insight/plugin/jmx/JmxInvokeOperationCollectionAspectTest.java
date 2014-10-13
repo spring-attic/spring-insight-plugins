@@ -34,77 +34,77 @@ import com.springsource.insight.util.StringFormatterUtils;
 
 
 /**
- * 
+ *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(JmxOperationCollectionTestSupport.TEST_CONTEXT)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class JmxInvokeOperationCollectionAspectTest extends JmxOperationCollectionTestSupport {
-	public JmxInvokeOperationCollectionAspectTest() {
-		super();
-	}
+    public JmxInvokeOperationCollectionAspectTest() {
+        super();
+    }
 
-	@Test
-	public void testDirectInvoke() throws Exception {
-		testInvoke(mbeanServer);
-	}
+    @Test
+    public void testDirectInvoke() throws Exception {
+        testInvoke(mbeanServer);
+    }
 
-	@Test	// ensures cflowbelow activation
-	public void testDelegatedInvoke() throws Exception {
-		testInvoke(new DelegatingMBeanServer(mbeanServer));
-	}
+    @Test    // ensures cflowbelow activation
+    public void testDelegatedInvoke() throws Exception {
+        testInvoke(new DelegatingMBeanServer(mbeanServer));
+    }
 
-	private void testInvoke(MBeanServer server) throws Exception {
-		final ObjectName	name=new ObjectName(SpringMBeanComponent.RESOURCE_NAME);
-		final String		expMethod="updateValues";
-		final Class<?>[]	methodParams={ Number.class, String.class };
-		final Object[]		methodArgs={
-				Long.valueOf(System.currentTimeMillis()),
-				getClass().getSimpleName() + "#testInvoke("
-			  + server.getClass().getSimpleName()
-			  + "@" + System.identityHashCode(server)
-			  + ")"
-			};
+    private void testInvoke(MBeanServer server) throws Exception {
+        final ObjectName name = new ObjectName(SpringMBeanComponent.RESOURCE_NAME);
+        final String expMethod = "updateValues";
+        final Class<?>[] methodParams = {Number.class, String.class};
+        final Object[] methodArgs = {
+                Long.valueOf(System.currentTimeMillis()),
+                getClass().getSimpleName() + "#testInvoke("
+                        + server.getClass().getSimpleName()
+                        + "@" + System.identityHashCode(server)
+                        + ")"
+        };
 
-		final String[]		expSignature=new String[methodParams.length];
-		for (int index=0; index < methodParams.length; index++) {
-			expSignature[index] = methodParams[index].getName();
-		}
+        final String[] expSignature = new String[methodParams.length];
+        for (int index = 0; index < methodParams.length; index++) {
+            expSignature[index] = methodParams[index].getName();
+        }
 
-		server.invoke(name, expMethod, methodArgs, expSignature);
-		assertInvocationOperation(name, expMethod, expSignature, methodArgs);
-	}
+        server.invoke(name, expMethod, methodArgs, expSignature);
+        assertInvocationOperation(name, expMethod, expSignature, methodArgs);
+    }
 
-	private Operation assertInvocationOperation(ObjectName name, String method, String[] paramsType, Object[] argVals) {
-		Operation	op=assertBeanOperation(name);
-		assertEquals("Mismatched operation type", JmxPluginRuntimeDescriptor.INVOKE, op.getType());
-		assertEquals("Mismatched operation label" ,JoinPointBreakDown.getMethodStringFromArgs(method, paramsType), op.getLabel());
-		assertEquals("Mismatched method name", method, op.get(JmxInvocationEndPointAnalyzer.METHOD_NAME_PROP, String.class));
-		assertEquals("Mismatched method signature",
-					 JoinPointBreakDown.createMethodParamsSignature(paramsType),
-					 op.get(JmxInvocationEndPointAnalyzer.SIGNATURE_NAME_PROP, String.class));
-		assertInvocationOperationArguments(op, argVals);
-		return op;
-	}
-	
-	private OperationList assertInvocationOperationArguments(Operation op, Object ... argVals) {
-		return assertInvocationOperationArguments((op == null) ? null : op.get(JmxInvocationEndPointAnalyzer.INVOCATION_ARGS_PROP, OperationList.class), argVals);
-	}
-	
-	private OperationList assertInvocationOperationArguments(OperationList op, Object ... argVals) {
-		assertNotNull("No arguments list found", op);
-		assertEquals("Mismatched values count", ArrayUtil.length(argVals), op.size());
-		for (int index=0; index < op.size(); index++) {
-			Object	expected=StringFormatterUtils.formatObject(argVals[index]);
-			Object	actual=op.get(index);
-			assertEquals("Mismached argument value at index=" + index, expected, actual);
-		}
+    private Operation assertInvocationOperation(ObjectName name, String method, String[] paramsType, Object[] argVals) {
+        Operation op = assertBeanOperation(name);
+        assertEquals("Mismatched operation type", JmxPluginRuntimeDescriptor.INVOKE, op.getType());
+        assertEquals("Mismatched operation label", JoinPointBreakDown.getMethodStringFromArgs(method, paramsType), op.getLabel());
+        assertEquals("Mismatched method name", method, op.get(JmxInvocationEndPointAnalyzer.METHOD_NAME_PROP, String.class));
+        assertEquals("Mismatched method signature",
+                JoinPointBreakDown.createMethodParamsSignature(paramsType),
+                op.get(JmxInvocationEndPointAnalyzer.SIGNATURE_NAME_PROP, String.class));
+        assertInvocationOperationArguments(op, argVals);
+        return op;
+    }
 
-		return op;
-	}
+    private OperationList assertInvocationOperationArguments(Operation op, Object... argVals) {
+        return assertInvocationOperationArguments((op == null) ? null : op.get(JmxInvocationEndPointAnalyzer.INVOCATION_ARGS_PROP, OperationList.class), argVals);
+    }
 
-	@Override
-	public JmxInvokeOperationCollectionAspect getAspect() {
-		return JmxInvokeOperationCollectionAspect.aspectOf();
-	}
+    private OperationList assertInvocationOperationArguments(OperationList op, Object... argVals) {
+        assertNotNull("No arguments list found", op);
+        assertEquals("Mismatched values count", ArrayUtil.length(argVals), op.size());
+        for (int index = 0; index < op.size(); index++) {
+            Object expected = StringFormatterUtils.formatObject(argVals[index]);
+            Object actual = op.get(index);
+            assertEquals("Mismached argument value at index=" + index, expected, actual);
+        }
+
+        return op;
+    }
+
+    @Override
+    public JmxInvokeOperationCollectionAspect getAspect() {
+        return JmxInvokeOperationCollectionAspect.aspectOf();
+    }
 }

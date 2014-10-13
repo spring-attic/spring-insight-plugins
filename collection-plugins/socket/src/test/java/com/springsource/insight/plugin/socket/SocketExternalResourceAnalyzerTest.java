@@ -27,7 +27,7 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 
 /**
- * 
+ *
  */
 public class SocketExternalResourceAnalyzerTest
         extends SocketConnectCollectionAspectTestSupport {
@@ -39,17 +39,17 @@ public class SocketExternalResourceAnalyzerTest
     // NOTE: it also indirectly tests the SocketConnectCollectionAspect
     //      so no need for specific tests for it
     @Test
-    public void testSocketExternalResourceAnalyzer () {
-        final SocketAddress connectAddress=new InetSocketAddress(TEST_HOST, TEST_PORT);
-        final Socket        socket=new Socket();
+    public void testSocketExternalResourceAnalyzer() {
+        final SocketAddress connectAddress = new InetSocketAddress(TEST_HOST, TEST_PORT);
+        final Socket socket = new Socket();
         try {
             socket.connect(connectAddress, 125);
             Assert.fail("Unexpected success to connect to " + connectAddress);
-        } catch(IOException e) {
+        } catch (IOException e) {
             // ignored since we don't really expect it to succeed
         }
 
-        Operation   op=assertConnectOperation(connectAddress);
+        Operation op = assertConnectOperation(connectAddress);
         runExternalResourceAnalyzer(op, ExternalResourceType.SERVER, op.get(SocketDefinitions.ADDRESS_ATTR, String.class), TEST_PORT);
     }
 

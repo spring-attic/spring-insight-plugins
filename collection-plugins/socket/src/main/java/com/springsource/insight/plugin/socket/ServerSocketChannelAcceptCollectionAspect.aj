@@ -21,18 +21,18 @@ import java.nio.channels.ServerSocketChannel;
 import org.aspectj.lang.JoinPoint;
 
 /**
- * 
+ *
  */
 public aspect ServerSocketChannelAcceptCollectionAspect extends SocketAcceptCollectionAspectSupport {
-    public ServerSocketChannelAcceptCollectionAspect () {
+    public ServerSocketChannelAcceptCollectionAspect() {
         super();
     }
-    
-    public pointcut collectionPoint() : call(* ServerSocketChannel+.accept() throws java.io.IOException);
+
+    public pointcut collectionPoint(): call(* ServerSocketChannel+.accept() throws java.io.IOException);
 
     @Override
     protected ServerSocket resolveServerSocket(JoinPoint jp) {
-        ServerSocketChannel channel=(ServerSocketChannel) jp.getTarget();
+        ServerSocketChannel channel = (ServerSocketChannel) jp.getTarget();
         return channel.socket();
     }
 }

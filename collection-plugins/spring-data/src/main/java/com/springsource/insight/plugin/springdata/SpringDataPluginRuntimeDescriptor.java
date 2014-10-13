@@ -25,15 +25,15 @@ import com.springsource.insight.util.ArrayUtil;
 
 public class SpringDataPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "spring-data";
-    private static final SpringDataPluginRuntimeDescriptor	INSTANCE=new SpringDataPluginRuntimeDescriptor();
-    private static final List<? extends EndPointAnalyzer>	epAnalyzers=ArrayUtil.asUnmodifiableList(RepositoryMethodEndPointAnalyzer.getInstance());
+    private static final SpringDataPluginRuntimeDescriptor INSTANCE = new SpringDataPluginRuntimeDescriptor();
+    private static final List<? extends EndPointAnalyzer> epAnalyzers = ArrayUtil.asUnmodifiableList(RepositoryMethodEndPointAnalyzer.getInstance());
 
-    private SpringDataPluginRuntimeDescriptor () {
+    private SpringDataPluginRuntimeDescriptor() {
         super();
     }
 
     public static final SpringDataPluginRuntimeDescriptor getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override

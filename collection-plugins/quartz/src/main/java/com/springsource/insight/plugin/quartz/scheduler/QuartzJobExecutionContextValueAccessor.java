@@ -19,46 +19,46 @@ import java.util.Date;
 
 
 /**
- * 
+ *
  */
 public class QuartzJobExecutionContextValueAccessor extends AbstractQuartzValueAccessor {
-	private static class LazyFieldHolder {
-		static final QuartzJobExecutionContextValueAccessor	accessor=new QuartzJobExecutionContextValueAccessor();
-	}
+    private static class LazyFieldHolder {
+        static final QuartzJobExecutionContextValueAccessor accessor = new QuartzJobExecutionContextValueAccessor();
+    }
 
-	public static QuartzJobExecutionContextValueAccessor getInstance () {
-		return LazyFieldHolder.accessor;
-	}
+    public static QuartzJobExecutionContextValueAccessor getInstance() {
+        return LazyFieldHolder.accessor;
+    }
 
-	QuartzJobExecutionContextValueAccessor () {
-		super("org.quartz.JobExecutionContext");
-	}
+    QuartzJobExecutionContextValueAccessor() {
+        super("org.quartz.JobExecutionContext");
+    }
 
-	public Date getFireTime (Object context) {
-		return getProperty(context, "fireTime", Date.class);
-	}
+    public Date getFireTime(Object context) {
+        return getProperty(context, "fireTime", Date.class);
+    }
 
-	public Date getScheduledFireTime (Object context) {
-		return getProperty(context, "scheduledFireTime", Date.class);
-	}
+    public Date getScheduledFireTime(Object context) {
+        return getProperty(context, "scheduledFireTime", Date.class);
+    }
 
-	public Date getPreviousFireTime (Object context) {
-		return getProperty(context, "previousFireTime", Date.class);
-	}
+    public Date getPreviousFireTime(Object context) {
+        return getProperty(context, "previousFireTime", Date.class);
+    }
 
-	public Date getNextFireTime (Object context) {
-		return getProperty(context, "nextFireTime", Date.class);
-	}
+    public Date getNextFireTime(Object context) {
+        return getProperty(context, "nextFireTime", Date.class);
+    }
 
-	public Number getRefireCount (Object context) {
-		return getProperty(context, "refireCount", Number.class);
-	}
-	
-	public Object getJobDetail (Object context) {
-		return getProperty(context, "jobDetail", Object.class);
-	}
-	
-	public Object getTrigger (Object context) {
-		return getProperty(context, "trigger", Object.class);
-	}
+    public Number getRefireCount(Object context) {
+        return getProperty(context, "refireCount", Number.class);
+    }
+
+    public Object getJobDetail(Object context) {
+        return getProperty(context, "jobDetail", Object.class);
+    }
+
+    public Object getTrigger(Object context) {
+        return getProperty(context, "trigger", Object.class);
+    }
 }

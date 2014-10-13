@@ -23,18 +23,18 @@ import org.aspectj.lang.JoinPoint;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public abstract class FileOpenTrackerAspectSupport extends AbstractFilesTrackerAspectSupport {
-    protected FileOpenTrackerAspectSupport () {
+    protected FileOpenTrackerAspectSupport() {
         super();
     }
 
-    protected Operation registerOpenOperation (JoinPoint.StaticPart staticPart,
-                                               Closeable            instance,
-                                               File                 f,
-                                               String               mode) {
-        Operation   op=registerOpenOperation(staticPart, instance, f.getAbsolutePath(), mode);
+    protected Operation registerOpenOperation(JoinPoint.StaticPart staticPart,
+                                              Closeable instance,
+                                              File f,
+                                              String mode) {
+        Operation op = registerOpenOperation(staticPart, instance, f.getAbsolutePath(), mode);
         if (collectExtraInformation()) {
             addExtraInformation(op, f);
         }
@@ -42,29 +42,29 @@ public abstract class FileOpenTrackerAspectSupport extends AbstractFilesTrackerA
         return op;
     }
 
-    protected Operation registerOpenOperation (JoinPoint.StaticPart staticPart,
-                                               Closeable            instance,
-                                               String               filePath,
-                                               String               mode) {
+    protected Operation registerOpenOperation(JoinPoint.StaticPart staticPart,
+                                              Closeable instance,
+                                              String filePath,
+                                              String mode) {
         mapOpenedFile(instance, filePath, mode);
-        
+
         return registerOperation(createOpenOperation(staticPart, filePath, mode));
     }
 
-    Operation createOpenOperation (JoinPoint.StaticPart staticPart, String filePath, String mode) {
+    Operation createOpenOperation(JoinPoint.StaticPart staticPart, String filePath, String mode) {
         return createOperation(staticPart, FilesTrackerDefinitions.OPEN_OP, filePath)
-                    .put(FilesTrackerDefinitions.MODE_ATTR, mode)
-                    ;
+                .put(FilesTrackerDefinitions.MODE_ATTR, mode)
+                ;
     }
 
     @Override
-    protected String createOperationLabel (Operation op) {
+    protected String createOperationLabel(Operation op) {
         return super.createOperationLabel(op)
-                   + " (mode=" +  op.get(FilesTrackerDefinitions.MODE_ATTR, String.class) + ")"
-                   ;
+                + " (mode=" + op.get(FilesTrackerDefinitions.MODE_ATTR, String.class) + ")"
+                ;
     }
 
-    static final String createOperationLabel (String action, String mode, String path) {
+    static final String createOperationLabel(String action, String mode, String path) {
         return createOperationLabel(action, path) + " (mode=" + mode + ")";
     }
 }

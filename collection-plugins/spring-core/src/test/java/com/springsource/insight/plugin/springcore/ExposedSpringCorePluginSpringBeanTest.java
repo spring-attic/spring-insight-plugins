@@ -22,18 +22,19 @@ import org.springframework.test.context.ContextConfiguration;
 import com.springsource.insight.idk.test.AbstractExposedIdkPuginsTestSupport;
 
 /**
- * Makes sure that the exposed singletons are indeed visible 
+ * Makes sure that the exposed singletons are indeed visible
  */
-@ContextConfiguration(locations={ "classpath:META-INF/insight-plugin-spring-core.xml" })
+@ContextConfiguration(locations = {"classpath:META-INF/insight-plugin-spring-core.xml"})
 public class ExposedSpringCorePluginSpringBeanTest
-		extends AbstractExposedIdkPuginsTestSupport<SpringCorePluginRuntimeDescriptor> {
+        extends AbstractExposedIdkPuginsTestSupport<SpringCorePluginRuntimeDescriptor> {
     /* NOTE: all beans are autowired with required=false since we want
      * to have specific tests for each and we don't want to fail ALL the
      * tests if one bean is missing
      */
-	@Autowired(required=false) protected SpringCorePluginRuntimeDescriptor	springCorePluginRuntimeDescriptor;
+    @Autowired(required = false)
+    protected SpringCorePluginRuntimeDescriptor springCorePluginRuntimeDescriptor;
 
-	public ExposedSpringCorePluginSpringBeanTest () {
-		super(SpringCorePluginRuntimeDescriptor.class);
-	}
+    public ExposedSpringCorePluginSpringBeanTest() {
+        super(SpringCorePluginRuntimeDescriptor.class);
+    }
 }

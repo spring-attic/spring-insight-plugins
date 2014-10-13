@@ -35,7 +35,7 @@ import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class JMSConsumerCollectionAspectTest extends AbstractJMSCollectionAspectTestSupport {
-    public JMSConsumerCollectionAspectTest () {
+    public JMSConsumerCollectionAspectTest() {
         super();
     }
 
@@ -71,7 +71,7 @@ public class JMSConsumerCollectionAspectTest extends AbstractJMSCollectionAspect
         return JMSConsumerCollectionAspect.aspectOf();
     }
 
-    private void runConsumerTest (boolean obscureAttrs) throws JMSException {
+    private void runConsumerTest(boolean obscureAttrs) throws JMSException {
         Queue queue = mock(Queue.class);
         DestinationType type = DestinationType.Queue;
 

@@ -18,12 +18,12 @@ package com.springsource.insight.plugin.jaxrs;
 /**
  */
 public final class RestServiceDefinitions {
-    private RestServiceDefinitions () {
+    private RestServiceDefinitions() {
         // no instance
     }
 
-    public static final String  ROOT_PATH="rest-test",
-                                NOW_PARAM_NAME="now",
-                                YESTERDAY_PATH="yesterday/{" + NOW_PARAM_NAME + "}",
-                                TOMORROW_PATH="tomorrow/{" + NOW_PARAM_NAME + "}";
+    public static final String ROOT_PATH = "rest-test",
+            NOW_PARAM_NAME = "now",
+            YESTERDAY_PATH = "yesterday/{" + NOW_PARAM_NAME + "}",
+            TOMORROW_PATH = "tomorrow/{" + NOW_PARAM_NAME + "}";
 }

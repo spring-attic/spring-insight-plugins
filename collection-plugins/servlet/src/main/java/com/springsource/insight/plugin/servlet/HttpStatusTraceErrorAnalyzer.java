@@ -25,26 +25,26 @@ import com.springsource.insight.intercept.trace.TraceError;
 import com.springsource.insight.util.StringUtil;
 
 public class HttpStatusTraceErrorAnalyzer extends AbstractTraceErrorAnalyzer {
-    private static final TraceError contextNotAvailableError=new TraceError("Context not available");
-    private static final HttpStatusTraceErrorAnalyzer	INSTANCE=new HttpStatusTraceErrorAnalyzer();
-	public static final String	STATUS_CODE_ATTR="statusCode", REASON_PHRASE_ATTR="reasonPhrase";
+    private static final TraceError contextNotAvailableError = new TraceError("Context not available");
+    private static final HttpStatusTraceErrorAnalyzer INSTANCE = new HttpStatusTraceErrorAnalyzer();
+    public static final String STATUS_CODE_ATTR = "statusCode", REASON_PHRASE_ATTR = "reasonPhrase";
 
-    private HttpStatusTraceErrorAnalyzer () {
-    	super(OperationType.HTTP);
+    private HttpStatusTraceErrorAnalyzer() {
+        super(OperationType.HTTP);
     }
 
     public static final HttpStatusTraceErrorAnalyzer getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override
-	public TraceError locateFrameError(Frame httpFrame) {
+    public TraceError locateFrameError(Frame httpFrame) {
         Operation op = httpFrame.getOperation();
         OperationMap response = op.get("response", OperationMap.class);
 
-        int statusCode =(response == null) ? (-1) : response.getInt(STATUS_CODE_ATTR, (-1));
+        int statusCode = (response == null) ? (-1) : response.getInt(STATUS_CODE_ATTR, (-1));
         if ((statusCode >= 0) && httpStatusIsError(statusCode)) {
-            return new TraceError(createErrorMessage(statusCode, response.get(REASON_PHRASE_ATTR, String.class))); 
+            return new TraceError(createErrorMessage(statusCode, response.get(REASON_PHRASE_ATTR, String.class)));
         }
 
         OperationMap request = op.get("request", OperationMap.class);
@@ -52,21 +52,21 @@ public class HttpStatusTraceErrorAnalyzer extends AbstractTraceErrorAnalyzer {
         if ((contextAvailable != null) && (!contextAvailable.booleanValue())) {
             return contextNotAvailableError;
         } else {
-        	return null;
+            return null;
         }
     }
 
-	// TODO make this a general utility
-	static String createErrorMessage (int statusCode, String reasonPhrase) {
-		if (StringUtil.isEmpty(reasonPhrase)) {
-			return String.valueOf("Status code = " + statusCode);
-		} else {
-			return String.valueOf(statusCode) + " " + reasonPhrase;
-		}
-	}
-	
-	// TODO make this a general utility
-	static boolean httpStatusIsError(int status) {
-	    return (status < 100) || (status >= 400);
-	}
+    // TODO make this a general utility
+    static String createErrorMessage(int statusCode, String reasonPhrase) {
+        if (StringUtil.isEmpty(reasonPhrase)) {
+            return String.valueOf("Status code = " + statusCode);
+        } else {
+            return String.valueOf(statusCode) + " " + reasonPhrase;
+        }
+    }
+
+    // TODO make this a general utility
+    static boolean httpStatusIsError(int status) {
+        return (status < 100) || (status >= 400);
+    }
 }

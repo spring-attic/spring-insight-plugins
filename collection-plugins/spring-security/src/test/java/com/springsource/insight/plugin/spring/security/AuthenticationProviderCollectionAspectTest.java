@@ -32,25 +32,25 @@ public class AuthenticationProviderCollectionAspectTest extends AuthenticationCo
     }
 
     @Test
-    public void testSuccessfulAuthentication () {
-        String[]                grants={ "tester", "insight"};
-        Authentication          token=new TestingAuthenticationToken("testSuccessfulAuthentication", "shir", grants);
-        AuthenticationProvider  testProvider=new AuthenticationProviderCollectionAspectTestProvider(false);
-        Authentication          result=testProvider.authenticate(token);
+    public void testSuccessfulAuthentication() {
+        String[] grants = {"tester", "insight"};
+        Authentication token = new TestingAuthenticationToken("testSuccessfulAuthentication", "shir", grants);
+        AuthenticationProvider testProvider = new AuthenticationProviderCollectionAspectTestProvider(false);
+        Authentication result = testProvider.authenticate(token);
         assertNotNull("No authentication result", result);
         assertSame("Mismatched authentication instances equality", token, result);
         assertOperationResult(result, Arrays.asList(grants));
     }
 
     @Test
-    public void testObscuredCredentials () {
-    	ObscuredValueSetMarker    marker=new ObscuredValueSetMarker();
+    public void testObscuredCredentials() {
+        ObscuredValueSetMarker marker = new ObscuredValueSetMarker();
         getAspect().setSensitiveValueMarker(marker);
 
-        String[]                grants={ "tester", "insight"};
-        Authentication          token=new TestingAuthenticationToken("testObscuredCredentials", "omer", grants);
-        AuthenticationProvider  testProvider=new AuthenticationProviderCollectionAspectTestProvider(true);
-        Authentication          result=testProvider.authenticate(token);
+        String[] grants = {"tester", "insight"};
+        Authentication token = new TestingAuthenticationToken("testObscuredCredentials", "omer", grants);
+        AuthenticationProvider testProvider = new AuthenticationProviderCollectionAspectTestProvider(true);
+        Authentication result = testProvider.authenticate(token);
         assertNotSame("Authentication token not cloned", token, result);
         assertObscuredAuthValues(token, result, marker);
     }

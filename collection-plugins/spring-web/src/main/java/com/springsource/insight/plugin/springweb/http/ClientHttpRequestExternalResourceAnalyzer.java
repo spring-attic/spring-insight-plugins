@@ -37,73 +37,73 @@ import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.StringUtil;
 
 /**
- * 
+ *
  */
 public class ClientHttpRequestExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-	public static final OperationType	TYPE=OperationType.valueOf("spring_http_connfactory");
-	public static final int	IPPORT_HTTP=80;
-	private static final ClientHttpRequestExternalResourceAnalyzer	INSTANCE=new ClientHttpRequestExternalResourceAnalyzer();
-	
-	private ClientHttpRequestExternalResourceAnalyzer() {
-		super(TYPE);
-	}
+    public static final OperationType TYPE = OperationType.valueOf("spring_http_connfactory");
+    public static final int IPPORT_HTTP = 80;
+    private static final ClientHttpRequestExternalResourceAnalyzer INSTANCE = new ClientHttpRequestExternalResourceAnalyzer();
 
-	public static final ClientHttpRequestExternalResourceAnalyzer getInstance() {
-		return INSTANCE;
-	}
+    private ClientHttpRequestExternalResourceAnalyzer() {
+        super(TYPE);
+    }
 
-	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> externalFrames) {
-		if (ListUtil.size(externalFrames) <= 0) {
-			return Collections.emptyList();
-		}
+    public static final ClientHttpRequestExternalResourceAnalyzer getInstance() {
+        return INSTANCE;
+    }
 
-		Set<ExternalResourceDescriptor>	descs=new HashSet<ExternalResourceDescriptor>(externalFrames.size());
-		for (Frame frame : externalFrames) {
-			ExternalResourceDescriptor	extDesc=extractExternalResourceDescriptor(frame);
-			if (extDesc == null) {
-				continue;
-			}
-			
-			if (!descs.add(extDesc)) {
-				continue;	// debug breakpoint
-			}
-		}
+    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> externalFrames) {
+        if (ListUtil.size(externalFrames) <= 0) {
+            return Collections.emptyList();
+        }
 
-		return descs;
-	}
+        Set<ExternalResourceDescriptor> descs = new HashSet<ExternalResourceDescriptor>(externalFrames.size());
+        for (Frame frame : externalFrames) {
+            ExternalResourceDescriptor extDesc = extractExternalResourceDescriptor(frame);
+            if (extDesc == null) {
+                continue;
+            }
 
-	ExternalResourceDescriptor extractExternalResourceDescriptor (Frame frame) {
-		Operation	op=frame.getOperation();
-		String		url=op.get(OperationFields.URI, String.class);
-		if (StringUtil.isEmpty(url)) {
-			return null;
-		}
-		
-		try {
-			URI		uri=new URI(url);
-			String	host=uri.getHost();
-			int		port=uri.getPort();
-			if (port <= 0) {
-				port = IPPORT_HTTP;
-			}
+            if (!descs.add(extDesc)) {
+                continue;    // debug breakpoint
+            }
+        }
 
-			String	color=colorManager.getColor(op);
-			String	name="http://" + host + ":" + port;
-			return new ExternalResourceDescriptor(frame,
-					  							  MD5NameGenerator.getName(name),
-					  							  url,
-					  							  ExternalResourceType.WEB_SERVER.name(),
-					  							  null,
-					  							  host,
-					  							  port,
-					  							  color,
-					  							  false);
-		} catch(URISyntaxException e) {
-			if (_logger.isLoggable(Level.FINE)) {
-				_logger.fine("createExternalResourceDescriptor(" + url + "): " + e.getMessage());
-			}
-			
-			return null;
-		}
-	}
+        return descs;
+    }
+
+    ExternalResourceDescriptor extractExternalResourceDescriptor(Frame frame) {
+        Operation op = frame.getOperation();
+        String url = op.get(OperationFields.URI, String.class);
+        if (StringUtil.isEmpty(url)) {
+            return null;
+        }
+
+        try {
+            URI uri = new URI(url);
+            String host = uri.getHost();
+            int port = uri.getPort();
+            if (port <= 0) {
+                port = IPPORT_HTTP;
+            }
+
+            String color = colorManager.getColor(op);
+            String name = "http://" + host + ":" + port;
+            return new ExternalResourceDescriptor(frame,
+                    MD5NameGenerator.getName(name),
+                    url,
+                    ExternalResourceType.WEB_SERVER.name(),
+                    null,
+                    host,
+                    port,
+                    color,
+                    false);
+        } catch (URISyntaxException e) {
+            if (_logger.isLoggable(Level.FINE)) {
+                _logger.fine("createExternalResourceDescriptor(" + url + "): " + e.getMessage());
+            }
+
+            return null;
+        }
+    }
 }

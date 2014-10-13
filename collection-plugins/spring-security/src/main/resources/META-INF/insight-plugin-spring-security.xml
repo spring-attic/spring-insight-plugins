@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:insight="http://www.springframework.org/schema/insight-idk"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:insight="http://www.springframework.org/schema/insight-idk"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
-	<insight:plugin name="spring-security" version="${project.version}" publisher="SpringSource" />
+    <insight:plugin name="spring-security" version="${project.version}" publisher="SpringSource"/>
 
-	<insight:operation-view operation="spring-authenticate" template="com/springsource/insight/plugin/spring/security/spring-authenticate.ftl"/>
-	
-	<insight:operation-group group="Web" operation="spring-authenticate" />
+    <insight:operation-view operation="spring-authenticate"
+                            template="com/springsource/insight/plugin/spring/security/spring-authenticate.ftl"/>
+
+    <insight:operation-group group="Web" operation="spring-authenticate"/>
 
     <bean id="springSecurityPluginRuntimeDescriptor"
           class="com.springsource.insight.plugin.spring.security.SpringSecurityPluginRuntimeDescriptor"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
 </beans>

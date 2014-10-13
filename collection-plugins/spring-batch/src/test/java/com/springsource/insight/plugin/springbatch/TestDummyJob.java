@@ -27,25 +27,25 @@ import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.JobParametersValidator;
 
 /**
- * 
+ *
  */
 public class TestDummyJob implements Job {
-    private static final JobParametersValidator validator=new JobParametersValidator() {
-            public void validate(JobParameters parameters)
-                    throws JobParametersInvalidException {
-                if (parameters == null) {
-                    throw new JobParametersInvalidException("No parameters");
-                }
+    private static final JobParametersValidator validator = new JobParametersValidator() {
+        public void validate(JobParameters parameters)
+                throws JobParametersInvalidException {
+            if (parameters == null) {
+                throw new JobParametersInvalidException("No parameters");
             }
-        };
-    private static final JobParametersIncrementer   incrementer=new JobParametersIncrementer() {
-            public JobParameters getNext(JobParameters parameters) {
-                Assert.assertNotNull("No parameters to increment", parameters);
-                return parameters;
-            }
-        };
-    private final String    name;
-    private final Logger    logger=LoggerFactory.getLogger(getClass());
+        }
+    };
+    private static final JobParametersIncrementer incrementer = new JobParametersIncrementer() {
+        public JobParameters getNext(JobParameters parameters) {
+            Assert.assertNotNull("No parameters to increment", parameters);
+            return parameters;
+        }
+    };
+    private final String name;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     public TestDummyJob(String jobName) {
         name = jobName;

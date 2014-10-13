@@ -17,16 +17,16 @@
 package com.springsource.insight.plugin.eclipse.persistence;
 
 /**
- * 
+ *
  */
 public class SessionQueryMetricsGenerator extends EclipsePersistenceMetricsGenerator {
-	private static final SessionQueryMetricsGenerator	INSTANCE=new SessionQueryMetricsGenerator();
+    private static final SessionQueryMetricsGenerator INSTANCE = new SessionQueryMetricsGenerator();
 
-    private SessionQueryMetricsGenerator () {
+    private SessionQueryMetricsGenerator() {
         super(EclipsePersistenceDefinitions.QUERY);
     }
 
     public static final SessionQueryMetricsGenerator getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 }

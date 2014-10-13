@@ -26,27 +26,27 @@ import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.method.JoinPointBreakDown;
 
 /**
- * 
+ *
  */
 public aspect TransactionManagerOperationCollectionAspect extends JtaOperationCollectionAspect {
-    public TransactionManagerOperationCollectionAspect () {
+    public TransactionManagerOperationCollectionAspect() {
         super(JtaDefinitions.MGR_OP, TransactionManager.class);
     }
 
     public pointcut collectionPoint()
-        : execution(* TransactionManager+.begin())
-       || execution(* TransactionManager+.commit())
-       || execution(* TransactionManager+.rollback())
-       || execution(* TransactionManager+.suspend())
-       || execution(* TransactionManager+.resume(Transaction))
-        ;
+            : execution(* TransactionManager+.begin())
+            || execution(* TransactionManager+.commit())
+            || execution(* TransactionManager+.rollback())
+            || execution(* TransactionManager+.suspend())
+            || execution(* TransactionManager+.resume(Transaction))
+            ;
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Operation   op=super.createOperation(jp);
-        String      methodName=op.get(OperationFields.METHOD_NAME, String.class);
+        Operation op = super.createOperation(jp);
+        String methodName = op.get(OperationFields.METHOD_NAME, String.class);
         if ("resume".equals(methodName)) {
-            op.put(OperationFields.METHOD_SIGNATURE, JoinPointBreakDown.getMethodStringFromArgs(methodName,Transaction.class));
+            op.put(OperationFields.METHOD_SIGNATURE, JoinPointBreakDown.getMethodStringFromArgs(methodName, Transaction.class));
         }
         return op;
     }

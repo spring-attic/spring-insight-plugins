@@ -19,11 +19,11 @@ package com.springsource.insight.plugin.neo4j;
 import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
 
 /**
- * 
+ *
  */
 public abstract class AbstractNeo4jCollectionAspectTestSupport extends OperationCollectionAspectTestSupport {
-	protected AbstractNeo4jCollectionAspectTestSupport() {
-		super();
-	}
+    protected AbstractNeo4jCollectionAspectTestSupport() {
+        super();
+    }
 
 }

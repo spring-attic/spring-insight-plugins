@@ -27,22 +27,22 @@ import com.springsource.insight.intercept.operation.SourceCodeLocation;
  * the aspect, {@link MyOperationAspectCollectionAspect}.
  */
 public class CashMoneyOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-	public CashMoneyOperationCollectionAspectTest () {
-		super();
-	}
+    public CashMoneyOperationCollectionAspectTest() {
+        super();
+    }
 
     @Test
     public void testMyOperationCollected() {
         /**
          * First step:  Execute whatever method is matched by our pointcut in
          * {@link CashMoneyOperationCollectionAspect}
-         * 
+         *
          * In this case, we simply create a new class which matches our pointcut
          * (which is any method named setCashBalance, taking a (int) balance.
          */
         DummyAccount account = new DummyAccount();
         account.setBalance(42);
-        
+
         /**
          * Second step:  Snatch the operation that was just created   
          */
@@ -54,8 +54,8 @@ public class CashMoneyOperationCollectionAspectTest extends OperationCollectionA
         assertEquals("Mismatched operation type", CashMoneyOperationCollectionAspect.TYPE, op.getType());
         assertEquals("Mismatched balance value", 42, op.getInt("newBalance", (-1)));
         assertEquals("Mismatched label", "Cash Balance Set: 42", op.getLabel());
-        
-        SourceCodeLocation	scl=op.getSourceCodeLocation();
+
+        SourceCodeLocation scl = op.getSourceCodeLocation();
         assertEquals("Mismatched source code class", DummyAccount.class.getName(), scl.getClassName());
         assertEquals("Mismatched source code method", "setBalance", scl.getMethodName());
     }

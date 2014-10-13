@@ -22,12 +22,12 @@ import org.springframework.stereotype.Service;
  * Causes all {@link org.springframework.stereotype.Service} annotated classes to be instrumented
  */
 public aspect ServiceMethodOperationCollectionAspect extends StereotypedSpringBeanMethodOperationCollectionAspectSupport {
-	public ServiceMethodOperationCollectionAspect () {
-		super(Service.class);
-	}
+    public ServiceMethodOperationCollectionAspect() {
+        super(Service.class);
+    }
 
-	public pointcut collectionPoint()
-		: execution(public * (@Service *).*(..))
-	   && !excludedLifecyclePointcuts()
-	    ;
+    public pointcut collectionPoint()
+            : execution(public * (@Service *).*(..))
+            && !excludedLifecyclePointcuts()
+            ;
 }

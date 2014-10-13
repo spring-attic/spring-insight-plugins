@@ -28,28 +28,30 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import com.springsource.insight.plugin.springdata.dao.TestEntityRepository;
 
 @TransactionConfiguration
-@ContextConfiguration(locations={ "classpath:META-INF/jpaTestContext.xml" })
+@ContextConfiguration(locations = {"classpath:META-INF/jpaTestContext.xml"})
 public class JpaRepositoryCollectionAspectTest extends AbstractTransactionalJUnit4SpringContextTests {
-    @Inject private TestEntityRepository    repository;
-    private final RepositoryMethodOperationCollectionAspectTestSupport  testSupport=
+    @Inject
+    private TestEntityRepository repository;
+    private final RepositoryMethodOperationCollectionAspectTestSupport testSupport =
             new RepositoryMethodOperationCollectionAspectTestSupport();
+
     public JpaRepositoryCollectionAspectTest() {
         super();
     }
 
     // need this since we cannot inherit from both classes
     @Before
-    public void setUp () {
+    public void setUp() {
         testSupport.setUp();
     }
 
     @After
-    public void tearDown () {
+    public void tearDown() {
         testSupport.restore();
     }
 
     @Test
-    public void testEntityRepository () {
+    public void testEntityRepository() {
         testSupport.testEntityRepository(repository);
     }
 }

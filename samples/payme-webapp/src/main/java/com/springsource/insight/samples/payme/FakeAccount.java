@@ -22,23 +22,25 @@ import java.util.Random;
  * Represents some monetary account.
  */
 public class FakeAccount {
-    
+
     private int balance;
     private Random rand = new Random();
-    
+
     public void setBalance(int newBalance) {
         balance = newBalance;
         randomDelay();
     }
-    
+
     public int getBalance() {
         return balance;
     }
-    
+
     private int maxDelay;
-    public void setMaxDelay (int maxDelay) {
+
+    public void setMaxDelay(int maxDelay) {
         this.maxDelay = maxDelay;
     }
+
     /**
      * Introduces a random delay (5 - 50ms) into the processing.  Faux business logic.
      */

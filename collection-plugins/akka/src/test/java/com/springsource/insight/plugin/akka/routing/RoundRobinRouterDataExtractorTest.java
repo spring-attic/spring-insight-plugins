@@ -25,20 +25,20 @@ import org.junit.Test;
 import akka.routing.RoundRobinRouter;
 
 public class RoundRobinRouterDataExtractorTest {
-	public RoundRobinRouterDataExtractorTest() {
-		super();
-	}
+    public RoundRobinRouterDataExtractorTest() {
+        super();
+    }
 
     @Test
     public void testExtract() {
-	RoundRobinRouter roundRobinRouter = new RoundRobinRouter(5);
-	RoundRobinRouterDataExtractor extractor = RoundRobinRouterDataExtractor.INSTANCE;
-	
-	Map<String, String> extracted = extractor.extract(roundRobinRouter);
-	Map<String, String> expected = Collections.singletonMap("Num of instances", String.valueOf(5));
-	
-	assertEquals("extracted property maps" , expected, extracted);
-	
+        RoundRobinRouter roundRobinRouter = new RoundRobinRouter(5);
+        RoundRobinRouterDataExtractor extractor = RoundRobinRouterDataExtractor.INSTANCE;
+
+        Map<String, String> extracted = extractor.extract(roundRobinRouter);
+        Map<String, String> expected = Collections.singletonMap("Num of instances", String.valueOf(5));
+
+        assertEquals("extracted property maps", expected, extracted);
+
     }
 
 }

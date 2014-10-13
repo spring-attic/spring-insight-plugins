@@ -19,32 +19,32 @@ import org.junit.Test;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 
-public class SystemOperationCollectionAspectTest extends AbstractOperationCollectionAspectTest{
-	public SystemOperationCollectionAspectTest () {
-		super();
-	}
+public class SystemOperationCollectionAspectTest extends AbstractOperationCollectionAspectTest {
+    public SystemOperationCollectionAspectTest() {
+        super();
+    }
 
-	@Override
-	public OperationCollectionAspectSupport getAspect() {
-		return SystemOperationCollectionAspect.aspectOf();
-	}
-	
-	@Test
-	public void testSystemAddKeyspace() throws Exception {
-		CassandraUnitTests.getInstance().testSystemAddKeyspace();
-		validate(OperationCollectionTypes.SYSTEM_TYPE.type, 
-				"keyspace=Keyspace1", "class");
-	}
-	
-	@Test
-	public void testSetKeyspace() throws Exception {
-		CassandraUnitTests.getInstance().testSetKeyspace();
-	}
-	
-	@Test
-	public void testSystemAddColumnFamily() throws Exception {
-		CassandraUnitTests.getInstance().testSystemAddColumnFamily();
-		validate(OperationCollectionTypes.SYSTEM_TYPE.type, 
-				"keyspace=Keyspace1", "columnFamilyDef={name=Standard1, type}");
-	}
+    @Override
+    public OperationCollectionAspectSupport getAspect() {
+        return SystemOperationCollectionAspect.aspectOf();
+    }
+
+    @Test
+    public void testSystemAddKeyspace() throws Exception {
+        CassandraUnitTests.getInstance().testSystemAddKeyspace();
+        validate(OperationCollectionTypes.SYSTEM_TYPE.type,
+                "keyspace=Keyspace1", "class");
+    }
+
+    @Test
+    public void testSetKeyspace() throws Exception {
+        CassandraUnitTests.getInstance().testSetKeyspace();
+    }
+
+    @Test
+    public void testSystemAddColumnFamily() throws Exception {
+        CassandraUnitTests.getInstance().testSystemAddColumnFamily();
+        validate(OperationCollectionTypes.SYSTEM_TYPE.type,
+                "keyspace=Keyspace1", "columnFamilyDef={name=Standard1, type}");
+    }
 }

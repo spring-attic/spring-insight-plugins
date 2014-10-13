@@ -20,18 +20,18 @@ import com.springsource.insight.intercept.operation.OperationType;
 
 
 public enum OperationCollectionTypes {
-	INIT_TYPE("neo4j-init", "Neo4j: Initialization"),
-	QUERY_TYPE("neo4j-query", "Neo4j: "),
-	FIND_TYPE("neo4j-find", "Neo4j: "),
-	LOOKUP_TYPE("neo4j-lookup", "Neo4j: Lookup"),
-	TRAVERSE_TYPE("neo4j-traverse", "Neo4j: Traverse");
+    INIT_TYPE("neo4j-init", "Neo4j: Initialization"),
+    QUERY_TYPE("neo4j-query", "Neo4j: "),
+    FIND_TYPE("neo4j-find", "Neo4j: "),
+    LOOKUP_TYPE("neo4j-lookup", "Neo4j: Lookup"),
+    TRAVERSE_TYPE("neo4j-traverse", "Neo4j: Traverse");
 
 
-	final public OperationType type;
-	final public String label;
+    final public OperationType type;
+    final public String label;
 
-	private OperationCollectionTypes(String typeId, String labelValue) {
-		this.type=OperationType.valueOf(typeId);
-		this.label = labelValue;
-	}
+    private OperationCollectionTypes(String typeId, String labelValue) {
+        this.type = OperationType.valueOf(typeId);
+        this.label = labelValue;
+    }
 }

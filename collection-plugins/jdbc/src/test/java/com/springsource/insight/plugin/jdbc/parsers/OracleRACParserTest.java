@@ -29,99 +29,96 @@ import com.springsource.insight.util.ListUtil;
 
 
 public class OracleRACParserTest extends SqlParserTestImpl<OracleRACParser> {
-    public OracleRACParserTest () {
-    	super(DatabaseType.ORACLE, new OracleRACParser(),
-  			  new SqlTestEntry("jdbc:oracle:thin:@(DESCRIPTION=(LOAD_BALANCE=yes)"
-  					  				+ "(ADDRESS = (PROTOCOL = TCP)(HOST = 108.121.111.114)(PORT = 7365))"
-  					  				+ "(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME = RAC.PARSER.TEST)))",
-  					  			"108.121.111.114",
-  					  			7365,
-			  		   			"RAC.PARSER.TEST"));
+    public OracleRACParserTest() {
+        super(DatabaseType.ORACLE, new OracleRACParser(),
+                new SqlTestEntry("jdbc:oracle:thin:@(DESCRIPTION=(LOAD_BALANCE=yes)"
+                        + "(ADDRESS = (PROTOCOL = TCP)(HOST = 108.121.111.114)(PORT = 7365))"
+                        + "(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME = RAC.PARSER.TEST)))",
+                        "108.121.111.114",
+                        7365,
+                        "RAC.PARSER.TEST"));
     }
-	
-	@Test
-	public void testTwoHostsAndPortsAndServiceName() {
-		// Basic Oracle RAC JDBC URL
-		String connectionUrl = "jdbc:oracle:thin:@(DESCRIPTION = (LOAD_BALANCE = on)(FAILOVER=on) "
-							+ "(ADDRESS = (PROTOCOL = TCP)(HOST = 10.17.184.138)(PORT = 1520)) "
-							+ "(ADDRESS = (PROTOCOL = TCP)(HOST = 10.17.184.139)(PORT = 1521)) "
-							+ "(CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = RAC.WORLD)(FAILOVER_MODE =(TYPE = SELECT)(METHOD = PRECONNECT)(RETRIES = 5)(DELAY = 1)) ) )"
-							;
-		Map<String, Integer> hostToPortHash = new HashMap<String, Integer>(); 
-		hostToPortHash.put("10.17.184.138", Integer.valueOf(1520));
-		hostToPortHash.put("10.17.184.139", Integer.valueOf(1521));
-		testMultipleHostsOrPorts(connectionUrl, hostToPortHash, "RAC.WORLD");
-	}
-	
-	@Test
-	public void testTwoHostsOneInvalidPort(){
-		// Basic Oracle RAC JDBC URL
-		String connectionUrl =  "jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 10.17.184.138)(PORT = boat)) "
-							+ "(ADDRESS = (PROTOCOL = TCP)(HOST = 10.17.184.139)(PORT = 1521)))"
-							;
-		Map<String, Integer> hostToPortHash = new HashMap<String, Integer>(); 
-		hostToPortHash.put("10.17.184.138", Integer.valueOf(-1));
-		hostToPortHash.put("10.17.184.139", Integer.valueOf(1521));
-		testMultipleHostsOrPorts(connectionUrl, hostToPortHash, null);
-	}
-	
-	@Test
-	public void testTwoHostsFirstWithNoPort(){
-		// Basic Oracle RAC JDBC URL
-		String connectionUrl = "jdbc:oracle:thin:@(DESCRIPTION = "
-							 + "(ADDRESS = (PROTOCOL = TCP)(HOST = 10.17.184.138)) "
-							 + "(ADDRESS = (PROTOCOL = TCP)(HOST = 10.17.184.139)(PORT = 1521)))"
-							 ;
-		Map<String, Integer> hostToPortHash = new HashMap<String, Integer>(); 
-		hostToPortHash.put("10.17.184.138", Integer.valueOf(parser.getDefaultPort()));
-		hostToPortHash.put("10.17.184.139", Integer.valueOf(1521));
-		testMultipleHostsOrPorts(connectionUrl, hostToPortHash, null);
-	}
-	
-	@Test
-	public void testOneAddressWithNoHost(){
-		// Basic Oracle RAC JDBC URL
-		String connectionUrl = "jdbc:oracle:thin:@(DESCRIPTION = "
-								+ "(ADDRESS = (PROTOCOL = TCP)(HOST = 10.17.184.138)(PORT = 1520)) "
-								+ "(ADDRESS = (PROTOCOL = TCP)(PORT = 1521)))";
-		Map<String, Integer> hostToPortHash = new HashMap<String, Integer>(); 
-		hostToPortHash.put(parser.getDefaultHost(), Integer.valueOf(1521));
-		hostToPortHash.put("10.17.184.138", Integer.valueOf(1520));
-		testMultipleHostsOrPorts(connectionUrl, hostToPortHash, null);
-	}
 
-	@Test
-	public void testUnspecifiedHostAndPortOnlyServiceName () {
-		String connectionUrl = "jdbc:oracle:thin:@(DESCRIPTION=(LOAD_BALANCE=yes)"
-	  				+ "(ADDRESS = (PROTOCOL = TCP)(HOST = )(PORT = ))"
-	  				+ "(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME = ONLY.SERVICE.NAME)))";		
-		Map<String, Integer> hostToPortHash = new HashMap<String, Integer>(); 
-		hostToPortHash.put(parser.getDefaultHost(), Integer.valueOf(parser.getDefaultPort()));
-		testMultipleHostsOrPorts(connectionUrl, hostToPortHash, "ONLY.SERVICE.NAME");
-	}
+    @Test
+    public void testTwoHostsAndPortsAndServiceName() {
+        // Basic Oracle RAC JDBC URL
+        String connectionUrl = "jdbc:oracle:thin:@(DESCRIPTION = (LOAD_BALANCE = on)(FAILOVER=on) "
+                + "(ADDRESS = (PROTOCOL = TCP)(HOST = 10.17.184.138)(PORT = 1520)) "
+                + "(ADDRESS = (PROTOCOL = TCP)(HOST = 10.17.184.139)(PORT = 1521)) "
+                + "(CONNECT_DATA = (SERVER = DEDICATED) (SERVICE_NAME = RAC.WORLD)(FAILOVER_MODE =(TYPE = SELECT)(METHOD = PRECONNECT)(RETRIES = 5)(DELAY = 1)) ) )";
+        Map<String, Integer> hostToPortHash = new HashMap<String, Integer>();
+        hostToPortHash.put("10.17.184.138", Integer.valueOf(1520));
+        hostToPortHash.put("10.17.184.139", Integer.valueOf(1521));
+        testMultipleHostsOrPorts(connectionUrl, hostToPortHash, "RAC.WORLD");
+    }
 
-	@Test
-	public void testAllDefaultsOnlyServiceName () {
-		String connectionUrl = "jdbc:oracle:thin:@(DESCRIPTION=(LOAD_BALANCE=yes)"
-	  				+ "(ADDRESS = (PROTOCOL = TCP))"
-	  				+ "(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME = ONLY.SERVICE.NAME)))";		
-		Map<String, Integer> hostToPortHash = new HashMap<String, Integer>(); 
-		hostToPortHash.put(parser.getDefaultHost(), Integer.valueOf(parser.getDefaultPort()));
-		testMultipleHostsOrPorts(connectionUrl, hostToPortHash, "ONLY.SERVICE.NAME");
-	}
+    @Test
+    public void testTwoHostsOneInvalidPort() {
+        // Basic Oracle RAC JDBC URL
+        String connectionUrl = "jdbc:oracle:thin:@(DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 10.17.184.138)(PORT = boat)) "
+                + "(ADDRESS = (PROTOCOL = TCP)(HOST = 10.17.184.139)(PORT = 1521)))";
+        Map<String, Integer> hostToPortHash = new HashMap<String, Integer>();
+        hostToPortHash.put("10.17.184.138", Integer.valueOf(-1));
+        hostToPortHash.put("10.17.184.139", Integer.valueOf(1521));
+        testMultipleHostsOrPorts(connectionUrl, hostToPortHash, null);
+    }
 
-	private void testMultipleHostsOrPorts(String connectionUrl, Map<String, Integer> hostToPortHash, String dbName){
-		final String				vendorName=databaseType.getVendorName();
-		final List<JdbcUrlMetaData> actualJdbcUrlMetaData = parser.parse(connectionUrl, vendorName);
-		
-		assertEquals("Mismatched number of meta data records", ListUtil.size(actualJdbcUrlMetaData), hostToPortHash.size());
-		
-		for (JdbcUrlMetaData actual: actualJdbcUrlMetaData) {
-			String actualHost = actual.getHost();
-			JdbcUrlMetaData	expected=
-					new SimpleJdbcUrlMetaData(actualHost, hostToPortHash.get(actualHost).intValue(), dbName, connectionUrl, vendorName);
-			assertEquals("Mismatched result for " + connectionUrl, expected, actual); 
-		}
-	}
+    @Test
+    public void testTwoHostsFirstWithNoPort() {
+        // Basic Oracle RAC JDBC URL
+        String connectionUrl = "jdbc:oracle:thin:@(DESCRIPTION = "
+                + "(ADDRESS = (PROTOCOL = TCP)(HOST = 10.17.184.138)) "
+                + "(ADDRESS = (PROTOCOL = TCP)(HOST = 10.17.184.139)(PORT = 1521)))";
+        Map<String, Integer> hostToPortHash = new HashMap<String, Integer>();
+        hostToPortHash.put("10.17.184.138", Integer.valueOf(parser.getDefaultPort()));
+        hostToPortHash.put("10.17.184.139", Integer.valueOf(1521));
+        testMultipleHostsOrPorts(connectionUrl, hostToPortHash, null);
+    }
+
+    @Test
+    public void testOneAddressWithNoHost() {
+        // Basic Oracle RAC JDBC URL
+        String connectionUrl = "jdbc:oracle:thin:@(DESCRIPTION = "
+                + "(ADDRESS = (PROTOCOL = TCP)(HOST = 10.17.184.138)(PORT = 1520)) "
+                + "(ADDRESS = (PROTOCOL = TCP)(PORT = 1521)))";
+        Map<String, Integer> hostToPortHash = new HashMap<String, Integer>();
+        hostToPortHash.put(parser.getDefaultHost(), Integer.valueOf(1521));
+        hostToPortHash.put("10.17.184.138", Integer.valueOf(1520));
+        testMultipleHostsOrPorts(connectionUrl, hostToPortHash, null);
+    }
+
+    @Test
+    public void testUnspecifiedHostAndPortOnlyServiceName() {
+        String connectionUrl = "jdbc:oracle:thin:@(DESCRIPTION=(LOAD_BALANCE=yes)"
+                + "(ADDRESS = (PROTOCOL = TCP)(HOST = )(PORT = ))"
+                + "(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME = ONLY.SERVICE.NAME)))";
+        Map<String, Integer> hostToPortHash = new HashMap<String, Integer>();
+        hostToPortHash.put(parser.getDefaultHost(), Integer.valueOf(parser.getDefaultPort()));
+        testMultipleHostsOrPorts(connectionUrl, hostToPortHash, "ONLY.SERVICE.NAME");
+    }
+
+    @Test
+    public void testAllDefaultsOnlyServiceName() {
+        String connectionUrl = "jdbc:oracle:thin:@(DESCRIPTION=(LOAD_BALANCE=yes)"
+                + "(ADDRESS = (PROTOCOL = TCP))"
+                + "(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME = ONLY.SERVICE.NAME)))";
+        Map<String, Integer> hostToPortHash = new HashMap<String, Integer>();
+        hostToPortHash.put(parser.getDefaultHost(), Integer.valueOf(parser.getDefaultPort()));
+        testMultipleHostsOrPorts(connectionUrl, hostToPortHash, "ONLY.SERVICE.NAME");
+    }
+
+    private void testMultipleHostsOrPorts(String connectionUrl, Map<String, Integer> hostToPortHash, String dbName) {
+        final String vendorName = databaseType.getVendorName();
+        final List<JdbcUrlMetaData> actualJdbcUrlMetaData = parser.parse(connectionUrl, vendorName);
+
+        assertEquals("Mismatched number of meta data records", ListUtil.size(actualJdbcUrlMetaData), hostToPortHash.size());
+
+        for (JdbcUrlMetaData actual : actualJdbcUrlMetaData) {
+            String actualHost = actual.getHost();
+            JdbcUrlMetaData expected =
+                    new SimpleJdbcUrlMetaData(actualHost, hostToPortHash.get(actualHost).intValue(), dbName, connectionUrl, vendorName);
+            assertEquals("Mismatched result for " + connectionUrl, expected, actual);
+        }
+    }
 
 }

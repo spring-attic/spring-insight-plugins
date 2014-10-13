@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:insight="http://www.springframework.org/schema/insight-idk"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:insight="http://www.springframework.org/schema/insight-idk"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
-	<insight:plugin name="jdbc" version="${project.version}" publisher="SpringSource" />
+    <insight:plugin name="jdbc" version="${project.version}" publisher="SpringSource"/>
 
-	<insight:operation-view operation="jdbc" template="com/springsource/insight/plugin/jdbc/jdbc.ftl"/>
+    <insight:operation-view operation="jdbc" template="com/springsource/insight/plugin/jdbc/jdbc.ftl"/>
     <insight:operation-view operation="jdbc-connect" template="com/springsource/insight/plugin/jdbc/jdbc-connect.ftl"/>
 
-	<insight:operation-group group="Database" operation="jdbc" />
-    <insight:operation-group group="Database" operation="jdbc-connect" />
-	
-	<bean id="jdbcPluginTopLevelOperationFilter"
-	      class="com.springsource.insight.plugin.jdbc.TopLevelJdbcOperationFilter"
+    <insight:operation-group group="Database" operation="jdbc"/>
+    <insight:operation-group group="Database" operation="jdbc-connect"/>
+
+    <bean id="jdbcPluginTopLevelOperationFilter"
+          class="com.springsource.insight.plugin.jdbc.TopLevelJdbcOperationFilter"
           factory-method="getInstance"
           lazy-init="true"
-        />
-	
-	<!--  TODO convert it to a singleton once SLQFormatter embedded instance can also be a singleton -->
-	<bean name="sqlToHtml" class="com.springsource.insight.plugin.jdbc.SqlToHtml" />
-    
+            />
+
+    <!--  TODO convert it to a singleton once SLQFormatter embedded instance can also be a singleton -->
+    <bean name="sqlToHtml" class="com.springsource.insight.plugin.jdbc.SqlToHtml"/>
+
     <bean id="jdbcPluginOperationExternalResourceAnalyzer"
           class="com.springsource.insight.plugin.jdbc.JdbcOperationExternalResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="jdbcPluginDriverExternalResourceAnalyzer"
           class="com.springsource.insight.plugin.jdbc.JdbcDriverExternalResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="jdbcPluginRuntimeDescriptor"
           class="com.springsource.insight.plugin.jdbc.JdbcRuntimePluginDescriptor"
           factory-method="getInstance"
           lazy-init="true"
-        />
-    
+            />
+
 </beans>

@@ -23,39 +23,39 @@ import com.springsource.insight.intercept.operation.Operation;
 
 public aspect GemFireRegionCollectionAspect extends AbstractGemFireCollectionAspect {
     public GemFireRegionCollectionAspect() {
-		super(GemFireDefenitions.TYPE_REGION);
-	}
+        super(GemFireDefenitions.TYPE_REGION);
+    }
 
-    public pointcut readWriteFlow ()
-         : execution(* Region.get(..)) || execution(* Region.getAll(..)) || execution(* Region.getEntry(..))
-        || execution(* Region.selectValue(..)) || execution(* Region.values())
-    	|| execution(* Region.put(..)) || execution(* Region.putAll(..)) || execution(* Region.putIfAbsent(..))
-    	|| execution(* Region.query(..))
-    	|| execution(* Region.remove(..))
-    	|| execution(* Region.replace(..))
-    	 ;    
-    	
-    public pointcut otherFlow ()
-    	: execution(* Region.clear())
-       || execution(* Region.containsKey*(..)) || execution(* Region.containsValue*(..))
-       || execution(* Region.create*(..)) || execution(* Region.destroy*(..))
-       || execution(* Region.entr*(..)) || execution(* Region.existsValue(..)) || execution(* Region.isEmpty())
-       || execution(* Region.invalidate*(..)) || execution(* Region.key*(..))
-       || execution(* Region.loadSnapshot*(..)) || execution(* Region.local*(..)) || execution(* Region.saveSnapshot*(..))
-        ;
-    
-    public pointcut regionFlow() : readWriteFlow() || otherFlow();
+    public pointcut readWriteFlow()
+            : execution(* Region.get(..)) || execution(* Region.getAll(..)) || execution(* Region.getEntry(..))
+            || execution(* Region.selectValue(..)) || execution(* Region.values())
+            || execution(* Region.put(..)) || execution(* Region.putAll(..)) || execution(* Region.putIfAbsent(..))
+            || execution(* Region.query(..))
+            || execution(* Region.remove(..))
+            || execution(* Region.replace(..))
+            ;
 
-    public pointcut collectionPoint () : regionFlow() && !cflowbelow(regionFlow());
+    public pointcut otherFlow()
+            : execution(* Region.clear())
+            || execution(* Region.containsKey*(..)) || execution(* Region.containsValue*(..))
+            || execution(* Region.create*(..)) || execution(* Region.destroy*(..))
+            || execution(* Region.entr*(..)) || execution(* Region.existsValue(..)) || execution(* Region.isEmpty())
+            || execution(* Region.invalidate*(..)) || execution(* Region.key*(..))
+            || execution(* Region.loadSnapshot*(..)) || execution(* Region.local*(..)) || execution(* Region.saveSnapshot*(..))
+            ;
 
-	@Override
+    public pointcut regionFlow(): readWriteFlow() || otherFlow();
+
+    public pointcut collectionPoint(): regionFlow() && !cflowbelow(regionFlow());
+
+    @Override
     protected Operation createOperation(final JoinPoint jp) {
-    	Operation op = createBasicOperation(jp);
-   
-    	Region<?,?> region = (Region<?,?>) jp.getThis();
+        Operation op = createBasicOperation(jp);
+
+        Region<?, ?> region = (Region<?, ?>) jp.getThis();
         op.put(GemFireDefenitions.FIELD_PATH, region.getFullPath());
-        
-                
+
+
         return op;
     }
 }

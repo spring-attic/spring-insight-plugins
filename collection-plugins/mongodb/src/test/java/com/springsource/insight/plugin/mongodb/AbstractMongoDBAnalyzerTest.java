@@ -41,98 +41,98 @@ import com.springsource.insight.util.time.TimeRange;
 /**
  */
 public abstract class AbstractMongoDBAnalyzerTest extends AbstractCollectionTestSupport {
-	
-	protected abstract OperationType getType();
+
+    protected abstract OperationType getType();
 
     protected abstract AbstractMongoDBExternalResourceAnalyzer createMongoAnalyzer();
 
-	@Test
-	public void testLocateDatabaseURI() throws Exception {
-		Operation op = new Operation();
-		op.type(getType());		
-		op.put("host", "localhost");
-		op.put("port", 6379);
-		op.put("dbName", "dbName");
-		Frame frame = new SimpleFrame(FrameId.valueOf("0"),
-				null,
-				op,
-				TimeRange.milliTimeRange(0, 1),
-				Collections.<Frame>emptyList());
+    @Test
+    public void testLocateDatabaseURI() throws Exception {
+        Operation op = new Operation();
+        op.type(getType());
+        op.put("host", "localhost");
+        op.put("port", 6379);
+        op.put("dbName", "dbName");
+        Frame frame = new SimpleFrame(FrameId.valueOf("0"),
+                null,
+                op,
+                TimeRange.milliTimeRange(0, 1),
+                Collections.<Frame>emptyList());
 
-		Trace trace = new Trace(ServerName.valueOf("fake-server"),
-				ApplicationName.valueOf("fake-app"),
-				new Date(),
-				TraceId.valueOf("fake-id"),
-				frame);
+        Trace trace = new Trace(ServerName.valueOf("fake-server"),
+                ApplicationName.valueOf("fake-app"),
+                new Date(),
+                TraceId.valueOf("fake-id"),
+                frame);
 
-		AbstractMongoDBExternalResourceAnalyzer	analyzer=createMongoAnalyzer();
-		List<ExternalResourceDescriptor>	results=
-				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
-		assertEquals(1, results.size());
+        AbstractMongoDBExternalResourceAnalyzer analyzer = createMongoAnalyzer();
+        List<ExternalResourceDescriptor> results =
+                (List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
+        assertEquals(1, results.size());
 
-		ExternalResourceDescriptor externalResourceDescriptor = results.get(0);
-		assertEquals(frame, externalResourceDescriptor.getFrame());
-		assertEquals(ExternalResourceType.DATABASE.name(), externalResourceDescriptor.getType());
-		assertEquals("mongo:" + MD5NameGenerator.getName("dbNamelocalhost"+6379), externalResourceDescriptor.getName());
-		assertEquals(AbstractMongoDBExternalResourceAnalyzer.MONGODB_VENDOR, externalResourceDescriptor.getVendor());
-		assertEquals("dbName", externalResourceDescriptor.getLabel());
-		assertEquals("localhost", externalResourceDescriptor.getHost());
-		assertEquals(6379, externalResourceDescriptor.getPort());
-		assertEquals(Boolean.FALSE, Boolean.valueOf(externalResourceDescriptor.isIncoming()));
-	}
+        ExternalResourceDescriptor externalResourceDescriptor = results.get(0);
+        assertEquals(frame, externalResourceDescriptor.getFrame());
+        assertEquals(ExternalResourceType.DATABASE.name(), externalResourceDescriptor.getType());
+        assertEquals("mongo:" + MD5NameGenerator.getName("dbNamelocalhost" + 6379), externalResourceDescriptor.getName());
+        assertEquals(AbstractMongoDBExternalResourceAnalyzer.MONGODB_VENDOR, externalResourceDescriptor.getVendor());
+        assertEquals("dbName", externalResourceDescriptor.getLabel());
+        assertEquals("localhost", externalResourceDescriptor.getHost());
+        assertEquals(6379, externalResourceDescriptor.getPort());
+        assertEquals(Boolean.FALSE, Boolean.valueOf(externalResourceDescriptor.isIncoming()));
+    }
 
-	@Test
-	public void testExactlyTwoDifferentExternalResourceNames() {   	
-		Operation op1 = new Operation();
-		op1.type(getType());		
-		op1.put("host", "127.0.0.1");
-		op1.put("port", 6379);
-		op1.put("dbName", "dbName");
-		
-		Operation op2 = new Operation();
-		op2.type(getType());	
-		
-		op2.put("port", 6379);
-		op2.put("dbName", "dbName2");
-		
-		Operation dummyOp = new Operation();
+    @Test
+    public void testExactlyTwoDifferentExternalResourceNames() {
+        Operation op1 = new Operation();
+        op1.type(getType());
+        op1.put("host", "127.0.0.1");
+        op1.put("port", 6379);
+        op1.put("dbName", "dbName");
 
-		SimpleFrameBuilder builder = new SimpleFrameBuilder();
-		builder.enter(new Operation().type(OperationType.HTTP));
-		builder.enter(op2);
-		builder.exit();
-		builder.enter(dummyOp);
-		builder.enter(op1);
-		builder.exit();
-		builder.exit();
-		Frame frame = builder.exit();
-		Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
+        Operation op2 = new Operation();
+        op2.type(getType());
 
-		AbstractMongoDBExternalResourceAnalyzer				analyzer=createMongoAnalyzer();
-		List<ExternalResourceDescriptor>	externalResourceDescriptors=
-				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
-		assertEquals(2, externalResourceDescriptors.size());        
+        op2.put("port", 6379);
+        op2.put("dbName", "dbName2");
 
-		ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);        
-		assertEquals(op2, descriptor.getFrame().getOperation());
-		assertEquals("dbName2", descriptor.getLabel());
-		assertEquals(ExternalResourceType.DATABASE.name(), descriptor.getType());
-		assertEquals("MongoDB", descriptor.getVendor());
-		assertEquals(null, descriptor.getHost());
-		assertEquals(6379, descriptor.getPort());
-		String expectedHash = MD5NameGenerator.getName("dbName2"+null+6379);
-		assertEquals("mongo:" + expectedHash, descriptor.getName());
-		assertEquals(Boolean.FALSE, Boolean.valueOf(descriptor.isIncoming()));
+        Operation dummyOp = new Operation();
 
-		descriptor = externalResourceDescriptors.get(1);        
-		assertEquals(op1, descriptor.getFrame().getOperation());
-		assertEquals("dbName", descriptor.getLabel());
-		assertEquals(ExternalResourceType.DATABASE.name(), descriptor.getType());
-		assertEquals("MongoDB", descriptor.getVendor());
-		assertEquals("127.0.0.1", descriptor.getHost());
-		assertEquals(6379, descriptor.getPort());
-		expectedHash = MD5NameGenerator.getName("dbName127.0.0.1"+6379);
-		assertEquals("mongo:" + expectedHash, descriptor.getName());
-		assertEquals(Boolean.FALSE, Boolean.valueOf(descriptor.isIncoming()));
-	}
+        SimpleFrameBuilder builder = new SimpleFrameBuilder();
+        builder.enter(new Operation().type(OperationType.HTTP));
+        builder.enter(op2);
+        builder.exit();
+        builder.enter(dummyOp);
+        builder.enter(op1);
+        builder.exit();
+        builder.exit();
+        Frame frame = builder.exit();
+        Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
+
+        AbstractMongoDBExternalResourceAnalyzer analyzer = createMongoAnalyzer();
+        List<ExternalResourceDescriptor> externalResourceDescriptors =
+                (List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
+        assertEquals(2, externalResourceDescriptors.size());
+
+        ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);
+        assertEquals(op2, descriptor.getFrame().getOperation());
+        assertEquals("dbName2", descriptor.getLabel());
+        assertEquals(ExternalResourceType.DATABASE.name(), descriptor.getType());
+        assertEquals("MongoDB", descriptor.getVendor());
+        assertEquals(null, descriptor.getHost());
+        assertEquals(6379, descriptor.getPort());
+        String expectedHash = MD5NameGenerator.getName("dbName2" + null + 6379);
+        assertEquals("mongo:" + expectedHash, descriptor.getName());
+        assertEquals(Boolean.FALSE, Boolean.valueOf(descriptor.isIncoming()));
+
+        descriptor = externalResourceDescriptors.get(1);
+        assertEquals(op1, descriptor.getFrame().getOperation());
+        assertEquals("dbName", descriptor.getLabel());
+        assertEquals(ExternalResourceType.DATABASE.name(), descriptor.getType());
+        assertEquals("MongoDB", descriptor.getVendor());
+        assertEquals("127.0.0.1", descriptor.getHost());
+        assertEquals(6379, descriptor.getPort());
+        expectedHash = MD5NameGenerator.getName("dbName127.0.0.1" + 6379);
+        assertEquals("mongo:" + expectedHash, descriptor.getName());
+        assertEquals(Boolean.FALSE, Boolean.valueOf(descriptor.isIncoming()));
+    }
 }

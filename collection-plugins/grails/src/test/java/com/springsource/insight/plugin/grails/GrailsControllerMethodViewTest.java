@@ -34,11 +34,11 @@ import com.springsource.insight.idk.WebApplicationContextLoader;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
 
-@ContextConfiguration(locations = { "classpath:META-INF/insight-plugin-grails.xml",
-                                    "classpath:META-INF/test-app-context.xml" }, 
-                      loader = WebApplicationContextLoader.class)
+@ContextConfiguration(locations = {"classpath:META-INF/insight-plugin-grails.xml",
+        "classpath:META-INF/test-app-context.xml"},
+        loader = WebApplicationContextLoader.class)
 @RunWith(SpringJUnit4ClassRunner.class)
-public class GrailsControllerMethodViewTest extends AbstractCollectionTestSupport  {
+public class GrailsControllerMethodViewTest extends AbstractCollectionTestSupport {
 
     protected MockHttpServletRequest request;
     protected MockHttpServletResponse response;
@@ -52,31 +52,31 @@ public class GrailsControllerMethodViewTest extends AbstractCollectionTestSuppor
     @Before
     @Override
     public void setUp() {
-    	super.setUp();
+        super.setUp();
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
     }
-    
+
     @Test
     public void testLocalViewWithStatus() throws Exception {
         Operation operation = new Operation()
-            .put("requestMethod", "PUT")
-            .put("requestUri", "/my/uri")
-            .put("actionName", "actionName");
+                .put("requestMethod", "PUT")
+                .put("requestUri", "/my/uri")
+                .put("actionName", "actionName");
         OperationList actionParams = operation.createList("actionParams");
         actionParams.createMap().put("key", "keyA").put("value", "valA");
         actionParams.createMap().put("key", "keyB").put("value", "valB");
         actionParams.createMap().put("key", "keyC").put("value", "valC");
-        
+
         model.put("operation", operation.asMap());
         local.render(model, request, response);
         String content = response.getContentAsString();
         //System.err.println(content);
         int keyAindex = content.indexOf("<td>keyA</td>");
-        int keyBindex = content.indexOf("<td>keyB</td>");        
-        assertTrue(keyAindex >= 0 && keyBindex >=0 && keyBindex > keyAindex);
-        
+        int keyBindex = content.indexOf("<td>keyB</td>");
+        assertTrue(keyAindex >= 0 && keyBindex >= 0 && keyBindex > keyAindex);
+
         assertTrue(content.contains("PUT /my/uri"));
-    }    
+    }
 }
 

@@ -37,71 +37,71 @@ import org.apache.hadoop.util.ToolRunner;
 import com.springsource.insight.util.FileUtil;
 
 public class WordCount extends Configured implements Tool {
-	public WordCount () {
-		super();
-	}
+    public WordCount() {
+        super();
+    }
 
-   static public class WordCountMapper extends Mapper<LongWritable, Text, Text, LongWritable> {
-      final private static LongWritable ONE = new LongWritable(1);
-      private Text tokenValue = new Text();
+    static public class WordCountMapper extends Mapper<LongWritable, Text, Text, LongWritable> {
+        final private static LongWritable ONE = new LongWritable(1);
+        private Text tokenValue = new Text();
 
-      @Override
-      protected void map(LongWritable offset, Text text, Context context) throws IOException, InterruptedException {
-         for (String token : text.toString().split("\\s+")) {
-            tokenValue.set(token);
-            context.write(tokenValue, ONE);
-         }
-      }
-   }
+        @Override
+        protected void map(LongWritable offset, Text text, Context context) throws IOException, InterruptedException {
+            for (String token : text.toString().split("\\s+")) {
+                tokenValue.set(token);
+                context.write(tokenValue, ONE);
+            }
+        }
+    }
 
-   static public class WordCountReducer extends Reducer<Text, LongWritable, Text, LongWritable> {
-      private LongWritable total = new LongWritable();
+    static public class WordCountReducer extends Reducer<Text, LongWritable, Text, LongWritable> {
+        private LongWritable total = new LongWritable();
 
-      @Override
-      protected void reduce(Text token, Iterable<LongWritable> counts, Context context)
-            throws IOException, InterruptedException {
-         long n = 0;
-         for (LongWritable count : counts)
-            n += count.get();
-         total.set(n);
-         context.write(token, total);
-         System.out.println(token+","+total);
-      }
-   }
+        @Override
+        protected void reduce(Text token, Iterable<LongWritable> counts, Context context)
+                throws IOException, InterruptedException {
+            long n = 0;
+            for (LongWritable count : counts)
+                n += count.get();
+            total.set(n);
+            context.write(token, total);
+            System.out.println(token + "," + total);
+        }
+    }
 
-   public int run(String[] args) throws Exception {
-	   String INPUT="src/test/resources";
-	   String OUTPUT="target/out";
-	   
-	   Configuration conf = new Configuration();
-	   File			 targetFolder = FileUtil.detectTargetFolder(getClass());
-	   if (targetFolder == null) {
-		   throw new IllegalStateException("Cannot detect target folder");
-	   }
-	   File	tempFolder = new File(targetFolder, "temp");
-	   conf.set("hadoop.tmp.dir", tempFolder.getAbsolutePath());
+    public int run(String[] args) throws Exception {
+        String INPUT = "src/test/resources";
+        String OUTPUT = "target/out";
 
-	   Job job = new Job(conf, "wordcount");
-      job.setJarByClass(WordCount.class);
+        Configuration conf = new Configuration();
+        File targetFolder = FileUtil.detectTargetFolder(getClass());
+        if (targetFolder == null) {
+            throw new IllegalStateException("Cannot detect target folder");
+        }
+        File tempFolder = new File(targetFolder, "temp");
+        conf.set("hadoop.tmp.dir", tempFolder.getAbsolutePath());
 
-      job.setMapperClass(WordCountMapper.class);
-      job.setCombinerClass(WordCountReducer.class);
-      job.setReducerClass(WordCountReducer.class);
+        Job job = new Job(conf, "wordcount");
+        job.setJarByClass(WordCount.class);
 
-      job.setInputFormatClass(TextInputFormat.class);
-      job.setOutputFormatClass(TextOutputFormat.class);
+        job.setMapperClass(WordCountMapper.class);
+        job.setCombinerClass(WordCountReducer.class);
+        job.setReducerClass(WordCountReducer.class);
 
-      job.setOutputKeyClass(Text.class);
-      job.setOutputValueClass(LongWritable.class);
-      
-      FileUtils.deleteDirectory(new File(OUTPUT)); // delete old output data
-      FileInputFormat.addInputPath(job, new Path(INPUT));
-      FileOutputFormat.setOutputPath(job, new Path(OUTPUT));
+        job.setInputFormatClass(TextInputFormat.class);
+        job.setOutputFormatClass(TextOutputFormat.class);
 
-      return job.waitForCompletion(true) ? 0 : -1;
-   }
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(LongWritable.class);
 
-   public static void main(String[] args) throws Exception {
-      System.exit(ToolRunner.run(new WordCount(), args));
-   }
+        FileUtils.deleteDirectory(new File(OUTPUT)); // delete old output data
+        FileInputFormat.addInputPath(job, new Path(INPUT));
+        FileOutputFormat.setOutputPath(job, new Path(OUTPUT));
+
+        return job.waitForCompletion(true) ? 0 : -1;
+    }
+
+    public static void main(String[] args) throws Exception {
+        System.exit(ToolRunner.run(new WordCount(), args));
+    }
 }

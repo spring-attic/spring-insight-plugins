@@ -20,21 +20,21 @@ import com.springsource.insight.intercept.operation.OperationType;
 
 /**
  * Concrete analyzer for Axon command handler operations.
- * 
+ *
  * @author Joris Kuipers
  * @since 2.0
  */
 public class CommandHandlerEndPointAnalyzer extends AbstractHandlerEndPointAnalyzer {
-	
-	private static final CommandHandlerEndPointAnalyzer	INSTANCE=new CommandHandlerEndPointAnalyzer();
 
-	private CommandHandlerEndPointAnalyzer() {
-		super(AxonOperationType.COMMAND_HANDLER);
-	}
-	
+    private static final CommandHandlerEndPointAnalyzer INSTANCE = new CommandHandlerEndPointAnalyzer();
+
+    private CommandHandlerEndPointAnalyzer() {
+        super(AxonOperationType.COMMAND_HANDLER);
+    }
+
 
     public static final CommandHandlerEndPointAnalyzer getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override
@@ -47,6 +47,5 @@ public class CommandHandlerEndPointAnalyzer extends AbstractHandlerEndPointAnaly
         return "COMMAND: " + operation.get("commandType");
     }
 
-	
 
 }

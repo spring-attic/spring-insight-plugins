@@ -1,4 +1,4 @@
- /**
+/**
  * Copyright (c) 2010-2012 Axon Framework All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -52,7 +52,7 @@ public class Axon20OperationUtils {
      * @param args      The arguments of the operation
      * @param operation The operation
      * @return true if first arg was {@link EventMessage} and has been handled,
-     *         false if calling code still needs to handle it as an event.
+     * false if calling code still needs to handle it as an event.
      */
     static boolean processEventMessage(Object[] args, Operation operation) {
         if (!(args[0] instanceof EventMessage<?>)) {
@@ -74,7 +74,7 @@ public class Axon20OperationUtils {
      * @param args      The arguments of the operation
      * @param operation The operation
      * @return true if first arg was {@link CommandMessage} and has been handled,
-     *         false if calling code still needs to handle it as a command.
+     * false if calling code still needs to handle it as a command.
      */
     static boolean processCommandMessage(Object[] args, Operation operation) {
         if (!(args[0] instanceof CommandMessage<?>)) {

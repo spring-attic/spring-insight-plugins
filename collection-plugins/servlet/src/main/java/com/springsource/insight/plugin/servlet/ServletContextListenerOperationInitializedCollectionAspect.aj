@@ -32,12 +32,12 @@ import com.springsource.insight.util.StringUtil;
 public aspect ServletContextListenerOperationInitializedCollectionAspect extends AbstractOperationCollectionAspect {
     private static final OperationType TYPE = LifecycleEndPointAnalyzer.SERVLET_LISTENER_TYPE;
 
-    public ServletContextListenerOperationInitializedCollectionAspect () {
+    public ServletContextListenerOperationInitializedCollectionAspect() {
         super();
     }
-    
-    public pointcut collectionPoint() 
-        : execution(* ServletContextListener+.contextInitialized(ServletContextEvent));
+
+    public pointcut collectionPoint()
+            : execution(* ServletContextListener+.contextInitialized(ServletContextEvent));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
@@ -49,15 +49,15 @@ public aspect ServletContextListenerOperationInitializedCollectionAspect extends
             application = "/";
         }
         Operation operation = new Operation()
-            .type(TYPE)
-            .label("Servlet Context: " + application + " Initialized")
-            .sourceCodeLocation(getSourceCodeLocation(jp))
-            .put("listenerClass", listener.getClass().getName())
-            .put("listenerPhase", "Initialized")
-            .put("event", "Initialize")
-            .put("application", application);
+                .type(TYPE)
+                .label("Servlet Context: " + application + " Initialized")
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .put("listenerClass", listener.getClass().getName())
+                .put("listenerPhase", "Initialized")
+                .put("event", "Initialize")
+                .put("application", application);
         OperationMap contextParams = operation.createMap("contextParams");
-        for (@SuppressWarnings("unchecked") Enumeration<String> paramNames = context.getInitParameterNames(); paramNames.hasMoreElements();) {
+        for (@SuppressWarnings("unchecked") Enumeration<String> paramNames = context.getInitParameterNames(); paramNames.hasMoreElements(); ) {
             String name = paramNames.nextElement();
             contextParams.put(name, event.getServletContext().getInitParameter(name));
         }

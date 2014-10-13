@@ -24,7 +24,7 @@ import org.springframework.batch.core.StepExecution;
 
 
 /**
- * 
+ *
  */
 public class StepOperationCollectionAspectTest
         extends SpringBatchOperationCollectionAspectTestSupport {
@@ -33,10 +33,10 @@ public class StepOperationCollectionAspectTest
     }
 
     @Test
-    public void testExecute () throws JobInterruptedException {
-        Step            step=createTestStep("testExecute");
-        JobExecution    jobData=TestDummyJobRepository.createJobExecutionInstance(step.getName());
-        StepExecution   stepData=new StepExecution(step.getName(), jobData, jobData.getId());
+    public void testExecute() throws JobInterruptedException {
+        Step step = createTestStep("testExecute");
+        JobExecution jobData = TestDummyJobRepository.createJobExecutionInstance(step.getName());
+        StepExecution stepData = new StepExecution(step.getName(), jobData, jobData.getId());
         step.execute(stepData);
         assertOperationDetails(getLastEntered(), "execute", step.getName());
     }

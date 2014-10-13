@@ -25,28 +25,29 @@ import com.springsource.insight.util.ArrayUtil;
 
 public class JaxrsPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "jax-rs";
-    private static final JaxrsPluginRuntimeDescriptor	INSTANCE=new JaxrsPluginRuntimeDescriptor();
-    private static final List<? extends EndPointAnalyzer>	epAnalyzers=ArrayUtil.asUnmodifiableList(JaxrsEndPointAnalyzer.getInstance());
-    private static final List<? extends ExternalResourceAnalyzer>	extResAnalyzers=
-       		ArrayUtil.asUnmodifiableList(JaxrsExternalResourceAnalyzer.getInstance());
-    private JaxrsPluginRuntimeDescriptor () {
-    	super();
+    private static final JaxrsPluginRuntimeDescriptor INSTANCE = new JaxrsPluginRuntimeDescriptor();
+    private static final List<? extends EndPointAnalyzer> epAnalyzers = ArrayUtil.asUnmodifiableList(JaxrsEndPointAnalyzer.getInstance());
+    private static final List<? extends ExternalResourceAnalyzer> extResAnalyzers =
+            ArrayUtil.asUnmodifiableList(JaxrsExternalResourceAnalyzer.getInstance());
+
+    private JaxrsPluginRuntimeDescriptor() {
+        super();
     }
 
     public static final JaxrsPluginRuntimeDescriptor getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override
     public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
         return epAnalyzers;
     }
-    
+
     @Override
     public Collection<? extends ExternalResourceAnalyzer> getExternalResourceAnalyzers() {
-    	return extResAnalyzers;
+        return extResAnalyzers;
     }
-    
+
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;

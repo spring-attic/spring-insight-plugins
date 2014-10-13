@@ -1,37 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:insight="http://www.springframework.org/schema/insight-idk"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:insight="http://www.springframework.org/schema/insight-idk"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                 http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
-	<insight:plugin name="mongodb" version="${project.version}"
-		publisher="Stephen Harrison (stephen@harrison.org) and the Insight Team" />
+    <insight:plugin name="mongodb" version="${project.version}"
+                    publisher="Stephen Harrison (stephen@harrison.org) and the Insight Team"/>
     <bean id="mongoDbPluginRuntimeDescriptor"
           class="com.springsource.insight.plugin.mongodb.MongoDBPluginRuntimeDescriptor"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
 
-    <insight:operation-group operation="mongo_collection_operation" group="MongoDB" />
-	<insight:operation-view operation="mongo_collection_operation"
-		template="com/springsource/insight/plugin/mongodb/mongo_collection_operation.ftl" />
+    <insight:operation-group operation="mongo_collection_operation" group="MongoDB"/>
+    <insight:operation-view operation="mongo_collection_operation"
+                            template="com/springsource/insight/plugin/mongodb/mongo_collection_operation.ftl"/>
 
-    <insight:operation-group operation="mongo_cursor_operation" group="MongoDB" />
-	<insight:operation-view operation="mongo_cursor_operation"
-		template="com/springsource/insight/plugin/mongodb/mongo_cursor_operation.ftl" />
+    <insight:operation-group operation="mongo_cursor_operation" group="MongoDB"/>
+    <insight:operation-view operation="mongo_cursor_operation"
+                            template="com/springsource/insight/plugin/mongodb/mongo_cursor_operation.ftl"/>
 
-    <insight:operation-group operation="mongo_db_operation" group="MongoDB" />
-	<insight:operation-view operation="mongo_db_operation"
-		template="com/springsource/insight/plugin/mongodb/mongo_db_operation.ftl" />
+    <insight:operation-group operation="mongo_db_operation" group="MongoDB"/>
+    <insight:operation-view operation="mongo_db_operation"
+                            template="com/springsource/insight/plugin/mongodb/mongo_db_operation.ftl"/>
 
-	<bean id="mongoDbPluginCollectionExternalResourceAnalyzer"
-	      class="com.springsource.insight.plugin.mongodb.MongoDBCollectionExternalResourceAnalyzer"
+    <bean id="mongoDbPluginCollectionExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.mongodb.MongoDBCollectionExternalResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
-	<bean id="mongoDbPluginOperationExternalResourceAnalyzer"
-	      class="com.springsource.insight.plugin.mongodb.MongoDBOperationExternalResourceAnalyzer"
+            />
+    <bean id="mongoDbPluginOperationExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.mongodb.MongoDBOperationExternalResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
 </beans>

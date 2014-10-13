@@ -27,24 +27,24 @@ import com.springsource.insight.util.ArrayUtil;
 
 public class ServletPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "servlet";
-    private static final ServletPluginRuntimeDescriptor	INSTANCE=new ServletPluginRuntimeDescriptor();
-    private static final List<? extends EndPointAnalyzer>	epAnalyzers=
-    		ArrayUtil.asUnmodifiableList(LifecycleEndPointAnalyzer.getInstance(),
-             	   						 RequestDispatchEndPointAnalyzer.getInstance(),
-             	   						 ServletEndPointAnalyzer.getInstance());
-    private static final List<? extends TraceErrorAnalyzer>	errAnalyzers=
-    		ArrayUtil.asUnmodifiableList(HttpStatusTraceErrorAnalyzer.getInstance());
-    private static final List<? extends TraceSourceAnalyzer>	tsAnalyzers=
-    		ArrayUtil.asUnmodifiableList(HttpTraceSourceAnalyzer.getInstance());
-    private static final List<? extends MetricsGenerator>	mGenerators=
-	    	ArrayUtil.asUnmodifiableList(RequestResponseSizeMetricsGenerator.getInstance());
+    private static final ServletPluginRuntimeDescriptor INSTANCE = new ServletPluginRuntimeDescriptor();
+    private static final List<? extends EndPointAnalyzer> epAnalyzers =
+            ArrayUtil.asUnmodifiableList(LifecycleEndPointAnalyzer.getInstance(),
+                    RequestDispatchEndPointAnalyzer.getInstance(),
+                    ServletEndPointAnalyzer.getInstance());
+    private static final List<? extends TraceErrorAnalyzer> errAnalyzers =
+            ArrayUtil.asUnmodifiableList(HttpStatusTraceErrorAnalyzer.getInstance());
+    private static final List<? extends TraceSourceAnalyzer> tsAnalyzers =
+            ArrayUtil.asUnmodifiableList(HttpTraceSourceAnalyzer.getInstance());
+    private static final List<? extends MetricsGenerator> mGenerators =
+            ArrayUtil.asUnmodifiableList(RequestResponseSizeMetricsGenerator.getInstance());
 
-    private ServletPluginRuntimeDescriptor () {
-    	super();
+    private ServletPluginRuntimeDescriptor() {
+        super();
     }
 
     public static final ServletPluginRuntimeDescriptor getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override
@@ -56,17 +56,17 @@ public class ServletPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public Collection<? extends TraceErrorAnalyzer> getTraceErrorAnalyzers() {
         return errAnalyzers;
     }
-    
+
     @Override
     public Collection<? extends TraceSourceAnalyzer> getTraceSourceAnalyzers() {
         return tsAnalyzers;
     }
-    
+
     @Override
     public Collection<? extends MetricsGenerator> getMetricsGenerators() {
-    	return mGenerators;
+        return mGenerators;
     }
-    
+
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;

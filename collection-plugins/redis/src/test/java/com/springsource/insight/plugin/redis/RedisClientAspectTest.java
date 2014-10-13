@@ -28,11 +28,12 @@ import com.springsource.insight.util.StringFormatterUtils;
  * Test cases for {@link RedisClientAspect}
  */
 public class RedisClientAspectTest extends OperationCollectionAspectTestSupport {
-	public RedisClientAspectTest () {
-		super();
-	}
+    public RedisClientAspectTest() {
+        super();
+    }
 
     String HOST = "127.0.0.1";
+
     @Test
     public void testSet() {
         DummyJedisCommands client = new DummyJedisCommands(HOST);
@@ -46,7 +47,7 @@ public class RedisClientAspectTest extends OperationCollectionAspectTestSupport 
         assertEquals("Mismatched port", 6379, op.getInt("port", (-1)));
         assertEquals("Mismatched DB name", "0", op.get("dbName"));
     }
-    
+
     @Test
     public void testSetWithDbName() {
         DummyJedisCommands client = new DummyJedisCommands("localhost");

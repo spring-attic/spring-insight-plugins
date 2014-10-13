@@ -24,18 +24,18 @@ import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.SourceCodeLocation;
 
 public class JdbcOperationFinalizerTest extends AbstractCollectionTestSupport {
-    
-    public JdbcOperationFinalizerTest () {
-    	super();
+
+    public JdbcOperationFinalizerTest() {
+        super();
     }
 
     public void testSetParameterInSequence() {
-    	Operation	operation=getTestOperation("testSetParameterInSequence");
+        Operation operation = getTestOperation("testSetParameterInSequence");
         JdbcOperationFinalizer.addParam(operation, 1, "a"); // this is 1-based index
         JdbcOperationFinalizer.addParam(operation, 2, "b"); // this is 1-based index
         JdbcOperationFinalizer.finalize(operation);
 
-        OperationList	params=operation.get(JdbcOperationFinalizer.PARAMS_VALUES, OperationList.class);
+        OperationList params = operation.get(JdbcOperationFinalizer.PARAMS_VALUES, OperationList.class);
         assertNotNull("Missing parameters list", params);
         assertEquals("Mismatched number of parameters", 2, params.size());
         assertEquals("Mismatched 1st parameter", "a", params.get(0));
@@ -44,12 +44,12 @@ public class JdbcOperationFinalizerTest extends AbstractCollectionTestSupport {
 
     @Test
     public void testSetParameterOutOfSequence() {
-    	Operation	operation=getTestOperation("testSetParameterOutOfSequence");
+        Operation operation = getTestOperation("testSetParameterOutOfSequence");
         JdbcOperationFinalizer.addParam(operation, 2, "b"); // this is 1-based index
         JdbcOperationFinalizer.addParam(operation, 1, "a"); // this is 1-based index
         JdbcOperationFinalizer.finalize(operation);
-        
-        OperationList	params=operation.get(JdbcOperationFinalizer.PARAMS_VALUES, OperationList.class);
+
+        OperationList params = operation.get(JdbcOperationFinalizer.PARAMS_VALUES, OperationList.class);
         assertNotNull("Missing parameters list", params);
         assertEquals("Mismatched number of parameters", 2, params.size());
         assertEquals("Mismatched 1st parameter", "a", params.get(0));
@@ -58,11 +58,11 @@ public class JdbcOperationFinalizerTest extends AbstractCollectionTestSupport {
 
     @Test
     public void testSetMappedParameter() {
-    	Operation	operation=getTestOperation("testSetMappedParameter");
+        Operation operation = getTestOperation("testSetMappedParameter");
         JdbcOperationFinalizer.addParam(operation, "key1", "value1");
         JdbcOperationFinalizer.addParam(operation, "key2", "value2");
         JdbcOperationFinalizer.finalize(operation);
-        
+
         OperationMap params = operation.get(JdbcOperationFinalizer.PARAMS_VALUES, OperationMap.class);
         assertNotNull("Missing parameters map", params);
         assertEquals("Mismatched mapped params size", 2, params.size());
@@ -72,28 +72,28 @@ public class JdbcOperationFinalizerTest extends AbstractCollectionTestSupport {
 
     @Test
     public void testMappedParamsValuesClearedBetweenSuccessiveInvocations() {
-    	Operation	operation=getTestOperation("testMappedParamsValuesClearedBetweenSuccessiveInvocations");
+        Operation operation = getTestOperation("testMappedParamsValuesClearedBetweenSuccessiveInvocations");
         JdbcOperationFinalizer.addParam(operation, "key1", "value1");
         JdbcOperationFinalizer.addParam(operation, "key2", "value2");
         JdbcOperationFinalizer.finalize(operation);
-    	
+
         OperationMap params = operation.get(JdbcOperationFinalizer.PARAMS_VALUES, OperationMap.class);
         assertNotNull("Missing parameters map", params);
-        
+
         JdbcOperationFinalizer.finalize(operation);
         assertNullValue("Unexpected parameters map", operation.get(JdbcOperationFinalizer.PARAMS_VALUES));
     }
 
     @Test
     public void testIndexedParamsValuesClearedBetweenSuccessiveInvocations() {
-    	Operation	operation=getTestOperation("testIndexedParamsValuesClearedBetweenSuccessiveInvocations");
+        Operation operation = getTestOperation("testIndexedParamsValuesClearedBetweenSuccessiveInvocations");
         JdbcOperationFinalizer.addParam(operation, 1, "a"); // this is 1-based index
         JdbcOperationFinalizer.addParam(operation, 2, "b"); // this is 1-based index
         JdbcOperationFinalizer.finalize(operation);
 
-        OperationList	params=operation.get(JdbcOperationFinalizer.PARAMS_VALUES, OperationList.class);
+        OperationList params = operation.get(JdbcOperationFinalizer.PARAMS_VALUES, OperationList.class);
         assertNotNull("Missing parameters list", params);
-        
+
         JdbcOperationFinalizer.finalize(operation);
         assertNullValue("Unexpected parameters list", operation.get(JdbcOperationFinalizer.PARAMS_VALUES));
     }
@@ -105,41 +105,41 @@ public class JdbcOperationFinalizerTest extends AbstractCollectionTestSupport {
         assertEquals("JDBC SELECT (TABLE)", JdbcOperationFinalizer.createLabel("select * from table t where x"));
         assertEquals("JDBC SELECT", JdbcOperationFinalizer.createLabel("SELECT * FROM"));
     }
-    
+
     @Test
     public void testCreateLabelInsert() {
         assertEquals("JDBC INSERT (TABLE)", JdbcOperationFinalizer.createLabel("insert into table values ..."));
         assertEquals("JDBC INSERT (TABLE)", JdbcOperationFinalizer.createLabel("insert into table"));
         assertEquals("JDBC INSERT", JdbcOperationFinalizer.createLabel("INSERT INTO"));
     }
-    
+
     @Test
     public void testCreateLabelDelete() {
         assertEquals("JDBC DELETE (TABLE)", JdbcOperationFinalizer.createLabel("delete from table where ..."));
         assertEquals("JDBC DELETE (TABLE)", JdbcOperationFinalizer.createLabel("delete from table"));
         assertEquals("JDBC DELETE", JdbcOperationFinalizer.createLabel("DELETE FROM"));
     }
-    
+
     @Test
     public void testCreateLabelUpdate() {
         assertEquals("JDBC UPDATE (TABLE)", JdbcOperationFinalizer.createLabel("update table set ..."));
         assertEquals("JDBC UPDATE (TABLE)", JdbcOperationFinalizer.createLabel("update table"));
         assertEquals("JDBC UPDATE", JdbcOperationFinalizer.createLabel("UPDATE"));
     }
-    
+
     @Test
     public void testCreateLabelCall() {
         assertEquals("JDBC CALL (FUNC)", JdbcOperationFinalizer.createLabel("CALL func args"));
         assertEquals("JDBC CALL (FUNC)", JdbcOperationFinalizer.createLabel("CALL func"));
         assertEquals("JDBC CALL", JdbcOperationFinalizer.createLabel("CALL"));
     }
-    
+
     @Test
     public void testCreateLabelCheckpoint() {
         assertEquals("JDBC CHECKPOINT", JdbcOperationFinalizer.createLabel("CHECKPOINT"));
         assertEquals("JDBC CHECKPOINT", JdbcOperationFinalizer.createLabel("CHECKPOINT FUBAR"));
     }
-    
+
     @Test
     public void testCreateLabelCreateTable() {
         assertEquals("JDBC CREATE TABLE (FUBAR)", JdbcOperationFinalizer.createLabel("CREATE TABLE FUBAR(BAZ)"));
@@ -165,23 +165,23 @@ public class JdbcOperationFinalizerTest extends AbstractCollectionTestSupport {
         assertEquals("JDBC CREATE UNIQUE INDEX (BARFO)", JdbcOperationFinalizer.createLabel("create unique index barfo(blah)"));
         assertEquals("JDBC CREATE UNIQUE INDEX", JdbcOperationFinalizer.createLabel("CREATE UNIQUE INDEX"));
     }
-    
+
     @Test
     public void testCreateLabelDml() {
         assertEquals("JDBC DML", JdbcOperationFinalizer.createLabel("CREATE INMEMORY TABLE FUBAR(BAZ)"));
         assertEquals("JDBC DML", JdbcOperationFinalizer.createLabel("CREATE USER BARFO"));
     }
-    
+
     @Test
     public void testCreateLabelStatement() {
         assertEquals("JDBC STATEMENT", JdbcOperationFinalizer.createLabel("ALTER MY DRESS"));
     }
-    
+
     private Operation getTestOperation(String methodName) {
-    	return new Operation()
-    					.type(JdbcOperationExternalResourceAnalyzer.TYPE)
-    					.label(methodName)
-    					.sourceCodeLocation(new SourceCodeLocation(getClass().getName(), methodName, -1))
-    					;
+        return new Operation()
+                .type(JdbcOperationExternalResourceAnalyzer.TYPE)
+                .label(methodName)
+                .sourceCodeLocation(new SourceCodeLocation(getClass().getName(), methodName, -1))
+                ;
     }
 }

@@ -22,24 +22,24 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.trace.Frame;
 
 public class JCREndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
-	private static final JCREndPointAnalyzer	INSTANCE=new JCREndPointAnalyzer();
+    private static final JCREndPointAnalyzer INSTANCE = new JCREndPointAnalyzer();
 
     private JCREndPointAnalyzer() {
         super(OperationCollectionTypes.LOGIN_TYPE.type);
     }
 
     public static final JCREndPointAnalyzer getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override
-	protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
-        Operation 		op=frame.getOperation();
-        
-        String workspaceName=op.get("workspace", String.class);
-        String repoName=op.get("repository", String.class);
-        String endPointName = repoName+(workspaceName!=null?"."+workspaceName:"");
-        
-        return new EndPointAnalysis(EndPointName.valueOf(endPointName), "JCR: "+endPointName, endPointName, getOperationScore(op, depth), op);
-    } 
+    protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
+        Operation op = frame.getOperation();
+
+        String workspaceName = op.get("workspace", String.class);
+        String repoName = op.get("repository", String.class);
+        String endPointName = repoName + (workspaceName != null ? "." + workspaceName : "");
+
+        return new EndPointAnalysis(EndPointName.valueOf(endPointName), "JCR: " + endPointName, endPointName, getOperationScore(op, depth), op);
+    }
 }

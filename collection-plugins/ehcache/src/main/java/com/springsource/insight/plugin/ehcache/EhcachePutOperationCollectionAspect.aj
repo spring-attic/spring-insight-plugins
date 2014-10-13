@@ -26,26 +26,26 @@ import com.springsource.insight.intercept.operation.Operation;
  *
  */
 public aspect EhcachePutOperationCollectionAspect extends EhcacheMethodOperationCollectionAspect {
-	public EhcachePutOperationCollectionAspect () {
-		super();
-	}
+    public EhcachePutOperationCollectionAspect() {
+        super();
+    }
 
-    public pointcut ehcacheCollectionPoint ()
-        : execution(* Ehcache+.put(..))
-       || execution(* Ehcache+.putWithWriter(..))
-       || execution(* Ehcache+.putQuiet(..))
-       || execution(* Ehcache+.putIfAbsent(..))
-        ;
+    public pointcut ehcacheCollectionPoint()
+            : execution(* Ehcache+.put(..))
+            || execution(* Ehcache+.putWithWriter(..))
+            || execution(* Ehcache+.putQuiet(..))
+            || execution(* Ehcache+.putIfAbsent(..))
+            ;
 
     @Override
     protected Operation createOperation(final JoinPoint jp) {
         return createPutOperation(super.createOperation(jp), (Ehcache) jp.getTarget(), (Element) jp.getArgs()[0]);
     }
 
-    Operation createPutOperation (final Operation op, final Ehcache cache, final Element elem) {
-    	final Object value=elem.getObjectValue();
+    Operation createPutOperation(final Operation op, final Ehcache cache, final Element elem) {
+        final Object value = elem.getObjectValue();
         return initCommonFields(op, cache, EhcacheDefinitions.PUT_METHOD, elem.getObjectKey())
-                    .putAnyNonEmpty(EhcacheDefinitions.VALUE_ATTRIBUTE, (value!=null)?value.getClass().getSimpleName():null)
-                    ;
+                .putAnyNonEmpty(EhcacheDefinitions.VALUE_ATTRIBUTE, (value != null) ? value.getClass().getSimpleName() : null)
+                ;
     }
 }

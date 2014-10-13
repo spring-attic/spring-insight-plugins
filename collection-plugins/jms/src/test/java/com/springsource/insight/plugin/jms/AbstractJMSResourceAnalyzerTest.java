@@ -65,7 +65,7 @@ public abstract class AbstractJMSResourceAnalyzerTest extends Assert {
                     put(DestinationType.Topic, INTTEST_TOPIC_NAME);
                 }
             }
-            );
+    );
 
     protected AbstractJMSResourceAnalyzerTest(AbstractJMSResourceAnalyzer analyzerInstance) {
         if ((this.analyzer = analyzerInstance) == null) {
@@ -167,12 +167,12 @@ public abstract class AbstractJMSResourceAnalyzerTest extends Assert {
     @Test
     public void generateIntegrationTestsHashes() {
         final Operation BASE_OP = new Operation()
-        .type(operationType.getOperationType())
-        .label(getClass().getSimpleName() + "#generateIntegrationTestsHashes")
-        .put("host", INTTEST_HOST)
-        .put("port", INTTEST_PORT);
+                .type(operationType.getOperationType())
+                .label(getClass().getSimpleName() + "#generateIntegrationTestsHashes")
+                .put("host", INTTEST_HOST)
+                .put("port", INTTEST_PORT);
 
-        final Frame TEST_FRAME = new SimpleFrame(FrameId.valueOf("7365"), null, BASE_OP, new TimeRange(1L, 10L), Collections.<Frame> emptyList());
+        final Frame TEST_FRAME = new SimpleFrame(FrameId.valueOf("7365"), null, BASE_OP, new TimeRange(1L, 10L), Collections.<Frame>emptyList());
         //final Trace TEST_TRACE = new Trace(ServerName.valueOf("7.3.6.5"), INTTEST_APP, new Date(System.currentTimeMillis()), TraceId.valueOf("3777347"), TEST_FRAME);
         final ColorManager colorManager = ColorManager.getInstance();
 

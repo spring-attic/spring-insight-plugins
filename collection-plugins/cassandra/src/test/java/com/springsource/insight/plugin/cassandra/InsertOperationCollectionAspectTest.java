@@ -19,22 +19,22 @@ import org.junit.Test;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 
-public class InsertOperationCollectionAspectTest extends AbstractOperationCollectionAspectTest{
-	public InsertOperationCollectionAspectTest () {
-		super();
-	}
+public class InsertOperationCollectionAspectTest extends AbstractOperationCollectionAspectTest {
+    public InsertOperationCollectionAspectTest() {
+        super();
+    }
 
-	@Override
-	public OperationCollectionAspectSupport getAspect() {
-		return UpdateOperationCollectionAspect.aspectOf();
-	}
-	
-	@Test
-	public void testInsert() throws Exception {
-		CassandraUnitTests.getInstance().testInsert();
-		validate(OperationCollectionTypes.UPDATE_TYPE.type,
-				"columnFamily=Standard1",
-				"key=1","colName=name","colValue","colTimestamp","consistLevel",
-				"returnValue");
-	}
+    @Override
+    public OperationCollectionAspectSupport getAspect() {
+        return UpdateOperationCollectionAspect.aspectOf();
+    }
+
+    @Test
+    public void testInsert() throws Exception {
+        CassandraUnitTests.getInstance().testInsert();
+        validate(OperationCollectionTypes.UPDATE_TYPE.type,
+                "columnFamily=Standard1",
+                "key=1", "colName=name", "colValue", "colTimestamp", "consistLevel",
+                "returnValue");
+    }
 }

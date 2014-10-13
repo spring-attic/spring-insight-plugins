@@ -19,14 +19,14 @@ package com.springsource.insight.plugin.springcore;
 import com.springsource.insight.collection.method.MethodOperationCollectionAspect;
 
 /**
- * 
+ *
  */
 public abstract aspect SpringCoreOperationCollectionAspect extends MethodOperationCollectionAspect {
-	protected SpringCoreOperationCollectionAspect () {
-		super();
-	}
+    protected SpringCoreOperationCollectionAspect() {
+        super();
+    }
 
-	@Override
+    @Override
     public String getPluginName() {
         return SpringCorePluginRuntimeDescriptor.PLUGIN_NAME;
     }

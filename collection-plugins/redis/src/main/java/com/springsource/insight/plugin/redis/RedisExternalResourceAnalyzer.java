@@ -32,46 +32,46 @@ import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.ListUtil;
 
 /**
- * 
+ *
  */
 public class RedisExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-	public static final OperationType TYPE =  OperationType.valueOf("redis-client-method");
-	private static final RedisExternalResourceAnalyzer	INSTANCE=new RedisExternalResourceAnalyzer();
+    public static final OperationType TYPE = OperationType.valueOf("redis-client-method");
+    private static final RedisExternalResourceAnalyzer INSTANCE = new RedisExternalResourceAnalyzer();
 
-	private RedisExternalResourceAnalyzer () {
-		super(TYPE);
-	}
+    private RedisExternalResourceAnalyzer() {
+        super(TYPE);
+    }
 
-	public static final RedisExternalResourceAnalyzer getInstance() {
-		return INSTANCE;
-	}
+    public static final RedisExternalResourceAnalyzer getInstance() {
+        return INSTANCE;
+    }
 
-	public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> dbFrames) {
-		if (ListUtil.size(dbFrames) <= 0) {
-		    return Collections.emptyList();
-		}
+    public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> dbFrames) {
+        if (ListUtil.size(dbFrames) <= 0) {
+            return Collections.emptyList();
+        }
 
-		List<ExternalResourceDescriptor> dbDescriptors = new ArrayList<ExternalResourceDescriptor>(dbFrames.size());
-		for (Frame dbFrame : dbFrames) {
-			Operation op = dbFrame.getOperation();
-			String host = op.get("host", String.class);
-			int port = op.getInt("port", (-1));
-			String color = colorManager.getColor(op);
-			String dbName = op.get("dbName", String.class);
-			
-			String redisHash = MD5NameGenerator.getName(dbName+host+port);
-			
-			dbDescriptors.add(new ExternalResourceDescriptor(dbFrame,
-					"redis:" + redisHash,
-					dbName,
-					ExternalResourceType.DATABASE.name(),
-					"Redis",
-					host,
-					port,
-                    color, false) );			
-		}
-		
-		return dbDescriptors;
-	}
+        List<ExternalResourceDescriptor> dbDescriptors = new ArrayList<ExternalResourceDescriptor>(dbFrames.size());
+        for (Frame dbFrame : dbFrames) {
+            Operation op = dbFrame.getOperation();
+            String host = op.get("host", String.class);
+            int port = op.getInt("port", (-1));
+            String color = colorManager.getColor(op);
+            String dbName = op.get("dbName", String.class);
+
+            String redisHash = MD5NameGenerator.getName(dbName + host + port);
+
+            dbDescriptors.add(new ExternalResourceDescriptor(dbFrame,
+                    "redis:" + redisHash,
+                    dbName,
+                    ExternalResourceType.DATABASE.name(),
+                    "Redis",
+                    host,
+                    port,
+                    color, false));
+        }
+
+        return dbDescriptors;
+    }
 
 }

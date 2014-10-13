@@ -27,6 +27,6 @@
         <include within="org.firebirdsql.jdbc..*" />
         <include within="sun.jdbc.odbc..*" />
         -->
-        
+
     </weaver>
 </aspectj>

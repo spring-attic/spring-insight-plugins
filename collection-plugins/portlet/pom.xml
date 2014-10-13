@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.springsource.insight.plugins</groupId>
-	<artifactId>insight-plugin-portlet</artifactId>
-	<name>com.springsource.insight.plugins:portlet</name>
-	<packaging>jar</packaging>
-	
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.springsource.insight.plugins</groupId>
+    <artifactId>insight-plugin-portlet</artifactId>
+    <name>com.springsource.insight.plugins:portlet</name>
+    <packaging>jar</packaging>
+
     <parent>
         <groupId>com.springsource.insight</groupId>
         <artifactId>community-plugins</artifactId>
         <version>2.0.0-CI-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
-	
-	<dependencies>
-		<!-- Provided dependencies (part of the user application) -->
+
+    <dependencies>
+        <!-- Provided dependencies (part of the user application) -->
         <dependency>
             <groupId>javax.portlet</groupId>
             <artifactId>portlet-api</artifactId>
@@ -26,7 +27,7 @@
             <artifactId>servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
-        
+
         <!-- Provided dependencies (part of Insight) -->
         <dependency>
             <groupId>com.springsource.insight</groupId>
@@ -34,8 +35,8 @@
             <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
-		
-		<!-- Test dependencies -->
+
+        <!-- Test dependencies -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
@@ -66,22 +67,22 @@
             <artifactId>log4j-over-slf4j</artifactId>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>net.sf.portletunit</groupId>
             <artifactId>portletunit2</artifactId>
             <version>1.0.2</version>
             <scope>test</scope>
             <exclusions>
-                    <!-- excluded since we provide our
-                        own dependencies versions for them - 
-                        usually jcl-over-slf4j  -->
+                <!-- excluded since we provide our
+                    own dependencies versions for them -
+                    usually jcl-over-slf4j  -->
                 <exclusion>
                     <groupId>commons-logging</groupId>
                     <artifactId>commons-logging</artifactId>
@@ -95,14 +96,14 @@
                     <artifactId>servlet-api-2.5</artifactId>
                 </exclusion>
                 <exclusion> <!-- we provide our own -->
-		            <groupId>org.slf4j</groupId>
-		            <artifactId>slf4j-log4j12</artifactId>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
-	</dependencies>
-	
-	<build>
+    </dependencies>
+
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -112,8 +113,10 @@
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
-                        <manifestEntries>                            
-                            <Insight-Plugin-Descriptor>com.springsource.insight.plugin.portlet.PortletPluginRuntimeDescriptor</Insight-Plugin-Descriptor>
+                        <manifestEntries>
+                            <Insight-Plugin-Descriptor>
+                                com.springsource.insight.plugin.portlet.PortletPluginRuntimeDescriptor
+                            </Insight-Plugin-Descriptor>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -123,7 +126,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                        <!-- special extra configuration beyond the default for other plugins -->
+                    <!-- special extra configuration beyond the default for other plugins -->
                     <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
             </plugin>
@@ -137,5 +140,5 @@
             </plugin>
         </plugins>
     </build>
-	
+
 </project>

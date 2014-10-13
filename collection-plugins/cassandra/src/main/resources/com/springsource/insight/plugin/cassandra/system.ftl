@@ -2,7 +2,7 @@
 <#import "/insight-1.0.ftl" as insight />
 
 <@insight.group label="Details">
-    <@insight.entry name="Server" value=operation.server />    
+    <@insight.entry name="Server" value=operation.server />
     <@insight.entry name="Keyspace" value=operation.keyspace />
     <@insight.entry name="Strategy Class" value=operation.class />
     <@insight.entry name="ColumnFamily" value=operation.columnFamily />

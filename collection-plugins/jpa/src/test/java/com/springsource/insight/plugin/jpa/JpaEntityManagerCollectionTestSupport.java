@@ -37,21 +37,21 @@ import com.springsource.insight.collection.test.OperationCollectionAspectTestSup
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public abstract class JpaEntityManagerCollectionTestSupport
         extends OperationCollectionAspectTestSupport {
-    protected final EntityManager   entityManager=new TestEntityManager();
+    protected final EntityManager entityManager = new TestEntityManager();
 
     protected JpaEntityManagerCollectionTestSupport() {
         super();
     }
 
-    protected Operation assertManagerOperation (String testName, String action, String opGroup) {
+    protected Operation assertManagerOperation(String testName, String action, String opGroup) {
         return assertManagerOperation(getLastEntered(), testName, action, opGroup);
     }
 
-    static Operation assertManagerOperation (Operation op, String testName, String action, String opGroup) {
+    static Operation assertManagerOperation(Operation op, String testName, String action, String opGroup) {
         assertNotNull(testName + ": No operation extracted", op);
         assertEquals(testName + ": Mismatched operation type", JpaDefinitions.ENTITY_MGR, op.getType());
         assertEquals(testName + ": Mismatched group", opGroup, op.get(JpaDefinitions.GROUP_ATTR, String.class));
@@ -60,27 +60,28 @@ public abstract class JpaEntityManagerCollectionTestSupport
     }
 
     static class TestEntityManager implements EntityManager {
-        private FlushModeType       flushMode=FlushModeType.AUTO;
-        private final Set<Object>   data=Collections.synchronizedSet(new HashSet<Object>());
-        private boolean             open=true;
-        protected final Logger logger=Logger.getLogger(getClass().getName());
+        private FlushModeType flushMode = FlushModeType.AUTO;
+        private final Set<Object> data = Collections.synchronizedSet(new HashSet<Object>());
+        private boolean open = true;
+        protected final Logger logger = Logger.getLogger(getClass().getName());
+
         public TestEntityManager() {
             super();
         }
 
         public void persist(Object entity) {
-            boolean result=data.add(entity);
+            boolean result = data.add(entity);
             logger.info("persist(" + entity + "): " + result);
         }
 
         public <T> T merge(T entity) {
-            boolean result=data.add(entity);
+            boolean result = data.add(entity);
             logger.info("merge(" + entity + "): " + result);
             return entity;
         }
 
         public void remove(Object entity) {
-            boolean result=data.remove(entity);
+            boolean result = data.remove(entity);
             logger.info("remove(" + entity + "): " + result);
         }
 
@@ -134,7 +135,7 @@ public abstract class JpaEntityManagerCollectionTestSupport
         }
 
         @SuppressWarnings("rawtypes")
-		public Query createNativeQuery(String sqlString, Class resultClass) {
+        public Query createNativeQuery(String sqlString, Class resultClass) {
             return null;
         }
 
@@ -201,7 +202,7 @@ public abstract class JpaEntityManagerCollectionTestSupport
             return null;
         }
 
-        public <T> TypedQuery<T> createNamedQuery(String name,Class<T> resultClass) {
+        public <T> TypedQuery<T> createNamedQuery(String name, Class<T> resultClass) {
             // TODO Auto-generated method stub
             return null;
         }

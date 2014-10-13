@@ -19,12 +19,12 @@ package com.springsource.insight.plugin.springdata;
 import com.springsource.insight.intercept.operation.OperationType;
 
 /**
- * 
+ *
  */
 public final class SpringDataDefinitions {
     private SpringDataDefinitions() {
         throw new UnsupportedOperationException("Construction N/A");
     }
 
-    public static final OperationType   REPO_TYPE=OperationType.valueOf("spring-data-repository");
+    public static final OperationType REPO_TYPE = OperationType.valueOf("spring-data-repository");
 }

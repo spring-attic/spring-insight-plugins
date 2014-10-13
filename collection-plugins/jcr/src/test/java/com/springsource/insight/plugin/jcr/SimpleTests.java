@@ -31,76 +31,73 @@ import org.apache.jackrabbit.core.fs.local.FileUtil;
 import org.junit.Assert;
 
 public class SimpleTests {
-	private static final String REPOSITORY_CONFIG_PATH="./src/test/resources/repository.xml";
-	private static final String REPOSITORY_DIRECTORY_PATH="./target/testdata";
-	
-	private static Repository repository;
-	private static SimpleTests instance;
-	
-	
-	public static SimpleTests getInstance() {
-		if (repository==null) {
-			init();
-		
-			instance=new SimpleTests();
-		}
-		
-		return instance;
-	}
-	
-	private SimpleTests() {
-		super();
-	}
-	
-	static void init() {
-		deleteRepoData();
-		
-		repository = new TransientRepository(REPOSITORY_CONFIG_PATH, REPOSITORY_DIRECTORY_PATH);
-	}
-	
-	static void close() {
-		try {
-			JackrabbitRepository jackrabbit = (JackrabbitRepository)repository;
-			jackrabbit.shutdown();
-		}
-		finally {
-			deleteRepoData();
-		}
-	}
-	
-	/**
-	* Clean up the test data
-	*/
-	private static void deleteRepoData() {
-		try {
-			FileUtil.delete(new File(REPOSITORY_DIRECTORY_PATH));
-		}
-		catch(IOException e) {
-			//ignore
-		}
-	}
-	
-	public void test() throws LoginException, RepositoryException {		
-		Session session = repository.login(new SimpleCredentials("admin", "admin".toCharArray()));
-		Assert.assertNotNull("Cannot login", session);
-		
-		try { 
-			Node root = session.getRootNode();
-			Assert.assertNotNull("Cannot retrieve root node", root);
+    private static final String REPOSITORY_CONFIG_PATH = "./src/test/resources/repository.xml";
+    private static final String REPOSITORY_DIRECTORY_PATH = "./target/testdata";
 
-			// Store content 
-			Node hello = root.addNode("hello");
-			Assert.assertNotNull("Cannot create node", hello);
-			hello.setProperty("message", "Hello, World!"); 
-			session.save();
-			
-			// Retrieve content 
-			Node node = root.getNode("hello");
-			Assert.assertNotNull("Cannot retrieve node by path", node);
-			Assert.assertEquals("Invalid node property", node.getProperty("message").getString(), "Hello, World!");
-		}
-		finally { 
-			session.logout();
-		}
-	}
+    private static Repository repository;
+    private static SimpleTests instance;
+
+
+    public static SimpleTests getInstance() {
+        if (repository == null) {
+            init();
+
+            instance = new SimpleTests();
+        }
+
+        return instance;
+    }
+
+    private SimpleTests() {
+        super();
+    }
+
+    static void init() {
+        deleteRepoData();
+
+        repository = new TransientRepository(REPOSITORY_CONFIG_PATH, REPOSITORY_DIRECTORY_PATH);
+    }
+
+    static void close() {
+        try {
+            JackrabbitRepository jackrabbit = (JackrabbitRepository) repository;
+            jackrabbit.shutdown();
+        } finally {
+            deleteRepoData();
+        }
+    }
+
+    /**
+     * Clean up the test data
+     */
+    private static void deleteRepoData() {
+        try {
+            FileUtil.delete(new File(REPOSITORY_DIRECTORY_PATH));
+        } catch (IOException e) {
+            //ignore
+        }
+    }
+
+    public void test() throws LoginException, RepositoryException {
+        Session session = repository.login(new SimpleCredentials("admin", "admin".toCharArray()));
+        Assert.assertNotNull("Cannot login", session);
+
+        try {
+            Node root = session.getRootNode();
+            Assert.assertNotNull("Cannot retrieve root node", root);
+
+            // Store content
+            Node hello = root.addNode("hello");
+            Assert.assertNotNull("Cannot create node", hello);
+            hello.setProperty("message", "Hello, World!");
+            session.save();
+
+            // Retrieve content
+            Node node = root.getNode("hello");
+            Assert.assertNotNull("Cannot retrieve node by path", node);
+            Assert.assertEquals("Invalid node property", node.getProperty("message").getString(), "Hello, World!");
+        } finally {
+            session.logout();
+        }
+    }
 }

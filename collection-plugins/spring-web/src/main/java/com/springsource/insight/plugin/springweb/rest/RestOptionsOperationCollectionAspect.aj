@@ -19,12 +19,12 @@ package com.springsource.insight.plugin.springweb.rest;
 import org.springframework.web.client.RestOperations;
 
 /**
- * 
+ *
  */
 public aspect RestOptionsOperationCollectionAspect extends RestOperationCollectionSupport {
-	public RestOptionsOperationCollectionAspect () {
-		super("OPTIONS");
-	}
+    public RestOptionsOperationCollectionAspect() {
+        super("OPTIONS");
+    }
 
-	public pointcut accessPoint () : execution(* RestOperations+.optionsForAllow(..));
+    public pointcut accessPoint(): execution(* RestOperations+.optionsForAllow(..));
 }

@@ -20,7 +20,7 @@ import net.sf.ehcache.Element;
 import org.junit.Test;
 
 /**
- * 
+ *
  */
 public class EhcachePutOperationCollectionAspectTest
         extends EhcacheOperationCollectionAspectTestSupport {
@@ -29,39 +29,40 @@ public class EhcachePutOperationCollectionAspectTest
     }
 
     @Test
-    public void testPutElement () {
-        Object  key="testPutElement", value=Long.valueOf(System.nanoTime());
+    public void testPutElement() {
+        Object key = "testPutElement", value = Long.valueOf(System.nanoTime());
         cache.put(new Element(key, value));
         assertEhcacheOperationContents(EhcacheDefinitions.PUT_METHOD, key, value);
     }
 
     @Test
-    public void testPutQuiet () {
-        Object  key="testPutQuiet", value=Long.valueOf(System.nanoTime());
+    public void testPutQuiet() {
+        Object key = "testPutQuiet", value = Long.valueOf(System.nanoTime());
         cache.putQuiet(new Element(key, value));
         assertEhcacheOperationContents(EhcacheDefinitions.PUT_METHOD, key, value);
     }
 
     @Test
-    public void testPutWithWriter () {
-        Object  key="testPutWithWriter", value=Long.valueOf(System.nanoTime());
+    public void testPutWithWriter() {
+        Object key = "testPutWithWriter", value = Long.valueOf(System.nanoTime());
         cache.putWithWriter(new Element(key, value));
         assertEhcacheOperationContents(EhcacheDefinitions.PUT_METHOD, key, value);
     }
 
     @Test
-    public void testPutIfAbsent () {
-        Object  key="testPutIfAbsent", value=Long.valueOf(System.nanoTime());
+    public void testPutIfAbsent() {
+        Object key = "testPutIfAbsent", value = Long.valueOf(System.nanoTime());
         assertNull("Unexpected previous mapping", cache.putIfAbsent(new Element(key, value)));
         assertEhcacheOperationContents(EhcacheDefinitions.PUT_METHOD, key, value);
     }
 
     @Test
-    public void testPutNotNotifyCacheReplicators () {
-        Object  key="testPutNotNotifyCacheReplicators", value=Long.valueOf(System.nanoTime());
+    public void testPutNotNotifyCacheReplicators() {
+        Object key = "testPutNotNotifyCacheReplicators", value = Long.valueOf(System.nanoTime());
         cache.put(new Element(key, value), true);
         assertEhcacheOperationContents(EhcacheDefinitions.PUT_METHOD, key, value);
     }
+
     /*
      * @see com.springsource.insight.collection.OperationCollectionAspectTestSupport#getAspect()
      */

@@ -30,7 +30,7 @@ public class RoundRobinRouterDataExtractor implements RouterConfigDataExtractor 
     }
 
     public Map<String, String> extract(RouterConfig routerConfig) {
-	RoundRobinRouter router = (RoundRobinRouter) routerConfig;
-	return Collections.singletonMap("Num of instances", String.valueOf(router.nrOfInstances()));
+        RoundRobinRouter router = (RoundRobinRouter) routerConfig;
+        return Collections.singletonMap("Num of instances", String.valueOf(router.nrOfInstances()));
     }
 }

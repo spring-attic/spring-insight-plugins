@@ -23,27 +23,29 @@ import com.springsource.insight.collection.method.MethodOperationCollectionAspec
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public abstract aspect JpaEntityManagerCollectionAspect extends MethodOperationCollectionAspect {
-    protected final String  opGroup;
+    protected final String opGroup;
 
-    protected JpaEntityManagerCollectionAspect (@SuppressWarnings("hiding") String opGroup) {
-        if (((this.opGroup=opGroup) == null) || (opGroup.length() <= 0)) {
+    protected JpaEntityManagerCollectionAspect(@SuppressWarnings("hiding") String opGroup) {
+        if (((this.opGroup = opGroup) == null) || (opGroup.length() <= 0)) {
             throw new IllegalStateException("No operation group specified");
         }
     }
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Signature   sig=jp.getSignature();
+        Signature sig = jp.getSignature();
         return super.createOperation(jp)
-                    .type(JpaDefinitions.ENTITY_MGR)
-                    .put(JpaDefinitions.ACTION_ATTR, sig.getName())
-                    .put(JpaDefinitions.GROUP_ATTR, this.opGroup)
-                    ;
+                .type(JpaDefinitions.ENTITY_MGR)
+                .put(JpaDefinitions.ACTION_ATTR, sig.getName())
+                .put(JpaDefinitions.GROUP_ATTR, this.opGroup)
+                ;
     }
 
     @Override
-    public String getPluginName() {return JpaPluginRuntimeDescriptor.PLUGIN_NAME;}
+    public String getPluginName() {
+        return JpaPluginRuntimeDescriptor.PLUGIN_NAME;
+    }
 }

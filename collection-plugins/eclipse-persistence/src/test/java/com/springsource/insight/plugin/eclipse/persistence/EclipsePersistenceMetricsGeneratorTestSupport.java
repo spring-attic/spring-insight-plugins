@@ -44,93 +44,92 @@ import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.time.TimeRange;
 
 /**
- * 
+ *
  */
 public abstract class EclipsePersistenceMetricsGeneratorTestSupport extends AbstractMetricsGeneratorTest {
     protected EclipsePersistenceMetricsGeneratorTestSupport(EclipsePersistenceMetricsGenerator generator) {
-    	super(generator);
+        super(generator);
     }
 
     @Override
     public void testGenerateMetrics() {
         // we do NOT want metrics to be generated on the endpoint
     }
-    
+
     @Test
-    public void testExtraMetricsGeneration () {
-    	TimeRange				range=new TimeRange(7365L, 3777347L);
-    	String					actionName="testExtraMetricsGeneration";
-    	Trace					trace=createMockTrace(range, actionName);
-    	Frame					root=trace.getRootFrame();
-    	EndPointName			ep=EndPointName.valueOf(actionName);
-    	ResourceKey				rKey=ep.makeKey();
-    	Collection<MetricsBag>	mbList=
-    			((EclipsePersistenceMetricsGenerator) gen).addExtraEndPointMetrics(trace, rKey, Collections.singletonList(root));
-    	assertEquals("Mismatched metrics count", 1, ListUtil.size(mbList));
-    	
-    	MetricsBag	mb=ListUtil.getFirstMember(mbList);
-    	assertEquals("Mismatched resource key", rKey, mb.getResourceKey());
-    	assertEquals("Mismatched time range", trace.getRange(), mb.getTimeRange());
+    public void testExtraMetricsGeneration() {
+        TimeRange range = new TimeRange(7365L, 3777347L);
+        String actionName = "testExtraMetricsGeneration";
+        Trace trace = createMockTrace(range, actionName);
+        Frame root = trace.getRootFrame();
+        EndPointName ep = EndPointName.valueOf(actionName);
+        ResourceKey rKey = ep.makeKey();
+        Collection<MetricsBag> mbList =
+                ((EclipsePersistenceMetricsGenerator) gen).addExtraEndPointMetrics(trace, rKey, Collections.singletonList(root));
+        assertEquals("Mismatched metrics count", 1, ListUtil.size(mbList));
 
-    	String					baseName=((EclipsePersistenceMetricsGenerator) gen).getBaseMetricName(actionName);
-    	Collection<String>		keys=mb.getMetricKeys();
-    	Map<String,PointType>	suffixes=new TreeMap<String, MetricsBag.PointType>() {
-    			private static final long serialVersionUID = 1L;
+        MetricsBag mb = ListUtil.getFirstMember(mbList);
+        assertEquals("Mismatched resource key", rKey, mb.getResourceKey());
+        assertEquals("Mismatched time range", trace.getRange(), mb.getTimeRange());
 
-				{
-    				put(AbstractMetricsGenerator.INVOCATION_COUNT, PointType.COUNTER);
-    				put(AbstractMetricsGenerator.EXECUTION_TIME, PointType.GAUGE);
-    			}
-    		};
-    	assertEquals("Mismatched number of keys - " + keys, suffixes.size(), keys.size());
+        String baseName = ((EclipsePersistenceMetricsGenerator) gen).getBaseMetricName(actionName);
+        Collection<String> keys = mb.getMetricKeys();
+        Map<String, PointType> suffixes = new TreeMap<String, MetricsBag.PointType>() {
+            private static final long serialVersionUID = 1L;
 
-		DataPoint	expValue=DataPoint.dataPointFromRange(range);
-    	for (Map.Entry<String,PointType> se : suffixes.entrySet()) {
-    		String	sfx=se.getKey();
-    		String	keyName=baseName + "." + sfx;
-    		assertTrue("Missing " + keyName + " from " + keys, keys.contains(keyName));
+            {
+                put(AbstractMetricsGenerator.INVOCATION_COUNT, PointType.COUNTER);
+                put(AbstractMetricsGenerator.EXECUTION_TIME, PointType.GAUGE);
+            }
+        };
+        assertEquals("Mismatched number of keys - " + keys, suffixes.size(), keys.size());
 
-    		PointType	expType=se.getValue(), actType=mb.getMetricType(keyName);
-    		assertEquals("Mismatched type for " + keyName, expType, actType);
+        DataPoint expValue = DataPoint.dataPointFromRange(range);
+        for (Map.Entry<String, PointType> se : suffixes.entrySet()) {
+            String sfx = se.getKey();
+            String keyName = baseName + "." + sfx;
+            assertTrue("Missing " + keyName + " from " + keys, keys.contains(keyName));
 
-    		List<IDataPoint>	dpList=mb.getPoints(keyName);
-    		assertEquals("Mismatched points size for " + keyName + " - " + dpList, 1, ListUtil.size(dpList));
+            PointType expType = se.getValue(), actType = mb.getMetricType(keyName);
+            assertEquals("Mismatched type for " + keyName, expType, actType);
 
-    		IDataPoint	dp=dpList.get(0);
-    		assertEquals("Mismatched timestamp for " + keyName, expValue.getTime(), dp.getTime());
+            List<IDataPoint> dpList = mb.getPoints(keyName);
+            assertEquals("Mismatched points size for " + keyName + " - " + dpList, 1, ListUtil.size(dpList));
 
-    		switch(actType) {
-    			case COUNTER	:
-    				assertEquals("Mismatched value for " + keyName, 1.0d, dp.getValue(), 0.000001d);
-    				break;
+            IDataPoint dp = dpList.get(0);
+            assertEquals("Mismatched timestamp for " + keyName, expValue.getTime(), dp.getTime());
 
-    			case GAUGE		:
-    				assertEquals("Mismatched value for " + keyName, expValue.getValue(), dp.getValue(), 0.000001d);
-    				break;
- 
-    			default			:
-    				fail("Unknown value type for " + keyName + ": " + actType);
-    		}
-    	}
-    }
-    
-    protected final Trace createMockTrace (TimeRange range, String actionName) {
-    	Frame		frame=createMockFrame(range, actionName);
-    	return new Trace(ServerName.valueOf(actionName),
-    				     ApplicationName.valueOf("localhost", actionName),
-    				     new Date(),
-    				     TraceId.valueOf(actionName),
-    				     frame);
+            switch (actType) {
+                case COUNTER:
+                    assertEquals("Mismatched value for " + keyName, 1.0d, dp.getValue(), 0.000001d);
+                    break;
+
+                case GAUGE:
+                    assertEquals("Mismatched value for " + keyName, expValue.getValue(), dp.getValue(), 0.000001d);
+                    break;
+
+                default:
+                    fail("Unknown value type for " + keyName + ": " + actType);
+            }
+        }
     }
 
-    protected final Frame createMockFrame (TimeRange range, String actionName) {
-    	Operation	op=new Operation()
-    						.type(gen.getOperationType())
-    						.label(actionName + ": " + range)
-    						.put(EclipsePersistenceDefinitions.ACTION_ATTR, actionName)
-    						;
-    	Frame	frame=createMockOperationWrapperFrame(op);
-    	Mockito.when(frame.getRange()).thenReturn(range);
-    	return frame;
+    protected final Trace createMockTrace(TimeRange range, String actionName) {
+        Frame frame = createMockFrame(range, actionName);
+        return new Trace(ServerName.valueOf(actionName),
+                ApplicationName.valueOf("localhost", actionName),
+                new Date(),
+                TraceId.valueOf(actionName),
+                frame);
+    }
+
+    protected final Frame createMockFrame(TimeRange range, String actionName) {
+        Operation op = new Operation()
+                .type(gen.getOperationType())
+                .label(actionName + ": " + range)
+                .put(EclipsePersistenceDefinitions.ACTION_ATTR, actionName);
+        Frame frame = createMockOperationWrapperFrame(op);
+        Mockito.when(frame.getRange()).thenReturn(range);
+        return frame;
     }
 }

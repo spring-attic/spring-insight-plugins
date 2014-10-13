@@ -26,7 +26,7 @@ import com.springsource.insight.plugin.files.tracker.AbstractFilesTrackerAspectS
 import com.springsource.insight.plugin.files.tracker.AbstractFilesTrackerAspectSupport.FilesCache;
 
 /**
- * Makes sure that the {@link FilesCache} does not grow beyond its max. capacity 
+ * Makes sure that the {@link FilesCache} does not grow beyond its max. capacity
  */
 public class FilesCacheTest extends Assert {
     public FilesCacheTest() {
@@ -34,12 +34,12 @@ public class FilesCacheTest extends Assert {
     }
 
     @Test
-    public void testFilesCacheSize () {
-        final int   MAX_CAPACITY=16;
-        FilesCache  cache=new FilesCache(MAX_CAPACITY);
+    public void testFilesCacheSize() {
+        final int MAX_CAPACITY = 16;
+        FilesCache cache = new FilesCache(MAX_CAPACITY);
 
-        for (int    index=0; index < 2 * MAX_CAPACITY; index++) {
-            CacheKey    key=CacheKey.getFileKey(Mockito.mock(Closeable.class));
+        for (int index = 0; index < 2 * MAX_CAPACITY; index++) {
+            CacheKey key = CacheKey.getFileKey(Mockito.mock(Closeable.class));
             assertNull("Multiple mappings for " + key, cache.put(key, String.valueOf(index)));
 
             if (index < MAX_CAPACITY) {
@@ -52,45 +52,45 @@ public class FilesCacheTest extends Assert {
     }
 
     @Test
-    public void testFilesCacheCapacityUpdateWithNumber () {
-        FilesCache  cache=AbstractFilesTrackerAspectSupport.filesCache;
-        int         oldCapacity=cache.getMaxCapacity(), newCapacity=oldCapacity + 7365;
+    public void testFilesCacheCapacityUpdateWithNumber() {
+        FilesCache cache = AbstractFilesTrackerAspectSupport.filesCache;
+        int oldCapacity = cache.getMaxCapacity(), newCapacity = oldCapacity + 7365;
         CollectionSettingsRegistry registry = CollectionSettingsRegistry.getInstance();
         registry.set(AbstractFilesTrackerAspectSupport.MAX_TRACKED_FILES_SETTING, Integer.valueOf(newCapacity));
         assertEquals("Mismatched capacity after update", newCapacity, cache.getMaxCapacity());
     }
 
     @Test
-    public void testFilesCacheCapacityUpdateWithString () {
-        FilesCache  cache=AbstractFilesTrackerAspectSupport.filesCache;
-        int         oldCapacity=cache.getMaxCapacity(), newCapacity=oldCapacity + 7365;
+    public void testFilesCacheCapacityUpdateWithString() {
+        FilesCache cache = AbstractFilesTrackerAspectSupport.filesCache;
+        int oldCapacity = cache.getMaxCapacity(), newCapacity = oldCapacity + 7365;
         CollectionSettingsRegistry registry = CollectionSettingsRegistry.getInstance();
         registry.set(AbstractFilesTrackerAspectSupport.MAX_TRACKED_FILES_SETTING, String.valueOf(newCapacity));
         assertEquals("Mismatched capacity after update", newCapacity, cache.getMaxCapacity());
     }
 
     @Test
-    public void testFilesCacheCapacityUpdateWithBadString () {
-        FilesCache  cache=AbstractFilesTrackerAspectSupport.filesCache;
-        int	capacity=cache.getMaxCapacity();
+    public void testFilesCacheCapacityUpdateWithBadString() {
+        FilesCache cache = AbstractFilesTrackerAspectSupport.filesCache;
+        int capacity = cache.getMaxCapacity();
         CollectionSettingsRegistry registry = CollectionSettingsRegistry.getInstance();
         registry.set(AbstractFilesTrackerAspectSupport.MAX_TRACKED_FILES_SETTING, "lyor");
         assertEquals("Unexpected capacity update success", capacity, cache.getMaxCapacity());
     }
 
     @Test
-    public void testFilesCacheCapacityUpdateFailOnNegativeNumber () {
-        FilesCache  cache=AbstractFilesTrackerAspectSupport.filesCache;
-        int         oldCapacity=cache.getMaxCapacity(), newCapacity=0 - oldCapacity;
+    public void testFilesCacheCapacityUpdateFailOnNegativeNumber() {
+        FilesCache cache = AbstractFilesTrackerAspectSupport.filesCache;
+        int oldCapacity = cache.getMaxCapacity(), newCapacity = 0 - oldCapacity;
         CollectionSettingsRegistry registry = CollectionSettingsRegistry.getInstance();
         registry.set(AbstractFilesTrackerAspectSupport.MAX_TRACKED_FILES_SETTING, Integer.valueOf(newCapacity));
         assertEquals("Unexpected capacity update success", oldCapacity, cache.getMaxCapacity());
     }
 
     @Test
-    public void testFilesCacheCapacityUpdateFailOnBadValueType () {
-        FilesCache  cache=AbstractFilesTrackerAspectSupport.filesCache;
-        int         oldCapacity=cache.getMaxCapacity(), newCapacity=oldCapacity + 3777;
+    public void testFilesCacheCapacityUpdateFailOnBadValueType() {
+        FilesCache cache = AbstractFilesTrackerAspectSupport.filesCache;
+        int oldCapacity = cache.getMaxCapacity(), newCapacity = oldCapacity + 3777;
         CollectionSettingsRegistry registry = CollectionSettingsRegistry.getInstance();
         registry.set(AbstractFilesTrackerAspectSupport.MAX_TRACKED_FILES_SETTING, new StringBuilder().append(newCapacity));
         assertEquals("Unexpected capacity update success", oldCapacity, cache.getMaxCapacity());

@@ -1,5 +1,5 @@
 
- /**
+/**
  * Copyright (c) 2009-2011 VMware, Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,31 +23,31 @@ enum RabbitPluginOperationType {
     CONSUME("rabbitmq-client-consumer", "Consume", "RabbitMQ Consume from: "),
     PUBLISH("rabbitmq-client-publish", "Publish", "RabbitMQ Publish to: ");
 
-    
+
     private OperationType operationType;
     private String label;
     private String endPointPrefix;
-    
+
     private RabbitPluginOperationType(String operationTypeName, String label, String endPointPrefix) {
         this.operationType = OperationType.valueOf(operationTypeName);
         this.label = label;
         this.endPointPrefix = endPointPrefix;
     }
-    
+
     public OperationType getOperationType() {
         return operationType;
     }
-    
+
     public String getLabel() {
         return label;
     }
-    
+
     public String getEndPointPrefix() {
         return endPointPrefix;
     }
 
     public static RabbitPluginOperationType getType(OperationType type) {
-        for(RabbitPluginOperationType otype : RabbitPluginOperationType.values()) {
+        for (RabbitPluginOperationType otype : RabbitPluginOperationType.values()) {
             if (otype.operationType == type) {
                 return otype;
             }

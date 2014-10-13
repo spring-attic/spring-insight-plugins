@@ -1,47 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:insight="http://www.springframework.org/schema/insight-idk"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:insight="http://www.springframework.org/schema/insight-idk"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
-	<insight:plugin name="spring-integration" version="${project.version}" publisher="SpringSource" />
+    <insight:plugin name="spring-integration" version="${project.version}" publisher="SpringSource"/>
 
-	<insight:operation-group group="Spring Integration" operation="integration_operation" />
-	<insight:operation-group group="Spring Integration" operation="integration_tcpconn" />
-	<insight:operation-group group="Spring Integration" operation="integration_gateway_operation" />
-	<insight:operation-group group="Spring Integration" operation="integration_service_activator_operation" />
-	<insight:operation-group group="Spring Integration" operation="integration_message_adapter" />		
-	<insight:operation-group group="Spring Integration" operation="integration_channel_operation" />		
-	
-	
-	<insight:operation-view operation="integration_operation" 
-				template="com/springsource/insight/plugin/integration/integration_operation.ftl"/>
-	<insight:operation-view operation="integration_service_activator_operation" 
-				template="com/springsource/insight/plugin/integration/integration_operation.ftl"/>
-	<insight:operation-view operation="integration_channel_operation" 
-				template="com/springsource/insight/plugin/integration/integration_operation.ftl"/>
-		<insight:operation-view operation="integration_gateway_operation" 
-				template="com/springsource/insight/plugin/integration/integration_operation.ftl"/>
-    <insight:operation-view operation="integration_message_adapter" 
-                template="com/springsource/insight/plugin/integration/integration_adapter.ftl"/>
-    <insight:operation-view operation="integration_tcpconn" 
-                template="com/springsource/insight/plugin/integration/tcp/integration_tcpconn.ftl"/>
+    <insight:operation-group group="Spring Integration" operation="integration_operation"/>
+    <insight:operation-group group="Spring Integration" operation="integration_tcpconn"/>
+    <insight:operation-group group="Spring Integration" operation="integration_gateway_operation"/>
+    <insight:operation-group group="Spring Integration" operation="integration_service_activator_operation"/>
+    <insight:operation-group group="Spring Integration" operation="integration_message_adapter"/>
+    <insight:operation-group group="Spring Integration" operation="integration_channel_operation"/>
+
+
+    <insight:operation-view operation="integration_operation"
+                            template="com/springsource/insight/plugin/integration/integration_operation.ftl"/>
+    <insight:operation-view operation="integration_service_activator_operation"
+                            template="com/springsource/insight/plugin/integration/integration_operation.ftl"/>
+    <insight:operation-view operation="integration_channel_operation"
+                            template="com/springsource/insight/plugin/integration/integration_operation.ftl"/>
+    <insight:operation-view operation="integration_gateway_operation"
+                            template="com/springsource/insight/plugin/integration/integration_operation.ftl"/>
+    <insight:operation-view operation="integration_message_adapter"
+                            template="com/springsource/insight/plugin/integration/integration_adapter.ftl"/>
+    <insight:operation-view operation="integration_tcpconn"
+                            template="com/springsource/insight/plugin/integration/tcp/integration_tcpconn.ftl"/>
 
     <bean id="springIntegrationPluginEndPointAnalyzer"
           class="com.springsource.insight.plugin.integration.IntegrationEndPointAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="springIntegrationPluginTcpConnectionExternalResourceAnalyzer"
           class="com.springsource.insight.plugin.integration.tcp.TcpConnectionExternalResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="springIntegrationPluginRuntimeDescriptor"
           class="com.springsource.insight.plugin.integration.IntegrationPluginRuntimeDescriptor"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
 
 </beans>

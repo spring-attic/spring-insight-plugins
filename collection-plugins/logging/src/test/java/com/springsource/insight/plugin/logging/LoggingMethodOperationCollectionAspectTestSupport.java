@@ -20,17 +20,17 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.util.StringFormatterUtils;
 
 /**
- * 
+ *
  */
 public abstract class LoggingMethodOperationCollectionAspectTestSupport
-            extends OperationCollectionAspectTestSupport {
+        extends OperationCollectionAspectTestSupport {
 
     protected LoggingMethodOperationCollectionAspectTestSupport() {
         super();
     }
 
-    protected Operation assertLoggingOperation (Class<?> logger, String level, String msg, Throwable t) {
-        Operation   op=getLastEntered();
+    protected Operation assertLoggingOperation(Class<?> logger, String level, String msg, Throwable t) {
+        Operation op = getLastEntered();
         assertNotNull("No operation extracted", op);
         assertEquals("Mismatched type", LoggingDefinitions.TYPE, op.getType());
         assertEquals("Mismatched framework", logger.getName(), op.get(LoggingDefinitions.FRAMEWORK_ATTR, String.class));
@@ -39,8 +39,8 @@ public abstract class LoggingMethodOperationCollectionAspectTestSupport
 
         if (t != null) {
             assertEquals("Mismatched exception",
-            			 StringFormatterUtils.formatStackTrace(t),
-            			 op.get(LoggingDefinitions.EXCEPTION_ATTR, String.class));
+                    StringFormatterUtils.formatStackTrace(t),
+                    op.get(LoggingDefinitions.EXCEPTION_ATTR, String.class));
         }
 
         return op;

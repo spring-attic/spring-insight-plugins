@@ -23,22 +23,22 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.plugin.springweb.SpringWebPluginRuntimeDescriptor;
 
 /**
- * 
+ *
  */
 public abstract aspect AbstractControllerOperationCollectionAspect extends MethodOperationCollectionAspect {
-	private final boolean	legacy;
+    private final boolean legacy;
 
-	protected AbstractControllerOperationCollectionAspect (boolean isLegacyAPI) {
-		super(new ControllerOperationCollector());
-		legacy = isLegacyAPI;
-	}
+    protected AbstractControllerOperationCollectionAspect(boolean isLegacyAPI) {
+        super(new ControllerOperationCollector());
+        legacy = isLegacyAPI;
+    }
 
-	@Override
+    @Override
     public Operation createOperation(JoinPoint jp) {
-	    return super.createOperation(jp)
-	    			.type(ControllerEndPointAnalyzer.CONTROLLER_METHOD_TYPE)
-	    			.put(ControllerEndPointAnalyzer.LEGACY_PROPNAME, legacy)
-	    			;
+        return super.createOperation(jp)
+                .type(ControllerEndPointAnalyzer.CONTROLLER_METHOD_TYPE)
+                .put(ControllerEndPointAnalyzer.LEGACY_PROPNAME, legacy)
+                ;
     }
 
     @Override

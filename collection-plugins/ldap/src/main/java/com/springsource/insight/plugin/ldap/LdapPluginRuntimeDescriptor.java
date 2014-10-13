@@ -24,22 +24,23 @@ import com.springsource.insight.util.ArrayUtil;
 
 public class LdapPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "javax-naming-ldap";
-    private static final LdapPluginRuntimeDescriptor	INSTANCE=new LdapPluginRuntimeDescriptor();
-    private static final List<? extends ExternalResourceAnalyzer>	extResAnalyzers=
-       		ArrayUtil.asUnmodifiableList(LdapExternalResourceAnalyzer.getInstance());
-    private LdapPluginRuntimeDescriptor () {
-    	super();
+    private static final LdapPluginRuntimeDescriptor INSTANCE = new LdapPluginRuntimeDescriptor();
+    private static final List<? extends ExternalResourceAnalyzer> extResAnalyzers =
+            ArrayUtil.asUnmodifiableList(LdapExternalResourceAnalyzer.getInstance());
+
+    private LdapPluginRuntimeDescriptor() {
+        super();
     }
 
     public static final LdapPluginRuntimeDescriptor getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
-    
+
     @Override
     public Collection<? extends ExternalResourceAnalyzer> getExternalResourceAnalyzers() {
-    	return extResAnalyzers;
+        return extResAnalyzers;
     }
-    
+
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;

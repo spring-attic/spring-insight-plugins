@@ -26,50 +26,50 @@ import com.springsource.insight.collection.test.OperationCollectionAspectTestSup
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public class EventPublisingOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-	public EventPublisingOperationCollectionAspectTest() {
-		super();
-	}
+    public EventPublisingOperationCollectionAspectTest() {
+        super();
+    }
 
-	@Test
-	public void testPublishEvent () {
-		MyApplicationEventPublisher	publisher=new MyApplicationEventPublisher();
-		MyEvent	event=new MyEvent("testPublishEvent");
-		publisher.publishEvent(event);
+    @Test
+    public void testPublishEvent() {
+        MyApplicationEventPublisher publisher = new MyApplicationEventPublisher();
+        MyEvent event = new MyEvent("testPublishEvent");
+        publisher.publishEvent(event);
 
-		assertPublishOperation("publish");
-		assertSame("Mismatched event instance", event, publisher.getLastEvent());
-	}
+        assertPublishOperation("publish");
+        assertSame("Mismatched event instance", event, publisher.getLastEvent());
+    }
 
-	@Test
-	public void testMulticastEvent () {
-		MyApplicationEventMulticaster	publisher=new MyApplicationEventMulticaster();
-		MyEvent	event=new MyEvent("testMulticastEvent");
-		publisher.multicastEvent(event);
+    @Test
+    public void testMulticastEvent() {
+        MyApplicationEventMulticaster publisher = new MyApplicationEventMulticaster();
+        MyEvent event = new MyEvent("testMulticastEvent");
+        publisher.multicastEvent(event);
 
-		assertPublishOperation("multicast");
-		assertSame("Mismatched event instance", event, publisher.getLastEvent());
-	}
+        assertPublishOperation("multicast");
+        assertSame("Mismatched event instance", event, publisher.getLastEvent());
+    }
 
-	protected Operation assertPublishOperation(String expectedAction) {
-		Operation	op=getLastEntered();
-		assertNotNull(expectedAction + ": no operation", op);
-		assertEquals(expectedAction + ": mismatched type", SpringCorePluginRuntimeDescriptor.EVENT_PUBLISH_TYPE, op.getType());
+    protected Operation assertPublishOperation(String expectedAction) {
+        Operation op = getLastEntered();
+        assertNotNull(expectedAction + ": no operation", op);
+        assertEquals(expectedAction + ": mismatched type", SpringCorePluginRuntimeDescriptor.EVENT_PUBLISH_TYPE, op.getType());
 
-		String	compType=op.get(StereotypedSpringBeanMethodOperationCollectionAspectSupport.COMP_TYPE_ATTR, String.class);
+        String compType = op.get(StereotypedSpringBeanMethodOperationCollectionAspectSupport.COMP_TYPE_ATTR, String.class);
         // make sure not intercepted by one of the stereotyped beans aspects
         assertNull(expectedAction + ": Unexpected stereotyped bean method collection: " + compType, compType);
         assertEquals("Mismatched action", expectedAction, op.get(EventPublisingOperationCollectionAspect.ACTION_ATTR, String.class));
-        
-        assertEquals(expectedAction + ": mismatched event type",
-   		     		 MyEvent.class.getName(), op.get(SpringLifecycleMethodOperationCollectionAspect.EVENT_ATTR, String.class));
-        return op;
-	}
 
-	@Override
-	public EventPublisingOperationCollectionAspect getAspect() {
-		return EventPublisingOperationCollectionAspect.aspectOf();
-	}
+        assertEquals(expectedAction + ": mismatched event type",
+                MyEvent.class.getName(), op.get(SpringLifecycleMethodOperationCollectionAspect.EVENT_ATTR, String.class));
+        return op;
+    }
+
+    @Override
+    public EventPublisingOperationCollectionAspect getAspect() {
+        return EventPublisingOperationCollectionAspect.aspectOf();
+    }
 }

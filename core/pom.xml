@@ -1,39 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.springsource.insight</groupId>
-	<artifactId>community-core</artifactId>
-	<name>com.springsource.insight:community-core</name>
-	<packaging>pom</packaging>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.springsource.insight</groupId>
+    <artifactId>community-core</artifactId>
+    <name>com.springsource.insight:community-core</name>
+    <packaging>pom</packaging>
 
-	<parent>
-		<groupId>com.springsource.insight</groupId>
-		<artifactId>community</artifactId>
-		<version>2.0.0-CI-SNAPSHOT</version>
-		<relativePath>../parent</relativePath>
-	</parent>
+    <parent>
+        <groupId>com.springsource.insight</groupId>
+        <artifactId>community</artifactId>
+        <version>2.0.0-CI-SNAPSHOT</version>
+        <relativePath>../parent</relativePath>
+    </parent>
 
-		<!-- common build configurations for all core artifacts -->
-	<dependencies>
-			<!-- Test dependencies -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<scope>test</scope>
-		</dependency>
+    <!-- common build configurations for all core artifacts -->
+    <dependencies>
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <dependency> <!-- Required also by various frameworks (e.g., Spring) -->
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <scope>test</scope>
         </dependency>
-            <!-- Replacement of commons-logging with a native slf4j 
-                 - Required by Spring framework (and others) -->
+        <!-- Replacement of commons-logging with a native slf4j
+             - Required by Spring framework (and others) -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
@@ -75,9 +76,9 @@
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
         </dependency>
-	</dependencies>
-	
-	<build>
+    </dependencies>
+
+    <build>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -85,22 +86,22 @@
             </resource>
         </resources>
 
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-enforcer-plugin</artifactId>
-				<configuration>
-					<rules>
-						<requireJavaVersion>
-							<version>[1.5,)</version>
-						</requireJavaVersion>
-					</rules>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>com.atlassian.maven.plugins</groupId>
-				<artifactId>maven-clover2-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <configuration>
+                    <rules>
+                        <requireJavaVersion>
+                            <version>[1.5,)</version>
+                        </requireJavaVersion>
+                    </rules>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.atlassian.maven.plugins</groupId>
+                <artifactId>maven-clover2-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 </project>

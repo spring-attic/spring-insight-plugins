@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:insight="http://www.springframework.org/schema/insight-idk"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:insight="http://www.springframework.org/schema/insight-idk"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
-	<insight:plugin name="redis" version="${project.version}" publisher="SpringSource" />
+    <insight:plugin name="redis" version="${project.version}" publisher="SpringSource"/>
 
-	<insight:operation-view operation="default-redis-collection" template="com/springsource/insight/plugin/redis/redisCollection.ftl"/>
+    <insight:operation-view operation="default-redis-collection"
+                            template="com/springsource/insight/plugin/redis/redisCollection.ftl"/>
     <insight:operation-view operation="redis-map" template="com/springsource/insight/plugin/redis/redisMap.ftl"/>
-    <insight:operation-view operation="redis-client-method" template="com/springsource/insight/plugin/redis/redisClientMethod.ftl"/>
+    <insight:operation-view operation="redis-client-method"
+                            template="com/springsource/insight/plugin/redis/redisClientMethod.ftl"/>
 
-	<insight:operation-group group="Redis" operation="default-redis-collection" />
-    <insight:operation-group group="Redis" operation="redis-map" />
-	<insight:operation-group group="Redis" operation="redis-client-method" />
-	
-	<bean id="redisPluginExternalResourceAnalyzer"
-	      class="com.springsource.insight.plugin.redis.RedisExternalResourceAnalyzer"
+    <insight:operation-group group="Redis" operation="default-redis-collection"/>
+    <insight:operation-group group="Redis" operation="redis-map"/>
+    <insight:operation-group group="Redis" operation="redis-client-method"/>
+
+    <bean id="redisPluginExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.redis.RedisExternalResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="redisPluginRuntimeDescriptor"
           class="com.springsource.insight.plugin.redis.RedisPluginRuntimeDescriptor"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
 
 </beans>

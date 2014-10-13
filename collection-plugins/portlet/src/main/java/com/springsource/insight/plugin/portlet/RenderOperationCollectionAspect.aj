@@ -30,31 +30,30 @@ import com.springsource.insight.intercept.operation.Operation;
  * @type: portlet-render
  */
 public privileged aspect RenderOperationCollectionAspect extends GenericOperationCollectionAspect {
-    public RenderOperationCollectionAspect () {
-    	super();
+    public RenderOperationCollectionAspect() {
+        super();
     }
 
-    public pointcut collectionPoint() : execution(void javax.portlet.Portlet+.render(RenderRequest, RenderResponse)) ||
-									    execution(void javax.portlet.GenericPortlet+.doView(RenderRequest, RenderResponse)) ||
-									    execution(void javax.portlet.GenericPortlet+.doEdit(RenderRequest, RenderResponse)) ||
-    									execution(@RenderMode void *(RenderRequest, RenderResponse));
+    public pointcut collectionPoint(): execution(void javax.portlet.Portlet+.render(RenderRequest, RenderResponse)) ||
+            execution(void javax.portlet.GenericPortlet+.doView(RenderRequest, RenderResponse)) ||
+            execution(void javax.portlet.GenericPortlet+.doEdit(RenderRequest, RenderResponse)) ||
+            execution(@RenderMode void *(RenderRequest, RenderResponse));
 
-	@Override
-	protected Operation createOperation(JoinPoint jp) {
-		Object[] 	  args=jp.getArgs();
-		RenderRequest req=(RenderRequest)args[0];
-		
-		Operation op=createOperation(jp, OperationCollectionTypes.RENDER_TYPE);
-		try {
-			//portlet2 support
-			op.putAnyNonEmpty("renderPhase", req.getParameter(PortletRequest.RENDER_PHASE));
-	        op.putAnyNonEmpty("renderPart", req.getParameter(PortletRequest.RENDER_PART));
-	        op.putAnyNonEmpty("ETag", req.getETag());
-		}
-		catch(Error e) {
-			// ignored
-		}
-		
-		return op;
-	}
+    @Override
+    protected Operation createOperation(JoinPoint jp) {
+        Object[] args = jp.getArgs();
+        RenderRequest req = (RenderRequest) args[0];
+
+        Operation op = createOperation(jp, OperationCollectionTypes.RENDER_TYPE);
+        try {
+            //portlet2 support
+            op.putAnyNonEmpty("renderPhase", req.getParameter(PortletRequest.RENDER_PHASE));
+            op.putAnyNonEmpty("renderPart", req.getParameter(PortletRequest.RENDER_PART));
+            op.putAnyNonEmpty("ETag", req.getETag());
+        } catch (Error e) {
+            // ignored
+        }
+
+        return op;
+    }
 }

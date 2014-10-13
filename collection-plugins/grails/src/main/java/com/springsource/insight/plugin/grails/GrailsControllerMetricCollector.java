@@ -26,21 +26,22 @@ import com.springsource.insight.plugin.grails.GrailsControllerStateKeeper.State;
 import com.springsource.insight.util.KeyValPair;
 
 /**
- * 
+ *
  */
 public class GrailsControllerMetricCollector extends DefaultOperationCollector {
-    public static final String  UNKNOWN_ACTION="unknownAction",
-                                UNKNOWN_CONTROLLER="UnknownController";
-    GrailsControllerMetricCollector  () {
+    public static final String UNKNOWN_ACTION = "unknownAction",
+            UNKNOWN_CONTROLLER = "UnknownController";
+
+    GrailsControllerMetricCollector() {
         super();
     }
-    
+
     @Override
     public void processNormalExit(Operation op, Object returnValue) {
         State state = GrailsControllerStateKeeper.getAndDestroyThreadLocalState();
         op.label(buildLabel(state))
-          .sourceCodeLocation(buildSourceCodeLocation(state))
-          ;
+                .sourceCodeLocation(buildSourceCodeLocation(state))
+        ;
 
         OperationList actionParams = op.createList("actionParams");
         if ((state != null) && (state.actionParams != null)) {
@@ -54,8 +55,8 @@ public class GrailsControllerMetricCollector extends DefaultOperationCollector {
     protected void processAbnormalExit(Operation op, Throwable throwable) {
         State state = GrailsControllerStateKeeper.getAndDestroyThreadLocalState();
         op.label(buildLabel(state))
-          .sourceCodeLocation(buildSourceCodeLocation(state))
-          ;
+                .sourceCodeLocation(buildSourceCodeLocation(state))
+        ;
     }
 
     static String buildLabel(State state) {
@@ -101,8 +102,8 @@ public class GrailsControllerMetricCollector extends DefaultOperationCollector {
          *  (2) state.request may be null if GrailsControllerStateKeeper.setThreadLocalWebRequest
          *  not called
          */
-        GrailsWebRequest    request=(state == null) ? null : state.request;
-        String              actionName=(request == null) ? null : request.getActionName();
+        GrailsWebRequest request = (state == null) ? null : state.request;
+        String actionName = (request == null) ? null : request.getActionName();
         if (actionName == null) {
             actionName = UNKNOWN_ACTION;
         }

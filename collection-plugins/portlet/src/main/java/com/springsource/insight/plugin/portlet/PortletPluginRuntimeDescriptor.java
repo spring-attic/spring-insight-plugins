@@ -24,28 +24,28 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 import com.springsource.insight.util.ArrayUtil;
 
 /**
- * 
+ *
  */
 public class PortletPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
-	public static final String	NAME="portlet";
-	private static final PortletPluginRuntimeDescriptor	INSTANCE=new PortletPluginRuntimeDescriptor();
-	private static final List<? extends EndPointAnalyzer>	epAnalyzers=ArrayUtil.asUnmodifiableList(PortletEndPointAnalyzer.getInstance());
+    public static final String NAME = "portlet";
+    private static final PortletPluginRuntimeDescriptor INSTANCE = new PortletPluginRuntimeDescriptor();
+    private static final List<? extends EndPointAnalyzer> epAnalyzers = ArrayUtil.asUnmodifiableList(PortletEndPointAnalyzer.getInstance());
 
-	private PortletPluginRuntimeDescriptor() {
-		super();
-	}
+    private PortletPluginRuntimeDescriptor() {
+        super();
+    }
 
-	public static final PortletPluginRuntimeDescriptor getInstance() {
-		return INSTANCE;
-	}
+    public static final PortletPluginRuntimeDescriptor getInstance() {
+        return INSTANCE;
+    }
 
     @Override
     public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
         return epAnalyzers;
     }
 
-	@Override
-	public String getPluginName() {
-		return NAME;
-	}
+    @Override
+    public String getPluginName() {
+        return NAME;
+    }
 }

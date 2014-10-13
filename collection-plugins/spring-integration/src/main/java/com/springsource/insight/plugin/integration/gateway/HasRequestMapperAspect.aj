@@ -20,13 +20,13 @@ package com.springsource.insight.plugin.integration.gateway;
  * Implementation of the {@link HasRequestMapper} interface
  */
 public aspect HasRequestMapperAspect {
-	private Object HasRequestMapper.__requestMapper;
-	
-	public Object HasRequestMapper.__getRequestMapper() {
-		return this.__requestMapper;
-	}
-	
-	public void HasRequestMapper.__setRequestMapper(Object mapper) {
-		this.__requestMapper = mapper;
-	}
+    private Object HasRequestMapper.__requestMapper;
+
+    public Object HasRequestMapper.__getRequestMapper() {
+        return this.__requestMapper;
+    }
+
+    public void HasRequestMapper.__setRequestMapper(Object mapper) {
+        this.__requestMapper = mapper;
+    }
 }

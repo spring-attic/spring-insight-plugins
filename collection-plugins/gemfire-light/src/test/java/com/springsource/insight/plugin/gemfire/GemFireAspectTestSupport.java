@@ -26,34 +26,34 @@ import com.springsource.insight.intercept.operation.Operation;
 
 public abstract class GemFireAspectTestSupport extends OperationCollectionAspectTestSupport {
 
-	private Cache cache;
+    private Cache cache;
 
-	protected GemFireAspectTestSupport () {
-		super();
-	}
-
-	@Before
-	@Override
-	public void setUp() {
-		super.setUp();
-    	cache = new CacheFactory()
-        .set("name", "Test")
-        .set("log-level", "warning")
-        .set("cache-xml-file", "gemfire.xml")
-        .create();    			
-	}
-	
-    protected void testInGemfire(GemFireCallback callback, TestCallback test) {
-    	Region r = cache.getRegion("test");
-    	callback.doInGemfire(r);
-        test.doTest(getLastEntered());    	
+    protected GemFireAspectTestSupport() {
+        super();
     }
-    
+
+    @Before
+    @Override
+    public void setUp() {
+        super.setUp();
+        cache = new CacheFactory()
+                .set("name", "Test")
+                .set("log-level", "warning")
+                .set("cache-xml-file", "gemfire.xml")
+                .create();
+    }
+
+    protected void testInGemfire(GemFireCallback callback, TestCallback test) {
+        Region r = cache.getRegion("test");
+        callback.doInGemfire(r);
+        test.doTest(getLastEntered());
+    }
+
     protected interface GemFireCallback {
-    	void doInGemfire(Region region);
+        void doInGemfire(Region region);
     }
 
     protected interface TestCallback {
-    	void doTest(Operation operation);
+        void doTest(Operation operation);
     }
 }

@@ -23,14 +23,14 @@ import javax.persistence.EntityManager;
  * related to a specific entity
  */
 public aspect JpaEntityManagerLifecycleAspect extends JpaEntityManagerCollectionAspect {
-    public JpaEntityManagerLifecycleAspect () {
+    public JpaEntityManagerLifecycleAspect() {
         super(JpaDefinitions.LIFECYCLE_GROUP);
     }
 
     public pointcut collectionPoint()
-        : execution(* EntityManager+.flush())
-       || execution(* EntityManager+.clear())
-       || execution(* EntityManager+.joinTransaction())
-       || execution(* EntityManager+.close())
-        ;
+            : execution(* EntityManager+.flush())
+            || execution(* EntityManager+.clear())
+            || execution(* EntityManager+.joinTransaction())
+            || execution(* EntityManager+.close())
+            ;
 }

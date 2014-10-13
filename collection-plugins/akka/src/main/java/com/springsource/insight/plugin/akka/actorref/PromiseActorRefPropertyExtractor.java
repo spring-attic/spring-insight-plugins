@@ -26,12 +26,12 @@ class PromiseActorRefPropertyExtractor implements ActorRefPropertyExtractor {
     public static final PromiseActorRefPropertyExtractor INSTANCE = new PromiseActorRefPropertyExtractor();
 
     private PromiseActorRefPropertyExtractor() {
-    	super();
+        super();
     }
 
     public Map<String, Object> extractProperties(ActorRef actorRef) {
-    	PromiseActorRef ref = (PromiseActorRef) actorRef;
-    	return Collections.<String, Object> singletonMap("local", Boolean.valueOf(ref.isLocal()));
+        PromiseActorRef ref = (PromiseActorRef) actorRef;
+        return Collections.<String, Object>singletonMap("local", Boolean.valueOf(ref.isLocal()));
     }
 
 }

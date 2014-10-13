@@ -24,15 +24,15 @@ import com.springsource.insight.util.ArrayUtil;
 
 public class JwsPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "jws";
-    private static final JwsPluginRuntimeDescriptor	INSTANCE=new JwsPluginRuntimeDescriptor();
-    private static final List<? extends EndPointAnalyzer>	epAnalyzers=ArrayUtil.asUnmodifiableList(JwsEndPointAnalyzer.getInstance());
+    private static final JwsPluginRuntimeDescriptor INSTANCE = new JwsPluginRuntimeDescriptor();
+    private static final List<? extends EndPointAnalyzer> epAnalyzers = ArrayUtil.asUnmodifiableList(JwsEndPointAnalyzer.getInstance());
 
-    private JwsPluginRuntimeDescriptor () {
-    	super();
+    private JwsPluginRuntimeDescriptor() {
+        super();
     }
 
     public static final JwsPluginRuntimeDescriptor getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override

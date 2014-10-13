@@ -48,8 +48,8 @@ public class PoolingConnectionTest extends OperationCollectionAspectTestSupport 
     @Autowired
     private DataSource dataSource;
 
-    public PoolingConnectionTest () {
-    	super();
+    public PoolingConnectionTest() {
+        super();
     }
 
     @Test
@@ -64,8 +64,8 @@ public class PoolingConnectionTest extends OperationCollectionAspectTestSupport 
             PreparedStatement ps = c.prepareStatement(sql);
             try {
                 System.out.println("Prepared statement=" + ps.getClass());
-        
-                ResultSet   rs=ps.executeQuery();
+
+                ResultSet rs = ps.executeQuery();
                 rs.close();
             } finally {
                 ps.close();
@@ -73,7 +73,7 @@ public class PoolingConnectionTest extends OperationCollectionAspectTestSupport 
         } finally {
             c.close();
         }
-        
+
         ArgumentCaptor<Operation> opCaptor = ArgumentCaptor.forClass(Operation.class);
         verify(spiedOperationCollector, times(3)).enter(opCaptor.capture());
 

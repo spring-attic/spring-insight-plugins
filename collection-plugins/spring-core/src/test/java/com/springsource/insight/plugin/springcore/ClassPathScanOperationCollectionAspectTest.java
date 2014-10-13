@@ -31,7 +31,7 @@ import com.springsource.insight.intercept.operation.SourceCodeLocation;
 import com.springsource.insight.plugin.springcore.beans.Fubar;
 
 public class ClassPathScanOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-    public ClassPathScanOperationCollectionAspectTest () {
+    public ClassPathScanOperationCollectionAspectTest() {
         super();
     }
 
@@ -43,39 +43,40 @@ public class ClassPathScanOperationCollectionAspectTest extends OperationCollect
         ArgumentCaptor<Operation> opCaptor = ArgumentCaptor.forClass(Operation.class);
         Mockito.verify(spiedOperationCollector, Mockito.atLeastOnce()).enter(opCaptor.capture());
 
-        final Package		pkg=getClass().getPackage();
-        Map<String,String>	locationsMap=new TreeMap<String, String>() {
-				private static final long serialVersionUID = 1L;
-	
-				{
-	        		put("findCandidateComponents", pkg.getName());
-	        		put("findPathMatchingResources", "classpath*:" + pkg.getName().replace('.',  '/') + "/**/*.class");
-	        	}
-	        };
+        final Package pkg = getClass().getPackage();
+        Map<String, String> locationsMap = new TreeMap<String, String>() {
+            private static final long serialVersionUID = 1L;
+
+            {
+                put("findCandidateComponents", pkg.getName());
+                put("findPathMatchingResources", "classpath*:" + pkg.getName().replace('.', '/') + "/**/*.class");
+            }
+        };
         for (Operation captured : opCaptor.getAllValues()) {
-        	Operation			op=assertScanOperation(captured);
-        	SourceCodeLocation	scl=op.getSourceCodeLocation();
-        	String				methodName=scl.getMethodName();
-        	String				expectedLocation=locationsMap.remove(methodName);
-        	assertNotNull("Unnown method: " + methodName, expectedLocation);
-        	
-        	String	actualLocation=op.get(SpringLifecycleMethodOperationCollectionAspect.EVENT_ATTR, String.class);
-        	assertEquals(methodName + ": Mismatched location", expectedLocation, actualLocation);
+            Operation op = assertScanOperation(captured);
+            SourceCodeLocation scl = op.getSourceCodeLocation();
+            String methodName = scl.getMethodName();
+            String expectedLocation = locationsMap.remove(methodName);
+            assertNotNull("Unnown method: " + methodName, expectedLocation);
+
+            String actualLocation = op.get(SpringLifecycleMethodOperationCollectionAspect.EVENT_ATTR, String.class);
+            assertEquals(methodName + ": Mismatched location", expectedLocation, actualLocation);
         }
 
         assertTrue("Aspect did not intercept call to " + locationsMap.keySet(), locationsMap.isEmpty());
     }
 
-    protected Operation assertScanOperation (Operation op) {
-    	assertNotNull("No operation", op);
+    protected Operation assertScanOperation(Operation op) {
+        assertNotNull("No operation", op);
         assertEquals("Mismatched operation type", SpringCorePluginRuntimeDescriptor.CLASSPATH_SCAN_TYPE, op.getType());
 
-        String	compType=op.get(StereotypedSpringBeanMethodOperationCollectionAspectSupport.COMP_TYPE_ATTR, String.class);
+        String compType = op.get(StereotypedSpringBeanMethodOperationCollectionAspectSupport.COMP_TYPE_ATTR, String.class);
         // make sure not intercepted by one of the stereotyped beans aspects
         assertNull("Unexpected stereotyped bean method collection: " + compType, compType);
         return op;
 
     }
+
     @Override
     public OperationCollectionAspectSupport getAspect() {
         return ClassPathScanOperationCollectionAspect.aspectOf();

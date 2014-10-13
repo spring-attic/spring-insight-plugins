@@ -31,44 +31,44 @@ import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.StringUtil;
 
 public class MailSendExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-	public static final String RESOURCE_TYPE=ExternalResourceType.EMAIL.name();
-	private static final MailSendExternalResourceAnalyzer	INSTANCE=new MailSendExternalResourceAnalyzer();
+    public static final String RESOURCE_TYPE = ExternalResourceType.EMAIL.name();
+    private static final MailSendExternalResourceAnalyzer INSTANCE = new MailSendExternalResourceAnalyzer();
 
-	private MailSendExternalResourceAnalyzer () {
-		super(MailDefinitions.SEND_OPERATION);
-	}
+    private MailSendExternalResourceAnalyzer() {
+        super(MailDefinitions.SEND_OPERATION);
+    }
 
-	public static final MailSendExternalResourceAnalyzer getInstance() {
-		return INSTANCE;
-	}
+    public static final MailSendExternalResourceAnalyzer getInstance() {
+        return INSTANCE;
+    }
 
-	public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> mailFrames) {
-		if (ListUtil.size(mailFrames) <= 0) {
+    public List<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> mailFrames) {
+        if (ListUtil.size(mailFrames) <= 0) {
             return Collections.emptyList();
-		}
+        }
 
-		List<ExternalResourceDescriptor> mailDescriptors = new ArrayList<ExternalResourceDescriptor>(mailFrames.size());
-		for (Frame mailFrame : mailFrames) {
-			Operation op = mailFrame.getOperation();
+        List<ExternalResourceDescriptor> mailDescriptors = new ArrayList<ExternalResourceDescriptor>(mailFrames.size());
+        for (Frame mailFrame : mailFrames) {
+            Operation op = mailFrame.getOperation();
 
-			String host = op.get(MailDefinitions.SEND_HOST, String.class);  
-			if (StringUtil.isEmpty(host)) {
-				continue;	// can happen if generated via Spring's JavaMailSender interface
-			}
+            String host = op.get(MailDefinitions.SEND_HOST, String.class);
+            if (StringUtil.isEmpty(host)) {
+                continue;    // can happen if generated via Spring's JavaMailSender interface
+            }
 
-			Number portProperty = op.get(MailDefinitions.SEND_PORT, Number.class);
-			int port = portProperty == null ? -1 : portProperty.intValue();
-			String protocol = op.get(MailDefinitions.SEND_PROTOCOL, String.class, "SMTP"); 
-			String label = protocol.toUpperCase() + ":" + host + ((port > 0) ? (":" + port) : "");
-			String hashString = MD5NameGenerator.getName(label);
+            Number portProperty = op.get(MailDefinitions.SEND_PORT, Number.class);
+            int port = portProperty == null ? -1 : portProperty.intValue();
+            String protocol = op.get(MailDefinitions.SEND_PROTOCOL, String.class, "SMTP");
+            String label = protocol.toUpperCase() + ":" + host + ((port > 0) ? (":" + port) : "");
+            String hashString = MD5NameGenerator.getName(label);
             String color = colorManager.getColor(op);
 
-			ExternalResourceDescriptor descriptor = new ExternalResourceDescriptor(
-					mailFrame, protocol + ":" + hashString, label, RESOURCE_TYPE, protocol, host, port, color, false);
-			mailDescriptors.add(descriptor);            
-		}
+            ExternalResourceDescriptor descriptor = new ExternalResourceDescriptor(
+                    mailFrame, protocol + ":" + hashString, label, RESOURCE_TYPE, protocol, host, port, color, false);
+            mailDescriptors.add(descriptor);
+        }
 
-		return mailDescriptors;
-	}
+        return mailDescriptors;
+    }
 
 }

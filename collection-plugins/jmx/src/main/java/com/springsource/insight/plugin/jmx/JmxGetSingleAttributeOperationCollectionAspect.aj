@@ -22,12 +22,12 @@ import com.springsource.insight.intercept.operation.Operation;
 
 
 /**
- * 
+ *
  */
 public aspect JmxGetSingleAttributeOperationCollectionAspect extends JmxSingleAttributeOperationCollectionSupport {
-	public JmxGetSingleAttributeOperationCollectionAspect() {
-		super(JmxPluginRuntimeDescriptor.GET_ACTION);
-	}
+    public JmxGetSingleAttributeOperationCollectionAspect() {
+        super(JmxPluginRuntimeDescriptor.GET_ACTION);
+    }
 
 	/* We use cflowbelow in case calls are delegated - theoretically, one
 	 * might make a case against the cflowbelow - e.g., if the server accesses
@@ -35,15 +35,15 @@ public aspect JmxGetSingleAttributeOperationCollectionAspect extends JmxSingleAt
 	 * (a) highly unlikely, (b) not really useful information and (c) considerable
 	 * trace size increase
 	 */
-	public pointcut collectionPoint()
-		: getAttributeValue()
-	   && (!cflowbelow(getAttributeValue()))
-	   && (!cflowbelow(getAttributesList()))
-	    ;
+    public pointcut collectionPoint()
+            : getAttributeValue()
+            && (!cflowbelow(getAttributeValue()))
+            && (!cflowbelow(getAttributesList()))
+            ;
 
-	@Override
-	protected Operation createOperation(JoinPoint jp) {
-		Object[]	args=jp.getArgs();
-		return createAttributeOperation(jp, getObjectName(args), getAttributeName(args));
-	}
+    @Override
+    protected Operation createOperation(JoinPoint jp) {
+        Object[] args = jp.getArgs();
+        return createAttributeOperation(jp, getObjectName(args), getAttributeName(args));
+    }
 }

@@ -29,10 +29,11 @@ import com.springsource.insight.intercept.operation.Operation;
  * Driver-level support for redis clients
  */
 public aspect RedisClientAspect extends AbstractOperationCollectionAspect {
-	private final JoinPointFinalizer	finalizer;
-	public RedisClientAspect () {
-		finalizer = JoinPointFinalizer.getJoinPointFinalizerInstance();
-	}
+    private final JoinPointFinalizer finalizer;
+
+    public RedisClientAspect() {
+        finalizer = JoinPointFinalizer.getJoinPointFinalizerInstance();
+    }
     /*
     No JRedis support yet...
     Not readily available in a public maven repository. Everyone uses
@@ -43,12 +44,12 @@ public aspect RedisClientAspect extends AbstractOperationCollectionAspect {
          : execution(* JRedis.*(..));
     */
     public pointcut jedis()
-         : execution(* redis.clients.jedis.Jedis.*(..));
+            : execution(* redis.clients.jedis.Jedis.*(..));
 
     // Spring-Data uses this for connection management on
     // nearly every call but it isn't useful to us.
     public pointcut jedisQuit()
-         : execution(* redis.clients.jedis.Jedis.quit(..));
+            : execution(* redis.clients.jedis.Jedis.quit(..));
 
     public pointcut collectionPoint()
             : jedis() && !jedisQuit() && !cflowbelow(jedis());
@@ -63,17 +64,17 @@ public aspect RedisClientAspect extends AbstractOperationCollectionAspect {
         } else {
             op.label("Redis: " + methodName);
         }
-        
+
         Jedis jedis = (Jedis) jp.getTarget();
         try {
-        	Client	client=jedis.getClient();
-			op.put("dbName", client.getDB().toString());
-			op.put("host", client.getHost());
-			op.put("port", client.getPort());
-		} catch (Exception e) {
-			// ignored
-		}
-        
+            Client client = jedis.getClient();
+            op.put("dbName", client.getDB().toString());
+            op.put("host", client.getHost());
+            op.put("port", client.getPort());
+        } catch (Exception e) {
+            // ignored
+        }
+
         return op;
     }
 
@@ -81,7 +82,7 @@ public aspect RedisClientAspect extends AbstractOperationCollectionAspect {
     public String getPluginName() {
         return RedisPluginRuntimeDescriptor.PLUGIN_NAME;
     }
-    
+
     @Override
     public boolean isMetricsGenerator() {
         return true; // This provides an external resource

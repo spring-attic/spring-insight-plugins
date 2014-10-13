@@ -24,20 +24,20 @@ import org.springframework.batch.core.JobInstance;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public aspect JobOperationCollectionAspect extends SpringBatchOperationCollectionAspect {
-    public JobOperationCollectionAspect () {
+    public JobOperationCollectionAspect() {
         super(Job.class);
     }
 
-    public pointcut collectionPoint() : execution(* Job+.execute(JobExecution));
+    public pointcut collectionPoint(): execution(* Job+.execute(JobExecution));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Object[]        args=jp.getArgs();
-        JobExecution    jobExecution=(JobExecution) args[0];
-        JobInstance     jobInstance=jobExecution.getJobInstance();
+        Object[] args = jp.getArgs();
+        JobExecution jobExecution = (JobExecution) args[0];
+        JobInstance jobInstance = jobExecution.getJobInstance();
         return fillJobExecution(createOperation(jp, jobInstance.getJobName()), jobExecution);
     }
 }

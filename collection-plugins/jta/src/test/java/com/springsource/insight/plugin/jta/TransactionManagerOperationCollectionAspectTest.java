@@ -32,18 +32,18 @@ import org.mockito.Mockito;
 
 
 /**
- * 
+ *
  */
 public class TransactionManagerOperationCollectionAspectTest
         extends JtaOperationCollectionAspectTestSupport {
-    static final TransactionManager manager=new TransactionManagerImpl();
+    static final TransactionManager manager = new TransactionManagerImpl();
 
     public TransactionManagerOperationCollectionAspectTest() {
         super();
     }
 
     @Test
-    public void testTransactionManagerOperations () {
+    public void testTransactionManagerOperations() {
         runAspectOperations(TransactionManagerOperation.class);
     }
 
@@ -55,47 +55,47 @@ public class TransactionManagerOperationCollectionAspectTest
     static enum TransactionManagerOperation implements Runnable, ParameterTypeDescriptor {
         BEGIN {
             @Override
-            protected void doOperation (TransactionManager mgr) throws Exception {
+            protected void doOperation(TransactionManager mgr) throws Exception {
                 mgr.begin();
             }
         },
         COMMIT {
             @Override
-            protected void doOperation (TransactionManager mgr) throws Exception {
+            protected void doOperation(TransactionManager mgr) throws Exception {
                 mgr.commit();
             }
         },
         ROLLBACK {
             @Override
-            protected void doOperation (TransactionManager mgr) throws Exception {
+            protected void doOperation(TransactionManager mgr) throws Exception {
                 mgr.rollback();
             }
         },
         SUSPEND {
             @Override
-            protected void doOperation (TransactionManager mgr) throws Exception {
+            protected void doOperation(TransactionManager mgr) throws Exception {
                 mgr.suspend();
             }
 
         },
         RESUME {
             @Override
-            protected void doOperation (TransactionManager mgr) throws Exception {
+            protected void doOperation(TransactionManager mgr) throws Exception {
                 mgr.resume(Mockito.mock(Transaction.class));
             }
 
             @Override
             public Class<?>[] getArgTypes() {
-                return new Class<?>[] { Transaction.class };
+                return new Class<?>[]{Transaction.class};
             }
         };
 
-        protected abstract void doOperation (TransactionManager mgr) throws Exception;
+        protected abstract void doOperation(TransactionManager mgr) throws Exception;
 
-        public void run () {
+        public void run() {
             try {
                 doOperation(manager);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 if (e instanceof RuntimeException) {
                     throw (RuntimeException) e;
                 } else {
@@ -110,8 +110,9 @@ public class TransactionManagerOperationCollectionAspectTest
     }
 
     static class TransactionManagerImpl implements TransactionManager {
-        private final Logger    logger=Logger.getLogger(getClass().getName());
-        TransactionManagerImpl () {
+        private final Logger logger = Logger.getLogger(getClass().getName());
+
+        TransactionManagerImpl() {
             super();
         }
 

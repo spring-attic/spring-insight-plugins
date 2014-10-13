@@ -36,56 +36,22 @@ import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
 import com.springsource.insight.util.time.TimeRange;
 
-public class GemFireRemoteExternalResourceAnalyzerTest extends AbstractCollectionTestSupport  {
-	private final GemFireRemoteExternalResourceAnalyzer analyzer=GemFireRemoteExternalResourceAnalyzer.getInstance();
+public class GemFireRemoteExternalResourceAnalyzerTest extends AbstractCollectionTestSupport {
+    private final GemFireRemoteExternalResourceAnalyzer analyzer = GemFireRemoteExternalResourceAnalyzer.getInstance();
 
-	public GemFireRemoteExternalResourceAnalyzerTest () {
-		super();
-	}
+    public GemFireRemoteExternalResourceAnalyzerTest() {
+        super();
+    }
 
-	@Test
-	public void testValidData() throws Exception {
-		Operation op = new Operation();		
-		op.type(GemFireDefenitions.TYPE_REMOTE.getType());
-		String host = "localhost";
-		int port = 12345;
-        op.put(GemFireDefenitions.FIELD_HOST, host);
-        op.put(GemFireDefenitions.FIELD_PORT, 12345);
-		
-		Frame frame = new SimpleFrame(FrameId.valueOf("0"),
-				null,
-				op,
-				TimeRange.milliTimeRange(0, 1),
-				Collections.<Frame>emptyList());
-
-		Trace trace = new Trace(ServerName.valueOf("fake-server"),
-				ApplicationName.valueOf("fake-app"),
-				new Date(),
-				TraceId.valueOf("fake-id"),
-				frame);
-		
-		Collection<ExternalResourceDescriptor>    res=analyzer.locateExternalResourceName(trace);
-		assertEquals("Mismatched number of results", 1, res.size());
-		ExternalResourceDescriptor externalResourceDescriptor = res.iterator().next();
-
-		assertEquals("Gemfire source frame", frame, externalResourceDescriptor.getFrame());
-		assertEquals("Gemfire external resource host", host, externalResourceDescriptor.getHost());
-		assertEquals("Gemfire external resource port", port, externalResourceDescriptor.getPort());
-		assertEquals("Gemfire external resource type", ExternalResourceType.KVSTORE.name(), externalResourceDescriptor.getType());
-		assertEquals("Gemfire external resource type", ExternalResourceType.KVSTORE.name(), externalResourceDescriptor.getType());
-		assertEquals("Gemfire external resource name", AbstractGemFireExternalResourceAnalyzer.createName(host, port), externalResourceDescriptor.getName());
-		assertEquals("Gemfire external resource vendor", GemFireDefenitions.GEMFIRE, externalResourceDescriptor.getVendor());
-		assertEquals("Gemfire external resource label", AbstractGemFireExternalResourceAnalyzer.createLabel(host, port), externalResourceDescriptor.getLabel());
-		assertEquals("Gemfire external incoming", Boolean.FALSE, Boolean.valueOf(externalResourceDescriptor.isIncoming()));
-	}
-
-	@Test
-	public void testUnknownPort() throws Exception {
-	    Operation op = new Operation();       
+    @Test
+    public void testValidData() throws Exception {
+        Operation op = new Operation();
         op.type(GemFireDefenitions.TYPE_REMOTE.getType());
         String host = "localhost";
+        int port = 12345;
         op.put(GemFireDefenitions.FIELD_HOST, host);
-        
+        op.put(GemFireDefenitions.FIELD_PORT, 12345);
+
         Frame frame = new SimpleFrame(FrameId.valueOf("0"),
                 null,
                 op,
@@ -97,8 +63,42 @@ public class GemFireRemoteExternalResourceAnalyzerTest extends AbstractCollectio
                 new Date(),
                 TraceId.valueOf("fake-id"),
                 frame);
-        
-        Collection<ExternalResourceDescriptor>    res=analyzer.locateExternalResourceName(trace);
+
+        Collection<ExternalResourceDescriptor> res = analyzer.locateExternalResourceName(trace);
+        assertEquals("Mismatched number of results", 1, res.size());
+        ExternalResourceDescriptor externalResourceDescriptor = res.iterator().next();
+
+        assertEquals("Gemfire source frame", frame, externalResourceDescriptor.getFrame());
+        assertEquals("Gemfire external resource host", host, externalResourceDescriptor.getHost());
+        assertEquals("Gemfire external resource port", port, externalResourceDescriptor.getPort());
+        assertEquals("Gemfire external resource type", ExternalResourceType.KVSTORE.name(), externalResourceDescriptor.getType());
+        assertEquals("Gemfire external resource type", ExternalResourceType.KVSTORE.name(), externalResourceDescriptor.getType());
+        assertEquals("Gemfire external resource name", AbstractGemFireExternalResourceAnalyzer.createName(host, port), externalResourceDescriptor.getName());
+        assertEquals("Gemfire external resource vendor", GemFireDefenitions.GEMFIRE, externalResourceDescriptor.getVendor());
+        assertEquals("Gemfire external resource label", AbstractGemFireExternalResourceAnalyzer.createLabel(host, port), externalResourceDescriptor.getLabel());
+        assertEquals("Gemfire external incoming", Boolean.FALSE, Boolean.valueOf(externalResourceDescriptor.isIncoming()));
+    }
+
+    @Test
+    public void testUnknownPort() throws Exception {
+        Operation op = new Operation();
+        op.type(GemFireDefenitions.TYPE_REMOTE.getType());
+        String host = "localhost";
+        op.put(GemFireDefenitions.FIELD_HOST, host);
+
+        Frame frame = new SimpleFrame(FrameId.valueOf("0"),
+                null,
+                op,
+                TimeRange.milliTimeRange(0, 1),
+                Collections.<Frame>emptyList());
+
+        Trace trace = new Trace(ServerName.valueOf("fake-server"),
+                ApplicationName.valueOf("fake-app"),
+                new Date(),
+                TraceId.valueOf("fake-id"),
+                frame);
+
+        Collection<ExternalResourceDescriptor> res = analyzer.locateExternalResourceName(trace);
         assertEquals("Mismatched number of results", 1, res.size());
         ExternalResourceDescriptor externalResourceDescriptor = res.iterator().next();
 
@@ -111,15 +111,15 @@ public class GemFireRemoteExternalResourceAnalyzerTest extends AbstractCollectio
         assertEquals("Gemfire external resource vendor", GemFireDefenitions.GEMFIRE, externalResourceDescriptor.getVendor());
         assertEquals("Gemfire external resource label", AbstractGemFireExternalResourceAnalyzer.createLabel(host, -1), externalResourceDescriptor.getLabel());
         assertEquals("Gemfire external incoming", Boolean.FALSE, Boolean.valueOf(externalResourceDescriptor.isIncoming()));
-	}
+    }
 
     @Test
     public void testUnknownHost() throws Exception {
-        Operation op = new Operation();       
+        Operation op = new Operation();
         op.type(GemFireDefenitions.TYPE_REMOTE.getType());
         int port = 12345;
         op.put(GemFireDefenitions.FIELD_PORT, port);
-        
+
         Frame frame = new SimpleFrame(FrameId.valueOf("0"),
                 null,
                 op,
@@ -131,16 +131,16 @@ public class GemFireRemoteExternalResourceAnalyzerTest extends AbstractCollectio
                 new Date(),
                 TraceId.valueOf("fake-id"),
                 frame);
-        
-        Collection<ExternalResourceDescriptor>    res=analyzer.locateExternalResourceName(trace);
+
+        Collection<ExternalResourceDescriptor> res = analyzer.locateExternalResourceName(trace);
         assertEquals("Mismatched number of results", 0, res.size());
     }
 
     @Test
     public void testNoRemoteFrame() throws Exception {
-        Operation op = new Operation();       
+        Operation op = new Operation();
         op.type(GemFireDefenitions.TYPE_REGION.getType());
-        
+
         Frame frame = new SimpleFrame(FrameId.valueOf("0"),
                 null,
                 op,
@@ -152,8 +152,8 @@ public class GemFireRemoteExternalResourceAnalyzerTest extends AbstractCollectio
                 new Date(),
                 TraceId.valueOf("fake-id"),
                 frame);
-        
-        Collection<ExternalResourceDescriptor>    res=analyzer.locateExternalResourceName(trace);
+
+        Collection<ExternalResourceDescriptor> res = analyzer.locateExternalResourceName(trace);
         assertEquals("Mismatched number of results", 0, res.size());
     }
 }

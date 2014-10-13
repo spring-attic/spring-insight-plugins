@@ -28,18 +28,18 @@ import com.springsource.insight.collection.test.OperationCollectionAspectTestSup
 import com.springsource.insight.intercept.operation.Operation;
 
 public class ViewResolverOperationCollectionAspectTest
-    	extends OperationCollectionAspectTestSupport {
-	
-	public ViewResolverOperationCollectionAspectTest () {
-		super();
-	}
+        extends OperationCollectionAspectTestSupport {
+
+    public ViewResolverOperationCollectionAspectTest() {
+        super();
+    }
 
     @Test
     public void viewResolverMonitored() throws Exception {
         ExampleViewResolver testResolver = new ExampleViewResolver();
         View view = testResolver.resolveViewName("testView", Locale.US);
 
-        Operation   operation=getLastEntered();
+        Operation operation = getLastEntered();
         assertEquals("Resolve view \"testView\"", operation.getLabel());
         assertEquals("testView", operation.get("viewName"));
         assertEquals(view.getContentType(), operation.get("contentType"));
@@ -52,7 +52,7 @@ public class ViewResolverOperationCollectionAspectTest
         NullViewResolver testResolver = new NullViewResolver();
         testResolver.resolveViewName("testView", Locale.US);
 
-        Operation   operation=getLastEntered();
+        Operation operation = getLastEntered();
         assertEquals("Resolve view \"testView\"", operation.getLabel());
         assertEquals("testView", operation.get("viewName"));
         assertNull(operation.get("contentType"));
@@ -61,9 +61,9 @@ public class ViewResolverOperationCollectionAspectTest
     }
 
     static class ExampleViewResolver implements ViewResolver {
-    	ExampleViewResolver () {
-    		super();
-    	}
+        ExampleViewResolver() {
+            super();
+        }
 
         public View resolveViewName(String viewName, Locale locale) throws Exception {
             return new JstlView("testUrl");
@@ -71,9 +71,9 @@ public class ViewResolverOperationCollectionAspectTest
     }
 
     static class NullViewResolver implements ViewResolver {
-    	NullViewResolver () {
-    		super();
-    	}
+        NullViewResolver() {
+            super();
+        }
 
         public View resolveViewName(String viewName, Locale locale) throws Exception {
             return null;

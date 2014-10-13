@@ -20,18 +20,18 @@ import com.springsource.insight.intercept.operation.OperationType;
 
 
 public enum OperationCollectionTypes {
-	LOGIN_TYPE("jcr-login", "JCR: Login"),
-	WORKSPACE_TYPE("jcr-workspace", "JCR: Workspace"),
-	ITEM_TYPE("jcr-item", "JCR: Item"),
-	QUERY_TYPE("jcr-query", "JCR: Query"),
-	GET_TYPE("jcr-get", "JCR: ");
+    LOGIN_TYPE("jcr-login", "JCR: Login"),
+    WORKSPACE_TYPE("jcr-workspace", "JCR: Workspace"),
+    ITEM_TYPE("jcr-item", "JCR: Item"),
+    QUERY_TYPE("jcr-query", "JCR: Query"),
+    GET_TYPE("jcr-get", "JCR: ");
 
-	
-	final public OperationType type;
-	final public String label;
 
-	private OperationCollectionTypes(String typeId, String labelValue) {
-		this.type=OperationType.valueOf(typeId);
-		this.label = labelValue;
-	}
+    final public OperationType type;
+    final public String label;
+
+    private OperationCollectionTypes(String typeId, String labelValue) {
+        this.type = OperationType.valueOf(typeId);
+        this.label = labelValue;
+    }
 }

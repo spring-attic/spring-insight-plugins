@@ -40,27 +40,27 @@ import com.springsource.insight.util.ArrayUtil;
 import com.springsource.insight.util.ListUtil;
 
 public class ApplicationListenerMethodOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-	public ApplicationListenerMethodOperationCollectionAspectTest () {
-		super();
-	}
+    public ApplicationListenerMethodOperationCollectionAspectTest() {
+        super();
+    }
 
     @Override
-	protected OperationCollector createSpiedOperationCollector(OperationCollector originalCollector) {
+    protected OperationCollector createSpiedOperationCollector(OperationCollector originalCollector) {
         assertNotNull("No original collector", originalCollector);
-		return new OperationListCollector();
-	}
+        return new OperationListCollector();
+    }
 
-	@Override
-	protected Operation getLastEnteredOperation(OperationCollector spiedCollector) {
-        List<Operation>	opsList=((OperationListCollector) spiedCollector).getCollectedOperations();
-		if (ListUtil.size(opsList) <= 0) {
-			return null;
-		} else {
-			return opsList.get(opsList.size() - 1);
-		}
-	}
+    @Override
+    protected Operation getLastEnteredOperation(OperationCollector spiedCollector) {
+        List<Operation> opsList = ((OperationListCollector) spiedCollector).getCollectedOperations();
+        if (ListUtil.size(opsList) <= 0) {
+            return null;
+        } else {
+            return opsList.get(opsList.size() - 1);
+        }
+    }
 
-	/**
+    /**
      * Verifies that if a regular listener and a @Repository annotated listener are called, that
      * only the regular listener generates a MethodOperation.  The @Repository
      * annotation will generate a MethodOperation independently for those methods;
@@ -74,23 +74,23 @@ public class ApplicationListenerMethodOperationCollectionAspectTest extends Oper
 
         MyApplicationListener listener = ctx.getBean(MyApplicationListener.class);
         MyApplicationListenerAndRepository listenerAndRepo = ctx.getBean(MyApplicationListenerAndRepository.class);
-        
+
         MyEvent event = new MyEvent("fubar");
         ctx.publishEvent(event);
         assertSame("Mismatched listener event", event, listener.getLastEvent());
         assertSame("Mismatched listener&repo event", event, listenerAndRepo.getLastEvent());
-        
-        List<Operation>	opsList=((OperationListCollector) spiedOperationCollector).getCollectedOperations();
+
+        List<Operation> opsList = ((OperationListCollector) spiedOperationCollector).getCollectedOperations();
         assertEquals("Mismatched number of collected operations", 2, ListUtil.size(opsList));
 
         @SuppressWarnings("unchecked")
-		Collection<Class<?>>	beanTypes=ListUtil.asSet((Class<?>) MyApplicationListener.class, (Class<?>) MyApplicationListenerAndRepository.class);
+        Collection<Class<?>> beanTypes = ListUtil.asSet((Class<?>) MyApplicationListener.class, (Class<?>) MyApplicationListenerAndRepository.class);
         for (Operation op : opsList) {
-        	Class<?>	matchClass=assertOperationBelongsToClass(op, beanTypes);
-        	assertTrue("Unexpected match: " + matchClass.getSimpleName(), beanTypes.remove(matchClass));
+            Class<?> matchClass = assertOperationBelongsToClass(op, beanTypes);
+            assertTrue("Unexpected match: " + matchClass.getSimpleName(), beanTypes.remove(matchClass));
         }
     }
-    
+
     @Test
     public void testSourceFilteredListener() {
         StaticApplicationContext ctx = new StaticApplicationContext();
@@ -102,51 +102,51 @@ public class ApplicationListenerMethodOperationCollectionAspectTest extends Oper
         ctx.publishEvent(event);
 
         assertSame("Mismatched delegate event", event, delegate.getLastEvent());
-        
-        List<Operation>	opsList=((OperationListCollector) spiedOperationCollector).getCollectedOperations();
+
+        List<Operation> opsList = ((OperationListCollector) spiedOperationCollector).getCollectedOperations();
         assertEquals("Mismatched number of collected operations", 1, ListUtil.size(opsList));
         assertOperationBelongsToClass(opsList.get(0), MyApplicationListener.class);
     }
-    
-    private Class<?> assertOperationBelongsToClass(Operation op, Class<?> ... beanTypes) {
-    	return assertOperationBelongsToClass(op,
-    				(ArrayUtil.length(beanTypes) <= 0)
-    					? Collections.<Class<?>>emptyList()
-    					: Arrays.asList(beanTypes));
+
+    private Class<?> assertOperationBelongsToClass(Operation op, Class<?>... beanTypes) {
+        return assertOperationBelongsToClass(op,
+                (ArrayUtil.length(beanTypes) <= 0)
+                        ? Collections.<Class<?>>emptyList()
+                        : Arrays.asList(beanTypes));
     }
 
     private Class<?> assertOperationBelongsToClass(Operation op, Collection<Class<?>> beanTypes) {
-    	if (op.isFinalizable()) {
-    		op.finalizeConstruction();
-    	}
+        if (op.isFinalizable()) {
+            op.finalizeConstruction();
+        }
 
-    	assertEquals("Mismatched operation type", SpringCorePluginRuntimeDescriptor.APP_LISTENER_TYPE, op.getType());
-    	String		shortName=op.get(OperationFields.SHORT_CLASS_NAME, String.class);
-    	Class<?>	matchingClass=null;
-    	for (Class<?> clazz : beanTypes) {
-    		if (clazz.getSimpleName().equals(shortName)) {
-    			if (matchingClass != null) {
-    				fail("Muliple matches for " + shortName + ": " + matchingClass.getSimpleName());
-    			}
-    			matchingClass = clazz;
-    		}
-    	}
-    	assertNotNull("Mismatched short class name: " + shortName, matchingClass);
+        assertEquals("Mismatched operation type", SpringCorePluginRuntimeDescriptor.APP_LISTENER_TYPE, op.getType());
+        String shortName = op.get(OperationFields.SHORT_CLASS_NAME, String.class);
+        Class<?> matchingClass = null;
+        for (Class<?> clazz : beanTypes) {
+            if (clazz.getSimpleName().equals(shortName)) {
+                if (matchingClass != null) {
+                    fail("Muliple matches for " + shortName + ": " + matchingClass.getSimpleName());
+                }
+                matchingClass = clazz;
+            }
+        }
+        assertNotNull("Mismatched short class name: " + shortName, matchingClass);
 
-        String	compType=op.get(StereotypedSpringBeanMethodOperationCollectionAspectSupport.COMP_TYPE_ATTR, String.class);
+        String compType = op.get(StereotypedSpringBeanMethodOperationCollectionAspectSupport.COMP_TYPE_ATTR, String.class);
         // make sure not intercepted by one of the stereotyped beans aspects
         assertNull("Unexpected stereotyped bean method collection: " + compType, compType);
 
-        String	methodName=op.get(OperationFields.METHOD_NAME, String.class, "");
+        String methodName = op.get(OperationFields.METHOD_NAME, String.class, "");
         assertTrue(shortName + methodName + " does not start with onApplicationEvent", methodName.startsWith("onApplicationEvent"));
         assertEquals(shortName + ": mismatched event type",
-        		     MyEvent.class.getName(), op.get(SpringLifecycleMethodOperationCollectionAspect.EVENT_ATTR, String.class));
+                MyEvent.class.getName(), op.get(SpringLifecycleMethodOperationCollectionAspect.EVENT_ATTR, String.class));
 
-        OperationList	argsList=op.get(OperationFields.ARGUMENTS, OperationList.class);
+        OperationList argsList = op.get(OperationFields.ARGUMENTS, OperationList.class);
         assertNotNull(shortName + ": Missing arguments list", argsList);
         assertEquals(shortName + ": Mismatched number of arguments", 1, argsList.size());
         assertEquals(shortName + ": Mismatched argument type", MyEvent.class.getName(), argsList.get(0));
-        
+
         return matchingClass;
     }
 

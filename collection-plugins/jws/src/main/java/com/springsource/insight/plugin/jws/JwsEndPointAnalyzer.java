@@ -25,21 +25,21 @@ import com.springsource.insight.intercept.trace.Frame;
  *
  */
 public class JwsEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
-	private static final JwsEndPointAnalyzer	INSTANCE=new JwsEndPointAnalyzer();
+    private static final JwsEndPointAnalyzer INSTANCE = new JwsEndPointAnalyzer();
 
     private JwsEndPointAnalyzer() {
         super(JwsDefinitions.TYPE);
     }
 
     public static final JwsEndPointAnalyzer getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override
-	protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
-		Operation	  op=frame.getOperation();
-        EndPointName  endPointName=EndPointName.valueOf(op);
-        String        example=EndPointAnalysis.getHttpExampleRequest(frame);
+    protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
+        Operation op = frame.getOperation();
+        EndPointName endPointName = EndPointName.valueOf(op);
+        String example = EndPointAnalysis.getHttpExampleRequest(frame);
         return new EndPointAnalysis(endPointName, op.getLabel(), example, getOperationScore(op, depth), op);
     }
 }

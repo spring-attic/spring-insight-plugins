@@ -38,46 +38,46 @@ public privileged aspect ResultOperationCollectionAspect extends AbstractOperati
         super();
     }
 
-    public pointcut collectionPoint() :
-    	execution(void org.apache.struts2.dispatcher.ServletDispatcherResult.doExecute(String, ActionInvocation));
+    public pointcut collectionPoint():
+            execution(void org.apache.struts2.dispatcher.ServletDispatcherResult.doExecute(String, ActionInvocation));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-    	Object[] args = jp.getArgs();
-    	ActionInvocation aci=(ActionInvocation)args[1];
-    	
-    	// get resolve view
-		String view=(String)args[0];
-		// get result code
-		String result=aci.getResultCode();
-		
-		// get fields validation errors 
-		Map<String, List<String>> errs=null;
-		Object action=aci.getAction();
-    	if (action instanceof ValidationAware) {
-    		errs=((ValidationAware)action).getFieldErrors();
-    	}
-		
-		Operation operation=new Operation().type(OperationCollectionTypes.RESULT_TYPE.type)
-    						.label(OperationCollectionTypes.RESULT_TYPE.label+" ["+result+"]")
-    						.sourceCodeLocation(getSourceCodeLocation(jp))
-    						.put("view", view)
-    						.put("resultCode",result);
-		
-		if (errs!=null && !errs.isEmpty()) {
-			// add fields validation errors
-			OperationMap map=operation.createMap("errs");			
-			Set<Entry<String, List<String>>> entries=errs.entrySet();
-			for(Entry<String, List<String>> item: entries) {
-				map.put(item.getKey(), item.getValue().get(0));
-			}
-		}
-    	
-    	return operation;
+        Object[] args = jp.getArgs();
+        ActionInvocation aci = (ActionInvocation) args[1];
+
+        // get resolve view
+        String view = (String) args[0];
+        // get result code
+        String result = aci.getResultCode();
+
+        // get fields validation errors
+        Map<String, List<String>> errs = null;
+        Object action = aci.getAction();
+        if (action instanceof ValidationAware) {
+            errs = ((ValidationAware) action).getFieldErrors();
+        }
+
+        Operation operation = new Operation().type(OperationCollectionTypes.RESULT_TYPE.type)
+                .label(OperationCollectionTypes.RESULT_TYPE.label + " [" + result + "]")
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .put("view", view)
+                .put("resultCode", result);
+
+        if (errs != null && !errs.isEmpty()) {
+            // add fields validation errors
+            OperationMap map = operation.createMap("errs");
+            Set<Entry<String, List<String>>> entries = errs.entrySet();
+            for (Entry<String, List<String>> item : entries) {
+                map.put(item.getKey(), item.getValue().get(0));
+            }
+        }
+
+        return operation;
     }
-    
-	@Override
+
+    @Override
     public String getPluginName() {
-		return Struts2PluginRuntimeDescriptor.PLUGIN_NAME;
-	}
+        return Struts2PluginRuntimeDescriptor.PLUGIN_NAME;
+    }
 }

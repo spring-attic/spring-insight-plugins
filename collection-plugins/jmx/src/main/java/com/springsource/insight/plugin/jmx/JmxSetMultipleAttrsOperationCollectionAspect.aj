@@ -24,12 +24,12 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.util.ArrayUtil;
 
 /**
- * 
+ *
  */
 public aspect JmxSetMultipleAttrsOperationCollectionAspect extends JmxMultiAttributeOperationCollectionSupport {
-	public JmxSetMultipleAttrsOperationCollectionAspect() {
-		super(JmxPluginRuntimeDescriptor.SET_ACTION);
-	}
+    public JmxSetMultipleAttrsOperationCollectionAspect() {
+        super(JmxPluginRuntimeDescriptor.SET_ACTION);
+    }
 	
 	/* We use cflowbelow in case calls are delegated - theoretically, one
 	 * might make a case against the cflowbelow - e.g., if the server accesses
@@ -37,18 +37,18 @@ public aspect JmxSetMultipleAttrsOperationCollectionAspect extends JmxMultiAttri
 	 * (a) highly unlikely, (b) not really useful information and (c) considerable
 	 * trace size increase
 	 */
-	public pointcut collectionPoint()
-		: setAttributesList()
-	   && (!cflowbelow(setAttributeValue()))
-	   && (!cflowbelow(setAttributesList()))
-	    ;
+    public pointcut collectionPoint()
+            : setAttributesList()
+            && (!cflowbelow(setAttributeValue()))
+            && (!cflowbelow(setAttributesList()))
+            ;
 
-	@Override
-	protected Operation createOperation(JoinPoint jp) {
-		Object[]		args=jp.getArgs();
-		AttributeList	attrsList=ArrayUtil.findFirstInstanceOf(AttributeList.class, args);
-		Operation		op=createAttributeOperation(jp, getObjectName(args), attrsList);
-		MultiAttributeOperationCollector.encodeManagedAttributes(op, attrsList);
-		return op;
-	}
+    @Override
+    protected Operation createOperation(JoinPoint jp) {
+        Object[] args = jp.getArgs();
+        AttributeList attrsList = ArrayUtil.findFirstInstanceOf(AttributeList.class, args);
+        Operation op = createAttributeOperation(jp, getObjectName(args), attrsList);
+        MultiAttributeOperationCollector.encodeManagedAttributes(op, attrsList);
+        return op;
+    }
 }

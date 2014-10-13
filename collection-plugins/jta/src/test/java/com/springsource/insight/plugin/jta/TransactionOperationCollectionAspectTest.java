@@ -30,17 +30,18 @@ import org.junit.Test;
 
 
 /**
- * 
+ *
  */
 public class TransactionOperationCollectionAspectTest
         extends JtaOperationCollectionAspectTestSupport {
-    static final Transaction    transaction=new TransactionImpl();
+    static final Transaction transaction = new TransactionImpl();
+
     public TransactionOperationCollectionAspectTest() {
         super();
     }
 
     @Test
-    public void testTransactionOperations () {
+    public void testTransactionOperations() {
         runAspectOperations(TransactionOperation.class);
     }
 
@@ -52,23 +53,23 @@ public class TransactionOperationCollectionAspectTest
     static enum TransactionOperation implements Runnable, ParameterTypeDescriptor {
         COMMIT {
             @Override
-            protected void doOperation (Transaction tx) throws Exception {
+            protected void doOperation(Transaction tx) throws Exception {
                 tx.commit();
             }
         },
         ROLLBACK {
             @Override
-            protected void doOperation (Transaction tx) throws Exception {
+            protected void doOperation(Transaction tx) throws Exception {
                 tx.rollback();
             }
         };
 
-        protected abstract void doOperation (Transaction tx) throws Exception;
+        protected abstract void doOperation(Transaction tx) throws Exception;
 
-        public void run () {
+        public void run() {
             try {
                 doOperation(transaction);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 if (e instanceof RuntimeException) {
                     throw (RuntimeException) e;
                 } else {
@@ -83,8 +84,9 @@ public class TransactionOperationCollectionAspectTest
     }
 
     static class TransactionImpl implements Transaction {
-        private final Logger    logger=Logger.getLogger(getClass().getName());
-        TransactionImpl () {
+        private final Logger logger = Logger.getLogger(getClass().getName());
+
+        TransactionImpl() {
             super();
         }
 
@@ -100,7 +102,7 @@ public class TransactionOperationCollectionAspectTest
         }
 
         public boolean enlistResource(XAResource xaRes)
-                throws RollbackException, IllegalStateException,SystemException {
+                throws RollbackException, IllegalStateException, SystemException {
             throw new SystemException("enlistResource - N/A");
         }
 

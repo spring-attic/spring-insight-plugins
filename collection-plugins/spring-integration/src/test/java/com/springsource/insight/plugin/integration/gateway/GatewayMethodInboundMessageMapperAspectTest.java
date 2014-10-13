@@ -28,43 +28,43 @@ import com.springsource.insight.util.ClassUtil;
 import com.springsource.insight.util.ExtraReflectionUtils;
 
 /**
- * 
+ *
  */
 public class GatewayMethodInboundMessageMapperAspectTest extends AbstractCollectionTestSupport {
-	private static String CLASS_NAME="org.springframework.integration.gateway.GatewayMethodInboundMessageMapper";
-	
-	public GatewayMethodInboundMessageMapperAspectTest() {
-		assertTrue("Cannot access " + CLASS_NAME, ClassUtil.isPresent(CLASS_NAME, getClass()));
-	}
+    private static String CLASS_NAME = "org.springframework.integration.gateway.GatewayMethodInboundMessageMapper";
 
-	@Test
-	public void testHasMethodIntroduction() throws Exception {
-		Object		gateway=getClassInstance("testHasMethodIntroduction");
-		Class<?>	gtwClass=gateway.getClass();
-		assertInstanceOf(gtwClass.getName() + " " + HasMethod.class.getSimpleName() + " ?", gateway, HasMethod.class);
-	}
-	
-	@Test
-	public void testMethodTaggingAspect() throws Exception {
-		Object		gateway=getClassInstance("testMethodTaggingAspect");
-		Class<?>	gtwClass=gateway.getClass();
-		Field		methodField=ExtraReflectionUtils.getAccessibleField(gtwClass, "method", Method.class);
-		assertNotNull("Cannot locate method field", methodField);
-		
-		Method	expected=ExtraReflectionUtils.getFieldValue(methodField, gateway, Method.class);
-		assertNotNull("No gateway method value", expected);
+    public GatewayMethodInboundMessageMapperAspectTest() {
+        assertTrue("Cannot access " + CLASS_NAME, ClassUtil.isPresent(CLASS_NAME, getClass()));
+    }
 
-		assertInstanceOf(gtwClass.getName() + " " + HasMethod.class.getSimpleName() + " ?", gateway, HasMethod.class);
-		HasMethod	methodAccess=(HasMethod) gateway;
-		Method	actual=methodAccess.__getInsightMethod();
-		assertSame("Mismatched tagged method value", expected, actual);
-	}
+    @Test
+    public void testHasMethodIntroduction() throws Exception {
+        Object gateway = getClassInstance("testHasMethodIntroduction");
+        Class<?> gtwClass = gateway.getClass();
+        assertInstanceOf(gtwClass.getName() + " " + HasMethod.class.getSimpleName() + " ?", gateway, HasMethod.class);
+    }
 
-	private Object getClassInstance(String methodName) throws Exception {
-		Class<?>		myClass=getClass();
-		Class<?>		instanceClass=ClassUtil.loadClassByName(CLASS_NAME, myClass);
-		Constructor<?>	ctor=ExtraReflectionUtils.getAccessibleConstructor(instanceClass, Method.class);
-		Method			method=myClass.getMethod(methodName, ArrayUtil.EMPTY_CLASSES);
-		return ctor.newInstance(method);
-	}
+    @Test
+    public void testMethodTaggingAspect() throws Exception {
+        Object gateway = getClassInstance("testMethodTaggingAspect");
+        Class<?> gtwClass = gateway.getClass();
+        Field methodField = ExtraReflectionUtils.getAccessibleField(gtwClass, "method", Method.class);
+        assertNotNull("Cannot locate method field", methodField);
+
+        Method expected = ExtraReflectionUtils.getFieldValue(methodField, gateway, Method.class);
+        assertNotNull("No gateway method value", expected);
+
+        assertInstanceOf(gtwClass.getName() + " " + HasMethod.class.getSimpleName() + " ?", gateway, HasMethod.class);
+        HasMethod methodAccess = (HasMethod) gateway;
+        Method actual = methodAccess.__getInsightMethod();
+        assertSame("Mismatched tagged method value", expected, actual);
+    }
+
+    private Object getClassInstance(String methodName) throws Exception {
+        Class<?> myClass = getClass();
+        Class<?> instanceClass = ClassUtil.loadClassByName(CLASS_NAME, myClass);
+        Constructor<?> ctor = ExtraReflectionUtils.getAccessibleConstructor(instanceClass, Method.class);
+        Method method = myClass.getMethod(methodName, ArrayUtil.EMPTY_CLASSES);
+        return ctor.newInstance(method);
+    }
 }

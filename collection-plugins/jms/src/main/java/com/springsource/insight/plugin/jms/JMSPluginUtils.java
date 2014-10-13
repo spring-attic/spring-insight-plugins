@@ -65,12 +65,12 @@ final class JMSPluginUtils {
     /**
      * Adds destination type and name to a given {@link OperationMap} only if {@code dest}
      * is not {@code null}
-     * 
-     * @param dest jms destination
-     * @param map The {@link OperationMap} to update
-     * @param marker The {@link ObscuredValueMarker} to use if a property is marked as sensitive
+     *
+     * @param dest    jms destination
+     * @param map     The {@link OperationMap} to update
+     * @param marker  The {@link ObscuredValueMarker} to use if a property is marked as sensitive
      * @param nameSet The {@link Collection} of properties names marked as sensitive
-     * @param prefix destination type and name prefix
+     * @param prefix  destination type and name prefix
      * @return Same as input map
      * @throws JMSException if any occurs by accessing {@code dest} attributes
      */
@@ -82,17 +82,17 @@ final class JMSPluginUtils {
 
         DestinationType destinationType = getDestinationType(dest);
         String destinationName = getDestinationName(dest, destinationType);
-        updateAny(map, prefix+TYPE, destinationType.name(), marker, nameSet);
-        updateAny(map, prefix+NAME, destinationName, marker, nameSet);
+        updateAny(map, prefix + TYPE, destinationType.name(), marker, nameSet);
+        updateAny(map, prefix + NAME, destinationName, marker, nameSet);
         return map;
     }
 
     /**
      * Creates an operation map named {@link #MESSAGE_PROPERTIES} and populates the map with {@code message} properties
-     * 
-     * @param op insight {@link Operation}
+     *
+     * @param op      insight {@link Operation}
      * @param message jms {@link Message}
-     * @param marker The {@link ObscuredValueMarker} to use if a property is marked as sensitive
+     * @param marker  The {@link ObscuredValueMarker} to use if a property is marked as sensitive
      * @param nameSet The {@link Collection} of properties names marked as sensitive
      * @return Generated attributes {@link OperationMap}
      * @throws JMSException if any occurs by accessing {@code message} properties
@@ -122,7 +122,7 @@ final class JMSPluginUtils {
                 connectionData.put("host", String.valueOf(host));
             }
 
-            for (Enumeration<?> propertyNameEnum = propertyNames; propertyNameEnum.hasMoreElements();) {
+            for (Enumeration<?> propertyNameEnum = propertyNames; propertyNameEnum.hasMoreElements(); ) {
                 String propertyName = (String) propertyNameEnum.nextElement();
                 Object propertyValue = message.getObjectProperty(propertyName);
                 updateAny(attributesMap, propertyName, propertyValue, marker, nameSet);
@@ -135,10 +135,10 @@ final class JMSPluginUtils {
     /**
      * Creates an operation map name {@link #MESSAGE_HEADERS} and populates the map
      * with {@code message} headers values
-     * 
-     * @param op insight {@link Operation}
+     *
+     * @param op      insight {@link Operation}
      * @param message jms {@link Message}
-     * @param marker The {@link ObscuredValueMarker} to use if a property is marked as sensitive
+     * @param marker  The {@link ObscuredValueMarker} to use if a property is marked as sensitive
      * @param nameSet The {@link Collection} of properties names marked as sensitive
      * @return The {@link OperationMap} containing the relevant extracted headers
      * @throws JMSException if any occurs by accessing {@code message} properties
@@ -165,13 +165,13 @@ final class JMSPluginUtils {
         return headersMap;
     }
 
-    private static OperationMap updateAny (OperationMap map, String name, Object value, ObscuredValueMarker marker, Collection<String> nameSet) {
+    private static OperationMap updateAny(OperationMap map, String name, Object value, ObscuredValueMarker marker, Collection<String> nameSet) {
         map.putAny(name, value);
         updateSensitiveValues(name, value, marker, nameSet);
         return map;
     }
 
-    private static boolean updateSensitiveValues (String name, Object value, ObscuredValueMarker marker, Collection<String> nameSet) {
+    private static boolean updateSensitiveValues(String name, Object value, ObscuredValueMarker marker, Collection<String> nameSet) {
         if (nameSet.contains(name) && (value != null)) {
             marker.markObscured(value);
             return true;
@@ -184,8 +184,8 @@ final class JMSPluginUtils {
      * Adds the message type ({@link MessageType}) to the {@code message}.<br>
      * It also adds the {@code message} content ({@link TextMessage#getText()}) if the {@code message} is a {@link TextMessage}, <br>
      * and if the {@code message} is a {@link MapMessage} then the {@code message} content map is added.
-     * 
-     * @param op insight operation
+     *
+     * @param op      insight operation
      * @param message jms message
      * @throws JMSException if any occurs by accessing {@code message} properties
      */
@@ -196,13 +196,12 @@ final class JMSPluginUtils {
 
     /**
      * @param deliveryMode message delivery mode ({@link DeliveryMode})
-     * 
      * @return an enum representation for the {@code message} delivery mode ({@link Message#getJMSDeliveryMode()})
      */
     static DeliveryModeType getDeliveryMode(int deliveryMode) {
         DeliveryModeType mode;
 
-        switch(deliveryMode) {
+        switch (deliveryMode) {
             case DeliveryMode.NON_PERSISTENT:
                 mode = DeliveryModeType.NON_PERSISTENT;
                 break;
@@ -220,15 +219,13 @@ final class JMSPluginUtils {
     /**
      * @param dest jms destination
      * @param type destination type
-     * 
      * @return destination name ({@link Queue#getQueueName()}, {@link Topic#getTopicName()})
-     * 
      * @throws JMSException if any occurs by accessing {@code dest} properties
      */
     static String getDestinationName(Destination dest, DestinationType type) throws JMSException {
         String name = UNKNOWN;
 
-        switch(type) {
+        switch (type) {
             case Queue:
             case TemporaryQueue:
                 name = ((Queue) dest).getQueueName();
@@ -245,7 +242,6 @@ final class JMSPluginUtils {
 
     /**
      * @param dest jms destination
-     * 
      * @return {@code dest} type (queue or topic)
      */
     static DestinationType getDestinationType(Destination dest) {
@@ -266,13 +262,13 @@ final class JMSPluginUtils {
 
     /**
      * Extracts a {@link Message} from a {@code args}
-     * 
+     *
      * @param args
      * @return a {@link Message} or {@code null} if none exists
      */
     static Message getMessage(Object[] args) {
         Message m = null;
-        for(Object obj : args) {
+        for (Object obj : args) {
             if (obj instanceof Message) {
                 m = (Message) obj;
                 break;

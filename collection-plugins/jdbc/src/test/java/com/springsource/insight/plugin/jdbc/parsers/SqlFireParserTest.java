@@ -19,7 +19,7 @@ import com.springsource.insight.plugin.jdbc.parser.DatabaseType;
 import com.springsource.insight.plugin.jdbc.parser.parsers.SqlFireParser;
 
 public class SqlFireParserTest extends SqlParserTestImpl<SqlFireParser> {
-	public SqlFireParserTest () {
-		super(DatabaseType.SQLFIRE, new SqlFireParser(), new SqlTestEntry("jdbc:sqlfire://localhost:7365/", "localhost", 7365, ""));
-	}
+    public SqlFireParserTest() {
+        super(DatabaseType.SQLFIRE, new SqlFireParser(), new SqlTestEntry("jdbc:sqlfire://localhost:7365/", "localhost", 7365, ""));
+    }
 }

@@ -65,23 +65,23 @@ import com.springsource.insight.util.time.TimeRange;
  */
 public abstract class LdapOperationCollectionAspectTestSupport
         extends OperationCollectionAspectTestSupport {
-    private static final Log    LOG=LogFactory.getLog(LdapOperationCollectionAspectTestSupport.class);
+    private static final Log LOG = LogFactory.getLog(LdapOperationCollectionAspectTestSupport.class);
     // Use non-default port to avoid conflicts if built on servers that have a running sever
-    protected static final int TEST_PORT=53899;
+    protected static final int TEST_PORT = 53899;
     // NOTE: the DN(s) should match the one in the LDIF file
-    protected static final String   ROOT_DN="dc=springframework,dc=org",
-                                    LDAP_URL="ldap://localhost:" + TEST_PORT + "/" + ROOT_DN;
+    protected static final String ROOT_DN = "dc=springframework,dc=org",
+            LDAP_URL = "ldap://localhost:" + TEST_PORT + "/" + ROOT_DN;
     // NOTE: these are the defaults - haven't figured out how to override them...
-    protected static final String   LDAP_USERNAME="uid=admin,ou=system",
-                                    LDAP_PASSWORD="secret";
+    protected static final String LDAP_USERNAME = "uid=admin,ou=system",
+            LDAP_PASSWORD = "secret";
     // NOTE: taken from a Spring security sample code
-    protected static final String   LDIF_LOCATION="META-INF/testUsers.ldif",
-                                    LDIF_RESUOURCE="classpath:" + LDIF_LOCATION;
-    protected static Collection<Map<String,Set<String>>>   LDIF_ENTRIES;
-    private static ApacheDSContainer   dsContainer;
+    protected static final String LDIF_LOCATION = "META-INF/testUsers.ldif",
+            LDIF_RESUOURCE = "classpath:" + LDIF_LOCATION;
+    protected static Collection<Map<String, Set<String>>> LDIF_ENTRIES;
+    private static ApacheDSContainer dsContainer;
 
-    protected final Log logger=LogFactory.getLog(getClass());
-    protected static final LdapExternalResourceAnalyzer analyzer=LdapExternalResourceAnalyzer.getInstance();
+    protected final Log logger = LogFactory.getLog(getClass());
+    protected static final LdapExternalResourceAnalyzer analyzer = LdapExternalResourceAnalyzer.getInstance();
 
     protected LdapOperationCollectionAspectTestSupport() {
         super();
@@ -89,7 +89,7 @@ public abstract class LdapOperationCollectionAspectTestSupport
 
     @BeforeClass
     public static final void startLdapServer() throws Exception {
-        File    apacheWorkDir=resolveApacheWorkDir(LdapOperationCollectionAspectTestSupport.class);
+        File apacheWorkDir = resolveApacheWorkDir(LdapOperationCollectionAspectTestSupport.class);
         // see ApacheDSContainer#afterPropertiesSet() as to why this is necessary
         if (FileSystemUtils.deleteRecursively(apacheWorkDir)) {
             System.out.println("Deleted " + apacheWorkDir.getAbsolutePath());
@@ -98,8 +98,8 @@ public abstract class LdapOperationCollectionAspectTestSupport
         dsContainer = new ApacheDSContainer(ROOT_DN, LDIF_RESUOURCE);
         dsContainer.setPort(TEST_PORT);
         dsContainer.setWorkingDirectory(apacheWorkDir);
-        
-        DefaultDirectoryService dsService=dsContainer.getService();
+
+        DefaultDirectoryService dsService = dsContainer.getService();
         dsService.setShutdownHookEnabled(true);
 
         LOG.info("Starting LDAP server on port " + TEST_PORT);
@@ -111,7 +111,7 @@ public abstract class LdapOperationCollectionAspectTestSupport
     }
 
     @AfterClass
-    public static final void stopLdapServer () throws Exception {
+    public static final void stopLdapServer() throws Exception {
         if (dsContainer == null) {
             LOG.warn("No current LDAP server instance running...");
             return;
@@ -122,56 +122,56 @@ public abstract class LdapOperationCollectionAspectTestSupport
         LOG.info("LDAP server stopped...");
     }
 
-    protected Operation assertContextOperation (String testName, String lookupName, Map<?,?> environment) {
-        Operation   op=getLastEntered();
+    protected Operation assertContextOperation(String testName, String lookupName, Map<?, ?> environment) {
+        Operation op = getLastEntered();
         assertNotNull(testName + ": No operation generated", op);
         assertEquals(testName + ": Mismatched operation type", LdapDefinitions.LDAP_OP, op.getType());
         assertEquals(testName + ": Mismatched lookup name",
-                            lookupName, op.get(LdapDefinitions.LOOKUP_NAME_ATTR, String.class));
+                lookupName, op.get(LdapDefinitions.LOOKUP_NAME_ATTR, String.class));
 
-        LdapOperationCollectionAspectSupport    aspectInstance=
+        LdapOperationCollectionAspectSupport aspectInstance =
                 (LdapOperationCollectionAspectSupport) getAspect();
         assertEquals(testName + ": Mismatched action",
-                            aspectInstance.action, op.get(OperationFields.METHOD_NAME, String.class));
+                aspectInstance.action, op.get(OperationFields.METHOD_NAME, String.class));
 
-        Class<?>    contextClass=aspectInstance.contextClass;
+        Class<?> contextClass = aspectInstance.contextClass;
         assertEquals(testName + ": Mismatched short class name",
-                            contextClass.getSimpleName(), op.get(OperationFields.SHORT_CLASS_NAME, String.class));
+                contextClass.getSimpleName(), op.get(OperationFields.SHORT_CLASS_NAME, String.class));
         assertEquals(testName + ": Mismatched full class name",
                 contextClass.getName(), op.get(OperationFields.CLASS_NAME, String.class));
         return op;
     }
 
-    protected static final Collection<ExternalResourceDescriptor> assertExternalResourceAnalysis (
-                String testName, Operation op, String ldapUrl)
-             throws URISyntaxException {
-        Frame   frame=new SimpleFrame(FrameId.valueOf("0"), null, op, TimeRange.FULL_RANGE, Collections.<Frame>emptyList());
-        Trace   trace=new Trace(ServerName.valueOf("fake-server"),
-                                ApplicationName.valueOf("fake-app"),
-                                new Date(System.currentTimeMillis()),
-                                TraceId.valueOf("0"),
-                                frame);
-        Collection<ExternalResourceDescriptor>    result=analyzer.locateExternalResourceName(trace);
+    protected static final Collection<ExternalResourceDescriptor> assertExternalResourceAnalysis(
+            String testName, Operation op, String ldapUrl)
+            throws URISyntaxException {
+        Frame frame = new SimpleFrame(FrameId.valueOf("0"), null, op, TimeRange.FULL_RANGE, Collections.<Frame>emptyList());
+        Trace trace = new Trace(ServerName.valueOf("fake-server"),
+                ApplicationName.valueOf("fake-app"),
+                new Date(System.currentTimeMillis()),
+                TraceId.valueOf("0"),
+                frame);
+        Collection<ExternalResourceDescriptor> result = analyzer.locateExternalResourceName(trace);
         assertNotNull(testName + ": No external resources recovered", result);
         assertEquals(testName + ": Mismatched number of results", 1, result.size());
 
-        ExternalResourceDescriptor  desc=result.iterator().next();
+        ExternalResourceDescriptor desc = result.iterator().next();
         assertSame(testName + ": Mismatched result frame", frame, desc.getFrame());
         assertEquals(testName + ": Mismathed name",
-                            MD5NameGenerator.getName(ldapUrl), desc.getName());
+                MD5NameGenerator.getName(ldapUrl), desc.getName());
         assertEquals(testName + ": Mismatched vendor", ldapUrl, desc.getVendor());
         assertEquals(testName + ": Mismatched label", ldapUrl, desc.getLabel());
         assertEquals(testName + ": Mismatched type",
-                            ExternalResourceType.LDAP.name(), desc.getType());
-        
-        URI uri=new URI(ldapUrl);
+                ExternalResourceType.LDAP.name(), desc.getType());
+
+        URI uri = new URI(ldapUrl);
         assertEquals(testName + ": Mismatched host", uri.getHost(), desc.getHost());
         assertEquals(testName + ": Mismatched port",
-                            LdapExternalResourceAnalyzer.resolvePort(uri), desc.getPort());
+                LdapExternalResourceAnalyzer.resolvePort(uri), desc.getPort());
         return result;
     }
 
-    private static File resolveApacheWorkDir (Class<?> anchorClass) {
+    private static File resolveApacheWorkDir(Class<?> anchorClass) {
         // see ApacheDSContainer#afterPropertiesSet
         String apacheWorkDir = System.getProperty("apacheDSWorkDir");
         if (apacheWorkDir != null) {
@@ -179,23 +179,23 @@ public abstract class LdapOperationCollectionAspectTestSupport
             return new File(apacheWorkDir);
         }
 
-		File	targetDir=FileUtil.detectTargetFolder(anchorClass);
-		if (targetDir == null) {
-			throw new IllegalStateException("No target folder for " + anchorClass.getSimpleName());
-		}
+        File targetDir = FileUtil.detectTargetFolder(anchorClass);
+        if (targetDir == null) {
+            throw new IllegalStateException("No target folder for " + anchorClass.getSimpleName());
+        }
 
-		targetDir = new File(targetDir, "apacheDSWorkDir");
-		LOG.info("resolveApacheWorkDir(" + anchorClass.getSimpleName() + ") location: " + targetDir);
+        targetDir = new File(targetDir, "apacheDSWorkDir");
+        LOG.info("resolveApacheWorkDir(" + anchorClass.getSimpleName() + ") location: " + targetDir);
         return targetDir;
     }
 
-    private static Collection<Map<String,Set<String>>> readLdifEntries (String location)
+    private static Collection<Map<String, Set<String>>> readLdifEntries(String location)
             throws IOException {
-        ClassLoader cl=ClassUtil.getDefaultClassLoader();
-        InputStream in=cl.getResourceAsStream(location);
+        ClassLoader cl = ClassUtil.getDefaultClassLoader();
+        InputStream in = cl.getResourceAsStream(location);
         assertNotNull("No LDIF input at " + location, in);
 
-        BufferedReader  rdr=new BufferedReader(new InputStreamReader(in));
+        BufferedReader rdr = new BufferedReader(new InputStreamReader(in));
         try {
             return readLdifEntries(rdr);
         } finally {
@@ -203,11 +203,11 @@ public abstract class LdapOperationCollectionAspectTestSupport
         }
     }
 
-    private static Collection<Map<String,Set<String>>> readLdifEntries (BufferedReader rdr)
-                throws IOException {
-        Collection<Map<String,Set<String>>>  result=new LinkedList<Map<String,Set<String>>>();
-        Map<String,Set<String>>  curEntry=null;
-        for (String line=rdr.readLine(); line != null; line=rdr.readLine()) {
+    private static Collection<Map<String, Set<String>>> readLdifEntries(BufferedReader rdr)
+            throws IOException {
+        Collection<Map<String, Set<String>>> result = new LinkedList<Map<String, Set<String>>>();
+        Map<String, Set<String>> curEntry = null;
+        for (String line = rdr.readLine(); line != null; line = rdr.readLine()) {
             line = line.trim();
             if (LOG.isTraceEnabled()) {
                 LOG.trace("readLdifEntries - " + line);
@@ -218,43 +218,43 @@ public abstract class LdapOperationCollectionAspectTestSupport
                 if (curEntry != null) {
                     result.add(curEntry);
                 }
-                
+
                 curEntry = null;
                 continue;
             }
-            
+
             if (curEntry == null) {
-                curEntry = new TreeMap<String,Set<String>>(String.CASE_INSENSITIVE_ORDER);
+                curEntry = new TreeMap<String, Set<String>>(String.CASE_INSENSITIVE_ORDER);
             }
-            
-            int     namePos=line.indexOf(':');
-            String  name=line.substring(0, namePos),
-                    value=line.substring(namePos + 2).trim();
+
+            int namePos = line.indexOf(':');
+            String name = line.substring(0, namePos),
+                    value = line.substring(namePos + 2).trim();
             if (StringUtil.isEmpty(name) || StringUtil.isEmpty(value)) {
                 throw new IllegalArgumentException("Bad line: " + line);
             }
 
             if ("dn".equalsIgnoreCase(name)) {
                 assertTrue("DN(" + value + ") not subset of root (" + ROOT_DN + ")",
-                                  value.toLowerCase().endsWith(ROOT_DN.toLowerCase()));
+                        value.toLowerCase().endsWith(ROOT_DN.toLowerCase()));
             }
 
-            Set<String> values=curEntry.get(name);
+            Set<String> values = curEntry.get(name);
             if (values == null) {
                 values = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
                 curEntry.put(name, values);
             }
-            
+
             if (!values.add(value)) {
                 throw new IllegalStateException("Duplicate values for name=" + name + " at line " + line);
             }
         }
-        
+
         return result;
     }
 
-    protected static final Hashtable<String,Object> createEnvironment () {
-        Hashtable<String,Object>    env=new Hashtable<String, Object>();
+    protected static final Hashtable<String, Object> createEnvironment() {
+        Hashtable<String, Object> env = new Hashtable<String, Object>();
         env.put(Context.PROVIDER_URL, LDAP_URL);
         env.put(Context.SECURITY_AUTHENTICATION, "simple");
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");

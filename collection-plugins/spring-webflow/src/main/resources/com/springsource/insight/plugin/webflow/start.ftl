@@ -2,7 +2,7 @@
 <#import "/insight-1.0.ftl" as insight />
 
 <@insight.group label="Details">
-	<@insight.entry name="Flow Name" value=operation.flowId/>
+    <@insight.entry name="Flow Name" value=operation.flowId/>
 </@insight.group>
 
 <#if operation.initParams?has_content>
@@ -12,7 +12,7 @@
 </#if>
 
 <#if operation.exception??>
-	<@insight.group label="Exception Details">
-		<@insight.entry name="Exception" value=operation.exception/>
-	</@insight.group>
+    <@insight.group label="Exception Details">
+        <@insight.entry name="Exception" value=operation.exception/>
+    </@insight.group>
 </#if>

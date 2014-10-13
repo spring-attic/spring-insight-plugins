@@ -24,10 +24,10 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.util.StringUtil;
 
 /**
- * 
+ *
  */
 public privileged aspect FileCloseCollectionAspect extends AbstractFilesTrackerAspectSupport {
-    public FileCloseCollectionAspect () {
+    public FileCloseCollectionAspect() {
         super();
     }
     /*
@@ -38,23 +38,23 @@ public privileged aspect FileCloseCollectionAspect extends AbstractFilesTrackerA
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after (Closeable c) returning
-        :  call(void Closeable+.close())
-        && target(c)
-        && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
-    {
-        registerCloseOperation(thisJoinPointStaticPart, c);
-    }
-    
-    Operation registerCloseOperation (JoinPoint.StaticPart staticPart, Closeable instance) {
-        String  filePath=unmapClosedFile(instance);
+            :  call(void Closeable+.close())
+            && target(c)
+            && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
+            {
+                registerCloseOperation(thisJoinPointStaticPart, c);
+            }
+
+    Operation registerCloseOperation(JoinPoint.StaticPart staticPart, Closeable instance) {
+        String filePath = unmapClosedFile(instance);
         if (StringUtil.isEmpty(filePath)) {
             return null;    // just means we did not intercept the open call...
         } else {
             return registerOperation(createCloseOperation(staticPart, filePath));
         }
     }
-    
-    Operation createCloseOperation (JoinPoint.StaticPart staticPart, String filePath) {
+
+    Operation createCloseOperation(JoinPoint.StaticPart staticPart, String filePath) {
         return createOperation(staticPart, FilesTrackerDefinitions.CLOSE_OP, filePath);
     }
 

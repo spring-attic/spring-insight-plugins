@@ -19,6 +19,6 @@ package com.springsource.insight.plugin.springweb;
 import org.springframework.web.servlet.DispatcherServlet;
 
 public aspect SpringWebPointcuts {
-    public pointcut processWebRequest() 
-        : execution(* DispatcherServlet.doService(..));
+    public pointcut processWebRequest()
+            : execution(* DispatcherServlet.doService(..));
 }

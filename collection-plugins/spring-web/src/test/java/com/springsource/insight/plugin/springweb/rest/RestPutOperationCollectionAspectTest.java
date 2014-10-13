@@ -24,33 +24,33 @@ import org.junit.Test;
 
 
 /**
- * 
+ *
  */
 public class RestPutOperationCollectionAspectTest extends RestOperationCollectionTestSupport {
-	public RestPutOperationCollectionAspectTest() {
-		super();
-	}
+    public RestPutOperationCollectionAspectTest() {
+        super();
+    }
 
-	@Test
-	public void testPutNoArgs() throws Exception {
-		opsInstance.put(new URI(createTestURI("testPutNoArgs")), this);
-		assertRestOperationResult(opsInstance);
-	}
+    @Test
+    public void testPutNoArgs() throws Exception {
+        opsInstance.put(new URI(createTestURI("testPutNoArgs")), this);
+        assertRestOperationResult(opsInstance);
+    }
 
-	@Test
-	public void testPutVarArgs() throws Exception {
-		opsInstance.put(createTestURI("testPutVarArgs"), this, new Date());
-		assertRestOperationResult(opsInstance);
-	}
+    @Test
+    public void testPutVarArgs() throws Exception {
+        opsInstance.put(createTestURI("testPutVarArgs"), this, new Date());
+        assertRestOperationResult(opsInstance);
+    }
 
-	@Test
-	public void testPutArgsMap() throws Exception {
-		opsInstance.put(createTestURI("testPutArgsMap"), this, Collections.singletonMap("now", new Date()));
-		assertRestOperationResult(opsInstance);
-	}
+    @Test
+    public void testPutArgsMap() throws Exception {
+        opsInstance.put(createTestURI("testPutArgsMap"), this, Collections.singletonMap("now", new Date()));
+        assertRestOperationResult(opsInstance);
+    }
 
-	@Override
-	public RestPutOperationCollectionAspect getAspect() {
-		return RestPutOperationCollectionAspect.aspectOf();
-	}
+    @Override
+    public RestPutOperationCollectionAspect getAspect() {
+        return RestPutOperationCollectionAspect.aspectOf();
+    }
 }

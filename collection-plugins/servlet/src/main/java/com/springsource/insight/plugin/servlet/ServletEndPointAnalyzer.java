@@ -26,56 +26,56 @@ import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.util.StringUtil;
 
 /**
- * Locates servlet endpoints within Traces.  
- * 
+ * Locates servlet endpoints within Traces.
+ * <p/>
  * If an HTTP {@link Operation} is detected, an endpoint analysis will be returned.
  * The score of the analysis will always be 0, and its endpoint key/label
  * will be based on the servlet's name.
  */
 public class ServletEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
     public static final int ANALYSIS_SCORE = EndPointAnalysis.TOP_LAYER_SCORE;
-    private static final ServletEndPointAnalyzer	INSTANCE=new ServletEndPointAnalyzer();
+    private static final ServletEndPointAnalyzer INSTANCE = new ServletEndPointAnalyzer();
 
-    private ServletEndPointAnalyzer () {
-    	super(OperationType.HTTP);
+    private ServletEndPointAnalyzer() {
+        super(OperationType.HTTP);
     }
 
     public static final ServletEndPointAnalyzer getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override
     protected int getDefaultScore(int depth) {
-    	return ANALYSIS_SCORE;
+        return ANALYSIS_SCORE;
     }
 
     @Override
     protected EndPointAnalysis makeEndPoint(Frame httpFrame, int depth) {
         Operation op = httpFrame.getOperation();
         OperationMap request = op.get("request", OperationMap.class);
-        
-        String 	servletName=(request == null) ? null : request.get("servletName", String.class);
-        String 	endPointKey=sanitizeEndPointKey(servletName);
-        String 	endPointLabel = "Servlet: " + servletName;
-        String	example=EndPointAnalysis.createHttpExampleRequest(request);
+
+        String servletName = (request == null) ? null : request.get("servletName", String.class);
+        String endPointKey = sanitizeEndPointKey(servletName);
+        String endPointLabel = "Servlet: " + servletName;
+        String example = EndPointAnalysis.createHttpExampleRequest(request);
         if (StringUtil.isEmpty(example)) {
-        	example = op.getLabel();
+            example = op.getLabel();
         }
 
         return new EndPointAnalysis(EndPointName.valueOf(endPointKey), endPointLabel, example, getOperationScore(op, depth), op);
     }
 
     static String sanitizeEndPointKey(String endPointKey) {
-    	if (StringUtil.isEmpty(endPointKey)) {
-    		return "unknonwn-servlet-name";
-    	} else {
-    		return endPointKey.replace('/', '_');
-    	}
+        if (StringUtil.isEmpty(endPointKey)) {
+            return "unknonwn-servlet-name";
+        } else {
+            return endPointKey.replace('/', '_');
+        }
     }
 
     static String getExampleRequest(Operation op) {
         OperationMap details = op.get("request", OperationMap.class);
         return ((details == null) ? "???" : String.valueOf(details.get("method")))
-             + " " + ((details == null) ? "<UNKNOWN>" : details.get(OperationFields.URI));
+                + " " + ((details == null) ? "<UNKNOWN>" : details.get(OperationFields.URI));
     }
 }

@@ -9,6 +9,6 @@
     <@insight.entry name="Overwrite" value=operation.removeExisting/>
     <@insight.entry name="Save and Refresh" value=operation.keepChanges/>
     <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
-</@insight.group>    
+</@insight.group>
 
 <@insight.sourceCodeLocation location=operation.sourceCodeLocation />

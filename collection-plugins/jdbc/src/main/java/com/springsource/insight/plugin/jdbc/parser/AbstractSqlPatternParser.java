@@ -24,31 +24,31 @@ import com.springsource.insight.util.ArrayUtil;
 import com.springsource.insight.util.StringUtil;
 
 public abstract class AbstractSqlPatternParser extends AbstractSqlParser {
-    
+
     private final SqlParserPattern[] patterns;
-    
+
     protected AbstractSqlPatternParser(String vendor, SqlParserPattern... patternValues) {
         this(vendor, DEFAULT_DB_NAME, patternValues);
     }
-    
+
     protected AbstractSqlPatternParser(String vendor, String dbName, SqlParserPattern... patternValues) {
         this(vendor, dbName, DEFAULT_HOST, DEFAULT_PORT, patternValues);
     }
-    
+
     protected AbstractSqlPatternParser(String vendor, int port, SqlParserPattern... patternValues) {
         this(vendor, DEFAULT_HOST, port, patternValues);
     }
 
     protected AbstractSqlPatternParser(String vendor, String host, int port, SqlParserPattern... patternValues) {
-    	this(vendor, DEFAULT_DB_NAME, host, port, patternValues);
- 	}
+        this(vendor, DEFAULT_DB_NAME, host, port, patternValues);
+    }
 
-    protected AbstractSqlPatternParser(String vendor, String dbName, String host, int port,SqlParserPattern... patternValues) {
+    protected AbstractSqlPatternParser(String vendor, String dbName, String host, int port, SqlParserPattern... patternValues) {
         super(vendor, dbName, host, port);
 
-		if (ArrayUtil.length(patternValues) <= 0) {
-			throw new IllegalStateException("No patterns specified");
-		}
+        if (ArrayUtil.length(patternValues) <= 0) {
+            throw new IllegalStateException("No patterns specified");
+        }
 
         this.patterns = patternValues;
     }
@@ -64,18 +64,18 @@ public abstract class AbstractSqlPatternParser extends AbstractSqlParser {
             final String host = getHost(connectionUrl, urlMatcher, sqlParserPattern);
             final String port = getPort(connectionUrl, urlMatcher, sqlParserPattern);
             final String databaseName = getDBName(connectionUrl, urlMatcher, sqlParserPattern);
-            final int finalPort=parsePort(connectionUrl, port);
+            final int finalPort = parsePort(connectionUrl, port);
 
             return Collections.<JdbcUrlMetaData>singletonList(new SimpleJdbcUrlMetaData(host, finalPort, databaseName, connectionUrl, vendorName));
         }
-        
+
         return null;
     }
-    
+
     protected String getHost(String connectionUrl, Matcher matcher, SqlParserPattern pattern) {
         return getValue(connectionUrl, matcher, pattern.getHostIndex(), getDefaultHost());
     }
-    
+
     protected String getPort(String connectionUrl, Matcher matcher, SqlParserPattern pattern) {
         return getValue(connectionUrl, matcher, pattern.getPortIndex(), getDefaultPortString());
     }
@@ -83,7 +83,7 @@ public abstract class AbstractSqlPatternParser extends AbstractSqlParser {
     protected String getDBName(String connectionUrl, Matcher matcher, SqlParserPattern pattern) {
         return getValue(connectionUrl, matcher, pattern.getDatabaseNameIndex(), getDefaultDatbaseName());
     }
-    
+
     protected String getValue(String connectionUrl, Matcher matcher, int index, String defaultValue) {
         String res = getGroupValue(connectionUrl, matcher, index);
         return StringUtil.isEmpty(res) ? defaultValue : res;
@@ -91,23 +91,23 @@ public abstract class AbstractSqlPatternParser extends AbstractSqlParser {
 
     protected String getGroupValue(String connectionUrl, Matcher matcher, int index) {
         if (index > -1) {
-        	String	attrValue=matcher.group(index);
-    		if (attrValue != null) {
-    			attrValue = attrValue.trim();
-    		}
+            String attrValue = matcher.group(index);
+            if (attrValue != null) {
+                attrValue = attrValue.trim();
+            }
 
             return attrValue;
         } else {
-        	return null;
+            return null;
         }
     }
 
     protected static final SqlParserPattern create(String vendor, String subType, String extra, int hostIndex, int portIndex, int databaseNameIndex) {
-    	return create(vendor, subType + ":" + extra, hostIndex, portIndex, databaseNameIndex);
+        return create(vendor, subType + ":" + extra, hostIndex, portIndex, databaseNameIndex);
     }
 
     protected static final SqlParserPattern create(String vendor, String extra, int hostIndex, int portIndex, int databaseNameIndex) {
-    	return create(JDBC_PREFIX + ":" + vendor + ":" + extra, hostIndex, portIndex, databaseNameIndex);
+        return create(JDBC_PREFIX + ":" + vendor + ":" + extra, hostIndex, portIndex, databaseNameIndex);
     }
 
     protected static final SqlParserPattern create(String pattern, int hostIndex, int portIndex, int databaseNameIndex) {

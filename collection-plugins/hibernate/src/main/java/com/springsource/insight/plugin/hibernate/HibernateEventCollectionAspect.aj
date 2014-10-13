@@ -25,39 +25,39 @@ import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.operation.Operation;
 
 public aspect HibernateEventCollectionAspect extends MethodOperationCollectionAspect {
-	/**
-	 * Default score assigned to the Hibernate events if they are considered
-	 * to be endpoints. We use a score slightly above the ceiling so that it
-	 * trumps the &quot;normal&quot; candidates (e.g., HTTP, queues, etc.),
-	 * but not other Spring beans/services that may be invoked as a result
-	 */
-	public static final int	ENDPOINT_SCORE=EndPointAnalysis.CEILING_LAYER_SCORE + 1;
+    /**
+     * Default score assigned to the Hibernate events if they are considered
+     * to be endpoints. We use a score slightly above the ceiling so that it
+     * trumps the &quot;normal&quot; candidates (e.g., HTTP, queues, etc.),
+     * but not other Spring beans/services that may be invoked as a result
+     */
+    public static final int ENDPOINT_SCORE = EndPointAnalysis.CEILING_LAYER_SCORE + 1;
 
-	public HibernateEventCollectionAspect () {
-		super();
-	}
+    public HibernateEventCollectionAspect() {
+        super();
+    }
 
     public pointcut dirtyCheck()
-        : execution(void DirtyCheckEventListener.onDirtyCheck(..));
+            : execution(void DirtyCheckEventListener.onDirtyCheck(..));
 
     public pointcut flushEvent()
-        : execution(void FlushEventListener.onFlush(..));
+            : execution(void FlushEventListener.onFlush(..));
 
     public pointcut abstractPrepareFlushing()
-        : execution(* AbstractFlushingEventListener.prepare*(..));
+            : execution(* AbstractFlushingEventListener.prepare*(..));
 
     public pointcut abstractFlushing()
-        : execution(* AbstractFlushingEventListener.flush*(..));
+            : execution(* AbstractFlushingEventListener.flush*(..));
 
     public pointcut collectionPoint()
-        : dirtyCheck() || flushEvent() || abstractPrepareFlushing() || abstractFlushing();
+            : dirtyCheck() || flushEvent() || abstractPrepareFlushing() || abstractFlushing();
 
     @Override
     public Operation createOperation(JoinPoint jp) {
         return super.createOperation(jp)
-                    .label("Hibernate " + jp.getStaticPart().getSignature().getName())
-                    .put(EndPointAnalysis.SCORE_FIELD, ENDPOINT_SCORE)
-                    ;
+                .label("Hibernate " + jp.getStaticPart().getSignature().getName())
+                .put(EndPointAnalysis.SCORE_FIELD, ENDPOINT_SCORE)
+                ;
     }
 
     @Override

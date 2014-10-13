@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:insight="http://www.springframework.org/schema/insight-idk"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:insight="http://www.springframework.org/schema/insight-idk"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
-    <insight:plugin name="jcr" version="${project.version}" publisher="SpringSource" />
-    
+    <insight:plugin name="jcr" version="${project.version}" publisher="SpringSource"/>
+
     <insight:operation-view operation="jcr-login" template="com/springsource/insight/plugin/jcr/login.ftl"/>
     <insight:operation-view operation="jcr-workspace" template="com/springsource/insight/plugin/jcr/workspace.ftl"/>
     <insight:operation-view operation="jcr-item" template="com/springsource/insight/plugin/jcr/item.ftl"/>
     <insight:operation-view operation="jcr-query" template="com/springsource/insight/plugin/jcr/query.ftl"/>
     <insight:operation-view operation="jcr-get" template="com/springsource/insight/plugin/jcr/get.ftl"/>
-    
-    <insight:operation-group group="JCR" operation="jcr-login" />
-    <insight:operation-group group="JCR" operation="jcr-workspace" />
-    <insight:operation-group group="JCR" operation="jcr-item" />
-    <insight:operation-group group="JCR" operation="jcr-query" />
-    <insight:operation-group group="JCR" operation="jcr-get" />
-    
+
+    <insight:operation-group group="JCR" operation="jcr-login"/>
+    <insight:operation-group group="JCR" operation="jcr-workspace"/>
+    <insight:operation-group group="JCR" operation="jcr-item"/>
+    <insight:operation-group group="JCR" operation="jcr-query"/>
+    <insight:operation-group group="JCR" operation="jcr-get"/>
+
     <bean id="jcrPluginEndPointAnalyzer"
           class="com.springsource.insight.plugin.jcr.JCREndPointAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="jcrPluginRuntimeDescriptor"
           class="com.springsource.insight.plugin.jcr.JCRPluginRuntimeDescriptor"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
 </beans>

@@ -20,8 +20,8 @@ import com.springsource.insight.intercept.trace.TraceSource;
 
 public class QuartzTraceSourceAnalyzerTest extends AbstractTraceSourceAnalyzerTestSupport {
 
-	public QuartzTraceSourceAnalyzerTest() {
-		super(QuartzTraceSourceAnalyzer.getInstance(), TraceSource.SCHEDULER, QuartzSchedulerDefinitions.TYPE);
-	}
+    public QuartzTraceSourceAnalyzerTest() {
+        super(QuartzTraceSourceAnalyzer.getInstance(), TraceSource.SCHEDULER, QuartzSchedulerDefinitions.TYPE);
+    }
 
 }

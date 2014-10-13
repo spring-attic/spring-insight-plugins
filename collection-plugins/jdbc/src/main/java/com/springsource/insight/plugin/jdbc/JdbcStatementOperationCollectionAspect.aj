@@ -29,36 +29,35 @@ import com.springsource.insight.util.ArrayUtil;
 import com.springsource.insight.util.StringUtil;
 
 public aspect JdbcStatementOperationCollectionAspect extends AbstractOperationCollectionAspect {
-    public JdbcStatementOperationCollectionAspect () {
-    	super();
+    public JdbcStatementOperationCollectionAspect() {
+        super();
     }
 
-    public pointcut sqlQueryExecution() : execution(* java.sql.Statement.execute*(String, ..));
-    public pointcut metaDataRetrieval() : execution(* java.sql.Connection.getMetaData());
-    public pointcut fetchDatabaseUrl() : execution(* java.sql.DatabaseMetaData.getURL());
+    public pointcut sqlQueryExecution(): execution(* java.sql.Statement.execute*(String, ..));
+    public pointcut metaDataRetrieval(): execution(* java.sql.Connection.getMetaData());
+    public pointcut fetchDatabaseUrl(): execution(* java.sql.DatabaseMetaData.getURL());
 
-    public pointcut collectionPoint() 
-        : sqlQueryExecution()
-      // avoid collecting SQL queries due to meta-data retrieval since it would cause infinite recursion
-      && (!cflow(metaDataRetrieval()))
-      && (!cflow(fetchDatabaseUrl()))
-        ;
+    public pointcut collectionPoint()
+            : sqlQueryExecution()
+            // avoid collecting SQL queries due to meta-data retrieval since it would cause infinite recursion
+            && (!cflow(metaDataRetrieval()))
+            && (!cflow(fetchDatabaseUrl()))
+            ;
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-    	Object[]	args=jp.getArgs();
-    	String		sql=(ArrayUtil.length(args) <= 0) ? "<UNKNOWN>" : StringUtil.safeToString(args[0]);
-        Operation 	operation = new Operation()
-            .type(JdbcOperationExternalResourceAnalyzer.TYPE)
-            .sourceCodeLocation(getSourceCodeLocation(jp))
-            .label(JdbcOperationFinalizer.createLabel(sql))
-            .putAnyNonEmpty("sql", sql)
-            ;
+        Object[] args = jp.getArgs();
+        String sql = (ArrayUtil.length(args) <= 0) ? "<UNKNOWN>" : StringUtil.safeToString(args[0]);
+        Operation operation = new Operation()
+                .type(JdbcOperationExternalResourceAnalyzer.TYPE)
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .label(JdbcOperationFinalizer.createLabel(sql))
+                .putAnyNonEmpty("sql", sql);
         try {
-            Statement 	statement = (Statement) jp.getTarget();
-            Connection	connection = statement.getConnection();
-            DatabaseMetaData	metaData = connection.getMetaData();
-            operation.putAnyNonEmpty(OperationFields.CONNECTION_URL, metaData.getURL());            
+            Statement statement = (Statement) jp.getTarget();
+            Connection connection = statement.getConnection();
+            DatabaseMetaData metaData = connection.getMetaData();
+            operation.putAnyNonEmpty(OperationFields.CONNECTION_URL, metaData.getURL());
         } catch (SQLException e) {
             // ignore
         }
@@ -69,7 +68,7 @@ public aspect JdbcStatementOperationCollectionAspect extends AbstractOperationCo
     public String getPluginName() {
         return JdbcRuntimePluginDescriptor.PLUGIN_NAME;
     }
-    
+
     @Override
     public boolean isMetricsGenerator() {
         return true; // This provides an external resource

@@ -41,97 +41,97 @@ import com.springsource.insight.util.time.TimeRange;
 /**
  */
 public class RedisExternalResourceAnalyzerTest extends AbstractCollectionTestSupport {
-	private final RedisExternalResourceAnalyzer	analyzer=RedisExternalResourceAnalyzer.getInstance();
+    private final RedisExternalResourceAnalyzer analyzer = RedisExternalResourceAnalyzer.getInstance();
 
-	public RedisExternalResourceAnalyzerTest () {
-		super();
-	}
+    public RedisExternalResourceAnalyzerTest() {
+        super();
+    }
 
-	@Test
-	public void testLocateDatabaseURI() throws Exception {
-		Operation op = new Operation();
-		op.type(RedisExternalResourceAnalyzer.TYPE);		
-		op.put("host", "localhost");
-		op.put("port", 6379);
-		op.put("dbName", "dbName");
-		Frame frame = new SimpleFrame(FrameId.valueOf("0"),
-				null,
-				op,
-				TimeRange.milliTimeRange(0, 1),
-				Collections.<Frame>emptyList());
+    @Test
+    public void testLocateDatabaseURI() throws Exception {
+        Operation op = new Operation();
+        op.type(RedisExternalResourceAnalyzer.TYPE);
+        op.put("host", "localhost");
+        op.put("port", 6379);
+        op.put("dbName", "dbName");
+        Frame frame = new SimpleFrame(FrameId.valueOf("0"),
+                null,
+                op,
+                TimeRange.milliTimeRange(0, 1),
+                Collections.<Frame>emptyList());
 
-		Trace trace = new Trace(ServerName.valueOf("fake-server"),
-				ApplicationName.valueOf("fake-app"),
-				new Date(),
-				TraceId.valueOf("fake-id"),
-				frame);
+        Trace trace = new Trace(ServerName.valueOf("fake-server"),
+                ApplicationName.valueOf("fake-app"),
+                new Date(),
+                TraceId.valueOf("fake-id"),
+                frame);
 
-		List<ExternalResourceDescriptor> externalResourceDescriptors =
-				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
-		ExternalResourceDescriptor externalResourceDescriptor = externalResourceDescriptors.get(0);
+        List<ExternalResourceDescriptor> externalResourceDescriptors =
+                (List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
+        ExternalResourceDescriptor externalResourceDescriptor = externalResourceDescriptors.get(0);
 
-		assertEquals(frame, externalResourceDescriptor.getFrame());
-		assertEquals(ExternalResourceType.DATABASE.name(), externalResourceDescriptor.getType());
-		assertEquals("redis:" + MD5NameGenerator.getName("dbNamelocalhost"+6379), externalResourceDescriptor.getName());
-		assertEquals("Redis", externalResourceDescriptor.getVendor());
-		assertEquals("dbName", externalResourceDescriptor.getLabel());
-		assertEquals("localhost", externalResourceDescriptor.getHost());
-		assertEquals(6379, externalResourceDescriptor.getPort());
-		assertEquals(Boolean.FALSE, Boolean.valueOf(externalResourceDescriptor.isIncoming()));
-	}
+        assertEquals(frame, externalResourceDescriptor.getFrame());
+        assertEquals(ExternalResourceType.DATABASE.name(), externalResourceDescriptor.getType());
+        assertEquals("redis:" + MD5NameGenerator.getName("dbNamelocalhost" + 6379), externalResourceDescriptor.getName());
+        assertEquals("Redis", externalResourceDescriptor.getVendor());
+        assertEquals("dbName", externalResourceDescriptor.getLabel());
+        assertEquals("localhost", externalResourceDescriptor.getHost());
+        assertEquals(6379, externalResourceDescriptor.getPort());
+        assertEquals(Boolean.FALSE, Boolean.valueOf(externalResourceDescriptor.isIncoming()));
+    }
 
-	@Test
-	public void testExactlyTwoDifferentExternalResourceNames() {   	
-		Operation op1 = new Operation();
-		op1.type(RedisExternalResourceAnalyzer.TYPE);		
-		op1.putAnyNonEmpty("host", "127.0.0.1");
-		op1.put("port", 6379);
-		op1.put("dbName", "dbName");
-		
-		Operation op2 = new Operation();
-		op2.type(RedisExternalResourceAnalyzer.TYPE);	
-		
-		op2.put("port", 6379);
-		op2.put("dbName", "dbName2");
-		
-		Operation dummyOp = new Operation();
+    @Test
+    public void testExactlyTwoDifferentExternalResourceNames() {
+        Operation op1 = new Operation();
+        op1.type(RedisExternalResourceAnalyzer.TYPE);
+        op1.putAnyNonEmpty("host", "127.0.0.1");
+        op1.put("port", 6379);
+        op1.put("dbName", "dbName");
 
-		SimpleFrameBuilder builder = new SimpleFrameBuilder();
-		builder.enter(new Operation().type(OperationType.HTTP));
-		builder.enter(op2);
-		builder.exit();
-		builder.enter(dummyOp);
-		builder.enter(op1);
-		builder.exit();
-		builder.exit();
-		Frame frame = builder.exit();
-		Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
+        Operation op2 = new Operation();
+        op2.type(RedisExternalResourceAnalyzer.TYPE);
 
-		List<ExternalResourceDescriptor> externalResourceDescriptors =
-				(List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
+        op2.put("port", 6379);
+        op2.put("dbName", "dbName2");
 
-		assertEquals(2, externalResourceDescriptors.size());        
+        Operation dummyOp = new Operation();
 
-		ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);        
-		assertEquals(op2, descriptor.getFrame().getOperation());
-		assertEquals("dbName2", descriptor.getLabel());
-		assertEquals(ExternalResourceType.DATABASE.name(), descriptor.getType());
-		assertEquals("Redis", descriptor.getVendor());
-		assertEquals(null, descriptor.getHost());
-		assertEquals(6379, descriptor.getPort());
-		String expectedHash = MD5NameGenerator.getName("dbName2"+null+6379);
-		assertEquals("redis:" + expectedHash, descriptor.getName());
-		assertEquals(Boolean.FALSE, Boolean.valueOf(descriptor.isIncoming()));
+        SimpleFrameBuilder builder = new SimpleFrameBuilder();
+        builder.enter(new Operation().type(OperationType.HTTP));
+        builder.enter(op2);
+        builder.exit();
+        builder.enter(dummyOp);
+        builder.enter(op1);
+        builder.exit();
+        builder.exit();
+        Frame frame = builder.exit();
+        Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
 
-		descriptor = externalResourceDescriptors.get(1);        
-		assertEquals(op1, descriptor.getFrame().getOperation());
-		assertEquals("dbName", descriptor.getLabel());
-		assertEquals(ExternalResourceType.DATABASE.name(), descriptor.getType());
-		assertEquals("Redis", descriptor.getVendor());
-		assertEquals("127.0.0.1", descriptor.getHost());
-		assertEquals(6379, descriptor.getPort());
-		expectedHash = MD5NameGenerator.getName("dbName127.0.0.1"+6379);
-		assertEquals("redis:" + expectedHash, descriptor.getName());
-		assertEquals(Boolean.FALSE, Boolean.valueOf(descriptor.isIncoming()));
-	}
+        List<ExternalResourceDescriptor> externalResourceDescriptors =
+                (List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
+
+        assertEquals(2, externalResourceDescriptors.size());
+
+        ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);
+        assertEquals(op2, descriptor.getFrame().getOperation());
+        assertEquals("dbName2", descriptor.getLabel());
+        assertEquals(ExternalResourceType.DATABASE.name(), descriptor.getType());
+        assertEquals("Redis", descriptor.getVendor());
+        assertEquals(null, descriptor.getHost());
+        assertEquals(6379, descriptor.getPort());
+        String expectedHash = MD5NameGenerator.getName("dbName2" + null + 6379);
+        assertEquals("redis:" + expectedHash, descriptor.getName());
+        assertEquals(Boolean.FALSE, Boolean.valueOf(descriptor.isIncoming()));
+
+        descriptor = externalResourceDescriptors.get(1);
+        assertEquals(op1, descriptor.getFrame().getOperation());
+        assertEquals("dbName", descriptor.getLabel());
+        assertEquals(ExternalResourceType.DATABASE.name(), descriptor.getType());
+        assertEquals("Redis", descriptor.getVendor());
+        assertEquals("127.0.0.1", descriptor.getHost());
+        assertEquals(6379, descriptor.getPort());
+        expectedHash = MD5NameGenerator.getName("dbName127.0.0.1" + 6379);
+        assertEquals("redis:" + expectedHash, descriptor.getName());
+        assertEquals(Boolean.FALSE, Boolean.valueOf(descriptor.isIncoming()));
+    }
 }

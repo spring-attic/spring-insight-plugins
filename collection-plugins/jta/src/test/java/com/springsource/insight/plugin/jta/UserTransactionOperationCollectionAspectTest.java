@@ -29,18 +29,18 @@ import org.junit.Test;
 
 
 /**
- * 
+ *
  */
 public class UserTransactionOperationCollectionAspectTest
         extends JtaOperationCollectionAspectTestSupport {
-    static final UserTransaction    transaction=new UserTransactionImpl();
+    static final UserTransaction transaction = new UserTransactionImpl();
 
     public UserTransactionOperationCollectionAspectTest() {
         super();
     }
 
     @Test
-    public void testUserTransactionOperations () {
+    public void testUserTransactionOperations() {
         runAspectOperations(UserTransactionOperation.class);
     }
 
@@ -52,29 +52,29 @@ public class UserTransactionOperationCollectionAspectTest
     static enum UserTransactionOperation implements Runnable, ParameterTypeDescriptor {
         BEGIN {
             @Override
-            protected void doOperation (UserTransaction tx) throws Exception {
+            protected void doOperation(UserTransaction tx) throws Exception {
                 tx.begin();
             }
         },
         COMMIT {
             @Override
-            protected void doOperation (UserTransaction tx) throws Exception {
+            protected void doOperation(UserTransaction tx) throws Exception {
                 tx.commit();
             }
         },
         ROLLBACK {
             @Override
-            protected void doOperation (UserTransaction tx) throws Exception {
+            protected void doOperation(UserTransaction tx) throws Exception {
                 tx.rollback();
             }
         };
 
-        protected abstract void doOperation (UserTransaction tx) throws Exception;
+        protected abstract void doOperation(UserTransaction tx) throws Exception;
 
-        public void run () {
+        public void run() {
             try {
                 doOperation(transaction);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 if (e instanceof RuntimeException) {
                     throw (RuntimeException) e;
                 } else {
@@ -90,8 +90,9 @@ public class UserTransactionOperationCollectionAspectTest
     }
 
     static class UserTransactionImpl implements UserTransaction {
-        private final Logger    logger=Logger.getLogger(getClass().getName());
-        UserTransactionImpl () {
+        private final Logger logger = Logger.getLogger(getClass().getName());
+
+        UserTransactionImpl() {
             super();
         }
 

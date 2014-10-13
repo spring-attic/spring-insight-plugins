@@ -26,57 +26,53 @@ import com.springsource.insight.intercept.operation.OperationType;
 
 public abstract class AbstractOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
 
-	protected AbstractOperationCollectionAspectTest() {
-		super();
-	}
+    protected AbstractOperationCollectionAspectTest() {
+        super();
+    }
 
-	public void validate(OperationType opType, String... p_params) throws Exception {
-		// Step 2:  Get the Operation that was just created by our aspect
-		Operation op = getLastEntered();
-		assertNotNull("No operation data is intercepted", op);
+    public void validate(OperationType opType, String... p_params) throws Exception {
+        // Step 2:  Get the Operation that was just created by our aspect
+        Operation op = getLastEntered();
+        assertNotNull("No operation data is intercepted", op);
 
-		// Step 3:  Validate operation type
-		assertTrue("Invalid operation type: "+op.getType().getName()+", expected: "+opType, op.getType().equals(opType));
-		
-		// prepare parameters
-		List<String> params=new ArrayList<String>();
-		Collections.addAll(params, p_params); 
-		params.add("server = " + CassandraUnitTests.TEST_HOST + ":" + CassandraUnitTests.RPC_PORT);
-		// Step 4: Validate parameters
-		for (String def: params) {
-			String[] param=null;
-			int indx=def.indexOf("=");
-			if (indx>0) {
-				param=new String[]{def.substring(0, indx).trim(), def.substring(indx+1).trim()};
-			}
-			else
-				param=new String[]{def};
-			
-			// get value
-			Object value=op.get(param[0]);
-			
-			// validate parameter's value
-			if (param.length==1) {
-				assertNotNull("Parameter ["+param[0]+"] does not exists", value);
-			}
-			else {
-				if (value instanceof String)
-					assertEquals("Invalid ["+param[0]+"] parameter: "+value, param[1], value);
-				else
-				if (value instanceof OperationMap) {
-					for(String mapEntry: param[1].substring(1, param[1].length()-1).split("\\s*,\\s*")) {
-						String[] expectedMapEntry=mapEntry.split("\\s*=\\s*");
-						
-						Object mapValue=((OperationMap)value).get(expectedMapEntry[0]);
-						if (expectedMapEntry.length==1) {
-							assertNotNull("Map key ["+expectedMapEntry[0]+"] does not exists", mapValue);
-						}
-						else {
-							assertEquals("Invalid ["+expectedMapEntry[0]+"] map key value: "+mapValue, expectedMapEntry[1], mapValue);
-						}
-					}
-				}
-			}
-		}
-	} 
+        // Step 3:  Validate operation type
+        assertTrue("Invalid operation type: " + op.getType().getName() + ", expected: " + opType, op.getType().equals(opType));
+
+        // prepare parameters
+        List<String> params = new ArrayList<String>();
+        Collections.addAll(params, p_params);
+        params.add("server = " + CassandraUnitTests.TEST_HOST + ":" + CassandraUnitTests.RPC_PORT);
+        // Step 4: Validate parameters
+        for (String def : params) {
+            String[] param = null;
+            int indx = def.indexOf("=");
+            if (indx > 0) {
+                param = new String[]{def.substring(0, indx).trim(), def.substring(indx + 1).trim()};
+            } else
+                param = new String[]{def};
+
+            // get value
+            Object value = op.get(param[0]);
+
+            // validate parameter's value
+            if (param.length == 1) {
+                assertNotNull("Parameter [" + param[0] + "] does not exists", value);
+            } else {
+                if (value instanceof String)
+                    assertEquals("Invalid [" + param[0] + "] parameter: " + value, param[1], value);
+                else if (value instanceof OperationMap) {
+                    for (String mapEntry : param[1].substring(1, param[1].length() - 1).split("\\s*,\\s*")) {
+                        String[] expectedMapEntry = mapEntry.split("\\s*=\\s*");
+
+                        Object mapValue = ((OperationMap) value).get(expectedMapEntry[0]);
+                        if (expectedMapEntry.length == 1) {
+                            assertNotNull("Map key [" + expectedMapEntry[0] + "] does not exists", mapValue);
+                        } else {
+                            assertEquals("Invalid [" + expectedMapEntry[0] + "] map key value: " + mapValue, expectedMapEntry[1], mapValue);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

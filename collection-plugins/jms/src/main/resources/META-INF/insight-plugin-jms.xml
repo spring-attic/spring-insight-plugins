@@ -1,60 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:insight="http://www.springframework.org/schema/insight-idk"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:insight="http://www.springframework.org/schema/insight-idk"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
-	<insight:plugin name="jms" version="${project.version}" publisher="SpringSource" />
+    <insight:plugin name="jms" version="${project.version}" publisher="SpringSource"/>
 
-	<insight:operation-view operation="jms-send" template="com/springsource/insight/plugin/jms/jms.ftl"/>
-	<insight:operation-view operation="jms-receive" template="com/springsource/insight/plugin/jms/jms.ftl"/>
-	<insight:operation-view operation="jms-listener-receive" template="com/springsource/insight/plugin/jms/jms.ftl"/>
-	<insight:operation-group group="JMS" operation="jms-send" />
-	<insight:operation-group group="JMS" operation="jms-receive" />
-	<insight:operation-group group="JMS" operation="jms-listener-receive" />
-	
-	<bean id="jmsPluginConsumerResourceAnalyzer"
-	      class="com.springsource.insight.plugin.jms.JMSConsumerResourceAnalyzer"
+    <insight:operation-view operation="jms-send" template="com/springsource/insight/plugin/jms/jms.ftl"/>
+    <insight:operation-view operation="jms-receive" template="com/springsource/insight/plugin/jms/jms.ftl"/>
+    <insight:operation-view operation="jms-listener-receive" template="com/springsource/insight/plugin/jms/jms.ftl"/>
+    <insight:operation-group group="JMS" operation="jms-send"/>
+    <insight:operation-group group="JMS" operation="jms-receive"/>
+    <insight:operation-group group="JMS" operation="jms-listener-receive"/>
+
+    <bean id="jmsPluginConsumerResourceAnalyzer"
+          class="com.springsource.insight.plugin.jms.JMSConsumerResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
-	<bean id="jmsPluginProducerResourceAnalyzer"
-	      class="com.springsource.insight.plugin.jms.JMSProducerResourceAnalyzer"
+            />
+    <bean id="jmsPluginProducerResourceAnalyzer"
+          class="com.springsource.insight.plugin.jms.JMSProducerResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
-	<bean id="jmsPluginMessageListenerResourceAnalyzer"
-	      class="com.springsource.insight.plugin.jms.JMSMessageListenerResourceAnalyzer"
+            />
+    <bean id="jmsPluginMessageListenerResourceAnalyzer"
+          class="com.springsource.insight.plugin.jms.JMSMessageListenerResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
-    
+            />
+
     <bean id="jmsPluginReceiveMetricsGenerator"
           class="com.springsource.insight.plugin.jms.JMSReceiveMetricsGenerator"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="jmsPluginSendMetricsGenerator"
           class="com.springsource.insight.plugin.jms.JMSSendMetricsGenerator"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="jmsPluginListenerReceiveMetricsGenerator"
           class="com.springsource.insight.plugin.jms.JMSListenerReceiveMetricsGenerator"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="jmsPluginRuntimeDescriptor"
           class="com.springsource.insight.plugin.jms.JmsPluginRuntimeDescriptor"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="JmsTraceSourceAnalyzer"
           class="com.springsource.insight.plugin.jms.JmsTraceSourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
 
 </beans>
 

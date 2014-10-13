@@ -22,11 +22,11 @@ import com.foo.example.AbstractBean;
 
 @Component
 public class InsightComponent extends AbstractBean {
-	public InsightComponent() {
-		super();
-	}
+    public InsightComponent() {
+        super();
+    }
 
-	public void run () {
-		logger.info("run(" + getClass().getSimpleName() + ")");
-	}
+    public void run() {
+        logger.info("run(" + getClass().getSimpleName() + ")");
+    }
 }

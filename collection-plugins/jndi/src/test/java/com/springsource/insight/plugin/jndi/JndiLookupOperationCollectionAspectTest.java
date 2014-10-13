@@ -26,63 +26,63 @@ import org.junit.Test;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public class JndiLookupOperationCollectionAspectTest extends JndiOperationCollectionAspectTestSupport {
-	public JndiLookupOperationCollectionAspectTest() {
-		super(JndiPluginRuntimeDescriptor.LOOKUP);
-	}
+    public JndiLookupOperationCollectionAspectTest() {
+        super(JndiPluginRuntimeDescriptor.LOOKUP);
+    }
 
-	@Test
-	public void testLookup () throws Exception {
-		final String	NAME="testLookup";
-		JndiTestContext	context=setUpContext(Collections.singletonMap(NAME, Long.valueOf(System.currentTimeMillis())),
-											 Collections.singletonMap(NAME, Long.valueOf(System.nanoTime())));
-		Object	value=context.lookup(NAME);
-		assertLookupOperation(context, "lookup", NAME, value);
-	}
+    @Test
+    public void testLookup() throws Exception {
+        final String NAME = "testLookup";
+        JndiTestContext context = setUpContext(Collections.singletonMap(NAME, Long.valueOf(System.currentTimeMillis())),
+                Collections.singletonMap(NAME, Long.valueOf(System.nanoTime())));
+        Object value = context.lookup(NAME);
+        assertLookupOperation(context, "lookup", NAME, value);
+    }
 
-	@Test
-	public void testLookupLink () throws Exception {
-		final String	NAME="testLookupLink";
-		JndiTestContext	context=setUpContext(Collections.singletonMap(NAME, Long.valueOf(System.currentTimeMillis())),
-											 Collections.singletonMap(NAME, Long.valueOf(System.nanoTime())));
-		Object	value=context.lookupLink(NAME);
-		assertLookupOperation(context, "lookupLink", NAME, value);
-	}
+    @Test
+    public void testLookupLink() throws Exception {
+        final String NAME = "testLookupLink";
+        JndiTestContext context = setUpContext(Collections.singletonMap(NAME, Long.valueOf(System.currentTimeMillis())),
+                Collections.singletonMap(NAME, Long.valueOf(System.nanoTime())));
+        Object value = context.lookupLink(NAME);
+        assertLookupOperation(context, "lookupLink", NAME, value);
+    }
 
-	@Test
-	public void testIgnoredResourcesLookup () throws Exception {
-		runFilteredResourcesTest("testIgnoredResourcesLookup",
-				new ContextOperationExecutor() {
-					public Object executeContextOperation(JndiTestContext context, String name, Object value) throws Exception {
-						return context.lookup(name);
-					}
-				});
-	}
+    @Test
+    public void testIgnoredResourcesLookup() throws Exception {
+        runFilteredResourcesTest("testIgnoredResourcesLookup",
+                new ContextOperationExecutor() {
+                    public Object executeContextOperation(JndiTestContext context, String name, Object value) throws Exception {
+                        return context.lookup(name);
+                    }
+                });
+    }
 
-	@Test
-	public void testIgnoredResourcesLookupLink () throws Exception {
-		runFilteredResourcesTest("testIgnoredResourcesLookup",
-				new ContextOperationExecutor() {
-					public Object executeContextOperation(JndiTestContext context, String name, Object value) throws Exception {
-						return context.lookupLink(name);
-					}
-				});
-	}
+    @Test
+    public void testIgnoredResourcesLookupLink() throws Exception {
+        runFilteredResourcesTest("testIgnoredResourcesLookup",
+                new ContextOperationExecutor() {
+                    public Object executeContextOperation(JndiTestContext context, String name, Object value) throws Exception {
+                        return context.lookupLink(name);
+                    }
+                });
+    }
 
-	protected Operation assertLookupOperation (JndiTestContext context, String action, String name, Object actual) throws NamingException {
-		Operation		op=assertCollectedOperation(action, name);
-		Map<String,?>	values=context.getBindings();
-		Object			expected=values.get(name);
-		assertEquals("Mismatched value for " + action + "[" + name + "]", expected, actual);
-		assertCollectedEnvironment(op, context);
-		return op;
-	}
+    protected Operation assertLookupOperation(JndiTestContext context, String action, String name, Object actual) throws NamingException {
+        Operation op = assertCollectedOperation(action, name);
+        Map<String, ?> values = context.getBindings();
+        Object expected = values.get(name);
+        assertEquals("Mismatched value for " + action + "[" + name + "]", expected, actual);
+        assertCollectedEnvironment(op, context);
+        return op;
+    }
 
-	@Override
-	public JndiLookupOperationCollectionAspect getAspect() {
-		return JndiLookupOperationCollectionAspect.aspectOf();
-	}
+    @Override
+    public JndiLookupOperationCollectionAspect getAspect() {
+        return JndiLookupOperationCollectionAspect.aspectOf();
+    }
 
 }

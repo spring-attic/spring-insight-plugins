@@ -24,5 +24,5 @@ public final class Ejb3LocalServiceDefinitions {
         // no instance
     }
 
-    public static final OperationType TYPE=OperationType.valueOf("ejb3");
+    public static final OperationType TYPE = OperationType.valueOf("ejb3");
 }

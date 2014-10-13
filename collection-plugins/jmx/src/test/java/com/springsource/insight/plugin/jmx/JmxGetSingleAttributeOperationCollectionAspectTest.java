@@ -40,80 +40,80 @@ import com.springsource.insight.util.StringFormatterUtils;
 
 
 /**
- * 
+ *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(JmxOperationCollectionTestSupport.TEST_CONTEXT)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class JmxGetSingleAttributeOperationCollectionAspectTest extends JmxSingleAttributeOperationTestSupport {
-	public JmxGetSingleAttributeOperationCollectionAspectTest() {
-		super(JmxPluginRuntimeDescriptor.GET_ACTION);
-	}
+    public JmxGetSingleAttributeOperationCollectionAspectTest() {
+        super(JmxPluginRuntimeDescriptor.GET_ACTION);
+    }
 
-	@Test
-	public void testGetDirectAttribute() throws Exception {
-		testGetAttribute(mbeanServer);
-	}
+    @Test
+    public void testGetDirectAttribute() throws Exception {
+        testGetAttribute(mbeanServer);
+    }
 
-	@Test	// makes sure that cflowbelow is activated
-	public void testGetDelegateAttribute() throws Exception {
-		testGetAttribute(new DelegatingMBeanServer(mbeanServer));
-	}
+    @Test    // makes sure that cflowbelow is activated
+    public void testGetDelegateAttribute() throws Exception {
+        testGetAttribute(new DelegatingMBeanServer(mbeanServer));
+    }
 
-	private void testGetAttribute(MBeanServer server) throws Exception {
-		Map<ObjectName,MBeanInfo>	beansMap=getBeansMap(server);
-		assertFalse("No beans", MapUtil.size(beansMap) <= 0);
-		
-		int	attrsCount=0;
-		for (Map.Entry<ObjectName, MBeanInfo> je : beansMap.entrySet()) {
-			ObjectName				name=je.getKey();
-			MBeanInfo				info=je.getValue();
-			MBeanAttributeInfo[]	attrs=info.getAttributes();
-			if (ArrayUtil.length(attrs) <= 0) {
-				_logger.info("Skip " + name.getCanonicalName() + " - no attributes");
-				continue;
-			}
-			
-			_logger.info("Check attributes of " + name.getCanonicalName());
-			for (MBeanAttributeInfo attrInfo : attrs) {
-				String	attrName=attrInfo.getName();
-				if (!attrInfo.isReadable()) {
-					_logger.info("getAttribute(" + name.getCanonicalName() + "[" + attrName + "] skip - non-readable");
-					continue;
-				}
+    private void testGetAttribute(MBeanServer server) throws Exception {
+        Map<ObjectName, MBeanInfo> beansMap = getBeansMap(server);
+        assertFalse("No beans", MapUtil.size(beansMap) <= 0);
 
-				final Object	attrValue;
-				try {
-					try {
-						attrValue = server.getAttribute(name, attrName);
-						_logger.info("getAttribute(" + name.getCanonicalName() + "[" + attrName + "]: " + StringFormatterUtils.formatObject(attrValue));
-						attrsCount++;
-					} catch(Exception e) {
-						Throwable	t=ExceptionUtils.peelThrowable(e);
-						_logger.warning("getAttribute(" + name.getCanonicalName() + "[" + attrName + "]"
-									  + " failed (" + t.getClass().getSimpleName() + ")"
-									  + " to retrieve: " + t.getMessage());
-						continue;
-					}
-	
-					Operation	op=assertAttributeOperation(name, attrName);
-					Object		retValue=op.get(OperationFields.RETURN_VALUE);
-					if (attrValue != null) {
-						assertEquals("Mismatched attribute value for " + name.getCanonicalName() + "[" + attrName + "]",
-									 StringFormatterUtils.formatObject(attrValue),
-									 StringFormatterUtils.formatObject(retValue));
-					}
-				} finally {
-					Mockito.reset(spiedOperationCollector);
-				}
-			}
-		}
-		
-		assertTrue("No attributes tested", attrsCount > 0);
-	}
+        int attrsCount = 0;
+        for (Map.Entry<ObjectName, MBeanInfo> je : beansMap.entrySet()) {
+            ObjectName name = je.getKey();
+            MBeanInfo info = je.getValue();
+            MBeanAttributeInfo[] attrs = info.getAttributes();
+            if (ArrayUtil.length(attrs) <= 0) {
+                _logger.info("Skip " + name.getCanonicalName() + " - no attributes");
+                continue;
+            }
 
-	@Override
-	public JmxGetSingleAttributeOperationCollectionAspect getAspect() {
-		return JmxGetSingleAttributeOperationCollectionAspect.aspectOf();
-	}
+            _logger.info("Check attributes of " + name.getCanonicalName());
+            for (MBeanAttributeInfo attrInfo : attrs) {
+                String attrName = attrInfo.getName();
+                if (!attrInfo.isReadable()) {
+                    _logger.info("getAttribute(" + name.getCanonicalName() + "[" + attrName + "] skip - non-readable");
+                    continue;
+                }
+
+                final Object attrValue;
+                try {
+                    try {
+                        attrValue = server.getAttribute(name, attrName);
+                        _logger.info("getAttribute(" + name.getCanonicalName() + "[" + attrName + "]: " + StringFormatterUtils.formatObject(attrValue));
+                        attrsCount++;
+                    } catch (Exception e) {
+                        Throwable t = ExceptionUtils.peelThrowable(e);
+                        _logger.warning("getAttribute(" + name.getCanonicalName() + "[" + attrName + "]"
+                                + " failed (" + t.getClass().getSimpleName() + ")"
+                                + " to retrieve: " + t.getMessage());
+                        continue;
+                    }
+
+                    Operation op = assertAttributeOperation(name, attrName);
+                    Object retValue = op.get(OperationFields.RETURN_VALUE);
+                    if (attrValue != null) {
+                        assertEquals("Mismatched attribute value for " + name.getCanonicalName() + "[" + attrName + "]",
+                                StringFormatterUtils.formatObject(attrValue),
+                                StringFormatterUtils.formatObject(retValue));
+                    }
+                } finally {
+                    Mockito.reset(spiedOperationCollector);
+                }
+            }
+        }
+
+        assertTrue("No attributes tested", attrsCount > 0);
+    }
+
+    @Override
+    public JmxGetSingleAttributeOperationCollectionAspect getAspect() {
+        return JmxGetSingleAttributeOperationCollectionAspect.aspectOf();
+    }
 }

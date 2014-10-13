@@ -20,35 +20,37 @@ import com.springsource.insight.intercept.operation.OperationType;
 
 public interface GemFireDefenitions {
 
-	static final GemFireType  TYPE_QUERY = new GemFireType("Query", OperationType.valueOf("gemfire_query_operation"));
-	static final GemFireType  TYPE_REGION = new GemFireType("Region", OperationType.valueOf("gemfire_region_operation"));
-	static final GemFireType  TYPE_REMOTE = new GemFireType("Remote Operation", OperationType.valueOf("gemfire_remote_operation"));
-	
-	static final String GEMFIRE = "GemFire";
-	
-	static final String FIELD_QUERY        = "query";
-	static final String FIELD_SERVERS      = "servers";
-	static final String FIELD_PATH         = "fullPath";
-	static final String FIELD_HOST         = "host";
-	static final String FIELD_PORT         = "port";
-	static final String FIELD_UNKNOWN      = "UNKNOWN";
-	static final String FIELD_MESSAGE_TYPE = "message_type";
-	
-	class GemFireType {
-		private final String label;
-		private final OperationType type;
-		
-		public GemFireType(String lavelValue, OperationType typeValue) {
-			super();
-			this.label = lavelValue;
-			this.type = typeValue;
-		}
-		public String getLabel() {
-			return label;
-		}
-		public OperationType getType() {
-			return type;
-		}
-	}
-	
+    static final GemFireType TYPE_QUERY = new GemFireType("Query", OperationType.valueOf("gemfire_query_operation"));
+    static final GemFireType TYPE_REGION = new GemFireType("Region", OperationType.valueOf("gemfire_region_operation"));
+    static final GemFireType TYPE_REMOTE = new GemFireType("Remote Operation", OperationType.valueOf("gemfire_remote_operation"));
+
+    static final String GEMFIRE = "GemFire";
+
+    static final String FIELD_QUERY = "query";
+    static final String FIELD_SERVERS = "servers";
+    static final String FIELD_PATH = "fullPath";
+    static final String FIELD_HOST = "host";
+    static final String FIELD_PORT = "port";
+    static final String FIELD_UNKNOWN = "UNKNOWN";
+    static final String FIELD_MESSAGE_TYPE = "message_type";
+
+    class GemFireType {
+        private final String label;
+        private final OperationType type;
+
+        public GemFireType(String lavelValue, OperationType typeValue) {
+            super();
+            this.label = lavelValue;
+            this.type = typeValue;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public OperationType getType() {
+            return type;
+        }
+    }
+
 }

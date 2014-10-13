@@ -23,37 +23,39 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.util.StringFormatterUtils;
 
 /**
- * 
+ *
  */
 public abstract aspect LoggingMethodOperationCollectionAspect extends MethodOperationCollectionAspect {
-	protected LoggingMethodOperationCollectionAspect () {
-		super();
-	}
+    protected LoggingMethodOperationCollectionAspect() {
+        super();
+    }
 
     protected Operation createOperation(JoinPoint jp, Class<?> logger, String level, String msg, Throwable t) {
-        Operation   op=super.createOperation(jp)
-                        .type(LoggingDefinitions.TYPE)
-                        .label(level + ": " + truncateMessage(msg))
-                        .put(EndPointAnalysis.SCORE_FIELD, EndPointAnalysis.DEFAULT_LAYER_SCORE)
-                        .put(LoggingDefinitions.FRAMEWORK_ATTR, logger.getName())
-                        .put(LoggingDefinitions.LEVEL_ATTR, level)
-                        .putAnyNonEmpty(LoggingDefinitions.MESSAGE_ATTR, msg)
-                        ;
+        Operation op = super.createOperation(jp)
+                .type(LoggingDefinitions.TYPE)
+                .label(level + ": " + truncateMessage(msg))
+                .put(EndPointAnalysis.SCORE_FIELD, EndPointAnalysis.DEFAULT_LAYER_SCORE)
+                .put(LoggingDefinitions.FRAMEWORK_ATTR, logger.getName())
+                .put(LoggingDefinitions.LEVEL_ATTR, level)
+                .putAnyNonEmpty(LoggingDefinitions.MESSAGE_ATTR, msg);
         if (t != null) {
             op.put(LoggingDefinitions.EXCEPTION_ATTR, StringFormatterUtils.formatStackTrace(t));
         }
         return op;
     }
 
-    static final int    MAX_LABEL_MESSAGE_LENGTH=80;
-    static String truncateMessage (String msg) {
+    static final int MAX_LABEL_MESSAGE_LENGTH = 80;
+
+    static String truncateMessage(String msg) {
         if ((msg == null) || (msg.length() < MAX_LABEL_MESSAGE_LENGTH)) {
             return msg;
         }
 
         return msg.substring(0, MAX_LABEL_MESSAGE_LENGTH) + " ...";
     }
-    
+
     @Override
-    public String getPluginName() { return LoggingPluginRuntimeDescriptor.PLUGIN_NAME; }
+    public String getPluginName() {
+        return LoggingPluginRuntimeDescriptor.PLUGIN_NAME;
+    }
 }

@@ -16,30 +16,30 @@
 package com.springsource.insight.plugin.quartz.scheduler;
 
 /**
- * 
+ *
  */
 public class QuartzJobDetailValueAccessor extends AbstractQuartzValueAccessor {
-	private static class LazyFieldHolder {
-		static final QuartzJobDetailValueAccessor	accessor=new QuartzJobDetailValueAccessor();
-	}
+    private static class LazyFieldHolder {
+        static final QuartzJobDetailValueAccessor accessor = new QuartzJobDetailValueAccessor();
+    }
 
-	public static QuartzJobDetailValueAccessor getInstance () {
-		return LazyFieldHolder.accessor;
-	}
+    public static QuartzJobDetailValueAccessor getInstance() {
+        return LazyFieldHolder.accessor;
+    }
 
-	QuartzJobDetailValueAccessor () {
-		super("org.quartz.JobDetail");
-	}
+    QuartzJobDetailValueAccessor() {
+        super("org.quartz.JobDetail");
+    }
 
-	public String getDescription (Object detail) {
-		return getProperty(detail, "description", String.class);
-	}
-	
-	public Object getKey (Object detail) {
-		return getProperty(detail, "key", Object.class);
-	}
-	
-	public Class<?> getJobClass (Object detail) {
-		return getProperty(detail, "jobClass", Class.class);
-	}
+    public String getDescription(Object detail) {
+        return getProperty(detail, "description", String.class);
+    }
+
+    public Object getKey(Object detail) {
+        return getProperty(detail, "key", Object.class);
+    }
+
+    public Class<?> getJobClass(Object detail) {
+        return getProperty(detail, "jobClass", Class.class);
+    }
 }

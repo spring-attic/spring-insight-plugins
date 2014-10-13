@@ -26,85 +26,85 @@ import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.util.MapUtil;
 
 /**
- * 
+ *
  */
 public abstract class AbstractControllerOperationCollectionAspectTestSupport
-		extends OperationCollectionAspectTestSupport {
-	private final Boolean	legacyAPI;
+        extends OperationCollectionAspectTestSupport {
+    private final Boolean legacyAPI;
 
-	protected AbstractControllerOperationCollectionAspectTestSupport (boolean isLegacy) {
-		legacyAPI = Boolean.valueOf(isLegacy);
-	}
+    protected AbstractControllerOperationCollectionAspectTestSupport(boolean isLegacy) {
+        legacyAPI = Boolean.valueOf(isLegacy);
+    }
 
-    protected Operation assertControllerOperation () {
-    	Operation   op=getLastEntered();
-    	assertNotNull("No operation entered", op);
-    	assertEquals("Mismatched operation type", ControllerEndPointAnalyzer.CONTROLLER_METHOD_TYPE, op.getType());
+    protected Operation assertControllerOperation() {
+        Operation op = getLastEntered();
+        assertNotNull("No operation entered", op);
+        assertEquals("Mismatched operation type", ControllerEndPointAnalyzer.CONTROLLER_METHOD_TYPE, op.getType());
         assertEquals("Mismatched legacy flag value", legacyAPI, op.get(ControllerEndPointAnalyzer.LEGACY_PROPNAME, Boolean.class));
-    	return op;
+        return op;
     }
 
-    protected Operation assertEncodeReturnModelValues (TestSupportController controller) {
-    	return assertEncodeModelValues(ControllerOperationCollector.RETURN_VALUE_MODEL_MAP, controller.returnModel);
+    protected Operation assertEncodeReturnModelValues(TestSupportController controller) {
+        return assertEncodeModelValues(ControllerOperationCollector.RETURN_VALUE_MODEL_MAP, controller.returnModel);
     }
 
-    protected Operation assertControllerView (String expected) {
-    	Operation	op=assertControllerOperation();
-    	assertControllerView(op, expected);
-    	return op;
+    protected Operation assertControllerView(String expected) {
+        Operation op = assertControllerOperation();
+        assertControllerView(op, expected);
+        return op;
     }
 
-	protected static final String assertControllerView(Operation op, String expected) {
-		String	viewName=op.get(ControllerOperationCollector.RETURN_VALUE_VIEW_NAME, String.class);
-		assertEquals("Mismatched view name", expected, viewName);
-		return viewName;
-	}
-
-    protected Operation assertEncodeModelValues (String mapName, Map<String,?> expected) {
-    	Operation	op=assertControllerOperation();
-    	assertEncodeModelValues(op, mapName , expected);
-    	return op;
+    protected static final String assertControllerView(Operation op, String expected) {
+        String viewName = op.get(ControllerOperationCollector.RETURN_VALUE_VIEW_NAME, String.class);
+        assertEquals("Mismatched view name", expected, viewName);
+        return viewName;
     }
 
-    protected static final OperationMap assertEncodeModelValues (Operation op, String mapName, Map<String,?> expected) {
-    	OperationMap	map=op.get(mapName, OperationMap.class);
-    	assertNotNull(mapName + ": missing encoding", map);
-    	return assertEncodeModelValues(map, mapName, expected);
+    protected Operation assertEncodeModelValues(String mapName, Map<String, ?> expected) {
+        Operation op = assertControllerOperation();
+        assertEncodeModelValues(op, mapName, expected);
+        return op;
     }
 
-    protected static final OperationMap assertEncodeModelValues (OperationMap map, String mapName, Map<String,?> expected) {
-    	assertEquals(mapName + ": Mismatched size", MapUtil.size(expected), map.size());
-    	
-    	for (Map.Entry<String,?> me : map.entrySet()) {
-    		String	key=me.getKey();
-    		Object	actualValue=me.getValue();
-    		Object	expectedValue=ControllerOperationCollector.resolveCollectedValue(expected.get(key));
-    		assertEquals(mapName + ": Mismatched value for " + key, expectedValue, actualValue);
-    	}
-
-    	return map;
+    protected static final OperationMap assertEncodeModelValues(Operation op, String mapName, Map<String, ?> expected) {
+        OperationMap map = op.get(mapName, OperationMap.class);
+        assertNotNull(mapName + ": missing encoding", map);
+        return assertEncodeModelValues(map, mapName, expected);
     }
 
-    protected static final Map<String,Object> createTestModelMap (final String testName) {
-    	return new TreeMap<String, Object>() {
-			private static final long serialVersionUID = 1L;
+    protected static final OperationMap assertEncodeModelValues(OperationMap map, String mapName, Map<String, ?> expected) {
+        assertEquals(mapName + ": Mismatched size", MapUtil.size(expected), map.size());
 
-			{
-				put("curDate", new Date());
-				put("nanoTime", Long.valueOf(System.nanoTime()));
-				put("testName", testName);
-				put("boolValue", Boolean.valueOf((System.currentTimeMillis() & 0x01L) == 0L));
-    		}
-    	};
+        for (Map.Entry<String, ?> me : map.entrySet()) {
+            String key = me.getKey();
+            Object actualValue = me.getValue();
+            Object expectedValue = ControllerOperationCollector.resolveCollectedValue(expected.get(key));
+            assertEquals(mapName + ": Mismatched value for " + key, expectedValue, actualValue);
+        }
+
+        return map;
+    }
+
+    protected static final Map<String, Object> createTestModelMap(final String testName) {
+        return new TreeMap<String, Object>() {
+            private static final long serialVersionUID = 1L;
+
+            {
+                put("curDate", new Date());
+                put("nanoTime", Long.valueOf(System.nanoTime()));
+                put("testName", testName);
+                put("boolValue", Boolean.valueOf((System.currentTimeMillis() & 0x01L) == 0L));
+            }
+        };
     }
 
     protected static class TestSupportController {
-    	protected final Map<String,?>	returnModel;
-    	protected final String returnView;
+        protected final Map<String, ?> returnModel;
+        protected final String returnView;
 
-    	TestSupportController (Map<String,?> outgoingModel, String outgoingView) {
-    		returnModel = outgoingModel;
-    		returnView = outgoingView;
-    	}
+        TestSupportController(Map<String, ?> outgoingModel, String outgoingView) {
+            returnModel = outgoingModel;
+            returnView = outgoingView;
+        }
     }
 }

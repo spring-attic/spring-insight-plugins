@@ -60,32 +60,32 @@ public class SQLFormatter {
     private String clauseIndent = "    ";
 
     private static final String[] selectSeparators = {
-	        "FROM ", "WHERE ", "ORDER BY ", // ### is this order correct?
-	        "GROUP BY ", "HAVING "
-       };
+            "FROM ", "WHERE ", "ORDER BY ", // ### is this order correct?
+            "GROUP BY ", "HAVING "
+    };
 
     private static final String[] insertSeparators = {
-	        "VALUES "
-	    };
+            "VALUES "
+    };
 
     private static final String[] updateSeparators = {
-        "SET ", "WHERE "
-      };
+            "SET ", "WHERE "
+    };
 
     private static final String[] deleteSeparators = {
-        "WHERE "
-      };
+            "WHERE "
+    };
 
     private static final String[] createTableSeparators = {
-        "( "
-     };
+            "( "
+    };
 
     private static final String[] createIndexSeparators = {
-        "ON ", "( "
-      };
+            "ON ", "( "
+    };
 
-    public SQLFormatter () {
-    	super();
+    public SQLFormatter() {
+        super();
     }
 
     public void setNewline(String val) {
@@ -159,7 +159,7 @@ public class SQLFormatter {
                 String line = null;
 
                 int index = Math.max(sql.toString().indexOf(";\n"),
-                    sql.toString().indexOf(";\r"));
+                        sql.toString().indexOf(";\r"));
                 if (index == -1)
                     line = sql.toString();
                 else
@@ -204,7 +204,7 @@ public class SQLFormatter {
         clauses.add(new StringBuilder());
         for (int i = 0; i < separators.length; i++) {
             end = lowerCaseSql.indexOf(" " + separators[i].toLowerCase(),
-                start);
+                    start);
             if (end == -1)
                 break;
 
@@ -223,7 +223,7 @@ public class SQLFormatter {
         clause.append(sql.substring(start));
 
         StringBuilder pp = new StringBuilder(sql.length());
-        for (Iterator<StringBuilder> iter = clauses.iterator(); iter.hasNext();){
+        for (Iterator<StringBuilder> iter = clauses.iterator(); iter.hasNext(); ) {
             pp.append(wrapLine(iter.next().toString()));
             if (iter.hasNext())
                 pp.append(newline);
@@ -237,7 +237,7 @@ public class SQLFormatter {
 
         // ensure that any leading whitespace is preserved.
         for (int i = 0; i < line.length() &&
-            (line.charAt(i) == ' ' || line.charAt(i) == '\t'); i++) {
+                (line.charAt(i) == ' ' || line.charAt(i) == '\t'); i++) {
             lines.append(line.charAt(i));
         }
 
@@ -279,7 +279,7 @@ public class SQLFormatter {
         return lines.toString();
     }
 
-    public static void main(String [] args) {
+    public static void main(String[] args) {
         SQLFormatter formatter = new SQLFormatter();
         for (int i = 0; i < args.length; i++) {
             System.out.println(formatter.prettyPrint(args[i]));

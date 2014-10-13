@@ -20,17 +20,17 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 
 /**
- * 
+ *
  */
 public class MyApplicationEventPublisher
-		extends MyEventHolder
-		implements ApplicationEventPublisher {
-	public MyApplicationEventPublisher() {
-		super();
-	}
+        extends MyEventHolder
+        implements ApplicationEventPublisher {
+    public MyApplicationEventPublisher() {
+        super();
+    }
 
-	public void publishEvent(ApplicationEvent event) {
-		lastEvent = event;
-	}
+    public void publishEvent(ApplicationEvent event) {
+        lastEvent = event;
+    }
 
 }

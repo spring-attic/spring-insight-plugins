@@ -2,9 +2,9 @@
 <#import "/insight-1.0.ftl" as insight />
 
 <@insight.group label="Details">
-	<@insight.entry name="Name" value=operation.stateId />
+    <@insight.entry name="Name" value=operation.stateId />
     <#if operation.view??>
-    	<@insight.entry name="View" value=operation.view />
+        <@insight.entry name="View" value=operation.view />
     </#if>
 </@insight.group>
 
@@ -37,7 +37,7 @@
 </#if>
 
 <#if operation.exception??>
-	<@insight.group label="Exception Details">
-		<@insight.entry name="Exception" value=operation.exception/>
-	</@insight.group>
+    <@insight.group label="Exception Details">
+        <@insight.entry name="Exception" value=operation.exception/>
+    </@insight.group>
 </#if>

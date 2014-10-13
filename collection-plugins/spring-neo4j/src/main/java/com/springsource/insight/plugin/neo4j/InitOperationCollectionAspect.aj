@@ -32,32 +32,32 @@ public privileged aspect InitOperationCollectionAspect extends AbstractOperation
         super();
     }
 
-    public pointcut collectionPoint() : execution(* Neo4jTemplate+.setInfrastructure(MappingInfrastructure));
+    public pointcut collectionPoint(): execution(* Neo4jTemplate+.setInfrastructure(MappingInfrastructure));
 
-	@Override
+    @Override
     protected Operation createOperation(JoinPoint jp) {
-		MappingInfrastructure infrastucture=(MappingInfrastructure)jp.getArgs()[0];
-		
+        MappingInfrastructure infrastucture = (MappingInfrastructure) jp.getArgs()[0];
+
         Operation op = new Operation().type(OperationCollectionTypes.INIT_TYPE.type)
-    						.label(OperationCollectionTypes.INIT_TYPE.label)
-    						.sourceCodeLocation(getSourceCodeLocation(jp));
-        
-		if (infrastucture!=null) {
-			GraphDatabaseService serv=infrastucture.getGraphDatabaseService();
-			if (serv instanceof RestGraphDatabase) {
-				op.put("serviceUri", ((RestGraphDatabase)serv).getRestRequest().getUri());
-			}
-			op.put("service", serv.toString());
-		}
-            	            
-		return op;
+                .label(OperationCollectionTypes.INIT_TYPE.label)
+                .sourceCodeLocation(getSourceCodeLocation(jp));
+
+        if (infrastucture != null) {
+            GraphDatabaseService serv = infrastucture.getGraphDatabaseService();
+            if (serv instanceof RestGraphDatabase) {
+                op.put("serviceUri", ((RestGraphDatabase) serv).getRestRequest().getUri());
+            }
+            op.put("service", serv.toString());
+        }
+
+        return op;
     }
 
     @Override
     public String getPluginName() {
         return Neo4jPluginRuntimeDescriptor.PLUGIN_NAME;
     }
-    
+
     @Override
     public boolean isMetricsGenerator() {
         return true; // This provides an external resource

@@ -28,7 +28,7 @@ import com.springsource.insight.intercept.operation.Operation;
 
 
 /**
- * 
+ *
  */
 public class FlowExecutorCollectionAspectTest
         extends SpringBatchOperationCollectionAspectTestSupport {
@@ -38,31 +38,31 @@ public class FlowExecutorCollectionAspectTest
     }
 
     @Test
-    public void testExecuteStep ()
+    public void testExecuteStep()
             throws JobInterruptedException, JobRestartException, StartLimitExceededException {
-        Step            step=createTestStep("testExecuteStep");
-        String          stepName=step.getName();
-        FlowExecutor    executor=createFlowExecutor("testExecuteJob", stepName);
+        Step step = createTestStep("testExecuteStep");
+        String stepName = step.getName();
+        FlowExecutor executor = createFlowExecutor("testExecuteJob", stepName);
 
         executor.executeStep(step);
-        
-        Operation   op=assertOperationDetails(getFirstEntered(), "executeStep", step.getName());
+
+        Operation op = assertOperationDetails(getFirstEntered(), "executeStep", step.getName());
         assertOperationPath(op, null, stepName);
     }
 
     @Test
-    public void testAbandonStepExecution () {
-        StepExecution   stepExec=createStepExecution("testAbandonJobExecution", "testAbandonStepExecution");
-        FlowExecutor    executor=createFlowExecutor(stepExec);
+    public void testAbandonStepExecution() {
+        StepExecution stepExec = createStepExecution("testAbandonJobExecution", "testAbandonStepExecution");
+        FlowExecutor executor = createFlowExecutor(stepExec);
         executor.abandonStepExecution();
-        
-        Operation   op=assertOperationDetails(getFirstEntered(), "abandonStepExecution", stepExec.getStepName());
+
+        Operation op = assertOperationDetails(getFirstEntered(), "abandonStepExecution", stepExec.getStepName());
         assertOperationPath(op, stepExec);
     }
 
     @Test
-    public void testAbandonNoCurrentStepExecution () {
-        FlowExecutor    executor=createFlowExecutor(null);
+    public void testAbandonNoCurrentStepExecution() {
+        FlowExecutor executor = createFlowExecutor(null);
         executor.abandonStepExecution();
         assertOperationDetails(getFirstEntered(), "abandonStepExecution", SpringBatchDefinitions.UNKNOWN_VALUE);
     }

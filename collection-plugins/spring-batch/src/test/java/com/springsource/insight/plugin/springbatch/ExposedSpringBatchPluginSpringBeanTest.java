@@ -22,18 +22,19 @@ import org.springframework.test.context.ContextConfiguration;
 import com.springsource.insight.idk.test.AbstractExposedIdkPuginsTestSupport;
 
 /**
- * Makes sure that the exposed singletons are indeed visible 
+ * Makes sure that the exposed singletons are indeed visible
  */
-@ContextConfiguration(locations={ "classpath:META-INF/insight-plugin-spring-batch.xml" })
+@ContextConfiguration(locations = {"classpath:META-INF/insight-plugin-spring-batch.xml"})
 public class ExposedSpringBatchPluginSpringBeanTest
-		extends AbstractExposedIdkPuginsTestSupport<SpringBatchPluginRuntimeDescriptor> {
+        extends AbstractExposedIdkPuginsTestSupport<SpringBatchPluginRuntimeDescriptor> {
     /* NOTE: all beans are autowired with required=false since we want
      * to have specific tests for each and we don't want to fail ALL the
      * tests if one bean is missing
      */
-	@Autowired(required=false) protected SpringBatchPluginRuntimeDescriptor	springBatchPluginRuntimeDescriptor;
+    @Autowired(required = false)
+    protected SpringBatchPluginRuntimeDescriptor springBatchPluginRuntimeDescriptor;
 
-	public ExposedSpringBatchPluginSpringBeanTest() {
-		super(SpringBatchPluginRuntimeDescriptor.class);
-	}
+    public ExposedSpringBatchPluginSpringBeanTest() {
+        super(SpringBatchPluginRuntimeDescriptor.class);
+    }
 }

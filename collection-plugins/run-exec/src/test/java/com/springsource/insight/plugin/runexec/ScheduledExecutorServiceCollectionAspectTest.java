@@ -25,7 +25,7 @@ import java.util.concurrent.TimeoutException;
 import org.junit.Test;
 
 /**
- * 
+ *
  */
 public class ScheduledExecutorServiceCollectionAspectTest
         extends ExecutionCollectionAspectTestSupport {
@@ -35,36 +35,35 @@ public class ScheduledExecutorServiceCollectionAspectTest
     }
 
     @Test
-    public void testSingleScheduling () throws InterruptedException, ExecutionException, TimeoutException {
-        SignallingRunnable          runner=new SignallingRunnable("testSingleScheduling");
-        ScheduledExecutorService    executor=createScheduledThreadPoolExecutor();
-        ScheduledFuture<?>          future=executor.schedule(runner, 25L, TimeUnit.MILLISECONDS);
+    public void testSingleScheduling() throws InterruptedException, ExecutionException, TimeoutException {
+        SignallingRunnable runner = new SignallingRunnable("testSingleScheduling");
+        ScheduledExecutorService executor = createScheduledThreadPoolExecutor();
+        ScheduledFuture<?> future = executor.schedule(runner, 25L, TimeUnit.MILLISECONDS);
         assertLastExecutionOperation(runner);
         assertCurrentThreadExecution();
 
-        Object   result=future.get(5L, TimeUnit.SECONDS);
+        Object result = future.get(5L, TimeUnit.SECONDS);
         assertNull("Unexpected future execution result", result);
         assertTrue("Future not marked as done", future.isDone());
     }
 
     @Test
-    public void testScheduleAtFixedRate () throws InterruptedException {
+    public void testScheduleAtFixedRate() throws InterruptedException {
         runRepeatedScheduling("testScheduleAtFixedRate", true);
     }
 
     @Test
-    public void testScheduleWithFixedDelay () throws InterruptedException {
+    public void testScheduleWithFixedDelay() throws InterruptedException {
         runRepeatedScheduling("testScheduleWithFixedDelay", false);
     }
 
-    private void runRepeatedScheduling (String testName, boolean fixedRate) throws InterruptedException {
-        SignallingRunnable          runner=new SignallingRunnable(testName);
-        ScheduledExecutorService    executor=createScheduledThreadPoolExecutor();
-        ScheduledFuture<?>          future=fixedRate
-                    ? executor.scheduleAtFixedRate(runner, 25L, 135L, TimeUnit.MILLISECONDS)
-                    : executor.scheduleWithFixedDelay(runner, 25L, 135L, TimeUnit.MILLISECONDS)
-                    ;
-        Thread                      thread=iterateRunner(runner);
+    private void runRepeatedScheduling(String testName, boolean fixedRate) throws InterruptedException {
+        SignallingRunnable runner = new SignallingRunnable(testName);
+        ScheduledExecutorService executor = createScheduledThreadPoolExecutor();
+        ScheduledFuture<?> future = fixedRate
+                ? executor.scheduleAtFixedRate(runner, 25L, 135L, TimeUnit.MILLISECONDS)
+                : executor.scheduleWithFixedDelay(runner, 25L, 135L, TimeUnit.MILLISECONDS);
+        Thread thread = iterateRunner(runner);
         future.cancel(true);
         assertCurrentThreadExecution();
         assertLastExecutionOperation(thread);
@@ -75,7 +74,7 @@ public class ScheduledExecutorServiceCollectionAspectTest
         return ScheduledExecutorServiceCollectionAspect.aspectOf();
     }
 
-    private ScheduledThreadPoolExecutor createScheduledThreadPoolExecutor () {
+    private ScheduledThreadPoolExecutor createScheduledThreadPoolExecutor() {
         return new ScheduledThreadPoolExecutor(5);
     }
 }

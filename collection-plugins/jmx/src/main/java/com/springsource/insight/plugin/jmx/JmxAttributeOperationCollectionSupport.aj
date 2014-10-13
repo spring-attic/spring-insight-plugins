@@ -33,59 +33,59 @@ import com.springsource.insight.util.StringUtil;
  * Serves as base class for aspects that instrument get/set attribute(s)
  */
 public abstract aspect JmxAttributeOperationCollectionSupport extends JmxOperationCollectionAspectSupport {
-	protected final String	action;
+    protected final String action;
 
-	protected JmxAttributeOperationCollectionSupport(String actionName, OperationCollector collector) {
-		super(collector);
+    protected JmxAttributeOperationCollectionSupport(String actionName, OperationCollector collector) {
+        super(collector);
 
-		if (StringUtil.isEmpty(actionName)) {
-			throw new IllegalArgumentException("No action specified");
-		}
-		
-		action = actionName;
-	}
+        if (StringUtil.isEmpty(actionName)) {
+            throw new IllegalArgumentException("No action specified");
+        }
 
-	protected JmxAttributeOperationCollectionSupport(String actionName) {
-		if (StringUtil.isEmpty(actionName)) {
-			throw new IllegalArgumentException("No action specified");
-		}
-		
-		action = actionName;
-	}
+        action = actionName;
+    }
 
-	// need to use 'call' since some implementations come from the core
-	public pointcut getAttributeValue()
-		: (call(* MBeanServer+.getAttribute(ObjectName,String)))
-	   || (call(* MBeanServerConnection+.getAttribute(ObjectName,String)))
-	    ;
+    protected JmxAttributeOperationCollectionSupport(String actionName) {
+        if (StringUtil.isEmpty(actionName)) {
+            throw new IllegalArgumentException("No action specified");
+        }
 
-	public pointcut setAttributeValue()
-		: (call(* MBeanServer+.setAttribute(ObjectName,Attribute)))
-	   || (call(* MBeanServerConnection+.setAttribute(ObjectName,Attribute)))
-	    ;
+        action = actionName;
+    }
 
-	public pointcut getAttributesList()
-		: (call(* MBeanServer+.getAttributes(ObjectName,String[])))
-	   || (call(* MBeanServerConnection+.getAttributes(ObjectName,String[])))
-	    ;
+    // need to use 'call' since some implementations come from the core
+    public pointcut getAttributeValue()
+            : (call(* MBeanServer+.getAttribute(ObjectName,String)))
+            || (call(* MBeanServerConnection+.getAttribute(ObjectName,String)))
+            ;
 
-	public pointcut setAttributesList()
-		: (call(* MBeanServer+.setAttributes(ObjectName,AttributeList)))
-	   || (call(* MBeanServerConnection+.setAttributes(ObjectName,AttributeList)))
-	    ;
+    public pointcut setAttributeValue()
+            : (call(* MBeanServer+.setAttribute(ObjectName,Attribute)))
+            || (call(* MBeanServerConnection+.setAttribute(ObjectName,Attribute)))
+            ;
 
-	protected Operation createAttributeOperation(JoinPoint jp, ObjectName name) {
-		return createBeanOperation(jp, name)
-							.type(JmxPluginRuntimeDescriptor.ATTR)
-							.put(JmxPluginRuntimeDescriptor.ACTION_PROP, action);
-	}
-	
-	protected String getAttributeName(JoinPoint jp) {
-		return getAttributeName(jp.getArgs());
-	}
-	
-	protected String getAttributeName(Object...args) {
-		return ArrayUtil.findFirstInstanceOf(String.class, args);
-	}
+    public pointcut getAttributesList()
+            : (call(* MBeanServer+.getAttributes(ObjectName,String[])))
+            || (call(* MBeanServerConnection+.getAttributes(ObjectName,String[])))
+            ;
+
+    public pointcut setAttributesList()
+            : (call(* MBeanServer+.setAttributes(ObjectName,AttributeList)))
+            || (call(* MBeanServerConnection+.setAttributes(ObjectName,AttributeList)))
+            ;
+
+    protected Operation createAttributeOperation(JoinPoint jp, ObjectName name) {
+        return createBeanOperation(jp, name)
+                .type(JmxPluginRuntimeDescriptor.ATTR)
+                .put(JmxPluginRuntimeDescriptor.ACTION_PROP, action);
+    }
+
+    protected String getAttributeName(JoinPoint jp) {
+        return getAttributeName(jp.getArgs());
+    }
+
+    protected String getAttributeName(Object... args) {
+        return ArrayUtil.findFirstInstanceOf(String.class, args);
+    }
 
 }

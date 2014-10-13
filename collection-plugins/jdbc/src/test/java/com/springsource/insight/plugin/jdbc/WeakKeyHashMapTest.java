@@ -25,20 +25,20 @@ import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 import com.springsource.insight.util.test.MicroBenchmark;
 
 
-public class WeakKeyHashMapTest extends AbstractCollectionTestSupport  {
+public class WeakKeyHashMapTest extends AbstractCollectionTestSupport {
     WeakKeyHashMap<FatObj, String> storage;
     final Random r = new Random(System.nanoTime());
-    
+
     @Before
     @Override
     public void setUp() {
-    	super.setUp();
+        super.setUp();
         storage = new WeakKeyHashMap<FatObj, String>();
     }
-    
+
     @Test
     public void canStore1Gigs() throws Exception {
-        for (int i=0; i<1000; i++) {
+        for (int i = 0; i < 1000; i++) {
             FatObj fatty = new FatObj(r, 1024 * 1024);
             storage.put(fatty, "fubar");
         }
@@ -48,7 +48,7 @@ public class WeakKeyHashMapTest extends AbstractCollectionTestSupport  {
     @Category(MicroBenchmark.class)
     public void weakEntriesRemovedOnGC() throws Exception {
         final int NUM_ITEMS = 100;
-        for (int i=0; i< NUM_ITEMS; i++) {
+        for (int i = 0; i < NUM_ITEMS; i++) {
             FatObj fatty = new FatObj(r, 1024 * 1024);
             storage.put(fatty, "fubar");
         }
@@ -60,20 +60,20 @@ public class WeakKeyHashMapTest extends AbstractCollectionTestSupport  {
 
         assertTrue("Storage size unchanged", storage.size() != NUM_ITEMS);
     }
-    
+
     @Test
-    public void testExplicitRemoval () {
-        final FatObj    KEY=new FatObj(r, 1);
+    public void testExplicitRemoval() {
+        final FatObj KEY = new FatObj(r, 1);
         storage.put(KEY, "testExplicitRemoval");
         assertEquals("Mismatched initial size", 1, storage.size());
-        
+
         storage.remove(KEY);
         assertEquals("Test key not removed", 0, storage.size());
     }
 
     public static class FatObj {
         private byte[] bytes;
-        
+
         public FatObj(Random r, int numBytes) {
             bytes = new byte[numBytes];
             r.nextBytes(bytes);

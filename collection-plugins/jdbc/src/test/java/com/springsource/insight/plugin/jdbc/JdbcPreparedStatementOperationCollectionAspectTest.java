@@ -40,83 +40,84 @@ import com.springsource.insight.util.StringUtil;
 @ContextConfiguration("classpath:jdbc-test-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class JdbcPreparedStatementOperationCollectionAspectTest extends JdbcStatementOperationCollectionTestSupport {
-    @Autowired private DataSource dataSource;
+    @Autowired
+    private DataSource dataSource;
 
-    public JdbcPreparedStatementOperationCollectionAspectTest () {
-    	super();
+    public JdbcPreparedStatementOperationCollectionAspectTest() {
+        super();
     }
 
     @Test
     public void testOperationCollectionForPreparedStatement() throws SQLException {
-    	final String	sql = "select * from appointment where owner = ? and dateTime = ?";
-    	final String	strParam="Agim";
-    	final Date		dtParam=Date.valueOf("2009-06-01");
-        Connection	 	c = dataSource.getConnection();
+        final String sql = "select * from appointment where owner = ? and dateTime = ?";
+        final String strParam = "Agim";
+        final Date dtParam = Date.valueOf("2009-06-01");
+        Connection c = dataSource.getConnection();
         try {
-        	PreparedStatement ps = c.prepareStatement(sql);
-        	try {
-	        	ps.setString(1, strParam);
-	        	ps.setDate(2, dtParam);
+            PreparedStatement ps = c.prepareStatement(sql);
+            try {
+                ps.setString(1, strParam);
+                ps.setDate(2, dtParam);
 
-	        	assertTrue("Failed to execute", ps.execute());
-        	} finally {
-        		ps.close();
-        	}
+                assertTrue("Failed to execute", ps.execute());
+            } finally {
+                ps.close();
+            }
         } finally {
-        	c.close();
+            c.close();
         }
 
-        Operation   operation=assertJdbcOperation(sql);
+        Operation operation = assertJdbcOperation(sql);
         assertSqlParams(operation, strParam, dtParam.toString());
     }
 
     @Test
     public void testOperationCollectionForCallableStatement() throws SQLException {
-        final String	sql = "{call testSp(?)}";
-        final String	strParam = "Agim";
+        final String sql = "{call testSp(?)}";
+        final String strParam = "Agim";
         Connection c = dataSource.getConnection();
         try {
-        	CallableStatement cs = c.prepareCall(sql);
-        	try {
-        		cs.setString(1, strParam);
-        		
-        		ResultSet	returnValue	= cs.executeQuery();
-        		if (returnValue != null) {
-        			returnValue.close();
-        		}
-        	} finally {
-        		cs.close();
-        	}
+            CallableStatement cs = c.prepareCall(sql);
+            try {
+                cs.setString(1, strParam);
+
+                ResultSet returnValue = cs.executeQuery();
+                if (returnValue != null) {
+                    returnValue.close();
+                }
+            } finally {
+                cs.close();
+            }
         } finally {
-        	c.close();
+            c.close();
         }
 
-        Operation   operation=assertJdbcOperation(sql);
+        Operation operation = assertJdbcOperation(sql);
         assertSqlParams(operation, strParam);
     }
-    
+
     @Test
     public void testOperationCollectionForCallableStatementWithNamedParameters() throws SQLException {
-        final String sql = "{call testSp(?)}", paramName = "@p1", paramValue="someValue";
+        final String sql = "{call testSp(?)}", paramName = "@p1", paramValue = "someValue";
         Connection c = dataSource.getConnection();
         try {
-	        CallableStatement cs = c.prepareCall(sql);
-	        
-	        // So finally, figured out how hsqldb maps named parameters (@p1, @p2 etc.)
-	        try {
-	        	cs.setString(paramName, paramValue);
-	        	ResultSet	returnValue = cs.executeQuery();
-        		if (returnValue != null) {
-        			returnValue.close();
-        		}
-	        } finally {
-	        	cs.close();
-	        }
+            CallableStatement cs = c.prepareCall(sql);
+
+            // So finally, figured out how hsqldb maps named parameters (@p1, @p2 etc.)
+            try {
+                cs.setString(paramName, paramValue);
+                ResultSet returnValue = cs.executeQuery();
+                if (returnValue != null) {
+                    returnValue.close();
+                }
+            } finally {
+                cs.close();
+            }
         } finally {
-        	c.close();
+            c.close();
         }
 
-        Operation   operation=assertJdbcOperation(sql);
+        Operation operation = assertJdbcOperation(sql);
 
         OperationMap parameters = operation.get(JdbcOperationFinalizer.PARAMS_VALUES, OperationMap.class);
         assertNotNull("Missing parameters map", parameters);
@@ -124,13 +125,13 @@ public class JdbcPreparedStatementOperationCollectionAspectTest extends JdbcStat
         assertEquals("Mismatched parameter value", paramValue, parameters.get(paramName));
     }
 
-    protected OperationList assertSqlParams (Operation	op, String ... values) {
-        OperationList	parameters =op.get(JdbcOperationFinalizer.PARAMS_VALUES, OperationList.class);
+    protected OperationList assertSqlParams(Operation op, String... values) {
+        OperationList parameters = op.get(JdbcOperationFinalizer.PARAMS_VALUES, OperationList.class);
         assertNotNull("Missing parameters list", parameters);
         assertEquals("Mismatched parameters count", ArrayUtil.length(values), parameters.size());
-        
-        for (int	index=0; index < parameters.size(); index++) {
-        	assertEquals("Mismatched parameter at index=" + index, values[index], StringUtil.safeToString(parameters.get(index)));
+
+        for (int index = 0; index < parameters.size(); index++) {
+            assertEquals("Mismatched parameter at index=" + index, values[index], StringUtil.safeToString(parameters.get(index)));
         }
         return parameters;
     }

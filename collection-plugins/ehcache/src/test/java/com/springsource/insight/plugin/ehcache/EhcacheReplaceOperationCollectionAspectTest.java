@@ -21,7 +21,7 @@ import org.junit.Test;
 
 
 /**
- * 
+ *
  */
 public class EhcacheReplaceOperationCollectionAspectTest
         extends EhcacheOperationCollectionAspectTestSupport {
@@ -31,22 +31,22 @@ public class EhcacheReplaceOperationCollectionAspectTest
     }
 
     @Test
-    public void testReplaceOldWithNew () {
-        Object  key="testReplaceOldWithNew", oldValue=Long.valueOf(System.nanoTime());
-        Element oldElem=putUncaptured(key, oldValue);
-        Object  newValue=Long.valueOf(System.currentTimeMillis() + System.nanoTime());
-        Element newElem=new Element(key, newValue);
+    public void testReplaceOldWithNew() {
+        Object key = "testReplaceOldWithNew", oldValue = Long.valueOf(System.nanoTime());
+        Element oldElem = putUncaptured(key, oldValue);
+        Object newValue = Long.valueOf(System.currentTimeMillis() + System.nanoTime());
+        Element newElem = new Element(key, newValue);
 
         assertTrue("Failed to replace", cache.replace(oldElem, newElem));
         assertEhcacheOperationContents(EhcacheDefinitions.RPL_METHOD, key, newValue);
     }
 
     @Test
-    public void testReplaceInPlace () {
-        Object  key="testReplaceInPlace", oldValue=Long.valueOf(System.nanoTime());
-        Element oldElem=putUncaptured(key, oldValue);
-        Object  newValue=Long.valueOf(System.currentTimeMillis() + System.nanoTime());
-        Element prevElem=cache.replace(new Element(key, newValue));
+    public void testReplaceInPlace() {
+        Object key = "testReplaceInPlace", oldValue = Long.valueOf(System.nanoTime());
+        Element oldElem = putUncaptured(key, oldValue);
+        Object newValue = Long.valueOf(System.currentTimeMillis() + System.nanoTime());
+        Element prevElem = cache.replace(new Element(key, newValue));
 
         assertSame("Mismatched replaced element", oldElem, prevElem);
         assertNotNull("Failed to replace", prevElem);

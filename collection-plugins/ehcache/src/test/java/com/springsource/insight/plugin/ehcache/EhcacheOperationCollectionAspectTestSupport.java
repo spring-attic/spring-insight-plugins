@@ -43,23 +43,23 @@ import com.springsource.insight.util.FileUtil;
  *
  */
 public abstract class EhcacheOperationCollectionAspectTestSupport
-            extends OperationCollectionAspectTestSupport {
-    protected static final String   TEST_CACHE_NAME="ehcacheOperationCollector";
-    protected static CacheManager   manager;
-    protected static Cache  cache;
+        extends OperationCollectionAspectTestSupport {
+    protected static final String TEST_CACHE_NAME = "ehcacheOperationCollector";
+    protected static CacheManager manager;
+    protected static Cache cache;
 
     protected EhcacheOperationCollectionAspectTestSupport() {
-       super();
+        super();
     }
 
     // neutralizes the argument captor
-    protected Element putUncaptured (final Object key, final Object value) {
+    protected Element putUncaptured(final Object key, final Object value) {
         assertNotNull("Null key", key);
         assertNotNull("Null value", value);
 
-        final Element                             elem=new Element(key, value);
-        final OperationCollectionAspectSupport    collAspect=getAspect();
-        final OperationCollector                  current=collAspect.getCollector();
+        final Element elem = new Element(key, value);
+        final OperationCollectionAspectSupport collAspect = getAspect();
+        final OperationCollector current = collAspect.getCollector();
         try {
             collAspect.setCollector(IgnoringOperationCollector.DEFAULT);
             cache.put(elem);
@@ -70,11 +70,11 @@ public abstract class EhcacheOperationCollectionAspectTestSupport
 
     }
 
-    protected Operation assertEhcacheOperationContents (final String method, final Object key, final Object value) {
-        final Operation op=getLastEntered();
+    protected Operation assertEhcacheOperationContents(final String method, final Object key, final Object value) {
+        final Operation op = getLastEntered();
         assertNotNull("No operation extracted", op);
         assertEquals("Mismatched operation type", EhcacheDefinitions.CACHE_OPERATION, op.getType());
-        assertEquals("Mismatched cache name", TEST_CACHE_NAME,op.get(EhcacheDefinitions.NAME_ATTRIBUTE, String.class));
+        assertEquals("Mismatched cache name", TEST_CACHE_NAME, op.get(EhcacheDefinitions.NAME_ATTRIBUTE, String.class));
         assertEquals("Mismatched method", method, op.get(EhcacheDefinitions.METHOD_ATTRIBUTE, String.class));
         assertEquals("Mismatched key", key.getClass().getSimpleName(), op.get(EhcacheDefinitions.KEY_ATTRIBUTE));
 
@@ -85,18 +85,18 @@ public abstract class EhcacheOperationCollectionAspectTestSupport
     }
 
     @BeforeClass
-    public static final synchronized void initTestCache () {
+    public static final synchronized void initTestCache() {
         if (manager != null) {
             return;
         }
 
-        final Class<?>	anchorClass=EhcacheOperationCollectionAspectTestSupport.class;
-        final URL				configURL=anchorClass.getResource("/ehcache.xml");
+        final Class<?> anchorClass = EhcacheOperationCollectionAspectTestSupport.class;
+        final URL configURL = anchorClass.getResource("/ehcache.xml");
         assertNotNull("Cannot find configuration file URL");
 
-        final File					testDir=FileUtil.detectTargetFolder(anchorClass), testStore=new File(testDir, "ehcache-store");
-        final Configuration			config=ConfigurationFactory.parseConfiguration(configURL);
-        final DiskStoreConfiguration	diskStore=config.getDiskStoreConfiguration();
+        final File testDir = FileUtil.detectTargetFolder(anchorClass), testStore = new File(testDir, "ehcache-store");
+        final Configuration config = ConfigurationFactory.parseConfiguration(configURL);
+        final DiskStoreConfiguration diskStore = config.getDiskStoreConfiguration();
         diskStore.setPath(testStore.getAbsolutePath());
 
         manager = CacheManager.create(config);
@@ -107,13 +107,14 @@ public abstract class EhcacheOperationCollectionAspectTestSupport
 
     @SuppressWarnings("hiding")
     public static class TestCacheWriter implements CacheWriter, Cloneable {
-        private Ehcache   cache;
-        public TestCacheWriter (final Ehcache cache) {
+        private Ehcache cache;
+
+        public TestCacheWriter(final Ehcache cache) {
             this.cache = cache;
         }
 
         public CacheWriter clone(final Ehcache cache) throws CloneNotSupportedException {
-            final TestCacheWriter writer=getClass().cast(super.clone());
+            final TestCacheWriter writer = getClass().cast(super.clone());
             writer.cache = cache;
             return writer;
         }

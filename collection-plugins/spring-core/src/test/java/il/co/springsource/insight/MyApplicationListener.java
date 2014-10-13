@@ -19,13 +19,13 @@ package il.co.springsource.insight;
 import org.springframework.context.ApplicationListener;
 
 public class MyApplicationListener
-		extends MyEventHolder
-		implements ApplicationListener<MyEvent> {
+        extends MyEventHolder
+        implements ApplicationListener<MyEvent> {
 
-    public MyApplicationListener () {
-    	super();
+    public MyApplicationListener() {
+        super();
     }
-    
+
     public void onApplicationEvent(MyEvent event) {
         lastEvent = event;
     }

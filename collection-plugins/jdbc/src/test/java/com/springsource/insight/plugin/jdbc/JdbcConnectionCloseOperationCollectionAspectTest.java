@@ -27,7 +27,7 @@ import com.springsource.insight.intercept.operation.Operation;
 
 
 /**
- * 
+ *
  */
 public class JdbcConnectionCloseOperationCollectionAspectTest
         extends JdbcConnectionOperationCollectionTestSupport {
@@ -38,50 +38,50 @@ public class JdbcConnectionCloseOperationCollectionAspectTest
 
     @Test
     public void testCloseAspect() throws SQLException {
-        Connection  conn=connectDriver.connect(connectUrl, connectProps);
+        Connection conn = connectDriver.connect(connectUrl, connectProps);
         try {
             assertTrackedConnection(conn, connectUrl);
         } finally {
             conn.close();   // don't need it for anything
             assertConnectionNotTracked(conn);
         }
-        
+
         assertCloseDetails(connectUrl);
     }
 
     @Test
-    public void testUntrackedConnectionClose () throws SQLException {
-        OperationCollectionAspectSupport    aspectInstance=getAspect();
-        final AtomicReference<Operation>    opRef=new AtomicReference<Operation>(null);
+    public void testUntrackedConnectionClose() throws SQLException {
+        OperationCollectionAspectSupport aspectInstance = getAspect();
+        final AtomicReference<Operation> opRef = new AtomicReference<Operation>(null);
         aspectInstance.setCollector(new OperationCollector() {
-                public void enter(Operation operation) {
-                    Operation prev=opRef.getAndSet(operation);
-                    assertNull("Multiple enter calls", prev);
-                }
-    
-                public void exitNormal() {
-                    // ignored
-                }
-    
-                public void exitNormal(Object returnValue) {
-                    // ignored
-                }
-    
-                public void exitAbnormal(Throwable throwable) {
-                    // ignored
-                }
-    
-                public void exitAndDiscard() {
-                    // ignored
-                }
-    
-                public void exitAndDiscard(Object returnValue) {
-                    // ignored
-                }
-            });
+            public void enter(Operation operation) {
+                Operation prev = opRef.getAndSet(operation);
+                assertNull("Multiple enter calls", prev);
+            }
 
-        Connection  conn=connectDriver.connect(connectUrl, connectProps);
-        for (int    index=0; index < Byte.SIZE; index++) {
+            public void exitNormal() {
+                // ignored
+            }
+
+            public void exitNormal(Object returnValue) {
+                // ignored
+            }
+
+            public void exitAbnormal(Throwable throwable) {
+                // ignored
+            }
+
+            public void exitAndDiscard() {
+                // ignored
+            }
+
+            public void exitAndDiscard(Object returnValue) {
+                // ignored
+            }
+        });
+
+        Connection conn = connectDriver.connect(connectUrl, connectProps);
+        for (int index = 0; index < Byte.SIZE; index++) {
             /*
              * NOTE: as per the javadoc:
              * 

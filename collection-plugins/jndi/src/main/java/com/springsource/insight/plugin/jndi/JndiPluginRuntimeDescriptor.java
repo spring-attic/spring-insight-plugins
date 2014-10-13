@@ -20,25 +20,25 @@ import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 /**
- * 
+ *
  */
 public class JndiPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "javax-naming-jndi";
-	public static final OperationType	LOOKUP=OperationType.valueOf("javax-naming-lookup");
-	public static final OperationType	BIND=OperationType.valueOf("javax-naming-bind");
+    public static final OperationType LOOKUP = OperationType.valueOf("javax-naming-lookup");
+    public static final OperationType BIND = OperationType.valueOf("javax-naming-bind");
 
-    private static final JndiPluginRuntimeDescriptor	INSTANCE=new JndiPluginRuntimeDescriptor();
+    private static final JndiPluginRuntimeDescriptor INSTANCE = new JndiPluginRuntimeDescriptor();
 
-	private JndiPluginRuntimeDescriptor () {
-		super();
-	}
+    private JndiPluginRuntimeDescriptor() {
+        super();
+    }
 
-	public static final JndiPluginRuntimeDescriptor getInstance() {
-		return INSTANCE;
-	}
+    public static final JndiPluginRuntimeDescriptor getInstance() {
+        return INSTANCE;
+    }
 
-	@Override
-	public String getPluginName() {
-		return PLUGIN_NAME;
-	}
+    @Override
+    public String getPluginName() {
+        return PLUGIN_NAME;
+    }
 }

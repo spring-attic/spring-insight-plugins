@@ -19,12 +19,12 @@ package il.co.springsource.insight;
 import org.springframework.context.ApplicationEvent;
 
 public class MyEvent extends ApplicationEvent {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public MyEvent(MyEventSource src) {
+    public MyEvent(MyEventSource src) {
         super(src);
     }
-    
+
     public MyEvent(String src) {
         super(src);
     }

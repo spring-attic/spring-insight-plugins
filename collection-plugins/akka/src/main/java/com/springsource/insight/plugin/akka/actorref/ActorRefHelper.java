@@ -28,31 +28,31 @@ public final class ActorRefHelper {
     private static final ActorRefHelper INSTANCE = new ActorRefHelper();
 
     public static ActorRefHelper getInstance() {
-	return INSTANCE;
+        return INSTANCE;
     }
 
     private Map<Class<? extends ActorRef>, ActorRefPropertyExtractor> extractors = new HashMap<Class<? extends ActorRef>, ActorRefPropertyExtractor>();
 
     private ActorRefHelper() {
-	extractors.put(RoutedActorRef.class, RouterActorRefPropertyExtractor.INSTANCE);
-	extractors.put(PromiseActorRef.class, PromiseActorRefPropertyExtractor.INSTANCE);
+        extractors.put(RoutedActorRef.class, RouterActorRefPropertyExtractor.INSTANCE);
+        extractors.put(PromiseActorRef.class, PromiseActorRefPropertyExtractor.INSTANCE);
     }
 
     public Map<String, Object> getActorRefProps(ActorRef actorRef) {
-	return extract(actorRef);
+        return extract(actorRef);
     }
 
     private Map<String, Object> extract(ActorRef actorRef) {
-	Class<?> searchClass = actorRef.getClass();
-	while (!Object.class.equals(searchClass)) {
-	    ActorRefPropertyExtractor extractor = extractors.get(searchClass);
-	    if (extractor == null) {
-		searchClass = searchClass.getSuperclass();
-	    } else {
-		return extractor.extractProperties(actorRef);
-	    }
-	}
-	return Collections.emptyMap();
+        Class<?> searchClass = actorRef.getClass();
+        while (!Object.class.equals(searchClass)) {
+            ActorRefPropertyExtractor extractor = extractors.get(searchClass);
+            if (extractor == null) {
+                searchClass = searchClass.getSuperclass();
+            } else {
+                return extractor.extractProperties(actorRef);
+            }
+        }
+        return Collections.emptyMap();
     }
 
 }

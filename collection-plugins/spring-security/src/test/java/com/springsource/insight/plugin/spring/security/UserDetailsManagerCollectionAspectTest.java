@@ -34,25 +34,25 @@ import com.springsource.insight.intercept.operation.OperationList;
 import com.springsource.insight.intercept.operation.OperationMap;
 
 /**
- * 
+ *
  */
 public class UserDetailsManagerCollectionAspectTest
         extends SpringSecurityCollectionTestSupport {
-    private final TestingUserDetailsManager manager=new TestingUserDetailsManager();
-    private static final ObscuredValueSetMarker    marker=new ObscuredValueSetMarker();
+    private final TestingUserDetailsManager manager = new TestingUserDetailsManager();
+    private static final ObscuredValueSetMarker marker = new ObscuredValueSetMarker();
 
     public UserDetailsManagerCollectionAspectTest() {
         super();
     }
 
     @BeforeClass
-    public static void setupObscuringMarker () {
+    public static void setupObscuringMarker() {
         UserDetailsManagerCollectionAspect.aspectOf().setSensitiveValueMarker(marker);
     }
 
     @Override
     @Before
-    public void setUp () {
+    public void setUp() {
         super.setUp();
         // making sure again
         marker.clear();
@@ -61,7 +61,7 @@ public class UserDetailsManagerCollectionAspectTest
 
     @Override
     @After
-    public void restore () {
+    public void restore() {
         super.restore();
         marker.clear();
         manager.clearUsers();
@@ -73,60 +73,60 @@ public class UserDetailsManagerCollectionAspectTest
      * {@link UserDetailsManager} ones since UserDetailsManager extends UserDetailsService
      */
     @Test
-    public void testLoadUserByUsername () {
-        final String    USERNAME="testLoadUserByUsername";
+    public void testLoadUserByUsername() {
+        final String USERNAME = "testLoadUserByUsername";
         manager.addUser(createUser(USERNAME));
 
-        UserDetails result=manager.loadUserByUsername(USERNAME);
+        UserDetails result = manager.loadUserByUsername(USERNAME);
         assertNotNull("Mismatched loaded user instances", result);
 
         // the result is created by the UserDetailsOperationCollector
-        Operation   op=assertOperationResult("loadUserByUsername", result, UserDetailsOperationCollector.RESULT_MAP_NAME);
+        Operation op = assertOperationResult("loadUserByUsername", result, UserDetailsOperationCollector.RESULT_MAP_NAME);
         assertExtractedUsername(op, USERNAME);
         assertScoreValue(op, SpringSecurityDefinitions.SECURITY_OPERATION_ENDPOINT_SCORE);
     }
 
     @Test
-    public void testCreateUser () {
-        UserDetails user=createUser("testCreateUser");
+    public void testCreateUser() {
+        UserDetails user = createUser("testCreateUser");
         manager.createUser(user);
         assertOperationResult("createUser", user, "userDetails");
     }
 
     @Test
-    public void testUpdateUser () {
+    public void testUpdateUser() {
         manager.addUser(createUser("testUpdateUser"));
-        UserDetails user=createUser("testUpdateUser");
+        UserDetails user = createUser("testUpdateUser");
         manager.updateUser(user);
         assertOperationResult("updateUser", user, "userDetails");
     }
 
     @Test
-    public void testDeleteUser () {
-        final String    USERNAME="testDeleteUser";
+    public void testDeleteUser() {
+        final String USERNAME = "testDeleteUser";
         manager.addUser(createUser(USERNAME));
         manager.deleteUser(USERNAME);
         assertExtractedUsername("deleteUser", USERNAME);
     }
-    
+
     @Test
-    public void testUserExists () {
-        final String    USERNAME="testUserExists";
+    public void testUserExists() {
+        final String USERNAME = "testUserExists";
         manager.userExists(USERNAME);
-        Operation	op=assertExtractedUsername("userExists", USERNAME);
+        Operation op = assertExtractedUsername("userExists", USERNAME);
         assertScoreValue(op, SpringSecurityDefinitions.SECURITY_OPERATION_ENDPOINT_SCORE);
     }
 
     @Test
-    public void testChangePassword () {
-        UserDetails user=createUser("testChangePassword");
+    public void testChangePassword() {
+        UserDetails user = createUser("testChangePassword");
         manager.addUser(user);
         manager.setCurrentUser(user.getUsername());
 
-        String  oldPassword=user.getPassword(), newPassword=UUID.randomUUID().toString();
+        String oldPassword = user.getPassword(), newPassword = UUID.randomUUID().toString();
         manager.changePassword(oldPassword, newPassword);
 
-        Operation   op=assertOperationAction("changePassword");
+        Operation op = assertOperationAction("changePassword");
         assertEquals("Mismatched old password", oldPassword, op.get("oldPassword", String.class));
         assertObscuredString("oldPassword", oldPassword);
 
@@ -134,11 +134,11 @@ public class UserDetailsManagerCollectionAspectTest
         assertObscuredString("newPassword", newPassword);
     }
 
-    protected Operation assertExtractedUsername (String actionName, String username) {
+    protected Operation assertExtractedUsername(String actionName, String username) {
         return assertExtractedUsername(assertOperationAction(actionName), username);
     }
 
-    protected Operation assertExtractedUsername (Operation op, String username) {
+    protected Operation assertExtractedUsername(Operation op, String username) {
         assertNotNull("No operation extracted", op);
         assertEquals("Mismatched operation type", SpringSecurityDefinitions.USER_OP, op.getType());
         assertEquals("Mismatched username value", username, op.get("username", String.class));
@@ -146,31 +146,31 @@ public class UserDetailsManagerCollectionAspectTest
         return op;
     }
 
-    protected void assertObscuredString (String type, String value) {
+    protected void assertObscuredString(String type, String value) {
         assertTrue("Not obscured - " + type, marker.contains(value));
     }
 
-    protected Operation assertOperationResult (String actionName, UserDetails details, String mapName) {
-        Operation   op=assertOperationAction(actionName);
+    protected Operation assertOperationResult(String actionName, UserDetails details, String mapName) {
+        Operation op = assertOperationAction(actionName);
         assertUserDetails(op.get(mapName, OperationMap.class), details);
         assertObscuredDetails(details, marker);
         return op;
     }
 
-    protected void assertObscuredDetails (UserDetails details, Collection<?> obscuredValues) {
+    protected void assertObscuredDetails(UserDetails details, Collection<?> obscuredValues) {
         assertTrue("Username not obscured", obscuredValues.contains(details.getUsername()));
         assertTrue("Password not obscured", obscuredValues.contains(details.getPassword()));
     }
 
-    protected Operation assertOperationAction (String actionName) {
-        Operation op=getLastEntered();
+    protected Operation assertOperationAction(String actionName) {
+        Operation op = getLastEntered();
         assertNotNull("No operation extracted", op);
         assertEquals("Mismatched operation type", SpringSecurityDefinitions.USER_OP, op.getType());
         assertEquals("Mismatched action name", actionName, op.get("action", String.class));
         return op;
     }
 
-    protected OperationMap assertUserDetails (OperationMap mapValue, UserDetails details) {
+    protected OperationMap assertUserDetails(OperationMap mapValue, UserDetails details) {
         if (mapValue == null) { // OK if null - just means no extra information collected
             return null;
         }
@@ -188,17 +188,17 @@ public class UserDetailsManagerCollectionAspectTest
         assertEquals("Mismatched enabled",
                 Boolean.valueOf(details.isEnabled()), mapValue.get("enabled", Boolean.class));
         assertGrantedAuthoritiesInstances(mapValue.get(ObscuringOperationCollector.GRANTED_AUTHS_LIST_NAME, OperationList.class),
-                                          details.getAuthorities());
+                details.getAuthorities());
         return mapValue;
     }
 
     protected Operation assertScoreValue(Operation op, int expected) {
-    	assertNotNull("No operation extracted", op);
-    	
-    	Number	actual=op.get(EndPointAnalysis.SCORE_FIELD, Number.class);
-    	assertNotNull("No score value set", actual);
-    	assertEquals("Mismatched score value", expected, actual.intValue());
-    	return op;
+        assertNotNull("No operation extracted", op);
+
+        Number actual = op.get(EndPointAnalysis.SCORE_FIELD, Number.class);
+        assertNotNull("No score value set", actual);
+        assertEquals("Mismatched score value", expected, actual.intValue());
+        return op;
     }
 
     @Override
@@ -206,9 +206,9 @@ public class UserDetailsManagerCollectionAspectTest
         return UserDetailsManagerCollectionAspect.aspectOf();
     }
 
-    private User createUser (String username) {
+    private User createUser(String username) {
         return new User(username, UUID.randomUUID().toString(),
-                        true, true, true, true,
-                        AuthorityUtils.createAuthorityList(String.valueOf(System.nanoTime())));
+                true, true, true, true,
+                AuthorityUtils.createAuthorityList(String.valueOf(System.nanoTime())));
     }
 }

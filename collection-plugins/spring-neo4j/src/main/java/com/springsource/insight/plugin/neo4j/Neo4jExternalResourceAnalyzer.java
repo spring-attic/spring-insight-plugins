@@ -34,58 +34,57 @@ import com.springsource.insight.util.StringUtil;
 
 
 public class Neo4jExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-	private static final Neo4jExternalResourceAnalyzer	INSTANCE=new Neo4jExternalResourceAnalyzer();
+    private static final Neo4jExternalResourceAnalyzer INSTANCE = new Neo4jExternalResourceAnalyzer();
 
-	private Neo4jExternalResourceAnalyzer() {
-	    super(OperationCollectionTypes.INIT_TYPE.type);
-	}
+    private Neo4jExternalResourceAnalyzer() {
+        super(OperationCollectionTypes.INIT_TYPE.type);
+    }
 
-	public static final Neo4jExternalResourceAnalyzer getInstance() {
-		return INSTANCE;
-	}
-	
-	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> frames) {
-		if (ListUtil.size(frames) <= 0) {
-		    return Collections.emptyList();
-		}
+    public static final Neo4jExternalResourceAnalyzer getInstance() {
+        return INSTANCE;
+    }
 
-		List<ExternalResourceDescriptor> queueDescriptors = new ArrayList<ExternalResourceDescriptor>(frames.size());
-		for (Frame cacheFrame : frames) {
-			Operation op = cacheFrame.getOperation();
-			String service = op.get("service", String.class);
-			if (StringUtil.isEmpty(service))
-				continue;
-			
-			String hashString = MD5NameGenerator.getName(service);
+    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> frames) {
+        if (ListUtil.size(frames) <= 0) {
+            return Collections.emptyList();
+        }
+
+        List<ExternalResourceDescriptor> queueDescriptors = new ArrayList<ExternalResourceDescriptor>(frames.size());
+        for (Frame cacheFrame : frames) {
+            Operation op = cacheFrame.getOperation();
+            String service = op.get("service", String.class);
+            if (StringUtil.isEmpty(service))
+                continue;
+
+            String hashString = MD5NameGenerator.getName(service);
             String color = colorManager.getColor(op);
-            
-            ExternalResourceType resType=ExternalResourceType.DATABASE;
-            if (service.indexOf("EmbeddedGraphDatabase") >= 0) {
-            	resType = ExternalResourceType.FILESTORE;
-            }
-            
-            int port=-1;
-			String host="localhost";
-			
-            String serviceUri=op.get("serviceUri", String.class);
-            if (!StringUtil.isEmpty(serviceUri)) {
-            	try {
-					URI url=new URI(serviceUri);
-					host = url.getHost();
-					port = url.getPort();
-				}
-				catch (URISyntaxException e) {
-					// invalid uri
-				}
-            }
-            
-			ExternalResourceDescriptor descriptor =
-			        new ExternalResourceDescriptor(cacheFrame, "server:" + hashString, service,
-			        							   resType.name(), "Neo4J",
-                       			                   host, port, color, false);
-			queueDescriptors.add(descriptor);           
-		}
 
-		return queueDescriptors;
-	}
+            ExternalResourceType resType = ExternalResourceType.DATABASE;
+            if (service.indexOf("EmbeddedGraphDatabase") >= 0) {
+                resType = ExternalResourceType.FILESTORE;
+            }
+
+            int port = -1;
+            String host = "localhost";
+
+            String serviceUri = op.get("serviceUri", String.class);
+            if (!StringUtil.isEmpty(serviceUri)) {
+                try {
+                    URI url = new URI(serviceUri);
+                    host = url.getHost();
+                    port = url.getPort();
+                } catch (URISyntaxException e) {
+                    // invalid uri
+                }
+            }
+
+            ExternalResourceDescriptor descriptor =
+                    new ExternalResourceDescriptor(cacheFrame, "server:" + hashString, service,
+                            resType.name(), "Neo4J",
+                            host, port, color, false);
+            queueDescriptors.add(descriptor);
+        }
+
+        return queueDescriptors;
+    }
 }

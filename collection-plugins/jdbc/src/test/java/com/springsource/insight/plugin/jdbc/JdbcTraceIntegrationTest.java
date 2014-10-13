@@ -35,26 +35,27 @@ import com.springsource.insight.util.MapUtil;
  * Checks a serialized version of the trace used in the integration tests
  */
 public class JdbcTraceIntegrationTest extends AbstractMetricsGeneratorTest {
-	private static final List<OperationType>	METRICS_OPS=
-			Arrays.asList(JdbcDriverExternalResourceAnalyzer.TYPE, JdbcOperationExternalResourceAnalyzer.TYPE);
-	private static final Map<OperationType,AbstractExternalResourceMetricsGenerator>	metricsGenerators=
-			Collections.unmodifiableMap(
-					toGeneratorsMap(createExternalResourceMetricsGenerators(false, METRICS_OPS)));
+    private static final List<OperationType> METRICS_OPS =
+            Arrays.asList(JdbcDriverExternalResourceAnalyzer.TYPE, JdbcOperationExternalResourceAnalyzer.TYPE);
+    private static final Map<OperationType, AbstractExternalResourceMetricsGenerator> metricsGenerators =
+            Collections.unmodifiableMap(
+                    toGeneratorsMap(createExternalResourceMetricsGenerators(false, METRICS_OPS)));
 
-	public JdbcTraceIntegrationTest() {
-		super(new AbstractExternalResourceMetricsGenerator(OperationType.UNKNOWN) { /* nothing extra */});
-	}
+    public JdbcTraceIntegrationTest() {
+        super(new AbstractExternalResourceMetricsGenerator(OperationType.UNKNOWN) { /* nothing extra */
+        });
+    }
 
-	@Test
-	public void testJdbcTrace () throws Exception {
-		Trace								trace=loadTrace("JdbcTraceTest");
-		Map<OperationType,List<MetricsBag>>	result=analyzeTrace("testJdbcTrace", trace, metricsGenerators.values());
-		assertEquals("Mismatched results size", 1, MapUtil.size(result));
-		
-		List<MetricsBag>	jdbcOperationMetrics=result.get(JdbcOperationExternalResourceAnalyzer.TYPE);
-		assertEquals("Mismatched operation metrics size: " + jdbcOperationMetrics, 2, ListUtil.size(jdbcOperationMetrics));
-		for (int index=0; index < jdbcOperationMetrics.size(); index++) {
-			assertInvocationCountValue("testJdbcTrace[" + index + "]", jdbcOperationMetrics.get(index), 1L);
-		}
-	}
+    @Test
+    public void testJdbcTrace() throws Exception {
+        Trace trace = loadTrace("JdbcTraceTest");
+        Map<OperationType, List<MetricsBag>> result = analyzeTrace("testJdbcTrace", trace, metricsGenerators.values());
+        assertEquals("Mismatched results size", 1, MapUtil.size(result));
+
+        List<MetricsBag> jdbcOperationMetrics = result.get(JdbcOperationExternalResourceAnalyzer.TYPE);
+        assertEquals("Mismatched operation metrics size: " + jdbcOperationMetrics, 2, ListUtil.size(jdbcOperationMetrics));
+        for (int index = 0; index < jdbcOperationMetrics.size(); index++) {
+            assertInvocationCountValue("testJdbcTrace[" + index + "]", jdbcOperationMetrics.get(index), 1L);
+        }
+    }
 }

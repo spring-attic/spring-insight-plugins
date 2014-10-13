@@ -17,16 +17,16 @@
 package com.springsource.insight.plugin.eclipse.persistence;
 
 /**
- * 
+ *
  */
 public class TransactionOperationMetricsGenerator extends EclipsePersistenceMetricsGenerator {
-	private static final TransactionOperationMetricsGenerator	INSTANCE=new TransactionOperationMetricsGenerator();
+    private static final TransactionOperationMetricsGenerator INSTANCE = new TransactionOperationMetricsGenerator();
 
-    private TransactionOperationMetricsGenerator () {
+    private TransactionOperationMetricsGenerator() {
         super(EclipsePersistenceDefinitions.TX);
     }
 
     public static final TransactionOperationMetricsGenerator getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 }

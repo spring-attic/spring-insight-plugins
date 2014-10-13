@@ -18,26 +18,26 @@ package com.springsource.insight.plugin.files.tracker;
 import com.springsource.insight.intercept.operation.OperationType;
 
 /**
- * 
+ *
  */
 public final class FilesTrackerDefinitions {
     private FilesTrackerDefinitions() {
-       // no instance
+        // no instance
     }
 
-    public static final OperationType   TYPE=OperationType.valueOf("files-tracker");
+    public static final OperationType TYPE = OperationType.valueOf("files-tracker");
     /**
      * Operation type (open, close)
      */
-    public static final String  OPTYPE_ATTR="op-type",
-                                    OPEN_OP="open",
-                                    CLOSE_OP="close";
+    public static final String OPTYPE_ATTR = "op-type",
+            OPEN_OP = "open",
+            CLOSE_OP = "close";
     /**
      * Path attribute
      */
-    public static final String  PATH_ATTR="path";
+    public static final String PATH_ATTR = "path";
     /**
      * Mode attribute (valid only for open operations)
      */
-    public static final String  MODE_ATTR="mode";
+    public static final String MODE_ATTR = "mode";
 }

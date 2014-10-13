@@ -19,16 +19,16 @@ package com.foo.example;
 import org.springframework.stereotype.Repository;
 
 /**
- * 
+ *
  */
 @Repository
 public class ExampleRepository extends AbstractBean {
-	public ExampleRepository() {
-		super();
-	}
+    public ExampleRepository() {
+        super();
+    }
 
-	public void run () {
-		logger.info("run(" + getClass().getSimpleName() + ")");
-	}
+    public void run() {
+        logger.info("run(" + getClass().getSimpleName() + ")");
+    }
 
 }

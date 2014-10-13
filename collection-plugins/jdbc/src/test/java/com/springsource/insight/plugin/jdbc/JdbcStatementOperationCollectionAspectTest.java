@@ -33,28 +33,29 @@ import com.springsource.insight.intercept.operation.Operation;
 @ContextConfiguration("classpath:jdbc-test-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class JdbcStatementOperationCollectionAspectTest extends JdbcStatementOperationCollectionTestSupport {
-    @Autowired private DataSource dataSource;
+    @Autowired
+    private DataSource dataSource;
 
-    public JdbcStatementOperationCollectionAspectTest () {
-    	super();
+    public JdbcStatementOperationCollectionAspectTest() {
+        super();
     }
 
     @Test
     public void testOperationCollection() throws SQLException {
-		final String sql = "select * from appointment where owner = 'Agim' and dateTime = '2009-06-01'";
+        final String sql = "select * from appointment where owner = 'Agim' and dateTime = '2009-06-01'";
         Connection c = dataSource.getConnection();
         try {
-        	Statement ps = c.createStatement();
-        	try {
-        		ps.execute(sql);
-        	} finally {
-        		ps.close();
-        	}
+            Statement ps = c.createStatement();
+            try {
+                ps.execute(sql);
+            } finally {
+                ps.close();
+            }
         } finally {
-        	c.close();
+            c.close();
         }
 
-        Operation	operation=assertJdbcOperation(sql);
+        Operation operation = assertJdbcOperation(sql);
         assertNull("Unexpected parameters", operation.get("params"));
     }
 

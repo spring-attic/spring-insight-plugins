@@ -7,21 +7,21 @@
         <#if operation.requiredFields?has_content>
             <@insight.list collection=operation.requiredFields />
         <#else>
-            <em>none specified</em>
+        <em>none specified</em>
         </#if>
     </@insight.entry>
     <@insight.entry name="Allowed Fields">
         <#if operation.allowedFields?has_content>
             <@insight.list collection=operation.allowedFields />
         <#else>
-            <em>none specified</em>
+        <em>none specified</em>
         </#if>
     </@insight.entry>
     <@insight.entry name="Disallowed Fields">
         <#if operation.disallowedFields?has_content>
             <@insight.list collection=operation.disallowedFields />
         <#else>
-            <em>none specified</em>
+        <em>none specified</em>
         </#if>
     </@insight.entry>
     <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />

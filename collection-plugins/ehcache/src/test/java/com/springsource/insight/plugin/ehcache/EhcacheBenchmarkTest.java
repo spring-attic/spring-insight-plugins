@@ -44,10 +44,10 @@ public class EhcacheBenchmarkTest extends EhcacheOperationCollectionAspectTestSu
             manager.clearAll();
         }
         System.out.printf("Total Time %dms , Total Memory Used %dmb , Avg. Time / Run %.2fms Avg. Memory / Run %.2fmb",
-                          time,
-                          memory,
-                          (double) time / RUNS,
-                          (double) memory / RUNS);
+                time,
+                memory,
+                (double) time / RUNS,
+                (double) memory / RUNS);
     }
 
 

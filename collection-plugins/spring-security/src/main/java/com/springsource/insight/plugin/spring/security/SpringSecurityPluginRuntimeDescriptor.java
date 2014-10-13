@@ -20,14 +20,14 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class SpringSecurityPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "spring-security";
-    private static final SpringSecurityPluginRuntimeDescriptor	INSTANCE=new SpringSecurityPluginRuntimeDescriptor();
+    private static final SpringSecurityPluginRuntimeDescriptor INSTANCE = new SpringSecurityPluginRuntimeDescriptor();
 
-    public SpringSecurityPluginRuntimeDescriptor () {
+    public SpringSecurityPluginRuntimeDescriptor() {
         super();
     }
 
     public static final SpringSecurityPluginRuntimeDescriptor getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override

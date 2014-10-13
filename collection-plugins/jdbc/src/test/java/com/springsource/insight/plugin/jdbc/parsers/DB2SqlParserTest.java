@@ -20,10 +20,10 @@ import com.springsource.insight.plugin.jdbc.parser.DatabaseType;
 import com.springsource.insight.plugin.jdbc.parser.parsers.DB2SqlParser;
 
 /**
- * 
+ *
  */
 public class DB2SqlParserTest extends SimpleSqlUrlParserTestSupport<DB2SqlParser> {
-	public DB2SqlParserTest () {
-		super(DatabaseType.DB2, new DB2SqlParser());
-	}
+    public DB2SqlParserTest() {
+        super(DatabaseType.DB2, new DB2SqlParser());
+    }
 }

@@ -32,23 +32,23 @@ public privileged aspect ConnectOperationCollectionAspect extends AbstractCassan
         super();
     }
 
-    public pointcut collectionPoint() : execution(public Cassandra.Client org.apache.cassandra.thrift.Cassandra.Client.Factory.getClient(..)) ||
-    									execution(public org.apache.cassandra.thrift.Cassandra.Client.new(..));
+    public pointcut collectionPoint(): execution(public Cassandra.Client org.apache.cassandra.thrift.Cassandra.Client.Factory.getClient(..)) ||
+            execution(public org.apache.cassandra.thrift.Cassandra.Client.new(..));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-    	Object[] args = jp.getArgs();
+        Object[] args = jp.getArgs();
 
-    	Operation operation = OperationUtils.createOperation(OperationCollectionTypes.CONNECT_TYPE, null, getSourceCodeLocation(jp)); 
-		// get transport info
-		String conn=OperationUtils.putTransportInfo(operation, (TProtocol)args[0]);
-		operation.label(OperationCollectionTypes.CONNECT_TYPE.label+conn);
-		
-		return operation;
+        Operation operation = OperationUtils.createOperation(OperationCollectionTypes.CONNECT_TYPE, null, getSourceCodeLocation(jp));
+        // get transport info
+        String conn = OperationUtils.putTransportInfo(operation, (TProtocol) args[0]);
+        operation.label(OperationCollectionTypes.CONNECT_TYPE.label + conn);
+
+        return operation;
     }
-    
-	@Override
+
+    @Override
     public String getPluginName() {
-		return CassandraPluginRuntimeDescriptor.PLUGIN_NAME;
-	}
+        return CassandraPluginRuntimeDescriptor.PLUGIN_NAME;
+    }
 }

@@ -30,34 +30,31 @@ public privileged aspect LookupOperationCollectionAspect extends AbstractOperati
         super();
     }
 
-    public pointcut collectionPoint() : execution(* Neo4jTemplate+.lookup(..));
+    public pointcut collectionPoint(): execution(* Neo4jTemplate+.lookup(..));
 
-	@Override
+    @Override
     protected Operation createOperation(JoinPoint jp) {
-    	Object[] args = jp.getArgs();
-        
-    	Operation op = new Operation().type(OperationCollectionTypes.LOOKUP_TYPE.type)
-    						.label(OperationCollectionTypes.LOOKUP_TYPE.label)
-    						.sourceCodeLocation(getSourceCodeLocation(jp)); 
-    	
-    	String value=args[args.length-1].toString();
-    	if (args[0] instanceof Class) {
-    		op.put("indexedType", ((Class<?>)args[0]).getName());
-    		op.put("propertyName", (String)args[1]);
-    		op.put("value", value);
-    	}
-    	else
-    	if (args[0] instanceof String) {
-    		op.put("indexName", (String)args[0]);
-    		if (args.length==3) {
-    			op.put("field", (String)args[1]);
-    			op.put("value", value);
-    		}
-    		else
-    			op.put("query", value);
-    	}
-    		
-    	return op;
+        Object[] args = jp.getArgs();
+
+        Operation op = new Operation().type(OperationCollectionTypes.LOOKUP_TYPE.type)
+                .label(OperationCollectionTypes.LOOKUP_TYPE.label)
+                .sourceCodeLocation(getSourceCodeLocation(jp));
+
+        String value = args[args.length - 1].toString();
+        if (args[0] instanceof Class) {
+            op.put("indexedType", ((Class<?>) args[0]).getName());
+            op.put("propertyName", (String) args[1]);
+            op.put("value", value);
+        } else if (args[0] instanceof String) {
+            op.put("indexName", (String) args[0]);
+            if (args.length == 3) {
+                op.put("field", (String) args[1]);
+                op.put("value", value);
+            } else
+                op.put("query", value);
+        }
+
+        return op;
     }
 
     @Override

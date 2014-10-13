@@ -37,7 +37,7 @@ import com.springsource.insight.collection.test.OperationCollectionAspectTestSup
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public abstract class SpringBatchOperationCollectionAspectTestSupport
         extends OperationCollectionAspectTestSupport {
@@ -54,47 +54,47 @@ public abstract class SpringBatchOperationCollectionAspectTestSupport
     protected Operation getLastEnteredOperation(OperationCollector spiedCollector) {
         assertTrue("Spied collector type mismatch", spiedCollector instanceof TestDummyOperationCollector);
 
-        List<Operation> opsList=((TestDummyOperationCollector) spiedCollector).getCapturedOperations();
+        List<Operation> opsList = ((TestDummyOperationCollector) spiedCollector).getCapturedOperations();
         assertNotNull("No operations list data", opsList);
         assertTrue("No operations collected", opsList.size() > 0);
         return opsList.get(opsList.size() - 1);
     }
 
     protected Operation getFirstEntered() {
-        OperationCollectionAspectSupport    aspectInstance=getAspect();
-        OperationCollector                  spiedCollector=aspectInstance.getCollector();
+        OperationCollectionAspectSupport aspectInstance = getAspect();
+        OperationCollector spiedCollector = aspectInstance.getCollector();
         assertTrue("Spied collector type mismatch", spiedCollector instanceof TestDummyOperationCollector);
 
-        List<Operation> opsList=((TestDummyOperationCollector) spiedCollector).getCapturedOperations();
+        List<Operation> opsList = ((TestDummyOperationCollector) spiedCollector).getCapturedOperations();
         assertNotNull("No operations list data", opsList);
         assertTrue("No operations collected", opsList.size() > 0);
         return opsList.get(0);
     }
 
-    protected Operation assertOperationDetails (Operation op, String action, String name) {
+    protected Operation assertOperationDetails(Operation op, String action, String name) {
         assertNotNull("No operation extracted", op);
         assertEquals("Mismatched type value", SpringBatchDefinitions.BATCH_TYPE, op.getType());
         assertEquals("Mismatched action", action, op.get(SpringBatchDefinitions.ACTION_ATTR, String.class));
         assertEquals("Mismatched name", name, op.get(SpringBatchDefinitions.NAME_ATTR, String.class));
-        
-        SpringBatchOperationCollectionAspect    aspectInstance=
+
+        SpringBatchOperationCollectionAspect aspectInstance =
                 (SpringBatchOperationCollectionAspect) getAspect();
-        Class<?>    batchType=aspectInstance.getBatchType();
+        Class<?> batchType = aspectInstance.getBatchType();
         assertEquals("Mismatched batch type", batchType.getSimpleName(), op.get(SpringBatchDefinitions.TYPE_ATTR, String.class));
         return op;
     }
 
-    protected Operation assertOperationPath (Operation op, FlowExecutor flowExecutor) {
+    protected Operation assertOperationPath(Operation op, FlowExecutor flowExecutor) {
         return assertOperationPath(op, flowExecutor.getStepExecution());
     }
 
-    protected Operation assertOperationPath (Operation op, StepExecution stepExecution) {
-        JobExecution    jobExecution=stepExecution.getJobExecution();
-        JobInstance     jobInstance=jobExecution.getJobInstance();
+    protected Operation assertOperationPath(Operation op, StepExecution stepExecution) {
+        JobExecution jobExecution = stepExecution.getJobExecution();
+        JobInstance jobInstance = jobExecution.getJobInstance();
         return assertOperationPath(op, jobInstance.getJobName(), stepExecution.getStepName());
     }
 
-    protected Operation assertOperationPath (Operation op, String jobName, String stepName) {
+    protected Operation assertOperationPath(Operation op, String jobName, String stepName) {
         assertNotNull("No operation extracted", op);
 
         if (StringUtils.hasText(jobName)) {
@@ -108,7 +108,7 @@ public abstract class SpringBatchOperationCollectionAspectTestSupport
         return op;
     }
 
-    protected Step createTestStep (final String name) {
+    protected Step createTestStep(final String name) {
         return new Step() {
             public String getName() {
                 return name;
@@ -129,27 +129,27 @@ public abstract class SpringBatchOperationCollectionAspectTestSupport
         };
     }
 
-    protected FlowExecutor createFlowExecutor (String jobName, String stepName) {
+    protected FlowExecutor createFlowExecutor(String jobName, String stepName) {
         return createFlowExecutor(createStepExecution(jobName, stepName));
     }
 
-    protected StepExecution createStepExecution (String jobName, String stepName) {
-        JobExecution    jobExecution=createJobExecution(jobName);
-        StepExecution   stepExecution=Mockito.mock(StepExecution.class);
+    protected StepExecution createStepExecution(String jobName, String stepName) {
+        JobExecution jobExecution = createJobExecution(jobName);
+        StepExecution stepExecution = Mockito.mock(StepExecution.class);
         Mockito.when(stepExecution.getStepName()).thenReturn(stepName);
         Mockito.when(stepExecution.getJobExecution()).thenReturn(jobExecution);
         return stepExecution;
     }
-    
-    protected JobExecution createJobExecution (String jobName) {
-        JobInstance     jobInstance=Mockito.mock(JobInstance.class);
+
+    protected JobExecution createJobExecution(String jobName) {
+        JobInstance jobInstance = Mockito.mock(JobInstance.class);
         Mockito.when(jobInstance.getJobName()).thenReturn(jobName);
-        JobExecution    jobExecution=Mockito.mock(JobExecution.class);
+        JobExecution jobExecution = Mockito.mock(JobExecution.class);
         Mockito.when(jobExecution.getJobInstance()).thenReturn(jobInstance);
         return jobExecution;
     }
 
-    protected FlowExecutor createFlowExecutor (final StepExecution stepExecution) {
+    protected FlowExecutor createFlowExecutor(final StepExecution stepExecution) {
         return new FlowExecutor() {
             public String executeStep(Step step)
                     throws JobInterruptedException, JobRestartException, StartLimitExceededException {

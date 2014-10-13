@@ -22,16 +22,16 @@ import org.aspectj.lang.JoinPoint;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public abstract aspect SocketAcceptCollectionAspectSupport extends SocketOperationCollectionAspectSupport {
-    protected SocketAcceptCollectionAspectSupport () {
+    protected SocketAcceptCollectionAspectSupport() {
         setCollector(new SocketAcceptOperationCollector(getSocketCollectOperationContext()));
     }
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        ServerSocket    sock=resolveServerSocket(jp);
+        ServerSocket sock = resolveServerSocket(jp);
         /*
          * NOTE: we use "0.0.0.0" as a placeholder address since at this stage
          * we cannot tell what is the client's address since the method is
@@ -41,7 +41,7 @@ public abstract aspect SocketAcceptCollectionAspectSupport extends SocketOperati
         return createOperation(super.createOperation(jp), SocketDefinitions.ACCEPT_ACTION, "0.0.0.0", sock.getLocalPort());
     }
 
-    protected abstract ServerSocket resolveServerSocket (JoinPoint jp);
+    protected abstract ServerSocket resolveServerSocket(JoinPoint jp);
 
     @Override
     public String getPluginName() {

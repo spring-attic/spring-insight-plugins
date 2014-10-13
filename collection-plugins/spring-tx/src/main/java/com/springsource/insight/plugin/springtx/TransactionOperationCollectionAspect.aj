@@ -38,7 +38,7 @@ import com.springsource.insight.intercept.operation.OperationType;
  */
 public aspect TransactionOperationCollectionAspect extends OperationCollectionAspectSupport {
     static final OperationType TYPE = OperationType.valueOf("transaction");
-    
+
     public TransactionOperationCollectionAspect() {
         super(new TransactionOperationCollector());
     }
@@ -50,19 +50,19 @@ public aspect TransactionOperationCollectionAspect extends OperationCollectionAs
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after(TransactionDefinition txDefinition) returning(TransactionStatus txStatus)
-        : TransactionPointcuts.transactionBegin(txDefinition)
-       && if(strategies.collect(thisAspectInstance,thisJoinPointStaticPart)) {
+            : TransactionPointcuts.transactionBegin(txDefinition)
+            && if(strategies.collect(thisAspectInstance,thisJoinPointStaticPart)) {
         // Record only if this is a new transaction 
         // (i.e. not a nested transaction with REQUIRED propagation)
         if (txStatus.isNewTransaction()) {
             getCollector().enter(createOperation(txDefinition, thisJoinPoint));
         }
     }
-    
+
     @SuppressAjWarnings({"adviceDidNotMatch"})
-    after(TransactionStatus txStatus) returning 
-        : TransactionPointcuts.transactionCommit(txStatus)
-       && if(strategies.collect(thisAspectInstance,thisJoinPointStaticPart)) {
+    after(TransactionStatus txStatus) returning
+            : TransactionPointcuts.transactionCommit(txStatus)
+            && if(strategies.collect(thisAspectInstance,thisJoinPointStaticPart)) {
         // Record only if the transaction has completed (committed or rolled back) and is a new (top-level) tx
         if (txStatus.isNewTransaction() && txStatus.isCompleted()) {
             getCollector().exitNormal(TransactionOperationStatus.Committed);
@@ -70,33 +70,33 @@ public aspect TransactionOperationCollectionAspect extends OperationCollectionAs
     }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
-    after(TransactionStatus txStatus) returning 
-        : TransactionPointcuts.transactionRollback(txStatus)
-       && if(strategies.collect(thisAspectInstance,thisJoinPointStaticPart)) {
+    after(TransactionStatus txStatus) returning
+            : TransactionPointcuts.transactionRollback(txStatus)
+            && if(strategies.collect(thisAspectInstance,thisJoinPointStaticPart)) {
         // Record only if the transaction has completed (committed or rolled back) and is a new (top-level) tx
-         if (txStatus.isNewTransaction() && txStatus.isCompleted()) {
+        if (txStatus.isNewTransaction() && txStatus.isCompleted()) {
             getCollector().exitNormal(TransactionOperationStatus.RolledBack);
         }
     }
-    
+
     protected Operation createOperation(TransactionDefinition txDefinition, JoinPoint jp) {
         Operation operation = new Operation()
-            .type(TYPE)
-            .sourceCodeLocation(getSourceCodeLocation(jp))
-            .put("name", txDefinition.getName())
-            .put("propagation", txDefinition.getPropagationBehavior())
-            .put("isolation", txDefinition.getIsolationLevel())
-            .put("readOnly", txDefinition.isReadOnly())
-            .put("timeout", txDefinition.getTimeout());
+                .type(TYPE)
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .put("name", txDefinition.getName())
+                .put("propagation", txDefinition.getPropagationBehavior())
+                .put("isolation", txDefinition.getIsolationLevel())
+                .put("readOnly", txDefinition.isReadOnly())
+                .put("timeout", txDefinition.getTimeout());
         TransactionOperationFinalizer.register(operation);
         return operation;
     }
-    
+
     static class TransactionOperationCollector extends DefaultOperationCollector {
 
         @Override
         protected void processNormalExit(Operation op, Object returnValue) {
             op.put("status", returnValue.toString());
         }
-    } 
+    }
 }

@@ -21,6 +21,7 @@ package com.springsource.insight.plugin.integration.gateway;
  * in order to avoid some class loading issues.
  */
 public interface HasRequestMapper {
-	Object __getRequestMapper();
-	void __setRequestMapper(Object mapper);
+    Object __getRequestMapper();
+
+    void __setRequestMapper(Object mapper);
 }

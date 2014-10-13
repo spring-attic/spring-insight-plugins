@@ -26,10 +26,10 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 
 /**
- * 
+ *
  */
 public aspect EntityTransactionCollectionAspect extends AbstractOperationCollectionAspect {
-    public EntityTransactionCollectionAspect () {
+    public EntityTransactionCollectionAspect() {
         super();
     }
 
@@ -39,19 +39,19 @@ public aspect EntityTransactionCollectionAspect extends AbstractOperationCollect
     }
 
     public pointcut collectionPoint()
-        : execution(* EntityTransaction+.begin())
-       || execution(* EntityTransaction+.commit())
-       || execution(* EntityTransaction+.rollback())
-        ;
+            : execution(* EntityTransaction+.begin())
+            || execution(* EntityTransaction+.commit())
+            || execution(* EntityTransaction+.rollback())
+            ;
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Signature   sig=jp.getSignature();
-        String      actionName=sig.getName();
+        Signature sig = jp.getSignature();
+        String actionName = sig.getName();
         return new Operation().type(JpaDefinitions.TX_ENTITY)
-                              .label("Transaction " + actionName)
-                              .sourceCodeLocation(getSourceCodeLocation(jp))
-                              .put(OperationFields.METHOD_NAME, actionName)
-                              ;
+                .label("Transaction " + actionName)
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .put(OperationFields.METHOD_NAME, actionName)
+                ;
     }
 }

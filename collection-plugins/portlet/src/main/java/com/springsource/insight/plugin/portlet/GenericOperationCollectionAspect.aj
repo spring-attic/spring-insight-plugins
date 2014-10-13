@@ -36,105 +36,103 @@ import com.springsource.insight.util.StringUtil;
  * This aspect create insight operation for general Portlet
  */
 abstract aspect GenericOperationCollectionAspect extends AbstractOperationCollectionAspect {
-	/**
-	 * Placeholder used if portlet name could not be resolved
-	 */
-	public static final String	UNKNOWN_PORTLET_NAME="<unknown>";
+    /**
+     * Placeholder used if portlet name could not be resolved
+     */
+    public static final String UNKNOWN_PORTLET_NAME = "<unknown>";
 
-	protected GenericOperationCollectionAspect () {
-		super();
-	}
+    protected GenericOperationCollectionAspect() {
+        super();
+    }
 
-	@Override
+    @Override
     public final String getPluginName() {
         return PortletPluginRuntimeDescriptor.NAME;
     }
 
-	protected Operation createOperation(JoinPoint jp, OperationCollectionTypes opType) {
-		String 	portletName=null;
-		Object	jpThis=jp.getThis();
-		if (jpThis instanceof GenericPortlet) {
-			GenericPortlet portlet=(GenericPortlet) jpThis;
-			portletName = portlet.getPortletName();
-		}
+    protected Operation createOperation(JoinPoint jp, OperationCollectionTypes opType) {
+        String portletName = null;
+        Object jpThis = jp.getThis();
+        if (jpThis instanceof GenericPortlet) {
+            GenericPortlet portlet = (GenericPortlet) jpThis;
+            portletName = portlet.getPortletName();
+        }
 
-		if (StringUtil.isEmpty(portletName)) {
-			portletName = UNKNOWN_PORTLET_NAME;
-		}
+        if (StringUtil.isEmpty(portletName)) {
+            portletName = UNKNOWN_PORTLET_NAME;
+        }
 
-		Object[] 			  args=jp.getArgs();
-		PortletRequest 		  req=(PortletRequest)args[0];
-		PortletPreferences	  preferences=req.getPreferences();
-		Map<String, String[]> preferencesMap=preferences.getMap();
-		Map<String, String[]> params=req.getParameterMap();
-        
-		Operation operation=new Operation().type(opType.type)
-    						.label("Portlet: '"+portletName+"' ["+opType.label+"]")
-    						.sourceCodeLocation(getSourceCodeLocation(jp))
-    						.put("name", portletName)
-    						.putAnyNonEmpty("scheme", req.getScheme())
-    						.putAnyNonEmpty("server", req.getServerName())
-    						.put("port", req.getServerPort())
-    						.putAnyNonEmpty("contextPath", req.getContextPath())
-    						.putAnyNonEmpty(OperationFields.URI, createRequestURI(req))
-            	            .put("mode", String.valueOf(req.getPortletMode()))
-            	            .put("winState", String.valueOf(req.getWindowState()))
-            	            ;
-		
-		try {
-			//portlet2 support
-			operation.putAnyNonEmpty("winId", req.getWindowID());
-		}
-		catch(Error e) {
-			// ignored
-		}
-		
-		createMap(operation,"preferences", preferencesMap);
-		createMap(operation,"params", params);
-		
-		return operation;
-	}
+        Object[] args = jp.getArgs();
+        PortletRequest req = (PortletRequest) args[0];
+        PortletPreferences preferences = req.getPreferences();
+        Map<String, String[]> preferencesMap = preferences.getMap();
+        Map<String, String[]> params = req.getParameterMap();
 
-	static String createRequestURI (PortletRequest req) {
-		if (req == null) {
-			return null;
-		}
+        Operation operation = new Operation().type(opType.type)
+                .label("Portlet: '" + portletName + "' [" + opType.label + "]")
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .put("name", portletName)
+                .putAnyNonEmpty("scheme", req.getScheme())
+                .putAnyNonEmpty("server", req.getServerName())
+                .put("port", req.getServerPort())
+                .putAnyNonEmpty("contextPath", req.getContextPath())
+                .putAnyNonEmpty(OperationFields.URI, createRequestURI(req))
+                .put("mode", String.valueOf(req.getPortletMode()))
+                .put("winState", String.valueOf(req.getWindowState()));
 
-		String	scheme=req.getScheme(), server=req.getServerName();
-		if (StringUtil.isEmpty(scheme) || StringUtil.isEmpty(server)) {
-			return null;
-		}
+        try {
+            //portlet2 support
+            operation.putAnyNonEmpty("winId", req.getWindowID());
+        } catch (Error e) {
+            // ignored
+        }
 
-		int				port=req.getServerPort();
-		String			contextPath=req.getContextPath();
-		StringBuilder	sb=new StringBuilder(scheme.length() + 4 + server.length() + 6 + StringUtil.getSafeLength(contextPath));
-		sb.append(scheme).append("://").append(server);
-		if (port > 0) {
-			sb.append(':').append(port);
-		}
+        createMap(operation, "preferences", preferencesMap);
+        createMap(operation, "params", params);
 
-		if (StringUtil.getSafeLength(contextPath) > 0) {
-			sb.append(contextPath);
-		}
+        return operation;
+    }
 
-		return sb.toString();
-	}
+    static String createRequestURI(PortletRequest req) {
+        if (req == null) {
+            return null;
+        }
 
-	static OperationMap createMap(Operation op, String name, Map<String, String[]> values) {
-		if ((values == null) || values.isEmpty()) {
-			return null;
-		}
+        String scheme = req.getScheme(), server = req.getServerName();
+        if (StringUtil.isEmpty(scheme) || StringUtil.isEmpty(server)) {
+            return null;
+        }
 
-		OperationMap opMap=op.createMap(name);
-		for(Map.Entry<String,String[]> item: values.entrySet()) {
-			String	 key=item.getKey();
-			String[] value=item.getValue();
-			if (value == null) {
-				value = ArrayUtil.EMPTY_STRINGS;
-			}
-			opMap.put(key, Arrays.toString(value));
-		}
+        int port = req.getServerPort();
+        String contextPath = req.getContextPath();
+        StringBuilder sb = new StringBuilder(scheme.length() + 4 + server.length() + 6 + StringUtil.getSafeLength(contextPath));
+        sb.append(scheme).append("://").append(server);
+        if (port > 0) {
+            sb.append(':').append(port);
+        }
 
-		return opMap;
-	}
+        if (StringUtil.getSafeLength(contextPath) > 0) {
+            sb.append(contextPath);
+        }
+
+        return sb.toString();
+    }
+
+    static OperationMap createMap(Operation op, String name, Map<String, String[]> values) {
+        if ((values == null) || values.isEmpty()) {
+            return null;
+        }
+
+        OperationMap opMap = op.createMap(name);
+        for (Map.Entry<String, String[]> item : values.entrySet()) {
+            String key = item.getKey();
+            String[] value = item.getValue();
+            if (value == null) {
+                value = ArrayUtil.EMPTY_STRINGS;
+            }
+            opMap.put(key, Arrays.toString(value));
+        }
+
+        return opMap;
+    }
 }

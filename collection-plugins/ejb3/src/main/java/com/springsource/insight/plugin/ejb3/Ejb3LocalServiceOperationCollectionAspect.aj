@@ -39,17 +39,17 @@ import com.springsource.insight.intercept.operation.Operation;
 public aspect Ejb3LocalServiceOperationCollectionAspect
         extends TrailingMethodOperationCollectionAspect
         implements CollectionAspectProperties {
-    public Ejb3LocalServiceOperationCollectionAspect () {
+    public Ejb3LocalServiceOperationCollectionAspect() {
         super();
     }
 
-    public pointcut statefulBeanExecution ()
-        : execution(* (@Stateful *).*(..))
-        ;
+    public pointcut statefulBeanExecution()
+            : execution(* (@Stateful *).*(..))
+            ;
 
-    public pointcut statelessBeanExecution ()
-        : execution(* (@Stateless *).*(..))
-        ;
+    public pointcut statelessBeanExecution()
+            : execution(* (@Stateless *).*(..))
+            ;
 
     /*
      * NOTE: a more generic (and code-free) definitions would be 'execution (* @Local *..*+.*(..))'.
@@ -58,10 +58,10 @@ public aspect Ejb3LocalServiceOperationCollectionAspect
      *      part of a @Local annotated interface.
      * @see com.springsource.insight.collection.TrailingAbstractOperationCollectionAspect#collectionPoint()
      */
-    public pointcut collectionPoint ()
-        : (statefulBeanExecution() || statelessBeanExecution())
-       && if(strategies.collect(thisAspectInstance,thisJoinPointStaticPart))
-        ;
+    public pointcut collectionPoint()
+            : (statefulBeanExecution() || statelessBeanExecution())
+            && if(strategies.collect(thisAspectInstance,thisJoinPointStaticPart))
+            ;
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
@@ -71,6 +71,7 @@ public aspect Ejb3LocalServiceOperationCollectionAspect
 
         return null;    // debug breakpoint
     }
+
     /**
      * Checks if the invocation pointcut represents a method of an
      * interface marked as {@link Local} as implemented by the target. This is
@@ -82,15 +83,15 @@ public aspect Ejb3LocalServiceOperationCollectionAspect
      * @see #getLocalInterfaceMethods(Class)
      * @see #buildMethodKey(Method)
      */
-    protected static final boolean checkAnnotatedEjb3LocalCollection (final JoinPoint jp) {
-        final Object    target=(jp == null) ? null : jp.getTarget();
-        final Class<?>  clazz=(target == null) ? null : target.getClass();
-        final Signature sig=(jp == null) ? null : jp.getSignature();
+    protected static final boolean checkAnnotatedEjb3LocalCollection(final JoinPoint jp) {
+        final Object target = (jp == null) ? null : jp.getTarget();
+        final Class<?> clazz = (target == null) ? null : target.getClass();
+        final Signature sig = (jp == null) ? null : jp.getSignature();
         if ((clazz != null) && (sig instanceof MethodSignature)) {
-            final Method        method=((MethodSignature) sig).getMethod();
-            final String        methodKey=(method == null) ? null : buildMethodKey(method);
-            final Set<String>   intfcMethods=
-                ((methodKey == null) || (methodKey.length() <= 0)) ? null : getLocalInterfaceMethods(clazz);
+            final Method method = ((MethodSignature) sig).getMethod();
+            final String methodKey = (method == null) ? null : buildMethodKey(method);
+            final Set<String> intfcMethods =
+                    ((methodKey == null) || (methodKey.length() <= 0)) ? null : getLocalInterfaceMethods(clazz);
             /*
              * NOTE: we rely on the fact that in Java, 2 methods are considered
              *      the same if they have the same name and same numer and type
@@ -111,8 +112,9 @@ public aspect Ejb3LocalServiceOperationCollectionAspect
         return false;
     }
 
-    private static final Map<Class<?>,Set<String>>  _localInterfaceMethodsMap=
-            Collections.synchronizedMap(new HashMap<Class<?>,Set<String>>());
+    private static final Map<Class<?>, Set<String>> _localInterfaceMethodsMap =
+            Collections.synchronizedMap(new HashMap<Class<?>, Set<String>>());
+
     /**
      * @param clazz The executing target {@link Class}
      * @return A {@link Set} of all the method &quot;keys&quot; representing
@@ -123,28 +125,29 @@ public aspect Ejb3LocalServiceOperationCollectionAspect
      * @see #buildMethodKey(Method)
      * @see #updateLocalInterfaceMethods(Class, Set)
      */
-    protected static final Set<String> getLocalInterfaceMethods (final Class<?> clazz) {
+    protected static final Set<String> getLocalInterfaceMethods(final Class<?> clazz) {
         if (clazz == null) {
             return Collections.emptySet();
         }
 
         // no need to lock the entire Map since parallel executions will yield the same result
-        Set<String> intfcMethods=_localInterfaceMethodsMap.get(clazz);
+        Set<String> intfcMethods = _localInterfaceMethodsMap.get(clazz);
         if (intfcMethods != null) {
             return intfcMethods;
         }
 
-        if ((intfcMethods=updateLocalInterfaceMethods(clazz, null)) == null) {
+        if ((intfcMethods = updateLocalInterfaceMethods(clazz, null)) == null) {
             intfcMethods = Collections.emptySet();
         }
 
-        final Set<String>   prevMethods=_localInterfaceMethodsMap.put(clazz, intfcMethods);
+        final Set<String> prevMethods = _localInterfaceMethodsMap.put(clazz, intfcMethods);
         if (prevMethods != null) {
             return prevMethods; // debug breakpoint
         }
 
         return intfcMethods;
     }
+
     /**
      * @param clazz The executing target {@link Class}
      * @param orgMethods A current {@link Set} of all the method &quot;keys&quot;
@@ -154,30 +157,31 @@ public aspect Ejb3LocalServiceOperationCollectionAspect
      * need to add names then a new {@link Set} instance is created and returned.
      * @see #updateLocalInterfaceMethods(Set, Method...)
      */
-    protected static final Set<String> updateLocalInterfaceMethods (final Class<?> clazz, final Set<String> orgMethods) {
+    protected static final Set<String> updateLocalInterfaceMethods(final Class<?> clazz, final Set<String> orgMethods) {
         if (clazz == null) {
             return orgMethods;
         }
 
-        Set<String> retMethods=orgMethods;
+        Set<String> retMethods = orgMethods;
         if (clazz.isInterface() && (clazz.getAnnotation(Local.class) != null)) {
             retMethods = updateLocalInterfaceMethods(retMethods, clazz.getDeclaredMethods());
         }
 
-        final Class<?>[]    interfaces=clazz.getInterfaces();
+        final Class<?>[] interfaces = clazz.getInterfaces();
         if ((interfaces != null) && (interfaces.length > 0)) {
             for (final Class<?> intfc : interfaces) {
                 retMethods = updateLocalInterfaceMethods(intfc, retMethods);
             }
         }
 
-        final Class<?>  parent=clazz.getSuperclass();
+        final Class<?> parent = clazz.getSuperclass();
         if (parent != null) {
             retMethods = updateLocalInterfaceMethods(parent, retMethods);
         }
 
         return retMethods;
     }
+
     /**
      * @param orgMethods A current {@link Set} of all the method &quot;keys&quot;
      * representing methods of an interface marked as {@link Local} that is
@@ -186,14 +190,14 @@ public aspect Ejb3LocalServiceOperationCollectionAspect
      * @return The updated {@link Set} - if original was <code>null</code> and
      * need to add names then a new {@link Set} instance is created and returned.
      */
-    protected static final Set<String> updateLocalInterfaceMethods (final Set<String> orgMethods, final Method ...methods) {
+    protected static final Set<String> updateLocalInterfaceMethods(final Set<String> orgMethods, final Method... methods) {
         if ((methods == null) || (methods.length <= 0)) {
             return orgMethods;
         }
-        
-        final Set<String>   retMethods=(orgMethods == null) ? new TreeSet<String>() : orgMethods;
+
+        final Set<String> retMethods = (orgMethods == null) ? new TreeSet<String>() : orgMethods;
         for (final Method m : methods) {
-            final String    mKey=buildMethodKey(m);
+            final String mKey = buildMethodKey(m);
             if ((mKey == null) || (mKey.length() <= 0) || (!retMethods.add(mKey))) {
                 continue;   // debug breakpoint
             }
@@ -203,37 +207,37 @@ public aspect Ejb3LocalServiceOperationCollectionAspect
     }
 
     // this code is based on JoinPointBreakdown#getMethodString - TODO move it to 'util' JAR
-    protected static final String buildMethodKey (final Method m) {
+    protected static final String buildMethodKey(final Method m) {
         if (m == null) {
             return null;
         }
 
-        final String        name=m.getName();
-        final Class<?>[]    params=m.getParameterTypes();
-        final int           numParams=(params == null) ? 0 : params.length;
-        final StringBuilder sb=new StringBuilder(name.length() + 2 + numParams * 64)
-                                        .append(name)
-                                        .append('(');
-        for (int    pIndex=0; pIndex < numParams; pIndex++) {
+        final String name = m.getName();
+        final Class<?>[] params = m.getParameterTypes();
+        final int numParams = (params == null) ? 0 : params.length;
+        final StringBuilder sb = new StringBuilder(name.length() + 2 + numParams * 64)
+                .append(name)
+                .append('(');
+        for (int pIndex = 0; pIndex < numParams; pIndex++) {
             if (pIndex > 0) {
                 sb.append(','); // separate from previous
             }
 
-            final Class<?>  pType=params[pIndex];
+            final Class<?> pType = params[pIndex];
             // NOTE: must use the full name since we are doing method matching
             sb.append(pType.getName());
         }
 
         return sb.append(')').toString();
     }
-    
+
     @Override
     public boolean isMetricsGenerator() {
-    	return true;
+        return true;
     }
-    
+
     @Override
     public String getPluginName() {
-    	return Ejb3PluginRuntimeDescriptor.PLUGIN_NAME;
+        return Ejb3PluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

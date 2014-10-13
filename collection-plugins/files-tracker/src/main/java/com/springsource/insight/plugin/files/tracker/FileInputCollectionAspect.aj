@@ -24,10 +24,10 @@ import java.io.RandomAccessFile;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 
 /**
- * 
+ *
  */
 public privileged aspect FileInputCollectionAspect extends FileOpenTrackerAspectSupport {
-    public FileInputCollectionAspect () {
+    public FileInputCollectionAspect() {
         super();
     }
 
@@ -39,37 +39,37 @@ public privileged aspect FileInputCollectionAspect extends FileOpenTrackerAspect
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after (File f) returning(Closeable r)
-        : (call(FileInputStream+.new(File)) || call(FileReader+.new(File)))
-       && args(f)
-       && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
-    {
-        registerOpenOperation(thisJoinPointStaticPart, r, f, "r");
-    }
+            : (call(FileInputStream+.new(File)) || call(FileReader+.new(File)))
+            && args(f)
+            && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
+            {
+                registerOpenOperation(thisJoinPointStaticPart, r, f, "r");
+            }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after (String f) returning(Closeable r)
-        : (call(FileInputStream+.new(String)) || call(FileReader+.new(String)))
-       && args(f)
-       && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
-    {
-        registerOpenOperation(thisJoinPointStaticPart, r, f, "r");
-    }
+            : (call(FileInputStream+.new(String)) || call(FileReader+.new(String)))
+            && args(f)
+            && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
+            {
+                registerOpenOperation(thisJoinPointStaticPart, r, f, "r");
+            }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after (File f, String mode) returning(Closeable r)
-        : call(RandomAccessFile+.new(File,String))
-       && args(f,mode)
-       && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
-    {
-        registerOpenOperation(thisJoinPointStaticPart, r, f, mode);
-    }
+            : call(RandomAccessFile+.new(File,String))
+            && args(f,mode)
+            && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
+            {
+                registerOpenOperation(thisJoinPointStaticPart, r, f, mode);
+            }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after (String f, String mode) returning(Closeable r)
-        : call(RandomAccessFile+.new(String,String))
-       && args(f,mode)
-       && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
-    {
-        registerOpenOperation(thisJoinPointStaticPart, r, f, mode);
-    }
+            : call(RandomAccessFile+.new(String,String))
+            && args(f,mode)
+            && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
+            {
+                registerOpenOperation(thisJoinPointStaticPart, r, f, mode);
+            }
 }

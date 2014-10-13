@@ -27,59 +27,59 @@ import com.springsource.insight.intercept.operation.Operation;
 /**
  */
 public class RmiOperationCollectionAspectTest extends RmiOperationCollectionAspectTestSupport {
-	public RmiOperationCollectionAspectTest() {
-		super();
-	}
+    public RmiOperationCollectionAspectTest() {
+        super();
+    }
 
-	@Test
-	public void testLookup() throws Exception {
-		String name = "testLookup";
-		Remote rem = Mockito.mock(Remote.class);
-		registry.put(name, rem);
-		Remote res = registry.lookup(name);
-		assertSame("Mismatched results", rem , res);
-		assertRmiOperation("lookup", name);
-	}
-	
-	@Test
-	public void testUnbind() throws Exception {
-		String name = "testUnbind";
-		Remote rem = Mockito.mock(Remote.class);
-		registry.put(name, rem);
-		registry.unbind(name);
-		
-		assertRmiOperation("unbind", name);
-	}
-	
-	@Test
-	public void testBind() throws Exception {
-		String name = "testBind";
-		Remote rem = Mockito.mock(Remote.class);
-		registry.bind(name, rem);
-		
-		assertRmiOperation("bind", name);
-	}
-	
-	@Test
-	public void testRebind() throws Exception {
-		String name = "testRebind";
-		Remote rem = Mockito.mock(Remote.class);
-		registry.rebind(name, rem);
-		
-		assertRmiOperation("rebind", name);
-	}
-	
-	private Operation assertRmiOperation (String action, String name) {
-		Operation	op=getLastEntered();
-		assertNotNull("No operation extracted", op);
-		assertEquals("Mismatched action", action, op.get(RmiDefinitions.ACTION_ATTR, String.class));
-		assertEquals("Mismatched name", name, op.get(RmiDefinitions.NAME_ATTR, String.class));
-		return op;
-	}
+    @Test
+    public void testLookup() throws Exception {
+        String name = "testLookup";
+        Remote rem = Mockito.mock(Remote.class);
+        registry.put(name, rem);
+        Remote res = registry.lookup(name);
+        assertSame("Mismatched results", rem, res);
+        assertRmiOperation("lookup", name);
+    }
 
-	@Override
-	public OperationCollectionAspectSupport getAspect() {
-		return RmiOperationCollectionAspect.aspectOf();
-	}
+    @Test
+    public void testUnbind() throws Exception {
+        String name = "testUnbind";
+        Remote rem = Mockito.mock(Remote.class);
+        registry.put(name, rem);
+        registry.unbind(name);
+
+        assertRmiOperation("unbind", name);
+    }
+
+    @Test
+    public void testBind() throws Exception {
+        String name = "testBind";
+        Remote rem = Mockito.mock(Remote.class);
+        registry.bind(name, rem);
+
+        assertRmiOperation("bind", name);
+    }
+
+    @Test
+    public void testRebind() throws Exception {
+        String name = "testRebind";
+        Remote rem = Mockito.mock(Remote.class);
+        registry.rebind(name, rem);
+
+        assertRmiOperation("rebind", name);
+    }
+
+    private Operation assertRmiOperation(String action, String name) {
+        Operation op = getLastEntered();
+        assertNotNull("No operation extracted", op);
+        assertEquals("Mismatched action", action, op.get(RmiDefinitions.ACTION_ATTR, String.class));
+        assertEquals("Mismatched name", name, op.get(RmiDefinitions.NAME_ATTR, String.class));
+        return op;
+    }
+
+    @Override
+    public OperationCollectionAspectSupport getAspect() {
+        return RmiOperationCollectionAspect.aspectOf();
+    }
 
 }

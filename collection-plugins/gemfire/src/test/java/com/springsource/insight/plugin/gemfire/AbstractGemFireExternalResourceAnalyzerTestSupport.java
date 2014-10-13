@@ -37,58 +37,58 @@ import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
 import com.springsource.insight.util.time.TimeRange;
 
-public abstract class AbstractGemFireExternalResourceAnalyzerTestSupport extends AbstractCollectionTestSupport  {
+public abstract class AbstractGemFireExternalResourceAnalyzerTestSupport extends AbstractCollectionTestSupport {
     protected final AbstractGemFireExternalResourceAnalyzer analyzer;
-    
+
     protected AbstractGemFireExternalResourceAnalyzerTestSupport(AbstractGemFireExternalResourceAnalyzer analyzerInstance) {
         this.analyzer = analyzerInstance;
     }
-    
-	@Test
-	public void testWithoutRemoteFrame() throws Exception {
-		Operation op = new Operation();		
-		op.type(analyzer.getOperationType());
-		
-		Frame frame = new SimpleFrame(FrameId.valueOf("0"),
-				null,
-				op,
-				TimeRange.milliTimeRange(0, 1),
-				Collections.<Frame>emptyList());
 
-		Trace trace = new Trace(ServerName.valueOf("fake-server"),
-				ApplicationName.valueOf("fake-app"),
-				new Date(),
-				TraceId.valueOf("fake-id"),
-				frame);
-		
-		Collection<ExternalResourceDescriptor>    res=analyzer.locateExternalResourceName(trace);
-		assertEquals("Mismatched number of results", 1, res.size());
-		ExternalResourceDescriptor externalResourceDescriptor = res.iterator().next();
+    @Test
+    public void testWithoutRemoteFrame() throws Exception {
+        Operation op = new Operation();
+        op.type(analyzer.getOperationType());
 
-		assertEquals("Gemfire source frame", frame, externalResourceDescriptor.getFrame());
-		assertNull("Gemfire external resource host", externalResourceDescriptor.getHost());
-		assertEquals("Gemfire external resource port", -1, externalResourceDescriptor.getPort());
-		assertEquals("Gemfire external resource type", ExternalResourceType.KVSTORE.name(), externalResourceDescriptor.getType());
-		assertEquals("Gemfire external resource type", ExternalResourceType.KVSTORE.name(), externalResourceDescriptor.getType());
-		assertEquals("Gemfire external resource name", AbstractGemFireExternalResourceAnalyzer.createName(null, -1), externalResourceDescriptor.getName());
-		assertEquals("Gemfire external resource vendor", GemFireDefenitions.GEMFIRE, externalResourceDescriptor.getVendor());
-		assertEquals("Gemfire external resource label", AbstractGemFireExternalResourceAnalyzer.createLabel(null, -1), externalResourceDescriptor.getLabel());
-		assertEquals("Gemfire external incoming", Boolean.FALSE, Boolean.valueOf(externalResourceDescriptor.isIncoming()));
-	}
-    
+        Frame frame = new SimpleFrame(FrameId.valueOf("0"),
+                null,
+                op,
+                TimeRange.milliTimeRange(0, 1),
+                Collections.<Frame>emptyList());
+
+        Trace trace = new Trace(ServerName.valueOf("fake-server"),
+                ApplicationName.valueOf("fake-app"),
+                new Date(),
+                TraceId.valueOf("fake-id"),
+                frame);
+
+        Collection<ExternalResourceDescriptor> res = analyzer.locateExternalResourceName(trace);
+        assertEquals("Mismatched number of results", 1, res.size());
+        ExternalResourceDescriptor externalResourceDescriptor = res.iterator().next();
+
+        assertEquals("Gemfire source frame", frame, externalResourceDescriptor.getFrame());
+        assertNull("Gemfire external resource host", externalResourceDescriptor.getHost());
+        assertEquals("Gemfire external resource port", -1, externalResourceDescriptor.getPort());
+        assertEquals("Gemfire external resource type", ExternalResourceType.KVSTORE.name(), externalResourceDescriptor.getType());
+        assertEquals("Gemfire external resource type", ExternalResourceType.KVSTORE.name(), externalResourceDescriptor.getType());
+        assertEquals("Gemfire external resource name", AbstractGemFireExternalResourceAnalyzer.createName(null, -1), externalResourceDescriptor.getName());
+        assertEquals("Gemfire external resource vendor", GemFireDefenitions.GEMFIRE, externalResourceDescriptor.getVendor());
+        assertEquals("Gemfire external resource label", AbstractGemFireExternalResourceAnalyzer.createLabel(null, -1), externalResourceDescriptor.getLabel());
+        assertEquals("Gemfire external incoming", Boolean.FALSE, Boolean.valueOf(externalResourceDescriptor.isIncoming()));
+    }
+
     @Test
     public void testWithRemoteFrame() throws Exception {
-        Operation op = new Operation();     
+        Operation op = new Operation();
         op.type(analyzer.getOperationType());
-        
+
         Frame remoteFrame = new SimpleFrame(FrameId.valueOf("1"),
                 null,
                 new Operation().type(GemFireDefenitions.TYPE_REMOTE.getType()),
                 TimeRange.milliTimeRange(0, 1),
                 Collections.<Frame>emptyList());
-        
+
         List<Frame> frames = Collections.singletonList(remoteFrame);
-        
+
         Frame frame = new SimpleFrame(FrameId.valueOf("0"),
                 null,
                 op,
@@ -100,8 +100,8 @@ public abstract class AbstractGemFireExternalResourceAnalyzerTestSupport extends
                 new Date(),
                 TraceId.valueOf("fake-id"),
                 frame);
-        
-        Collection<ExternalResourceDescriptor>    res=analyzer.locateExternalResourceName(trace);
+
+        Collection<ExternalResourceDescriptor> res = analyzer.locateExternalResourceName(trace);
         assertEquals("Mismatched number of results", 0, res.size());
     }
 }

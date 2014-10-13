@@ -27,7 +27,7 @@ import com.springsource.insight.collection.ObscuredValueSetMarker;
 
 
 /**
- * 
+ *
  */
 public class AuthenticationManagerCollectionAspectTest
         extends AuthenticationCollectionAspectTestSupport {
@@ -36,25 +36,25 @@ public class AuthenticationManagerCollectionAspectTest
     }
 
     @Test
-    public void testSuccessfulAuthentication () {
-        String[]                grants={ "tester", "insight"};
-        Authentication          token=new TestingAuthenticationToken("testSuccessfulAuthentication", "shir", grants);
-        AuthenticationManager   testManager=new AuthenticationTestManager(false);
-        Authentication          result=testManager.authenticate(token);
+    public void testSuccessfulAuthentication() {
+        String[] grants = {"tester", "insight"};
+        Authentication token = new TestingAuthenticationToken("testSuccessfulAuthentication", "shir", grants);
+        AuthenticationManager testManager = new AuthenticationTestManager(false);
+        Authentication result = testManager.authenticate(token);
         assertNotNull("No authentication result", result);
         assertSame("Mismatched authentication instances equality", token, result);
         assertOperationResult(result, Arrays.asList(grants));
     }
 
     @Test
-    public void testObscuredCredentials () {
-    	ObscuredValueSetMarker    marker=new ObscuredValueSetMarker();
+    public void testObscuredCredentials() {
+        ObscuredValueSetMarker marker = new ObscuredValueSetMarker();
         getAspect().setSensitiveValueMarker(marker);
 
-        String[]                grants={ "tester", "insight"};
-        Authentication          token=new TestingAuthenticationToken("testObscuredCredentials", "omer", grants);
-        AuthenticationManager   testManager=new AuthenticationTestManager(true);
-        Authentication          result=testManager.authenticate(token);
+        String[] grants = {"tester", "insight"};
+        Authentication token = new TestingAuthenticationToken("testObscuredCredentials", "omer", grants);
+        AuthenticationManager testManager = new AuthenticationTestManager(true);
+        Authentication result = testManager.authenticate(token);
         assertNotSame("Authentication token not cloned", token, result);
         assertObscuredAuthValues(token, result, marker);
     }

@@ -20,29 +20,30 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 
+ *
  */
 public class SignallingRunnable extends TestRunnable {
-    private final BlockingQueue<Thread> _threadsQueue=new LinkedBlockingQueue<Thread>();
+    private final BlockingQueue<Thread> _threadsQueue = new LinkedBlockingQueue<Thread>();
+
     public SignallingRunnable(String testName) {
         super(testName);
     }
 
     @Override
     public void run() {
-        Thread  curThread=Thread.currentThread();
+        Thread curThread = Thread.currentThread();
         super.run();
         try {
             if (!_threadsQueue.offer(curThread, 5L, TimeUnit.SECONDS)) {
                 throw new IllegalStateException("Failed to signal end of run");
             }
-        } catch(InterruptedException e) {
+        } catch (InterruptedException e) {
             throw new IllegalStateException("Interrupted");
         }
     }
 
-    public Thread waitForThread (boolean joinIt) throws InterruptedException {
-        Thread  t=_threadsQueue.poll(10L, TimeUnit.SECONDS);
+    public Thread waitForThread(boolean joinIt) throws InterruptedException {
+        Thread t = _threadsQueue.poll(10L, TimeUnit.SECONDS);
         if (t == null) {
             throw new IllegalStateException("No thread returned");
         }

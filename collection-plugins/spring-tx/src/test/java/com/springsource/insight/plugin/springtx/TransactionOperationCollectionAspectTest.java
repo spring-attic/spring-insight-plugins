@@ -31,7 +31,7 @@ import com.springsource.insight.collection.test.OperationCollectionAspectTestSup
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public class TransactionOperationCollectionAspectTest
         extends OperationCollectionAspectTestSupport {
@@ -40,62 +40,62 @@ public class TransactionOperationCollectionAspectTest
     }
 
     @Test
-    public void testCollectionAspect () {
-        final PlatformTransactionManager    manager=new PlatformTransactionManagerImpl();
-        final int                           timeout=(int) Thread.currentThread().getId();
+    public void testCollectionAspect() {
+        final PlatformTransactionManager manager = new PlatformTransactionManagerImpl();
+        final int timeout = (int) Thread.currentThread().getId();
         for (final TransactionOperationStatus opStatus : TransactionOperationStatus.values()) {
-            for (final boolean readOnly : new boolean[] { true, false }) { 
-                for (int propagationValue=0;
-                        propagationValue < TransactionOperationFinalizer.propagationNames.size();
-                        propagationValue++) {
-                    final int propagationBehavior=propagationValue; // has to be final for use in the anonymous class
-                    for (final int isolationLevel : new int[] { 
-                                Connection.TRANSACTION_NONE,
-                                Connection.TRANSACTION_READ_COMMITTED,
-                                Connection.TRANSACTION_REPEATABLE_READ,
-                                Connection.TRANSACTION_SERIALIZABLE
-                            }) {
-                        TransactionDefinition   txDefinition=new TransactionDefinition() {
-                                public boolean isReadOnly() {
-                                    return readOnly;
-                                }
-                                
-                                public int getTimeout() {
-                                    return timeout;
-                                }
-                                
-                                public int getPropagationBehavior() {
-                                    return propagationBehavior;
-                                }
-                                
-                                public String getName() {
-                                    return opStatus.name()
-                                            + ";readOnly=" + readOnly
-                                            + ";propagation=" + TransactionOperationFinalizer.propagationNames.get(propagationBehavior)
-                                            + ";isolation=" + isolationLevel
-                                            + ";timeout=" + timeout
-                                              ;
-                                }
-                                
-                                public int getIsolationLevel() {
-                                    return isolationLevel;
-                                }
-                                
-                                @Override
-                                public String toString () {
-                                    return getName();
-                                }
-                            };
-                        TransactionStatus   txStatus=manager.getTransaction(txDefinition);
-                       
-                        switch(opStatus) {
-                            case Committed :
+            for (final boolean readOnly : new boolean[]{true, false}) {
+                for (int propagationValue = 0;
+                     propagationValue < TransactionOperationFinalizer.propagationNames.size();
+                     propagationValue++) {
+                    final int propagationBehavior = propagationValue; // has to be final for use in the anonymous class
+                    for (final int isolationLevel : new int[]{
+                            Connection.TRANSACTION_NONE,
+                            Connection.TRANSACTION_READ_COMMITTED,
+                            Connection.TRANSACTION_REPEATABLE_READ,
+                            Connection.TRANSACTION_SERIALIZABLE
+                    }) {
+                        TransactionDefinition txDefinition = new TransactionDefinition() {
+                            public boolean isReadOnly() {
+                                return readOnly;
+                            }
+
+                            public int getTimeout() {
+                                return timeout;
+                            }
+
+                            public int getPropagationBehavior() {
+                                return propagationBehavior;
+                            }
+
+                            public String getName() {
+                                return opStatus.name()
+                                        + ";readOnly=" + readOnly
+                                        + ";propagation=" + TransactionOperationFinalizer.propagationNames.get(propagationBehavior)
+                                        + ";isolation=" + isolationLevel
+                                        + ";timeout=" + timeout
+                                        ;
+                            }
+
+                            public int getIsolationLevel() {
+                                return isolationLevel;
+                            }
+
+                            @Override
+                            public String toString() {
+                                return getName();
+                            }
+                        };
+                        TransactionStatus txStatus = manager.getTransaction(txDefinition);
+
+                        switch (opStatus) {
+                            case Committed:
                                 manager.commit(txStatus);
                                 break;
-                            case RolledBack :
+                            case RolledBack:
                                 manager.rollback(txStatus);
                                 break;
-                            default :
+                            default:
                                 fail("Unknown status action: " + opStatus);
                         }
 
@@ -112,33 +112,33 @@ public class TransactionOperationCollectionAspectTest
         return TransactionOperationCollectionAspect.aspectOf();
     }
 
-    protected Operation assertTransactionOperation (String  testName,
-                                                    TransactionOperationStatus opStatus,
-                                                    TransactionDefinition txDefinition) {
-        Operation   op=getLastEntered();
+    protected Operation assertTransactionOperation(String testName,
+                                                   TransactionOperationStatus opStatus,
+                                                   TransactionDefinition txDefinition) {
+        Operation op = getLastEntered();
         assertNotNull(testName + ": No operation extracted", op);
         assertEquals(testName + ": Mismatched operation type", TransactionOperationCollectionAspect.TYPE, op.getType());
         assertEquals(testName + ": Mismatched name", txDefinition.getName(), op.get("name", String.class));
         assertEquals(testName + ": Mismatched read only value",
-                     Boolean.valueOf(txDefinition.isReadOnly()), op.get("readOnly", Boolean.class));
+                Boolean.valueOf(txDefinition.isReadOnly()), op.get("readOnly", Boolean.class));
         assertEquals(testName + ": Mismatched timeout value", txDefinition.getTimeout(), op.getInt("timeout", (-1)));
 
-        Operation   dummyOp=new Operation()
-                        .put("propagation", txDefinition.getPropagationBehavior())
-                        .put("isolation", txDefinition.getIsolationLevel())
-                        ;
+        Operation dummyOp = new Operation()
+                .put("propagation", txDefinition.getPropagationBehavior())
+                .put("isolation", txDefinition.getIsolationLevel());
         assertEquals(testName + ": Mismatched propagation value",
-                            TransactionOperationFinalizer.normalizePropagation(dummyOp),
-                            op.get("propagation", String.class));
+                TransactionOperationFinalizer.normalizePropagation(dummyOp),
+                op.get("propagation", String.class));
         assertEquals(testName + ": Mismatched isolation value",
-                            TransactionOperationFinalizer.normalizeIsolation(dummyOp),
-                            op.get("isolation", String.class));
+                TransactionOperationFinalizer.normalizeIsolation(dummyOp),
+                op.get("isolation", String.class));
         return op;
     }
-            
+
     static class PlatformTransactionManagerImpl implements PlatformTransactionManager {
-        private final Logger    logger=Logger.getLogger(getClass().getName());
-        PlatformTransactionManagerImpl () {
+        private final Logger logger = Logger.getLogger(getClass().getName());
+
+        PlatformTransactionManagerImpl() {
             super();
         }
 
@@ -188,11 +188,12 @@ public class TransactionOperationCollectionAspectTest
 
         public void commit(TransactionStatus status)
                 throws TransactionException {
-            logger.info("commit()");            
+            logger.info("commit()");
         }
+
         public void rollback(TransactionStatus status)
                 throws TransactionException {
-            logger.info("rollback()");            
+            logger.info("rollback()");
         }
     }
 }

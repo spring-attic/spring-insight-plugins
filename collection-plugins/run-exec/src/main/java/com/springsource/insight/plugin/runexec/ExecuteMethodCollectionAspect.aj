@@ -26,12 +26,12 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 
 /**
- * 
+ *
  */
 public abstract aspect ExecuteMethodCollectionAspect
-            extends MethodOperationCollectionAspect
-            implements RunnableResolver {
-    private RunnableResolver    resolver=DefaultRunnableResolver.DEFAULT;
+        extends MethodOperationCollectionAspect
+        implements RunnableResolver {
+    private RunnableResolver resolver = DefaultRunnableResolver.DEFAULT;
 
     protected ExecuteMethodCollectionAspect() {
         super();
@@ -40,36 +40,35 @@ public abstract aspect ExecuteMethodCollectionAspect
     protected ExecuteMethodCollectionAspect(OperationCollector collector) {
         super(collector);
     }
-    
+
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
         return createOperation(jp, RunExecDefinitions.EXEC_OP, resolveRunnerArgument(jp));
     }
 
-    protected Operation createOperation (JoinPoint jp, OperationType type, Runnable runner) {
-        Operation   op=super.createOperation(jp)
-                        .type(type)
-                        .put(RunExecDefinitions.THREADNAME_ATTR, Thread.currentThread().getName())
-                        ;
+    protected Operation createOperation(JoinPoint jp, OperationType type, Runnable runner) {
+        Operation op = super.createOperation(jp)
+                .type(type)
+                .put(RunExecDefinitions.THREADNAME_ATTR, Thread.currentThread().getName());
         if (runner instanceof RunnableWrapper) {
-            RunnableWrapper wrapper=(RunnableWrapper) runner;
+            RunnableWrapper wrapper = (RunnableWrapper) runner;
             wrapper.setSpawnLocation(op);
             op.put(RunExecDefinitions.RUNNERID_ATTR, wrapper.getRunnerId());
         } else if (runner != null) {
             RunExecDefinitions.setSpawnLocation(op, runner);
             op.put(RunExecDefinitions.RUNNERID_ATTR, RunExecDefinitions.createRunnerId(runner));
         }
-    
+
         return op;
     }
 
-    RunnableResolver getRunnableResolver () {
+    RunnableResolver getRunnableResolver() {
         return resolver;
     }
 
-    void setRunnableResolver (RunnableResolver resolverInstance) {
-        if ((resolver=resolverInstance) == null) {
+    void setRunnableResolver(RunnableResolver resolverInstance) {
+        if ((resolver = resolverInstance) == null) {
             throw new IllegalStateException("No resolver set");
         }
     }
@@ -77,16 +76,16 @@ public abstract aspect ExecuteMethodCollectionAspect
     public Runnable resolveRunner(Runnable runner, JoinPoint.StaticPart spawnLocation) {
         return resolver.resolveRunner(runner, spawnLocation);
     }
-    
+
     public TimerTask resolveTimerTask(TimerTask task, StaticPart spawnLocation) {
         return resolver.resolveTimerTask(task, spawnLocation);
     }
 
     protected Runnable resolveRunnerArgument(JoinPoint jp) {
-        Object[]    args=jp.getArgs();
+        Object[] args = jp.getArgs();
         return (Runnable) args[0];
     }
-    
+
     @Override
     public String getPluginName() {
         return RunExecPluginRuntimeDescriptor.PLUGIN_NAME;

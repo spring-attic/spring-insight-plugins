@@ -20,9 +20,10 @@ import org.junit.Test;
 import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 
 public class SqlToHtmlTest extends AbstractCollectionTestSupport {
-	private final SqlToHtml	formatter=new SqlToHtml();
-    public SqlToHtmlTest () {
-    	super();
+    private final SqlToHtml formatter = new SqlToHtml();
+
+    public SqlToHtmlTest() {
+        super();
     }
 
     @Test
@@ -33,7 +34,7 @@ public class SqlToHtmlTest extends AbstractCollectionTestSupport {
     @Test
     public void testSexySelect() {
         assertEquals("<span class='myClass myClass-select'>SELECT </span>* \n    <span class='myClass myClass-from'>FROM </span>users ",
-        			 formatter.toHtml("select * from users", "myClass"));
+                formatter.toHtml("select * from users", "myClass"));
     }
 
 }

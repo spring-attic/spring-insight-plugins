@@ -20,14 +20,16 @@ import org.junit.Test;
 
 public class SQLFormatterTest extends Assert {
     private final SQLFormatter fmt = new SQLFormatter();
-	public SQLFormatterTest () {
-		super();
-	}
+
+    public SQLFormatterTest() {
+        super();
+    }
+
     @Test
     public void testSimpleSqlWithCapitalization() {
-        assertEquals("SELECT * \n    FROM users ", fmt.prettyPrint("select * from users")); 
+        assertEquals("SELECT * \n    FROM users ", fmt.prettyPrint("select * from users"));
     }
-    
+
     @Test
     public void testBogusSql() {
         assertEquals("Barf on this baby ", fmt.prettyPrint("Barf on this baby"));

@@ -29,29 +29,29 @@ import com.springsource.insight.intercept.operation.OperationList;
 import com.springsource.insight.util.ArrayUtil;
 
 public class InitBinderOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-    private static final ExampleController testController=new ExampleController();
-    
-    public InitBinderOperationCollectionAspectTest () {
-    	super();
+    private static final ExampleController testController = new ExampleController();
+
+    public InitBinderOperationCollectionAspectTest() {
+        super();
     }
-    
+
     @Test
     public void testInitBinderPickedCorrectlyFirstParam() {
-    	WebDataBinder	dataBinder=new WebDataBinder(null);
+        WebDataBinder dataBinder = new WebDataBinder(null);
         testController.initBinderFirstParam(dataBinder);
         assertDataBinderOperation(dataBinder);
     }
 
     @Test
     public void testInitBinderPickedCorrectlySecondParam() {
-    	WebDataBinder	dataBinder=new WebDataBinder(this);
+        WebDataBinder dataBinder = new WebDataBinder(this);
         testController.initBinderSecondParam(null, dataBinder);
         assertDataBinderOperation(dataBinder);
     }
-    
-    @Test 
+
+    @Test
     public void testInitBinderObjectNameCorrectlyCollectedWhenSpecified() {
-    	WebDataBinder	dataBinder=new WebDataBinder(this, "testInitBinderObjectNameCorrectlyCollectedWhenSpecified");
+        WebDataBinder dataBinder = new WebDataBinder(this, "testInitBinderObjectNameCorrectlyCollectedWhenSpecified");
         testController.initBinderFirstParam(dataBinder);
         assertDataBinderOperation(dataBinder);
     }
@@ -61,14 +61,14 @@ public class InitBinderOperationCollectionAspectTest extends OperationCollection
         return InitBinderOperationCollectionAspect.aspectOf();
     }
 
-    private Operation assertDataBinderOperation (DataBinder dataBinder) {
+    private Operation assertDataBinderOperation(DataBinder dataBinder) {
         Operation op = getLastEntered();
         assertNotNull("No operation", op);
         assertEquals("Mismatched type", InitBinderOperationCollectionAspect.TYPE, op.getType());
         assertEquals("Mismatched object name", dataBinder.getObjectName(), op.get(InitBinderOperationFinalizer.OBJECT_NAME, String.class));
 
-        Object	target=dataBinder.getTarget();
-        String	expected=(target == null) ? InitBinderOperationFinalizer.UNKNOWN_TARGET_TYPE : target.getClass().getName();
+        Object target = dataBinder.getTarget();
+        String expected = (target == null) ? InitBinderOperationFinalizer.UNKNOWN_TARGET_TYPE : target.getClass().getName();
         assertEquals("Mismatched target type", expected, op.get(InitBinderOperationFinalizer.TARGET_TYPE, String.class));
         assertDataBinderFields(op, InitBinderOperationFinalizer.ALLOWED_FIELDS_LIST, dataBinder.getAllowedFields());
         assertDataBinderFields(op, InitBinderOperationFinalizer.DISALLOWED_FIELDS_LIST, dataBinder.getDisallowedFields());
@@ -77,27 +77,27 @@ public class InitBinderOperationCollectionAspectTest extends OperationCollection
         return op;
     }
 
-    private static OperationList assertDataBinderFields (Operation op, String key, String ... names) {
-    	return assertDataBinderFields(op.get(key, OperationList.class), key, names);
+    private static OperationList assertDataBinderFields(Operation op, String key, String... names) {
+        return assertDataBinderFields(op.get(key, OperationList.class), key, names);
     }
 
-    private static OperationList assertDataBinderFields (OperationList list, String key, String ... names) {
-    	assertNotNull(key + ": no list", list);
-    	assertEquals(key + ": mismatched length", ArrayUtil.length(names), list.size());
+    private static OperationList assertDataBinderFields(OperationList list, String key, String... names) {
+        assertNotNull(key + ": no list", list);
+        assertEquals(key + ": mismatched length", ArrayUtil.length(names), list.size());
 
-    	for (int index=0; index < list.size(); index++) {
-    		String	expected=names[index], actual=list.get(index, String.class);
-    		assertEquals(key + ": mismatched value at index=" + index, expected, actual);
-    	}
+        for (int index = 0; index < list.size(); index++) {
+            String expected = names[index], actual = list.get(index, String.class);
+            assertEquals(key + ": mismatched value at index=" + index, expected, actual);
+        }
 
-    	return list;
+        return list;
     }
 
     @Controller
     static class ExampleController {
-    	ExampleController () {
-    		super();
-    	}
+        ExampleController() {
+            super();
+        }
 
         @InitBinder
         public void initBinderFirstParam(WebDataBinder dataBinder) {

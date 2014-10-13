@@ -53,10 +53,10 @@ import com.springsource.insight.util.ClassUtil;
 import com.springsource.insight.util.StringUtil;
 
 /**
- * 
+ *
  */
 public class SimpleHttpInvokerRequestExecutorAspectTest
-extends HttpInvokerRequestOperationCollectionTestSupport {
+        extends HttpInvokerRequestOperationCollectionTestSupport {
     private static final Log logger = LogFactory.getLog(SimpleHttpInvokerRequestExecutorAspectTest.class);
     private static Server SERVER;
 
@@ -85,7 +85,7 @@ extends HttpInvokerRequestOperationCollectionTestSupport {
     @Test
     public void testSimpleHttpInvokerRequestExecutor() throws Exception {
         RemoteInvocation invocation =
-                new RemoteInvocation("testSimpleHttpInvokerRequestExecutor", new Class[] { Long.class }, new Object[] { Long.valueOf(System.nanoTime()) });
+                new RemoteInvocation("testSimpleHttpInvokerRequestExecutor", new Class[]{Long.class}, new Object[]{Long.valueOf(System.nanoTime())});
         TestingSimpleHttpInvokerRequestExecutor executor = new TestingSimpleHttpInvokerRequestExecutor(invocation.getMethodName());
         HttpInvokerClientConfiguration config = createMockConfiguration(executor.getColor(), ArrayUtil.EMPTY_STRINGS);
         RemoteInvocationResult result = executor.executeRequest(config, invocation);
@@ -243,8 +243,8 @@ extends HttpInvokerRequestOperationCollectionTestSupport {
 
             Request baseRequest = (request instanceof Request)
                     ? (Request) request
-                            : HttpConnection.getCurrentConnection().getRequest();
-                    baseRequest.setHandled(true);
+                    : HttpConnection.getCurrentConnection().getRequest();
+            baseRequest.setHandled(true);
         }
 
         public void destroy() {

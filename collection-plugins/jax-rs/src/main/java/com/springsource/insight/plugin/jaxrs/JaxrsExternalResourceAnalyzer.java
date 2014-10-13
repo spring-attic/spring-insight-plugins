@@ -32,42 +32,42 @@ import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.StringUtil;
 
 public class JaxrsExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-	private static final JaxrsExternalResourceAnalyzer	INSTANCE=new JaxrsExternalResourceAnalyzer();
+    private static final JaxrsExternalResourceAnalyzer INSTANCE = new JaxrsExternalResourceAnalyzer();
 
-	private JaxrsExternalResourceAnalyzer () {
-		super(JaxrsDefinitions.TYPE);
-	}
+    private JaxrsExternalResourceAnalyzer() {
+        super(JaxrsDefinitions.TYPE);
+    }
 
-	public static final JaxrsExternalResourceAnalyzer getInstance() {
-		return INSTANCE;
-	}
+    public static final JaxrsExternalResourceAnalyzer getInstance() {
+        return INSTANCE;
+    }
 
-	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> frames) {
-		if (ListUtil.size(frames) <= 0) {
-		    return Collections.emptyList();
-		}
+    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> frames) {
+        if (ListUtil.size(frames) <= 0) {
+            return Collections.emptyList();
+        }
 
-		List<ExternalResourceDescriptor> descriptors = new ArrayList<ExternalResourceDescriptor>(frames.size());
-		for (Frame frame : frames) {			
+        List<ExternalResourceDescriptor> descriptors = new ArrayList<ExternalResourceDescriptor>(frames.size());
+        for (Frame frame : frames) {
             Operation op = frame.getOperation();
-            
-			String path = op.get(JaxrsDefinitions.REQ_TEMPLATE, String.class);
-			if (StringUtil.isEmpty(path)) {
-				continue;
-			}
-			
-			String hashString = MD5NameGenerator.getName(path);
-			String color = colorManager.getColor(op);
-			ExternalResourceDescriptor desc = new ExternalResourceDescriptor(frame,
-																			 JaxrsDefinitions.TYPE.getName() + ":" + hashString,
-																			 path,
-																			 ExternalResourceType.WEB_SERVICE.name(),
-																			 JaxrsDefinitions.TYPE.getName(),
-																			 color,
-																			 true);
-			descriptors.add(desc);			
-		}
-		
-		return descriptors;
-	}
+
+            String path = op.get(JaxrsDefinitions.REQ_TEMPLATE, String.class);
+            if (StringUtil.isEmpty(path)) {
+                continue;
+            }
+
+            String hashString = MD5NameGenerator.getName(path);
+            String color = colorManager.getColor(op);
+            ExternalResourceDescriptor desc = new ExternalResourceDescriptor(frame,
+                    JaxrsDefinitions.TYPE.getName() + ":" + hashString,
+                    path,
+                    ExternalResourceType.WEB_SERVICE.name(),
+                    JaxrsDefinitions.TYPE.getName(),
+                    color,
+                    true);
+            descriptors.add(desc);
+        }
+
+        return descriptors;
+    }
 }

@@ -31,24 +31,24 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
 
 public class CommandHandlerOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-    
+
     @Test
     public void annotatedCommandHandlerOperationCollected() {
         new TestCommandHandler().handleCommand(new TestCommand());
-        
+
         Operation op = getLastEntered();
 
         assertEquals("org.axonframework.insight.plugin.axon.CommandHandlerOperationCollectionAspectTest$TestCommand", op.get("commandType"));
         assertEquals("handleCommand", op.getSourceCodeLocation().getMethodName());
     }
-    
+
     @Test
     public void commandHandlerOperationCollected() throws Throwable {
         new TestCommandHandler().handle(
                 new GenericCommandMessage<CommandHandlerOperationCollectionAspectTest.TestCommand>(
                         new TestCommand(), Collections.singletonMap("someKey", (Object) "someValue")),
                 new DefaultUnitOfWork());
-        
+
         Operation op = getLastEntered();
 
         assertEquals("org.axonframework.insight.plugin.axon.CommandHandlerOperationCollectionAspectTest$TestCommand", op.get("commandType"));
@@ -63,12 +63,14 @@ public class CommandHandlerOperationCollectionAspectTest extends OperationCollec
     public OperationCollectionAspectSupport getAspect() {
         return CommandHandlerOperationCollectionAspect.aspectOf();
     }
-    
-    static class TestCommand {}
-    
+
+    static class TestCommand {
+    }
+
     static class TestCommandHandler implements org.axonframework.commandhandling.CommandHandler<TestCommand> {
         @CommandHandler
-        void handleCommand(TestCommand Command) {}
+        void handleCommand(TestCommand Command) {
+        }
 
         public Object handle(CommandMessage<TestCommand> commandMessage, UnitOfWork unitOfWork) throws Throwable {
             return null;

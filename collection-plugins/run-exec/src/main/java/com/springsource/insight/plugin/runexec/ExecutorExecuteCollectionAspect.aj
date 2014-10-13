@@ -20,10 +20,10 @@ import java.util.concurrent.Executor;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 
 /**
- * 
+ *
  */
 public aspect ExecutorExecuteCollectionAspect extends ExecuteMethodCollectionAspect {
-    public ExecutorExecuteCollectionAspect () {
+    public ExecutorExecuteCollectionAspect() {
         super();
     }
 
@@ -31,12 +31,12 @@ public aspect ExecutorExecuteCollectionAspect extends ExecuteMethodCollectionAsp
      * NOTE: we need to use 'call' in order to intercept calls to the Java
      *      core classes that implement this interface
      */
-    public pointcut collectionPoint () : call(* Executor+.execute(Runnable));
+    public pointcut collectionPoint(): call(* Executor+.execute(Runnable));
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     Object around (Runnable runner)
-        : collectionPoint() && args(runner) {
-        Runnable    effectiveRunner=resolveRunner(runner, thisJoinPointStaticPart);
+            : collectionPoint() && args(runner) {
+        Runnable effectiveRunner = resolveRunner(runner, thisJoinPointStaticPart);
         return proceed(effectiveRunner);
     }
 }
