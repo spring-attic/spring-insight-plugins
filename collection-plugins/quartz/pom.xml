@@ -16,7 +16,7 @@
 
     <properties>
         <!-- NOTE: it seems to be compliant with 1.8 and 2.1 as well -->
-        <quartz.version>2.0.2</quartz.version>
+        <quartz.version>2.2.1</quartz.version>
     </properties>
 
     <dependencies>
