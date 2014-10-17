@@ -16,7 +16,7 @@
         <java.source.version>1.5</java.source.version>
         <!-- target code compliance level -->
         <java.target.version>${java.source.version}</java.target.version>
-        <spring.framework.version>4.1.0.RELEASE</spring.framework.version>
+        <spring.framework.version>4.1.1.RELEASE</spring.framework.version>
         <spring.security.version>3.2.5.RELEASE</spring.security.version>
         <spring.webflow.version>2.3.4.RELEASE</spring.webflow.version>
         <spring.integration.version>2.2.1.RELEASE</spring.integration.version>

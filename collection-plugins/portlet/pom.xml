@@ -14,6 +14,11 @@
         <relativePath>..</relativePath>
     </parent>
 
+    <properties>
+	<!-- This plugin's tests are not yet compatible with 4.1.1 -->
+        <springframework.version>4.1.0.RELEASE</springframework.version>
+    </properties>
+
     <dependencies>
         <!-- Provided dependencies (part of the user application) -->
         <dependency>
@@ -40,16 +45,25 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
+            <version>${springframework.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
+            <version>${springframework.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
+            <version>${springframework.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${springframework.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
