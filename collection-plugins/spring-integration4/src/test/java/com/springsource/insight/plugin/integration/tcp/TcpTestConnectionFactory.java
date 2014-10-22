@@ -22,7 +22,7 @@ import org.springframework.core.serializer.DefaultDeserializer;
 import org.springframework.core.serializer.DefaultSerializer;
 import org.springframework.core.serializer.Deserializer;
 import org.springframework.core.serializer.Serializer;
-import org.springframework.integration.Message;
+import org.springframework.messaging.Message;
 import org.springframework.integration.ip.tcp.connection.ConnectionFactory;
 import org.springframework.integration.ip.tcp.connection.TcpConnection;
 import org.springframework.integration.ip.tcp.connection.TcpListener;
@@ -161,6 +161,11 @@ public class TcpTestConnectionFactory implements ConnectionFactory, TcpConnectio
 
     public long incrementAndGetConnectionSequence() {
         return 0L;
+    }
+
+    public Object getDeserializerStateKey() {
+        //do nothing
+        return null;
     }
 
     public TcpConnection getConnection() throws Exception {

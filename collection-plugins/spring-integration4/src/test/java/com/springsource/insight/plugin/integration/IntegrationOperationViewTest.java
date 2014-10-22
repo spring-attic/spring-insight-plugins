@@ -19,8 +19,8 @@ package com.springsource.insight.plugin.integration;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.integration.Message;
-import org.springframework.integration.message.GenericMessage;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.GenericMessage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 

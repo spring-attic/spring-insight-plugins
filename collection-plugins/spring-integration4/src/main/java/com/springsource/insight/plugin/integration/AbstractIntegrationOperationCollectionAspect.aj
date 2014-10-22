@@ -20,8 +20,8 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.springframework.integration.Message;
-import org.springframework.integration.MessageHeaders;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
 
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.collection.OperationCollector;
