@@ -16,6 +16,7 @@
 
 package com.springsource.insight.plugin.springbatch;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -46,6 +47,14 @@ public class TestDummyJobRepository implements JobRepository {
         return execsMap.containsKey(jobName);
     }
 
+    public JobInstance createJobInstance(String s, JobParameters jobParameters) {
+        return null;
+    }
+
+    public JobExecution createJobExecution(JobInstance jobInstance, JobParameters jobParameters, String s) {
+        return null;
+    }
+
     public JobExecution createJobExecution(String jobName, JobParameters jobParameters)
             throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
         if (isJobInstanceExists(jobName, jobParameters)) {
@@ -72,6 +81,10 @@ public class TestDummyJobRepository implements JobRepository {
         // ignored
     }
 
+    public void addAll(Collection<StepExecution> stepExecutions) {
+
+    }
+
     public void update(StepExecution stepExecution) {
         // ignored
     }
@@ -81,7 +94,7 @@ public class TestDummyJobRepository implements JobRepository {
     }
 
     public void updateExecutionContext(JobExecution jobExecution) {
-        // TODO Auto-generated method stub
+        // ignored
 
     }
 
@@ -107,7 +120,7 @@ public class TestDummyJobRepository implements JobRepository {
         Assert.assertNotNull("No job parameters provided", jobParameters);
 
         Long id = Long.valueOf(idsGenerator.incrementAndGet());
-        JobInstance instance = new JobInstance(id, jobParameters, jobName);
-        return new JobExecution(instance, id);
+        JobInstance instance = new JobInstance(id, jobName);
+        return new JobExecution(instance, jobParameters);
     }
 }

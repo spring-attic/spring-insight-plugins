@@ -36,7 +36,7 @@ public class StepOperationCollectionAspectTest
     public void testExecute() throws JobInterruptedException {
         Step step = createTestStep("testExecute");
         JobExecution jobData = TestDummyJobRepository.createJobExecutionInstance(step.getName());
-        StepExecution stepData = new StepExecution(step.getName(), jobData, jobData.getId());
+        StepExecution stepData = new StepExecution(step.getName(), jobData);
         step.execute(stepData);
         assertOperationDetails(getLastEntered(), "execute", step.getName());
     }
