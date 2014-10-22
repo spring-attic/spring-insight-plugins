@@ -19,7 +19,7 @@
         <spring.framework.version>4.1.1.RELEASE</spring.framework.version>
         <spring.security.version>3.2.5.RELEASE</spring.security.version>
         <spring.webflow.version>2.3.4.RELEASE</spring.webflow.version>
-        <spring.integration.version>2.2.1.RELEASE</spring.integration.version>
+        <spring.integration.version>4.0.4.RELEASE</spring.integration.version>
         <spring.data.commons.version>1.9.0.RELEASE</spring.data.commons.version>
         <aspectj.version>1.8.2</aspectj.version>
         <junit.version>4.11</junit.version>

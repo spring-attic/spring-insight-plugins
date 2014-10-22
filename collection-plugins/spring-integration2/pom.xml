@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.springsource.insight.plugins</groupId>
     <artifactId>insight-plugin-spring-integration</artifactId>
-    <name>com.springsource.insight.plugins:spring-integration</name>
+    <name>com.springsource.insight.plugins:spring-integration2</name>
     <packaging>jar</packaging>
 
     <parent>
@@ -14,16 +14,22 @@
         <relativePath>..</relativePath>
     </parent>
 
+    <properties>
+        <spring.integration.version>2.2.6.RELEASE</spring.integration.version>
+    </properties>
+
     <dependencies>
         <!-- Provided dependencies (part of the user application) -->
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-core</artifactId>
+            <version>${spring.integration.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-ip</artifactId>
+            <version>${spring.integration.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -35,6 +41,7 @@
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-stream</artifactId>
+            <version>${spring.integration.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
