@@ -54,6 +54,12 @@
             <artifactId>spring-rabbit</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+            <scope>provided</scope>
+            <version>${spring.framework.version}</version>
+        </dependency>
 
         <!-- Test dependencies -->
         <dependency>    <!-- required for the FreeMarkerConfigurationFactory -->
