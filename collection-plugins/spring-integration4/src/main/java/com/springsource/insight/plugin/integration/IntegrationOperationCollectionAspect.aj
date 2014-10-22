@@ -205,9 +205,9 @@ public privileged aspect IntegrationOperationCollectionAspect extends AbstractIn
             // filter out anonymous channels
             execution (* org.springframework.integration.context.IntegrationObjectSupport+.*(..))
                     &&
-                    (execution(boolean org.springframework.integration.MessageChannel+.send(org.springframework.integration.Message, long))
-                            || execution(void org.springframework.integration.core.MessageHandler+.handleMessage(org.springframework.integration.Message))
-                            || execution(* org.springframework.integration.transformer.Transformer+.transform(org.springframework.integration.Message)));
+                    (execution(boolean org.springframework.messaging.MessageChannel+.send(org.springframework.messaging.Message, long))
+                            || execution(void org.springframework.messaging.MessageHandler+.handleMessage(org.springframework.messaging.Message))
+                            || execution(* org.springframework.integration.transformer.Transformer+.transform(org.springframework.messaging.Message)));
 
 
     private Operation createCachedOperation(Object target, String beanName) {
