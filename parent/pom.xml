@@ -16,6 +16,8 @@
         <java.source.version>1.5</java.source.version>
         <!-- target code compliance level -->
         <java.target.version>${java.source.version}</java.target.version>
+        <java.test.source.version>1.8</java.test.source.version>
+        <java.test.target.version>${java.test.source.version}</java.test.target.version>
         <spring.framework.version>4.1.1.RELEASE</spring.framework.version>
         <spring.security.version>3.2.5.RELEASE</spring.security.version>
         <spring.webflow.version>2.3.4.RELEASE</spring.webflow.version>
@@ -1312,10 +1314,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
+                <version>3.2</version>
                 <configuration>
                     <source>${java.source.version}</source>
                     <target>${java.target.version}</target>
+                    <testSource>${java.test.source.version}</testSource>
+                    <testTarget>${java.test.target.version}</testTarget>
                 </configuration>
             </plugin>
             <plugin>
