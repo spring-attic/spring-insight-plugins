@@ -13,7 +13,7 @@
     <properties>
         <insight.root.dir>${project.parent.basedir}/..</insight.root.dir>
         <!-- source code compliance level -->
-        <java.source.version>1.5</java.source.version>
+        <java.source.version>1.8</java.source.version>
         <!-- target code compliance level -->
         <java.target.version>${java.source.version}</java.target.version>
         <java.test.source.version>1.8</java.test.source.version>
@@ -23,7 +23,7 @@
         <spring.webflow.version>2.3.4.RELEASE</spring.webflow.version>
         <spring.integration.version>4.0.4.RELEASE</spring.integration.version>
         <spring.data.commons.version>1.9.0.RELEASE</spring.data.commons.version>
-        <aspectj.version>1.8.2</aspectj.version>
+        <aspectj.version>1.8.4.BUILD-SNAPSHOT</aspectj.version>
         <junit.version>4.11</junit.version>
         <mockito.version>1.9.5</mockito.version>
         <commons.logging.version>1.1.1</commons.logging.version>
@@ -268,6 +268,14 @@
     </organization>
 
     <repositories>
+        <repository>
+            <id>maven.springframework.org</id>
+            <name>SpringSource snapshots</name>
+            <url>http://maven.springframework.org/snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
         <repository>    <!-- NOTE: these values must match the properties -->
             <id>spring-release</id>
             <name>Spring Release Repository</name>
@@ -394,6 +402,14 @@
             <releases>
                 <updatePolicy>never</updatePolicy>
             </releases>
+        </pluginRepository>
+        <pluginRepository>
+            <id>maven.springframework.org</id>
+            <name>SpringSource snapshots</name>
+            <url>http://maven.springframework.org/snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </pluginRepository>
     </pluginRepositories>
 
@@ -1025,7 +1041,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>aspectj-maven-plugin</artifactId>
-                    <version>1.4</version>
+                    <version>1.7</version>
                     <!-- As per Andy Clement's recommendation and also as per the plugin's documentation -->
                     <dependencies>
                         <dependency>
