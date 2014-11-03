@@ -13,7 +13,7 @@
     <properties>
         <insight.root.dir>${project.parent.basedir}/..</insight.root.dir>
         <!-- source code compliance level -->
-        <java.source.version>1.8</java.source.version>
+        <java.source.version>1.5</java.source.version>
         <!-- target code compliance level -->
         <java.target.version>${java.source.version}</java.target.version>
         <spring.framework.version>4.1.1.RELEASE</spring.framework.version>
