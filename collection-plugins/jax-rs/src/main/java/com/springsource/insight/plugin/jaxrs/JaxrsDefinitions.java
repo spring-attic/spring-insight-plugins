@@ -20,11 +20,11 @@ import com.springsource.insight.intercept.operation.OperationType;
 /**
  */
 public final class JaxrsDefinitions {
-    private JaxrsDefinitions () {
+    private JaxrsDefinitions() {
         // no instance
     }
 
-    public static final OperationType   TYPE=OperationType.valueOf("jax-rs");
-    
-    public static final String REQ_TEMPLATE="requestTemplate";
+    public static final OperationType TYPE = OperationType.valueOf("jax-rs");
+
+    public static final String REQ_TEMPLATE = "requestTemplate";
 }

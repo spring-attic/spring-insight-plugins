@@ -31,23 +31,23 @@ import com.springsource.insight.intercept.operation.Operation;
  * @type: portlet-event
  */
 public privileged aspect EventOperationCollectionAspect extends GenericOperationCollectionAspect {
-    public EventOperationCollectionAspect () {
-    	super();
+    public EventOperationCollectionAspect() {
+        super();
     }
 
-    public pointcut collectionPoint() : execution(void javax.portlet.EventPortlet+.processEvent(EventRequest, EventResponse)) ||
-    									execution(@ProcessEvent void *(EventRequest, EventResponse));
+    public pointcut collectionPoint(): execution(void javax.portlet.EventPortlet+.processEvent(EventRequest, EventResponse)) ||
+            execution(@ProcessEvent void *(EventRequest, EventResponse));
 
-	@Override
-	protected Operation createOperation(JoinPoint jp) {
-		Object[] 	 args=jp.getArgs();
-		EventRequest req=(EventRequest)args[0];
-		Event 		 event=req.getEvent();
-		
-		return createOperation(jp, OperationCollectionTypes.EVENT_TYPE)
-				.putAnyNonEmpty("eventName", event.getName())
-				.putAny("eventValue", event.getValue())
-				.putAnyNonEmpty("eventPhase", req.getParameter(PortletRequest.EVENT_PHASE))
-				;
-	}
+    @Override
+    protected Operation createOperation(JoinPoint jp) {
+        Object[] args = jp.getArgs();
+        EventRequest req = (EventRequest) args[0];
+        Event event = req.getEvent();
+
+        return createOperation(jp, OperationCollectionTypes.EVENT_TYPE)
+                .putAnyNonEmpty("eventName", event.getName())
+                .putAny("eventValue", event.getValue())
+                .putAnyNonEmpty("eventPhase", req.getParameter(PortletRequest.EVENT_PHASE))
+                ;
+    }
 }

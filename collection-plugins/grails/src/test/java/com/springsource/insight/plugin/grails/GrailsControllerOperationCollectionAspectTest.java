@@ -19,6 +19,7 @@ package com.springsource.insight.plugin.grails;
 import static com.springsource.insight.intercept.operation.OperationFields.EXCEPTION;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 import groovy.lang.Closure;
 import groovy.lang.GroovyObject;
 
@@ -56,28 +57,28 @@ public class GrailsControllerOperationCollectionAspectTest extends OperationColl
     private MockHttpServletResponse response;
     private GrailsWebRequest mockRequest;
 
-    public GrailsControllerOperationCollectionAspectTest () {
-    	super();
+    public GrailsControllerOperationCollectionAspectTest() {
+        super();
     }
 
     @Override
-	@Before
+    @Before
     public void setUp() {
         super.setUp();
         request = new MockHttpServletRequest();
         response = new MockHttpServletResponse();
-        mockRequest = new GrailsWebRequest(request, response, new MockServletContext()); 
+        mockRequest = new GrailsWebRequest(request, response, new MockServletContext());
     }
-    
+
     @Test
     public void controllerMonitored() throws Exception {
-        Map<String,String> actionParams = new HashMap<String,String>();
+        Map<String, String> actionParams = new HashMap<String, String>();
         actionParams.put("param1", "val1");
-        actionParams.put("param2", "val2");        
+        actionParams.put("param2", "val2");
         ExampleHelper testHelper = new ExampleHelper("", actionParams);
 
         request.setMethod("PUT");
-        ModelAndView model = testHelper.handleURI("/my/uri", mockRequest, new HashMap<String,String>());
+        ModelAndView model = testHelper.handleURI("/my/uri", mockRequest, new HashMap<String, String>());
         assertEquals(Boolean.TRUE, model.getModelMap().get("success"));
         Operation op = getLastEntered();
         assertEquals("MyClass#gettinAction", op.getLabel());
@@ -94,10 +95,10 @@ public class GrailsControllerOperationCollectionAspectTest extends OperationColl
     public void controllerMonitored_exceptionBeforeActionOrController() throws Exception {
         ExampleHelper testHelper = new ExampleHelper("blowUpBeforeController", Collections.EMPTY_MAP);
         try {
-            testHelper.handleURI("uri", mockRequest, new HashMap<String,String>());
+            testHelper.handleURI("uri", mockRequest, new HashMap<String, String>());
             fail("Expected exception");
         } catch (RuntimeException e) {
-        	// ignored
+            // ignored
         }
 
         Operation op = getLastEntered();
@@ -109,10 +110,10 @@ public class GrailsControllerOperationCollectionAspectTest extends OperationColl
     public void controllerMonitored_exceptionButControllerIsKnown() throws Exception {
         ExampleHelper testHelper = new ExampleHelper("blowUpAfterController", Collections.EMPTY_MAP);
         try {
-            testHelper.handleURI("uri", mockRequest, new HashMap<String,String>());
+            testHelper.handleURI("uri", mockRequest, new HashMap<String, String>());
             fail("Expected exception");
         } catch (RuntimeException e) {
-        	// ignored
+            // ignored
         }
 
         Operation op = getLastEntered();
@@ -124,10 +125,10 @@ public class GrailsControllerOperationCollectionAspectTest extends OperationColl
     public void controllerMonitored_exceptionButControllerAndActionAreKnown() throws Exception {
         ExampleHelper testHelper = new ExampleHelper("blowUpAfterAction", Collections.EMPTY_MAP);
         try {
-            testHelper.handleURI("uri", mockRequest, new HashMap<String,String>());
+            testHelper.handleURI("uri", mockRequest, new HashMap<String, String>());
             fail("Expected exception");
         } catch (RuntimeException e) {
-        	// ignored
+            // ignored
         }
 
         Operation op = getLastEntered();
@@ -138,15 +139,15 @@ public class GrailsControllerOperationCollectionAspectTest extends OperationColl
     /**
      * This helper acts similarly to what the aspects are expecting of the
      * {@link SimpleGrailsControllerHelper}.
-     * 
+     * <p/>
      * In addition, this class is able to throw exceptions at various location,
      * to allow testing of failure scenarios.
      */
     private static class ExampleHelper implements GrailsControllerHelper {
         private String whenToBlowUp;
-        private Map<String,String> actionParams;
+        private Map<String, String> actionParams;
 
-        ExampleHelper(String blowUp, Map<String,String> params) {
+        ExampleHelper(String blowUp, Map<String, String> params) {
             this.whenToBlowUp = blowUp;
             this.actionParams = params;
         }
@@ -212,20 +213,20 @@ public class GrailsControllerOperationCollectionAspectTest extends OperationColl
             }
 
             webRequest.setActionName("gettinAction");
-            
+
             GroovyObject controller = mock(GroovyObject.class);
-            GrailsParameterMap paramsMap = new GrailsParameterMap(actionParams, new MockHttpServletRequest()); 
+            GrailsParameterMap paramsMap = new GrailsParameterMap(actionParams, new MockHttpServletRequest());
             when(controller.getProperty("params")).thenReturn(paramsMap);
-            
-            
+
+
             Closure action = mock(Closure.class);
             handleAction(controller, action, webRequest.getCurrentRequest(),
-                         webRequest.getCurrentResponse(), new HashMap<String,String>());
-            
+                    webRequest.getCurrentResponse(), new HashMap<String, String>());
+
             if (whenToBlowUp.equals("blowUpAfterAction")) {
                 throw new RuntimeException("Kaboom3");
             }
-            
+
             ModelAndView res = new ModelAndView();
             res.addObject("success", Boolean.TRUE);
             return res;

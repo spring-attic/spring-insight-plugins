@@ -53,7 +53,7 @@ public abstract class AbstractGemFireExternalResourceAnalyzer extends
 
     public static final String createLabel(String hostname, int port) {
         StringBuilder builder = new StringBuilder((hostname != null ? hostname.length() : 4) + 6);
-        
+
         if (StringUtil.isEmpty(hostname) && port == EMPTY_PORT) {
             builder.append(GEMFIRE_EMBEDDED);
         } else {
@@ -61,51 +61,51 @@ public abstract class AbstractGemFireExternalResourceAnalyzer extends
             builder.append(':');
             builder.append(port);
         }
-        
-        
+
+
         return builder.toString();
     }
 
     public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> frames) {
-    	if (ListUtil.size(frames) <= 0) {
-    	    return Collections.emptyList();
-    	}
-    
-    	List<ExternalResourceDescriptor> descriptors = new ArrayList<ExternalResourceDescriptor>(frames.size());
-    	for (Frame frame : frames) {			
-            Operation       op = frame.getOperation();
-            
+        if (ListUtil.size(frames) <= 0) {
+            return Collections.emptyList();
+        }
+
+        List<ExternalResourceDescriptor> descriptors = new ArrayList<ExternalResourceDescriptor>(frames.size());
+        for (Frame frame : frames) {
+            Operation op = frame.getOperation();
+
             String hostname = getHostname(op);
             int port = getPort(op);
-            
-    		if (!shouldCreateExteranlResource(frame)) {
-    			continue;
-    		}
-    
+
+            if (!shouldCreateExteranlResource(frame)) {
+                continue;
+            }
+
             String color = colorManager.getColor(op);
-    		String label = createLabel(hostname, port);
-    		String name = createName(hostname, port, label);
-    		
-    		ExternalResourceDescriptor desc =
-    		        createExternalResource(frame, hostname, port, color, label, name);
-    		descriptors.add(desc);
-    	}
-    	
-    	return descriptors;
+            String label = createLabel(hostname, port);
+            String name = createName(hostname, port, label);
+
+            ExternalResourceDescriptor desc =
+                    createExternalResource(frame, hostname, port, color, label, name);
+            descriptors.add(desc);
+        }
+
+        return descriptors;
     }
 
     private ExternalResourceDescriptor createExternalResource(Frame frame, String hostname,
-            int port, String color, String label, String name) {
-                return new ExternalResourceDescriptor(frame,
-                                               name,
-                                               label,
-                                               ExternalResourceType.KVSTORE.name(),
-                                               GemFireDefenitions.GEMFIRE,
-                                               hostname,
-                                               port,
-                                               color,
-                                               false);
-            }
+                                                              int port, String color, String label, String name) {
+        return new ExternalResourceDescriptor(frame,
+                name,
+                label,
+                ExternalResourceType.KVSTORE.name(),
+                GemFireDefenitions.GEMFIRE,
+                hostname,
+                port,
+                color,
+                false);
+    }
 
     public static final String createName(String hostname, int port) {
         return createName(hostname, port, null);
@@ -114,20 +114,20 @@ public abstract class AbstractGemFireExternalResourceAnalyzer extends
     public static final String createName(String hostname, int port, String label) {
         String labelToUse = label != null ? label : createLabel(hostname, port);
         StringBuilder builder = new StringBuilder(GemFireDefenitions.GEMFIRE.length() + 1 + labelToUse.length());
-        
+
         builder.append(GemFireDefenitions.GEMFIRE);
         builder.append(':');
         builder.append(labelToUse);
-        
+
         String name = MD5NameGenerator.getName(builder.toString());
-        
+
         builder.delete(0, builder.length());
         builder.ensureCapacity(GemFireDefenitions.GEMFIRE.length() + 1 + name.length());
-        
+
         builder.append(GemFireDefenitions.GEMFIRE);
         builder.append(':');
         builder.append(name);
-        
+
         return builder.toString();
     }
 

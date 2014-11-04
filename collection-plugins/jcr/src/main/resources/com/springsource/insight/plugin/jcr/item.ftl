@@ -8,6 +8,6 @@
     <@insight.entry name="Source Workspace" value=operation.srcWorkspace/>
     <@insight.entry name="Relative Path" value=operation.relPath/>
     <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
-</@insight.group>    
+</@insight.group>
 
 <@insight.sourceCodeLocation location=operation.sourceCodeLocation />

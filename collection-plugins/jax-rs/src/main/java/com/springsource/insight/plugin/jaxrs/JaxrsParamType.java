@@ -32,93 +32,98 @@ import javax.ws.rs.QueryParam;
  */
 public enum JaxrsParamType {
     COOKIE(CookieParam.class) {
-            /*
-             * @see com.springsource.insight.plugin.jaxrs.JaxrsParamType#getValue(java.lang.annotation.Annotation)
-             */
-            @Override
-            public String getValue(Annotation a) throws ClassCastException {
-                return (a == null) ? null : ((CookieParam) a).value();
-            }
-        },
+        /*
+         * @see com.springsource.insight.plugin.jaxrs.JaxrsParamType#getValue(java.lang.annotation.Annotation)
+         */
+        @Override
+        public String getValue(Annotation a) throws ClassCastException {
+            return (a == null) ? null : ((CookieParam) a).value();
+        }
+    },
     FORM(FormParam.class) {
-            /*
-             * @see com.springsource.insight.plugin.jaxrs.JaxrsParamType#getValue(java.lang.annotation.Annotation)
-             */
-            @Override
-            public String getValue(Annotation a) throws ClassCastException {
-                return (a == null) ? null : ((FormParam) a).value();
-            }
-        },
+        /*
+         * @see com.springsource.insight.plugin.jaxrs.JaxrsParamType#getValue(java.lang.annotation.Annotation)
+         */
+        @Override
+        public String getValue(Annotation a) throws ClassCastException {
+            return (a == null) ? null : ((FormParam) a).value();
+        }
+    },
     HEADER(HeaderParam.class) {
-            /*
-             * @see com.springsource.insight.plugin.jaxrs.JaxrsParamType#getValue(java.lang.annotation.Annotation)
-             */
-            @Override
-            public String getValue(Annotation a) throws ClassCastException {
-                return (a == null) ? null : ((HeaderParam) a).value();
-            }
-        },
+        /*
+         * @see com.springsource.insight.plugin.jaxrs.JaxrsParamType#getValue(java.lang.annotation.Annotation)
+         */
+        @Override
+        public String getValue(Annotation a) throws ClassCastException {
+            return (a == null) ? null : ((HeaderParam) a).value();
+        }
+    },
     MATRIX(MatrixParam.class) {
-            /*
-             * @see com.springsource.insight.plugin.jaxrs.JaxrsParamType#getValue(java.lang.annotation.Annotation)
-             */
-            @Override
-            public String getValue(Annotation a) throws ClassCastException {
-                return (a == null) ? null : ((MatrixParam) a).value();
-            }
-        },
+        /*
+         * @see com.springsource.insight.plugin.jaxrs.JaxrsParamType#getValue(java.lang.annotation.Annotation)
+         */
+        @Override
+        public String getValue(Annotation a) throws ClassCastException {
+            return (a == null) ? null : ((MatrixParam) a).value();
+        }
+    },
     PATH(PathParam.class) {
-            /*
-             * @see com.springsource.insight.plugin.jaxrs.JaxrsParamType#getValue(java.lang.annotation.Annotation)
-             */
-            @Override
-            public String getValue(Annotation a) throws ClassCastException {
-                return (a == null) ? null : ((PathParam) a).value();
-            }
-        },
+        /*
+         * @see com.springsource.insight.plugin.jaxrs.JaxrsParamType#getValue(java.lang.annotation.Annotation)
+         */
+        @Override
+        public String getValue(Annotation a) throws ClassCastException {
+            return (a == null) ? null : ((PathParam) a).value();
+        }
+    },
     QUERY(QueryParam.class) {
-            /*
-             * @see com.springsource.insight.plugin.jaxrs.JaxrsParamType#getValue(java.lang.annotation.Annotation)
-             */
-            @Override
-            public String getValue(Annotation a) throws ClassCastException {
-                return (a == null) ? null : ((QueryParam) a).value();
-            }
-        };
+        /*
+         * @see com.springsource.insight.plugin.jaxrs.JaxrsParamType#getValue(java.lang.annotation.Annotation)
+         */
+        @Override
+        public String getValue(Annotation a) throws ClassCastException {
+            return (a == null) ? null : ((QueryParam) a).value();
+        }
+    };
 
-    private final Class<? extends Annotation>   _annClass;
-    public final Class<? extends Annotation> getAnnotationClass () {
+    private final Class<? extends Annotation> _annClass;
+
+    public final Class<? extends Annotation> getAnnotationClass() {
         return _annClass;
     }
+
     /**
      * Extract the annotation's <I>value</I>
+     *
      * @param a The {@link Annotation} instance - may be <code>null</code>
      * @return The extracted value - <code>null</code> if <code>null</code> instance
      * @throws ClassCastException If the annotation is not of the expected type
      */
-    public abstract String getValue (Annotation a) throws ClassCastException;
+    public abstract String getValue(Annotation a) throws ClassCastException;
 
-    JaxrsParamType (Class<? extends Annotation> annClass) {
+    JaxrsParamType(Class<? extends Annotation> annClass) {
         _annClass = annClass;
     }
 
-    public static final Set<JaxrsParamType> VALUES=
-        Collections.unmodifiableSet(EnumSet.allOf(JaxrsParamType.class));
+    public static final Set<JaxrsParamType> VALUES =
+            Collections.unmodifiableSet(EnumSet.allOf(JaxrsParamType.class));
+
     /**
      * Checks if the provided type name matches the {@link Class#getSimpleName()}
      * of any of the annotation classes encapsulated in the enumeration (case
      * <U>sensitive</U>)
+     *
      * @param typeName The type name - may be <code>null</code>/empty
      * @return The matching {@link JaxrsParamType} - <code>null</code> if
      * no match found
      */
-    public static final JaxrsParamType fromTypeName (final String typeName) {
+    public static final JaxrsParamType fromTypeName(final String typeName) {
         if ((typeName == null) || (typeName.length() <= 0)) {
             return null;
         }
 
         for (final JaxrsParamType val : VALUES) {
-            final Class<? extends Annotation> annClass=(val == null) ? null : val.getAnnotationClass();
+            final Class<? extends Annotation> annClass = (val == null) ? null : val.getAnnotationClass();
             if ((annClass != null) && typeName.equals(annClass.getSimpleName())) {
                 return val;
             }
@@ -127,7 +132,7 @@ public enum JaxrsParamType {
         return null;    // no match
     }
 
-    public static final JaxrsParamType fromAnnotationClass (final Class<? extends Annotation> annClass) {
+    public static final JaxrsParamType fromAnnotationClass(final Class<? extends Annotation> annClass) {
         if (annClass == null) {
             return null;
         }
@@ -140,15 +145,15 @@ public enum JaxrsParamType {
 
         return null;    // no match
     }
-    
-    public static final JaxrsParamType fromAnnotation (final Annotation a) {
+
+    public static final JaxrsParamType fromAnnotation(final Annotation a) {
         if (a == null) {
             return null;
         }
 
-        final Class<?>  proxyClass=a.getClass();
+        final Class<?> proxyClass = a.getClass();
         for (final JaxrsParamType val : VALUES) {
-            final Class<? extends Annotation> annClass=(val == null) ? null : val.getAnnotationClass();
+            final Class<? extends Annotation> annClass = (val == null) ? null : val.getAnnotationClass();
             /*
              * NOTE !!! we cannot use class reference equality since annotation
              *      instances are usually represented by Proxy instances of

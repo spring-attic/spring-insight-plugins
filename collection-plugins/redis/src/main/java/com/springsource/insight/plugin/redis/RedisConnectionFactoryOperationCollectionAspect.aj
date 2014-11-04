@@ -35,28 +35,28 @@ public aspect RedisConnectionFactoryOperationCollectionAspect extends AbstractOp
     // On the other hand we have to instrument this because this is the only place where
     // we are guaranteed to have access to the connection
     public pointcut redisGetConnection()
-        : execution(* RedisConnectionFactory.getConnectionnnn(..));
+            : execution(* RedisConnectionFactory.getConnectionnnn(..));
 
-    public pointcut collectionPoint() : redisGetConnection();
+    public pointcut collectionPoint(): redisGetConnection();
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
         String method = jp.getSignature().getName();
         Operation op = new Operation()
-            .type(TYPE)
-            .put("method", method);
-        RedisConnectionFactory redisConnectionFactory = (RedisConnectionFactory)jp.getTarget();
+                .type(TYPE)
+                .put("method", method);
+        RedisConnectionFactory redisConnectionFactory = (RedisConnectionFactory) jp.getTarget();
         op.label("RedisConnection: " + redisConnectionFactory.getClass().getSimpleName());
         // TODO - this is by reflection because although all the 3 connection factories have these methods 
         // they do not appear in the interface
         // SO - better to create 3 separate aspects
         try {
-			op.put("host", redisConnectionFactory.getClass().getMethod("getHostName").invoke(redisConnectionFactory).toString());
-			op.put("port", Integer.parseInt(redisConnectionFactory.getClass().getMethod("getPort").invoke(redisConnectionFactory).toString()));
-			op.put("dbName", redisConnectionFactory.getClass().getMethod("getDatabase").invoke(redisConnectionFactory).toString());
-		} catch (Exception e) {
-			// ignored
-		}
+            op.put("host", redisConnectionFactory.getClass().getMethod("getHostName").invoke(redisConnectionFactory).toString());
+            op.put("port", Integer.parseInt(redisConnectionFactory.getClass().getMethod("getPort").invoke(redisConnectionFactory).toString()));
+            op.put("dbName", redisConnectionFactory.getClass().getMethod("getDatabase").invoke(redisConnectionFactory).toString());
+        } catch (Exception e) {
+            // ignored
+        }
 
         return op;
     }

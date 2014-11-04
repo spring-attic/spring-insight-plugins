@@ -27,41 +27,41 @@ import com.springsource.insight.intercept.color.ColorManager.ExtractColorParams;
 import com.springsource.insight.intercept.operation.Operation;
 
 public aspect JMSConsumerCollectionAspect extends AbstractJMSCollectionAspect {
-    public JMSConsumerCollectionAspect () {
+    public JMSConsumerCollectionAspect() {
         super(JMSPluginOperationType.RECEIVE);
     }
 
     public pointcut consumer()
-        : execution(Message javax.jms.MessageConsumer+.receive*(..))
-       && if(strategies.collect(thisAspectInstance,thisJoinPointStaticPart))
-        ;
-    
-	@SuppressAjWarnings({"adviceDidNotMatch"})
-    after() returning(final Message message) : consumer() {
+            : execution(Message javax.jms.MessageConsumer+.receive*(..))
+            && if(strategies.collect(thisAspectInstance,thisJoinPointStaticPart))
+            ;
+
+    @SuppressAjWarnings({"adviceDidNotMatch"})
+    after() returning(final Message message): consumer() {
         if (message != null) {
             JoinPoint jp = thisJoinPoint;
-            
+
             Operation op = createOperation(jp);
             try {
                 applyAdditionalData(op, jp);
                 applyDestinationData(message, op);
                 applyMessageData(message, op);
-             } catch (Throwable t) {
-            	 markException("afterReturning", t);
-             }
+            } catch (Throwable t) {
+                markException("afterReturning", t);
+            }
 
             //Set the color for this frame
-            extractColor(new ExtractColorParams() {				
-    	        public String getColor(String key) {
-    	            try {
-        		        return message.getStringProperty(key);
-        		    } catch (JMSException e) {
-        		        return null;
-        		    }
+            extractColor(new ExtractColorParams() {
+                public String getColor(String key) {
+                    try {
+                        return message.getStringProperty(key);
+                    } catch (JMSException e) {
+                        return null;
+                    }
                 }
             });
-            
-            OperationCollector	collector=getCollector();
+
+            OperationCollector collector = getCollector();
             //we enter and exit cause we want to ignore null messages
             //for now there is no way to discard a frame once it was entered
             collector.enter(op);
@@ -69,22 +69,22 @@ public aspect JMSConsumerCollectionAspect extends AbstractJMSCollectionAspect {
         }
     }
 
-	@SuppressAjWarnings({"adviceDidNotMatch"})
-    after() throwing(Throwable exception) : consumer() {
+    @SuppressAjWarnings({"adviceDidNotMatch"})
+    after() throwing(Throwable exception): consumer() {
         Operation op = createOperation(thisJoinPoint);
-        OperationCollector	collector=getCollector();
+        OperationCollector collector = getCollector();
         collector.enter(op);
         // we enter and exit since there is no "before" clause
         collector.exitAbnormal(exception);
     }
-    
+
     private Operation applyAdditionalData(Operation op, JoinPoint jp) {
         try {
-            MessageConsumer consumer =  (MessageConsumer) jp.getThis();
+            MessageConsumer consumer = (MessageConsumer) jp.getThis();
             String selector = consumer.getMessageSelector();
             op.putAnyNonEmpty("selector", selector);
         } catch (JMSException e) {
-       	 	markException("applyAdditionalData", e);
+            markException("applyAdditionalData", e);
         }
 
         return op;

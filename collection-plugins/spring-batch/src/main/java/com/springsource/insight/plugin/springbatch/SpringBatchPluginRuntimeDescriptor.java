@@ -20,14 +20,14 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class SpringBatchPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "spring-batch";
-    private static final SpringBatchPluginRuntimeDescriptor	INSTANCE=new SpringBatchPluginRuntimeDescriptor();
+    private static final SpringBatchPluginRuntimeDescriptor INSTANCE = new SpringBatchPluginRuntimeDescriptor();
 
-    private SpringBatchPluginRuntimeDescriptor () {
+    private SpringBatchPluginRuntimeDescriptor() {
         super();
     }
 
     public static final SpringBatchPluginRuntimeDescriptor getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override

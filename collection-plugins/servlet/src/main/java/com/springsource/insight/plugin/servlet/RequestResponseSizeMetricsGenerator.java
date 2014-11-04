@@ -38,64 +38,64 @@ import com.springsource.insight.util.time.TimeUtil;
  * endpoint within a {@link Trace}
  */
 public class RequestResponseSizeMetricsGenerator extends AbstractMetricsGenerator {
-	// TODO the "type" value should be using the same MetricDataType(s) literals (which should be exposed)
-	public static final String ENDPOINT_RESPONSE_SIZE = "endPointResponseSize:type=bytes";
-	public static final String ENDPOINT_REQUEST_SIZE = "endPointRequestSize:type=bytes";    
-	private static final RequestResponseSizeMetricsGenerator	INSTANCE=new RequestResponseSizeMetricsGenerator();
+    // TODO the "type" value should be using the same MetricDataType(s) literals (which should be exposed)
+    public static final String ENDPOINT_RESPONSE_SIZE = "endPointResponseSize:type=bytes";
+    public static final String ENDPOINT_REQUEST_SIZE = "endPointRequestSize:type=bytes";
+    private static final RequestResponseSizeMetricsGenerator INSTANCE = new RequestResponseSizeMetricsGenerator();
 
-	private RequestResponseSizeMetricsGenerator() {
-		super(OperationType.HTTP);
-	}
+    private RequestResponseSizeMetricsGenerator() {
+        super(OperationType.HTTP);
+    }
 
-	public static final RequestResponseSizeMetricsGenerator getInstance() {
-		return INSTANCE;
-	}
+    public static final RequestResponseSizeMetricsGenerator getInstance() {
+        return INSTANCE;
+    }
 
-	@Override
-	public Collection<Frame> locateFrames(Trace trace) {
-		Frame frame = trace.getFirstFrameOfType(getOperationType());
-		if (frame == null) {
-		    return Collections.emptyList();
-		} else {
-			return Collections.singletonList(frame);
-		}
-	}
+    @Override
+    public Collection<Frame> locateFrames(Trace trace) {
+        Frame frame = trace.getFirstFrameOfType(getOperationType());
+        if (frame == null) {
+            return Collections.emptyList();
+        } else {
+            return Collections.singletonList(frame);
+        }
+    }
 
-	@Override
-	public List<MetricsBag> generateMetrics(Trace trace, ResourceKey endpointResourceKey, Collection<Frame> frames) {
-		if (ListUtil.size(frames) != 1) {
-		    return Collections.emptyList();
-		}
+    @Override
+    public List<MetricsBag> generateMetrics(Trace trace, ResourceKey endpointResourceKey, Collection<Frame> frames) {
+        if (ListUtil.size(frames) != 1) {
+            return Collections.emptyList();
+        }
 
-        Frame		frame = ListUtil.getFirstMember(frames);
-        Operation   op = frame.getOperation();
+        Frame frame = ListUtil.getFirstMember(frames);
+        Operation op = frame.getOperation();
         ResourceKey resourceKey = getResourceKey(op, endpointResourceKey);
-		TimeRange   range = trace.getRange();
-        int         time = TimeUtil.nanosToSeconds(range.getStart());
-		MetricsBag  mb = MetricsBag.create(resourceKey, range);
+        TimeRange range = trace.getRange();
+        int time = TimeUtil.nanosToSeconds(range.getStart());
+        MetricsBag mb = MetricsBag.create(resourceKey, range);
 
-		// Add the response size data point
-		OperationMap response = op.get("response", OperationMap.class);
-		Number contentSize = (response == null) ? null : response.get("contentSize", Number.class);
-		if (contentSize != null) {	// OK if missing since collected only if extra information
-			DataPoint responseSizePoint = new DataPoint(time, contentSize.doubleValue());
-			mb.add(ENDPOINT_RESPONSE_SIZE, PointType.GAUGE);
-			mb.add(responseSizePoint, ENDPOINT_RESPONSE_SIZE);
-		}
+        // Add the response size data point
+        OperationMap response = op.get("response", OperationMap.class);
+        Number contentSize = (response == null) ? null : response.get("contentSize", Number.class);
+        if (contentSize != null) {    // OK if missing since collected only if extra information
+            DataPoint responseSizePoint = new DataPoint(time, contentSize.doubleValue());
+            mb.add(ENDPOINT_RESPONSE_SIZE, PointType.GAUGE);
+            mb.add(responseSizePoint, ENDPOINT_RESPONSE_SIZE);
+        }
 
-		// Add the request size data point
-		OperationMap request = op.get("request", OperationMap.class);
-		Number contentLength = (request == null) ? null : request.get("contentLength", Number.class);
-		if (contentLength != null) {	// OK if missing since collected only if extra information
-			DataPoint requestSizePoint = new DataPoint(time, contentLength.doubleValue());
-			mb.add(ENDPOINT_REQUEST_SIZE, PointType.GAUGE);
-			mb.add(requestSizePoint, ENDPOINT_REQUEST_SIZE);
-		}
+        // Add the request size data point
+        OperationMap request = op.get("request", OperationMap.class);
+        Number contentLength = (request == null) ? null : request.get("contentLength", Number.class);
+        if (contentLength != null) {    // OK if missing since collected only if extra information
+            DataPoint requestSizePoint = new DataPoint(time, contentLength.doubleValue());
+            mb.add(ENDPOINT_REQUEST_SIZE, PointType.GAUGE);
+            mb.add(requestSizePoint, ENDPOINT_REQUEST_SIZE);
+        }
 
-		if (mb.isEmpty()) {
-			return Collections.emptyList();
-		} else {
-			return Collections.singletonList(mb);
-		}
-	}
+        if (mb.isEmpty()) {
+            return Collections.emptyList();
+        } else {
+            return Collections.singletonList(mb);
+        }
+    }
 }

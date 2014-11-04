@@ -20,15 +20,15 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class JtaPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "jta";
-    private static final JtaPluginRuntimeDescriptor	INSTANCE=new JtaPluginRuntimeDescriptor();
-    
-	private JtaPluginRuntimeDescriptor () {
-		super();
-	}
+    private static final JtaPluginRuntimeDescriptor INSTANCE = new JtaPluginRuntimeDescriptor();
 
-	public static final JtaPluginRuntimeDescriptor getInstance() {
-		return INSTANCE;
-	}
+    private JtaPluginRuntimeDescriptor() {
+        super();
+    }
+
+    public static final JtaPluginRuntimeDescriptor getInstance() {
+        return INSTANCE;
+    }
 
     @Override
     public String getPluginName() {

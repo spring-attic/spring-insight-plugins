@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
     <!--
         This Spring application context is only used in testing scnearios to setup the FreeMarker configuration. When
@@ -9,9 +9,9 @@
 
     <!-- freemarker config -->
     <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
-        <property name="templateLoaderPaths" value="classpath:" />
+        <property name="templateLoaderPaths" value="classpath:"/>
         <!-- TODO: find a way to switch this on for some template paths and not others -->
-        <property name="preferFileSystemAccess" value="false" />
+        <property name="preferFileSystemAccess" value="false"/>
     </bean>
 
 </beans>

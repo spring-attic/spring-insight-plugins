@@ -24,30 +24,30 @@ import com.springsource.insight.plugin.springcore.beans.InsightComponent;
 
 
 /**
- * 
+ *
  */
 public class ComponentMethodOperationCollectionAspectTest extends StereotypeOperationCollectionAspectTestSupport {
-	public ComponentMethodOperationCollectionAspectTest() {
-		super(Component.class);
-	}
+    public ComponentMethodOperationCollectionAspectTest() {
+        super(Component.class);
+    }
 
-	@Test
-	public void testNonInsightComponentCollected () {
-		assertStereotypeOperation(new ExampleComponent(), true);
-	}
+    @Test
+    public void testNonInsightComponentCollected() {
+        assertStereotypeOperation(new ExampleComponent(), true);
+    }
 
-	@Test
-	public void testInsightComponentNotCollected () {
-		assertStereotypeOperation(new InsightComponent(), false);
-	}
+    @Test
+    public void testInsightComponentNotCollected() {
+        assertStereotypeOperation(new InsightComponent(), false);
+    }
 
-	@Test
-	public void testLifecycleMethodsNotCollected() throws Exception {
-		assertLifecycleMethodsNotIntercepted(new ExampleComponent());
-	}
+    @Test
+    public void testLifecycleMethodsNotCollected() throws Exception {
+        assertLifecycleMethodsNotIntercepted(new ExampleComponent());
+    }
 
-	@Override
-	public ComponentMethodOperationCollectionAspect getAspect() {
-		return ComponentMethodOperationCollectionAspect.aspectOf();
-	}
+    @Override
+    public ComponentMethodOperationCollectionAspect getAspect() {
+        return ComponentMethodOperationCollectionAspect.aspectOf();
+    }
 }

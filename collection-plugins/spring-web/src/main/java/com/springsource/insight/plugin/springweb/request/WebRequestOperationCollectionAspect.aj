@@ -35,7 +35,7 @@ public aspect WebRequestOperationCollectionAspect extends AbstractSpringWebAspec
         super(new WebRequestOperationCollector());
     }
 
-    public pointcut collectionPoint() : SpringWebPointcuts.processWebRequest();
+    public pointcut collectionPoint(): SpringWebPointcuts.processWebRequest();
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
@@ -44,18 +44,18 @@ public aspect WebRequestOperationCollectionAspect extends AbstractSpringWebAspec
         HttpServletRequest request = (HttpServletRequest) args[0];
 
         return new Operation()
-            .label("Spring Web Dispatch")
-            .type(OperationType.WEB_REQUEST)
-            .sourceCodeLocation(getSourceCodeLocation(jp))
-            .put("method", request.getMethod())
-            .put(OperationFields.URI, request.getRequestURI())
-            ;
+                .label("Spring Web Dispatch")
+                .type(OperationType.WEB_REQUEST)
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .put("method", request.getMethod())
+                .put(OperationFields.URI, request.getRequestURI())
+                ;
     }
 
     static class WebRequestOperationCollector extends DefaultOperationCollector {
-    	WebRequestOperationCollector () {
-    		super();
-    	}
+        WebRequestOperationCollector() {
+            super();
+        }
 
         @Override
         protected void processNormalExit(Operation op) {
@@ -70,11 +70,11 @@ public aspect WebRequestOperationCollectionAspect extends AbstractSpringWebAspec
         @Override
         protected void processAbnormalExit(Operation op, Throwable throwable) {
             op.put("error", true)
-                .put(EXCEPTION, StringUtil.throwableToString(throwable))
-                ;
-            
+                    .put(EXCEPTION, StringUtil.throwableToString(throwable))
+            ;
+
         }
-        
+
     }
-    
+
 }

@@ -17,6 +17,7 @@
 package com.springsource.insight.plugin.jcr;
 
 import org.aspectj.lang.JoinPoint;
+
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 
@@ -27,25 +28,25 @@ import com.springsource.insight.intercept.operation.Operation;
  * This aspect intercepts all JCR Query requests
  */
 public privileged aspect QueryOperationCollectionAspect extends AbstractOperationCollectionAspect {
-	public QueryOperationCollectionAspect () {
-		super();
-	}
+    public QueryOperationCollectionAspect() {
+        super();
+    }
 
-    public pointcut collectionPoint() : execution(public QueryResult javax.jcr.query.Query+.execute());
+    public pointcut collectionPoint(): execution(public QueryResult javax.jcr.query.Query+.execute());
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-    	Query query=(Query)jp.getTarget();
-    			
-    	return new Operation().type(OperationCollectionTypes.QUERY_TYPE.type)
-    						.label(OperationCollectionTypes.QUERY_TYPE.label)
-    						.sourceCodeLocation(getSourceCodeLocation(jp))
-    						.put("statement", query.getStatement())
-    						;
+        Query query = (Query) jp.getTarget();
+
+        return new Operation().type(OperationCollectionTypes.QUERY_TYPE.type)
+                .label(OperationCollectionTypes.QUERY_TYPE.label)
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .put("statement", query.getStatement())
+                ;
     }
 
-	@Override
-	public String getPluginName() {
-		return JCRPluginRuntimeDescriptor.PLUGIN_NAME;
-	}
+    @Override
+    public String getPluginName() {
+        return JCRPluginRuntimeDescriptor.PLUGIN_NAME;
+    }
 }

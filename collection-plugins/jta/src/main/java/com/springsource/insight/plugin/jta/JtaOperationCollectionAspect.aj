@@ -25,48 +25,48 @@ import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationType;
 
 /**
- * 
+ *
  */
 public abstract aspect JtaOperationCollectionAspect extends AbstractOperationCollectionAspect {
-    protected final OperationType   opType;
-    protected final Class<?>    txClass;
+    protected final OperationType opType;
+    protected final Class<?> txClass;
 
-    protected JtaOperationCollectionAspect (OperationType type, Class<?> clazz) {
-        if ((opType=type) == null) {
+    protected JtaOperationCollectionAspect(OperationType type, Class<?> clazz) {
+        if ((opType = type) == null) {
             throw new IllegalStateException("No operation type specified");
         }
 
-        if ((txClass=clazz) == null) {
+        if ((txClass = clazz) == null) {
             throw new IllegalStateException("No object class specified");
         }
     }
 
-    final OperationType getOperationType () {
+    final OperationType getOperationType() {
         return opType;
     }
 
-    final Class<?> getTransactionClass () {
+    final Class<?> getTransactionClass() {
         return txClass;
     }
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Signature   sig=jp.getSignature();
-        String      actionName=sig.getName();
+        Signature sig = jp.getSignature();
+        String actionName = sig.getName();
         return new Operation().type(opType)
-                              .label("Transaction " + actionName)
-                              .sourceCodeLocation(getSourceCodeLocation(jp))
-                              .put(OperationFields.CLASS_NAME, txClass.getName())
-                              .put(OperationFields.METHOD_NAME, sig.getName())
-                              .put(OperationFields.SHORT_CLASS_NAME, txClass.getSimpleName())
-                               // same as JoinPointBreakDown#getMethodStringFromArgs
-                              .put(OperationFields.METHOD_SIGNATURE, sig.getName() + "()")
-                              .put(JtaDefinitions.ACTION_ATTR, actionName)
-                              ;
+                .label("Transaction " + actionName)
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .put(OperationFields.CLASS_NAME, txClass.getName())
+                .put(OperationFields.METHOD_NAME, sig.getName())
+                .put(OperationFields.SHORT_CLASS_NAME, txClass.getSimpleName())
+                        // same as JoinPointBreakDown#getMethodStringFromArgs
+                .put(OperationFields.METHOD_SIGNATURE, sig.getName() + "()")
+                .put(JtaDefinitions.ACTION_ATTR, actionName)
+                ;
     }
 
     @Override
     public String getPluginName() {
-    	return JtaPluginRuntimeDescriptor.PLUGIN_NAME;
+        return JtaPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

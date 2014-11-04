@@ -24,30 +24,30 @@ import org.junit.Test;
 
 
 /**
- * 
+ *
  */
 public class RestOptionsOperationCollectionAspectTest extends RestOperationCollectionTestSupport {
-	public RestOptionsOperationCollectionAspectTest() {
-		super();
-	}
+    public RestOptionsOperationCollectionAspectTest() {
+        super();
+    }
 
-	@Test
-	public void testOptionsForAllowsNoArgs() throws Exception {
-		assertRestOperationResult(opsInstance.optionsForAllow(new URI(createTestURI("testOptionsForAllowNoArgs"))));
-	}
+    @Test
+    public void testOptionsForAllowsNoArgs() throws Exception {
+        assertRestOperationResult(opsInstance.optionsForAllow(new URI(createTestURI("testOptionsForAllowNoArgs"))));
+    }
 
-	@Test
-	public void testOptionsForAllowVarArgs() throws Exception {
-		assertRestOperationResult(opsInstance.optionsForAllow(createTestURI("testOptionsForAllowNoArgs"), new Date()));
-	}
+    @Test
+    public void testOptionsForAllowVarArgs() throws Exception {
+        assertRestOperationResult(opsInstance.optionsForAllow(createTestURI("testOptionsForAllowNoArgs"), new Date()));
+    }
 
-	@Test
-	public void testOptionsForAllowArgsMap() throws Exception {
-		assertRestOperationResult(opsInstance.optionsForAllow(createTestURI("testOptionsForAllowArgsMap"), Collections.singletonMap("now", new Date())));
-	}
+    @Test
+    public void testOptionsForAllowArgsMap() throws Exception {
+        assertRestOperationResult(opsInstance.optionsForAllow(createTestURI("testOptionsForAllowArgsMap"), Collections.singletonMap("now", new Date())));
+    }
 
-	@Override
-	public RestOptionsOperationCollectionAspect getAspect() {
-		return RestOptionsOperationCollectionAspect.aspectOf();
-	}
+    @Override
+    public RestOptionsOperationCollectionAspect getAspect() {
+        return RestOptionsOperationCollectionAspect.aspectOf();
+    }
 }

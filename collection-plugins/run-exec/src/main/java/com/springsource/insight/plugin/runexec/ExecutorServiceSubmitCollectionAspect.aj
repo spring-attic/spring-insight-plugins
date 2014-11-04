@@ -20,7 +20,7 @@ import java.util.concurrent.ExecutorService;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 
 /**
- * 
+ *
  */
 public aspect ExecutorServiceSubmitCollectionAspect extends ExecuteMethodCollectionAspect {
     public ExecutorServiceSubmitCollectionAspect() {
@@ -31,21 +31,21 @@ public aspect ExecutorServiceSubmitCollectionAspect extends ExecuteMethodCollect
      * NOTE: we need to use 'call' in order to intercept calls to the Java
      *      core classes that implement this interface
      */
-    public pointcut singleArgSubmit () : call(* ExecutorService+.submit(Runnable));
-    public pointcut twoArgsSubmit () : call(* ExecutorService+.submit(Runnable,Object));
-    public pointcut collectionPoint() : singleArgSubmit() || twoArgsSubmit();
+    public pointcut singleArgSubmit(): call(* ExecutorService+.submit(Runnable));
+    public pointcut twoArgsSubmit(): call(* ExecutorService+.submit(Runnable,Object));
+    public pointcut collectionPoint(): singleArgSubmit() || twoArgsSubmit();
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     Object around (Runnable runner)
-        : singleArgSubmit() && args(runner) {
-        Runnable    effectiveRunner=resolveRunner(runner, thisJoinPointStaticPart);
+            : singleArgSubmit() && args(runner) {
+        Runnable effectiveRunner = resolveRunner(runner, thisJoinPointStaticPart);
         return proceed(effectiveRunner);
     }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
-    Object around (Runnable runner,Object argVal)
-        : twoArgsSubmit() && args(runner,argVal) {
-        Runnable    effectiveRunner=resolveRunner(runner, thisJoinPointStaticPart);
-        return proceed(effectiveRunner,argVal);
+    Object around (Runnable runner, Object argVal)
+            : twoArgsSubmit() && args(runner,argVal) {
+        Runnable effectiveRunner = resolveRunner(runner, thisJoinPointStaticPart);
+        return proceed(effectiveRunner, argVal);
     }
 }

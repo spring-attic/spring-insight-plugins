@@ -26,51 +26,51 @@ import com.springsource.insight.collection.method.MethodOperationCollectionAspec
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public abstract aspect SpringBatchOperationCollectionAspect extends MethodOperationCollectionAspect {
-    protected final Class<?>    batchType;
+    protected final Class<?> batchType;
 
-    protected SpringBatchOperationCollectionAspect (@SuppressWarnings("hiding") Class<?> batchType) {
-        if ((this.batchType=batchType) == null) {
+    protected SpringBatchOperationCollectionAspect(@SuppressWarnings("hiding") Class<?> batchType) {
+        if ((this.batchType = batchType) == null) {
             throw new IllegalStateException("No batch type provided");
         }
     }
 
-    public final Class<?> getBatchType () {
+    public final Class<?> getBatchType() {
         return this.batchType;
     }
 
     protected Operation createOperation(JoinPoint jp, String name) {
-        Signature   sig=jp.getSignature();
-        String      action=sig.getName();
+        Signature sig = jp.getSignature();
+        String action = sig.getName();
         return createOperation(jp, getBatchType(), action, name);
     }
 
     protected Operation createOperation(JoinPoint jp, Class<?> batchClass, String action, String name) {
         return super.createOperation(jp)
-                    .type(SpringBatchDefinitions.BATCH_TYPE)
-                    .label(batchClass.getSimpleName() + " " + action + " " + name)
-                    .put(SpringBatchDefinitions.ACTION_ATTR, action)
-                    .put(SpringBatchDefinitions.NAME_ATTR, name)
-                    .put(SpringBatchDefinitions.TYPE_ATTR, batchClass.getSimpleName())
-                    // these may be overridden by the specific aspects - we only ensure non-null value
-                    .put(SpringBatchDefinitions.JOBNAME_ATTR, SpringBatchDefinitions.UNKNOWN_VALUE)
-                    .put(SpringBatchDefinitions.STEPNAME_ATTR, SpringBatchDefinitions.UNKNOWN_VALUE)
-                    ;
+                .type(SpringBatchDefinitions.BATCH_TYPE)
+                .label(batchClass.getSimpleName() + " " + action + " " + name)
+                .put(SpringBatchDefinitions.ACTION_ATTR, action)
+                .put(SpringBatchDefinitions.NAME_ATTR, name)
+                .put(SpringBatchDefinitions.TYPE_ATTR, batchClass.getSimpleName())
+                        // these may be overridden by the specific aspects - we only ensure non-null value
+                .put(SpringBatchDefinitions.JOBNAME_ATTR, SpringBatchDefinitions.UNKNOWN_VALUE)
+                .put(SpringBatchDefinitions.STEPNAME_ATTR, SpringBatchDefinitions.UNKNOWN_VALUE)
+                ;
     }
 
-    protected Operation fillStepExecutionDetails (Operation op, StepExecution stepExecution) {
+    protected Operation fillStepExecutionDetails(Operation op, StepExecution stepExecution) {
         if (stepExecution == null) {
             return op;
         }
 
         return fillJobExecution(op, stepExecution.getJobExecution())
-                 .put(SpringBatchDefinitions.STEPNAME_ATTR, stepExecution.getStepName())
-                 ;
+                .put(SpringBatchDefinitions.STEPNAME_ATTR, stepExecution.getStepName())
+                ;
     }
 
-    protected Operation fillJobExecution (Operation op, JobExecution jobExecution) {
+    protected Operation fillJobExecution(Operation op, JobExecution jobExecution) {
         if (jobExecution == null) {
             return op;
         }
@@ -78,7 +78,7 @@ public abstract aspect SpringBatchOperationCollectionAspect extends MethodOperat
         return fillJobJobInstance(op, jobExecution.getJobInstance());
     }
 
-    protected Operation fillJobJobInstance(Operation op,JobInstance jobInstance) {
+    protected Operation fillJobJobInstance(Operation op, JobInstance jobInstance) {
         if (jobInstance == null) {
             return op;
         }
@@ -90,7 +90,7 @@ public abstract aspect SpringBatchOperationCollectionAspect extends MethodOperat
     public boolean isMetricsGenerator() {
         return true;
     }
-    
+
     @Override
     public String getPluginName() {
         return SpringBatchPluginRuntimeDescriptor.PLUGIN_NAME;

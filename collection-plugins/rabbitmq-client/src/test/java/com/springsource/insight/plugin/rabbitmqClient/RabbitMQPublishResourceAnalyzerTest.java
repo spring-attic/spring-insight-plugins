@@ -21,28 +21,28 @@ import com.springsource.insight.util.KeyValPair;
 
 
 public class RabbitMQPublishResourceAnalyzerTest extends AbstractRabbitMQResourceAnalyzerTest {
-	public RabbitMQPublishResourceAnalyzerTest() {
-		super(RabbitMQPublishResourceAnalyzer.getInstance());
-	}
-	
-	@Override
-	protected KeyValPair<String,String> addInitialOperationProps(Operation operation, boolean addRouting, boolean addExchange, Boolean useTempRoutingKey){
-		KeyValPair<String,String>	res = null;
+    public RabbitMQPublishResourceAnalyzerTest() {
+        super(RabbitMQPublishResourceAnalyzer.getInstance());
+    }
 
-		if (addExchange){
-			operation.put("exchange", TEST_EXCHANGE);
-			res = setExchange(res, TEST_EXCHANGE);
-		}
+    @Override
+    protected KeyValPair<String, String> addInitialOperationProps(Operation operation, boolean addRouting, boolean addExchange, Boolean useTempRoutingKey) {
+        KeyValPair<String, String> res = null;
 
-		if (addRouting){
-			String routingKey = TEST_ROUTING_KEY;
-			if ((useTempRoutingKey != null) && useTempRoutingKey.booleanValue()) {
-				routingKey = TEST_TEMP_ROUTING_KEY;
-			}
-			operation.put("routingKey", routingKey);
-			res = setRoutingKey(res, routingKey);
-		}
+        if (addExchange) {
+            operation.put("exchange", TEST_EXCHANGE);
+            res = setExchange(res, TEST_EXCHANGE);
+        }
 
-		return res;
-	}
+        if (addRouting) {
+            String routingKey = TEST_ROUTING_KEY;
+            if ((useTempRoutingKey != null) && useTempRoutingKey.booleanValue()) {
+                routingKey = TEST_TEMP_ROUTING_KEY;
+            }
+            operation.put("routingKey", routingKey);
+            res = setRoutingKey(res, routingKey);
+        }
+
+        return res;
+    }
 }

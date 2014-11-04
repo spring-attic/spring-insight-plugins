@@ -22,19 +22,19 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
  *
  */
 public class RmiPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
-	public static final String PLUGIN_NAME = "rmi";
-	private static final RmiPluginRuntimeDescriptor	INSTANCE=new RmiPluginRuntimeDescriptor();
+    public static final String PLUGIN_NAME = "rmi";
+    private static final RmiPluginRuntimeDescriptor INSTANCE = new RmiPluginRuntimeDescriptor();
 
-	private RmiPluginRuntimeDescriptor() {
-		super();
-	}
+    private RmiPluginRuntimeDescriptor() {
+        super();
+    }
 
-	public static final RmiPluginRuntimeDescriptor getInstance() {
-		return INSTANCE;
-	}
+    public static final RmiPluginRuntimeDescriptor getInstance() {
+        return INSTANCE;
+    }
 
-	@Override
-	public String getPluginName() {
-		 return PLUGIN_NAME;
-	}
+    @Override
+    public String getPluginName() {
+        return PLUGIN_NAME;
+    }
 }

@@ -24,24 +24,24 @@ import com.springsource.insight.util.ArrayUtil;
 
 public class LoggingPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "logging";
-    private static final LoggingPluginRuntimeDescriptor	INSTANCE=new LoggingPluginRuntimeDescriptor();
-    
-    private static final List<? extends TraceErrorAnalyzer>	errAnalyzers=
-    		ArrayUtil.asUnmodifiableList(LoggingTraceErrorAnalyzer.getInstance());
+    private static final LoggingPluginRuntimeDescriptor INSTANCE = new LoggingPluginRuntimeDescriptor();
 
-    private LoggingPluginRuntimeDescriptor () {
-    	super();
+    private static final List<? extends TraceErrorAnalyzer> errAnalyzers =
+            ArrayUtil.asUnmodifiableList(LoggingTraceErrorAnalyzer.getInstance());
+
+    private LoggingPluginRuntimeDescriptor() {
+        super();
     }
 
     public static final LoggingPluginRuntimeDescriptor getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
-    
+
     @Override
     public Collection<? extends TraceErrorAnalyzer> getTraceErrorAnalyzers() {
         return errAnalyzers;
     }
-    
+
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;

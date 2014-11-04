@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:insight="http://www.springframework.org/schema/insight-idk"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:insight="http://www.springframework.org/schema/insight-idk"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
-	<insight:plugin name="portlet" version="${project.version}" publisher="SpringSource" />
-    
+    <insight:plugin name="portlet" version="${project.version}" publisher="SpringSource"/>
+
     <insight:operation-view operation="portlet-action" template="com/springsource/insight/plugin/portlet/action.ftl"/>
     <insight:operation-view operation="portlet-event" template="com/springsource/insight/plugin/portlet/event.ftl"/>
     <insight:operation-view operation="portlet-render" template="com/springsource/insight/plugin/portlet/render.ftl"/>
-    <insight:operation-view operation="portlet-resource" template="com/springsource/insight/plugin/portlet/resource.ftl"/>
-    
-	<insight:operation-group group="Web" operation="portlet-action" />
-    <insight:operation-group group="Web" operation="portlet-event" />
-    <insight:operation-group group="Web" operation="portlet-render" />
-    <insight:operation-group group="Web" operation="portlet-resource" />
-    
+    <insight:operation-view operation="portlet-resource"
+                            template="com/springsource/insight/plugin/portlet/resource.ftl"/>
+
+    <insight:operation-group group="Web" operation="portlet-action"/>
+    <insight:operation-group group="Web" operation="portlet-event"/>
+    <insight:operation-group group="Web" operation="portlet-render"/>
+    <insight:operation-group group="Web" operation="portlet-resource"/>
+
     <bean id="portletPluginEndPointAnalyzer"
           class="com.springsource.insight.plugin.portlet.PortletEndPointAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="portletPluginRuntimeDescriptor"
           class="com.springsource.insight.plugin.portlet.PortletPluginRuntimeDescriptor"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
 </beans>

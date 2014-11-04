@@ -21,13 +21,13 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class MyApplicationListenerAndRepository
-		extends MyEventHolder
-		implements ApplicationListener<MyEvent> {
+        extends MyEventHolder
+        implements ApplicationListener<MyEvent> {
 
-    public MyApplicationListenerAndRepository () {
-    	super();
+    public MyApplicationListenerAndRepository() {
+        super();
     }
-   
+
     public void onApplicationEvent(MyEvent event) {
         lastEvent = event;
     }

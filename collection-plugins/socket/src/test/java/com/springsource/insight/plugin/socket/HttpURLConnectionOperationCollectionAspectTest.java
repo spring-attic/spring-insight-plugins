@@ -45,19 +45,19 @@ import com.springsource.insight.util.MapUtil;
 import com.springsource.insight.util.io.Base64;
 
 /**
- * 
+ *
  */
 public class HttpURLConnectionOperationCollectionAspectTest
-extends SocketOperationCollectionAspectTestSupport {
-    private static final String TEST_URI="http://" + TEST_HOST + ":" + TEST_PORT + "/";
-    private static Server    SERVER;
+        extends SocketOperationCollectionAspectTestSupport {
+    private static final String TEST_URI = "http://" + TEST_HOST + ":" + TEST_PORT + "/";
+    private static Server SERVER;
 
-    public HttpURLConnectionOperationCollectionAspectTest () {
+    public HttpURLConnectionOperationCollectionAspectTest() {
         super();
     }
 
     @BeforeClass
-    public static void startEmbeddedServer () throws Exception {
+    public static void startEmbeddedServer() throws Exception {
         SERVER = new Server(TEST_PORT);
         SERVER.setHandler(new TestHandler());
         System.out.println("Starting embedded server on port " + TEST_PORT);
@@ -66,7 +66,7 @@ extends SocketOperationCollectionAspectTestSupport {
     }
 
     @AfterClass
-    public static void stopEmbeddedServer () throws Exception {
+    public static void stopEmbeddedServer() throws Exception {
         if (SERVER != null) {
             System.out.println("Stopping embedded server");
             SERVER.stop();
@@ -75,38 +75,38 @@ extends SocketOperationCollectionAspectTestSupport {
     }
 
     @Test
-    public void testConnect () throws IOException {
-        final String		METHOD="GET";
-        HttpURLConnection   conn=createConnection(METHOD, "testConnect");
+    public void testConnect() throws IOException {
+        final String METHOD = "GET";
+        HttpURLConnection conn = createConnection(METHOD, "testConnect");
         try {
             conn.connect();
-            int responseCode=conn.getResponseCode();
+            int responseCode = conn.getResponseCode();
             assertEquals("Bad response code", HttpServletResponse.SC_OK, responseCode);
         } finally {
             conn.disconnect();
         }
 
-        Operation   op=assertSocketOperation(SocketDefinitions.CONNECT_ACTION, TEST_HOST, TEST_PORT);
+        Operation op = assertSocketOperation(SocketDefinitions.CONNECT_ACTION, TEST_HOST, TEST_PORT);
         assertEquals("Mismatched method", METHOD, op.get("method", String.class));
 
-        URL url=conn.getURL();
+        URL url = conn.getURL();
         assertEquals("Mismatched URL", url.toExternalForm(), op.get(OperationFields.URI, String.class));
 
         runExternalResourceAnalyzer(op, ExternalResourceType.WEB_SERVER, TEST_HOST, TEST_PORT);
     }
 
     @Test
-    public void testDefaultObscuredHeaders () throws IOException {
-        ObscuredValueSetMarker    marker=
+    public void testDefaultObscuredHeaders() throws IOException {
+        ObscuredValueSetMarker marker =
                 setupObscuredTest(HttpObfuscator.OBFUSCATED_HEADERS_SETTING, HttpObfuscator.DEFAULT_OBFUSCATED_HEADERS_VALUES);
-        HttpURLConnection   		conn=createConnection("POST", "testDefaultObscuredHeaders");
-        Map<String,List<String>>	propsMap;
+        HttpURLConnection conn = createConnection("POST", "testDefaultObscuredHeaders");
+        Map<String, List<String>> propsMap;
         try {
             propsMap = conn.getRequestProperties();
             assertTrue("No request properties map", MapUtil.size(propsMap) > 0);
 
             conn.connect();
-            int responseCode=conn.getResponseCode();
+            int responseCode = conn.getResponseCode();
             assertEquals("Bad response code", HttpServletResponse.SC_OK, responseCode);
         } finally {
             conn.disconnect();
@@ -114,11 +114,11 @@ extends SocketOperationCollectionAspectTestSupport {
 
         for (String hdrName : HttpObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST) {
             if ("WWW-Authenticate".equals(hdrName)) {
-                continue;	// this is a response header and we do not intercept them
+                continue;    // this is a response header and we do not intercept them
             }
 
             // see http://stackoverflow.com/questions/2864062/getrequestpropertyauthorization-always-returns-null
-            List<String>	values=propsMap.get(hdrName);
+            List<String> values = propsMap.get(hdrName);
             if (ListUtil.size(values) <= 0) {
                 continue;
             }
@@ -129,18 +129,18 @@ extends SocketOperationCollectionAspectTestSupport {
     }
 
     @Test
-    public void testObscuredHeaders () throws IOException {
-        final String            	hdrName="TestObscuredHeaders", hdrValue=String.valueOf(System.nanoTime());
+    public void testObscuredHeaders() throws IOException {
+        final String hdrName = "TestObscuredHeaders", hdrValue = String.valueOf(System.nanoTime());
         ObscuredValueSetMarker marker = setupObscuredTest(HttpObfuscator.OBFUSCATED_HEADERS_SETTING, hdrName);
-        HttpURLConnection   		conn=createConnection("POST", hdrName);
-        Map<String,List<String>>	propsMap;
+        HttpURLConnection conn = createConnection("POST", hdrName);
+        Map<String, List<String>> propsMap;
         try {
             conn.setRequestProperty(hdrName, hdrValue);
             propsMap = conn.getRequestProperties();
             assertTrue("No request properties map", MapUtil.size(propsMap) > 0);
 
             conn.connect();
-            int responseCode=conn.getResponseCode();
+            int responseCode = conn.getResponseCode();
             assertEquals("Bad response code", HttpServletResponse.SC_OK, responseCode);
         } finally {
             conn.disconnect();
@@ -151,7 +151,7 @@ extends SocketOperationCollectionAspectTestSupport {
 
         for (String defName : HttpObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST) {
             // see http://stackoverflow.com/questions/2864062/getrequestpropertyauthorization-always-returns-null
-            List<String>	values=propsMap.get(defName);
+            List<String> values = propsMap.get(defName);
             if (ListUtil.size(values) <= 0) {
                 continue;
             }
@@ -166,10 +166,10 @@ extends SocketOperationCollectionAspectTestSupport {
         return HttpURLConnectionOperationCollectionAspect.aspectOf();
     }
 
-    protected HttpURLConnection createConnection (final String method, final String testName)
+    protected HttpURLConnection createConnection(final String method, final String testName)
             throws IOException {
-        URL               testURL=new URL(createTestUri(testName));
-        HttpURLConnection conn=(HttpURLConnection) testURL.openConnection();
+        URL testURL = new URL(createTestUri(testName));
+        HttpURLConnection conn = (HttpURLConnection) testURL.openConnection();
         conn.setConnectTimeout((int) TimeUnit.SECONDS.toMillis(15L));
         conn.setReadTimeout((int) TimeUnit.SECONDS.toMillis(15L));
         if ("POST".equalsIgnoreCase(method)) {
@@ -177,7 +177,7 @@ extends SocketOperationCollectionAspectTestSupport {
         }
         conn.setRequestMethod(method);
 
-        final String	authToken=Base64.encode(getClass().getSimpleName() + ":" + testName);
+        final String authToken = Base64.encode(getClass().getSimpleName() + ":" + testName);
         conn.setRequestProperty("Authentication-Info", "Blah");
         conn.setRequestProperty("Authorization", "Basic " + authToken);
         conn.setRequestProperty("Proxy-Authenticate", "Base64 " + authToken);
@@ -185,19 +185,19 @@ extends SocketOperationCollectionAspectTestSupport {
         return conn;
     }
 
-    static String createResponseContent (String testName) {
+    static String createResponseContent(String testName) {
         return "<test name=\"" + testName + "\" />";
     }
 
-    static String createTestUri (String testName) {
+    static String createTestUri(String testName) {
         return TEST_URI + testName;
     }
 
     private static final class TestHandler implements Handler {
-        private Server  server;
+        private Server server;
         private boolean started;
 
-        protected TestHandler () {
+        protected TestHandler() {
             super();
         }
 
@@ -257,17 +257,17 @@ extends SocketOperationCollectionAspectTestSupport {
             this.server = serverInstance;
         }
 
-        public void handle (String target, HttpServletRequest request,
-                HttpServletResponse response, int dispatch)
-                        throws IOException, ServletException {
-            int     namePos=target.lastIndexOf('/');
-            String  testName=target.substring(namePos + 1);
+        public void handle(String target, HttpServletRequest request,
+                           HttpServletResponse response, int dispatch)
+                throws IOException, ServletException {
+            int namePos = target.lastIndexOf('/');
+            String testName = target.substring(namePos + 1);
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("text/xml;charset=utf-8");
             response.addHeader("X-Test-Name", testName);
             response.addHeader("WWW-Authenticate", "allowed");
 
-            Writer  writer=response.getWriter();
+            Writer writer = response.getWriter();
             try {
                 writer.append(createResponseContent(testName));
             } finally {
@@ -276,9 +276,8 @@ extends SocketOperationCollectionAspectTestSupport {
 
             Request baseRequest = (request instanceof Request)
                     ? (Request) request
-                            : HttpConnection.getCurrentConnection().getRequest()
-                            ;
-                    baseRequest.setHandled(true);
+                    : HttpConnection.getCurrentConnection().getRequest();
+            baseRequest.setHandled(true);
         }
 
         public void destroy() {

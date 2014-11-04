@@ -31,13 +31,13 @@ import com.springsource.insight.util.StringUtil;
 
 public aspect ServletContextListenerOperationDestroyedCollectionAspect extends AbstractOperationCollectionAspect {
     private static final OperationType TYPE = LifecycleEndPointAnalyzer.SERVLET_LISTENER_TYPE;
-    
+
     public ServletContextListenerOperationDestroyedCollectionAspect() {
         super();
     }
 
-    public pointcut collectionPoint() 
-        : execution(* ServletContextListener+.contextDestroyed(ServletContextEvent));
+    public pointcut collectionPoint()
+            : execution(* ServletContextListener+.contextDestroyed(ServletContextEvent));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
@@ -50,15 +50,15 @@ public aspect ServletContextListenerOperationDestroyedCollectionAspect extends A
         }
 
         Operation operation = new Operation()
-            .type(TYPE)
-            .label("Servlet Context: " + application + " Destroyed")
-            .sourceCodeLocation(getSourceCodeLocation(jp))
-            .put("listenerClass", listener.getClass().getName())
-            .put("listenerPhase", "Destroyed")
-            .put("event", "Destroy")
-            .put("application", application);
+                .type(TYPE)
+                .label("Servlet Context: " + application + " Destroyed")
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .put("listenerClass", listener.getClass().getName())
+                .put("listenerPhase", "Destroyed")
+                .put("event", "Destroy")
+                .put("application", application);
         OperationList contextParams = operation.createList("contextParams");
-        for (@SuppressWarnings("unchecked") Enumeration<String> paramNames = context.getInitParameterNames(); paramNames.hasMoreElements();) {
+        for (@SuppressWarnings("unchecked") Enumeration<String> paramNames = context.getInitParameterNames(); paramNames.hasMoreElements(); ) {
             String name = paramNames.nextElement();
             contextParams.createMap().put("name", name).put("value", event.getServletContext().getInitParameter(name));
         }

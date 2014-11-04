@@ -3,12 +3,12 @@
 
 <@insight.group label="Details">
     <#if operation.service??>
-	   <@insight.entry name="DatabaseService" value=operation.service/>
-	</#if>
-	<#if operation.serviceUri??>
-       <@insight.entry name="DatabaseServiceURI" value=operation.serviceUri/>
-    </#if>  
+        <@insight.entry name="DatabaseService" value=operation.service/>
+    </#if>
+    <#if operation.serviceUri??>
+        <@insight.entry name="DatabaseServiceURI" value=operation.serviceUri/>
+    </#if>
     <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
-	<@insight.sourceCodeLocation location=operation.sourceCodeLocation />
+    <@insight.sourceCodeLocation location=operation.sourceCodeLocation />
 </@insight.group>
 

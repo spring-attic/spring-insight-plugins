@@ -36,7 +36,7 @@ import com.springsource.insight.intercept.trace.FrameBuilder;
  * words, if there is an actual class that implements this interface, then
  * <B><U>all</U></B> its methods will be intercepted and not only those that
  * are defined in an interface derived from the repository one.</P>
- * 
+ *
  * <P>It is possible to modify the aspect so as to intercept only methods
  * from interfaces derived from {@link Repository}, but this would be a
  * <B><U>runtime</U></B> filtering. In other words, we would need to use
@@ -44,14 +44,14 @@ import com.springsource.insight.intercept.trace.FrameBuilder;
  * to generate an intercepted {@link com.springsource.insight.intercept.operation.Operation}.
  * This seems very time-consuming and therefore for the initial version of
  * this aspect we will go with the basic assumption described above</P>
- *  
+ *
  * <B>Note(s)</B>:</BR>
  * <UL>
  *      <LI><P>
  *      We must use <code>call</code> since the proxy-ing mechanism does not always
  *      implement the methods but rather directly converts them to executed queries
  *      </P></LI></BR>
- * 
+ *
  *      <LI><P>
  *      We use the {@link RepositoryDefinition} annotation as well - even though
  *      the current implementation of spring-data-commons expects the annotated
@@ -60,7 +60,7 @@ import com.springsource.insight.intercept.trace.FrameBuilder;
  *      automatic cast. We leave it in anyway in case this is fixed or some other
  *      factory bean is used that does not have this implicit assumption
  *      </P></LI></BR>
- *      
+ *
  *      <LI><P>
  *      We use <code>cflowbelow</code> since some implementations actually
  *      provide some generic implementation (e.g., {@link org.springframework.data.jpa.repository.support.SimpleJpaRepsitory}),
@@ -70,33 +70,34 @@ import com.springsource.insight.intercept.trace.FrameBuilder;
  */
 public aspect RepositoryMethodOperationCollectionAspect extends MethodOperationCollectionAspect {
     private final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
-    public RepositoryMethodOperationCollectionAspect () {
+
+    public RepositoryMethodOperationCollectionAspect() {
         super();
     }
 
-    public pointcut repositoryCall ()
-        : call(* Repository+.*(..))
-       || call(* (@RepositoryDefinition *)+.*(..))
-        ;
+    public pointcut repositoryCall()
+            : call(* Repository+.*(..))
+            || call(* (@RepositoryDefinition *)+.*(..))
+            ;
 
     public pointcut collectionPoint()
-        : repositoryCall() && (!cflowbelow(repositoryCall()))
-        ;
+            : repositoryCall() && (!cflowbelow(repositoryCall()))
+            ;
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-    	Query 		query=null;
-    	Signature	sig=jp.getSignature();
-		// get method @Query annotation
-    	if (sig instanceof MethodSignature) {
-    		Method	method=((MethodSignature) sig).getMethod();
-    		query = method.getAnnotation(Query.class);
-    	}
+        Query query = null;
+        Signature sig = jp.getSignature();
+        // get method @Query annotation
+        if (sig instanceof MethodSignature) {
+            Method method = ((MethodSignature) sig).getMethod();
+            query = method.getAnnotation(Query.class);
+        }
 
         return super.createOperation(jp)
-                    .type(SpringDataDefinitions.REPO_TYPE)
-                    .putAnyNonEmpty("query", (query!=null) ? query.value() : null)
-                    ;
+                .type(SpringDataDefinitions.REPO_TYPE)
+                .putAnyNonEmpty("query", (query != null) ? query.value() : null)
+                ;
     }
 
     @Override

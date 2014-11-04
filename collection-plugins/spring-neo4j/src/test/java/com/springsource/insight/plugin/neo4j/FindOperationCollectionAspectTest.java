@@ -29,34 +29,34 @@ import com.springsource.insight.intercept.operation.Operation;
 @ContextConfiguration(OperationCollectionAspectTests.TEST_CONTEXT)
 @Transactional
 public class FindOperationCollectionAspectTest extends AbstractNeo4jCollectionAspectTestSupport {
-	@Autowired
-	OperationCollectionAspectTests tests;
-	
-	
-	public FindOperationCollectionAspectTest () {
-		super();
-	}
+    @Autowired
+    OperationCollectionAspectTests tests;
 
-	@Override
-	public OperationCollectionAspectSupport getAspect() {
-		return FindOperationCollectionAspect.aspectOf();
-	}
-	
-	@Test
-	public void testRun() throws Exception {
-		// Step 1: Execute test
-		tests.test_Find();
 
-		// Step 2:  Get the Operation that was just created by our aspect
-		Operation op = getLastEntered();
-		assertNotNull("No Neo4J.Find operation data is intercepted",op);
+    public FindOperationCollectionAspectTest() {
+        super();
+    }
 
-		// Step 3:  Validate
-		assertEquals("Invalid operation type", OperationCollectionTypes.FIND_TYPE.type, op.getType());
-		
-		assertEquals("Invalid Label", OperationCollectionTypes.FIND_TYPE.label+"findOne", op.getLabel());
-		
-		assertNotNull("Parameter 'entityClass' does not exists", op.get("entityClass"));
-		assertNotNull("Parameter 'entityId' does not exists", op.get("entityId"));
-	}
+    @Override
+    public OperationCollectionAspectSupport getAspect() {
+        return FindOperationCollectionAspect.aspectOf();
+    }
+
+    @Test
+    public void testRun() throws Exception {
+        // Step 1: Execute test
+        tests.test_Find();
+
+        // Step 2:  Get the Operation that was just created by our aspect
+        Operation op = getLastEntered();
+        assertNotNull("No Neo4J.Find operation data is intercepted", op);
+
+        // Step 3:  Validate
+        assertEquals("Invalid operation type", OperationCollectionTypes.FIND_TYPE.type, op.getType());
+
+        assertEquals("Invalid Label", OperationCollectionTypes.FIND_TYPE.label + "findOne", op.getLabel());
+
+        assertNotNull("Parameter 'entityClass' does not exists", op.get("entityClass"));
+        assertNotNull("Parameter 'entityId' does not exists", op.get("entityId"));
+    }
 }

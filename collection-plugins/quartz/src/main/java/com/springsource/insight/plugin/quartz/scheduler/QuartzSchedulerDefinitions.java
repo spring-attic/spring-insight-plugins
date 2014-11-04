@@ -18,12 +18,12 @@ package com.springsource.insight.plugin.quartz.scheduler;
 import com.springsource.insight.intercept.operation.OperationType;
 
 /**
- * 
+ *
  */
 public final class QuartzSchedulerDefinitions {
     private QuartzSchedulerDefinitions() {
-       	throw new UnsupportedOperationException("No instance allowed");
+        throw new UnsupportedOperationException("No instance allowed");
     }
 
-    public static final OperationType   TYPE=OperationType.valueOf("quartz-scheduler");
+    public static final OperationType TYPE = OperationType.valueOf("quartz-scheduler");
 }

@@ -26,31 +26,31 @@ import org.aspectj.lang.JoinPoint;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public aspect MessageSendOperationCollectionAspect extends MailOperationCollectionSupport {
-    public MessageSendOperationCollectionAspect () {
+    public MessageSendOperationCollectionAspect() {
         super();
     }
 
     public pointcut collectionPoint()
-        : execution(* javax.mail.Transport.sendMessage(..))
-        ;
+            : execution(* javax.mail.Transport.sendMessage(..))
+            ;
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Object[]    args=jp.getArgs();
+        Object[] args = jp.getArgs();
         return createOperation(super.createOperation(jp), (Transport) jp.getTarget(), (Message) args[0], (Address[]) args[1]);
     }
 
-    Operation createOperation (Operation op, Transport transport, Message msg, Address ... recips) {
+    Operation createOperation(Operation op, Transport transport, Message msg, Address... recips) {
         addMessageDetails(op, msg);
         createOperation(op, transport.getURLName());
 
         if (collectExtraInformation()) {
             try {
                 addAddresses(op.createList(MailDefinitions.SEND_SENDERS), msg.getFrom());
-            } catch(MessagingException e) {
+            } catch (MessagingException e) {
                 _logger.warning(e.getClass().getSimpleName() + " while get senders: " + e.getMessage());
             }
 
@@ -61,21 +61,20 @@ public aspect MessageSendOperationCollectionAspect extends MailOperationCollecti
         return op;
     }
 
-    Operation createOperation (Operation op, URLName urlName) {
+    Operation createOperation(Operation op, URLName urlName) {
         String protocol = urlName.getProtocol();
-		op.put(MailDefinitions.SEND_HOST, urlName.getHost())
-          // protocol may return null/empty if some default is assumed 
-          .putAnyNonEmpty(MailDefinitions.SEND_PROTOCOL, protocol);
+        op.put(MailDefinitions.SEND_HOST, urlName.getHost())
+                // protocol may return null/empty if some default is assumed
+                .putAnyNonEmpty(MailDefinitions.SEND_PROTOCOL, protocol);
 
-        final int   port=urlName.getPort();
+        final int port = urlName.getPort();
         if (port > 0) { // non-positive values usually indicate the default
             op.put(MailDefinitions.SEND_PORT, port);
-        }
-        else {
-        	Number defaultValue= MailDefinitions.protocolToPortMap.get(protocol);
-        	if (defaultValue != null) {
-        		op.put(MailDefinitions.SEND_PORT, defaultValue.intValue());
-        	} 
+        } else {
+            Number defaultValue = MailDefinitions.protocolToPortMap.get(protocol);
+            if (defaultValue != null) {
+                op.put(MailDefinitions.SEND_PORT, defaultValue.intValue());
+            }
         }
 
         return op;

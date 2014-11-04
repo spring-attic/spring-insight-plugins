@@ -30,19 +30,20 @@ import com.springsource.insight.util.StringUtil;
 public class TransactionOperationFinalizer implements OperationFinalizer {
 
     private static final TransactionOperationFinalizer INSTANCE = new TransactionOperationFinalizer();
-    
+
     static final int MAX_TX_NAME_LEN = 30;
-    
-    static final List<String> propagationNames=
+
+    static final List<String> propagationNames =
             Collections.unmodifiableList(
                     Arrays.asList("REQUIRED", "SUPPORTS", "MANDATORY",
-                                  "REQUIRES_NEW", "NOT_SUPPORTED", "NEVER",
-                                  "NESTED"));
+                            "REQUIRES_NEW", "NOT_SUPPORTED", "NEVER",
+                            "NESTED"));
 
-    static final String DEFAULT_ISOLATION_LEVEL="DEFAULT";
-    static final Map<Integer,String>    isolationLevels=
-            Collections.unmodifiableMap(new HashMap<Integer,String>() {
+    static final String DEFAULT_ISOLATION_LEVEL = "DEFAULT";
+    static final Map<Integer, String> isolationLevels =
+            Collections.unmodifiableMap(new HashMap<Integer, String>() {
                 private static final long serialVersionUID = 1L;
+
                 {
                     put(Integer.valueOf(Connection.TRANSACTION_NONE), DEFAULT_ISOLATION_LEVEL);
                     put(Integer.valueOf(Connection.TRANSACTION_READ_COMMITTED), "READ_COMMITTED");
@@ -51,67 +52,67 @@ public class TransactionOperationFinalizer implements OperationFinalizer {
                     put(Integer.valueOf(Connection.TRANSACTION_SERIALIZABLE), "SERIALIZABLE");
                 }
             });
+
     public static void register(Operation operation) {
         operation.addFinalizer(INSTANCE);
     }
-    
+
     // convert values to strings
     public void finalize(Operation operation, Map<String, Object> richObjects) {
-        String  level=normalizeIsolation(operation);
+        String level = normalizeIsolation(operation);
         if (level != null) {
             operation.put("isolation", level);
         }
 
-        String  propagation=normalizePropagation(operation);
+        String propagation = normalizePropagation(operation);
         if (propagation != null) {
             operation.put("propagation", propagation);
         }
 
         operation.label(buildLabel(operation));
     }
-    
+
     static String normalizeIsolation(Operation operation) {
-        int 	isolation=operation.getInt("isolation", (-1));
+        int isolation = operation.getInt("isolation", (-1));
         if (isolation < 0) {
-        	return DEFAULT_ISOLATION_LEVEL;	// debug breakpoint
+            return DEFAULT_ISOLATION_LEVEL;    // debug breakpoint
         }
 
-        String  level=isolationLevels.get(Integer.valueOf(isolation));
+        String level = isolationLevels.get(Integer.valueOf(isolation));
         if (StringUtil.isEmpty(level)) {
             return DEFAULT_ISOLATION_LEVEL;
         } else {
-        	return level;
+            return level;
         }
     }
-    
+
     static String normalizePropagation(Operation operation) {
-        int propagation=operation.getInt("propagation", (-1));
+        int propagation = operation.getInt("propagation", (-1));
         if ((propagation >= 0) && (propagation < propagationNames.size())) {
             return propagationNames.get(propagation);
         } else {
-        	return null;
+            return null;
         }
     }
-    
+
     static String buildLabel(Operation operation) {
-        StringBuilder label=new StringBuilder("Transaction");
-        String        name=operation.get("name", String.class);
+        StringBuilder label = new StringBuilder("Transaction");
+        String name = operation.get("name", String.class);
         if (name != null) {
             label.append(": ")
-                 .append(truncateTxName(name, MAX_TX_NAME_LEN));
+                    .append(truncateTxName(name, MAX_TX_NAME_LEN));
         }
 
-        Boolean readOnly=operation.get("readOnly", Boolean.class, Boolean.FALSE);
+        Boolean readOnly = operation.get("readOnly", Boolean.class, Boolean.FALSE);
         if (readOnly.booleanValue()) {
             label.append(" (Read-only)");
-        }
-        else if (TransactionOperationStatus.RolledBack.toString().equals(operation.get("status", String.class))) {
+        } else if (TransactionOperationStatus.RolledBack.toString().equals(operation.get("status", String.class))) {
             label.append(" (Rolled Back)");
         }
 
         return label.toString();
     }
-    
+
     static String truncateTxName(String txName, int maxChars) {
         int packageIdx = StringUtil.indexOfNthCharFromTail(txName, '.', 2);
         if (packageIdx == -1) {

@@ -36,37 +36,42 @@ import com.springsource.insight.intercept.operation.OperationMap;
 
 public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectionAspect {
 
-	public static final String LABEL_PREFIX = "Consumed from queue(s) - ";
-	private static final String CONSUMED_QUEUES = "consumedQueues";
-	
-    public RabbitMQConsumerCollectionAspect () {
+    public static final String LABEL_PREFIX = "Consumed from queue(s) - ";
+    private static final String CONSUMED_QUEUES = "consumedQueues";
+
+    public RabbitMQConsumerCollectionAspect() {
         super(RabbitPluginOperationType.CONSUME);
     }
-    
+
     // use inter-type declaration so that each Consumer 'knows' the list of all queues which it serves as their callback
-    
-    interface HasQueues {}
-    declare parents: com.rabbitmq.client.Consumer extends HasQueues;
-    
+
+    interface HasQueues {
+    }
+    declare parents:com.rabbitmq.client.Consumer extends HasQueues;
+
     private Set<String> HasQueues.__insightQueues = new TreeSet<String>();
-    public void HasQueues.__setInsightQueues(String queue) { this.__insightQueues.add(queue); }
-    public String HasQueues.__getInsightQueues() { return this.__insightQueues.toString(); }
-    
-    String around () : 
-    	execution (public String com.rabbitmq.client.Channel.basicConsume(..)){
-    	Object[] args = thisJoinPoint.getArgs();
-    	String queue = (String) args[0];
-    	Consumer callback = (Consumer) args[args.length -1];
-    	
+    public void HasQueues.__setInsightQueues(String queue) {
+        this.__insightQueues.add(queue);
+    }
+    public String HasQueues.__getInsightQueues() {
+        return this.__insightQueues.toString();
+    }
+
+    String around ():
+            execution (public String com.rabbitmq.client.Channel.basicConsume(..)){
+        Object[] args = thisJoinPoint.getArgs();
+        String queue = (String) args[0];
+        Consumer callback = (Consumer) args[args.length - 1];
+
         String res = proceed();
-        
+
         if (callback instanceof HasQueues) {
-            ((HasQueues)callback).__setInsightQueues(queue);
+            ((HasQueues) callback).__setInsightQueues(queue);
         }
-        
+
         return res;
-    }    
-    
+    }
+
 
     // Holds Operations in progress for a given Channel
     // According to the API, the Channel should only be
@@ -74,24 +79,24 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
     static Map<Channel, Operation> opHolder = new ConcurrentHashMap<Channel, Operation>();
 
     public pointcut handleDelivery(String consumerTag, Envelope envelope, BasicProperties props, byte[] body)
-        : execution(void Consumer+.handleDelivery(String, Envelope, BasicProperties, byte[]))
-       && args(consumerTag, envelope, props, body)
-       && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
-        ;
-    
-    public pointcut basicGet(String queue, boolean ack) 
-        : execution(GetResponse Channel+.basicGet(String, boolean)) 
-       && args(queue, ack)
-       && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
-        ;
+            : execution(void Consumer+.handleDelivery(String, Envelope, BasicProperties, byte[]))
+            && args(consumerTag, envelope, props, body)
+            && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
+            ;
+
+    public pointcut basicGet(String queue, boolean ack)
+            : execution(GetResponse Channel+.basicGet(String, boolean))
+            && args(queue, ack)
+            && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
+            ;
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     before(String queue, boolean ack)
             : basicGet(queue, ack) {
         Channel channel = (Channel) thisJoinPoint.getThis();
-        Operation op = createOperation(thisJoinPoint);        
-        op.put(CONSUMED_QUEUES,  queue);        
-        opHolder.put(channel,op);
+        Operation op = createOperation(thisJoinPoint);
+        op.put(CONSUMED_QUEUES, queue);
+        opHolder.put(channel, op);
         getCollector().enter(op);
     }
 
@@ -102,23 +107,23 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
         Channel channel = (Channel) thisJoinPoint.getThis();
         Connection conn = channel.getConnection();
         Operation op = opHolder.remove(channel);
-        
+
         if (conn != null) {
             applyConnectionData(op, conn);
         }
 
-        BasicProperties	props=resp.getProps();
+        BasicProperties props = resp.getProps();
         if (props != null) {
             applyPropertiesData(op, props);
         }
 
-        Envelope	envelope=resp.getEnvelope();
+        Envelope envelope = resp.getEnvelope();
         if (envelope != null) {
             applyMessageData(op, envelope, resp.getBody());
         }
         getCollector().exitNormal(resp);
     }
-	
+
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after(String queue, boolean ack) throwing(Throwable t)
@@ -145,7 +150,7 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
         if (conn != null) {
             applyConnectionData(op, conn);
             if (consumer instanceof HasQueues) {
-            	op.putAnyNonEmpty(CONSUMED_QUEUES,  ((HasQueues)consumer).__getInsightQueues());
+                op.putAnyNonEmpty(CONSUMED_QUEUES, ((HasQueues) consumer).__getInsightQueues());
             }
         }
         if (props != null) {
@@ -155,21 +160,21 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
             applyMessageData(op, envelope, body);
         }
         getCollector().enter(op);
-        
+
         if (props != null) {
             extractColor(new ExtractColorParams() {
                 public String getColor(String key) {
                     String color = null;
-                    
+
                     if (props != null) {
                         Map<String, Object> headers = props.getHeaders();
-                        
+
                         if (headers != null) {
                             Object obj = headers.get(key);
                             color = obj != null ? obj.toString() : null;
                         }
                     }
-                    
+
                     return color;
                 }
             });
@@ -179,11 +184,11 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after(String consumerTag, Envelope envelope, BasicProperties props, byte[] body) returning()
             : handleDelivery(consumerTag, envelope, props, body) {
-         getCollector().exitNormal();
+        getCollector().exitNormal();
     }
-    
+
     @SuppressAjWarnings({"adviceDidNotMatch"})
-    after(String consumerTag, Envelope envelope, BasicProperties props, byte[] body) throwing(Throwable t) 
+    after(String consumerTag, Envelope envelope, BasicProperties props, byte[] body) throwing(Throwable t)
             : handleDelivery(consumerTag, envelope, props, body) {
         getCollector().exitAbnormal(t);
     }
@@ -195,18 +200,18 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
 
         OperationMap map = op.createMap("envelope");
         String exchangeString = envelope.getExchange();
-		String routingKeyString = envelope.getRoutingKey();
-		map.put("deliveryTag", envelope.getDeliveryTag())
-           .putAnyNonEmpty("exchange", exchangeString)
-           .putAnyNonEmpty("routingKey", routingKeyString)
-           ;
-        
+        String routingKeyString = envelope.getRoutingKey();
+        map.put("deliveryTag", envelope.getDeliveryTag())
+                .putAnyNonEmpty("exchange", exchangeString)
+                .putAnyNonEmpty("routingKey", routingKeyString)
+        ;
+
         op.label(getConsumeOperationLabel(op, exchangeString, routingKeyString));
-        
+
         return op;
     }
-    
+
     private String getConsumeOperationLabel(Operation op, String exchange, String routingKey) {
-		return AbstractRabbitMQResourceAnalyzer.RABBIT + "-" + LABEL_PREFIX +  op.get(CONSUMED_QUEUES) + " ("  + exchange + "#" + routingKey + ")";
-	}
+        return AbstractRabbitMQResourceAnalyzer.RABBIT + "-" + LABEL_PREFIX + op.get(CONSUMED_QUEUES) + " (" + exchange + "#" + routingKey + ")";
+    }
 }

@@ -19,15 +19,16 @@ package com.springsource.insight.plugin.eclipse.persistence;
 import com.springsource.insight.intercept.operation.OperationType;
 
 /**
- * 
+ *
  */
 public final class EclipsePersistenceDefinitions {
     private EclipsePersistenceDefinitions() {
         // no instance
     }
+
     public static final String PLUGIN_NAME = "eclipse-persistence";
-    public static final OperationType TX=OperationType.valueOf(PLUGIN_NAME + "-tx"),
-                                      DB=OperationType.valueOf(PLUGIN_NAME + "-db"),
-                                      QUERY=OperationType.valueOf(PLUGIN_NAME + "-query");
-    public static final String  ACTION_ATTR="action", UNKNOWN_ACTION="unknown";
+    public static final OperationType TX = OperationType.valueOf(PLUGIN_NAME + "-tx"),
+            DB = OperationType.valueOf(PLUGIN_NAME + "-db"),
+            QUERY = OperationType.valueOf(PLUGIN_NAME + "-query");
+    public static final String ACTION_ATTR = "action", UNKNOWN_ACTION = "unknown";
 }

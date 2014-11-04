@@ -17,11 +17,11 @@
 package com.springsource.insight.plugin.eclipse.persistence;
 
 /**
- * 
+ *
  */
 public class DatabaseSessionMetricsGeneratorTest
         extends EclipsePersistenceMetricsGeneratorTestSupport {
-    public DatabaseSessionMetricsGeneratorTest () {
+    public DatabaseSessionMetricsGeneratorTest() {
         super(DatabaseSessionMetricsGenerator.getInstance());
     }
 }

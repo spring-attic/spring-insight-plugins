@@ -23,7 +23,7 @@ import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
 
 /**
- * 
+ *
  */
 public class JdbcDriverExternalResourceAnalyzer extends DatabaseJDBCURIAnalyzer {
     public static final OperationType TYPE = OperationType.valueOf("jdbc-connect");

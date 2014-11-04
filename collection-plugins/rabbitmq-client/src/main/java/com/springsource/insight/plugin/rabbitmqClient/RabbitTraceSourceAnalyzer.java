@@ -19,14 +19,14 @@ import com.springsource.insight.intercept.trace.AbstractTraceSourceAnalyzer;
 import com.springsource.insight.intercept.trace.TraceSource;
 
 public class RabbitTraceSourceAnalyzer extends AbstractTraceSourceAnalyzer {
-	private static final RabbitTraceSourceAnalyzer INSTANCE = new RabbitTraceSourceAnalyzer();
-	
-	private RabbitTraceSourceAnalyzer() {
-		super(TraceSource.MESSAGE_BUS, RabbitPluginOperationType.CONSUME.getOperationType(), 
-				                       RabbitPluginOperationType.PUBLISH.getOperationType());
-	}
-	
-	public static final RabbitTraceSourceAnalyzer getInstance() {
-		return INSTANCE;
-	}
+    private static final RabbitTraceSourceAnalyzer INSTANCE = new RabbitTraceSourceAnalyzer();
+
+    private RabbitTraceSourceAnalyzer() {
+        super(TraceSource.MESSAGE_BUS, RabbitPluginOperationType.CONSUME.getOperationType(),
+                RabbitPluginOperationType.PUBLISH.getOperationType());
+    }
+
+    public static final RabbitTraceSourceAnalyzer getInstance() {
+        return INSTANCE;
+    }
 }

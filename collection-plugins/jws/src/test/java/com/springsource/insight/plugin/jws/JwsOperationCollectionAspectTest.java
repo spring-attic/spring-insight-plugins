@@ -29,13 +29,15 @@ import com.springsource.insight.intercept.operation.OperationList;
 import com.springsource.insight.intercept.operation.OperationMap;
 
 /**
- * 
+ *
  */
 public class JwsOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-    private final JwsServiceInstance    _testService;
+    private final JwsServiceInstance _testService;
+
     public JwsOperationCollectionAspectTest() {
         _testService = new JwsServiceInstance();
     }
+
     /*
      * @see com.springsource.insight.collection.OperationCollectionAspectTestSupport#getAspect()
      */
@@ -45,23 +47,23 @@ public class JwsOperationCollectionAspectTest extends OperationCollectionAspectT
     }
 
     @Test
-    public void testRootPath () {
+    public void testRootPath() {
         runTestJwsService(_testService, JwsServiceDefinitions.NOW_CALL);
     }
 
     @Test
-    public void testYesterdayPath () {
+    public void testYesterdayPath() {
         runTestJwsService(_testService, JwsServiceDefinitions.YESTERDAY_CALL);
     }
 
     @Test
-    public void testTomorrowPath () {
+    public void testTomorrowPath() {
         runTestJwsService(_testService, JwsServiceDefinitions.TOMORROW_CALL);
     }
 
-    private void runTestJwsService (final JwsServiceInstance testService, final String callType) {
-        final Date  expDate, actDate;
-        final long  now=System.currentTimeMillis();
+    private void runTestJwsService(final JwsServiceInstance testService, final String callType) {
+        final Date expDate, actDate;
+        final long now = System.currentTimeMillis();
         if (JwsServiceDefinitions.NOW_CALL.equals(callType)) {
             expDate = testService.getCurrentDate();
             actDate = new Date(now);
@@ -76,10 +78,10 @@ public class JwsOperationCollectionAspectTest extends OperationCollectionAspectT
             return;
         }
 
-        final ArgumentCaptor<Operation> operationCaptor=ArgumentCaptor.forClass(Operation.class);
+        final ArgumentCaptor<Operation> operationCaptor = ArgumentCaptor.forClass(Operation.class);
         Mockito.verify(spiedOperationCollector).enter(operationCaptor.capture());
 
-        final Operation op=operationCaptor.getValue();
+        final Operation op = operationCaptor.getValue();
         assertNotNull("No operation extracted", op);
         assertEquals("Mismatched operation type(s)", JwsDefinitions.TYPE, op.getType());
 
@@ -87,7 +89,7 @@ public class JwsOperationCollectionAspectTest extends OperationCollectionAspectT
             op.finalizeConstruction();
         }
 
-        final long  valsDiff=Math.abs(expDate.getTime() - actDate.getTime());
+        final long valsDiff = Math.abs(expDate.getTime() - actDate.getTime());
         assertTrue("Mismatched call return values", valsDiff < 5000L);
 
         assertServiceInformation(callType, op);
@@ -99,7 +101,7 @@ public class JwsOperationCollectionAspectTest extends OperationCollectionAspectT
         assertWebMethodInformation(callType, op);
     }
 
-    private void assertServiceInformation (final String callType, final Operation op) {
+    private void assertServiceInformation(final String callType, final Operation op) {
         assertOperationValue(callType, op, "name", "name", JwsServiceDefinitions.SERVICE_NAME);
         assertOperationValue(callType, op, "target namespace", "targetNamespace", JwsServiceDefinitions.TARGET_NAMESPACE);
         assertOperationValue(callType, op, "service name", "serviceName", JwsServiceDefinitions.SERVICE_NAME);
@@ -108,29 +110,29 @@ public class JwsOperationCollectionAspectTest extends OperationCollectionAspectT
         assertOperationValue(callType, op, "endpoint", "endpointInterface", JwsServiceDefinitions.ENDPOINT);
     }
 
-    private void assertWebMethodInformation (final String callType, final Operation op) {
+    private void assertWebMethodInformation(final String callType, final Operation op) {
         assertOperationValue(callType, op, "op. name", "operationName", callType + JwsServiceDefinitions.OPERATION_SUFFIX);
         assertOperationValue(callType, op, "op. action", "action", callType + JwsServiceDefinitions.ACTION_SUFFIX);
         assertOperationValue(callType, op, "op. exclude", "exclude", Boolean.valueOf(JwsServiceDefinitions.EXCLUDE_METHOD), Boolean.class);
 
-        final OperationList opList=op.get("webParams", OperationList.class);
+        final OperationList opList = op.get("webParams", OperationList.class);
         assertNotNull(callType + "[Missing path parameters list]", opList);
         assertEquals(callType + "[Unexpected number of path parameters]", 1, opList.size());
         assertWebParams(callType, opList.get(0, OperationMap.class));
     }
 
-    private void assertOperationValue (
+    private void assertOperationValue(
             final String callType, final Operation op, final String valueType, final String key, final String expValue) {
         assertOperationValue(callType, op, valueType, key, expValue, String.class);
     }
 
-    private <T> void assertOperationValue (
+    private <T> void assertOperationValue(
             final String callType, final Operation op, final String valueType,
             final String key, final T expValue, final Class<T> expType) {
         assertEquals(callType + "[Mismatched " + valueType + "]", expValue, op.get(key, expType));
     }
 
-    private void assertWebParams (final String callType, final OperationMap map) {
+    private void assertWebParams(final String callType, final OperationMap map) {
         assertNotNull(callType + "[No web parameters map]", map);
 
         assertMapOperationValue(callType, map, "param name", "name", callType + JwsServiceDefinitions.PARAM_SUFFIX);
@@ -140,13 +142,13 @@ public class JwsOperationCollectionAspectTest extends OperationCollectionAspectT
         assertMapOperationValue(callType, map, "param header", "header", Boolean.valueOf(JwsServiceDefinitions.HEADER_PARAM), Boolean.class);
     }
 
-    private void assertMapOperationValue (
+    private void assertMapOperationValue(
             final String callType, final OperationMap map, final String valueType,
             final String key, final String expValue) {
         assertMapOperationValue(callType, map, valueType, key, expValue, String.class);
     }
 
-    private  <T> void assertMapOperationValue (
+    private <T> void assertMapOperationValue(
             final String callType, final OperationMap map, final String valueType,
             final String key, final T expValue, final Class<T> expType) {
         assertEquals(callType + "[Mismatched " + valueType + "]", expValue, map.get(key, expType));

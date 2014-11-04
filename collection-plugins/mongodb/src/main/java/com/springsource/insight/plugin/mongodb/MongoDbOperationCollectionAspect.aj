@@ -28,31 +28,31 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
 
 public aspect MongoDbOperationCollectionAspect extends AbstractOperationCollectionAspect {
-	public MongoDbOperationCollectionAspect () {
-		super();
-	}
+    public MongoDbOperationCollectionAspect() {
+        super();
+    }
 
     public pointcut collectionPoint(): execution(CommandResult DB.command(..));
 
     @Override
     protected Operation createOperation(final JoinPoint jp) {
         Operation op = new Operation()
-        					.label("MongoDB: DB." + jp.getSignature().getName() + "()")
-        					.type(MongoDBOperationExternalResourceAnalyzer.TYPE)
-        					.sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(jp));
+                .label("MongoDB: DB." + jp.getSignature().getName() + "()")
+                .type(MongoDBOperationExternalResourceAnalyzer.TYPE)
+                .sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(jp));
         OperationList opList = op.createList("args");
 
         List<String> args = MongoArgumentUtils.toString(jp.getArgs());
         for (String arg : args) {
             opList.add(arg);
         }
-        
+
         try {
-        	MongoArgumentUtils.putDatabaseDetails(op, (DB) jp.getTarget());
-		} catch (Exception e) {
-			// ignored
-		}
-        
+            MongoArgumentUtils.putDatabaseDetails(op, (DB) jp.getTarget());
+        } catch (Exception e) {
+            // ignored
+        }
+
         return op;
     }
 
@@ -60,7 +60,7 @@ public aspect MongoDbOperationCollectionAspect extends AbstractOperationCollecti
     public String getPluginName() {
         return MongoDBPluginRuntimeDescriptor.PLUGIN_NAME;
     }
-    
+
     @Override
     public boolean isMetricsGenerator() {
         return true; // This provides an external resource

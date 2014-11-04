@@ -19,16 +19,16 @@ package com.springsource.insight.plugin.springdata;
 import com.springsource.insight.intercept.endpoint.AbstractSingleTypeEndpointAnalyzer;
 
 /**
- * 
+ *
  */
 public class RepositoryMethodEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
-	private static final RepositoryMethodEndPointAnalyzer	INSTANCE=new RepositoryMethodEndPointAnalyzer();
+    private static final RepositoryMethodEndPointAnalyzer INSTANCE = new RepositoryMethodEndPointAnalyzer();
 
-	private RepositoryMethodEndPointAnalyzer() {
-		super(SpringDataDefinitions.REPO_TYPE);
-	}
+    private RepositoryMethodEndPointAnalyzer() {
+        super(SpringDataDefinitions.REPO_TYPE);
+    }
 
-	public static final RepositoryMethodEndPointAnalyzer getInstance() {
-		return INSTANCE;
-	}
+    public static final RepositoryMethodEndPointAnalyzer getInstance() {
+        return INSTANCE;
+    }
 }

@@ -31,9 +31,8 @@ import com.springsource.insight.util.StringFormatterUtils;
 
 /**
  * This enum values reflects all five types of JMS messages
- * 
- * @author shachar
  *
+ * @author shachar
  */
 enum MessageType {
     /**
@@ -45,7 +44,7 @@ enum MessageType {
             return message instanceof BytesMessage;
         }
     },
-    
+
     /**
      * Map body message
      */
@@ -54,12 +53,12 @@ enum MessageType {
         @SuppressWarnings("unchecked")
         public void handleMessage(Message message, Operation op) throws JMSException {
             super.handleMessage(message, op);
-            
+
             OperationMap contentMap = op.createMap(JMSPluginUtils.MESSAGE_CONTENT_MAP);
             MapMessage mapMessage = (MapMessage) message;
-            
-            for(Enumeration<String> entryNameEnum = mapMessage.getMapNames();
-            	(entryNameEnum != null) && entryNameEnum.hasMoreElements();) {
+
+            for (Enumeration<String> entryNameEnum = mapMessage.getMapNames();
+                 (entryNameEnum != null) && entryNameEnum.hasMoreElements(); ) {
                 String entryName = entryNameEnum.nextElement();
                 Object entryValue = mapMessage.getObject(entryName);
                 contentMap.putAnyNonEmpty(entryName, entryValue);
@@ -71,7 +70,7 @@ enum MessageType {
             return message instanceof MapMessage;
         }
     },
-    
+
     /**
      * Object body message
      */
@@ -81,7 +80,7 @@ enum MessageType {
             return message instanceof ObjectMessage;
         }
     },
-    
+
     /**
      * Stream body message
      */
@@ -90,8 +89,8 @@ enum MessageType {
         public boolean isTypeOf(Message message) {
             return message instanceof StreamMessage;
         }
-    }, 
-    
+    },
+
     /**
      * Text body message
      */
@@ -99,9 +98,9 @@ enum MessageType {
         @Override
         public void handleMessage(Message message, Operation op) throws JMSException {
             super.handleMessage(message, op);
-            
-            TextMessage		textMessage=(TextMessage) message;
-            String			content=textMessage.getText();
+
+            TextMessage textMessage = (TextMessage) message;
+            String content = textMessage.getText();
             op.put(JMSPluginUtils.MESSAGE_CONTENT, StringFormatterUtils.formatObjectAndTrim(content));
         }
 
@@ -109,10 +108,10 @@ enum MessageType {
         public boolean isTypeOf(Message message) {
             return message instanceof TextMessage;
         }
-    }, 
-    
+    },
+
     /**
-     * in case the message type isn't one of the above 
+     * in case the message type isn't one of the above
      */
     UNKNOWN {
         @Override
@@ -120,38 +119,38 @@ enum MessageType {
             return false;
         }
     };
-    
+
     /**
      * add message specific data to the operation
-     * 
+     *
      * @param message jms message
-     * @param op insight operation
-     * @throws JMSException 
+     * @param op      insight operation
+     * @throws JMSException
      */
     public void handleMessage(Message message, Operation op) throws JMSException {
         op.put(JMSPluginUtils.MESSAGE_TYPE, name());
     }
-    
+
     /**
      * @param message jms message
-     * @return true if this type matches to the message type 
+     * @return true if this type matches to the message type
      */
     public abstract boolean isTypeOf(Message message);
-    
+
     /**
      * @param message jms message
      * @return the first MessageType where MessageType.isTypeOf(message) returned true
      */
     public static MessageType getType(Message message) {
         MessageType messageType = MessageType.UNKNOWN;
-        
-        for(MessageType type : values()) {
+
+        for (MessageType type : values()) {
             if (type.isTypeOf(message)) {
                 messageType = type;
                 break;
             }
         }
-        
+
         return messageType;
     }
 }

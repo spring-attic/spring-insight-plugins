@@ -22,14 +22,14 @@
 <#if operation.method == "remove">
     <@insight.group label="${operation.label?html}">
         <@insight.entry name="Key" value=operation.key if=operation.key?? />
-        <#--<#if operation.arglen == 2>-->
-            <#--<@insight.entry name="Value" value=operation.value if=operation.value?? />-->
-        <#--</#if>-->
+    <#--<#if operation.arglen == 2>-->
+    <#--<@insight.entry name="Value" value=operation.value if=operation.value?? />-->
+    <#--</#if>-->
     </@insight.group>
 </#if>
 
 <#if operation.exception??>
-	<@insight.group label="Exception Details">
-		<@insight.entry name="Exception" value=operation.exception/>
-	</@insight.group>
+    <@insight.group label="Exception Details">
+        <@insight.entry name="Exception" value=operation.exception/>
+    </@insight.group>
 </#if>

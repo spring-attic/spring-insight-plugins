@@ -21,14 +21,13 @@ import com.springsource.insight.plugin.jdbc.parser.AbstractSqlPatternParser;
  * taken from
  * http://dev.mysql.com/doc/refman/5.0/en/connector-j-reference-configuration
  * -properties.html
- * 
+ * <p/>
  * jdbc:mysql://[host][,failoverhost...][:port]/[database] »
  * [?propertyName1][=propertyValue1][&propertyName2][=propertyValue2]...
- * 
  */
 public class MySqlParser extends AbstractSqlPatternParser {
-	public static final int	DEFAULT_CONNECTION_PORT=3306;
-	public static final String	VENDOR="mysql";
+    public static final int DEFAULT_CONNECTION_PORT = 3306;
+    public static final String VENDOR = "mysql";
 
     public MySqlParser() {
         super(VENDOR, DEFAULT_CONNECTION_PORT, create(VENDOR, "//(.*?)(:(.*))?/(.*?)(\\?.*)??", 1, 3, 4));

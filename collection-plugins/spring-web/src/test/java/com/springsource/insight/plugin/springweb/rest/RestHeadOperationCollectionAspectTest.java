@@ -24,30 +24,30 @@ import org.junit.Test;
 
 
 /**
- * 
+ *
  */
 public class RestHeadOperationCollectionAspectTest extends RestOperationCollectionTestSupport {
-	public RestHeadOperationCollectionAspectTest() {
-		super();
-	}
+    public RestHeadOperationCollectionAspectTest() {
+        super();
+    }
 
-	@Test
-	public void testHeadForHeadersNoArgs() throws Exception {
-		assertRestOperationResult(opsInstance.headForHeaders(new URI(createTestURI("testHeadForHeadersNoArgs"))));
-	}
+    @Test
+    public void testHeadForHeadersNoArgs() throws Exception {
+        assertRestOperationResult(opsInstance.headForHeaders(new URI(createTestURI("testHeadForHeadersNoArgs"))));
+    }
 
-	@Test
-	public void testHeadForHeadersVarArgs() throws Exception {
-		assertRestOperationResult(opsInstance.headForHeaders(createTestURI("testHeadForHeadersNoArgs"), new Date()));
-	}
+    @Test
+    public void testHeadForHeadersVarArgs() throws Exception {
+        assertRestOperationResult(opsInstance.headForHeaders(createTestURI("testHeadForHeadersNoArgs"), new Date()));
+    }
 
-	@Test
-	public void testHeadForHeadersArgsMap() throws Exception {
-		assertRestOperationResult(opsInstance.headForHeaders(createTestURI("testHeadForHeadersArgsMap"), Collections.singletonMap("now", new Date())));
-	}
+    @Test
+    public void testHeadForHeadersArgsMap() throws Exception {
+        assertRestOperationResult(opsInstance.headForHeaders(createTestURI("testHeadForHeadersArgsMap"), Collections.singletonMap("now", new Date())));
+    }
 
-	@Override
-	public RestHeadOperationCollectionAspect getAspect() {
-		return RestHeadOperationCollectionAspect.aspectOf();
-	}
+    @Override
+    public RestHeadOperationCollectionAspect getAspect() {
+        return RestHeadOperationCollectionAspect.aspectOf();
+    }
 }

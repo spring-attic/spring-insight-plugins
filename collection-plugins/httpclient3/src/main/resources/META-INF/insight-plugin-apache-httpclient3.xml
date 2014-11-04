@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:insight="http://www.springframework.org/schema/insight-idk"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:insight="http://www.springframework.org/schema/insight-idk"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
-	<insight:plugin name="apache-httpclient3" version="${project.version}" publisher="SpringSource" />
+    <insight:plugin name="apache-httpclient3" version="${project.version}" publisher="SpringSource"/>
 
-	<insight:operation-view operation="apache-hc3" template="com/springsource/insight/plugin/apache/http/hc3/hc3.ftl"/>
-	
-	<insight:operation-group group="Web" operation="apache-hc3" />
+    <insight:operation-view operation="apache-hc3" template="com/springsource/insight/plugin/apache/http/hc3/hc3.ftl"/>
+
+    <insight:operation-group group="Web" operation="apache-hc3"/>
 
     <bean id="hc3HttpStatusTraceErrorAnalyzer"
-          class="com.springsource.insight.plugin.apache.http.hc3.HttpStatusTraceErrorAnalyzer" 
+          class="com.springsource.insight.plugin.apache.http.hc3.HttpStatusTraceErrorAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
-    
+            />
+
     <bean id="hc3HttpExternalResourceAnalyzer"
           class="com.springsource.insight.plugin.apache.http.hc3.HttpExternalResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
 
     <bean id="hc3PluginRuntimeDescriptor"
           class="com.springsource.insight.plugin.apache.http.hc3.HC3PluginRuntimeDescriptor"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
 
 </beans>

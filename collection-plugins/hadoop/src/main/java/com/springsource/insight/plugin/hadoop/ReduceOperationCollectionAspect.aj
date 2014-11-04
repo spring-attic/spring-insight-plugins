@@ -30,18 +30,18 @@ public privileged aspect ReduceOperationCollectionAspect extends AbstractOperati
         super();
     }
 
-    public pointcut collectionPoint() : execution(public void org.apache.hadoop.mapred.Reducer+.reduce(..)) ||
-    									execution(protected void org.apache.hadoop.mapreduce.Reducer+.reduce(..));
+    public pointcut collectionPoint(): execution(public void org.apache.hadoop.mapred.Reducer+.reduce(..)) ||
+            execution(protected void org.apache.hadoop.mapreduce.Reducer+.reduce(..));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-    	Object[] args = jp.getArgs();
-    	
-		Operation operation = new Operation().type(OperationCollectionTypes.REDUCE_TYPE.type)
-    						.label(OperationCollectionTypes.REDUCE_TYPE.label)
-    						.sourceCodeLocation(getSourceCodeLocation(jp));
+        Object[] args = jp.getArgs();
 
-		operation.putAnyNonEmpty("key", args[0].toString());
+        Operation operation = new Operation().type(OperationCollectionTypes.REDUCE_TYPE.type)
+                .label(OperationCollectionTypes.REDUCE_TYPE.label)
+                .sourceCodeLocation(getSourceCodeLocation(jp));
+
+        operation.putAnyNonEmpty("key", args[0].toString());
 		
 		/*Iterator<?> values;
 		if (args[1] instanceof Iterable) {
@@ -58,11 +58,11 @@ public privileged aspect ReduceOperationCollectionAspect extends AbstractOperati
 			}
 		}*/
 
-		return operation;
+        return operation;
     }
-    
-	@Override
+
+    @Override
     public String getPluginName() {
-		return HadoopPluginRuntimeDescriptor.PLUGIN_NAME;
-	}
+        return HadoopPluginRuntimeDescriptor.PLUGIN_NAME;
+    }
 }

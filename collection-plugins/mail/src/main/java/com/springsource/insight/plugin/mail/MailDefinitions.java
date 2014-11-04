@@ -23,40 +23,39 @@ import java.util.TreeMap;
 import com.springsource.insight.intercept.operation.OperationType;
 
 /**
- * 
+ *
  */
 public final class MailDefinitions {
-	private MailDefinitions() {
-		// no instance
-	}
+    private MailDefinitions() {
+        // no instance
+    }
 
-	public static final OperationType   SEND_OPERATION=OperationType.valueOf("javax.mail.send");
-	// useful operation attributes
-	public static final String  SEND_PROTOCOL="protocol",
-								SEND_HOST="host",
-								SEND_PORT="port",
-								SEND_DETAILS="details",
-								SEND_SUBJECT="subject",
-								SEND_DATE="date",
-								SEND_SENDERS="senders",
-								SEND_RECIPS="recipients",
-								RECIP_TYPE="type",
-								RECIP_VALUE="value";
+    public static final OperationType SEND_OPERATION = OperationType.valueOf("javax.mail.send");
+    // useful operation attributes
+    public static final String SEND_PROTOCOL = "protocol",
+            SEND_HOST = "host",
+            SEND_PORT = "port",
+            SEND_DETAILS = "details",
+            SEND_SUBJECT = "subject",
+            SEND_DATE = "date",
+            SEND_SENDERS = "senders",
+            SEND_RECIPS = "recipients",
+            RECIP_TYPE = "type",
+            RECIP_VALUE = "value";
 
-	public static final Map<String, Integer> protocolToPortMap = 
-		Collections.unmodifiableMap(new TreeMap<String, Integer>(String.CASE_INSENSITIVE_ORDER)
-				{
-                    private static final long serialVersionUID = 1L;
+    public static final Map<String, Integer> protocolToPortMap =
+            Collections.unmodifiableMap(new TreeMap<String, Integer>(String.CASE_INSENSITIVE_ORDER) {
+                                            private static final long serialVersionUID = 1L;
 
-                    {
-						put("SMTP", Integer.valueOf(25));
-						put("IMAP4", Integer.valueOf(143));
-						put("POP3", Integer.valueOf(110));
-					}
-				}
-		);
-	
-	public static final long getSendDate (Date date) {
-		return (date == null) ? (-1L) : date.getTime();
-	}
+                                            {
+                                                put("SMTP", Integer.valueOf(25));
+                                                put("IMAP4", Integer.valueOf(143));
+                                                put("POP3", Integer.valueOf(110));
+                                            }
+                                        }
+            );
+
+    public static final long getSendDate(Date date) {
+        return (date == null) ? (-1L) : date.getTime();
+    }
 }

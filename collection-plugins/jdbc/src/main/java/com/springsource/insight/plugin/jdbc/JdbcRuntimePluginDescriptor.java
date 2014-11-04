@@ -24,23 +24,24 @@ import com.springsource.insight.util.ArrayUtil;
 
 public class JdbcRuntimePluginDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "jdbc";
-    private static final JdbcRuntimePluginDescriptor	INSTANCE=new JdbcRuntimePluginDescriptor();
-    private static final List<? extends ExternalResourceAnalyzer>	extResAnalyzers=
-       		ArrayUtil.asUnmodifiableList(JdbcDriverExternalResourceAnalyzer.getInstance(),
-       				JdbcOperationExternalResourceAnalyzer.getInstance());
-    private JdbcRuntimePluginDescriptor () {
-    	super();
+    private static final JdbcRuntimePluginDescriptor INSTANCE = new JdbcRuntimePluginDescriptor();
+    private static final List<? extends ExternalResourceAnalyzer> extResAnalyzers =
+            ArrayUtil.asUnmodifiableList(JdbcDriverExternalResourceAnalyzer.getInstance(),
+                    JdbcOperationExternalResourceAnalyzer.getInstance());
+
+    private JdbcRuntimePluginDescriptor() {
+        super();
     }
-    
+
     public static final JdbcRuntimePluginDescriptor getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override
     public Collection<? extends ExternalResourceAnalyzer> getExternalResourceAnalyzers() {
-    	return extResAnalyzers;
+        return extResAnalyzers;
     }
-    
+
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;

@@ -18,22 +18,22 @@ package com.springsource.insight.plugin.apache.http.hc4;
 import com.springsource.insight.intercept.operation.OperationType;
 
 /**
- * 
+ *
  */
 public final class HttpClientDefinitions {
     private HttpClientDefinitions() {
         // no instance
     }
 
-    public static final OperationType   TYPE=OperationType.valueOf("apache-hc4");
+    public static final OperationType TYPE = OperationType.valueOf("apache-hc4");
     /**
      * Special HTTP method name used as placeholder in operations where the
      * <I>HttpRequest</I> value was <code>null</code>
      */
-    public static final String  PLACEHOLDER_METHOD_NAME="<PLACEHOLDER>";
+    public static final String PLACEHOLDER_METHOD_NAME = "<PLACEHOLDER>";
     /**
      * Special HTTP method URI value used as placeholder in operations where the
      * <I>HttpRequest</I> value was <code>null</code>
      */
-    public static final String  PLACEHOLDER_URI_VALUE="http://127.0.0.1/placeholder";
+    public static final String PLACEHOLDER_URI_VALUE = "http://127.0.0.1/placeholder";
 }

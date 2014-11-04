@@ -38,126 +38,127 @@ import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.util.system.net.NetworkAddressUtil;
 
 /**
- * 
+ *
  */
 public class MessageSendOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-	/*
-	 * NOTE: we use a port other than the default for SMTP (25) to avoid conflicts
-	 *  with any running services on the build environment
-	 */
-	private static final int    TEST_PORT=7365;
-	private static SMTPServer   SERVER;
+    /*
+     * NOTE: we use a port other than the default for SMTP (25) to avoid conflicts
+     *  with any running services on the build environment
+     */
+    private static final int TEST_PORT = 7365;
+    private static SMTPServer SERVER;
 
-	@BeforeClass
-	public static void startEmbeddedServer () {
-		assertNull("Server already initialized", SERVER);
-		SERVER = new SMTPServer(new SimpleMessageListenerAdapter(SmtpServerListener.INSTANCE));
-		SERVER.setHostName("localhost");
-		SERVER.setPort(TEST_PORT);
-		SERVER.start();
-		System.out.println("Started embedded server on port " + SERVER.getPort());
-	}
+    @BeforeClass
+    public static void startEmbeddedServer() {
+        assertNull("Server already initialized", SERVER);
+        SERVER = new SMTPServer(new SimpleMessageListenerAdapter(SmtpServerListener.INSTANCE));
+        SERVER.setHostName("localhost");
+        SERVER.setPort(TEST_PORT);
+        SERVER.start();
+        System.out.println("Started embedded server on port " + SERVER.getPort());
+    }
 
-	@AfterClass
-	public static void stopEmbeddedServer () {
-		if (SERVER != null) {
-			SERVER.stop();
-			System.out.println("Stopped embedded server on port " + SERVER.getPort());
-			SERVER = null;
-		}
-	}
+    @AfterClass
+    public static void stopEmbeddedServer() {
+        if (SERVER != null) {
+            SERVER.stop();
+            System.out.println("Stopped embedded server on port " + SERVER.getPort());
+            SERVER = null;
+        }
+    }
 
-	// cant test this because the transport will actually use the 25 port which will raise an exception
-	//@Test
-	public void testSendMessageWithDefaultPort(){
-		testSendMessage(-1);
-	}
+    // cant test this because the transport will actually use the 25 port which will raise an exception
+    //@Test
+    public void testSendMessageWithDefaultPort() {
+        testSendMessage(-1);
+    }
 
-	@Test
-	public void testSendMessageWithPort(){
-		testSendMessage(TEST_PORT);
-	}
+    @Test
+    public void testSendMessageWithPort() {
+        testSendMessage(TEST_PORT);
+    }
 
-	private void testSendMessage (int port) {
-		JavaMailSenderImpl  sender=new JavaMailSenderImpl();
-		sender.setHost(NetworkAddressUtil.LOOPBACK_ADDRESS);
-		sender.setProtocol(JavaMailSenderImpl.DEFAULT_PROTOCOL);
-		sender.setPort(port);
+    private void testSendMessage(int port) {
+        JavaMailSenderImpl sender = new JavaMailSenderImpl();
+        sender.setHost(NetworkAddressUtil.LOOPBACK_ADDRESS);
+        sender.setProtocol(JavaMailSenderImpl.DEFAULT_PROTOCOL);
+        sender.setPort(port);
 
-		SimpleMailMessage   message=new SimpleMailMessage();
-		message.setFrom("from@com.springsource.insight.plugin.mail");
-		message.setTo("to@com.springsource.insight.plugin.mail");
-		message.setCc("cc@com.springsource.insight.plugin.mail");
-		message.setBcc("bcc@com.springsource.insight.plugin.mail");
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("from@com.springsource.insight.plugin.mail");
+        message.setTo("to@com.springsource.insight.plugin.mail");
+        message.setCc("cc@com.springsource.insight.plugin.mail");
+        message.setBcc("bcc@com.springsource.insight.plugin.mail");
 
-		Date    now=new Date(System.currentTimeMillis());
-		message.setSentDate(now);
-		message.setSubject(now.toString());
-		message.setText("Test at " + now.toString());
-		sender.send(message);
+        Date now = new Date(System.currentTimeMillis());
+        message.setSentDate(now);
+        message.setSubject(now.toString());
+        message.setText("Test at " + now.toString());
+        sender.send(message);
 
-		Operation op = getLastEntered();
-		assertNotNull("No operation extracted", op);
-		assertEquals("Mismatched operation type", MailDefinitions.SEND_OPERATION, op.getType());
-		assertEquals("Mismatched protocol", sender.getProtocol(), op.get(MailDefinitions.SEND_PROTOCOL, String.class));
-		assertEquals("Mismatched host", sender.getHost(), op.get(MailDefinitions.SEND_HOST, String.class));
-		if (port == -1) {
-			assertEquals("Mismatched default port", 25, op.getInt(MailDefinitions.SEND_PORT, (-1)));
-		} else {
-			assertEquals("Mismatched send port", sender.getPort(), op.getInt(MailDefinitions.SEND_PORT, (-1)));
-		}
+        Operation op = getLastEntered();
+        assertNotNull("No operation extracted", op);
+        assertEquals("Mismatched operation type", MailDefinitions.SEND_OPERATION, op.getType());
+        assertEquals("Mismatched protocol", sender.getProtocol(), op.get(MailDefinitions.SEND_PROTOCOL, String.class));
+        assertEquals("Mismatched host", sender.getHost(), op.get(MailDefinitions.SEND_HOST, String.class));
+        if (port == -1) {
+            assertEquals("Mismatched default port", 25, op.getInt(MailDefinitions.SEND_PORT, (-1)));
+        } else {
+            assertEquals("Mismatched send port", sender.getPort(), op.getInt(MailDefinitions.SEND_PORT, (-1)));
+        }
 
-		if (getAspect().collectExtraInformation()) {
-			assertAddresses(op, MailDefinitions.SEND_SENDERS, 1);
-			assertAddresses(op, MailDefinitions.SEND_RECIPS, 3);
+        if (getAspect().collectExtraInformation()) {
+            assertAddresses(op, MailDefinitions.SEND_SENDERS, 1);
+            assertAddresses(op, MailDefinitions.SEND_RECIPS, 3);
 
-			OperationMap    details=op.get(MailDefinitions.SEND_DETAILS, OperationMap.class);
-			assertNotNull("No details extracted", details);
-			assertEquals("Mismatched subject", message.getSubject(), details.get(MailDefinitions.SEND_SUBJECT, String.class));
-		}
-	}
+            OperationMap details = op.get(MailDefinitions.SEND_DETAILS, OperationMap.class);
+            assertNotNull("No details extracted", details);
+            assertEquals("Mismatched subject", message.getSubject(), details.get(MailDefinitions.SEND_SUBJECT, String.class));
+        }
+    }
 
-	private void assertAddresses (Operation op, String type, int expectedSize) {
-		OperationList   list=op.get(type, OperationList.class);
-		assertNotNull("No addresses of type=" + type, list);
-		assertEquals("Mismatched number of " + type + " addresses", expectedSize, list.size());
+    private void assertAddresses(Operation op, String type, int expectedSize) {
+        OperationList list = op.get(type, OperationList.class);
+        assertNotNull("No addresses of type=" + type, list);
+        assertEquals("Mismatched number of " + type + " addresses", expectedSize, list.size());
 
-		for (int    index=0; index < list.size(); index++) {
-			OperationMap    addrEntry=list.get(index, OperationMap.class);
-			assertNotNull("Missing " + type + " entry #" + index, addrEntry);
+        for (int index = 0; index < list.size(); index++) {
+            OperationMap addrEntry = list.get(index, OperationMap.class);
+            assertNotNull("Missing " + type + " entry #" + index, addrEntry);
 
-			String  typeValue=addrEntry.get("type", String.class),
-			addrValue=addrEntry.get("value", String.class);
-			assertEquals("Mismatched " + type + " type for entry #" + index, "rfc822", typeValue);
-			assertNotNull("No " + type + " value for entry #" + index, addrValue);
+            String typeValue = addrEntry.get("type", String.class),
+                    addrValue = addrEntry.get("value", String.class);
+            assertEquals("Mismatched " + type + " type for entry #" + index, "rfc822", typeValue);
+            assertNotNull("No " + type + " value for entry #" + index, addrValue);
 
-			int     domainIndex=addrValue.lastIndexOf('@');
-			String  domain=addrValue.substring(domainIndex);
-			assertEquals("Mismatched " + type + "domain for entry #" + index,
-					"@com.springsource.insight.plugin.mail", domain);
-		}
-	}
+            int domainIndex = addrValue.lastIndexOf('@');
+            String domain = addrValue.substring(domainIndex);
+            assertEquals("Mismatched " + type + "domain for entry #" + index,
+                    "@com.springsource.insight.plugin.mail", domain);
+        }
+    }
 
-	@Override
-	public MessageSendOperationCollectionAspect getAspect() {
-		return MessageSendOperationCollectionAspect.aspectOf();
-	}
+    @Override
+    public MessageSendOperationCollectionAspect getAspect() {
+        return MessageSendOperationCollectionAspect.aspectOf();
+    }
 
-	static class SmtpServerListener implements SimpleMessageListener {
-		static final SmtpServerListener INSTANCE=new SmtpServerListener();
-		private SmtpServerListener () {
-			super();
-		}
+    static class SmtpServerListener implements SimpleMessageListener {
+        static final SmtpServerListener INSTANCE = new SmtpServerListener();
 
-		public boolean accept(String from, String recipient) {
-			return ((from != null) && (from.length() > 0))
-			|| ((recipient != null) && (recipient.length() > 0))
-			;
-		}
+        private SmtpServerListener() {
+            super();
+        }
 
-		public void deliver(String from, String recipient, InputStream data)
-		throws TooMuchDataException, IOException {
-			assertTrue("Bad data copied", IOUtils.copy(data, NullOutputStream.NULL_OUTPUT_STREAM) > 0);
-		}
-	}
+        public boolean accept(String from, String recipient) {
+            return ((from != null) && (from.length() > 0))
+                    || ((recipient != null) && (recipient.length() > 0))
+                    ;
+        }
+
+        public void deliver(String from, String recipient, InputStream data)
+                throws TooMuchDataException, IOException {
+            assertTrue("Bad data copied", IOUtils.copy(data, NullOutputStream.NULL_OUTPUT_STREAM) > 0);
+        }
+    }
 }

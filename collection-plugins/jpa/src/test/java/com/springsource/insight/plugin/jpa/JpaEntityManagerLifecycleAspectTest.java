@@ -25,7 +25,7 @@ import com.springsource.insight.intercept.operation.Operation;
 
 
 /**
- * 
+ *
  */
 public class JpaEntityManagerLifecycleAspectTest
         extends JpaEntityManagerCollectionTestSupport {
@@ -35,9 +35,9 @@ public class JpaEntityManagerLifecycleAspectTest
     }
 
     @Test
-    public void testLifecyleActions () {
+    public void testLifecyleActions() {
         for (LifecycleAction action : LifecycleAction.values()) {
-            String  testName="testLifecyleActions(" + action + ")";
+            String testName = "testLifecyleActions(" + action + ")";
             action.executeAction(entityManager);
             assertManagerOperation(testName, action.getActionName());
             Mockito.reset(spiedOperationCollector); // prepare for next iteration
@@ -49,44 +49,44 @@ public class JpaEntityManagerLifecycleAspectTest
         return JpaEntityManagerLifecycleAspect.aspectOf();
     }
 
-    protected Operation assertManagerOperation (String testName, String action) {
+    protected Operation assertManagerOperation(String testName, String action) {
         return assertManagerOperation(testName, action, JpaDefinitions.LIFECYCLE_GROUP);
     }
 
     static enum LifecycleAction {
         FLUSH {
             @Override
-            public void executeAction (EntityManager em) {
+            public void executeAction(EntityManager em) {
                 em.flush();
             }
         },
         CLEAR {
             @Override
-            public void executeAction (EntityManager em) {
+            public void executeAction(EntityManager em) {
                 em.clear();
             }
         },
         JOIN {
             @Override
-            public void executeAction (EntityManager em) {
+            public void executeAction(EntityManager em) {
                 em.joinTransaction();
             }
-            
+
             @Override
-            public String getActionName () {
+            public String getActionName() {
                 return "joinTransaction";
             }
         },
         CLOSE {
             @Override
-            public void executeAction (EntityManager em) {
+            public void executeAction(EntityManager em) {
                 em.close();
             }
         };
-        
-        public abstract void executeAction (EntityManager em);
 
-        public String getActionName () {
+        public abstract void executeAction(EntityManager em);
+
+        public String getActionName() {
             return name().toLowerCase();
         }
     }

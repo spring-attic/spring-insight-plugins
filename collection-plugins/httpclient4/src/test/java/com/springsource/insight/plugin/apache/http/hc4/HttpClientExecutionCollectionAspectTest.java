@@ -76,18 +76,18 @@ import com.springsource.insight.util.StringUtil;
  * Jetty server
  */
 public class HttpClientExecutionCollectionAspectTest extends OperationCollectionAspectTestSupport {
-    private static final int    TEST_PORT=7365;
-    private static final String TEST_URI="http://localhost:" + TEST_PORT + "/";
-    private static Server    SERVER;
-    private HttpObfuscator	originalObfuscator;
-    private final ObscuredValueSetMarker	marker=new ObscuredValueSetMarker();
+    private static final int TEST_PORT = 7365;
+    private static final String TEST_URI = "http://localhost:" + TEST_PORT + "/";
+    private static Server SERVER;
+    private HttpObfuscator originalObfuscator;
+    private final ObscuredValueSetMarker marker = new ObscuredValueSetMarker();
 
     public HttpClientExecutionCollectionAspectTest() {
         super();
     }
 
     @BeforeClass
-    public static void startEmbeddedServer () throws Exception {
+    public static void startEmbeddedServer() throws Exception {
         SERVER = new Server(TEST_PORT);
         SERVER.setHandler(new TestHandler());
         System.out.println("Starting embedded server on port " + TEST_PORT);
@@ -96,9 +96,8 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
     }
 
     @AfterClass
-    public static void stopEmbeddedServer () throws Exception {
-        if (SERVER != null)
-        {
+    public static void stopEmbeddedServer() throws Exception {
+        if (SERVER != null) {
             System.out.println("Stopping embedded server");
             SERVER.stop();
             System.out.println("Server stopped");
@@ -108,74 +107,70 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
     @Before
     @Override
     public void setUp() {
-    	super.setUp();
-    	
-    	HttpClientExecutionCollectionAspect	aspectInstance=getAspect();
-    	originalObfuscator = aspectInstance.getHttpHeadersObfuscator();
-    	marker.clear();
-    	aspectInstance.setHttpHeadersObfuscator(new HttpObfuscator(marker));
+        super.setUp();
+
+        HttpClientExecutionCollectionAspect aspectInstance = getAspect();
+        originalObfuscator = aspectInstance.getHttpHeadersObfuscator();
+        marker.clear();
+        aspectInstance.setHttpHeadersObfuscator(new HttpObfuscator(marker));
     }
 
     @After
     @Override
     public void restore() {
-    	HttpClientExecutionCollectionAspect	aspectInstance=getAspect();
-    	aspectInstance.setHttpHeadersObfuscator(originalObfuscator);
-    	marker.clear();
-    	super.restore();
+        HttpClientExecutionCollectionAspect aspectInstance = getAspect();
+        aspectInstance.setHttpHeadersObfuscator(originalObfuscator);
+        marker.clear();
+        super.restore();
     }
 
     @Test
-    public void testHttpUriRequest () throws IOException {
+    public void testHttpUriRequest() throws IOException {
         runHttpUriRequestTest("testHttpUriRequest", null);
     }
 
     @Test
-    public void testHttpUriRequestWithContext () throws IOException {
+    public void testHttpUriRequestWithContext() throws IOException {
         runHttpUriRequestTest("testHttpUriRequestWithContext", new BasicHttpContext());
     }
 
     @Test
-    public void testHttpHostUriRequest () throws Exception {
+    public void testHttpHostUriRequest() throws Exception {
         runHttpHostRequestTest("testHttpHostUriRequest", null);
     }
 
     @Test
-    public void testHttpHostUriRequestWithContext () throws Exception {
+    public void testHttpHostUriRequestWithContext() throws Exception {
         runHttpHostRequestTest("testHttpHostUriRequestWithContext", new BasicHttpContext());
     }
 
     @Test
-    public void testResponseHandler () throws IOException
-    {
+    public void testResponseHandler() throws IOException {
         runResponseHandlerTest("testResponseHandler", null);
     }
 
     @Test
-    public void testResponseHandlerWithContext () throws IOException
-    {
+    public void testResponseHandlerWithContext() throws IOException {
         runResponseHandlerTest("testResponseHandlerWithContext", new BasicHttpContext());
     }
 
     @Test
-    public void testHostResponseHandler () throws Exception
-    {
+    public void testHostResponseHandler() throws Exception {
         runHostResponseHandlerTest("testHostResponseHandler", null);
     }
 
     @Test
-    public void testHostResponseHandlerWithContext () throws Exception
-    {
+    public void testHostResponseHandlerWithContext() throws Exception {
         runHostResponseHandlerTest("testHostResponseHandlerWithContext", new BasicHttpContext());
     }
 
     @Test
-    public void testDefaultObfuscatedHeaders () throws Exception {
+    public void testDefaultObfuscatedHeaders() throws Exception {
         runHeadersObfuscationTest("testDefaultObfuscatedHeaders", HttpObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST, true);
     }
 
     @Test
-    public void testNonDefaultObfuscatedHeaders () throws Exception {
+    public void testNonDefaultObfuscatedHeaders() throws Exception {
         runHeadersObfuscationTest("testNonDefaultObfuscatedHeaders", Arrays.asList("X-Hdr1", "X-Hdr2", "X-Hdr3"), false);
     }
 
@@ -186,202 +181,198 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
      * instead of {@link IllegalStateException} as it should have
      */
     @Test
-    public void testMissingRequestArgument () throws IOException, ClientProtocolException {
-        HttpClient  httpClient=new DefaultHttpClient();
+    public void testMissingRequestArgument() throws IOException, ClientProtocolException {
+        HttpClient httpClient = new DefaultHttpClient();
         for (MissingRequestTestRunner runner : MissingRequestTestRunner.values()) {
-            String  excValue=null;
+            String excValue = null;
             try {
-                HttpResponse    rsp=runner.execute(httpClient);
+                HttpResponse rsp = runner.execute(httpClient);
                 fail("Unexpected sucess of " + runner + ": " + rsp);
-            } catch(IllegalArgumentException e) {
+            } catch (IllegalArgumentException e) {
                 // expected - thrown by HttpClient when null request supplied
                 excValue = StringFormatterUtils.formatStackTrace(e);
             }
-            
-            Operation   op=assertExecutionResult(HttpClientDefinitions.PLACEHOLDER_URI_VALUE,
-                                                 HttpPlaceholderRequest.PLACEHOLDER,
-                                                 null, true);
+
+            Operation op = assertExecutionResult(HttpClientDefinitions.PLACEHOLDER_URI_VALUE,
+                    HttpPlaceholderRequest.PLACEHOLDER,
+                    null, true);
             assertEquals("Mismatched exception value for " + runner,
                     excValue,
                     op.get(OperationFields.EXCEPTION, String.class));
             Mockito.reset(spiedOperationCollector); // prepare for next iteration
         }
     }
-    
+
     static enum MissingRequestTestRunner {
         REQONLY {
-                @Override
-                public HttpResponse execute (HttpClient httpClient) throws IOException, ClientProtocolException {
-                    return httpClient.execute(null);
-                }
-            },
+            @Override
+            public HttpResponse execute(HttpClient httpClient) throws IOException, ClientProtocolException {
+                return httpClient.execute(null);
+            }
+        },
         REQANDCONTEXT {
-                @Override
-                public HttpResponse execute (HttpClient httpClient) throws IOException, ClientProtocolException {
-                    return httpClient.execute(null, Mockito.mock(HttpContext.class));
-                }
-            },
+            @Override
+            public HttpResponse execute(HttpClient httpClient) throws IOException, ClientProtocolException {
+                return httpClient.execute(null, Mockito.mock(HttpContext.class));
+            }
+        },
         HOSTANDREQ {
-                @Override
-                public HttpResponse execute (HttpClient httpClient) throws IOException, ClientProtocolException {
-                    return httpClient.execute(new HttpHost("localhost", TEST_PORT, "http"), null);
-                }
-            },
+            @Override
+            public HttpResponse execute(HttpClient httpClient) throws IOException, ClientProtocolException {
+                return httpClient.execute(new HttpHost("localhost", TEST_PORT, "http"), null);
+            }
+        },
         HOSTREQCONTEXT {
-                @Override
-                public HttpResponse execute (HttpClient httpClient) throws IOException, ClientProtocolException {
-                    return httpClient.execute(new HttpHost("localhost", TEST_PORT, "http"), null, Mockito.mock(HttpContext.class));
-                }
-            };
-        
-        public abstract HttpResponse execute (HttpClient httpClient) throws IOException, ClientProtocolException;
+            @Override
+            public HttpResponse execute(HttpClient httpClient) throws IOException, ClientProtocolException {
+                return httpClient.execute(new HttpHost("localhost", TEST_PORT, "http"), null, Mockito.mock(HttpContext.class));
+            }
+        };
+
+        public abstract HttpResponse execute(HttpClient httpClient) throws IOException, ClientProtocolException;
     }
 
-    private Map<String,String> runHeadersObfuscationTest (String testName, Collection<String> headerSet, boolean defaultHeaders) throws IOException {
-        HttpClient  httpClient=new DefaultHttpClient();
-        String      uri=createTestUri(testName);
-        HttpGet     request=new HttpGet(uri);
+    private Map<String, String> runHeadersObfuscationTest(String testName, Collection<String> headerSet, boolean defaultHeaders) throws IOException {
+        HttpClient httpClient = new DefaultHttpClient();
+        String uri = createTestUri(testName);
+        HttpGet request = new HttpGet(uri);
         for (String name : headerSet) {
-			if ("WWW-Authenticate".equalsIgnoreCase(name)) {
-				continue;	// this is a response header
-			}
-			request.setHeader(name, name);
+            if ("WWW-Authenticate".equalsIgnoreCase(name)) {
+                continue;    // this is a response header
+            }
+            request.setHeader(name, name);
         }
 
-    	HttpClientExecutionCollectionAspect	aspectInstance=getAspect();
-    	HttpObfuscator				obfuscator=aspectInstance.getHttpHeadersObfuscator();
-    	if (!defaultHeaders) {
-    		for (String name : HttpObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST) {
-    			if ("WWW-Authenticate".equalsIgnoreCase(name)) {
-    				continue;	// this is a response header
-    			}
-    			request.setHeader(name, name);
-    		}
-    		obfuscator.incrementalUpdate(HttpObfuscator.OBFUSCATED_HEADERS_SETTING, StringUtil.implode(headerSet, ","));
-    	}
+        HttpClientExecutionCollectionAspect aspectInstance = getAspect();
+        HttpObfuscator obfuscator = aspectInstance.getHttpHeadersObfuscator();
+        if (!defaultHeaders) {
+            for (String name : HttpObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST) {
+                if ("WWW-Authenticate".equalsIgnoreCase(name)) {
+                    continue;    // this is a response header
+                }
+                request.setHeader(name, name);
+            }
+            obfuscator.incrementalUpdate(HttpObfuscator.OBFUSCATED_HEADERS_SETTING, StringUtil.implode(headerSet, ","));
+        }
 
-        HttpResponse        response=httpClient.execute(request);
-        Operation           op=assertExecutionResult(uri, request, response, false);
-        OperationMap        reqDetails=op.get("request", OperationMap.class);
-        OperationList       reqHeaders=reqDetails.get("headers", OperationList.class);
-        Map<String,String>  requestHeaders=toHeadersMap(reqHeaders);
-        OperationMap        rspDetails=op.get("response", OperationMap.class);
-        OperationList       rspHeaders=rspDetails.get("headers", OperationList.class);
-        Map<String,String>  responseHeaders=toHeadersMap(rspHeaders);
-        Map<String,String>	hdrsMap=new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+        HttpResponse response = httpClient.execute(request);
+        Operation op = assertExecutionResult(uri, request, response, false);
+        OperationMap reqDetails = op.get("request", OperationMap.class);
+        OperationList reqHeaders = reqDetails.get("headers", OperationList.class);
+        Map<String, String> requestHeaders = toHeadersMap(reqHeaders);
+        OperationMap rspDetails = op.get("response", OperationMap.class);
+        OperationList rspHeaders = rspDetails.get("headers", OperationList.class);
+        Map<String, String> responseHeaders = toHeadersMap(rspHeaders);
+        Map<String, String> hdrsMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
         if (MapUtil.size(requestHeaders) > 0) {
-        	hdrsMap.putAll(requestHeaders);
+            hdrsMap.putAll(requestHeaders);
         }
         if (MapUtil.size(responseHeaders) > 0) {
-        	hdrsMap.putAll(responseHeaders);
+            hdrsMap.putAll(responseHeaders);
         }
 
-        Collection<?>	obscuredValues=(ObscuredValueSetMarker) obfuscator.getSensitiveValueMarker();
+        Collection<?> obscuredValues = (ObscuredValueSetMarker) obfuscator.getSensitiveValueMarker();
         for (String name : headerSet) {
-            String  value=hdrsMap.get(name);
+            String value = hdrsMap.get(name);
             assertNotNull("Missing header=" + name, value);
             assertTrue("Unobscured value of " + name, obscuredValues.contains(value));
         }
 
-    	if (!defaultHeaders) {
-    		for (String name : HttpObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST) {
+        if (!defaultHeaders) {
+            for (String name : HttpObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST) {
                 assertFalse("Un-necessarily obscured value of " + name, obscuredValues.contains(name));
-    		}
-    	}
-        
+            }
+        }
+
         return hdrsMap;
     }
 
-    private void runResponseHandlerTest (String testName, HttpContext context) throws IOException {
+    private void runResponseHandlerTest(String testName, HttpContext context) throws IOException {
         runResponseHandlerTest(testName, null, context);
     }
 
-    private void runHostResponseHandlerTest (String testName, HttpContext context) throws Exception {
+    private void runHostResponseHandlerTest(String testName, HttpContext context) throws Exception {
         runResponseHandlerTest(testName, URIUtils.extractHost(new URI(createTestUri(testName))), context);
     }
 
-    private void runResponseHandlerTest (String testName, HttpHost host, HttpContext context) throws IOException {
-        HttpClient                          httpClient=new DefaultHttpClient();
-        String                              uri=createTestUri(testName);
-        HttpGet                             request=new HttpGet(uri);
+    private void runResponseHandlerTest(String testName, HttpHost host, HttpContext context) throws IOException {
+        HttpClient httpClient = new DefaultHttpClient();
+        String uri = createTestUri(testName);
+        HttpGet request = new HttpGet(uri);
         // must be final or the anonymous class cannot reference it...
-        final AtomicReference<HttpResponse> rspRef=new AtomicReference<HttpResponse>(null);
-        ResponseHandler<HttpResponse>       handler=new ResponseHandler<HttpResponse>() {
-                public HttpResponse handleResponse(HttpResponse response)
-                        throws ClientProtocolException, IOException {
-                    HttpResponse    prevValue=rspRef.getAndSet(response);
-                    assertNull("Duplicate response handling", prevValue);
-                    return response;
-                }
-            };
-         
-         HttpResponse   response;
-         if (host == null) {
-             response = (context == null)
-                     ? httpClient.execute(request, handler)
-                     : httpClient.execute(request, handler, context)
-                     ;
-         } else {
-             response = (context == null)
-                     ? httpClient.execute(host, request, handler)
-                     : httpClient.execute(host, request, handler, context)
-                     ;
-         }
+        final AtomicReference<HttpResponse> rspRef = new AtomicReference<HttpResponse>(null);
+        ResponseHandler<HttpResponse> handler = new ResponseHandler<HttpResponse>() {
+            public HttpResponse handleResponse(HttpResponse response)
+                    throws ClientProtocolException, IOException {
+                HttpResponse prevValue = rspRef.getAndSet(response);
+                assertNull("Duplicate response handling", prevValue);
+                return response;
+            }
+        };
 
-         assertSame("Mismatched reference and return value", response, rspRef.get());
-         handleResponse(testName, uri, request, response, true);
+        HttpResponse response;
+        if (host == null) {
+            response = (context == null)
+                    ? httpClient.execute(request, handler)
+                    : httpClient.execute(request, handler, context)
+            ;
+        } else {
+            response = (context == null)
+                    ? httpClient.execute(host, request, handler)
+                    : httpClient.execute(host, request, handler, context)
+            ;
+        }
+
+        assertSame("Mismatched reference and return value", response, rspRef.get());
+        handleResponse(testName, uri, request, response, true);
     }
 
-    private void runHttpUriRequestTest (String testName, HttpContext context) throws IOException {
+    private void runHttpUriRequestTest(String testName, HttpContext context) throws IOException {
         runHttpRequestTest(testName, null, context);
     }
 
-    private void runHttpHostRequestTest (String testName, HttpContext context) throws Exception {
+    private void runHttpHostRequestTest(String testName, HttpContext context) throws Exception {
         runHttpRequestTest(testName, URIUtils.extractHost(new URI(createTestUri(testName))), context);
     }
 
-    private void runHttpRequestTest (String testName, HttpHost host, HttpContext context) throws IOException {
-        HttpClient      httpClient=new DefaultHttpClient();
-        String          uri=createTestUri(testName); 
-        HttpGet         request=new HttpGet(uri);
-        HttpResponse    response;
+    private void runHttpRequestTest(String testName, HttpHost host, HttpContext context) throws IOException {
+        HttpClient httpClient = new DefaultHttpClient();
+        String uri = createTestUri(testName);
+        HttpGet request = new HttpGet(uri);
+        HttpResponse response;
         if (host == null) {
             response = (context == null)
                     ? httpClient.execute(request)
                     : httpClient.execute(request, context)
-                    ;
+            ;
         } else {
             response = (context == null)
                     ? httpClient.execute(host, request)
                     : httpClient.execute(host, request, context)
-                    ;
+            ;
         }
-        
+
         handleResponse(testName, uri, request, response, true);
     }
 
-    private Operation handleResponse (String        testName, 
-                                      String        uri,
-                                      HttpRequest   request,
-                                      HttpResponse  response,
-                                      boolean       checkHeaders) throws IOException {
-        HttpEntity    entity=response.getEntity();
-        try
-        {
+    private Operation handleResponse(String testName,
+                                     String uri,
+                                     HttpRequest request,
+                                     HttpResponse response,
+                                     boolean checkHeaders) throws IOException {
+        HttpEntity entity = response.getEntity();
+        try {
             return assertExecutionResult(uri, request, response, checkHeaders);
-        }
-        finally
-        {
+        } finally {
             EntityUtils.consume(entity);
         }
     }
 
-    private Operation assertExecutionResult (String        uri,
-                                             HttpRequest   request,
-                                             HttpResponse  response,
-                                             boolean       checkHeaders)
-    {
-        Operation op=getLastEntered();
+    private Operation assertExecutionResult(String uri,
+                                            HttpRequest request,
+                                            HttpResponse response,
+                                            boolean checkHeaders) {
+        Operation op = getLastEntered();
         assertNotNull("No operation extracted", op);
         assertEquals("Mismatched operation type for " + uri, HttpClientDefinitions.TYPE, op.getType());
         assertRequestDetails(uri, op.get("request", OperationMap.class), request, checkHeaders);
@@ -389,23 +380,23 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
         return op;
     }
 
-    private OperationMap assertRequestDetails (String uri, OperationMap details, HttpRequest request, boolean checkHeaders) {
+    private OperationMap assertRequestDetails(String uri, OperationMap details, HttpRequest request, boolean checkHeaders) {
         assertNotNull("No request details for " + uri, details);
 
-        RequestLine     reqLine=request.getRequestLine();
+        RequestLine reqLine = request.getRequestLine();
         assertEquals("Mismatched method", reqLine.getMethod(), details.get("method"));
         assertEquals("Mismatched URI", reqLine.getUri(), details.get(OperationFields.URI));
         assertEquals("Mismatched protocol",
-                            HttpClientExecutionCollectionAspect.createVersionValue(reqLine.getProtocolVersion()),
-                            details.get("protocol"));
+                HttpClientExecutionCollectionAspect.createVersionValue(reqLine.getProtocolVersion()),
+                details.get("protocol"));
         if (checkHeaders) {
             assertHeadersContents(uri, "request", details, request);
         }
-        
+
         return details;
     }
-    
-    private OperationMap assertResponseDetails (String uri, OperationMap details, HttpResponse response, boolean checkHeaders) {
+
+    private OperationMap assertResponseDetails(String uri, OperationMap details, HttpResponse response, boolean checkHeaders) {
         if (response == null) {
             return details;
         }
@@ -420,53 +411,53 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
         return details;
     }
 
-    private void assertHeadersContents (String uri, String type, OperationMap details, HttpMessage message) {
-        OperationList headers=details.get("headers", OperationList.class);
+    private void assertHeadersContents(String uri, String type, OperationMap details, HttpMessage message) {
+        OperationList headers = details.get("headers", OperationList.class);
         assertNotNull("No " + type + " headers for " + uri, headers);
 
-        Header[]    hdrArray=message.getAllHeaders();
-        int         numHdrs=(hdrArray == null) ? 0 : hdrArray.length;
+        Header[] hdrArray = message.getAllHeaders();
+        int numHdrs = (hdrArray == null) ? 0 : hdrArray.length;
         assertEquals("Mismatched " + type + " number of headers", numHdrs, headers.size());
         if (numHdrs <= 0) {
             return;
         }
 
-        Map<String,String>  opHdrs=toHeadersMap(headers);
-        Map<String,String>  msgHdrs=toHeadersMap(hdrArray);
+        Map<String, String> opHdrs = toHeadersMap(headers);
+        Map<String, String> msgHdrs = toHeadersMap(hdrArray);
         assertEquals("Mismatched " + type + " headers map size", msgHdrs.size(), opHdrs.size());
-        
-        for (Map.Entry<String,String> hdrValue : msgHdrs.entrySet()) {
-            String  name=hdrValue.getKey();
+
+        for (Map.Entry<String, String> hdrValue : msgHdrs.entrySet()) {
+            String name = hdrValue.getKey();
             assertEquals("Mismatched " + type + " value for " + name + " header",
-                                hdrValue.getValue(), opHdrs.get(name));
+                    hdrValue.getValue(), opHdrs.get(name));
         }
     }
 
-    private Map<String,String> toHeadersMap (Header ... headers) {
+    private Map<String, String> toHeadersMap(Header... headers) {
         if (ArrayUtil.length(headers) <= 0) {
             return Collections.emptyMap();
         }
 
-        Map<String,String>  hdrsMap=new TreeMap<String, String>();
+        Map<String, String> hdrsMap = new TreeMap<String, String>();
         for (Header hdrValue : headers) {
-            String  name=hdrValue.getName();
-            String  value=hdrValue.getValue();
+            String name = hdrValue.getName();
+            String value = hdrValue.getValue();
             hdrsMap.put(name, value);
         }
 
         return hdrsMap;
     }
 
-    private Map<String,String> toHeadersMap (OperationList headers) {
+    private Map<String, String> toHeadersMap(OperationList headers) {
         if ((headers == null) || (headers.size() <= 0)) {
             return Collections.emptyMap();
         }
 
-        Map<String,String>  hdrsMap=new TreeMap<String, String>();
-        for (int    index=0; index < headers.size(); index++) {
-            OperationMap    hdrValue=headers.get(index, OperationMap.class);
-            String          name=hdrValue.get(OperationUtils.NAME_KEY, String.class);
-            String          value=hdrValue.get(OperationUtils.VALUE_KEY, String.class);
+        Map<String, String> hdrsMap = new TreeMap<String, String>();
+        for (int index = 0; index < headers.size(); index++) {
+            OperationMap hdrValue = headers.get(index, OperationMap.class);
+            String name = hdrValue.get(OperationUtils.NAME_KEY, String.class);
+            String value = hdrValue.get(OperationUtils.VALUE_KEY, String.class);
             hdrsMap.put(name, value);
         }
 
@@ -479,10 +470,10 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
     }
 
     private static final class TestHandler implements Handler {
-        private Server  server;
+        private Server server;
         private boolean started;
 
-        protected TestHandler () {
+        protected TestHandler() {
             super();
         }
 
@@ -498,10 +489,10 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
             if (!started) {
                 throw new IllegalStateException("Not started");
             }
-            
+
             started = false;
         }
-        
+
         public void start() throws Exception {
             if (started) {
                 throw new IllegalStateException("Double start");
@@ -509,31 +500,31 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
 
             started = true;
         }
-        
+
         public boolean isStopping() {
             return true;
         }
-        
+
         public boolean isStopped() {
             return !started;
         }
-        
+
         public boolean isStarting() {
             return true;
         }
-        
+
         public boolean isStarted() {
             return started;
         }
-        
+
         public boolean isRunning() {
             return started;
         }
-        
+
         public boolean isFailed() {
             return false;
         }
-        
+
         public Server getServer() {
             return this.server;
         }
@@ -541,18 +532,18 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
         public void setServer(Server s) {
             this.server = s;
         }
-        
-        public void handle (String target, HttpServletRequest request,
-                            HttpServletResponse response, int dispatch)
-                        throws IOException, ServletException {
-            int     namePos=target.lastIndexOf('/');
-            String  testName=target.substring(namePos + 1);
+
+        public void handle(String target, HttpServletRequest request,
+                           HttpServletResponse response, int dispatch)
+                throws IOException, ServletException {
+            int namePos = target.lastIndexOf('/');
+            String testName = target.substring(namePos + 1);
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("text/xml;charset=utf-8");
             response.addHeader("X-Test-Name", testName);
             response.addHeader("WWW-Authenticate", "allowed");
 
-            Writer  writer=response.getWriter();
+            Writer writer = response.getWriter();
             try {
                 writer.append(createResponseContent(testName));
             } finally {
@@ -561,24 +552,21 @@ public class HttpClientExecutionCollectionAspectTest extends OperationCollection
 
             Request baseRequest = (request instanceof Request)
                     ? (Request) request
-                    : HttpConnection.getCurrentConnection().getRequest()
-                    ;
+                    : HttpConnection.getCurrentConnection().getRequest();
             baseRequest.setHandled(true);
         }
-        
+
         public void destroy() {
             if (this.server != null)
                 this.server = null;
         }
     }
 
-    static String createResponseContent (String testName)
-    {
+    static String createResponseContent(String testName) {
         return "<test name=\"" + testName + "\" />";
     }
 
-    static String createTestUri (String testName)
-    {
+    static String createTestUri(String testName) {
         return TEST_URI + testName;
     }
 }

@@ -21,8 +21,8 @@ import com.springsource.insight.intercept.trace.TraceSource;
 
 public class HttpTraceSourceAnalyzerTest extends AbstractTraceSourceAnalyzerTestSupport {
 
-	public HttpTraceSourceAnalyzerTest() {
-		super(HttpTraceSourceAnalyzer.getInstance(), TraceSource.HTTP, OperationType.HTTP);
-	}
+    public HttpTraceSourceAnalyzerTest() {
+        super(HttpTraceSourceAnalyzer.getInstance(), TraceSource.HTTP, OperationType.HTTP);
+    }
 
 }

@@ -33,24 +33,24 @@ public privileged aspect QueryOperationCollectionAspect extends AbstractOperatio
         super();
     }
 
-    public pointcut collectionPoint() : execution(* Neo4jTemplate+.execute(String, Map)) ||
-    									execution(* Neo4jTemplate+.query(String, Map, ..));
+    public pointcut collectionPoint(): execution(* Neo4jTemplate+.execute(String, Map)) ||
+            execution(* Neo4jTemplate+.query(String, Map, ..));
 
-	@SuppressWarnings("unchecked")
-	@Override
+    @SuppressWarnings("unchecked")
+    @Override
     protected Operation createOperation(JoinPoint jp) {
-    	Object[] args = jp.getArgs();
-    	String method=jp.getSignature().getName();
-        
-    	Operation op=new Operation().type(OperationCollectionTypes.QUERY_TYPE.type)
-    						.label(OperationCollectionTypes.QUERY_TYPE.label+method)
-    						.sourceCodeLocation(getSourceCodeLocation(jp))
-    						.put("statement", (String)args[0]);
-    		
-    	OperationMap map=op.createMap("params");
-    	map.putAnyAll((Map<String,Object>)args[1]);
-    	
-    	return op;
+        Object[] args = jp.getArgs();
+        String method = jp.getSignature().getName();
+
+        Operation op = new Operation().type(OperationCollectionTypes.QUERY_TYPE.type)
+                .label(OperationCollectionTypes.QUERY_TYPE.label + method)
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .put("statement", (String) args[0]);
+
+        OperationMap map = op.createMap("params");
+        map.putAnyAll((Map<String, Object>) args[1]);
+
+        return op;
     }
 
     @Override

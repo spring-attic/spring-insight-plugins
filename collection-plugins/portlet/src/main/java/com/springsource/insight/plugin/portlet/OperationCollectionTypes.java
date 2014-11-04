@@ -20,17 +20,17 @@ import com.springsource.insight.intercept.operation.OperationType;
 
 
 public enum OperationCollectionTypes {
-	ACTION_TYPE("portlet-action", "Action"),
-	EVENT_TYPE("portlet-event", "Event"),
-	RENDER_TYPE("portlet-render", "Render"),
-	RESOURCE_TYPE("portlet-resource", "ResourceServing");
+    ACTION_TYPE("portlet-action", "Action"),
+    EVENT_TYPE("portlet-event", "Event"),
+    RENDER_TYPE("portlet-render", "Render"),
+    RESOURCE_TYPE("portlet-resource", "ResourceServing");
 
 
-	final public OperationType type;
-	final public String label;
+    final public OperationType type;
+    final public String label;
 
-	private OperationCollectionTypes(String typeId, String typeLabel) {
-		this.type=OperationType.valueOf(typeId);
-		this.label = typeLabel;
-	}
+    private OperationCollectionTypes(String typeId, String typeLabel) {
+        this.type = OperationType.valueOf(typeId);
+        this.label = typeLabel;
+    }
 }

@@ -7,10 +7,10 @@
     <@insight.entry name="Event ID" value=operation.eventId />
     <@insight.entry name="Event timestamp" value=operation.timestamp />
     <#if operation.associationValues?has_content>
-	    <@insight.entry name="Association Values">
+        <@insight.entry name="Association Values">
             <@insight.group collection=operation.associationValues ; entry>
                 <@insight.entry name=entry.key value=entry.value />
             </@insight.group>
-	    </@insight.entry>
+        </@insight.entry>
     </#if>
 </@insight.group>

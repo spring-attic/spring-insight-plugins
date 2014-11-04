@@ -26,56 +26,53 @@ import com.springsource.insight.collection.OperationCollector;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public aspect Log4jLoggingOperationCollectionAspect extends LoggingMethodOperationCollectionAspect {
-    public pointcut errorLogFlow ()
-        : execution(* Category+.error(Object))
-       || execution(* Category+.error(Object,Throwable))
-       || execution(* Category+.fatal(Object))
-       || execution(* Category+.fatal(Object,Throwable))
-        ;
+    public pointcut errorLogFlow()
+            : execution(* Category+.error(Object))
+            || execution(* Category+.error(Object,Throwable))
+            || execution(* Category+.fatal(Object))
+            || execution(* Category+.fatal(Object,Throwable))
+            ;
 
     public pointcut collectionPoint()
-        : errorLogFlow()
-       && (!cflowbelow(errorLogFlow()))
-        ;
+            : errorLogFlow()
+            && (!cflowbelow(errorLogFlow()))
+            ;
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Object[]    args=jp.getArgs();
-        Signature   sig=jp.getSignature();
+        Object[] args = jp.getArgs();
+        Signature sig = jp.getSignature();
         return createOperation(jp, (Category) jp.getTarget(), sig.getName().toUpperCase(),
-                               String.valueOf(args[0]), (args.length > 1) ? (Throwable) args[1] : null);
+                String.valueOf(args[0]), (args.length > 1) ? (Throwable) args[1] : null);
     }
 
     //////////////////////////////////////////////////////////////////////////
 
-    public pointcut indirectFlow ()
-        : execution(* Category+.log(Priority,Object,Throwable))
-       || execution(* Category+.log(Priority,Object))
-       || execution(* Category+.log(String,Priority,Object,Throwable))
-        ;
+    public pointcut indirectFlow()
+            : execution(* Category+.log(Priority,Object,Throwable))
+            || execution(* Category+.log(Priority,Object))
+            || execution(* Category+.log(String,Priority,Object,Throwable))
+            ;
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
-    Object around () : indirectFlow() && (!cflowbelow(indirectFlow())) {
-        Object[]    args=thisJoinPoint.getArgs();
-        int         pIndex=findFirstArgumentIndex(Priority.class, args);
-        Priority    p=(Priority) args[pIndex];
-        int         pLevel=p.toInt();
+    Object around (): indirectFlow() && (!cflowbelow(indirectFlow())) {
+        Object[] args = thisJoinPoint.getArgs();
+        int pIndex = findFirstArgumentIndex(Priority.class, args);
+        Priority p = (Priority) args[pIndex];
+        int pLevel = p.toInt();
         if ((Priority.ERROR_INT == pLevel) || (Priority.FATAL_INT == pLevel)) {
-            OperationCollector  collector=getCollector();
+            OperationCollector collector = getCollector();
             collector.enter(createOperation(thisJoinPoint, (Category) thisJoinPoint.getTarget(),
-                            p.toString(), String.valueOf(args[pIndex+1]),
-                            (pIndex < (args.length - 2)) ? (Throwable) args[pIndex+2] : null));
-            try
-            {
-                Object  returnValue=proceed();
+                    p.toString(), String.valueOf(args[pIndex + 1]),
+                    (pIndex < (args.length - 2)) ? (Throwable) args[pIndex + 2] : null));
+            try {
+                Object returnValue = proceed();
                 collector.exitNormal();
                 return returnValue;
-            }
-            catch(RuntimeException e)
-            {
+            } catch (RuntimeException e) {
                 collector.exitAbnormal(e);
                 throw e;
             }
@@ -86,19 +83,19 @@ public aspect Log4jLoggingOperationCollectionAspect extends LoggingMethodOperati
 
     protected Operation createOperation(JoinPoint jp, Category logger, String level, String msg, Throwable t) {
         return createOperation(jp, Logger.class, level, msg, t)
-                    .putAnyNonEmpty(LoggingDefinitions.NAME_ATTR, logger.getName())
-                    ;
+                .putAnyNonEmpty(LoggingDefinitions.NAME_ATTR, logger.getName())
+                ;
     }
 
-    int findFirstArgumentIndex (Class<?> expectedClass, Object... args) {
-        for (int    index=0; index < args.length; index++) {
-            Object      arg=args[index];
-            Class<?>    argClass=(arg == null) ? null : arg.getClass();
+    int findFirstArgumentIndex(Class<?> expectedClass, Object... args) {
+        for (int index = 0; index < args.length; index++) {
+            Object arg = args[index];
+            Class<?> argClass = (arg == null) ? null : arg.getClass();
             if ((argClass != null) & expectedClass.isAssignableFrom(argClass)) {
                 return index;
             }
         }
-        
+
         throw new IllegalStateException("No argument found of type " + expectedClass.getSimpleName());
     }
 }

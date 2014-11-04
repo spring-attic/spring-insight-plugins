@@ -40,10 +40,10 @@ import com.springsource.insight.util.StringFormatterUtils;
 import com.springsource.insight.util.StringUtil;
 
 /**
- * 
+ *
  */
 public abstract class HttpInvokerRequestOperationCollectionTestSupport
-extends OperationCollectionAspectTestSupport {
+        extends OperationCollectionAspectTestSupport {
     protected static final HttpInvokerRequestExecutorExternalResourceAnalyzer extresAnalyzer =
             HttpInvokerRequestExecutorExternalResourceAnalyzer.getInstance();
     protected static final HttpInvokerRequestExecutorTraceErrorAnalyzer errorsAnalyzer =
@@ -117,7 +117,7 @@ extends OperationCollectionAspectTestSupport {
     }
 
     protected static HttpInvokerClientConfiguration createMockConfiguration(String path, String... codebaseUrls) {
-        return createMockConfiguration(path, (ArrayUtil.length(codebaseUrls) <= 0) ? Collections.<String> emptyList() : Arrays.asList(codebaseUrls));
+        return createMockConfiguration(path, (ArrayUtil.length(codebaseUrls) <= 0) ? Collections.<String>emptyList() : Arrays.asList(codebaseUrls));
     }
 
     protected static HttpInvokerClientConfiguration createMockConfiguration(String path, Collection<String> codebaseUrls) {

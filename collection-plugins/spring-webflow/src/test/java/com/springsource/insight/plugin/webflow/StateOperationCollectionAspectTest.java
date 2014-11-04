@@ -26,36 +26,36 @@ import com.springsource.insight.intercept.operation.OperationMap;
 
 
 public class StateOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-	public StateOperationCollectionAspectTest () {
-		super();
-	}
+    public StateOperationCollectionAspectTest() {
+        super();
+    }
 
-	@Test
-	public void testState() {
-		// Step 1: Execute test
-		WebFlowExecutionTest webFlow=new WebFlowExecutionTest();
-		webFlow.testState();
+    @Test
+    public void testState() {
+        // Step 1: Execute test
+        WebFlowExecutionTest webFlow = new WebFlowExecutionTest();
+        webFlow.testState();
 
-		// Step 2:  Get the Operation that was just created by our aspect
-		Operation op = getLastEntered();
+        // Step 2:  Get the Operation that was just created by our aspect
+        Operation op = getLastEntered();
 
-		// Step 3:  Validate
-		assertNotNull(op);
-		assert op.getType().getName().equals("wf-state");
+        // Step 3:  Validate
+        assertNotNull(op);
+        assert op.getType().getName().equals("wf-state");
 
-		assert "ViewState".equals(op.get("stateType"));
-		assert "dummy2".equals(op.get("stateId"));
-		//assert "/dummyView".equals(op.get("view"));
-		OperationMap map=(OperationMap)op.get("attribs");
-		assertNotNull(map.get("model"));
+        assert "ViewState".equals(op.get("stateType"));
+        assert "dummy2".equals(op.get("stateId"));
+        //assert "/dummyView".equals(op.get("view"));
+        OperationMap map = (OperationMap) op.get("attribs");
+        assertNotNull(map.get("model"));
 
-		OperationList entryActions=(OperationList)op.get("entryActions");
-		assert "personDao.save(person)".equals(entryActions.get(0));
-		assert "flowScope.temp=1".equals(entryActions.get(1));
-	}
+        OperationList entryActions = (OperationList) op.get("entryActions");
+        assert "personDao.save(person)".equals(entryActions.get(0));
+        assert "flowScope.temp=1".equals(entryActions.get(1));
+    }
 
-	@Override
-	public OperationCollectionAspectSupport getAspect() {
-		return StateOperationCollectionAspect.aspectOf();
-	}
+    @Override
+    public OperationCollectionAspectSupport getAspect() {
+        return StateOperationCollectionAspect.aspectOf();
+    }
 }

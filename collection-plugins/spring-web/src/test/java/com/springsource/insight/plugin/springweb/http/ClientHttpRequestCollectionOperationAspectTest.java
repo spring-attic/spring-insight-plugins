@@ -49,12 +49,12 @@ import com.springsource.insight.util.StringUtil;
 
 
 /**
- * 
+ *
  */
 public class ClientHttpRequestCollectionOperationAspectTest extends OperationCollectionAspectTestSupport {
-    private static final ClientHttpRequestTraceErrorAnalyzer	errAnalyzer=ClientHttpRequestTraceErrorAnalyzer.getInstance();
+    private static final ClientHttpRequestTraceErrorAnalyzer errAnalyzer = ClientHttpRequestTraceErrorAnalyzer.getInstance();
     private HttpObfuscator originalObfuscator;
-    private final ObscuredValueSetMarker	marker=new ObscuredValueSetMarker();
+    private final ObscuredValueSetMarker marker = new ObscuredValueSetMarker();
 
     public ClientHttpRequestCollectionOperationAspectTest() {
         super();
@@ -65,8 +65,8 @@ public class ClientHttpRequestCollectionOperationAspectTest extends OperationCol
     public void setUp() {
         super.setUp();
 
-        ClientHttpRequestCollectionOperationAspect	aspectInstance=getAspect();
-        ClientHttpRequestOperationCollector	collector=(ClientHttpRequestOperationCollector) aspectInstance.getCollector();
+        ClientHttpRequestCollectionOperationAspect aspectInstance = getAspect();
+        ClientHttpRequestOperationCollector collector = (ClientHttpRequestOperationCollector) aspectInstance.getCollector();
         originalObfuscator = collector.getHttpObfuscator();
         marker.clear();
         collector.setHttpObfuscator(new HttpObfuscator(marker));
@@ -75,8 +75,8 @@ public class ClientHttpRequestCollectionOperationAspectTest extends OperationCol
     @After
     @Override
     public void restore() {
-        ClientHttpRequestCollectionOperationAspect	aspectInstance=getAspect();
-        ClientHttpRequestOperationCollector	collector=(ClientHttpRequestOperationCollector) aspectInstance.getCollector();
+        ClientHttpRequestCollectionOperationAspect aspectInstance = getAspect();
+        ClientHttpRequestOperationCollector collector = (ClientHttpRequestOperationCollector) aspectInstance.getCollector();
         collector.setHttpObfuscator(originalObfuscator);
         marker.clear();
 
@@ -84,31 +84,31 @@ public class ClientHttpRequestCollectionOperationAspectTest extends OperationCol
     }
 
     @Test
-    public void testSuccessfulExecutionCollected () throws Exception {
-        ClientHttpRequest	request=
+    public void testSuccessfulExecutionCollected() throws Exception {
+        ClientHttpRequest request =
                 new TestClientHttpRequest(HttpMethod.GET,
                         new URI("http://somewhere:7365/testExecutionCollected"),
                         createIdentityHttpHeaders(Arrays.asList("Req-Header1", "Req-Header2")),
                         createMockClientHttpResponse(HttpStatus.OK, createIdentityHttpHeaders(Arrays.asList("Rsp-Header1", "Rsp-Header2"))));
-        ClientHttpResponse	response=request.execute();
-        Operation 			op=assertExecuteRequest(request);
+        ClientHttpResponse response = request.execute();
+        Operation op = assertExecuteRequest(request);
         assertRequestDetails(op, request);
         assertResponseDetails(op, response);
 
-        TraceError	err=assertTraceError(op, response);
+        TraceError err = assertTraceError(op, response);
         assertNull("Unexpected trace error: " + err, err);
     }
 
     @Test
-    public void testFailedExecutionCollected () throws Exception {
-        ClientHttpRequest	request=
+    public void testFailedExecutionCollected() throws Exception {
+        ClientHttpRequest request =
                 new TestClientHttpRequest(HttpMethod.GET,
                         new URI("http://somewhere:7365/testExecutionCollected"),
                         createIdentityHttpHeaders(Arrays.asList("Req-Header1", "req-value1", "Req-Header2", "req-value2")),
                         createMockClientHttpResponse(HttpStatus.GATEWAY_TIMEOUT, createIdentityHttpHeaders(Arrays.asList("Rsp-Header1", "Rsp-Header2"))));
-        ClientHttpResponse	response=request.execute();
-        Operation 			op=assertExecuteRequest(request);
-        TraceError			err=assertTraceError(op, response);
+        ClientHttpResponse response = request.execute();
+        Operation op = assertExecuteRequest(request);
+        TraceError err = assertTraceError(op, response);
         assertNotNull("No error detected", err);
     }
 
@@ -128,8 +128,8 @@ public class ClientHttpRequestCollectionOperationAspectTest extends OperationCol
     }
 
     private void runObfuscationTest(String testName, Collection<String> hdrs, boolean defaultHeaders) throws Exception {
-        ClientHttpRequestCollectionOperationAspect	aspectInstance=getAspect();
-        ClientHttpRequestOperationCollector	collector=(ClientHttpRequestOperationCollector) aspectInstance.getCollector();
+        ClientHttpRequestCollectionOperationAspect aspectInstance = getAspect();
+        ClientHttpRequestOperationCollector collector = (ClientHttpRequestOperationCollector) aspectInstance.getCollector();
         HttpObfuscator obfuscator = collector.getHttpObfuscator();
         if (!defaultHeaders) {
             obfuscator.incrementalUpdate(HttpObfuscator.OBFUSCATED_HEADERS_SETTING, StringUtil.implode(hdrs, ","));
@@ -141,16 +141,16 @@ public class ClientHttpRequestCollectionOperationAspectTest extends OperationCol
             addIdentityHttpHeaders(reqHdrs, hdrs);
         }
 
-        HttpHeaders	rspHdrs=createIdentityHttpHeaders(Collections.singletonList("WWW-Authenticate"));
-        ClientHttpRequest	request=
+        HttpHeaders rspHdrs = createIdentityHttpHeaders(Collections.singletonList("WWW-Authenticate"));
+        ClientHttpRequest request =
                 new TestClientHttpRequest(HttpMethod.GET,
                         new URI("http://somewhere:7365/" + testName),
                         reqHdrs,
                         createMockClientHttpResponse(HttpStatus.OK, rspHdrs));
-        ClientHttpResponse	response=request.execute();
+        ClientHttpResponse response = request.execute();
         assertNotNull("No response", response);
 
-        ObscuredValueSetMarker	obsMarker=(ObscuredValueSetMarker) obfuscator.getSensitiveValueMarker();
+        ObscuredValueSetMarker obsMarker = (ObscuredValueSetMarker) obfuscator.getSensitiveValueMarker();
         for (String name : hdrs) {
             assertTrue("Value not obscured for " + name, obsMarker.remove(name));
         }
@@ -164,13 +164,13 @@ public class ClientHttpRequestCollectionOperationAspectTest extends OperationCol
     }
 
     private TraceError assertTraceError(Operation op, ClientHttpResponse rsp) throws IOException {
-        int					statusCode=rsp.getRawStatusCode();
-        String				reasonPhrase=rsp.getStatusText();
-        List<TraceError>	errors=errAnalyzer.locateErrors(creatMockOperationTraceWrapper(op));
+        int statusCode = rsp.getRawStatusCode();
+        String reasonPhrase = rsp.getStatusText();
+        List<TraceError> errors = errAnalyzer.locateErrors(creatMockOperationTraceWrapper(op));
         if (ClientHttpRequestTraceErrorAnalyzer.httpStatusIsError(statusCode)) {
             assertEquals("Mismatched number of errors", 1, ListUtil.size(errors));
 
-            TraceError	err=errors.get(0);
+            TraceError err = errors.get(0);
             assertEquals("Mismatched error message", ClientHttpRequestTraceErrorAnalyzer.createErrorMessage(statusCode, reasonPhrase), err.getMessage());
             return err;
         } else {
@@ -186,8 +186,8 @@ public class ClientHttpRequestCollectionOperationAspectTest extends OperationCol
     private OperationMap assertRequestDetails(OperationMap op, ClientHttpRequest request) {
         assertNotNull("No request details", op);
 
-        URI			uri=request.getURI();
-        HttpMethod	method=request.getMethod();
+        URI uri = request.getURI();
+        HttpMethod method = request.getMethod();
         assertEquals("Mismatched method", method.name(), op.get("method", String.class));
         assertEquals("Mismatched URI", uri.toString(), op.get(OperationFields.URI, String.class));
         assertMethodHeaders("request", op, request.getHeaders());
@@ -213,34 +213,34 @@ public class ClientHttpRequestCollectionOperationAspectTest extends OperationCol
     private OperationList assertMethodHeaders(String type, OperationList op, HttpHeaders hdrs) {
         assertEquals(type + ": mismatched num. of headers", op.size(), hdrs.size());
 
-        for (int	index=0; index < op.size(); index++) {
-            OperationMap	nvp=op.get(index, OperationMap.class);
+        for (int index = 0; index < op.size(); index++) {
+            OperationMap nvp = op.get(index, OperationMap.class);
             assertNotNull(type + ": missing name-value pair for index=" + index, nvp);
 
-            String	key=nvp.get(OperationUtils.NAME_KEY, String.class);
+            String key = nvp.get(OperationUtils.NAME_KEY, String.class);
             assertFalse(type + ": missing header name for index=" + index, StringUtil.isEmpty(key));
 
-            String	actual=nvp.get(OperationUtils.VALUE_KEY, String.class), expected=hdrs.getFirst(key);
+            String actual = nvp.get(OperationUtils.VALUE_KEY, String.class), expected = hdrs.getFirst(key);
             assertEquals(type + ": mismatched value for header=" + key, expected, actual);
         }
 
         return op;
     }
 
-    private Operation assertExecuteRequest (ClientHttpRequest request) {
-        Operation	op=getLastEntered();
+    private Operation assertExecuteRequest(ClientHttpRequest request) {
+        Operation op = getLastEntered();
         assertNotNull("No operation collected", op);
         assertEquals("Mismatched type", ClientHttpRequestOperationCollector.TYPE, op.getType());
 
-        URI			uri=request.getURI();
-        HttpMethod	method=request.getMethod();
+        URI uri = request.getURI();
+        HttpMethod method = request.getMethod();
         assertEquals("Mismatched label", method + " " + uri.toString(), op.getLabel());
         return op;
     }
 
     @SuppressWarnings("boxing")
-    private static ClientHttpResponse createMockClientHttpResponse (HttpStatus status, HttpHeaders hdrs) throws IOException {
-        ClientHttpResponse	response=Mockito.mock(ClientHttpResponse.class);
+    private static ClientHttpResponse createMockClientHttpResponse(HttpStatus status, HttpHeaders hdrs) throws IOException {
+        ClientHttpResponse response = Mockito.mock(ClientHttpResponse.class);
         Mockito.when(response.getHeaders()).thenReturn(hdrs);
         Mockito.when(response.getStatusCode()).thenReturn(status);
         Mockito.when(response.getRawStatusCode()).thenReturn(status.value());
@@ -248,11 +248,11 @@ public class ClientHttpRequestCollectionOperationAspectTest extends OperationCol
         return response;
     }
 
-    private static HttpHeaders createIdentityHttpHeaders (Collection<String> hdrNames) {
+    private static HttpHeaders createIdentityHttpHeaders(Collection<String> hdrNames) {
         return addIdentityHttpHeaders(new HttpHeaders(), hdrNames);
     }
 
-    private static HttpHeaders addIdentityHttpHeaders (HttpHeaders hdrs, Collection<String> hdrNames) {
+    private static HttpHeaders addIdentityHttpHeaders(HttpHeaders hdrs, Collection<String> hdrNames) {
         if (ListUtil.size(hdrNames) <= 0) {
             return hdrs;
         }
@@ -265,16 +265,16 @@ public class ClientHttpRequestCollectionOperationAspectTest extends OperationCol
     }
 
     static class TestClientHttpRequest implements ClientHttpRequest {
-        private final ClientHttpResponse	response;
-        private final HttpMethod			method;
-        private final URI					uri;
-        private final HttpHeaders			hdrs;
+        private final ClientHttpResponse response;
+        private final HttpMethod method;
+        private final URI uri;
+        private final HttpHeaders hdrs;
 
-        TestClientHttpRequest (HttpMethod mthd, URI uriValue, HttpHeaders hdrsMap, ClientHttpResponse rsp) {
-            if (((method=mthd) == null)
-                    || ((uri=uriValue) == null)
-                    || ((hdrs=hdrsMap) == null)
-                    || ((response=rsp) == null)) {
+        TestClientHttpRequest(HttpMethod mthd, URI uriValue, HttpHeaders hdrsMap, ClientHttpResponse rsp) {
+            if (((method = mthd) == null)
+                    || ((uri = uriValue) == null)
+                    || ((hdrs = hdrsMap) == null)
+                    || ((response = rsp) == null)) {
                 throw new IllegalStateException("Incomplete state");
             }
         }

@@ -30,8 +30,9 @@ import com.springsource.insight.intercept.operation.Operation;
 
 public aspect MongoCursorOperationCollectionAspect extends AbstractOperationCollectionAspect {
     public static final OperationType TYPE = OperationType.valueOf("mongo_cursor_operation");
-    public MongoCursorOperationCollectionAspect () {
-    	super();
+
+    public MongoCursorOperationCollectionAspect() {
+        super();
     }
 
     private pointcut nextExecution(): execution(* DBCursor.next());
@@ -41,13 +42,13 @@ public aspect MongoCursorOperationCollectionAspect extends AbstractOperationColl
     private pointcut sortExecution(): execution(* DBCursor.sort(..));
     private pointcut batchSizeExecution(): execution(* DBCursor.batchSize(int));
 
-    public pointcut collectionPoint(): 
-    	(nextExecution() && !cflowbelow(nextExecution())) ||
-    	(skipExecution() && !cflowbelow(skipExecution())) ||
-    	(limitExecution() && !cflowbelow(limitExecution())) ||
-    	(toArrayExecution() && !cflowbelow(toArrayExecution())) ||
-    	(sortExecution() && !cflowbelow(sortExecution())) ||
-    	(batchSizeExecution() && !cflowbelow(batchSizeExecution()));
+    public pointcut collectionPoint():
+            (nextExecution() && !cflowbelow(nextExecution())) ||
+                    (skipExecution() && !cflowbelow(skipExecution())) ||
+                    (limitExecution() && !cflowbelow(limitExecution())) ||
+                    (toArrayExecution() && !cflowbelow(toArrayExecution())) ||
+                    (sortExecution() && !cflowbelow(sortExecution())) ||
+                    (batchSizeExecution() && !cflowbelow(batchSizeExecution()));
 
     @Override
     protected Operation createOperation(final JoinPoint joinPoint) {
@@ -59,7 +60,7 @@ public aspect MongoCursorOperationCollectionAspect extends AbstractOperationColl
                 .sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(joinPoint));
 
         op.put("keysWanted", MongoArgumentUtils.toString(cursor.getKeysWanted()))
-          .put("query", MongoArgumentUtils.toString(cursor.getQuery()));
+                .put("query", MongoArgumentUtils.toString(cursor.getQuery()));
         OperationList opList = op.createList("args");
         List<String> args = MongoArgumentUtils.toString(joinPoint.getArgs());
         for (String arg : args) {

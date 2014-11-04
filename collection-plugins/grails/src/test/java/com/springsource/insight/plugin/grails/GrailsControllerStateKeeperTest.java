@@ -29,59 +29,60 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  */
 public class GrailsControllerStateKeeperTest extends Assert {
-    protected final Logger    logger=LoggerFactory.getLogger(getClass());
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
+
     public GrailsControllerStateKeeperTest() {
         super();
     }
 
     @Test
-    public void testThreadLocalStateAccess () throws InterruptedException {
-        final Semaphore             sigsem=new Semaphore(0, true);
-        final Collection<Exception> excList=Collections.synchronizedCollection(new LinkedList<Exception>());
-        Collection<Thread>          threadsList=new LinkedList<Thread>();
-        final int                   NUM_ITERATIONS=Short.SIZE;
-        for (int    index=0; index < Byte.SIZE; index++) {
-            Thread  testThread=new Thread("tRunner" + index) {
-                    @Override
-                    public void run () {
-                        Thread  t=Thread.currentThread();
-                        try {
-                            sigsem.acquire();
+    public void testThreadLocalStateAccess() throws InterruptedException {
+        final Semaphore sigsem = new Semaphore(0, true);
+        final Collection<Exception> excList = Collections.synchronizedCollection(new LinkedList<Exception>());
+        Collection<Thread> threadsList = new LinkedList<Thread>();
+        final int NUM_ITERATIONS = Short.SIZE;
+        for (int index = 0; index < Byte.SIZE; index++) {
+            Thread testThread = new Thread("tRunner" + index) {
+                @Override
+                public void run() {
+                    Thread t = Thread.currentThread();
+                    try {
+                        sigsem.acquire();
 
-                            GrailsControllerStateKeeper.State   stateValue=null;
-                            Random                              randomizer=new Random(System.nanoTime());
-                            logger.info(t.getName() + " start");
-                            for (int    tryIndex=0; tryIndex < NUM_ITERATIONS; tryIndex++) {
-                                GrailsControllerStateKeeper.State   currentState=GrailsControllerStateKeeper.getState();
-                                assertNotNull(t.getName() + " Null state value at iteration #" + tryIndex, currentState);
-                                if (stateValue == null) {
-                                    assertEquals(t.getName() + " Null initial value at iteration #" + tryIndex, 0, tryIndex);
-                                    stateValue = currentState;
-                                } else {
-                                    assertSame(t.getName() + " Mismatched state instance at iteration #" + tryIndex, stateValue, currentState);
-                                }
-                                
-                                Thread.sleep(randomizer.nextInt(Byte.MAX_VALUE) + 1L);
+                        GrailsControllerStateKeeper.State stateValue = null;
+                        Random randomizer = new Random(System.nanoTime());
+                        logger.info(t.getName() + " start");
+                        for (int tryIndex = 0; tryIndex < NUM_ITERATIONS; tryIndex++) {
+                            GrailsControllerStateKeeper.State currentState = GrailsControllerStateKeeper.getState();
+                            assertNotNull(t.getName() + " Null state value at iteration #" + tryIndex, currentState);
+                            if (stateValue == null) {
+                                assertEquals(t.getName() + " Null initial value at iteration #" + tryIndex, 0, tryIndex);
+                                stateValue = currentState;
+                            } else {
+                                assertSame(t.getName() + " Mismatched state instance at iteration #" + tryIndex, stateValue, currentState);
                             }
-                            
-                            GrailsControllerStateKeeper.State   remState=
-                                    GrailsControllerStateKeeper.getAndDestroyThreadLocalState();
-                            assertSame(t.getName() + " Mismatched removed state instance", stateValue, remState);
-                            logger.info(t.getName() + " end");
-                        } catch(Exception e) {
-                            logger.error(t.getName() + " [" + e.getClass().getSimpleName() + "}: " + e.getMessage());
-                            excList.add(e);
+
+                            Thread.sleep(randomizer.nextInt(Byte.MAX_VALUE) + 1L);
                         }
+
+                        GrailsControllerStateKeeper.State remState =
+                                GrailsControllerStateKeeper.getAndDestroyThreadLocalState();
+                        assertSame(t.getName() + " Mismatched removed state instance", stateValue, remState);
+                        logger.info(t.getName() + " end");
+                    } catch (Exception e) {
+                        logger.error(t.getName() + " [" + e.getClass().getSimpleName() + "}: " + e.getMessage());
+                        excList.add(e);
                     }
-                };
+                }
+            };
             threadsList.add(testThread);
             testThread.start();
         }
 
-        int numPending=threadsList.size();
+        int numPending = threadsList.size();
         sigsem.release(numPending); // release all threads at once
         for (Thread t : threadsList) {
             t.join(numPending * TimeUnit.SECONDS.toMillis(2L) + NUM_ITERATIONS * Byte.MAX_VALUE);
@@ -94,15 +95,15 @@ public class GrailsControllerStateKeeperTest extends Assert {
             for (Exception e : excList) {
                 logger.error(e.getMessage());
             }
-            
+
             fail("Thread exceptions captured");
         }
     }
-    
+
     @Test
     public void testGetAndDestroyThreadLocalState() {
         assertNull("Unexpected pre-removal initial value", GrailsControllerStateKeeper.getAndDestroyThreadLocalState());
-        Object  state=GrailsControllerStateKeeper.getState();
+        Object state = GrailsControllerStateKeeper.getState();
         assertNotNull("No new state created", state);
         assertSame("Mismatched removed instance", state, GrailsControllerStateKeeper.getAndDestroyThreadLocalState());
         assertNull("Unexpected new value after removal", GrailsControllerStateKeeper.getAndDestroyThreadLocalState());

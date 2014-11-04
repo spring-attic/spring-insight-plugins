@@ -7,15 +7,15 @@
     <name>com.springsource.insight.plugins:gemfire</name>
     <packaging>jar</packaging>
 
-	<parent>
-		<groupId>com.springsource.insight</groupId>
-		<artifactId>community-plugins</artifactId>
-		<version>2.0.0-CI-SNAPSHOT</version>
-		<relativePath>..</relativePath>
-	</parent>
+    <parent>
+        <groupId>com.springsource.insight</groupId>
+        <artifactId>community-plugins</artifactId>
+        <version>2.0.0-CI-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
 
     <dependencies>
-            <!-- Javadoc: https://www.vmware.com/support/developer/vfabric-gemfire/661-api/ -->
+        <!-- Javadoc: https://www.vmware.com/support/developer/vfabric-gemfire/661-api/ -->
         <dependency>
             <groupId>com.gemstone.gemfire</groupId>
             <artifactId>gemfire</artifactId>
@@ -88,20 +88,22 @@
                     <header>../../aslHeader.txt</header>
                 </configuration>
             </plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-                    	<manifest>
-                    		<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                    	</manifest>
-						<manifestEntries>
-							<Insight-Plugin-Descriptor>com.springsource.insight.plugin.gemfire.GemFirePluginRuntimeDescriptor</Insight-Plugin-Descriptor>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Insight-Plugin-Descriptor>
+                                com.springsource.insight.plugin.gemfire.GemFirePluginRuntimeDescriptor
+                            </Insight-Plugin-Descriptor>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

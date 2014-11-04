@@ -25,10 +25,10 @@ import com.springsource.insight.intercept.operation.OperationType;
  * This aspect is responsible for intercepting calls to any code (library calls,
  * annotated methods, whatever) and creating an instance of {@link CashMoneyOperation} which
  * map to them.
- * 
- * In the case of this example, we will create a new instance of {@link CashMoneyOperation} 
+ *
+ * In the case of this example, we will create a new instance of {@link CashMoneyOperation}
  * whenever a method called setBalance(int) is called on any object.  
- * 
+ *
  * The {@link AbstractOperationCollectionAspect} does most of the heavy lifting in cases
  * like this, where we only depend on the arguments passed into the method.
  *
@@ -36,20 +36,19 @@ import com.springsource.insight.intercept.operation.OperationType;
  * there could be an unexpected version change within the instrumented library. In either
  * case insight should catch these without interfering with the application.
  */
-public aspect CashMoneyOperationCollectionAspect extends AbstractOperationCollectionAspect
-{
+public aspect CashMoneyOperationCollectionAspect extends AbstractOperationCollectionAspect {
     static final OperationType TYPE = OperationType.valueOf("cash_money_operation");
 
-    public CashMoneyOperationCollectionAspect () {
-    	super();
+    public CashMoneyOperationCollectionAspect() {
+        super();
     }
 
-    public pointcut collectionPoint() : execution(void *.setBalance(int));
+    public pointcut collectionPoint(): execution(void *.setBalance(int));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
         Object[] args = jp.getArgs();
-        Integer newBalance = (Integer)args[0];
+        Integer newBalance = (Integer) args[0];
 
         /**
          * Simulate a bug in the plugin. Bugs within plugins should be caught by insight. See the
@@ -61,17 +60,17 @@ public aspect CashMoneyOperationCollectionAspect extends AbstractOperationCollec
         }
 
         return new Operation()
-            .type(TYPE)
-            .sourceCodeLocation(getSourceCodeLocation(jp))
-            .label("Cash Balance Set: " + newBalance)
-            .put("newBalance", newBalance.intValue())
-            ;
+                .type(TYPE)
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .label("Cash Balance Set: " + newBalance)
+                .put("newBalance", newBalance.intValue())
+                ;
     }
 
     @Override
     public boolean isMetricsGenerator() {
         return true; // Always include this frame in the trace
-}
+    }
 
     @Override
     public String getPluginName() {

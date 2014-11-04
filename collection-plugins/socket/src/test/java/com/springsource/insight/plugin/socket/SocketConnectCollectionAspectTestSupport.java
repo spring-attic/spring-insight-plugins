@@ -21,7 +21,7 @@ import com.springsource.insight.intercept.operation.Operation;
 
 
 /**
- * 
+ *
  */
 public abstract class SocketConnectCollectionAspectTestSupport
         extends SocketOperationCollectionAspectTestSupport {
@@ -29,9 +29,9 @@ public abstract class SocketConnectCollectionAspectTestSupport
         super();
     }
 
-    protected Operation assertConnectOperation (SocketAddress connectAddress) {
-        String                                  addr=SocketDefinitions.resolveConnectAddress(connectAddress);
-        int                                     port=SocketDefinitions.resolveConnectPort(connectAddress);
+    protected Operation assertConnectOperation(SocketAddress connectAddress) {
+        String addr = SocketDefinitions.resolveConnectAddress(connectAddress);
+        int port = SocketDefinitions.resolveConnectPort(connectAddress);
         return assertSocketOperation(SocketDefinitions.CONNECT_ACTION, addr, port);
     }
 }

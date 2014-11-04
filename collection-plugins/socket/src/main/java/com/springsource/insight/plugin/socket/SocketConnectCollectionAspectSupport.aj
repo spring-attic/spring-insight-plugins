@@ -22,22 +22,22 @@ import org.aspectj.lang.JoinPoint;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public abstract aspect SocketConnectCollectionAspectSupport extends SocketOperationCollectionAspectSupport {
-    protected SocketConnectCollectionAspectSupport () {
+    protected SocketConnectCollectionAspectSupport() {
         super();
     }
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        SocketAddress   sockAddr=resolveConnectAddress(jp);
-        String          addr=SocketDefinitions.resolveConnectAddress(sockAddr);
-        int             port=SocketDefinitions.resolveConnectPort(sockAddr);
+        SocketAddress sockAddr = resolveConnectAddress(jp);
+        String addr = SocketDefinitions.resolveConnectAddress(sockAddr);
+        int port = SocketDefinitions.resolveConnectPort(sockAddr);
         return createOperation(super.createOperation(jp), SocketDefinitions.CONNECT_ACTION, addr, port);
     }
 
-    protected abstract SocketAddress resolveConnectAddress (JoinPoint jp);
+    protected abstract SocketAddress resolveConnectAddress(JoinPoint jp);
 
     @Override
     public String getPluginName() {

@@ -34,16 +34,16 @@ import com.springsource.insight.util.ObjectUtil;
 import com.springsource.insight.util.StringUtil;
 
 public enum DatabaseType {
-    MYSQL(new MySqlParser()), 
-    ORACLE(new OracleParser(), new OracleRACParser()), 
-    HSQLDB(new HsqlParser()), 
+    MYSQL(new MySqlParser()),
+    ORACLE(new OracleParser(), new OracleRACParser()),
+    HSQLDB(new HsqlParser()),
     MSSQL(new MssqlParser()),
     SQLFIRE(new SqlFireParser(), new SqlFirePeerParser()),
     POSTGRESQL(new PostgresSqlParser()),
     DB2(new DB2SqlParser()),
     SYBASE(new SybaseSqlParser());
 
-    private static final Map<String, DatabaseType> map=new TreeMap<String, DatabaseType>(String.CASE_INSENSITIVE_ORDER);
+    private static final Map<String, DatabaseType> map = new TreeMap<String, DatabaseType>(String.CASE_INSENSITIVE_ORDER);
 
     static {
         for (DatabaseType type : DatabaseType.values()) {
@@ -55,24 +55,24 @@ public enum DatabaseType {
     private final JdbcUrlParser[] parsers;
 
     private DatabaseType(JdbcUrlParser... urlParsers) {
-    	if (ArrayUtil.length(urlParsers) <= 0) {
-    		throw new IllegalStateException("No parsers provided");
-    	}
+        if (ArrayUtil.length(urlParsers) <= 0) {
+            throw new IllegalStateException("No parsers provided");
+        }
 
         vendorName = urlParsers[0].getVendorName();
         if (StringUtil.isEmpty(vendorName)) {
-        	throw new IllegalStateException("No vendor name");
+            throw new IllegalStateException("No vendor name");
         }
 
         // ensure all parsers belong to the same vendor
         if (urlParsers.length > 0) {
-        	for (JdbcUrlParser parser : urlParsers) {
-        		String	parserVendor=parser.getVendorName();
-        		if (!ObjectUtil.typedEquals(vendorName, parserVendor)) {
-        			throw new IllegalStateException("Mismatched vendors for " + parser.getClass().getSimpleName()
-        										  + ": expected=" + vendorName + ", actual=" + parserVendor);
-        		}
-        	}
+            for (JdbcUrlParser parser : urlParsers) {
+                String parserVendor = parser.getVendorName();
+                if (!ObjectUtil.typedEquals(vendorName, parserVendor)) {
+                    throw new IllegalStateException("Mismatched vendors for " + parser.getClass().getSimpleName()
+                            + ": expected=" + vendorName + ", actual=" + parserVendor);
+                }
+            }
         }
 
         parsers = urlParsers;
@@ -82,32 +82,32 @@ public enum DatabaseType {
         return vendorName;
     }
 
-    public List<JdbcUrlMetaData> parseConnectionUrl (final String connectionUrl) {
+    public List<JdbcUrlMetaData> parseConnectionUrl(final String connectionUrl) {
         if (StringUtil.isEmpty(connectionUrl)) {
-        	return null;
+            return null;
         }
 
         for (JdbcUrlParser parser : parsers) {
-            List<JdbcUrlMetaData> res=parser.parse(connectionUrl, vendorName);
+            List<JdbcUrlMetaData> res = parser.parse(connectionUrl, vendorName);
             if (res != null) {
-            	return res;
+                return res;
             }
         }
 
-        return null;	// no successful parsing
+        return null;    // no successful parsing
     }
 
     public static List<JdbcUrlMetaData> parse(final String connectionUrl) {
         if (StringUtil.isEmpty(connectionUrl)) {
-        	return null;
+            return null;
         }
 
-        String[] 	 parts=connectionUrl.split("[:]");
-        DatabaseType type=(parts.length >= 2) ? findByDatabaseName(parts[1]) : null;
-        if (type == null) {	// cannot determine type
-        	return null;
+        String[] parts = connectionUrl.split("[:]");
+        DatabaseType type = (parts.length >= 2) ? findByDatabaseName(parts[1]) : null;
+        if (type == null) {    // cannot determine type
+            return null;
         } else {
-        	return type.parseConnectionUrl(connectionUrl);
+            return type.parseConnectionUrl(connectionUrl);
         }
     }
 

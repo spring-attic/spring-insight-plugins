@@ -33,45 +33,45 @@ import com.springsource.insight.collection.OperationListCollector;
 import com.springsource.insight.intercept.operation.Operation;
 
 @TransactionConfiguration
-@ContextConfiguration(locations={ "classpath:META-INF/jpaTestContext.xml" })
-public abstract class TransactionalJpaEntityManagerTestSupport 
+@ContextConfiguration(locations = {"classpath:META-INF/jpaTestContext.xml"})
+public abstract class TransactionalJpaEntityManagerTestSupport
         extends AbstractTransactionalJUnit4SpringContextTests {
     @PersistenceContext
-    protected EntityManager   entityManager;
-    private OperationCollector  originalCollector;
-    private final OperationListCollector    spiedCollector=new OperationListCollector();
+    protected EntityManager entityManager;
+    private OperationCollector originalCollector;
+    private final OperationListCollector spiedCollector = new OperationListCollector();
 
     protected TransactionalJpaEntityManagerTestSupport() {
         super();
     }
 
     @Before
-    public void setUp () {
-        OperationCollectionAspectSupport    aspectInstance=getAspect();
+    public void setUp() {
+        OperationCollectionAspectSupport aspectInstance = getAspect();
         originalCollector = aspectInstance.getCollector();
         spiedCollector.clearCollectedOperations();
         aspectInstance.setCollector(spiedCollector);
     }
 
     @After
-    public void tearDown () {
-        OperationCollectionAspectSupport    aspectInstance=getAspect();
+    public void tearDown() {
+        OperationCollectionAspectSupport aspectInstance = getAspect();
         aspectInstance.setCollector(originalCollector);
     }
 
-    protected abstract OperationCollectionAspectSupport getAspect ();
+    protected abstract OperationCollectionAspectSupport getAspect();
 
-    protected Operation assertManagerOperation (String testName, String action, String opGroup) {
+    protected Operation assertManagerOperation(String testName, String action, String opGroup) {
         return JpaEntityManagerCollectionTestSupport.assertManagerOperation(getLastEntered(), testName, action, opGroup);
     }
 
-    protected Operation getLastEntered () {
-        List<? extends Operation>   opsList=spiedCollector.getCollectedOperations();
-        int                         numOps=opsList.size();
+    protected Operation getLastEntered() {
+        List<? extends Operation> opsList = spiedCollector.getCollectedOperations();
+        int numOps = opsList.size();
         if (numOps <= 0) {
             return null;
         }
-        
+
         return opsList.get(numOps - 1);
     }
 }

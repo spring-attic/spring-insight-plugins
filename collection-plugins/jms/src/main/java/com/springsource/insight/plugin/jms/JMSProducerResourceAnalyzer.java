@@ -16,13 +16,13 @@
 package com.springsource.insight.plugin.jms;
 
 public class JMSProducerResourceAnalyzer extends AbstractJMSResourceAnalyzer {
-	private static final JMSProducerResourceAnalyzer	INSTANCE=new JMSProducerResourceAnalyzer();
+    private static final JMSProducerResourceAnalyzer INSTANCE = new JMSProducerResourceAnalyzer();
 
-	private JMSProducerResourceAnalyzer() {
+    private JMSProducerResourceAnalyzer() {
         super(JMSPluginOperationType.SEND, false);
     }
 
-	public static final JMSProducerResourceAnalyzer getInstance() {
-		return INSTANCE;
-	}
+    public static final JMSProducerResourceAnalyzer getInstance() {
+        return INSTANCE;
+    }
 }

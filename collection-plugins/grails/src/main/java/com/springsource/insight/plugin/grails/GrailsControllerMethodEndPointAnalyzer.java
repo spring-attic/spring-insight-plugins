@@ -26,30 +26,30 @@ import com.springsource.insight.intercept.trace.Frame;
 
 public class GrailsControllerMethodEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
     public static final OperationType TYPE = OperationType.valueOf("grails_controller_method");
-    private static final GrailsControllerMethodEndPointAnalyzer	INSTANCE=new GrailsControllerMethodEndPointAnalyzer();
+    private static final GrailsControllerMethodEndPointAnalyzer INSTANCE = new GrailsControllerMethodEndPointAnalyzer();
 
-    private GrailsControllerMethodEndPointAnalyzer () {
-    	super(TYPE);
+    private GrailsControllerMethodEndPointAnalyzer() {
+        super(TYPE);
     }
 
     public static final GrailsControllerMethodEndPointAnalyzer getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
-	@Override
-	protected EndPointAnalysis makeEndPoint(Frame grailsFrame, int depth) {
+    @Override
+    protected EndPointAnalysis makeEndPoint(Frame grailsFrame, int depth) {
         Operation operation = grailsFrame.getOperation();
         String resourceKey = makeResourceKey(operation.getSourceCodeLocation());
         String resourceLabel = operation.getLabel();
         String exampleRequest = EndPointAnalysis.getHttpExampleRequest(grailsFrame);
         return new EndPointAnalysis(EndPointName.valueOf(resourceKey),
-                                    resourceLabel,
-                                    exampleRequest,
-                                    getOperationScore(operation, depth),
-                                    operation);
+                resourceLabel,
+                exampleRequest,
+                getOperationScore(operation, depth),
+                operation);
     }
 
-	static String makeResourceKey (SourceCodeLocation actionLocation) {
-		return actionLocation.getClassName() + "." + actionLocation.getMethodName();
-	}
+    static String makeResourceKey(SourceCodeLocation actionLocation) {
+        return actionLocation.getClassName() + "." + actionLocation.getMethodName();
+    }
 }

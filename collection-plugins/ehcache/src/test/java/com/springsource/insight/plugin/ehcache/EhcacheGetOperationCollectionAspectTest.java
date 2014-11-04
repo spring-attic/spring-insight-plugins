@@ -22,7 +22,7 @@ import net.sf.ehcache.Element;
 import org.junit.Test;
 
 /**
- * 
+ *
  */
 public class EhcacheGetOperationCollectionAspectTest
         extends EhcacheOperationCollectionAspectTestSupport {
@@ -31,41 +31,37 @@ public class EhcacheGetOperationCollectionAspectTest
     }
 
     @Test
-    public void testGetSerializable ()
-    {
-        Serializable    key=Long.valueOf(System.nanoTime());
+    public void testGetSerializable() {
+        Serializable key = Long.valueOf(System.nanoTime());
         assertNull("Unexpected cache content", cache.get(key));
         assertEhcacheOperationContents(EhcacheDefinitions.GET_METHOD, key, null);
     }
 
     @Test
-    public void testGetObject ()
-    {
-        Object    key=Long.valueOf(System.nanoTime());
+    public void testGetObject() {
+        Object key = Long.valueOf(System.nanoTime());
         assertNull("Unexpected cache content", cache.get(key));
         assertEhcacheOperationContents(EhcacheDefinitions.GET_METHOD, key, null);
     }
 
     @Test
-    public void testGetQuietSerializable ()
-    {
-        Serializable    key=Long.valueOf(System.nanoTime());
+    public void testGetQuietSerializable() {
+        Serializable key = Long.valueOf(System.nanoTime());
         assertNull("Unexpected cache content", cache.getQuiet(key));
         assertEhcacheOperationContents(EhcacheDefinitions.GET_METHOD, key, null);
     }
 
     @Test
-    public void testGetQuietObject ()
-    {
-        Object    key=Long.valueOf(System.nanoTime());
+    public void testGetQuietObject() {
+        Object key = Long.valueOf(System.nanoTime());
         assertNull("Unexpected cache content", cache.getQuiet(key));
         assertEhcacheOperationContents(EhcacheDefinitions.GET_METHOD, key, null);
     }
 
     @Test
-    public void testGetExistingValue () {
-        Object  key="testGetExistingValue", value=Long.valueOf(System.nanoTime());
-        Element putElem=putUncaptured(key, value), getElem=cache.get(key);
+    public void testGetExistingValue() {
+        Object key = "testGetExistingValue", value = Long.valueOf(System.nanoTime());
+        Element putElem = putUncaptured(key, value), getElem = cache.get(key);
 
         assertNotNull("Missing uncaptured put", putElem);
         assertNotNull("Cached value not found", getElem);

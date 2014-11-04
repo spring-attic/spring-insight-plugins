@@ -35,8 +35,8 @@ public class RedisMapOperationCollectionAspectTest extends OperationCollectionAs
     private static final String kw_value = "value";
     private static final String kw_size = "size";
 
-    public RedisMapOperationCollectionAspectTest () {
-    	super();
+    public RedisMapOperationCollectionAspectTest() {
+        super();
     }
 
     @Test

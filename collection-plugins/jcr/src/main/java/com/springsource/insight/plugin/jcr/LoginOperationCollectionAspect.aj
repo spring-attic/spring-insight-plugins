@@ -30,43 +30,42 @@ import com.springsource.insight.intercept.operation.Operation;
  * This aspect intercepts all JCR Login
  */
 public privileged aspect LoginOperationCollectionAspect extends AbstractOperationCollectionAspect {
-	public LoginOperationCollectionAspect () {
-		super();
-	}
+    public LoginOperationCollectionAspect() {
+        super();
+    }
 
-	public pointcut collectionPoint() : execution(public Session javax.jcr.Repository+.login(Credentials, String)) && if(LoginOperationCollectionAspect.isEnabled(thisJoinPoint));
+    public pointcut collectionPoint(): execution(public Session javax.jcr.Repository+.login(Credentials, String)) && if(LoginOperationCollectionAspect.isEnabled(thisJoinPoint));
 
     public static boolean isEnabled(JoinPoint jp) {
-    	Repository repo=(Repository)jp.getTarget();
-    	return repo.getClass().getSimpleName().endsWith("Impl"); // filter multiple login requests in chain
+        Repository repo = (Repository) jp.getTarget();
+        return repo.getClass().getSimpleName().endsWith("Impl"); // filter multiple login requests in chain
     }
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-    	Object[] args = jp.getArgs();
-    	Repository repo=(Repository)jp.getTarget();
-    	
-    	Credentials credentials=(Credentials)args[0];
-    	String workspaceName=(String)args[1];
-    			
-    	Operation op=new Operation().type(OperationCollectionTypes.LOGIN_TYPE.type)
-    								.label(OperationCollectionTypes.LOGIN_TYPE.label+(workspaceName!=null?" ["+workspaceName+"]":""))
-    								.sourceCodeLocation(getSourceCodeLocation(jp))
-    								.putAnyNonEmpty("repository", repo.getDescriptor(Repository.REP_NAME_DESC))
-    								.putAnyNonEmpty("workspace", workspaceName)
-    								;
-    						
-    	if (credentials instanceof SimpleCredentials) {
-    		SimpleCredentials	auth=(SimpleCredentials) credentials;
-    		op.putAnyNonEmpty("user", auth.getUserID());
-    		op.putAnyNonEmpty("pass", JCRCollectionUtils.safeToString(auth.getPassword()));
-    	}
-    	
-    	return op;
+        Object[] args = jp.getArgs();
+        Repository repo = (Repository) jp.getTarget();
+
+        Credentials credentials = (Credentials) args[0];
+        String workspaceName = (String) args[1];
+
+        Operation op = new Operation().type(OperationCollectionTypes.LOGIN_TYPE.type)
+                .label(OperationCollectionTypes.LOGIN_TYPE.label + (workspaceName != null ? " [" + workspaceName + "]" : ""))
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .putAnyNonEmpty("repository", repo.getDescriptor(Repository.REP_NAME_DESC))
+                .putAnyNonEmpty("workspace", workspaceName);
+
+        if (credentials instanceof SimpleCredentials) {
+            SimpleCredentials auth = (SimpleCredentials) credentials;
+            op.putAnyNonEmpty("user", auth.getUserID());
+            op.putAnyNonEmpty("pass", JCRCollectionUtils.safeToString(auth.getPassword()));
+        }
+
+        return op;
     }
 
-	@Override
-	public String getPluginName() {
-		return JCRPluginRuntimeDescriptor.PLUGIN_NAME;
-	}
+    @Override
+    public String getPluginName() {
+        return JCRPluginRuntimeDescriptor.PLUGIN_NAME;
+    }
 }

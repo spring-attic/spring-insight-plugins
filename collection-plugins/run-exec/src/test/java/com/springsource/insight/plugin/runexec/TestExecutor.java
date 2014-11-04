@@ -21,12 +21,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 
+ *
  */
 public class TestExecutor implements Executor, Runnable {
-    private Runnable    _command;
-    private final boolean   _runCommand, _runAsync;
-    private final BlockingQueue<Thread> _threadsQueue=new LinkedBlockingQueue<Thread>();
+    private Runnable _command;
+    private final boolean _runCommand, _runAsync;
+    private final BlockingQueue<Thread> _threadsQueue = new LinkedBlockingQueue<Thread>();
+
     public TestExecutor(boolean runCommand, boolean runAsync) {
         _runCommand = runCommand;
         _runAsync = runAsync;
@@ -37,13 +38,13 @@ public class TestExecutor implements Executor, Runnable {
             throw new IllegalStateException("Command already run");
         }
 
-        if ((_command=command) == null) {
+        if ((_command = command) == null) {
             throw new IllegalArgumentException("No command to run");
         }
- 
+
         if (_runCommand) {
             if (_runAsync) {
-                Thread  t=new Thread(this, "tAsyncCommand" + System.nanoTime());
+                Thread t = new Thread(this, "tAsyncCommand" + System.nanoTime());
                 t.start();
             } else {
                 run();
@@ -51,24 +52,24 @@ public class TestExecutor implements Executor, Runnable {
         }
     }
 
-    public void run () {
-        Thread  curThread=Thread.currentThread();
+    public void run() {
+        Thread curThread = Thread.currentThread();
         _command.run();
         try {
             if (!_threadsQueue.offer(curThread, 5L, TimeUnit.SECONDS)) {
                 throw new IllegalStateException("Failed to signal end of run");
             }
-        } catch(InterruptedException e) {
+        } catch (InterruptedException e) {
             throw new IllegalStateException("Interrupted");
         }
     }
 
-    public Thread waitForThread () throws InterruptedException {
+    public Thread waitForThread() throws InterruptedException {
         if (!_runCommand) {
             return Thread.currentThread();
         }
 
-        Thread  t=_threadsQueue.poll(10L, TimeUnit.SECONDS);
+        Thread t = _threadsQueue.poll(10L, TimeUnit.SECONDS);
         if (t == null) {
             throw new IllegalStateException("No thread returned");
         }
@@ -83,7 +84,7 @@ public class TestExecutor implements Executor, Runnable {
         return t;
     }
 
-    public Runnable getLastRunCommand () {
+    public Runnable getLastRunCommand() {
         return _command;
     }
 }

@@ -23,31 +23,31 @@ import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.util.ArrayUtil;
 
 /**
- * 
+ *
  */
 public abstract class AbstractRabbitMQCollectionAspectTestSupport
-		extends OperationCollectionAspectTestSupport {
+        extends OperationCollectionAspectTestSupport {
 
-    protected final RabbitPluginOperationType	pluginOpType;
+    protected final RabbitPluginOperationType pluginOpType;
 
-	protected AbstractRabbitMQCollectionAspectTestSupport(RabbitPluginOperationType rabbitOpType) {
-    	if ((pluginOpType=rabbitOpType) == null) {
-    		throw new IllegalStateException("No plugin operation type specified");
-    	}
+    protected AbstractRabbitMQCollectionAspectTestSupport(RabbitPluginOperationType rabbitOpType) {
+        if ((pluginOpType = rabbitOpType) == null) {
+            throw new IllegalStateException("No plugin operation type specified");
+        }
     }
 
     protected Operation assertBasicOperation(BasicProperties props, byte[] body, String opLabel) {
-    	return assertBasicOperation(assertOperationCreated(), props, body, opLabel);
+        return assertBasicOperation(assertOperationCreated(), props, body, opLabel);
     }
 
     protected Operation assertBasicOperation(Operation op, BasicProperties props, byte[] body, String opLabel) {
         assertEquals("Mismatched body length", ArrayUtil.length(body), op.getInt("bytes", (-1)));
         assertEquals("Mismatched label", opLabel, op.getLabel());
 
-        for (String propName : new String[] { "connectionUrl", "serverVersion", "clientVersion"}) {
-        	assertNullValue(propName, op.get(propName));
+        for (String propName : new String[]{"connectionUrl", "serverVersion", "clientVersion"}) {
+            assertNullValue(propName, op.get(propName));
         }
-        
+
         OperationMap propsMap = op.get("props", OperationMap.class);
         assertNotNull("No properties extracted", propsMap);
 
@@ -62,7 +62,7 @@ public abstract class AbstractRabbitMQCollectionAspectTestSupport
     protected Operation assertOperationCreated() {
         Operation op = getLastEntered();
         assertNotNull("No operation entered", op);
-        assertEquals("Mismatched operation type", pluginOpType.getOperationType(), op.getType());       
+        assertEquals("Mismatched operation type", pluginOpType.getOperationType(), op.getType());
         return op;
     }
 }

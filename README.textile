@@ -1,5 +1,7 @@
 h1. Community Plugin Repository for Insight Developer and Insight Operations
 
+![Build Status](https://travis-ci.org/wesschlichter/spring-insight-plugins.svg?branch=master)
+
 h2. What is Insight Developer Edition?
 
 Insight is a VMware® Web application that gives you real-time visibility into application behavior and performance at the code-level. Released as part of vFabric and AppInsight.

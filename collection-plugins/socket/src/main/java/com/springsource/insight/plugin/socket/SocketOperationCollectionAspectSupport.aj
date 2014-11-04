@@ -23,27 +23,27 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.trace.FrameBuilder;
 
 /**
- * 
+ *
  */
 public abstract aspect SocketOperationCollectionAspectSupport
-                extends MethodOperationCollectionAspect {
+        extends MethodOperationCollectionAspect {
     private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
-    private SocketCollectOperationContext collectContext=new SocketCollectOperationContext();
+    private SocketCollectOperationContext collectContext = new SocketCollectOperationContext();
 
     protected SocketOperationCollectionAspectSupport() {
         super();
     }
 
-    SocketCollectOperationContext getSocketCollectOperationContext () {
+    SocketCollectOperationContext getSocketCollectOperationContext() {
         return collectContext;
     }
 
-    void setSocketCollectOperationContext (SocketCollectOperationContext context) {
-    	collectContext = context;
+    void setSocketCollectOperationContext(SocketCollectOperationContext context) {
+        collectContext = context;
     }
 
-    protected Operation createOperation (Operation op, String action, String addr, int port) {
-    	SocketCollectOperationContext	context=getSocketCollectOperationContext();
+    protected Operation createOperation(Operation op, String action, String addr, int port) {
+        SocketCollectOperationContext context = getSocketCollectOperationContext();
         if (context.updateObscuredAddressValue(addr)) {
             if (_logger.isLoggable(Level.FINE)) {
                 _logger.fine("createOperation(" + action + ") obscured: " + addr);
@@ -53,7 +53,7 @@ public abstract aspect SocketOperationCollectionAspectSupport
         return SocketDefinitions.initializeOperation(op, action, addr, port);
     }
 
-    protected boolean collectExtraInformation () {
+    protected boolean collectExtraInformation() {
         return FrameBuilder.OperationCollectionLevel.HIGH.equals(configuration.getCollectionLevel());
     }
 
@@ -61,7 +61,7 @@ public abstract aspect SocketOperationCollectionAspectSupport
     public String getPluginName() {
         return SocketPluginRuntimeDescriptor.PLUGIN_NAME;
     }
-    
+
     @Override
     public boolean isMetricsGenerator() {
         return true; // This provides an external resource

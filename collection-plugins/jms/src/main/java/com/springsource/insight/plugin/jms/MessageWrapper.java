@@ -27,53 +27,53 @@ import javax.jms.Message;
  */
 final class MessageWrapper {
     /**
-     * Weak reference - to avoid memory leaks 
+     * Weak reference - to avoid memory leaks
      */
     WeakReference<Message> weakMessage;
-    
+
     /**
      * message hash code
      */
     private int messageHash = -1;
-    
+
     /**
      * Creates a wrapper for a given {@code message}
-     * 
+     *
      * @param message jms message
      */
     private MessageWrapper(Message message) {
         this.weakMessage = new WeakReference<Message>(message);
         this.messageHash = System.identityHashCode(message);
     }
-    
+
     @Override
     public int hashCode() {
         return messageHash;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         boolean e = this == obj;
-        
+
         if (!e) {
             if (obj instanceof MessageWrapper) {
                 MessageWrapper o = (MessageWrapper) obj;
                 Message message = weakMessage.get();
                 Message omessage = o.weakMessage.get();
-                e = message != null &&  omessage != null && omessage == message;
+                e = message != null && omessage != null && omessage == message;
             }
         }
-        
+
         return e;
     }
-    
+
     /**
      * A convenient way to create a wrapper
-     *  
+     *
      * @param message jms message
      * @return wrapper for the given {@code message}
      */
-    static MessageWrapper instance(Message message){
+    static MessageWrapper instance(Message message) {
         return new MessageWrapper(message);
     }
 

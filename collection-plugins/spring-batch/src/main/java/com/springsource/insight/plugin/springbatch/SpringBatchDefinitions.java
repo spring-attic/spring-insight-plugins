@@ -19,19 +19,19 @@ package com.springsource.insight.plugin.springbatch;
 import com.springsource.insight.intercept.operation.OperationType;
 
 /**
- * 
+ *
  */
 public final class SpringBatchDefinitions {
     private SpringBatchDefinitions() {
         throw new UnsupportedOperationException("Construction N/A");
     }
 
-    public static final OperationType   BATCH_TYPE=OperationType.valueOf("spring-batch");
+    public static final OperationType BATCH_TYPE = OperationType.valueOf("spring-batch");
     // some widely used operation attributes
-    public static final String  NAME_ATTR="name",
-                                JOBNAME_ATTR="jobName",
-                                STEPNAME_ATTR="stepName",
-                                TYPE_ATTR="batchType",
-                                ACTION_ATTR="action",
-                                UNKNOWN_VALUE="<unknown>";
+    public static final String NAME_ATTR = "name",
+            JOBNAME_ATTR = "jobName",
+            STEPNAME_ATTR = "stepName",
+            TYPE_ATTR = "batchType",
+            ACTION_ATTR = "action",
+            UNKNOWN_VALUE = "<unknown>";
 }

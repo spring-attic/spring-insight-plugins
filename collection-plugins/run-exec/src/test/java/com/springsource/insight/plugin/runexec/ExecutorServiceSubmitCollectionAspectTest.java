@@ -41,25 +41,25 @@ public class ExecutorServiceSubmitCollectionAspectTest
     }
 
     @Test
-    public void testNoArgsSubmit () throws Exception {
+    public void testNoArgsSubmit() throws Exception {
         runSubmitTest(null);
     }
 
     @Test
-    public void testSubmitWithResult () throws Exception {
+    public void testSubmitWithResult() throws Exception {
         runSubmitTest(Long.valueOf(System.nanoTime()));
     }
 
-    private void runSubmitTest (Object result) throws InterruptedException, ExecutionException, TimeoutException {
-        ExecutorService     executor=new ThreadPoolExecutor(5, 5, 5L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(5));
-        SignallingRunnable  runner=new SignallingRunnable("runSubmitTest(result=" + result + ")");
-        Future<?>           future=(result == null) ? executor.submit(runner) : executor.submit(runner, result);
+    private void runSubmitTest(Object result) throws InterruptedException, ExecutionException, TimeoutException {
+        ExecutorService executor = new ThreadPoolExecutor(5, 5, 5L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(5));
+        SignallingRunnable runner = new SignallingRunnable("runSubmitTest(result=" + result + ")");
+        Future<?> future = (result == null) ? executor.submit(runner) : executor.submit(runner, result);
         assertNotNull("No future instance returned", future);
         assertLastExecutionOperation(runner);
         assertCurrentThreadExecution();
 
         if (result != null) {
-            Object  actual=future.get(5L, TimeUnit.SECONDS);
+            Object actual = future.get(5L, TimeUnit.SECONDS);
             assertEquals("Mismatched future result", result, actual);
         }
     }

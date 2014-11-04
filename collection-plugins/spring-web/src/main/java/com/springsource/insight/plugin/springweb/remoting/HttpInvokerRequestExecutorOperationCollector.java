@@ -25,23 +25,23 @@ import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.util.StringFormatterUtils;
 
 /**
- * 
+ *
  */
 public class HttpInvokerRequestExecutorOperationCollector extends DefaultOperationCollector {
-	public static final String	REMOTE_EXCEPTION="remoteException";
+    public static final String REMOTE_EXCEPTION = "remoteException";
 
-	HttpInvokerRequestExecutorOperationCollector() {
-		super();
-	}
+    HttpInvokerRequestExecutorOperationCollector() {
+        super();
+    }
 
-	@Override
-	protected void processNormalExit(Operation op, Object returnValue) {
-		RemoteInvocationResult	result=(RemoteInvocationResult) returnValue;
-		Throwable	remoteError=result.getException();
-		if (remoteError != null) {
-			op.put(REMOTE_EXCEPTION, StringFormatterUtils.formatStackTrace(remoteError));
-		} else {
-			op.put(OperationFields.RETURN_VALUE, StringFormatterUtils.formatObject(result.getValue()));
-		}
-	}
+    @Override
+    protected void processNormalExit(Operation op, Object returnValue) {
+        RemoteInvocationResult result = (RemoteInvocationResult) returnValue;
+        Throwable remoteError = result.getException();
+        if (remoteError != null) {
+            op.put(REMOTE_EXCEPTION, StringFormatterUtils.formatStackTrace(remoteError));
+        } else {
+            op.put(OperationFields.RETURN_VALUE, StringFormatterUtils.formatObject(result.getValue()));
+        }
+    }
 }

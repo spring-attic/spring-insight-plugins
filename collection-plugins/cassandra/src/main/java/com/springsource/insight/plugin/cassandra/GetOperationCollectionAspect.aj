@@ -45,107 +45,106 @@ public privileged aspect GetOperationCollectionAspect extends AbstractCassandraO
         super();
     }
 
-    public pointcut collectionPoint() : execution(public * org.apache.cassandra.thrift.Cassandra.Client.get*(..)) ||
-    									execution(public * org.apache.cassandra.thrift.Cassandra.Client.multiget_*(..));
+    public pointcut collectionPoint(): execution(public * org.apache.cassandra.thrift.Cassandra.Client.get*(..)) ||
+            execution(public * org.apache.cassandra.thrift.Cassandra.Client.multiget_*(..));
 
-	@Override
+    @Override
     protected Operation createOperation(JoinPoint jp) {
-    	String method=jp.getSignature().getName(); //method name
-    	Object[] args = jp.getArgs();
-    	
-		Operation operation = OperationUtils.createOperation(OperationCollectionTypes.GET_TYPE, method, getSourceCodeLocation(jp)); 
-		// get transport info
-		OperationUtils.putTransportInfo(operation, ((Cassandra.Client)jp.getTarget()).getInputProtocol());
+        String method = jp.getSignature().getName(); //method name
+        Object[] args = jp.getArgs();
 
-		operation.putAnyNonEmpty("consistLevel", (args[args.length-1]!=null)?((ConsistencyLevel)args[args.length-1]).name():null);
-		for (int i=0; i<args.length-1; i++) {
-			Object	argVal=args[i];
-			if (argVal instanceof ByteBuffer) {
-				if (i==0) {
-					operation.put("key", OperationUtils.getText((ByteBuffer)argVal));
-				}
-				else {
-					operation.putAnyNonEmpty("startColumn", OperationUtils.getString((ByteBuffer)argVal));
-				}
-			} else if (argVal instanceof Collection<?>) {
-				OperationList keys=operation.createList("keys");
-				@SuppressWarnings("unchecked")
-				Collection<ByteBuffer>	bbList=(Collection<ByteBuffer>) argVal;
-				for(ByteBuffer key: bbList) {
-					keys.add(OperationUtils.getString(key));
-				}
-			} else if (argVal instanceof ColumnParent) {
-				ColumnParent colParent=(ColumnParent)argVal;
-				if (colParent!=null) {
-					operation.put("columnFamily", OperationUtils.getText(colParent.getColumn_family()));
-					operation.putAnyNonEmpty("superColumn", OperationUtils.getString(colParent.getSuper_column()));
-				}
-			} else if (argVal instanceof SlicePredicate) {
-				SlicePredicate pred=(SlicePredicate)argVal;
-				if (pred!=null) {
-					if (pred.getColumn_names()!=null) {
-						OperationList cols=operation.createList("columns");
-						for(ByteBuffer col: pred.getColumn_names()) {
-							cols.add(OperationUtils.getString(col));
-						}
-					}
-					
-					SliceRange range=pred.getSlice_range();
-					if (range!=null) {
-						OperationMap rangeMap=operation.createMap("range");
-						rangeMap.put("start", OperationUtils.getText(range.getStart()));
-						rangeMap.put("end", OperationUtils.getText(range.getFinish()));
-						rangeMap.put("count", range.getCount());
-						rangeMap.put("reversed", range.isReversed());
-					}
-				}
-			} else if (argVal instanceof KeyRange) {
-				KeyRange range=(KeyRange)argVal;
-				if (range!=null) {
-					OperationMap rangeMap=operation.createMap("range");
-					rangeMap.put("count", range.getCount());
-					rangeMap.put("startKey", OperationUtils.getString(range.getStart_key()));
-					rangeMap.putAnyNonEmpty("startToken", range.getStart_token());
-					rangeMap.put("endKey", OperationUtils.getString(range.getEnd_key()));
-					rangeMap.putAnyNonEmpty("endToken", range.getEnd_token());
-					
-					if (range.getRow_filter()!=null) {
-						OperationList filter=operation.createList("rowFilter");
-						for(IndexExpression exp: range.getRow_filter()) {
-							filter.add(OperationUtils.getText(exp.getColumn_name())+" "+exp.getOp().name()+" "+OperationUtils.getAnyData(exp.getValue()));
-						}
-					}
-				}
-			} else if (argVal instanceof  ColumnPath) {
-				ColumnPath colPath=(ColumnPath)argVal;
-				if (colPath!=null) {
-					operation.put("columnFamily", OperationUtils.getText(colPath.getColumn_family()));
-					operation.putAnyNonEmpty("superColumn", OperationUtils.getString(colPath.getSuper_column()));
-					operation.putAnyNonEmpty("colName", OperationUtils.getString(colPath.getColumn()));
-				}
-			} else if (argVal instanceof IndexClause) {
-				IndexClause indCls=(IndexClause)argVal;
-				if (indCls!=null) {
-					operation.put("startKey", OperationUtils.getText(indCls.getStart_key()));
-					operation.put("count", indCls.getCount());
-					List<IndexExpression> exps=indCls.getExpressions();
-					if (exps!=null && exps.size()>0) {
-						OperationList listExp=operation.createList("indexExp");
-						for(IndexExpression exp: exps) {
-							listExp.add(OperationUtils.getText(exp.getColumn_name())+" "+exp.getOp().name()+" "+OperationUtils.getAnyData(exp.getValue()));
-						}
-					}
-				}
-			} else if (argVal instanceof String) {
-				operation.put("columnFamily", OperationUtils.getText((String)argVal));
-			}
-		}
-		
-		return operation;
+        Operation operation = OperationUtils.createOperation(OperationCollectionTypes.GET_TYPE, method, getSourceCodeLocation(jp));
+        // get transport info
+        OperationUtils.putTransportInfo(operation, ((Cassandra.Client) jp.getTarget()).getInputProtocol());
+
+        operation.putAnyNonEmpty("consistLevel", (args[args.length - 1] != null) ? ((ConsistencyLevel) args[args.length - 1]).name() : null);
+        for (int i = 0; i < args.length - 1; i++) {
+            Object argVal = args[i];
+            if (argVal instanceof ByteBuffer) {
+                if (i == 0) {
+                    operation.put("key", OperationUtils.getText((ByteBuffer) argVal));
+                } else {
+                    operation.putAnyNonEmpty("startColumn", OperationUtils.getString((ByteBuffer) argVal));
+                }
+            } else if (argVal instanceof Collection<?>) {
+                OperationList keys = operation.createList("keys");
+                @SuppressWarnings("unchecked")
+                Collection<ByteBuffer> bbList = (Collection<ByteBuffer>) argVal;
+                for (ByteBuffer key : bbList) {
+                    keys.add(OperationUtils.getString(key));
+                }
+            } else if (argVal instanceof ColumnParent) {
+                ColumnParent colParent = (ColumnParent) argVal;
+                if (colParent != null) {
+                    operation.put("columnFamily", OperationUtils.getText(colParent.getColumn_family()));
+                    operation.putAnyNonEmpty("superColumn", OperationUtils.getString(colParent.getSuper_column()));
+                }
+            } else if (argVal instanceof SlicePredicate) {
+                SlicePredicate pred = (SlicePredicate) argVal;
+                if (pred != null) {
+                    if (pred.getColumn_names() != null) {
+                        OperationList cols = operation.createList("columns");
+                        for (ByteBuffer col : pred.getColumn_names()) {
+                            cols.add(OperationUtils.getString(col));
+                        }
+                    }
+
+                    SliceRange range = pred.getSlice_range();
+                    if (range != null) {
+                        OperationMap rangeMap = operation.createMap("range");
+                        rangeMap.put("start", OperationUtils.getText(range.getStart()));
+                        rangeMap.put("end", OperationUtils.getText(range.getFinish()));
+                        rangeMap.put("count", range.getCount());
+                        rangeMap.put("reversed", range.isReversed());
+                    }
+                }
+            } else if (argVal instanceof KeyRange) {
+                KeyRange range = (KeyRange) argVal;
+                if (range != null) {
+                    OperationMap rangeMap = operation.createMap("range");
+                    rangeMap.put("count", range.getCount());
+                    rangeMap.put("startKey", OperationUtils.getString(range.getStart_key()));
+                    rangeMap.putAnyNonEmpty("startToken", range.getStart_token());
+                    rangeMap.put("endKey", OperationUtils.getString(range.getEnd_key()));
+                    rangeMap.putAnyNonEmpty("endToken", range.getEnd_token());
+
+                    if (range.getRow_filter() != null) {
+                        OperationList filter = operation.createList("rowFilter");
+                        for (IndexExpression exp : range.getRow_filter()) {
+                            filter.add(OperationUtils.getText(exp.getColumn_name()) + " " + exp.getOp().name() + " " + OperationUtils.getAnyData(exp.getValue()));
+                        }
+                    }
+                }
+            } else if (argVal instanceof ColumnPath) {
+                ColumnPath colPath = (ColumnPath) argVal;
+                if (colPath != null) {
+                    operation.put("columnFamily", OperationUtils.getText(colPath.getColumn_family()));
+                    operation.putAnyNonEmpty("superColumn", OperationUtils.getString(colPath.getSuper_column()));
+                    operation.putAnyNonEmpty("colName", OperationUtils.getString(colPath.getColumn()));
+                }
+            } else if (argVal instanceof IndexClause) {
+                IndexClause indCls = (IndexClause) argVal;
+                if (indCls != null) {
+                    operation.put("startKey", OperationUtils.getText(indCls.getStart_key()));
+                    operation.put("count", indCls.getCount());
+                    List<IndexExpression> exps = indCls.getExpressions();
+                    if (exps != null && exps.size() > 0) {
+                        OperationList listExp = operation.createList("indexExp");
+                        for (IndexExpression exp : exps) {
+                            listExp.add(OperationUtils.getText(exp.getColumn_name()) + " " + exp.getOp().name() + " " + OperationUtils.getAnyData(exp.getValue()));
+                        }
+                    }
+                }
+            } else if (argVal instanceof String) {
+                operation.put("columnFamily", OperationUtils.getText((String) argVal));
+            }
+        }
+
+        return operation;
     }
-    
-	@Override
+
+    @Override
     public String getPluginName() {
-		return CassandraPluginRuntimeDescriptor.PLUGIN_NAME;
-	}
+        return CassandraPluginRuntimeDescriptor.PLUGIN_NAME;
+    }
 }

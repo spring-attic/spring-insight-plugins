@@ -36,11 +36,11 @@ import com.springsource.insight.intercept.operation.Operation;
  */
 public class MongoCollectionOperationCollectionAspectTest
         extends OperationCollectionAspectTestSupport {
-	public MongoCollectionOperationCollectionAspectTest () {
-		super();
-	}
+    public MongoCollectionOperationCollectionAspectTest() {
+        super();
+    }
 
-//	execution(WriteResult DBCollection.insert(DBObject[], WriteConcern));
+    //	execution(WriteResult DBCollection.insert(DBObject[], WriteConcern));
     @Test
     public void testInsert() {
         getMeACollection().insert(new DBObject[0], null);
@@ -48,7 +48,7 @@ public class MongoCollectionOperationCollectionAspectTest
         standardAsserts(op);
     }
 
-//	execution(WriteResult DBCollection.update(DBObject, DBObject, boolean, boolean));
+    //	execution(WriteResult DBCollection.update(DBObject, DBObject, boolean, boolean));
     @Test
     public void testUpdate() {
         getMeACollection().update(null, null, true, true);
@@ -56,7 +56,7 @@ public class MongoCollectionOperationCollectionAspectTest
         standardAsserts(op);
     }
 
-//	execution(WriteResult DBCollection.remove(DBObject, WriteConcern));
+    //	execution(WriteResult DBCollection.remove(DBObject, WriteConcern));
     @Test
     public void testRemove() {
         getMeACollection().remove(null, null);
@@ -64,23 +64,24 @@ public class MongoCollectionOperationCollectionAspectTest
         standardAsserts(op);
     }
 
-//	execution(WriteResult DBCollection.save(DBObject, WriteConcern));
+    //	execution(WriteResult DBCollection.save(DBObject, WriteConcern));
     @Test
     @Ignore("This particular method is very difficult to test due to final and various other interactions in the DBCollection class")
     public void testSave() {
-        ((DBCollectionDummy)getMeACollection()).save(new BasicDBObject("whoa", "there"), new WriteConcern(), "blah");
+        ((DBCollectionDummy) getMeACollection()).save(new BasicDBObject("whoa", "there"), new WriteConcern(), "blah");
         Operation op = getLastEntered();
         standardAsserts(op);
     }
 
-//	execution(DBCursor DBCollection.__find(DBObject, DBObject, int, int, int, int, ReadPreference));
+    //	execution(DBCursor DBCollection.__find(DBObject, DBObject, int, int, int, int, ReadPreference));
     @Test
     public void testFind() {
         getMeACollection().find(new BasicDBObject("whoa", "there"), new BasicDBObject("whoa", "there"));
         Operation op = getLastEntered();
         standardAsserts(op);
     }
-//	execution(void DBCollection.createIndex(DBObject, DBObject));
+
+    //	execution(void DBCollection.createIndex(DBObject, DBObject));
     @Test
     public void testCreateIndex() {
         getMeACollection().createIndex(new BasicDBObject("hi", "there"));
@@ -88,35 +89,39 @@ public class MongoCollectionOperationCollectionAspectTest
         standardAsserts(op);
     }
 
-//	execution(long DBCollection.getCount(DBObject, DBObject, long, long));
+    //	execution(long DBCollection.getCount(DBObject, DBObject, long, long));
     @Test
     public void testGetCount() {
         getMeACollection().getCount(new BasicDBObject("hi", "there"), new BasicDBObject("blah", "blah"), 1L, 2L);
         Operation op = getLastEntered();
         standardAsserts(op);
     }
-//	execution(DBObject DBCollection.group(GroupCommand));
+
+    //	execution(DBObject DBCollection.group(GroupCommand));
     @Test
     public void testGroup() {
         getMeACollection().group(new BasicDBObject("hi", "there"), new BasicDBObject("blah", "blah"), new BasicDBObject("blah", "blah"), "what do you know");
         Operation op = getLastEntered();
         standardAsserts(op);
     }
-//	execution(List DBCollection.distinct(String,DBObject));
+
+    //	execution(List DBCollection.distinct(String,DBObject));
     @Test
     public void testDistinct() {
         getMeACollection().distinct("what do you know");
         Operation op = getLastEntered();
         standardAsserts(op);
     }
-//	execution(MapReduceOutput DBCollection.mapReduce(..));
+
+    //	execution(MapReduceOutput DBCollection.mapReduce(..));
     @Test
     public void testMapReduce() {
         getMeACollection().mapReduce(new BasicDBObject("map-reduce", "smoosh"));
         Operation op = getLastEntered();
         standardAsserts(op);
     }
-//	execution(void DBCollection.dropIndexes(..));
+
+    //	execution(void DBCollection.dropIndexes(..));
     @Test
     public void testDropIndexes() {
         getMeACollection().dropIndexes("smoosh");

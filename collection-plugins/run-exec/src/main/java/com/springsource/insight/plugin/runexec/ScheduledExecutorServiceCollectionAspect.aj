@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 
 /**
- * 
+ *
  */
 public aspect ScheduledExecutorServiceCollectionAspect extends ExecuteMethodCollectionAspect {
     public ScheduledExecutorServiceCollectionAspect() {
@@ -32,25 +32,25 @@ public aspect ScheduledExecutorServiceCollectionAspect extends ExecuteMethodColl
      * NOTE: we need to use 'call' in order to intercept calls to the Java
      *      core classes that implement this interface
      */
-    public pointcut scheduleRunnable () : call(* ScheduledExecutorService+.schedule(Runnable,long,TimeUnit));
-    public pointcut ratedScheduling ()
-        : call(* ScheduledExecutorService+.scheduleAtFixedRate(Runnable,long,long,TimeUnit))
-       || call(* ScheduledExecutorService+.scheduleWithFixedDelay(Runnable,long,long,TimeUnit))
-        ;
+    public pointcut scheduleRunnable(): call(* ScheduledExecutorService+.schedule(Runnable,long,TimeUnit));
+    public pointcut ratedScheduling()
+            : call(* ScheduledExecutorService+.scheduleAtFixedRate(Runnable,long,long,TimeUnit))
+            || call(* ScheduledExecutorService+.scheduleWithFixedDelay(Runnable,long,long,TimeUnit))
+            ;
     public pointcut collectionPoint()
-        : scheduleRunnable() || ratedScheduling();
+            : scheduleRunnable() || ratedScheduling();
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
-    Object around (Runnable runner,long delay,TimeUnit unit)
-        : scheduleRunnable() && args(runner,delay,unit) {
-        Runnable    effectiveRunner=resolveRunner(runner, thisJoinPointStaticPart);
-        return proceed(effectiveRunner,delay,unit);
+    Object around (Runnable runner, long delay, TimeUnit unit)
+            : scheduleRunnable() && args(runner,delay,unit) {
+        Runnable effectiveRunner = resolveRunner(runner, thisJoinPointStaticPart);
+        return proceed(effectiveRunner, delay, unit);
     }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
-    Object around (Runnable runner,long initialValue,long delay,TimeUnit unit)
-        : ratedScheduling() && args(runner,initialValue,delay,unit) {
-        Runnable    effectiveRunner=resolveRunner(runner, thisJoinPointStaticPart);
-        return proceed(effectiveRunner,initialValue,delay,unit);
+    Object around (Runnable runner, long initialValue, long delay, TimeUnit unit)
+            : ratedScheduling() && args(runner,initialValue,delay,unit) {
+        Runnable effectiveRunner = resolveRunner(runner, thisJoinPointStaticPart);
+        return proceed(effectiveRunner, initialValue, delay, unit);
     }
 }

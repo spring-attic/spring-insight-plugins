@@ -39,87 +39,87 @@ import com.springsource.insight.util.StringFormatterUtils;
 
 
 /**
- * 
+ *
  */
 public abstract class JmxMultiAttributeCollectionTestSupport extends JmxSingleAttributeOperationTestSupport {
 
-	protected JmxMultiAttributeCollectionTestSupport(String actionName) {
-		super(actionName);
-	}
+    protected JmxMultiAttributeCollectionTestSupport(String actionName) {
+        super(actionName);
+    }
 
-	protected Operation assertAttributesListOperation(ObjectName name, AttributeList attrs) {
-		return assertAttributeOperation(name, JmxMultiAttributeOperationCollectionSupport.createNamesList(attrs));
-	}
+    protected Operation assertAttributesListOperation(ObjectName name, AttributeList attrs) {
+        return assertAttributeOperation(name, JmxMultiAttributeOperationCollectionSupport.createNamesList(attrs));
+    }
 
-	protected Operation assertAttributesListOperation(ObjectName name, String ... attrsNames) {
-		return assertAttributeOperation(name, JmxMultiAttributeOperationCollectionSupport.createNamesList(attrsNames));
-	}
+    protected Operation assertAttributesListOperation(ObjectName name, String... attrsNames) {
+        return assertAttributeOperation(name, JmxMultiAttributeOperationCollectionSupport.createNamesList(attrsNames));
+    }
 
-	protected OperationList assertEncodedManagedAttributes(Operation op, ObjectName name, AttributeList values) {
-		assertNotNull(name.getCanonicalName() + ": No attributes operation", op);
-		return assertEncodedManagedAttributes(op.get(JmxPluginRuntimeDescriptor.ATTR_LIST_PROP, OperationList.class), name, values);
-	}
+    protected OperationList assertEncodedManagedAttributes(Operation op, ObjectName name, AttributeList values) {
+        assertNotNull(name.getCanonicalName() + ": No attributes operation", op);
+        return assertEncodedManagedAttributes(op.get(JmxPluginRuntimeDescriptor.ATTR_LIST_PROP, OperationList.class), name, values);
+    }
 
-	protected OperationList assertEncodedManagedAttributes(OperationList op, ObjectName name, AttributeList values) {
-		assertNotNull(name.getCanonicalName() + ": No encoded attributes list", op);
-		assertEquals(name.getCanonicalName() + ": mismatched attributes count", ListUtil.size(values), op.size());
-		
-		for (int	index=0; index < op.size(); index++) {
-			Attribute		expected=(Attribute) values.get(index);
-			String			expName=expected.getName(), expValue=StringFormatterUtils.formatObject(expected.getValue());
-			OperationMap	actual=op.get(index, OperationMap.class);
-			assertNotNull(name.getCanonicalName() + "[" + expName + "]: no actual encoding", actual);
-			assertEquals(name.getCanonicalName() + ": Mismatched encoded name", expName, actual.get(OperationUtils.NAME_KEY, String.class));
-			assertEquals(name.getCanonicalName() + "[" + expName + "]: Mismatched encoded value", expValue, actual.get(OperationUtils.VALUE_KEY, String.class));
-		}
-		
-		return op;
-	}
+    protected OperationList assertEncodedManagedAttributes(OperationList op, ObjectName name, AttributeList values) {
+        assertNotNull(name.getCanonicalName() + ": No encoded attributes list", op);
+        assertEquals(name.getCanonicalName() + ": mismatched attributes count", ListUtil.size(values), op.size());
 
-	protected AttributeList getSingleAttribute(MBeanServer server, ObjectName name, String attrName)
-			throws InstanceNotFoundException, ReflectionException {
-		return server.getAttributes(name, new String[] { attrName });
-	}
-	
-	public static final List<String> getReadableAttributes(MBeanInfo info) {
-		return getReadableAttributes(info.getAttributes());
-	}
-	
-	public static final List<String> getReadableAttributes(MBeanAttributeInfo ... attrs) {
-		return getAccessibleAttributes(Boolean.TRUE, attrs);
-	}
+        for (int index = 0; index < op.size(); index++) {
+            Attribute expected = (Attribute) values.get(index);
+            String expName = expected.getName(), expValue = StringFormatterUtils.formatObject(expected.getValue());
+            OperationMap actual = op.get(index, OperationMap.class);
+            assertNotNull(name.getCanonicalName() + "[" + expName + "]: no actual encoding", actual);
+            assertEquals(name.getCanonicalName() + ": Mismatched encoded name", expName, actual.get(OperationUtils.NAME_KEY, String.class));
+            assertEquals(name.getCanonicalName() + "[" + expName + "]: Mismatched encoded value", expValue, actual.get(OperationUtils.VALUE_KEY, String.class));
+        }
 
-	public static final List<String> getWriteableAttributes(MBeanInfo info) {
-		return getWriteableAttributes(info.getAttributes());
-	}
-	
-	public static final List<String> getWriteableAttributes(MBeanAttributeInfo ... attrs) {
-		return getAccessibleAttributes(Boolean.FALSE, attrs);
-	}
+        return op;
+    }
 
-	public static final List<String> getAccessibleAttributes(Boolean readOrWrite, MBeanAttributeInfo ... attrs) {
-		if (ArrayUtil.length(attrs) <= 0) {
-			return Collections.emptyList();
-		}
-		
-		List<String>	names=new ArrayList<String>(attrs.length);
-		for (MBeanAttributeInfo info : attrs) {
-			String	n=info.getName();
-			if (readOrWrite != null) {
-				if (readOrWrite.booleanValue()) {
-					if (!info.isReadable()) {
-						continue;
-					}
-				} else {
-					if (!info.isWritable()) {
-						continue;
-					}
-				}
-			}
-			
-			names.add(n);
-		}
-		
-		return names;
-	}
+    protected AttributeList getSingleAttribute(MBeanServer server, ObjectName name, String attrName)
+            throws InstanceNotFoundException, ReflectionException {
+        return server.getAttributes(name, new String[]{attrName});
+    }
+
+    public static final List<String> getReadableAttributes(MBeanInfo info) {
+        return getReadableAttributes(info.getAttributes());
+    }
+
+    public static final List<String> getReadableAttributes(MBeanAttributeInfo... attrs) {
+        return getAccessibleAttributes(Boolean.TRUE, attrs);
+    }
+
+    public static final List<String> getWriteableAttributes(MBeanInfo info) {
+        return getWriteableAttributes(info.getAttributes());
+    }
+
+    public static final List<String> getWriteableAttributes(MBeanAttributeInfo... attrs) {
+        return getAccessibleAttributes(Boolean.FALSE, attrs);
+    }
+
+    public static final List<String> getAccessibleAttributes(Boolean readOrWrite, MBeanAttributeInfo... attrs) {
+        if (ArrayUtil.length(attrs) <= 0) {
+            return Collections.emptyList();
+        }
+
+        List<String> names = new ArrayList<String>(attrs.length);
+        for (MBeanAttributeInfo info : attrs) {
+            String n = info.getName();
+            if (readOrWrite != null) {
+                if (readOrWrite.booleanValue()) {
+                    if (!info.isReadable()) {
+                        continue;
+                    }
+                } else {
+                    if (!info.isWritable()) {
+                        continue;
+                    }
+                }
+            }
+
+            names.add(n);
+        }
+
+        return names;
+    }
 }

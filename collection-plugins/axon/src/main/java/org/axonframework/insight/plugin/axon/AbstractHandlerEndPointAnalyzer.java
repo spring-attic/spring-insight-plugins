@@ -34,30 +34,29 @@ import com.springsource.insight.intercept.trace.FrameUtil;
  * @since 2.0
  */
 public abstract class AbstractHandlerEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
-	
-	protected AbstractHandlerEndPointAnalyzer(OperationType handlerOp) {
-		super(handlerOp);
-	}
-	
-    
-	@Override
-	protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
-		Frame busFrame = FrameUtil.getLastParentOfType(frame, getBusOperationType());
-		if (busFrame == null){
-			return null;
-		}
-		
-		Operation handlerOp = frame.getOperation();
-		
-		EndPointName endPointName = EndPointName.valueOf(
-	                handlerOp.get(CLASS_NAME) + "#" + handlerOp.get(METHOD_NAME));
-		
 
-		return new EndPointAnalysis(endPointName, handlerOp.getLabel(), 
-				getExample(busFrame.getOperation()), getOperationScore(handlerOp, depth), handlerOp);
-	}
-    
-	
+    protected AbstractHandlerEndPointAnalyzer(OperationType handlerOp) {
+        super(handlerOp);
+    }
+
+
+    @Override
+    protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
+        Frame busFrame = FrameUtil.getLastParentOfType(frame, getBusOperationType());
+        if (busFrame == null) {
+            return null;
+        }
+
+        Operation handlerOp = frame.getOperation();
+
+        EndPointName endPointName = EndPointName.valueOf(
+                handlerOp.get(CLASS_NAME) + "#" + handlerOp.get(METHOD_NAME));
+
+
+        return new EndPointAnalysis(endPointName, handlerOp.getLabel(),
+                getExample(busFrame.getOperation()), getOperationScore(handlerOp, depth), handlerOp);
+    }
+
 
     abstract OperationType getBusOperationType();
 

@@ -32,36 +32,35 @@ import com.springsource.insight.util.StringUtil;
  *
  */
 public aspect RmiOperationCollectionAspect extends MethodOperationCollectionAspect {
-	public RmiOperationCollectionAspect () {
-		super();
-	}
+    public RmiOperationCollectionAspect() {
+        super();
+    }
 
-	public pointcut lookup() : execution (* Registry.lookup(String)) ;
-	public pointcut bind() : execution (* Registry.bind(String, Remote)) ;
-	public pointcut rebind() : execution (* Registry.rebind(String, Remote)) ;
-	public pointcut unbind() : execution (* Registry.unbind(String)) ;
-	
-	public pointcut collectionPoint() : lookup() || bind() || rebind() || unbind();
-	
-	@Override
-	protected Operation createOperation(JoinPoint jp) {
-		Signature sig = jp.getSignature();
-		String	action = sig.getName();
-		String name = (String) jp.getArgs()[0];
-		return super.createOperation(jp)
-					.type(RmiDefinitions.RMI_ACTION)
-					.label(StringUtil.capitalize(action) + " " + StringUtil.chopTailAndEllipsify(name, StringFormatterUtils.MAX_PARAM_LENGTH))
-					.put(RmiDefinitions.ACTION_ATTR, action)
-					.put(RmiDefinitions.NAME_ATTR, name)
-					.put(EndPointAnalysis.SCORE_FIELD, EndPointAnalysis.TOP_LAYER_SCORE)
-					;
-	}
-	
-	
+    public pointcut lookup(): execution (* Registry.lookup(String)) ;
+    public pointcut bind(): execution (* Registry.bind(String, Remote)) ;
+    public pointcut rebind(): execution (* Registry.rebind(String, Remote)) ;
+    public pointcut unbind(): execution (* Registry.unbind(String)) ;
 
-	@Override
-	public String getPluginName() {
-		return RmiPluginRuntimeDescriptor.PLUGIN_NAME;
-	}
+    public pointcut collectionPoint(): lookup() || bind() || rebind() || unbind();
+
+    @Override
+    protected Operation createOperation(JoinPoint jp) {
+        Signature sig = jp.getSignature();
+        String action = sig.getName();
+        String name = (String) jp.getArgs()[0];
+        return super.createOperation(jp)
+                .type(RmiDefinitions.RMI_ACTION)
+                .label(StringUtil.capitalize(action) + " " + StringUtil.chopTailAndEllipsify(name, StringFormatterUtils.MAX_PARAM_LENGTH))
+                .put(RmiDefinitions.ACTION_ATTR, action)
+                .put(RmiDefinitions.NAME_ATTR, name)
+                .put(EndPointAnalysis.SCORE_FIELD, EndPointAnalysis.TOP_LAYER_SCORE)
+                ;
+    }
+
+
+    @Override
+    public String getPluginName() {
+        return RmiPluginRuntimeDescriptor.PLUGIN_NAME;
+    }
 
 }

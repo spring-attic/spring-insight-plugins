@@ -26,7 +26,7 @@ import com.springsource.insight.intercept.operation.Operation;
 
 
 /**
- * 
+ *
  */
 public class JobLauncherCollectionAspectTest
         extends SpringBatchOperationCollectionAspectTestSupport {
@@ -36,17 +36,17 @@ public class JobLauncherCollectionAspectTest
     }
 
     @Test
-    public void testRunJob () throws Exception {
-        SimpleJobLauncher launcher=new SimpleJobLauncher();
+    public void testRunJob() throws Exception {
+        SimpleJobLauncher launcher = new SimpleJobLauncher();
         launcher.setJobRepository(new TestDummyJobRepository());
         launcher.afterPropertiesSet();
-        
-        Job             job=new TestDummyJob("testRunJob");
-        JobExecution    execution=launcher.run(job, new JobParameters());
+
+        Job job = new TestDummyJob("testRunJob");
+        JobExecution execution = launcher.run(job, new JobParameters());
         assertNotNull("No job exectuion instance", execution);
 
-        String      jobName=job.getName();
-        Operation   op=assertOperationDetails(getFirstEntered(), "run", job.getName());
+        String jobName = job.getName();
+        Operation op = assertOperationDetails(getFirstEntered(), "run", job.getName());
         assertOperationPath(op, jobName, null);
     }
 

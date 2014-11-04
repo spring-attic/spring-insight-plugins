@@ -41,8 +41,8 @@ public aspect FilterOperationCollectionAspect extends AbstractOperationCollectio
         super();
     }
 
-    public pointcut collectionPoint() 
-        : execution(* Filter+.doFilter(ServletRequest, ServletResponse, FilterChain));
+    public pointcut collectionPoint()
+            : execution(* Filter+.doFilter(ServletRequest, ServletResponse, FilterChain));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
@@ -58,12 +58,12 @@ public aspect FilterOperationCollectionAspect extends AbstractOperationCollectio
         // If we have some servlet request/response specific junk to add, do so here
         // Right now we just fill the filter up with the initParams, so we just pass in
         // the exact same operation
-        
+
         //return a copy of the operation so that properties added in the analysis set are not persisted cross-analysis
         //(specifically epSource)
         Operation operationCopy = new Operation();
         operationCopy.cloneFrom(operation);
-        
+
         return operationCopy;
     }
 
@@ -73,35 +73,35 @@ public aspect FilterOperationCollectionAspect extends AbstractOperationCollectio
     }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
-    before() : execution(* Filter+.destroy()) {
+    before(): execution(* Filter+.destroy()) {
         opCache.remove(thisJoinPoint.getThis());
     }
 
-    Operation createFilterOperation (JoinPoint jp) {
-        Filter 			filter=(Filter) jp.getThis();
-        FilterConfig	config=(FilterConfig) jp.getArgs()[0];
-    	Operation		operation=createFilterOperation(new Operation()
-    										.type(TYPE)
-    										.sourceCodeLocation(getSourceCodeLocation(jp)),
-    								 filter,
-    								 config);
+    Operation createFilterOperation(JoinPoint jp) {
+        Filter filter = (Filter) jp.getThis();
+        FilterConfig config = (FilterConfig) jp.getArgs()[0];
+        Operation operation = createFilterOperation(new Operation()
+                        .type(TYPE)
+                        .sourceCodeLocation(getSourceCodeLocation(jp)),
+                filter,
+                config);
         opCache.put(filter, operation);
         return operation;
     }
 
-    Operation createFilterOperation (Operation operation, Filter filter, FilterConfig config) {
-    	operation.label("Filter: " + config.getFilterName())
-    			 .put("filterClass", filter.getClass().getName())
-    			 .put("filterName", config.getFilterName())
-    			 ;
+    Operation createFilterOperation(Operation operation, Filter filter, FilterConfig config) {
+        operation.label("Filter: " + config.getFilterName())
+                .put("filterClass", filter.getClass().getName())
+                .put("filterName", config.getFilterName())
+        ;
 
-    	OperationMap initParams = operation.createMap("initParams");
-    	for (@SuppressWarnings("unchecked") Enumeration<String> initParamNames=config.getInitParameterNames(); initParamNames.hasMoreElements(); ) {
-    		String name = initParamNames.nextElement();
-    		initParams.put(name, config.getInitParameter(name));
-    	}
+        OperationMap initParams = operation.createMap("initParams");
+        for (@SuppressWarnings("unchecked") Enumeration<String> initParamNames = config.getInitParameterNames(); initParamNames.hasMoreElements(); ) {
+            String name = initParamNames.nextElement();
+            initParams.put(name, config.getInitParameter(name));
+        }
 
-    	return operation;
+        return operation;
     }
 
     @Override

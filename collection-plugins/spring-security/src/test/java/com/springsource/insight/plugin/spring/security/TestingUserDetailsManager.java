@@ -27,12 +27,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.provisioning.UserDetailsManager;
 
 /**
- * 
+ *
  */
 public class TestingUserDetailsManager implements UserDetailsManager {
-    private final Map<String,UserDetails>   usersMap=new TreeMap<String, UserDetails>();
-    private final Logger    logger=Logger.getLogger(getClass().getName());
+    private final Map<String, UserDetails> usersMap = new TreeMap<String, UserDetails>();
+    private final Logger logger = Logger.getLogger(getClass().getName());
     private UserDetails currentUser;
+
     public TestingUserDetailsManager() {
         super();
     }
@@ -47,15 +48,15 @@ public class TestingUserDetailsManager implements UserDetailsManager {
     }
 
     public void updateUser(UserDetails user) {
-        String      username=user.getUsername();
-        UserDetails prev=usersMap.put(username, user);
+        String username = user.getUsername();
+        UserDetails prev = usersMap.put(username, user);
         if (prev == null)
             throw new IllegalStateException("No previous details for " + username);
         logger.info("updated " + user);
     }
 
     public void deleteUser(String username) {
-        UserDetails user=usersMap.remove(username);
+        UserDetails user = usersMap.remove(username);
         if (user == null)
             logger.warning("deleteUser(" + username + ") N/A");
         else
@@ -74,31 +75,31 @@ public class TestingUserDetailsManager implements UserDetailsManager {
         return usersMap.containsKey(username);
     }
 
-    Map<String,UserDetails> getUsersMap () {
+    Map<String, UserDetails> getUsersMap() {
         return Collections.unmodifiableMap(usersMap);
     }
 
     // need this call to avoid calling "loadUserByUsername" which is intercepted by the aspect
-    UserDetails setCurrentUser (String username)
+    UserDetails setCurrentUser(String username)
             throws UsernameNotFoundException {
-        UserDetails user=usersMap.get(username);
+        UserDetails user = usersMap.get(username);
         if (user == null)
             throw new UsernameNotFoundException("No such user");
- 
+
         currentUser = user;
         return user;
     }
 
     // need this call to avoid calling "createUser" which is intercepted by the aspect
-    void addUser (UserDetails user) {
-        String      username=user.getUsername();
-        UserDetails prev=usersMap.put(username, user);
+    void addUser(UserDetails user) {
+        String username = user.getUsername();
+        UserDetails prev = usersMap.put(username, user);
         if (prev != null)
             throw new IllegalStateException("Multiple instances for " + username);
         logger.info("added " + user);
     }
 
-    void clearUsers () {
+    void clearUsers() {
         if (usersMap.size() > 0)
             usersMap.clear();
         if (currentUser != null)

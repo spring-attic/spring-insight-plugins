@@ -31,28 +31,28 @@ import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
 
 
-public class FilesTrackerExternalResourceAnalyzerTest extends AbstractCollectionTestSupport  {
-	private final FilesTrackerExternalResourceAnalyzer analyzer=FilesTrackerExternalResourceAnalyzer.getInstance();
-	
-	public FilesTrackerExternalResourceAnalyzerTest () {
-		super();
-	}
+public class FilesTrackerExternalResourceAnalyzerTest extends AbstractCollectionTestSupport {
+    private final FilesTrackerExternalResourceAnalyzer analyzer = FilesTrackerExternalResourceAnalyzer.getInstance();
 
-	@Test
-	public void testLocateExternalResourceName() {
-        final String PATH="/dummy/path/123";
-		Trace trace = createValidTrace(PATH);
+    public FilesTrackerExternalResourceAnalyzerTest() {
+        super();
+    }
 
-		List<ExternalResourceDescriptor> externalResourceDescriptors = (List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
-		assertNotNull("No descriptors extracted", externalResourceDescriptors);
-		assertEquals("Mismatched number of descriptors", 1, externalResourceDescriptors.size());        
+    @Test
+    public void testLocateExternalResourceName() {
+        final String PATH = "/dummy/path/123";
+        Trace trace = createValidTrace(PATH);
 
-		ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);
-		assertSame("Mismatched descriptor frame", trace.getRootFrame(), descriptor.getFrame());
-		assertDescriptorContents("testLocateExternalResourceName", PATH, descriptor);
-	}
-	
-	private static ExternalResourceDescriptor assertDescriptorContents (String testName, String path, ExternalResourceDescriptor descriptor) {
+        List<ExternalResourceDescriptor> externalResourceDescriptors = (List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
+        assertNotNull("No descriptors extracted", externalResourceDescriptors);
+        assertEquals("Mismatched number of descriptors", 1, externalResourceDescriptors.size());
+
+        ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);
+        assertSame("Mismatched descriptor frame", trace.getRootFrame(), descriptor.getFrame());
+        assertDescriptorContents("testLocateExternalResourceName", PATH, descriptor);
+    }
+
+    private static ExternalResourceDescriptor assertDescriptorContents(String testName, String path, ExternalResourceDescriptor descriptor) {
 
         assertEquals(testName + ": Mismatched label", path, descriptor.getLabel());
         assertEquals(testName + ": Mismatched type", ExternalResourceType.FILESTORE.name(), descriptor.getType());
@@ -62,21 +62,21 @@ public class FilesTrackerExternalResourceAnalyzerTest extends AbstractCollection
         assertEquals(testName + ": Mismatched direction", Boolean.FALSE, Boolean.valueOf(descriptor.isIncoming()));
         return descriptor;
     }
-	
-	private Trace createValidTrace(String param) {
+
+    private Trace createValidTrace(String param) {
         SimpleFrameBuilder builder = new SimpleFrameBuilder();
         Operation op = createOperation(param);
-        
+
         builder.enter(op);
-        
+
         Frame frame = builder.exit();
         return Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
     }
-	
-	private Operation createOperation(String param) {
-		Operation op = new Operation().type(FilesTrackerDefinitions.TYPE);
-        
+
+    private Operation createOperation(String param) {
+        Operation op = new Operation().type(FilesTrackerDefinitions.TYPE);
+
         op.put(FilesTrackerDefinitions.PATH_ATTR, param);
-		return op;
-	}
+        return op;
+    }
 }

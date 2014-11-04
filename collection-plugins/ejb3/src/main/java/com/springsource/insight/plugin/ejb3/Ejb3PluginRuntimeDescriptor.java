@@ -24,15 +24,15 @@ import com.springsource.insight.util.ArrayUtil;
 
 public class Ejb3PluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "ejb3";
-    private static final Ejb3PluginRuntimeDescriptor	INSTANCE=new Ejb3PluginRuntimeDescriptor();
-    private static final List<? extends EndPointAnalyzer>	epAnalyzers=ArrayUtil.asUnmodifiableList(Ejb3LocalServiceEndPointAnalyzer.getInstance());
+    private static final Ejb3PluginRuntimeDescriptor INSTANCE = new Ejb3PluginRuntimeDescriptor();
+    private static final List<? extends EndPointAnalyzer> epAnalyzers = ArrayUtil.asUnmodifiableList(Ejb3LocalServiceEndPointAnalyzer.getInstance());
 
-    private Ejb3PluginRuntimeDescriptor () {
-    	super();
+    private Ejb3PluginRuntimeDescriptor() {
+        super();
     }
 
     public static final Ejb3PluginRuntimeDescriptor getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override

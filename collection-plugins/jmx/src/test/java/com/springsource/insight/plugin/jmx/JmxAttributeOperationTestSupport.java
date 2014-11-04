@@ -19,13 +19,13 @@ package com.springsource.insight.plugin.jmx;
 import com.springsource.insight.util.StringUtil;
 
 /**
- * 
+ *
  */
 public abstract class JmxAttributeOperationTestSupport extends JmxOperationCollectionTestSupport {
-	protected final String	action;
-	
-	protected JmxAttributeOperationTestSupport(String actionName) {
-		assertFalse("No action specified", StringUtil.isEmpty(actionName));
-		action = actionName;
-	}
+    protected final String action;
+
+    protected JmxAttributeOperationTestSupport(String actionName) {
+        assertFalse("No action specified", StringUtil.isEmpty(actionName));
+        action = actionName;
+    }
 }

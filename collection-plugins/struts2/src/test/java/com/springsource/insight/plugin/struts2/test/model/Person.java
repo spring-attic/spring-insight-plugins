@@ -19,65 +19,55 @@ package com.springsource.insight.plugin.struts2.test.model;
 
 /**
  * Models a Person who registers.
- * @author bruce phillips
  *
+ * @author bruce phillips
  */
-public class Person
-{
+public class Person {
     private String firstName;
     private String lastName;
     private String email;
     private int age;
 
-    public Person () {
-    	super();
+    public Person() {
+        super();
     }
 
-    public String getFirstName()
-    {
+    public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String name)
-    {
+    public void setFirstName(String name) {
         this.firstName = name;
     }
 
-    public String getLastName()
-    {
+    public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String name)
-    {
+    public void setLastName(String name) {
         this.lastName = name;
     }
 
-    public String getEmail()
-    {
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail(String mail)
-    {
+    public void setEmail(String mail) {
         this.email = mail;
     }
 
-    public int getAge()
-    {
+    public int getAge() {
         return age;
     }
 
-    public void setAge(int value)
-    {
+    public void setAge(int value) {
         this.age = value;
     }
 
 
     @Override
-	public String toString()
-    {
+    public String toString() {
         return "First Name: " + getFirstName() + " Last Name:  " + getLastName()
-        	+ " Email:      " + getEmail() + " Age:      " + getAge() ;
+                + " Email:      " + getEmail() + " Age:      " + getAge();
     }
 }

@@ -24,21 +24,24 @@ import javax.ejb.Stateless;
 
 @Stateless
 public class ExampleStatelessEjb3LocalServiceAction implements ExampleEjb3LocalService, SessionSynchronization {
-    public void invokeMe (Date dtVal) {
+    public void invokeMe(Date dtVal) {
         // do nothing
     }
+
     /*
      * @see javax.ejb.SessionSynchronization#afterBegin()
      */
     public void afterBegin() throws EJBException, RemoteException {
         // TODO Auto-generated method stub
     }
+
     /*
      * @see javax.ejb.SessionSynchronization#beforeCompletion()
      */
     public void beforeCompletion() throws EJBException, RemoteException {
         // TODO Auto-generated method stub
     }
+
     /*
      * @see javax.ejb.SessionSynchronization#afterCompletion(boolean)
      */

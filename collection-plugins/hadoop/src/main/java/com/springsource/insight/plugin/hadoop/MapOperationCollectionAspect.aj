@@ -32,37 +32,37 @@ public privileged aspect MapOperationCollectionAspect extends AbstractOperationC
         super();
     }
 
-    public pointcut collectionPoint() : execution(public void org.apache.hadoop.mapred.Mapper+.map(..)) ||
-    									execution(protected void org.apache.hadoop.mapreduce.Mapper+.map(..));
+    public pointcut collectionPoint(): execution(public void org.apache.hadoop.mapred.Mapper+.map(..)) ||
+            execution(protected void org.apache.hadoop.mapreduce.Mapper+.map(..));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-    	Object[] args = jp.getArgs();
-    	
-		Operation operation = new Operation().type(OperationCollectionTypes.MAP_TYPE.type)
-    						.label(OperationCollectionTypes.MAP_TYPE.label)
-    						.sourceCodeLocation(getSourceCodeLocation(jp));
+        Object[] args = jp.getArgs();
 
-		operation.putAnyNonEmpty("key", args[0].toString());
-		operation.putAnyNonEmpty("value", args[1].toString());
-		
-		if (args[2] instanceof Context) {
-			@SuppressWarnings("rawtypes")
-			Context			ctx=(Context) args[2];
-			Configuration	config=ctx.getConfiguration();
-			operation.putAnyNonEmpty("host", config.get("mapreduce.job.submithostaddress"));
-		}
+        Operation operation = new Operation().type(OperationCollectionTypes.MAP_TYPE.type)
+                .label(OperationCollectionTypes.MAP_TYPE.label)
+                .sourceCodeLocation(getSourceCodeLocation(jp));
 
-		return operation;
+        operation.putAnyNonEmpty("key", args[0].toString());
+        operation.putAnyNonEmpty("value", args[1].toString());
+
+        if (args[2] instanceof Context) {
+            @SuppressWarnings("rawtypes")
+            Context ctx = (Context) args[2];
+            Configuration config = ctx.getConfiguration();
+            operation.putAnyNonEmpty("host", config.get("mapreduce.job.submithostaddress"));
+        }
+
+        return operation;
     }
-    
-	@Override
+
+    @Override
     public String getPluginName() {
-		return HadoopPluginRuntimeDescriptor.PLUGIN_NAME;
-	}
-	
-	 @Override
-	    public boolean isMetricsGenerator() {
-	        return true; // This provides an external resource
-	    }
+        return HadoopPluginRuntimeDescriptor.PLUGIN_NAME;
+    }
+
+    @Override
+    public boolean isMetricsGenerator() {
+        return true; // This provides an external resource
+    }
 }

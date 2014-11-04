@@ -21,36 +21,36 @@ import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class RenderOperationCollectionAspectTest extends GenericOperationCollectionTestSupport {
-	public RenderOperationCollectionAspectTest () {
-		super();
-	}
+    public RenderOperationCollectionAspectTest() {
+        super();
+    }
 
-	/*
-	 * tests view render 
-	 */
-	@Test
-	public void testView() throws Exception {
-		// Step 1: Execute test
-		tester.doView();
-		validate("view");
-	}
-	
-	/*
-	 * tests edit render 
-	 */
-	@Test
-	public void testEdit() throws Exception {
-		// Step 1: Execute test
-		tester.doEdit();
-		validate("edit");
-	}
+    /*
+     * tests view render
+     */
+    @Test
+    public void testView() throws Exception {
+        // Step 1: Execute test
+        tester.doView();
+        validate("view");
+    }
 
-	private Operation validate(String mode) {
-		return validate(OperationCollectionTypes.RENDER_TYPE, mode);
-	}
-	
-	@Override
-	public OperationCollectionAspectSupport getAspect() {
-		return RenderOperationCollectionAspect.aspectOf();
-	}
+    /*
+     * tests edit render
+     */
+    @Test
+    public void testEdit() throws Exception {
+        // Step 1: Execute test
+        tester.doEdit();
+        validate("edit");
+    }
+
+    private Operation validate(String mode) {
+        return validate(OperationCollectionTypes.RENDER_TYPE, mode);
+    }
+
+    @Override
+    public OperationCollectionAspectSupport getAspect() {
+        return RenderOperationCollectionAspect.aspectOf();
+    }
 }

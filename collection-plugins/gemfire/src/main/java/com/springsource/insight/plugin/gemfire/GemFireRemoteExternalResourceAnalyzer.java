@@ -22,33 +22,33 @@ import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.util.StringUtil;
 
 public class GemFireRemoteExternalResourceAnalyzer extends AbstractGemFireExternalResourceAnalyzer {
-	private static final GemFireRemoteExternalResourceAnalyzer	INSTANCE=new GemFireRemoteExternalResourceAnalyzer();
+    private static final GemFireRemoteExternalResourceAnalyzer INSTANCE = new GemFireRemoteExternalResourceAnalyzer();
 
-	private GemFireRemoteExternalResourceAnalyzer () {
-		super(GemFireDefenitions.TYPE_REMOTE.getType());
-	}
+    private GemFireRemoteExternalResourceAnalyzer() {
+        super(GemFireDefenitions.TYPE_REMOTE.getType());
+    }
 
-	public static final GemFireRemoteExternalResourceAnalyzer getInstance() {
-		return INSTANCE;
-	}
+    public static final GemFireRemoteExternalResourceAnalyzer getInstance() {
+        return INSTANCE;
+    }
 
-	@Override
+    @Override
     protected String getHostname(Operation op) {
-	    return op.get(GemFireDefenitions.FIELD_HOST, String.class);
-	}
-	
-	@Override
+        return op.get(GemFireDefenitions.FIELD_HOST, String.class);
+    }
+
+    @Override
     protected int getPort(Operation op) {
-	    Number portObj = op.get(GemFireDefenitions.FIELD_PORT, Number.class);
+        Number portObj = op.get(GemFireDefenitions.FIELD_PORT, Number.class);
         int port = portObj != null ? portObj.intValue() : EMPTY_PORT;
-        
+
         return port;
-	}
-	
-	@Override
+    }
+
+    @Override
     protected boolean shouldCreateExteranlResource(Frame frame) {
-	    Operation op = frame.getOperation();
-	    String hostname = getHostname(op);
-	    return !StringUtil.isEmpty(hostname) && !GemFireDefenitions.FIELD_UNKNOWN.equals(hostname);
-	}
+        Operation op = frame.getOperation();
+        String hostname = getHostname(op);
+        return !StringUtil.isEmpty(hostname) && !GemFireDefenitions.FIELD_UNKNOWN.equals(hostname);
+    }
 }

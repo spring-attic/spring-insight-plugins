@@ -30,30 +30,30 @@ import com.springsource.insight.collection.ObscuredValueSetMarker;
  * so we don't repeat it here
  */
 public class SocketConnectCollectionAspectTest
-       extends SocketOperationCollectionAspectTestSupport {
+        extends SocketOperationCollectionAspectTestSupport {
     public SocketConnectCollectionAspectTest() {
         super();
     }
 
-	@Test
-    public void testMatchingObscuredAddressesPattern () {
+    @Test
+    public void testMatchingObscuredAddressesPattern() {
         runObscuredTest("^10\\..*", "10.1.2.3", true);
     }
 
     @Test
-    public void testNonMatchingObscuredAddressesPattern () {
+    public void testNonMatchingObscuredAddressesPattern() {
         runObscuredTest("^10\\..*", "192.168.3.1", false);
     }
 
-    private void runObscuredTest (String pattern, String testAddress, boolean shouldObscure) {
-    	ObscuredValueSetMarker    marker=
+    private void runObscuredTest(String pattern, String testAddress, boolean shouldObscure) {
+        ObscuredValueSetMarker marker =
                 setupObscuredTest(SocketCollectOperationContext.OBSCURED_ADDRESSES_PATTERN_SETTING, pattern);
-        SocketAddress         	  connectAddress=new InetSocketAddress(testAddress, TEST_PORT);
-        Socket                    socket=new Socket();
+        SocketAddress connectAddress = new InetSocketAddress(testAddress, TEST_PORT);
+        Socket socket = new Socket();
         try {
             socket.connect(connectAddress, 125);
             socket.close(); // just in case it somehow succeeded
-        } catch(IOException e) {
+        } catch (IOException e) {
             // ignored since we don't really expect it to succeed
         }
 

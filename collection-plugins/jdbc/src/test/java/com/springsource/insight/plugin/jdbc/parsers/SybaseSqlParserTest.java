@@ -21,29 +21,30 @@ import com.springsource.insight.plugin.jdbc.parser.JdbcUrlParser;
 import com.springsource.insight.plugin.jdbc.parser.parsers.SybaseSqlParser;
 
 /**
- * 
+ *
  */
 public class SybaseSqlParserTest extends SqlParserTestImpl<SybaseSqlParser> {
-	private static final String	TEST_HOST="neptune.acme.com";
-	private static final int	TEST_PORT=7365;
-	private static final String	TEST_DB="ryol";
-	public SybaseSqlParserTest () {
-		super(DatabaseType.SYBASE, new SybaseSqlParser(),
-				new SqlTestEntry("jdbc:sybase:Tds:" + TEST_HOST + ":" + TEST_PORT,
-						TEST_HOST,
-						TEST_PORT,
-						JdbcUrlParser.DEFAULT_DB_NAME),
-				new SqlTestEntry("jdbc:sybase:Tds:" + TEST_HOST,
-						TEST_HOST,
-						JdbcUrlParser.DEFAULT_PORT,
-						JdbcUrlParser.DEFAULT_DB_NAME),
-				new SqlTestEntry("jdbc:sybase:Tds:" + TEST_HOST + ":" + TEST_PORT + "?ServiceName=" + TEST_DB,
-						TEST_HOST,
-						TEST_PORT,
-						TEST_DB),
-				new SqlTestEntry("jdbc:sybase:Tds:" + TEST_HOST + "?ServiceName=" + TEST_DB,
-						TEST_HOST,
-						JdbcUrlParser.DEFAULT_PORT,
-						TEST_DB));
-	}
+    private static final String TEST_HOST = "neptune.acme.com";
+    private static final int TEST_PORT = 7365;
+    private static final String TEST_DB = "ryol";
+
+    public SybaseSqlParserTest() {
+        super(DatabaseType.SYBASE, new SybaseSqlParser(),
+                new SqlTestEntry("jdbc:sybase:Tds:" + TEST_HOST + ":" + TEST_PORT,
+                        TEST_HOST,
+                        TEST_PORT,
+                        JdbcUrlParser.DEFAULT_DB_NAME),
+                new SqlTestEntry("jdbc:sybase:Tds:" + TEST_HOST,
+                        TEST_HOST,
+                        JdbcUrlParser.DEFAULT_PORT,
+                        JdbcUrlParser.DEFAULT_DB_NAME),
+                new SqlTestEntry("jdbc:sybase:Tds:" + TEST_HOST + ":" + TEST_PORT + "?ServiceName=" + TEST_DB,
+                        TEST_HOST,
+                        TEST_PORT,
+                        TEST_DB),
+                new SqlTestEntry("jdbc:sybase:Tds:" + TEST_HOST + "?ServiceName=" + TEST_DB,
+                        TEST_HOST,
+                        JdbcUrlParser.DEFAULT_PORT,
+                        TEST_DB));
+    }
 }

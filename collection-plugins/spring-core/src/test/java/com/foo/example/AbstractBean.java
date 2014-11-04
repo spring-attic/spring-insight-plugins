@@ -25,59 +25,59 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationEventMulticaster;
 
 /**
- * 
+ *
  */
 public abstract class AbstractBean implements Runnable,
-												ApplicationListener<ApplicationEvent>,
-												InitializingBean,
-												ApplicationEventPublisher,
-												ApplicationEventMulticaster {
-	protected final Log	logger=LogFactory.getLog(getClass());
+        ApplicationListener<ApplicationEvent>,
+        InitializingBean,
+        ApplicationEventPublisher,
+        ApplicationEventMulticaster {
+    protected final Log logger = LogFactory.getLog(getClass());
 
-	protected AbstractBean() {
-		super();
-	}
+    protected AbstractBean() {
+        super();
+    }
 
-	public void afterPropertiesSet() throws Exception {
-		logger.info("afterPropertiesSet()");
-	}
+    public void afterPropertiesSet() throws Exception {
+        logger.info("afterPropertiesSet()");
+    }
 
-	@SuppressWarnings("rawtypes")
-	public void addApplicationListener(ApplicationListener listener) {
-		// ignored
-	}
+    @SuppressWarnings("rawtypes")
+    public void addApplicationListener(ApplicationListener listener) {
+        // ignored
+    }
 
-	public void addApplicationListenerBean(String listenerBeanName) {
-		// ignored
-	}
+    public void addApplicationListenerBean(String listenerBeanName) {
+        // ignored
+    }
 
-	@SuppressWarnings("rawtypes")
-	public void removeApplicationListener(ApplicationListener listener) {
-		// ignored
-	}
+    @SuppressWarnings("rawtypes")
+    public void removeApplicationListener(ApplicationListener listener) {
+        // ignored
+    }
 
-	public void removeApplicationListenerBean(String listenerBeanName) {
-		// ignored
-	}
+    public void removeApplicationListenerBean(String listenerBeanName) {
+        // ignored
+    }
 
-	public void removeAllListeners() {
-		// ignored
-	}
+    public void removeAllListeners() {
+        // ignored
+    }
 
-	public void multicastEvent(ApplicationEvent event) {
-		logger.info("multicastEvent(" + event.getClass().getSimpleName() + ")@" + event.getTimestamp());
-	}
+    public void multicastEvent(ApplicationEvent event) {
+        logger.info("multicastEvent(" + event.getClass().getSimpleName() + ")@" + event.getTimestamp());
+    }
 
-	public void publishEvent(ApplicationEvent event) {
-		logger.info("publishEvent(" + event.getClass().getSimpleName() + ")@" + event.getTimestamp());
-	}
+    public void publishEvent(ApplicationEvent event) {
+        logger.info("publishEvent(" + event.getClass().getSimpleName() + ")@" + event.getTimestamp());
+    }
 
-	public void onApplicationEvent(ApplicationEvent event) {
-		logger.info("onApplicationEvent(" + event.getClass().getSimpleName() + ")@" + event.getTimestamp());
-	}
+    public void onApplicationEvent(ApplicationEvent event) {
+        logger.info("onApplicationEvent(" + event.getClass().getSimpleName() + ")@" + event.getTimestamp());
+    }
 
-	@Override
-	public String toString() {
-		return getClass().getSimpleName();
-	}
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
 }

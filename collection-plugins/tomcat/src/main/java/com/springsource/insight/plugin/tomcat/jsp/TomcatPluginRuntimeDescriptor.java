@@ -20,15 +20,15 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class TomcatPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "tomcat";
-    private static final TomcatPluginRuntimeDescriptor	INSTANCE=new TomcatPluginRuntimeDescriptor();
+    private static final TomcatPluginRuntimeDescriptor INSTANCE = new TomcatPluginRuntimeDescriptor();
 
-	private TomcatPluginRuntimeDescriptor () {
-		super();
-	}
+    private TomcatPluginRuntimeDescriptor() {
+        super();
+    }
 
-	public static final TomcatPluginRuntimeDescriptor getInstance() {
-		return INSTANCE;
-	}
+    public static final TomcatPluginRuntimeDescriptor getInstance() {
+        return INSTANCE;
+    }
 
     @Override
     public String getPluginName() {

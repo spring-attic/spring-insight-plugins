@@ -23,19 +23,19 @@ import com.springsource.insight.intercept.operation.OperationType;
  */
 public final class RmiDefinitions {
 
-	/**
-	 * 
-	 */
-	private RmiDefinitions() {
-		throw new UnsupportedOperationException("Instance NA");
-	}
+    /**
+     *
+     */
+    private RmiDefinitions() {
+        throw new UnsupportedOperationException("Instance NA");
+    }
 
-	public static final OperationType RMI_ACTION = OperationType.valueOf("rmi-action");
-	public static final OperationType RMI_LIST = OperationType.valueOf("rmi-list");
-	
-	public static final String ACTION_ATTR = "action";
-	
-	public static final String NAME_ATTR = "name";
-	
-	public static final String LIST_ATTR = "list";
+    public static final OperationType RMI_ACTION = OperationType.valueOf("rmi-action");
+    public static final OperationType RMI_LIST = OperationType.valueOf("rmi-list");
+
+    public static final String ACTION_ATTR = "action";
+
+    public static final String NAME_ATTR = "name";
+
+    public static final String LIST_ATTR = "list";
 }

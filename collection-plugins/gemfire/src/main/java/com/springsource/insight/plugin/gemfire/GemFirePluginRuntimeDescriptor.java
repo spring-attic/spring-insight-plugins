@@ -24,23 +24,24 @@ import com.springsource.insight.util.ArrayUtil;
 
 public class GemFirePluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "gemfire";
-    private static final GemFirePluginRuntimeDescriptor	INSTANCE=new GemFirePluginRuntimeDescriptor();
-    private static final List<? extends ExternalResourceAnalyzer>	extResAnalyzers=
-       		ArrayUtil.asUnmodifiableList(GemFireQueryExternalResourceAnalyzer.getInstance(),
-       				GemFireRemoteExternalResourceAnalyzer.getInstance());
-    private GemFirePluginRuntimeDescriptor () {
-    	super();
+    private static final GemFirePluginRuntimeDescriptor INSTANCE = new GemFirePluginRuntimeDescriptor();
+    private static final List<? extends ExternalResourceAnalyzer> extResAnalyzers =
+            ArrayUtil.asUnmodifiableList(GemFireQueryExternalResourceAnalyzer.getInstance(),
+                    GemFireRemoteExternalResourceAnalyzer.getInstance());
+
+    private GemFirePluginRuntimeDescriptor() {
+        super();
     }
 
     public static final GemFirePluginRuntimeDescriptor getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
-    
+
     @Override
     public Collection<? extends ExternalResourceAnalyzer> getExternalResourceAnalyzers() {
-    	return extResAnalyzers;
+        return extResAnalyzers;
     }
-    
+
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;

@@ -26,29 +26,29 @@ import com.springsource.insight.intercept.operation.OperationType;
 public aspect JspCompilerOperationCollectionAspect extends AbstractOperationCollectionAspect {
     private static final OperationType type = OperationType.valueOf("jsp-compiler");
 
-    public JspCompilerOperationCollectionAspect () {
-    	super();
+    public JspCompilerOperationCollectionAspect() {
+        super();
     }
 
-    public pointcut compileExecution() 
-        : execution(* Compiler+.compile(..));
+    public pointcut compileExecution()
+            : execution(* Compiler+.compile(..));
 
     /*
      * Use cflowbelow() to avoid collecting nested calls.
      */
-    public pointcut collectionPoint() 
-        : compileExecution() && !cflowbelow(compileExecution());
+    public pointcut collectionPoint()
+            : compileExecution() && !cflowbelow(compileExecution());
 
     @Override
-	protected Operation createOperation(JoinPoint jp) {
+    protected Operation createOperation(JoinPoint jp) {
         Compiler compiler = (Compiler) jp.getThis();
         String jspName = compiler.getCompilationContext().getJspFile();
         String compilerName = compiler.getClass().getName();
         return new Operation()
-            .label("Compile JSP: " + jspName)
-            .type(type).sourceCodeLocation(getSourceCodeLocation(jp))
-            .put("compiler", compilerName)
-            .put("jspName", jspName);
+                .label("Compile JSP: " + jspName)
+                .type(type).sourceCodeLocation(getSourceCodeLocation(jp))
+                .put("compiler", compilerName)
+                .put("jspName", jspName);
     }
 
     @Override

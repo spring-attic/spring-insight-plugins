@@ -37,17 +37,18 @@ import com.springsource.insight.util.logging.InsightLogger;
  * is called
  */
 public class SocketAcceptOperationCollector extends DefaultOperationCollector {
-    private final SocketCollectOperationContext    collectionContext;
-    private final InsightLogger logger=InsightLogManager.getLogger(getClass().getName());
-    public SocketAcceptOperationCollector (SocketCollectOperationContext context) {
+    private final SocketCollectOperationContext collectionContext;
+    private final InsightLogger logger = InsightLogManager.getLogger(getClass().getName());
+
+    public SocketAcceptOperationCollector(SocketCollectOperationContext context) {
         collectionContext = context;
     }
 
     @Override
     protected void processNormalExit(Operation op, Object returnValue) {
-        Socket      sock=resolveAcceptedSocket(returnValue);
-        InetAddress addr=sock.getInetAddress();
-        String      addrValue=addr.getHostAddress();
+        Socket sock = resolveAcceptedSocket(returnValue);
+        InetAddress addr = sock.getInetAddress();
+        String addrValue = addr.getHostAddress();
         // replace the placeholder from createOperation with the actual value
         op.put(SocketDefinitions.ADDRESS_ATTR, addrValue);
         // update the label since address changed
@@ -63,8 +64,8 @@ public class SocketAcceptOperationCollector extends DefaultOperationCollector {
             }
         }
     }
-    
-    protected Socket resolveAcceptedSocket (Object returnValue) {
+
+    protected Socket resolveAcceptedSocket(Object returnValue) {
         if (returnValue instanceof Socket) {
             return (Socket) returnValue;
         } else if (returnValue instanceof SocketChannel) {  // if accepted via a ServerSocketChannel

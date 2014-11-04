@@ -28,33 +28,33 @@ import org.springframework.web.client.ResponseExtractor;
 
 
 /**
- * 
+ *
  */
 public class RestExecuteOperationCollectionAspectTest extends RestOperationCollectionTestSupport {
-	private final RequestCallback 		cb=Mockito.mock(RequestCallback.class);
-	private final ResponseExtractor<?>	ex=Mockito.mock(ResponseExtractor.class);
+    private final RequestCallback cb = Mockito.mock(RequestCallback.class);
+    private final ResponseExtractor<?> ex = Mockito.mock(ResponseExtractor.class);
 
-	public RestExecuteOperationCollectionAspectTest() {
-		super();
-	}
+    public RestExecuteOperationCollectionAspectTest() {
+        super();
+    }
 
-	@Test
-	public void testExecuteNoArgs () throws Exception {
-		assertRestOperationResult(opsInstance.execute(new URI(createTestURI("testExecuteNoArgs")), HttpMethod.GET, cb, ex));
-	}
+    @Test
+    public void testExecuteNoArgs() throws Exception {
+        assertRestOperationResult(opsInstance.execute(new URI(createTestURI("testExecuteNoArgs")), HttpMethod.GET, cb, ex));
+    }
 
-	@Test
-	public void testExecuteVarArgs () throws Exception {
-		assertRestOperationResult(opsInstance.execute(createTestURI("testExecuteVarArgs"), HttpMethod.POST, cb, ex, new Date()));
-	}
+    @Test
+    public void testExecuteVarArgs() throws Exception {
+        assertRestOperationResult(opsInstance.execute(createTestURI("testExecuteVarArgs"), HttpMethod.POST, cb, ex, new Date()));
+    }
 
-	@Test
-	public void testExecuteMappedVars () throws Exception {
-		assertRestOperationResult(opsInstance.execute(createTestURI("testExecuteMappedVars"), HttpMethod.DELETE, cb, ex, Collections.singletonMap("now",  new Date())));
-	}
+    @Test
+    public void testExecuteMappedVars() throws Exception {
+        assertRestOperationResult(opsInstance.execute(createTestURI("testExecuteMappedVars"), HttpMethod.DELETE, cb, ex, Collections.singletonMap("now", new Date())));
+    }
 
-	@Override
-	public RestExecuteOperationCollectionAspect getAspect() {
-		return RestExecuteOperationCollectionAspect.aspectOf();
-	}
+    @Override
+    public RestExecuteOperationCollectionAspect getAspect() {
+        return RestExecuteOperationCollectionAspect.aspectOf();
+    }
 }

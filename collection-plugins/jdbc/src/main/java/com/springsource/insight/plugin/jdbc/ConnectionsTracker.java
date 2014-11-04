@@ -45,32 +45,33 @@ class ConnectionsTracker extends AbstractLoggingClass implements CollectionSetti
     /**
      * Default initial LRU capacity
      */
-    static final int    DEFAULT_CAPACITY=100;
+    static final int DEFAULT_CAPACITY = 100;
     /**
      * Default logging {@link Level} for tracker
      */
-    static final Level  DEFAULT_LEVEL=Level.OFF;
+    static final Level DEFAULT_LEVEL = Level.OFF;
 
-    private volatile int    maxCapacity=DEFAULT_CAPACITY;
-    private volatile Level  logLevel=DEFAULT_LEVEL;
+    private volatile int maxCapacity = DEFAULT_CAPACITY;
+    private volatile Level logLevel = DEFAULT_LEVEL;
     /**
      * The tracked connections {@link Map} - key={@link CacheKey}
      * (consists of the class name and identity hash) and value=the connection
-     * URL used when connection was opened 
+     * URL used when connection was opened
      */
-    private final Map<CacheKey,String>    trackedMap=
+    private final Map<CacheKey, String> trackedMap =
             Collections.synchronizedMap(new LinkedHashMap<CacheKey, String>() {
-                    private static final long serialVersionUID = 1L;
-                    @Override
-                    protected boolean removeEldestEntry(Map.Entry<CacheKey,String> entry) {
-                        return size() > getMaxCapacity();
-                    }
-            });
-    private static final ConnectionsTracker INSTANCE=new ConnectionsTracker();
+                private static final long serialVersionUID = 1L;
 
-    protected static final CollectionSettingName    MAX_TRACKED_CONNECTIONS_SETTING =
+                @Override
+                protected boolean removeEldestEntry(Map.Entry<CacheKey, String> entry) {
+                    return size() > getMaxCapacity();
+                }
+            });
+    private static final ConnectionsTracker INSTANCE = new ConnectionsTracker();
+
+    protected static final CollectionSettingName MAX_TRACKED_CONNECTIONS_SETTING =
             new CollectionSettingName("max.tracked.connections", "jdbc", "Controls the number of concurrently tracked connections (default=" + DEFAULT_CAPACITY + ")");
-    protected static final CollectionSettingName    CONNECTION_TRACKING_LOGGING_SETTING =
+    protected static final CollectionSettingName CONNECTION_TRACKING_LOGGING_SETTING =
             new CollectionSettingName("connections.tracking.loglevel", "jdbc", "One of the java.util.logging.Level values (default=" + DEFAULT_LEVEL + ")");
 
     // register a collection setting update listener and register the initial defaults
@@ -79,34 +80,34 @@ class ConnectionsTracker extends AbstractLoggingClass implements CollectionSetti
         registry.addListener(INSTANCE);
     }
 
-    private ConnectionsTracker () {
+    private ConnectionsTracker() {
         super();
     }
 
-    public int getMaxCapacity () {
+    public int getMaxCapacity() {
         return maxCapacity;
     }
 
     /**
      * @param conn The created {@link Connection}
-     * @param op The {@link Operation} containing the URL in its {@link OperationFields#CONNECTION_URL}
-     * attribute
+     * @param op   The {@link Operation} containing the URL in its {@link OperationFields#CONNECTION_URL}
+     *             attribute
      * @return The previous assigned URL to the connection - <code>null</code>
      * if none
      */
-    String startTracking (Connection conn, Operation op) {
+    String startTracking(Connection conn, Operation op) {
         return startTracking(conn, op.get(OperationFields.CONNECTION_URL, String.class));
     }
 
     /**
      * @param conn The created {@link Connection}
-     * @param url The used URL to create the connection
+     * @param url  The used URL to create the connection
      * @return The previous assigned URL to the connection - <code>null</code>
      * if none
      */
-    String startTracking (Connection conn, String url) {
-        CacheKey    key=new CacheKey(conn);
-        String      prev=trackedMap.put(key, (url == null) ? "" : url);
+    String startTracking(Connection conn, String url) {
+        CacheKey key = new CacheKey(conn);
+        String prev = trackedMap.put(key, (url == null) ? "" : url);
         if ((logLevel != null) && (!Level.OFF.equals(logLevel)) && _logger.isLoggable(logLevel)) {
             _logger.log(logLevel, "startTracking(" + key + ")[" + url + "] => " + prev);
         }
@@ -118,9 +119,9 @@ class ConnectionsTracker extends AbstractLoggingClass implements CollectionSetti
      * @return The URL used when {@link #startTracking(Connection, String)}
      * was called - <code>null</code> if connection not tracked
      */
-    String stopTracking (Connection conn) {
-        CacheKey    key=new CacheKey(conn);
-        String      url=trackedMap.remove(key);
+    String stopTracking(Connection conn) {
+        CacheKey key = new CacheKey(conn);
+        String url = trackedMap.remove(key);
         if ((logLevel != null) && (!Level.OFF.equals(logLevel)) && _logger.isLoggable(logLevel)) {
             _logger.log(logLevel, "stopTracking(" + key + ") => " + url);
         }
@@ -129,21 +130,22 @@ class ConnectionsTracker extends AbstractLoggingClass implements CollectionSetti
 
     /**
      * Checks if a {@link Connection} is currently being tracked
+     *
      * @param conn The connection instance
      * @return The URL of the tracked connection - <code>null</code> if not tracked
      */
-    String checkTrackingState (Connection conn) {
+    String checkTrackingState(Connection conn) {
         return trackedMap.get(new CacheKey(conn));
     }
 
-    Set<String> getTrackedURLs () {
+    Set<String> getTrackedURLs() {
         if (trackedMap.isEmpty()) {
             return Collections.emptySet();
         }
         return new TreeSet<String>(trackedMap.values());
     }
 
-    int getNumTrackedConnections () {
+    int getNumTrackedConnections() {
         return trackedMap.size();
     }
 
@@ -151,45 +153,45 @@ class ConnectionsTracker extends AbstractLoggingClass implements CollectionSetti
      * @return A {@link Map} where key=URL, value=a {@link Collection} of all
      * the {@link CacheKey}-s currently tracking this URL
      */
-    Map<String,Collection<CacheKey>> getTrackedConnections () {
+    Map<String, Collection<CacheKey>> getTrackedConnections() {
         if (trackedMap.isEmpty()) {
             return Collections.emptyMap();
         }
 
-        Map<String,Collection<CacheKey>>    result=new TreeMap<String, Collection<CacheKey>>();
-        synchronized(trackedMap) {
-            for (Map.Entry<CacheKey,String> ce : trackedMap.entrySet()) {
-                CacheKey                key=ce.getKey();
-                String                  url=ce.getValue();
-                Collection<CacheKey>    keyList=result.get(url);
+        Map<String, Collection<CacheKey>> result = new TreeMap<String, Collection<CacheKey>>();
+        synchronized (trackedMap) {
+            for (Map.Entry<CacheKey, String> ce : trackedMap.entrySet()) {
+                CacheKey key = ce.getKey();
+                String url = ce.getValue();
+                Collection<CacheKey> keyList = result.get(url);
                 if (keyList == null) {
                     keyList = new TreeSet<CacheKey>();
                     result.put(url, keyList);
                 }
-                
+
                 keyList.add(key);
             }
         }
-        
+
         return result;
     }
 
-    void clear () {
+    void clear() {
         trackedMap.clear();
     }
 
     public void incrementalUpdate(CollectionSettingName name, Serializable value) {
         if (MAX_TRACKED_CONNECTIONS_SETTING.equals(name)) {
-            int newCapacity=CollectionSettingsRegistry.getIntegerSettingValue(value);
+            int newCapacity = CollectionSettingsRegistry.getIntegerSettingValue(value);
             if (newCapacity <= 0) {
                 throw new IllegalArgumentException("Non-positive capacity N/A: " + value);
             }
-            
-            int oldCapacity=maxCapacity;
+
+            int oldCapacity = maxCapacity;
             maxCapacity = newCapacity;
             _logger.info("incrementalUpdate(" + name + ") " + oldCapacity + " => " + maxCapacity);
         } else if (CONNECTION_TRACKING_LOGGING_SETTING.equals(name)) {
-            Level   oldLevel=logLevel;
+            Level oldLevel = logLevel;
             logLevel = CollectionSettingsRegistry.getLogLevelSetting(value);
             _logger.info("incrementalUpdate(" + name + ") " + oldLevel + " => " + logLevel);
         } else if (_logger.isLoggable(Level.FINE)) {
@@ -203,28 +205,28 @@ class ConnectionsTracker extends AbstractLoggingClass implements CollectionSetti
 
     static Operation createOperation(JoinPoint.StaticPart staticPart, String url, String action) {
         return new Operation()
-                        .type(JdbcDriverExternalResourceAnalyzer.TYPE)
-                        .sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(staticPart))
-                        .label("JDBC connection " + action)
-                        .put(OperationFields.METHOD_NAME, action)
-                        .put(OperationFields.CONNECTION_URL, (url == null) ? "" : url)
-                        ;
+                .type(JdbcDriverExternalResourceAnalyzer.TYPE)
+                .sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(staticPart))
+                .label("JDBC connection " + action)
+                .put(OperationFields.METHOD_NAME, action)
+                .put(OperationFields.CONNECTION_URL, (url == null) ? "" : url)
+                ;
     }
 
-    static ConnectionsTracker getInstance () {
+    static ConnectionsTracker getInstance() {
         return INSTANCE;
     }
-    
+
     static class CacheKey implements Serializable, Comparable<CacheKey> {
         private static final long serialVersionUID = -470721146773085523L;
-        private final String    name;
-        private final int       hashValue;
+        private final String name;
+        private final int hashValue;
 
-        CacheKey (Connection conn) {
+        CacheKey(Connection conn) {
             if (conn == null) {
                 throw new IllegalStateException("No connection");
             }
-            
+
             name = conn.getClass().getName();
             hashValue = System.identityHashCode(conn);
         }
@@ -233,20 +235,20 @@ class ConnectionsTracker extends AbstractLoggingClass implements CollectionSetti
             if (o == null) {
                 return (-1);
             }
-            
+
             if (o == this) {
                 return 0;
             }
-            
-            int nRes=name.compareTo(o.name);
+
+            int nRes = name.compareTo(o.name);
             if (nRes != 0) {
                 return nRes;
             }
-            
-            if ((nRes=hashValue - o.hashValue) != 0) {
+
+            if ((nRes = hashValue - o.hashValue) != 0) {
                 return nRes;
             }
-            
+
             return 0;
         }
 
@@ -266,12 +268,12 @@ class ConnectionsTracker extends AbstractLoggingClass implements CollectionSetti
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            
-            CacheKey    other=(CacheKey) obj;
+
+            CacheKey other = (CacheKey) obj;
             if (name.equals(other.name) && (hashValue == other.hashValue)) {
                 return true;
             }
-            
+
             return false;
         }
 

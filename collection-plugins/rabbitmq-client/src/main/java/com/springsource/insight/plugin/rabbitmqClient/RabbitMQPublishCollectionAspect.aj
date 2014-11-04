@@ -25,54 +25,53 @@ import com.springsource.insight.util.ExceptionUtils;
 
 
 public aspect RabbitMQPublishCollectionAspect extends AbstractRabbitMQCollectionAspect {
-    public RabbitMQPublishCollectionAspect () {
+    public RabbitMQPublishCollectionAspect() {
         super(RabbitPluginOperationType.PUBLISH);
     }
 
-    public pointcut publish(String exchange, String routingKey, boolean mandatory, 
-                                        boolean immediate, BasicProperties props, byte[] body)
-        : execution(void Channel+.basicPublish(String, String, boolean, boolean, BasicProperties,byte[])) 
-       && args(exchange,routingKey,mandatory,immediate,props,body)
-       && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
-        ;
-    
-    void around(String exchange, String routingKey, boolean mandatory, boolean immediate, BasicProperties props,byte[] body) : 
-        publish(exchange,routingKey,mandatory,immediate,props,body) {
-        
+    public pointcut publish(String exchange, String routingKey, boolean mandatory,
+                            boolean immediate, BasicProperties props, byte[] body)
+            : execution(void Channel+.basicPublish(String, String, boolean, boolean, BasicProperties,byte[]))
+            && args(exchange,routingKey,mandatory,immediate,props,body)
+            && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
+            ;
+
+    void around(String exchange, String routingKey, boolean mandatory, boolean immediate, BasicProperties props, byte[] body):
+            publish(exchange,routingKey,mandatory,immediate,props,body) {
+
         final Operation op = createOperation(thisJoinPoint)
-        		.label(AbstractRabbitMQResourceAnalyzer.RABBIT + "-" + "Published to " + exchange + "#" + routingKey)
-        		.put("exchange", exchange)
-				.put("routingKey", routingKey)
-				.put("mandatory", mandatory)
-				.put("immediate", immediate)
-				.put("showPublishData", "true")
-				;        
-    
+                .label(AbstractRabbitMQResourceAnalyzer.RABBIT + "-" + "Published to " + exchange + "#" + routingKey)
+                .put("exchange", exchange)
+                .put("routingKey", routingKey)
+                .put("mandatory", mandatory)
+                .put("immediate", immediate)
+                .put("showPublishData", "true");
+
         Channel channel = (Channel) thisJoinPoint.getThis();
         Connection conn = channel.getConnection();
-        
+
         if (body != null) {
             op.put("bytes", body.length);
         }
-        
+
         if (conn != null) {
             applyConnectionData(op, conn);
         }
-        
+
         if (props != null) {
             applyPropertiesData(op, props);
         }
 
-        OperationCollector	collector=getCollector();
+        OperationCollector collector = getCollector();
         collector.enter(op);
-        BasicProperties	proceedProps = colorForward(props, op);
-        
+        BasicProperties proceedProps = colorForward(props, op);
+
         try {
-            proceed(exchange,routingKey,mandatory,immediate,proceedProps,body);
+            proceed(exchange, routingKey, mandatory, immediate, proceedProps, body);
             collector.exitNormal();
         } catch (Exception e) {
-        	collector.exitAbnormal(e);
-        	ExceptionUtils.rethrowException(e);
+            collector.exitAbnormal(e);
+            ExceptionUtils.rethrowException(e);
         }
     }
 }

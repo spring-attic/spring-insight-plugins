@@ -23,7 +23,7 @@ import com.springsource.insight.intercept.operation.Operation;
 
 
 /**
- * 
+ *
  */
 public class Log4jLoggingOperationCollectionAspectTest
         extends LoggingMethodOperationCollectionAspectTestSupport {
@@ -33,69 +33,69 @@ public class Log4jLoggingOperationCollectionAspectTest
     }
 
     @Test
-    public void testLogErrorMessage () {
-       String   msg="testLogErrorMessage";
-       Logger   logger=Logger.getLogger(getClass());
-       logger.error(msg);
-       assertLoggingOperation(logger, "ERROR", msg, null);
+    public void testLogErrorMessage() {
+        String msg = "testLogErrorMessage";
+        Logger logger = Logger.getLogger(getClass());
+        logger.error(msg);
+        assertLoggingOperation(logger, "ERROR", msg, null);
     }
 
     @Test
-    public void testLogErrorMessageWithException () {
-       String       msg="testLogErrorMessageWithException";
-       Logger       logger=Logger.getLogger(getClass());
-       Throwable    t=new IllegalArgumentException(msg);
-       logger.error(msg, t);
-       assertLoggingOperation(logger, "ERROR", msg, t);
+    public void testLogErrorMessageWithException() {
+        String msg = "testLogErrorMessageWithException";
+        Logger logger = Logger.getLogger(getClass());
+        Throwable t = new IllegalArgumentException(msg);
+        logger.error(msg, t);
+        assertLoggingOperation(logger, "ERROR", msg, t);
     }
 
     @Test
-    public void testFatalErrorMessage () {
-       String   msg="testFatalErrorMessage";
-       Logger   logger=Logger.getLogger(getClass());
-       logger.fatal(msg);
-       assertLoggingOperation(logger, "FATAL", msg, null);
+    public void testFatalErrorMessage() {
+        String msg = "testFatalErrorMessage";
+        Logger logger = Logger.getLogger(getClass());
+        logger.fatal(msg);
+        assertLoggingOperation(logger, "FATAL", msg, null);
     }
 
     @Test
-    public void testFatalErrorMessageWithException () {
-       String       msg="testFatalErrorMessageWithException";
-       Logger       logger=Logger.getLogger(getClass());
-       Throwable    t=new IllegalArgumentException(msg);
-       logger.fatal(msg, t);
-       assertLoggingOperation(logger, "FATAL", msg, t);
+    public void testFatalErrorMessageWithException() {
+        String msg = "testFatalErrorMessageWithException";
+        Logger logger = Logger.getLogger(getClass());
+        Throwable t = new IllegalArgumentException(msg);
+        logger.fatal(msg, t);
+        assertLoggingOperation(logger, "FATAL", msg, t);
     }
 
     @Test
-    public void testIndirectErrorLogMessage () {
-        String   msg="testIndirectErrorLogMessage";
-        Logger   logger=Logger.getLogger(getClass());
+    public void testIndirectErrorLogMessage() {
+        String msg = "testIndirectErrorLogMessage";
+        Logger logger = Logger.getLogger(getClass());
         logger.log(Level.ERROR, msg);
         assertLoggingOperation(logger, "ERROR", msg, null);
     }
 
     @Test
-    public void testIndirectErrorLogMessageWithException () {
-        String      msg="testIndirectErrorLogMessageWithException";
-        Logger      logger=Logger.getLogger(getClass());
-        Throwable   t=new IllegalArgumentException(msg);
+    public void testIndirectErrorLogMessageWithException() {
+        String msg = "testIndirectErrorLogMessageWithException";
+        Logger logger = Logger.getLogger(getClass());
+        Throwable t = new IllegalArgumentException(msg);
         logger.log(Level.ERROR, msg, t);
         assertLoggingOperation(logger, "ERROR", msg, t);
     }
 
     @Test
-    public void testIndirectFatalLogMessage () {
-        String   msg="testIndirectFatalLogMessage";
-        Logger   logger=Logger.getLogger(getClass());
+    public void testIndirectFatalLogMessage() {
+        String msg = "testIndirectFatalLogMessage";
+        Logger logger = Logger.getLogger(getClass());
         logger.log(Level.FATAL, msg);
         assertLoggingOperation(logger, "FATAL", msg, null);
     }
 
     @Test
-    public void testIndirectFatalLogMessageWithException () {
-        String      msg="testIndirectFatalLogMessageWithException";
-        Logger      logger=Logger.getLogger(getClass());
-        Throwable   t=new IllegalArgumentException(msg);
+    public void testIndirectFatalLogMessageWithException() {
+        String msg = "testIndirectFatalLogMessageWithException";
+        Logger logger = Logger.getLogger(getClass());
+        Throwable t = new IllegalArgumentException(msg);
         logger.log(Level.FATAL, msg, t);
         assertLoggingOperation(logger, "FATAL", msg, t);
     }
@@ -105,8 +105,8 @@ public class Log4jLoggingOperationCollectionAspectTest
         return Log4jLoggingOperationCollectionAspect.aspectOf();
     }
 
-    private Operation assertLoggingOperation (Logger logger, String level, String msg, Throwable t) {
-        Operation   op=assertLoggingOperation(Logger.class, level, msg, t);
+    private Operation assertLoggingOperation(Logger logger, String level, String msg, Throwable t) {
+        Operation op = assertLoggingOperation(Logger.class, level, msg, t);
         assertEquals("Mismatched logger name", logger.getName(), op.get(LoggingDefinitions.NAME_ATTR));
         return op;
     }

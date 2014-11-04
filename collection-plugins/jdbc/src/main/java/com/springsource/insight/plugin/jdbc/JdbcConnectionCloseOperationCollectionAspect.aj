@@ -28,9 +28,9 @@ import com.springsource.insight.util.ExceptionUtils;
  * Intercepts {@link Connection#close()} call for tracking purposes
  */
 public aspect JdbcConnectionCloseOperationCollectionAspect extends OperationCollectionAspectSupport {
-    private final ConnectionsTracker    tracker=ConnectionsTracker.getInstance();
+    private final ConnectionsTracker tracker = ConnectionsTracker.getInstance();
 
-    public JdbcConnectionCloseOperationCollectionAspect () {
+    public JdbcConnectionCloseOperationCollectionAspect() {
         super();
     }
 
@@ -39,32 +39,32 @@ public aspect JdbcConnectionCloseOperationCollectionAspect extends OperationColl
         return JdbcRuntimePluginDescriptor.PLUGIN_NAME;
     }
 
-    public pointcut collectionPoint() : execution(* Connection+.close());
+    public pointcut collectionPoint(): execution(* Connection+.close());
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     Object around (Connection conn)
             : collectionPoint()
-           && target(conn)
-           && if(strategies.collect(thisAspectInstance,thisJoinPointStaticPart)) {
-        OperationCollector  collector = null;
+            && target(conn)
+            && if(strategies.collect(thisAspectInstance,thisJoinPointStaticPart)) {
+        OperationCollector collector = null;
         try {
-            String url=tracker.stopTracking(conn);
-            collector=(url == null) /* not tracked */ ? null : getCollector();
+            String url = tracker.stopTracking(conn);
+            collector = (url == null) /* not tracked */ ? null : getCollector();
             if (collector != null) {
                 collector.enter(ConnectionsTracker.createOperation(thisJoinPointStaticPart, url, "close"));
             }
         } catch (Throwable t) {
             CollectionErrors.markCollectionError(this, t);
         }
-        
+
         try {
-            Object returnValue=proceed(conn);
+            Object returnValue = proceed(conn);
             if (collector != null) {
                 collector.exitNormal();
             }
 
             return returnValue;
-        } catch(Throwable t) {
+        } catch (Throwable t) {
             if (collector != null) {
                 collector.exitAbnormal(t);
             }
@@ -72,7 +72,7 @@ public aspect JdbcConnectionCloseOperationCollectionAspect extends OperationColl
             return null;
         }
     }
-    
+
     @Override
     public boolean isMetricsGenerator() {
         return true; // This provides an external resource

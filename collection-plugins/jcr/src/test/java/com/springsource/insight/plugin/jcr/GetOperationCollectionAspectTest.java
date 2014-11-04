@@ -22,31 +22,31 @@ import com.springsource.insight.collection.test.OperationCollectionAspectTestSup
 import com.springsource.insight.intercept.operation.Operation;
 
 public class GetOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-	@Override
-	public OperationCollectionAspectSupport getAspect() {
-		return GetNodeOperationCollectionAspect.aspectOf();
-	}
+    @Override
+    public OperationCollectionAspectSupport getAspect() {
+        return GetNodeOperationCollectionAspect.aspectOf();
+    }
 
-	@Test
-	public void test1() throws Exception {
-		System.out.println("Running get data test..");
-		// Step 1: Execute test
-		SimpleTests.getInstance().test();
-	
-		// Step 2:  Get the Operation that was just created by our aspect
-		Operation op = getLastEntered();
-		assertNotNull("No operation data is intercepted",op);
+    @Test
+    public void test1() throws Exception {
+        System.out.println("Running get data test..");
+        // Step 1: Execute test
+        SimpleTests.getInstance().test();
 
-		// Step 3:  Validate
-		assertTrue("Invalid operation type: "+op.getType().getName()+", expected: "+OperationCollectionTypes.GET_TYPE.type,
-							op.getType().equals(OperationCollectionTypes.GET_TYPE.type));
-		
-		String path=(String)op.get("path");
-		assertTrue("Invalid path: "+path+", expected: /", path.equals("/"));
-		
-		String relPath=(String)op.get("relPath");
-		assertTrue("Invalid relative path: "+relPath+", expected: hello", relPath.equals("hello"));
-		
-		System.out.println("Completed get data test.\n");
-	}
+        // Step 2:  Get the Operation that was just created by our aspect
+        Operation op = getLastEntered();
+        assertNotNull("No operation data is intercepted", op);
+
+        // Step 3:  Validate
+        assertTrue("Invalid operation type: " + op.getType().getName() + ", expected: " + OperationCollectionTypes.GET_TYPE.type,
+                op.getType().equals(OperationCollectionTypes.GET_TYPE.type));
+
+        String path = (String) op.get("path");
+        assertTrue("Invalid path: " + path + ", expected: /", path.equals("/"));
+
+        String relPath = (String) op.get("relPath");
+        assertTrue("Invalid relative path: " + relPath + ", expected: hello", relPath.equals("hello"));
+
+        System.out.println("Completed get data test.\n");
+    }
 }

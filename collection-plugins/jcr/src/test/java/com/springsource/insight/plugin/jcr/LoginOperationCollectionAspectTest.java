@@ -22,32 +22,32 @@ import com.springsource.insight.collection.test.OperationCollectionAspectTestSup
 import com.springsource.insight.intercept.operation.Operation;
 
 public class LoginOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-	@Override
-	public OperationCollectionAspectSupport getAspect() {
-		return LoginOperationCollectionAspect.aspectOf();
-	}
-	
-	@Test
-	public void test1() throws Exception {
-		System.out.println("Running login test..");
-		
-		// Step 1: Execute test
-		SimpleTests.getInstance().test();
-	
-		// Step 2:  Get the Operation that was just created by our aspect
-		Operation op = getLastEntered();
-		assertNotNull("No operation data is intercepted",op);
+    @Override
+    public OperationCollectionAspectSupport getAspect() {
+        return LoginOperationCollectionAspect.aspectOf();
+    }
 
-		// Step 3:  Validate
-		assertTrue("Invalid operation type: "+op.getType().getName()+", expected: "+OperationCollectionTypes.LOGIN_TYPE.type,
-							op.getType().equals(OperationCollectionTypes.LOGIN_TYPE.type));
-		
-		String repoName=(String)op.get("workspace");
-		assertNull("Invalid workspace name: "+repoName, repoName);
-		
-		String username=(String)op.get("user");
-		assertTrue("Invalid user name: "+username+", expected: admin", username.equals("admin"));
-		
-		System.out.println("Completed login test.\n");
-	}
+    @Test
+    public void test1() throws Exception {
+        System.out.println("Running login test..");
+
+        // Step 1: Execute test
+        SimpleTests.getInstance().test();
+
+        // Step 2:  Get the Operation that was just created by our aspect
+        Operation op = getLastEntered();
+        assertNotNull("No operation data is intercepted", op);
+
+        // Step 3:  Validate
+        assertTrue("Invalid operation type: " + op.getType().getName() + ", expected: " + OperationCollectionTypes.LOGIN_TYPE.type,
+                op.getType().equals(OperationCollectionTypes.LOGIN_TYPE.type));
+
+        String repoName = (String) op.get("workspace");
+        assertNull("Invalid workspace name: " + repoName, repoName);
+
+        String username = (String) op.get("user");
+        assertTrue("Invalid user name: " + username + ", expected: admin", username.equals("admin"));
+
+        System.out.println("Completed login test.\n");
+    }
 }

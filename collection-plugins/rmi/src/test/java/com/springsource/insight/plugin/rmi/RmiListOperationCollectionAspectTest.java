@@ -32,39 +32,39 @@ import com.springsource.insight.util.ListUtil;
  */
 public class RmiListOperationCollectionAspectTest extends RmiOperationCollectionAspectTestSupport {
 
-	public RmiListOperationCollectionAspectTest() {
-		super();
-	}
-	
-	@Test
-	public void testList() throws Exception {
-		List<String> names = Arrays.asList("111", "222", "333", "444");
-		Remote rem = Mockito.mock(Remote.class);
-		for (String n : names) {
-			registry.put(n, rem);
-		}
-		
-		List<String> res = Arrays.asList(registry.list());
-		if (! ListUtil.compareCollections(names, res)) {
-			fail("Mismatched resutls in array - expected: " + names + ", actual: " + res);
-		}
-		
-		Operation op = getLastEntered();
-		assertNotNull("No operation", op);
-		assertEquals("Mismatched type", RmiDefinitions.RMI_LIST, op.getType());
-		
-		OperationList list = op.get(RmiDefinitions.LIST_ATTR, OperationList.class);
-		assertNotNull("Missing names list", list);
-		assertEquals("Mismatched names list size", res.size(), list.size());
-		for (int index = 0; index < list.size(); index++) {
-			String expected = res.get(index), actual = list.get(index, String.class);
-			assertEquals("Mismatched value @ index " + index, expected, actual);
-		}
-	}
+    public RmiListOperationCollectionAspectTest() {
+        super();
+    }
 
-	@Override
-	public OperationCollectionAspectSupport getAspect() {
-		return RmiListOperationCollectionAspect.aspectOf();
-	}
+    @Test
+    public void testList() throws Exception {
+        List<String> names = Arrays.asList("111", "222", "333", "444");
+        Remote rem = Mockito.mock(Remote.class);
+        for (String n : names) {
+            registry.put(n, rem);
+        }
+
+        List<String> res = Arrays.asList(registry.list());
+        if (!ListUtil.compareCollections(names, res)) {
+            fail("Mismatched resutls in array - expected: " + names + ", actual: " + res);
+        }
+
+        Operation op = getLastEntered();
+        assertNotNull("No operation", op);
+        assertEquals("Mismatched type", RmiDefinitions.RMI_LIST, op.getType());
+
+        OperationList list = op.get(RmiDefinitions.LIST_ATTR, OperationList.class);
+        assertNotNull("Missing names list", list);
+        assertEquals("Mismatched names list size", res.size(), list.size());
+        for (int index = 0; index < list.size(); index++) {
+            String expected = res.get(index), actual = list.get(index, String.class);
+            assertEquals("Mismatched value @ index " + index, expected, actual);
+        }
+    }
+
+    @Override
+    public OperationCollectionAspectSupport getAspect() {
+        return RmiListOperationCollectionAspect.aspectOf();
+    }
 
 }

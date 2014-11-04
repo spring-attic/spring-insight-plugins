@@ -26,53 +26,53 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 import org.springframework.stereotype.Component;
 
 /**
- * 
+ *
  */
 @Component(SpringMBeanComponent.BEAN_NAME)
-@ManagedResource(objectName=SpringMBeanComponent.RESOURCE_NAME, description="Test Spring MBean")
+@ManagedResource(objectName = SpringMBeanComponent.RESOURCE_NAME, description = "Test Spring MBean")
 public class SpringMBeanComponent {
-	public static final String	DOMAIN_NAME="com.springsource.insight.plugin.jmx";
-	public static final String	BEAN_NAME="SpringMBeanComponent";
-	public static final String	RESOURCE_NAME=DOMAIN_NAME + ":name=" + BEAN_NAME;
-	
-	private Number	number=Integer.valueOf(0);
-	private String	str="";
-	private final Logger	logger;
+    public static final String DOMAIN_NAME = "com.springsource.insight.plugin.jmx";
+    public static final String BEAN_NAME = "SpringMBeanComponent";
+    public static final String RESOURCE_NAME = DOMAIN_NAME + ":name=" + BEAN_NAME;
 
-	public SpringMBeanComponent() {
-		logger = LoggerFactory.getLogger(getClass());
-	}
+    private Number number = Integer.valueOf(0);
+    private String str = "";
+    private final Logger logger;
 
-	@ManagedAttribute(description="Number value getter")
-	public Number getNumberValue() {
-		return number;
-	}
+    public SpringMBeanComponent() {
+        logger = LoggerFactory.getLogger(getClass());
+    }
 
-	@ManagedAttribute(description="Number value setter")
-	public void setNumberValue(Number n) {
-		number = n;
-		logger.info("setNumberValue(" + n + ")");
-	}
+    @ManagedAttribute(description = "Number value getter")
+    public Number getNumberValue() {
+        return number;
+    }
 
-	@ManagedAttribute(description="String value getter")
-	public String getStringValue() {
-		return str;
-	}
-	
-	@ManagedAttribute(description="String value setter")
-	public void setStringValue(String s) {
-		str = s;
-		logger.info("setStringValue(" + s + ")");
-	}
+    @ManagedAttribute(description = "Number value setter")
+    public void setNumberValue(Number n) {
+        number = n;
+        logger.info("setNumberValue(" + n + ")");
+    }
 
-	@ManagedOperation(description="Updates both values")
-	@ManagedOperationParameters({
-		@ManagedOperationParameter(name="number", description="Number value"),
-		@ManagedOperationParameter(name="string", description="String value")
-	})
-	public void updateValues(Number n, String s) {
-		number = n;
-		str = s;
-		logger.info("updateValues(" + n + "/" + s + ")");
-	}
+    @ManagedAttribute(description = "String value getter")
+    public String getStringValue() {
+        return str;
+    }
+
+    @ManagedAttribute(description = "String value setter")
+    public void setStringValue(String s) {
+        str = s;
+        logger.info("setStringValue(" + s + ")");
+    }
+
+    @ManagedOperation(description = "Updates both values")
+    @ManagedOperationParameters({
+            @ManagedOperationParameter(name = "number", description = "Number value"),
+            @ManagedOperationParameter(name = "string", description = "String value")
+    })
+    public void updateValues(Number n, String s) {
+        number = n;
+        str = s;
+        logger.info("updateValues(" + n + "/" + s + ")");
+    }
 }

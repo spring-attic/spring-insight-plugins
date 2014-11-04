@@ -26,33 +26,33 @@ import com.springsource.insight.collection.method.AnnotationDrivenMethodOperatio
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public aspect EventPublisingOperationCollectionAspect extends SpringEventReferenceCollectionAspect {
-	public static final String	ACTION_ATTR="actionType", ACTION_SUFFIX="Event";
+    public static final String ACTION_ATTR = "actionType", ACTION_SUFFIX = "Event";
 
-	public EventPublisingOperationCollectionAspect () {
-		super(SpringCorePluginRuntimeDescriptor.EVENT_PUBLISH_TYPE);
-	}
+    public EventPublisingOperationCollectionAspect() {
+        super(SpringCorePluginRuntimeDescriptor.EVENT_PUBLISH_TYPE);
+    }
 
-	public pointcut publishingPoint ()
-		: execution(* ApplicationEventPublisher+.publishEvent(ApplicationEvent))
-	   || execution(* ApplicationEventMulticaster+.multicastEvent(ApplicationEvent))
-	    ;
+    public pointcut publishingPoint()
+            : execution(* ApplicationEventPublisher+.publishEvent(ApplicationEvent))
+            || execution(* ApplicationEventMulticaster+.multicastEvent(ApplicationEvent))
+            ;
 
-	public pointcut collectionPoint()
-		: publishingPoint()
-	  && !AnnotationDrivenMethodOperationCollectionAspect.collectionPoint()
-	    ;
+    public pointcut collectionPoint()
+            : publishingPoint()
+            && !AnnotationDrivenMethodOperationCollectionAspect.collectionPoint()
+            ;
 
-	@Override
-	protected Operation createOperation(JoinPoint jp) {
-		Signature	sig=jp.getSignature();
-		String		name=sig.getName();
-		if (name.endsWith(ACTION_SUFFIX) && (name.length() > ACTION_SUFFIX.length())) {
-			name = name.substring(0, name.length() - ACTION_SUFFIX.length());
-		}
+    @Override
+    protected Operation createOperation(JoinPoint jp) {
+        Signature sig = jp.getSignature();
+        String name = sig.getName();
+        if (name.endsWith(ACTION_SUFFIX) && (name.length() > ACTION_SUFFIX.length())) {
+            name = name.substring(0, name.length() - ACTION_SUFFIX.length());
+        }
 
-		return super.createOperation(jp).put(ACTION_ATTR, name);
-	}
+        return super.createOperation(jp).put(ACTION_ATTR, name);
+    }
 }

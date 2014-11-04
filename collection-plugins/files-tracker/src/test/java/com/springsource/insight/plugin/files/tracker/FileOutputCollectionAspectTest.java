@@ -30,130 +30,132 @@ import org.junit.experimental.categories.Category;
 import com.springsource.insight.util.test.MicroBenchmark;
 
 /**
- * 
+ *
  */
 public class FileOutputCollectionAspectTest extends FilesOpenTrackerAspectTestSupport {
     private File TEST_FILE;
+
     public FileOutputCollectionAspectTest() {
         super();
     }
 
     @Before
     @Override
-    public void setUp () {
-    	super.setUp();
+    public void setUp() {
+        super.setUp();
 
-    	TEST_FILE = new File(ensureTempFolderExists(), "output-test-file.txt");
-    	if (TEST_FILE.exists() && (!TEST_FILE.delete())) {
-    		fail("Failed to delete test file=" + TEST_FILE.getAbsolutePath());
-    	}
+        TEST_FILE = new File(ensureTempFolderExists(), "output-test-file.txt");
+        if (TEST_FILE.exists() && (!TEST_FILE.delete())) {
+            fail("Failed to delete test file=" + TEST_FILE.getAbsolutePath());
+        }
     }
 
     @Test
-    public void testFileOutputStreamWithFile () throws IOException {
+    public void testFileOutputStreamWithFile() throws IOException {
         assertFileTrackingOperation(new FileOutputStream(TEST_FILE), TEST_FILE,
-                                    "open", FileOutputCollectionAspect.resolveWriteMode(false));
+                "open", FileOutputCollectionAspect.resolveWriteMode(false));
     }
 
     @Test
-    public void testFileOutputStreamWithPath () throws IOException {
+    public void testFileOutputStreamWithPath() throws IOException {
         assertFileTrackingOperation(new FileOutputStream(TEST_FILE.getAbsolutePath()), TEST_FILE.getAbsolutePath(),
-                                    "open", FileOutputCollectionAspect.resolveWriteMode(false));
+                "open", FileOutputCollectionAspect.resolveWriteMode(false));
     }
 
     @Test
-    public void testFileOutputStreamAppendWithFile () throws IOException {
+    public void testFileOutputStreamAppendWithFile() throws IOException {
         assertFileTrackingOperation(new FileOutputStream(TEST_FILE, true), TEST_FILE,
-                                    "open", FileOutputCollectionAspect.resolveWriteMode(true));
+                "open", FileOutputCollectionAspect.resolveWriteMode(true));
     }
 
     @Test
-    public void testFileOutputStreamAppendWithPath () throws IOException {
+    public void testFileOutputStreamAppendWithPath() throws IOException {
         assertFileTrackingOperation(new FileOutputStream(TEST_FILE.getAbsolutePath(), true), TEST_FILE.getAbsolutePath(),
-                                    "open", FileOutputCollectionAspect.resolveWriteMode(true));
+                "open", FileOutputCollectionAspect.resolveWriteMode(true));
     }
 
     @Test
-    public void testFileWriterWithFile () throws IOException {
+    public void testFileWriterWithFile() throws IOException {
         assertFileTrackingOperation(new FileWriter(TEST_FILE), TEST_FILE,
-                                    "open", FileOutputCollectionAspect.resolveWriteMode(false));
+                "open", FileOutputCollectionAspect.resolveWriteMode(false));
     }
 
     @Test
-    public void testFileWriterWithPath () throws IOException {
+    public void testFileWriterWithPath() throws IOException {
         assertFileTrackingOperation(new FileWriter(TEST_FILE.getAbsolutePath()), TEST_FILE.getAbsolutePath(),
-                                    "open", FileOutputCollectionAspect.resolveWriteMode(false));
+                "open", FileOutputCollectionAspect.resolveWriteMode(false));
     }
 
     @Test
-    public void testFileWriterAppendWithFile () throws IOException {
+    public void testFileWriterAppendWithFile() throws IOException {
         assertFileTrackingOperation(new FileWriter(TEST_FILE, true), TEST_FILE,
-                                    "open", FileOutputCollectionAspect.resolveWriteMode(true));
+                "open", FileOutputCollectionAspect.resolveWriteMode(true));
     }
 
     @Test
-    public void testFileWriterAppendWithPath () throws IOException {
+    public void testFileWriterAppendWithPath() throws IOException {
         assertFileTrackingOperation(new FileWriter(TEST_FILE.getAbsolutePath(), true), TEST_FILE.getAbsolutePath(),
-                                    "open", FileOutputCollectionAspect.resolveWriteMode(true));
+                "open", FileOutputCollectionAspect.resolveWriteMode(true));
     }
 
     @Test
-    public void testPrintStreamWithFile () throws IOException {
+    public void testPrintStreamWithFile() throws IOException {
         assertFileTrackingOperation(new PrintStream(TEST_FILE), TEST_FILE,
-                                    "open", FileOutputCollectionAspect.resolveWriteMode(false));
+                "open", FileOutputCollectionAspect.resolveWriteMode(false));
     }
 
     @Test
-    public void testPrintStreamWithPath () throws IOException {
+    public void testPrintStreamWithPath() throws IOException {
         assertFileTrackingOperation(new PrintStream(TEST_FILE.getAbsolutePath()), TEST_FILE.getAbsolutePath(),
-                                    "open", FileOutputCollectionAspect.resolveWriteMode(false));
+                "open", FileOutputCollectionAspect.resolveWriteMode(false));
     }
 
     @Test
-    public void testCharsetPrintStreamWithFile () throws IOException {
+    public void testCharsetPrintStreamWithFile() throws IOException {
         assertFileTrackingOperation(new PrintStream(TEST_FILE, "utf-8"), TEST_FILE,
-                                    "open", FileOutputCollectionAspect.resolveWriteMode(false));
+                "open", FileOutputCollectionAspect.resolveWriteMode(false));
     }
 
     @Test
-    public void testCharsetPrintStreamWithPath () throws IOException {
+    public void testCharsetPrintStreamWithPath() throws IOException {
         assertFileTrackingOperation(new PrintStream(TEST_FILE.getAbsolutePath(), "utf-8"), TEST_FILE.getAbsolutePath(),
-                                    "open", FileOutputCollectionAspect.resolveWriteMode(false));
+                "open", FileOutputCollectionAspect.resolveWriteMode(false));
     }
 
     @Test
-    public void testPrintWriterWithFile () throws IOException {
+    public void testPrintWriterWithFile() throws IOException {
         assertFileTrackingOperation(new PrintWriter(TEST_FILE), TEST_FILE,
-                                    "open", FileOutputCollectionAspect.resolveWriteMode(false));
+                "open", FileOutputCollectionAspect.resolveWriteMode(false));
     }
 
     @Test
-    public void testPrintWriterWithPath () throws IOException {
+    public void testPrintWriterWithPath() throws IOException {
         assertFileTrackingOperation(new PrintWriter(TEST_FILE.getAbsolutePath()), TEST_FILE.getAbsolutePath(),
-                                    "open", FileOutputCollectionAspect.resolveWriteMode(false));
+                "open", FileOutputCollectionAspect.resolveWriteMode(false));
     }
 
     @Test
-    public void testCharsetPrintWriterWithFile () throws IOException {
+    public void testCharsetPrintWriterWithFile() throws IOException {
         assertFileTrackingOperation(new PrintWriter(TEST_FILE, "utf-8"), TEST_FILE,
-                                    "open", FileOutputCollectionAspect.resolveWriteMode(false));
+                "open", FileOutputCollectionAspect.resolveWriteMode(false));
     }
 
     @Test
-    public void testCharsetPrintWriterWithPath () throws IOException {
+    public void testCharsetPrintWriterWithPath() throws IOException {
         assertFileTrackingOperation(new PrintWriter(TEST_FILE.getAbsolutePath(), "utf-8"), TEST_FILE.getAbsolutePath(),
-                                    "open", FileOutputCollectionAspect.resolveWriteMode(false));
+                "open", FileOutputCollectionAspect.resolveWriteMode(false));
     }
+
     /**
      * This is not really a test but more a micro-benchmark of how the the
-     * synchronization of the tracked files map affects the performance 
+     * synchronization of the tracked files map affects the performance
      */
     @Test
     @Category(MicroBenchmark.class)
-    public void testSynchronizedAspectPerformance () {
+    public void testSynchronizedAspectPerformance() {
         runSynchronizedAspectPerformance(new FileAccessor() {
             @SuppressWarnings("synthetic-access")
-			public Closeable createInstance() throws IOException {
+            public Closeable createInstance() throws IOException {
                 return new FileOutputStream(TEST_FILE);
             }
         });

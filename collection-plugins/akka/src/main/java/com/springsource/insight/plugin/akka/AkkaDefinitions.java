@@ -19,24 +19,24 @@ package com.springsource.insight.plugin.akka;
 import com.springsource.insight.intercept.operation.OperationType;
 
 public class AkkaDefinitions {
-    
+
     public static final class OperationTypes {
-	public static final OperationType AKKA_OP_ACTOR_REF = OperationType.valueOf("akka_actor_ref");
-	public static final OperationType AKKA_OP_UNTYPED_ACTOR = OperationType.valueOf("akka_untyped_actor");
-	public static final OperationType AKKA_OP_TYPED_ACTOR = OperationType.valueOf("akka_typed_actor");
+        public static final OperationType AKKA_OP_ACTOR_REF = OperationType.valueOf("akka_actor_ref");
+        public static final OperationType AKKA_OP_UNTYPED_ACTOR = OperationType.valueOf("akka_untyped_actor");
+        public static final OperationType AKKA_OP_TYPED_ACTOR = OperationType.valueOf("akka_typed_actor");
     }
-    
+
     public static final class Labels {
-	public static final String AKKA = "Akka";
-	public static final String ACTOR = "Actor";
-	public static final String ACTOR_REF = "ActorRef";
-	public static final String MESSAGE = "MessageType";
-	public static final String PATH = "Path";
-	public static final String ROUTER = "Router";
-	public static final String SENDER = "Sender";
-	public static final String SYSTEM = "System";
-	public static final String TYPED_ACTOR = "Typed Actor";
-	public static final String UNTYPED_ACTOR = "Untyped Actor";
+        public static final String AKKA = "Akka";
+        public static final String ACTOR = "Actor";
+        public static final String ACTOR_REF = "ActorRef";
+        public static final String MESSAGE = "MessageType";
+        public static final String PATH = "Path";
+        public static final String ROUTER = "Router";
+        public static final String SENDER = "Sender";
+        public static final String SYSTEM = "System";
+        public static final String TYPED_ACTOR = "Typed Actor";
+        public static final String UNTYPED_ACTOR = "Untyped Actor";
     }
 
 }

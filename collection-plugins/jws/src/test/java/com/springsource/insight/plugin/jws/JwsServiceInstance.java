@@ -22,43 +22,43 @@ import javax.jws.WebParam;
 import javax.jws.WebService;
 
 /**
- * 
+ *
  */
-@WebService(name=JwsServiceDefinitions.SERVICE_NAME,
-            endpointInterface=JwsServiceDefinitions.ENDPOINT,
-            portName=JwsServiceDefinitions.PORT_NAME,
-            serviceName=JwsServiceDefinitions.SERVICE_NAME,
-            targetNamespace=JwsServiceDefinitions.TARGET_NAMESPACE,
-            wsdlLocation=JwsServiceDefinitions.WSDL_LOCATION)
+@WebService(name = JwsServiceDefinitions.SERVICE_NAME,
+        endpointInterface = JwsServiceDefinitions.ENDPOINT,
+        portName = JwsServiceDefinitions.PORT_NAME,
+        serviceName = JwsServiceDefinitions.SERVICE_NAME,
+        targetNamespace = JwsServiceDefinitions.TARGET_NAMESPACE,
+        wsdlLocation = JwsServiceDefinitions.WSDL_LOCATION)
 public class JwsServiceInstance {
     public JwsServiceInstance() {
         super();
     }
 
-    public Date getCurrentDate () {
+    public Date getCurrentDate() {
         return new Date(System.currentTimeMillis());
     }
 
-    @WebMethod(action=JwsServiceDefinitions.YESTERDAY_ACTION,
-               operationName=JwsServiceDefinitions.YESTERDAY_OPER,
-               exclude=JwsServiceDefinitions.EXCLUDE_METHOD)
-    public Date getYesterdayDate (
-            @WebParam(name=JwsServiceDefinitions.YESTERDAY_PARAM,
-                      partName=JwsServiceDefinitions.YESTERDAY_PARAM,
-                      targetNamespace=JwsServiceDefinitions.TARGET_NAMESPACE,
-                      header=JwsServiceDefinitions.HEADER_PARAM)    long now,
+    @WebMethod(action = JwsServiceDefinitions.YESTERDAY_ACTION,
+            operationName = JwsServiceDefinitions.YESTERDAY_OPER,
+            exclude = JwsServiceDefinitions.EXCLUDE_METHOD)
+    public Date getYesterdayDate(
+            @WebParam(name = JwsServiceDefinitions.YESTERDAY_PARAM,
+                    partName = JwsServiceDefinitions.YESTERDAY_PARAM,
+                    targetNamespace = JwsServiceDefinitions.TARGET_NAMESPACE,
+                    header = JwsServiceDefinitions.HEADER_PARAM) long now,
             boolean ignoredValue) {
         return new Date(now - 86400000L);
     }
 
-    @WebMethod(action=JwsServiceDefinitions.TOMORROW_ACTION,
-               operationName=JwsServiceDefinitions.TOMORROW_OPER,
-               exclude=JwsServiceDefinitions.EXCLUDE_METHOD)
-    public Date getTomorrowDate (
-            @WebParam(name=JwsServiceDefinitions.TOMORROW_PARAM,
-                      partName=JwsServiceDefinitions.TOMORROW_PARAM,
-                      targetNamespace=JwsServiceDefinitions.TARGET_NAMESPACE,
-                      header=JwsServiceDefinitions.HEADER_PARAM)    long now,
+    @WebMethod(action = JwsServiceDefinitions.TOMORROW_ACTION,
+            operationName = JwsServiceDefinitions.TOMORROW_OPER,
+            exclude = JwsServiceDefinitions.EXCLUDE_METHOD)
+    public Date getTomorrowDate(
+            @WebParam(name = JwsServiceDefinitions.TOMORROW_PARAM,
+                    partName = JwsServiceDefinitions.TOMORROW_PARAM,
+                    targetNamespace = JwsServiceDefinitions.TARGET_NAMESPACE,
+                    header = JwsServiceDefinitions.HEADER_PARAM) long now,
             boolean ignoredValue) {
         return new Date(now + 86400000L);
     }

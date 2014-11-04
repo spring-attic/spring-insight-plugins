@@ -2,19 +2,19 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
 
-  <!-- ============================== -->
-  <!-- Append messages to the console -->
-  <!-- ============================== -->
+    <!-- ============================== -->
+    <!-- Append messages to the console -->
+    <!-- ============================== -->
 
-  <appender name="EMPTY" class="org.apache.log4j.varia.NullAppender" />
+    <appender name="EMPTY" class="org.apache.log4j.varia.NullAppender"/>
 
-  <!-- ======================= -->
-  <!-- Setup the Root category -->
-  <!-- ======================= -->
+    <!-- ======================= -->
+    <!-- Setup the Root category -->
+    <!-- ======================= -->
 
-  <root>
-    <priority value="INFO" />
-    <appender-ref ref="EMPTY" />
-  </root>
-  
+    <root>
+        <priority value="INFO"/>
+        <appender-ref ref="EMPTY"/>
+    </root>
+
 </log4j:configuration>

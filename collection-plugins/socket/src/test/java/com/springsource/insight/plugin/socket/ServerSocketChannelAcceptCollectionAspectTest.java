@@ -26,7 +26,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * 
+ *
  */
 public class ServerSocketChannelAcceptCollectionAspectTest
         extends SocketAcceptCollectionAspectTestSupport {
@@ -37,9 +37,9 @@ public class ServerSocketChannelAcceptCollectionAspectTest
 
     @Test
     @Ignore("For some reason this test conflicts with the ServerSocket#accept.\n"
-          + "However, each one of them passes separately if the other is ignored\n"
-          + "This shows that they work...")
-    public void testBasicFunctionality () throws IOException, InterruptedException {
+            + "However, each one of them passes separately if the other is ignored\n"
+            + "This shows that they work...")
+    public void testBasicFunctionality() throws IOException, InterruptedException {
         runAcceptorTest("testBasicFunctionality", new ServerSocketChannelAcceptor(3777));
     }
 
@@ -49,12 +49,13 @@ public class ServerSocketChannelAcceptCollectionAspectTest
     }
 
     static class ServerSocketChannelAcceptor extends SocketAcceptorHelper<SocketChannel> {
-        private final ServerSocketChannel   channel;
+        private final ServerSocketChannel channel;
+
         public ServerSocketChannelAcceptor(int listenPort) throws IOException {
             super(listenPort);
-            
+
             channel = ServerSocketChannel.open();
-            ServerSocket    sock=channel.socket();
+            ServerSocket sock = channel.socket();
             sock.bind(new InetSocketAddress(listenPort), 5);
         }
 
@@ -62,7 +63,7 @@ public class ServerSocketChannelAcceptCollectionAspectTest
         protected SocketChannel waitForConnection() throws IOException {
             return channel.accept();
         }
-        
+
         @Override
         protected Socket resolveClientSocket(SocketChannel conn) throws IOException {
             return conn.socket();

@@ -39,21 +39,21 @@ public aspect RedisCollectionOperationAspect extends AbstractOperationCollection
     protected static final OperationType TYPE = OperationType.valueOf("default-redis-collection");
 
     public pointcut redisCollectionAdd()
-        : execution(* AbstractRedisCollection.add*(..));
+            : execution(* AbstractRedisCollection.add*(..));
 
     public pointcut redisCollectionRemove()
-        : execution(* AbstractRedisCollection.remove*(..));
+            : execution(* AbstractRedisCollection.remove*(..));
 
     public pointcut collectionPoint()
-        : redisCollectionAdd() || redisCollectionRemove();
+            : redisCollectionAdd() || redisCollectionRemove();
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
         String method = jp.getSignature().getName();
         Operation op = new Operation()
-            .type(TYPE)
-            .put("method", method);
-        AbstractRedisCollection<?> collection = (AbstractRedisCollection<?>)jp.getTarget();
+                .type(TYPE)
+                .put("method", method);
+        AbstractRedisCollection<?> collection = (AbstractRedisCollection<?>) jp.getTarget();
         String collectionKey = collection.getKey();
         if (StringUtil.isEmpty(collectionKey)) {
             collectionKey = "?";
@@ -62,15 +62,15 @@ public aspect RedisCollectionOperationAspect extends AbstractOperationCollection
         op.label("RedisCollection: " + collectionKey + "." + method + "()");
         op.sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(jp));
         Object[] args = jp.getArgs();
-        if(ArrayUtil.length(args) == 1) {
-            if(StringUtil.safeCompare(method, "add") == 0) {
+        if (ArrayUtil.length(args) == 1) {
+            if (StringUtil.safeCompare(method, "add") == 0) {
                 op.put("value", objectToString(args[0]));
-            } else if(StringUtil.safeCompare(method, "addAll") == 0) {
-                op.put("size", ((Collection<?>)args[0]).size());
-            } else if(StringUtil.safeCompare(method, "remove") == 0) {
+            } else if (StringUtil.safeCompare(method, "addAll") == 0) {
+                op.put("size", ((Collection<?>) args[0]).size());
+            } else if (StringUtil.safeCompare(method, "remove") == 0) {
                 op.put("value", objectToString(args[0]));
-            } else if(StringUtil.safeCompare(method, "removeAll") == 0) {
-                op.put("size", ((Collection<?>)args[0]).size());
+            } else if (StringUtil.safeCompare(method, "removeAll") == 0) {
+                op.put("size", ((Collection<?>) args[0]).size());
             }
         }
 

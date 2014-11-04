@@ -27,23 +27,23 @@ public class AkkaUntypedActorEndPointAnalyzer extends AbstractSingleTypeEndpoint
     private static final AkkaUntypedActorEndPointAnalyzer INSTANCE = new AkkaUntypedActorEndPointAnalyzer();
 
     public static final AkkaUntypedActorEndPointAnalyzer getInstance() {
-	return INSTANCE;
+        return INSTANCE;
     }
 
     protected AkkaUntypedActorEndPointAnalyzer() {
-	super(AkkaDefinitions.OperationTypes.AKKA_OP_UNTYPED_ACTOR);
+        super(AkkaDefinitions.OperationTypes.AKKA_OP_UNTYPED_ACTOR);
     }
 
     @Override
     protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
-	Operation operation = frame.getOperation();
-	EndPointName endPointName = EndPointName.valueOf(operation);
-	String example = createExample(operation);
-	return new EndPointAnalysis(endPointName, operation.getLabel(), example, getDefaultScore(depth));
+        Operation operation = frame.getOperation();
+        EndPointName endPointName = EndPointName.valueOf(operation);
+        String example = createExample(operation);
+        return new EndPointAnalysis(endPointName, operation.getLabel(), example, getDefaultScore(depth));
     }
 
     private String createExample(Operation operation) {
-	return operation.get(AkkaDefinitions.Labels.ACTOR, String.class) + " received message of type "
-		+ operation.get(AkkaDefinitions.Labels.MESSAGE, String.class);
+        return operation.get(AkkaDefinitions.Labels.ACTOR, String.class) + " received message of type "
+                + operation.get(AkkaDefinitions.Labels.MESSAGE, String.class);
     }
 }

@@ -25,38 +25,38 @@ import com.springsource.insight.collection.test.OperationCollectionAspectTestSup
 import com.springsource.insight.intercept.operation.Operation;
 
 public abstract class GemFireAspectTestSupport extends OperationCollectionAspectTestSupport {
-	private Cache cache;
+    private Cache cache;
 
-	// NOTE: this must match the name if the gemfire XML file
-	protected static final String	TEST_REGION_NAME="test";
+    // NOTE: this must match the name if the gemfire XML file
+    protected static final String TEST_REGION_NAME = "test";
 
-	protected GemFireAspectTestSupport () {
-		super();
-	}
-
-	@Before
-	@Override
-	public void setUp() {
-		super.setUp();
-    	cache = new CacheFactory()
-        				.set("name", "Test")
-        				.set("log-level", "warning")
-        				.set("cache-xml-file", "gemfire.xml")
-        				.create()
-        				;    			
-	}
-	
-    protected void testInGemfire(GemFireCallback callback, TestCallback test) {
-    	Region<?,?> r = cache.getRegion(TEST_REGION_NAME);
-    	callback.doInGemfire(r);
-        test.doTest(getLastEntered());    	
+    protected GemFireAspectTestSupport() {
+        super();
     }
-    
+
+    @Before
+    @Override
+    public void setUp() {
+        super.setUp();
+        cache = new CacheFactory()
+                .set("name", "Test")
+                .set("log-level", "warning")
+                .set("cache-xml-file", "gemfire.xml")
+                .create()
+        ;
+    }
+
+    protected void testInGemfire(GemFireCallback callback, TestCallback test) {
+        Region<?, ?> r = cache.getRegion(TEST_REGION_NAME);
+        callback.doInGemfire(r);
+        test.doTest(getLastEntered());
+    }
+
     protected static interface GemFireCallback {
-    	void doInGemfire(Region<?,?> region);
+        void doInGemfire(Region<?, ?> region);
     }
 
     protected static interface TestCallback {
-    	void doTest(Operation operation);
+        void doTest(Operation operation);
     }
 }

@@ -44,9 +44,10 @@ import com.springsource.insight.util.StringUtil;
  * Utilities for converting method arguments for MongoDB-related operations
  */
 public final class MongoArgumentUtils {
-	private MongoArgumentUtils () {
-		throw new UnsupportedOperationException("No instance");
-	}
+    private MongoArgumentUtils() {
+        throw new UnsupportedOperationException("No instance");
+    }
+
     /**
      * The maximum length of a string we generate
      */
@@ -124,10 +125,10 @@ public final class MongoArgumentUtils {
      * if you did it long hand.
      */
     @SuppressWarnings("synthetic-access")
-	public static final Map<Class<?>, StringForm<? extends Object>> STRING_FORM_MAP = new HashMap<Class<?>, StringForm<? extends Object>>() {
-		private static final long serialVersionUID = 1L;
+    public static final Map<Class<?>, StringForm<? extends Object>> STRING_FORM_MAP = new HashMap<Class<?>, StringForm<? extends Object>>() {
+        private static final long serialVersionUID = 1L;
 
-		{
+        {
             // Wrapper classes
             //
             for (Class<?> cls : SIMPLE_CLASSES) {
@@ -162,13 +163,13 @@ public final class MongoArgumentUtils {
      */
     public static List<String> toString(final Object[] array, final int maxLength) {
         return new ArrayList<String>() {
-			private static final long serialVersionUID = 1L;
+            private static final long serialVersionUID = 1L;
 
-			{
+            {
                 int soFar = 0;
 
                 for (final Object arg : array) {
-                    final String result=MongoArgumentUtils.toString(arg, maxLength - soFar);
+                    final String result = MongoArgumentUtils.toString(arg, maxLength - soFar);
 
                     soFar += result.length();
 
@@ -217,13 +218,13 @@ public final class MongoArgumentUtils {
         return StringUtil.chopTailAndEllipsify(string, MAX_STRING_LENGTH);
     }
 
-    public static Operation putDatabaseDetails (Operation op, DB db) {
-    	op.put("dbName", db.getName());
-    	
-    	Mongo			mongo=db.getMongo();
-    	ServerAddress	address=mongo.getAddress();
-		op.put("host", address.getHost());
-		op.put("port", address.getPort());
-		return op;
+    public static Operation putDatabaseDetails(Operation op, DB db) {
+        op.put("dbName", db.getName());
+
+        Mongo mongo = db.getMongo();
+        ServerAddress address = mongo.getAddress();
+        op.put("host", address.getHost());
+        op.put("port", address.getPort());
+        return op;
     }
 }

@@ -31,24 +31,24 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
 
 public class EventHandlerOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-    
+
     @Test
     public void annotatedEventHandlerOperationCollected() {
         new TestEventHandler().handleEvent(new TestEvent());
-        
+
         Operation op = getLastEntered();
 
         assertEquals("org.axonframework.insight.plugin.axon.EventHandlerOperationCollectionAspectTest$TestEvent", op.get("eventType"));
         assertEquals("handleEvent", op.getSourceCodeLocation().getMethodName());
     }
-    
+
     @Test
     public void eventListenerOperationCollected() {
         new TestEventHandler().handle(
                 new GenericEventMessage<TestEvent>(
                         new TestEvent(),
                         Collections.singletonMap("someKey", (Object) "someValue")));
-        
+
         Operation op = getLastEntered();
 
         assertEquals("org.axonframework.insight.plugin.axon.EventHandlerOperationCollectionAspectTest$TestEvent", op.get("eventType"));
@@ -58,19 +58,22 @@ public class EventHandlerOperationCollectionAspectTest extends OperationCollecti
         assertEquals(1, map.size());
         assertEquals("someValue", map.get("someKey"));
     }
-    
+
     @Override
     public OperationCollectionAspectSupport getAspect() {
         return EventHandlerOperationCollectionAspect.aspectOf();
     }
-    
-    static class TestEvent {}
-    
+
+    static class TestEvent {
+    }
+
     static class TestEventHandler implements EventListener {
         @EventHandler
-        void handleEvent(TestEvent event) {}
+        void handleEvent(TestEvent event) {
+        }
 
-        public void handle(EventMessage event) {}
+        public void handle(EventMessage event) {
+        }
     }
 
 }

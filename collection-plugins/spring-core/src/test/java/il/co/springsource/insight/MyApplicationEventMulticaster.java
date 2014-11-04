@@ -21,37 +21,37 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationEventMulticaster;
 
 /**
- * 
+ *
  */
 public class MyApplicationEventMulticaster
-		extends MyEventHolder
-		implements ApplicationEventMulticaster {
+        extends MyEventHolder
+        implements ApplicationEventMulticaster {
 
-	public MyApplicationEventMulticaster() {
-		super();
-	}
+    public MyApplicationEventMulticaster() {
+        super();
+    }
 
-	public void addApplicationListener(@SuppressWarnings("rawtypes") ApplicationListener listener) {
-		// ignored
-	}
+    public void addApplicationListener(@SuppressWarnings("rawtypes") ApplicationListener listener) {
+        // ignored
+    }
 
-	public void addApplicationListenerBean(String listenerBeanName) {
-		// ignored
-	}
+    public void addApplicationListenerBean(String listenerBeanName) {
+        // ignored
+    }
 
-	public void removeApplicationListener(@SuppressWarnings("rawtypes") ApplicationListener listener) {
-		// ignored
-	}
+    public void removeApplicationListener(@SuppressWarnings("rawtypes") ApplicationListener listener) {
+        // ignored
+    }
 
-	public void removeApplicationListenerBean(String listenerBeanName) {
-		// ignored
-	}
+    public void removeApplicationListenerBean(String listenerBeanName) {
+        // ignored
+    }
 
-	public void removeAllListeners() {
-		// ignored
-	}
+    public void removeAllListeners() {
+        // ignored
+    }
 
-	public void multicastEvent(ApplicationEvent event) {
-		lastEvent = event;
-	}
+    public void multicastEvent(ApplicationEvent event) {
+        lastEvent = event;
+    }
 }

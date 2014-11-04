@@ -17,14 +17,14 @@ package com.springsource.insight.plugin.jdbc.parser;
 
 public interface JdbcUrlMetaData {
 
-	public String getConnectionUrl();
+    public String getConnectionUrl();
 
-	public String getVendorName();
+    public String getVendorName();
 
-	public String getHost();
+    public String getHost();
 
-	public int getPort();
+    public int getPort();
 
-	public String getDatabaseName();
+    public String getDatabaseName();
 
 }

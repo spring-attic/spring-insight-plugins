@@ -26,15 +26,15 @@ import com.springsource.insight.intercept.operation.OperationType;
  * @since 2.0
  */
 public class EventHandlerEndPointAnalyzer extends AbstractHandlerEndPointAnalyzer {
-	
-	private static final EventHandlerEndPointAnalyzer	INSTANCE=new EventHandlerEndPointAnalyzer();
-	
-	private EventHandlerEndPointAnalyzer() {
-		super(AxonOperationType.EVENT_HANDLER);
-	}
+
+    private static final EventHandlerEndPointAnalyzer INSTANCE = new EventHandlerEndPointAnalyzer();
+
+    private EventHandlerEndPointAnalyzer() {
+        super(AxonOperationType.EVENT_HANDLER);
+    }
 
     public static final EventHandlerEndPointAnalyzer getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override

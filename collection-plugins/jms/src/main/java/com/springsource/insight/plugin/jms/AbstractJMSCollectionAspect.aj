@@ -46,19 +46,20 @@ import com.springsource.insight.util.logging.InsightLogManager;
 public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAspectSupport {
     private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
 
-    public static final CollectionSettingName    OBFUSCATED_HEADERS_SETTING =
+    public static final CollectionSettingName OBFUSCATED_HEADERS_SETTING =
             new CollectionSettingName("obfuscated.headers", JmsPluginRuntimeDescriptor.PLUGIN_NAME, "Comma separated list of headers whose data requires obfuscation");
-    public static final CollectionSettingName    OBFUSCATED_PROPERTIES_SETTING =
+    public static final CollectionSettingName OBFUSCATED_PROPERTIES_SETTING =
             new CollectionSettingName("obfuscated.properties", JmsPluginRuntimeDescriptor.PLUGIN_NAME, "Comma separated list of properties whose data requires obfuscation");
 
     // NOTE: using a synchronized set in order to allow modification while running
-    static final Set<String>    OBFUSCATED_HEADERS=Collections.synchronizedSet(new TreeSet<String>(String.CASE_INSENSITIVE_ORDER));
-    static final Set<String>    OBFUSCATED_PROPERTIES=Collections.synchronizedSet(new TreeSet<String>(String.CASE_INSENSITIVE_ORDER));
+    static final Set<String> OBFUSCATED_HEADERS = Collections.synchronizedSet(new TreeSet<String>(String.CASE_INSENSITIVE_ORDER));
+    static final Set<String> OBFUSCATED_PROPERTIES = Collections.synchronizedSet(new TreeSet<String>(String.CASE_INSENSITIVE_ORDER));
+
     // register a collection setting update listener to update the obfuscated headers
     static {
         CollectionSettingsRegistry registry = CollectionSettingsRegistry.getInstance();
         registry.addListener(new CollectionSettingsUpdateListener() {
-            public void incrementalUpdate (CollectionSettingName name, Serializable value) {
+            public void incrementalUpdate(CollectionSettingName name, Serializable value) {
                 if (OBFUSCATED_HEADERS_SETTING.equals(name)) {
                     updateObscuredSettings(name, value, OBFUSCATED_HEADERS);
                 } else if (OBFUSCATED_PROPERTIES_SETTING.equals(name)) {
@@ -70,28 +71,28 @@ public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAs
         registry.register(OBFUSCATED_PROPERTIES_SETTING, "");
     }
 
-    static void updateObscuredSettings (CollectionSettingName name, Serializable value, Collection<String> nameSet) {
+    static void updateObscuredSettings(CollectionSettingName name, Serializable value, Collection<String> nameSet) {
         if (!(value instanceof String)) {
             return;
         }
 
-        Set<String>	newNames=toHeaderNameSet((String) value);
+        Set<String> newNames = toHeaderNameSet((String) value);
         if ((nameSet.size() != newNames.size()) || (!nameSet.containsAll(newNames))) {
             InsightLogManager.getLogger(AbstractJMSCollectionAspect.class.getName())
-			 				 .info("updateObscuredSettings(" + name + ")" + nameSet + " => [" + value + "]")
-			 				 ;
+                    .info("updateObscuredSettings(" + name + ")" + nameSet + " => [" + value + "]")
+            ;
             nameSet.clear();
             nameSet.addAll(newNames);
         }
     }
 
-    static Set<String> toHeaderNameSet (String value) {
+    static Set<String> toHeaderNameSet(String value) {
         if (StringUtil.isEmpty(value)) {
             return Collections.emptySet();
         }
 
-        Set<String> 		result=new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-        Collection<String>	nameList=StringUtil.explode(value, ",", true, true);
+        Set<String> result = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+        Collection<String> nameList = StringUtil.explode(value, ",", true, true);
         for (String headerName : nameList) {
             if (!result.add(headerName)) {
                 continue;
@@ -104,13 +105,13 @@ public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAs
     protected ObscuredValueMarker obscuredMarker =
             new FrameBuilderHintObscuredValueMarker(configuration.getFrameBuilder());
 
-    protected AbstractJMSCollectionAspect (JMSPluginOperationType type) {
-        if ((optype=type) == null) {
+    protected AbstractJMSCollectionAspect(JMSPluginOperationType type) {
+        if ((optype = type) == null) {
             throw new IllegalStateException("No operation type specified");
         }
     }
 
-    ObscuredValueMarker getSensitiveValueMarker () {
+    ObscuredValueMarker getSensitiveValueMarker() {
         return this.obscuredMarker;
     }
 
@@ -120,10 +121,10 @@ public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAs
 
     Operation createOperation(JoinPoint jp) {
         return new Operation()
-        .type(optype.getOperationType())
-        .label(optype.getLabel())
-        .sourceCodeLocation(getSourceCodeLocation(jp))
-        ;
+                .type(optype.getOperationType())
+                .label(optype.getLabel())
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                ;
     }
 
     Operation applyDestinationData(Message message, Operation op) {
@@ -149,13 +150,13 @@ public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAs
     Operation applyMessageData(Message message, Operation op) {
         try {
             JMSPluginUtils.extractMessageTypeAttributes(op, message);
-        } catch(JMSException e) {
+        } catch (JMSException e) {
             markException("extractMessageTypeAttributes", e);
         }
 
         try {
             JMSPluginUtils.extractMessageHeaders(op, message, getSensitiveValueMarker(), OBFUSCATED_HEADERS);
-        } catch(JMSException e) {
+        } catch (JMSException e) {
             markException("extractMessageHeaders", e);
         }
 
@@ -169,18 +170,18 @@ public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAs
     }
 
     // returns a Map of the obscured keys and values
-    Map<String,Object> obscureValues (OperationMap valuesMap, CollectionSettingName settingName, Collection<String> nameSet) {
+    Map<String, Object> obscureValues(OperationMap valuesMap, CollectionSettingName settingName, Collection<String> nameSet) {
         if ((ListUtil.size(nameSet) <= 0) || (valuesMap.size() <= 0)) {
-            return Collections.emptyMap();	// nothing to obscure
+            return Collections.emptyMap();    // nothing to obscure
         }
 
-        Map<String,Object>	result=null;
+        Map<String, Object> result = null;
         for (String key : valuesMap.keySet()) {
             if (!nameSet.contains(key)) {
                 continue;
             }
 
-            Object	value=valuesMap.get(key);
+            Object value = valuesMap.get(key);
             obscuredMarker.markObscured(value);
 
             if (result == null) {
@@ -197,7 +198,7 @@ public abstract aspect AbstractJMSCollectionAspect extends OperationCollectionAs
         }
     }
 
-    static Operation applyDestinationData (Operation op, DestinationType destinationType, String destinationName) {
+    static Operation applyDestinationData(Operation op, DestinationType destinationType, String destinationName) {
         op.put(OperationFields.CLASS_NAME, destinationType.name());
         op.put(OperationFields.METHOD_SIGNATURE, destinationName);
 

@@ -26,10 +26,10 @@ import org.mockito.Mockito;
 import com.springsource.insight.intercept.plugin.CollectionSettingsRegistry;
 
 /**
- * 
+ *
  */
 public class ConnectionsTrackerTest extends Assert {
-    private final ConnectionsTracker  tracker=ConnectionsTracker.getInstance();
+    private final ConnectionsTracker tracker = ConnectionsTracker.getInstance();
     private final CollectionSettingsRegistry registry = CollectionSettingsRegistry.getInstance();
 
     public ConnectionsTrackerTest() {
@@ -37,38 +37,38 @@ public class ConnectionsTrackerTest extends Assert {
     }
 
     @Before
-    public void setUp () {
+    public void setUp() {
         tracker.clear();    // start with a clean cache
     }
 
     @After
     public void restore() {
         registry.set(ConnectionsTracker.MAX_TRACKED_CONNECTIONS_SETTING,
-                     Integer.valueOf(ConnectionsTracker.DEFAULT_CAPACITY));
+                Integer.valueOf(ConnectionsTracker.DEFAULT_CAPACITY));
         registry.set(ConnectionsTracker.CONNECTION_TRACKING_LOGGING_SETTING,
-                     ConnectionsTracker.DEFAULT_LEVEL);
+                ConnectionsTracker.DEFAULT_LEVEL);
     }
-    
+
     @Test
-    public void testCachingCapacity () {
-        final int       TEST_CAPACITY=Byte.SIZE;
-        final String    URL="jdbc:test:testCachingCapacity";
+    public void testCachingCapacity() {
+        final int TEST_CAPACITY = Byte.SIZE;
+        final String URL = "jdbc:test:testCachingCapacity";
         registry.set(ConnectionsTracker.MAX_TRACKED_CONNECTIONS_SETTING, Integer.valueOf(TEST_CAPACITY));
         assertEquals("Mismatched set capacity", TEST_CAPACITY, tracker.getMaxCapacity());
         assertEquals("Tracker not empty", 0, tracker.getNumTrackedConnections());
 
-        for (int    index=0; index < TEST_CAPACITY; index++) {
+        for (int index = 0; index < TEST_CAPACITY; index++) {
             assertNull("Multiple tracked connections at index=" + index, tracker.startTracking(createMockConnection(), URL));
             assertEquals("Mismatched cache size", index + 1, tracker.getNumTrackedConnections());
         }
 
-        for (int    index=0; index < TEST_CAPACITY; index++) {
+        for (int index = 0; index < TEST_CAPACITY; index++) {
             assertNull("Multiple tracked connections at index=" + (TEST_CAPACITY + index), tracker.startTracking(createMockConnection(), URL));
             assertEquals("Mismatched cache size", TEST_CAPACITY, tracker.getNumTrackedConnections());
         }
     }
-    
-    private static Connection createMockConnection () {
+
+    private static Connection createMockConnection() {
         return Mockito.mock(Connection.class);
     }
 }

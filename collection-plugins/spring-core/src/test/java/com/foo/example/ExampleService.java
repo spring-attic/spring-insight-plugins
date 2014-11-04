@@ -19,15 +19,15 @@ package com.foo.example;
 import org.springframework.stereotype.Service;
 
 /**
- * 
+ *
  */
 @Service
 public class ExampleService extends AbstractBean {
-	public ExampleService() {
-		super();
-	}
+    public ExampleService() {
+        super();
+    }
 
-	public void run () {
-		logger.info("run(" + getClass().getSimpleName() + ")");
-	}
+    public void run() {
+        logger.info("run(" + getClass().getSimpleName() + ")");
+    }
 }

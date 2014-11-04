@@ -26,7 +26,7 @@ import org.junit.Test;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public class TransactionalJpaEntityManagerDomainAspectTest
         extends TransactionalJpaEntityManagerTestSupport {
@@ -36,21 +36,21 @@ public class TransactionalJpaEntityManagerDomainAspectTest
     }
 
     @Test
-    public void testPersist () {
+    public void testPersist() {
         entityManager.persist(new TestEntity());
         assertDomainOperation("testPersist", "persist");
     }
 
     @Test
-    public void testRemove () {
-        TestEntity  entity=createPersistedEntity();
+    public void testRemove() {
+        TestEntity entity = createPersistedEntity();
         entityManager.remove(entity);
         assertDomainOperation("testRemove", "remove");
     }
 
     @Test
-    public void testRefresh () {
-        TestEntity  entity=createPersistedEntity();
+    public void testRefresh() {
+        TestEntity entity = createPersistedEntity();
         entity.setCreationDate(new Date(System.currentTimeMillis() - TimeUnit.SECONDS.toMillis(3600L)));
         entityManager.refresh(entity);
         assertDomainOperation("testRefresh", "refresh");
@@ -58,10 +58,10 @@ public class TransactionalJpaEntityManagerDomainAspectTest
 
     @Test
     public void testMerge() {
-        TestEntity  entity=createPersistedEntity();
+        TestEntity entity = createPersistedEntity();
         entity.setCreationDate(new Date(System.currentTimeMillis() - TimeUnit.SECONDS.toMillis(3600L)));
-        
-        TestEntity  result=entityManager.merge(entity);
+
+        TestEntity result = entityManager.merge(entity);
         Assert.assertNotNull("No merge result", result);
         assertDomainOperation("testMerge", "merge");
     }
@@ -71,28 +71,28 @@ public class TransactionalJpaEntityManagerDomainAspectTest
         return JpaEntityManagerDomainObjectAspect.aspectOf();
     }
 
-    protected Operation assertDomainOperation (String testName, String action) {
-        Operation   op=assertManagerOperation(testName, action, JpaDefinitions.DOMAIN_GROUP);
+    protected Operation assertDomainOperation(String testName, String action) {
+        Operation op = assertManagerOperation(testName, action, JpaDefinitions.DOMAIN_GROUP);
         Assert.assertEquals(testName + ": Mismatched domain class",
-                            TestEntity.class.getName(),
-                            op.get(JpaDefinitions.DOMAIN_CLASS_ATTR, String.class));
+                TestEntity.class.getName(),
+                op.get(JpaDefinitions.DOMAIN_CLASS_ATTR, String.class));
         return op;
     }
 
-    protected TestEntity createPersistedEntity () {
+    protected TestEntity createPersistedEntity() {
         entityManager.persist(new TestEntity());
 
-        List<TestEntity>    el=findAllEntities();
+        List<TestEntity> el = findAllEntities();
         Assert.assertNotNull("No results list", el);
         Assert.assertTrue("No results data", el.size() > 0);
         return el.get(0);
     }
 
-    protected List<TestEntity> findAllEntities () {
+    protected List<TestEntity> findAllEntities() {
         return entityManager.createNamedQuery("TestEntity.findEntitiesInRange", TestEntity.class)
-                            .setParameter("startTime", new Date(TimeUnit.SECONDS.toMillis(1L)))
-                            .setParameter("endTime", new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(3600L)))
-                            .getResultList()
-                            ;
+                .setParameter("startTime", new Date(TimeUnit.SECONDS.toMillis(1L)))
+                .setParameter("endTime", new Date(System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(3600L)))
+                .getResultList()
+                ;
     }
 }

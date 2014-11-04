@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
- package com.springsource.insight.plugin.eclipse.persistence;
+
+package com.springsource.insight.plugin.eclipse.persistence;
 
 import java.util.Collection;
 import java.util.List;
@@ -24,24 +24,25 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 import com.springsource.insight.util.ArrayUtil;
 
 public class EclipsePersistencePluginRuntimeDescriptor extends PluginRuntimeDescriptor {
-	private static final EclipsePersistencePluginRuntimeDescriptor	INSTANCE=new EclipsePersistencePluginRuntimeDescriptor();
-	private static final List<? extends MetricsGenerator>	mGenerators=
-	    	ArrayUtil.asUnmodifiableList(DatabaseSessionMetricsGenerator.getInstance(),
-	    			SessionQueryMetricsGenerator.getInstance(),
-	    			TransactionOperationMetricsGenerator.getInstance());
-	private EclipsePersistencePluginRuntimeDescriptor () {
-		super();
-	}
+    private static final EclipsePersistencePluginRuntimeDescriptor INSTANCE = new EclipsePersistencePluginRuntimeDescriptor();
+    private static final List<? extends MetricsGenerator> mGenerators =
+            ArrayUtil.asUnmodifiableList(DatabaseSessionMetricsGenerator.getInstance(),
+                    SessionQueryMetricsGenerator.getInstance(),
+                    TransactionOperationMetricsGenerator.getInstance());
 
-	public static final EclipsePersistencePluginRuntimeDescriptor getInstance() {
-		return INSTANCE;
-	}
-	
+    private EclipsePersistencePluginRuntimeDescriptor() {
+        super();
+    }
+
+    public static final EclipsePersistencePluginRuntimeDescriptor getInstance() {
+        return INSTANCE;
+    }
+
     @Override
     public Collection<? extends MetricsGenerator> getMetricsGenerators() {
-    	return mGenerators;
+        return mGenerators;
     }
-    
+
     @Override
     public String getPluginName() {
         return EclipsePersistenceDefinitions.PLUGIN_NAME;

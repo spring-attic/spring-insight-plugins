@@ -20,28 +20,27 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * 
+ *
  */
 public class JndiResourceCollectionFilterTest extends Assert {
-	public JndiResourceCollectionFilterTest() {
-		super();
-	}
+    public JndiResourceCollectionFilterTest() {
+        super();
+    }
 
-	@Test
-	public void testDefaultExclusion () {
-		JndiResourceCollectionFilter	filter=new JndiResourceCollectionFilter(null);
-		for (String suffix : JndiResourceCollectionFilter.DEFAULT_EXCLUSION_PATTERNS) {
-			String	path=getClass().getSimpleName()
-						+ "/"
-						+ ((suffix.charAt(0) == '.') ? ("testDefaultExclusion." + suffix) : suffix)
-						;
-			boolean	result=filter.accept(path);
-			assertFalse("Default excluded pattern passed: " + suffix, result);
-		}
+    @Test
+    public void testDefaultExclusion() {
+        JndiResourceCollectionFilter filter = new JndiResourceCollectionFilter(null);
+        for (String suffix : JndiResourceCollectionFilter.DEFAULT_EXCLUSION_PATTERNS) {
+            String path = getClass().getSimpleName()
+                    + "/"
+                    + ((suffix.charAt(0) == '.') ? ("testDefaultExclusion." + suffix) : suffix);
+            boolean result = filter.accept(path);
+            assertFalse("Default excluded pattern passed: " + suffix, result);
+        }
 
-		for (String resourcePath : new String[] { getClass().getName(), "testDefaultExclusion", "foo.txt", "bar.doc" }) {
-			boolean	result=filter.accept(resourcePath);
-			assertTrue("Resource not accepted: " + resourcePath, result);
-		}
-	}
+        for (String resourcePath : new String[]{getClass().getName(), "testDefaultExclusion", "foo.txt", "bar.doc"}) {
+            boolean result = filter.accept(resourcePath);
+            assertTrue("Resource not accepted: " + resourcePath, result);
+        }
+    }
 }

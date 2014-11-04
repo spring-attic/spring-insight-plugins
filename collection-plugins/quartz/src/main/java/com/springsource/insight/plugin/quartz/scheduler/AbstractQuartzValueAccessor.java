@@ -20,28 +20,29 @@ import com.springsource.insight.util.logging.InsightLogger;
 import com.springsource.insight.util.props.BeanPropertiesSource;
 
 /**
- * 
+ *
  */
 public abstract class AbstractQuartzValueAccessor extends BeanPropertiesSource {
-	protected final InsightLogger	logger=InsightLogManager.getLogger(getClass().getName());
-	protected AbstractQuartzValueAccessor (String beanClass) {
-		super(beanClass, QuartzSchedulerDefinitions.class, true);
-	}
+    protected final InsightLogger logger = InsightLogManager.getLogger(getClass().getName());
 
-	@Override
-	public <T> T getProperty (Object target, String name, Class<T> attrType) {
-		if (target == null) {
-			return null;
-		}
+    protected AbstractQuartzValueAccessor(String beanClass) {
+        super(beanClass, QuartzSchedulerDefinitions.class, true);
+    }
 
-		try {
-			return super.getProperty(target, name, attrType);
-		} catch(Exception e) {
-			logger.warning("getProperty(" + getBeanClass().getSimpleName() + "@" + name + ")"
-						+ "[" + attrType.getSimpleName() + "]"
-						+ " failed (" + e.getClass().getSimpleName() + ")"
-						+ " to retrieve: " + e.getMessage());
-			return null;
-		}
-	}
+    @Override
+    public <T> T getProperty(Object target, String name, Class<T> attrType) {
+        if (target == null) {
+            return null;
+        }
+
+        try {
+            return super.getProperty(target, name, attrType);
+        } catch (Exception e) {
+            logger.warning("getProperty(" + getBeanClass().getSimpleName() + "@" + name + ")"
+                    + "[" + attrType.getSimpleName() + "]"
+                    + " failed (" + e.getClass().getSimpleName() + ")"
+                    + " to retrieve: " + e.getMessage());
+            return null;
+        }
+    }
 }

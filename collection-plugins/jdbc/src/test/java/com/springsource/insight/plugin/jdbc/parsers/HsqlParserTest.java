@@ -21,8 +21,8 @@ import com.springsource.insight.plugin.jdbc.parser.parsers.HsqlParser;
 
 
 public class HsqlParserTest extends SqlParserTestImpl<HsqlParser> {
-	public HsqlParserTest () {
-		super(DatabaseType.HSQLDB, new HsqlParser(),
-			  new SqlTestEntry("jdbc:hsqldb:mem:testdb", JdbcUrlParser.DEFAULT_HOST, HsqlParser.DEFAULT_CONNECTION_PORT, "testdb"));
-	}
+    public HsqlParserTest() {
+        super(DatabaseType.HSQLDB, new HsqlParser(),
+                new SqlTestEntry("jdbc:hsqldb:mem:testdb", JdbcUrlParser.DEFAULT_HOST, HsqlParser.DEFAULT_CONNECTION_PORT, "testdb"));
+    }
 }

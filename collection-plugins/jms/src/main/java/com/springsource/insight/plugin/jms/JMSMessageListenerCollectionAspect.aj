@@ -25,18 +25,18 @@ import com.springsource.insight.intercept.color.ColorManager.ExtractColorParams;
 import com.springsource.insight.intercept.operation.Operation;
 
 public aspect JMSMessageListenerCollectionAspect extends AbstractJMSCollectionAspect {
-    public JMSMessageListenerCollectionAspect () {
+    public JMSMessageListenerCollectionAspect() {
         super(JMSPluginOperationType.LISTENER_RECEIVE);
     }
 
     public pointcut messageListener(Message message)
-        : execution(void javax.jms.MessageListener+.onMessage(Message))
-       && args(message)
-       && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
-        ;
+            : execution(void javax.jms.MessageListener+.onMessage(Message))
+            && args(message)
+            && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
+            ;
 
-	@SuppressAjWarnings({"adviceDidNotMatch"})
-    before(final Message message) : messageListener(message) {
+    @SuppressAjWarnings({"adviceDidNotMatch"})
+    before(final Message message): messageListener(message) {
         if (message != null) {
             JoinPoint jp = thisJoinPoint;
             Operation op = createOperation(jp);
@@ -48,7 +48,7 @@ public aspect JMSMessageListenerCollectionAspect extends AbstractJMSCollectionAs
             }
 
             //Set the color for this frame
-            extractColor(new ExtractColorParams() {				
+            extractColor(new ExtractColorParams() {
                 public String getColor(String key) {
                     try {
                         return message.getStringProperty(key);
@@ -61,18 +61,18 @@ public aspect JMSMessageListenerCollectionAspect extends AbstractJMSCollectionAs
             getCollector().enter(op);
         }
     }
-    
-	@SuppressAjWarnings({"adviceDidNotMatch"})
+
+    @SuppressAjWarnings({"adviceDidNotMatch"})
     after(Message message) returning : messageListener(message) {
-    	if (message != null) {
-    		getCollector().exitNormal();
-    	}
+        if (message != null) {
+            getCollector().exitNormal();
+        }
     }
 
-	@SuppressAjWarnings({"adviceDidNotMatch"})
-    after(Message message) throwing(Throwable exception) : messageListener(message) {
-    	if (message != null) {
-    		getCollector().exitAbnormal(exception);
-    	}
+    @SuppressAjWarnings({"adviceDidNotMatch"})
+    after(Message message) throwing(Throwable exception): messageListener(message) {
+        if (message != null) {
+            getCollector().exitAbnormal(exception);
+        }
     }
 }

@@ -18,45 +18,45 @@ package com.springsource.insight.plugin.quartz.scheduler;
 import com.springsource.insight.util.StringUtil;
 
 /**
- * 
+ *
  */
 public final class QuartzKeyValueAccessor extends AbstractQuartzValueAccessor {
-	private static class LazyFieldHolder {
-		static final QuartzKeyValueAccessor	accessor=new QuartzKeyValueAccessor();
-	}
+    private static class LazyFieldHolder {
+        static final QuartzKeyValueAccessor accessor = new QuartzKeyValueAccessor();
+    }
 
-	public static QuartzKeyValueAccessor getInstance () {
-		return LazyFieldHolder.accessor;
-	}
+    public static QuartzKeyValueAccessor getInstance() {
+        return LazyFieldHolder.accessor;
+    }
 
-	QuartzKeyValueAccessor () {
-		super("org.quartz.utils.Key");
-	}
+    QuartzKeyValueAccessor() {
+        super("org.quartz.utils.Key");
+    }
 
-	public String getFullName (Object key) {
-		String	group=getGroup(key), name=getName(key);
-		if (StringUtil.isEmpty(group)) {
-			if (StringUtil.isEmpty(name)) {
-				return "";
-			} else {
-				return name;
-			}
-		} else if (StringUtil.isEmpty(name)) {
-			return group;
-		} else {	// both non-empty
-			return group + "." + name;
-		}
-	}
+    public String getFullName(Object key) {
+        String group = getGroup(key), name = getName(key);
+        if (StringUtil.isEmpty(group)) {
+            if (StringUtil.isEmpty(name)) {
+                return "";
+            } else {
+                return name;
+            }
+        } else if (StringUtil.isEmpty(name)) {
+            return group;
+        } else {    // both non-empty
+            return group + "." + name;
+        }
+    }
 
-	public String getGroup (Object key) {
-		return getKeyValue(key, "group");
-	}
+    public String getGroup(Object key) {
+        return getKeyValue(key, "group");
+    }
 
-	public String getName (Object key) {
-		return getKeyValue(key, "name");
-	}
+    public String getName(Object key) {
+        return getKeyValue(key, "name");
+    }
 
-    private String getKeyValue (Object key, String name) {
-    	return getProperty(key, name, String.class);
+    private String getKeyValue(Object key, String name) {
+        return getProperty(key, name, String.class);
     }
 }

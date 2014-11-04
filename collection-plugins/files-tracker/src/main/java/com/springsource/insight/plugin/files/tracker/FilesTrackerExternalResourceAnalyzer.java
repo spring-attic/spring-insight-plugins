@@ -32,41 +32,41 @@ import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.StringUtil;
 
 public class FilesTrackerExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-	private static final FilesTrackerExternalResourceAnalyzer	INSTANCE=new FilesTrackerExternalResourceAnalyzer();
+    private static final FilesTrackerExternalResourceAnalyzer INSTANCE = new FilesTrackerExternalResourceAnalyzer();
 
-    private FilesTrackerExternalResourceAnalyzer () {
+    private FilesTrackerExternalResourceAnalyzer() {
         super(FilesTrackerDefinitions.TYPE);
     }
 
     public static final FilesTrackerExternalResourceAnalyzer getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
-	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> frames) {
-		if (ListUtil.size(frames) <= 0) {
-		    return Collections.emptyList();
-		}
+    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> frames) {
+        if (ListUtil.size(frames) <= 0) {
+            return Collections.emptyList();
+        }
 
-		List<ExternalResourceDescriptor> descriptors = new ArrayList<ExternalResourceDescriptor>(frames.size());
-		for (Frame frame : frames) {			
-            Operation    op=frame.getOperation();
-			String       path=op.get(FilesTrackerDefinitions.PATH_ATTR, String.class);
-			if (StringUtil.isEmpty(path)) {
-				continue;
-			}
+        List<ExternalResourceDescriptor> descriptors = new ArrayList<ExternalResourceDescriptor>(frames.size());
+        for (Frame frame : frames) {
+            Operation op = frame.getOperation();
+            String path = op.get(FilesTrackerDefinitions.PATH_ATTR, String.class);
+            if (StringUtil.isEmpty(path)) {
+                continue;
+            }
 
-			String hashString = MD5NameGenerator.getName(path);
-			String color = colorManager.getColor(op);
-			ExternalResourceDescriptor desc =
-			        new ExternalResourceDescriptor(frame,
-			                                       FilesTrackerDefinitions.TYPE.getName() + ":" + hashString,
-			                                       path,
-			                                       ExternalResourceType.FILESTORE.name(),
-			                                       FilesTrackerDefinitions.TYPE.getName(),
-			                                       color, false);
-			descriptors.add(desc);			
-		}
-		
-		return descriptors;
-	}
+            String hashString = MD5NameGenerator.getName(path);
+            String color = colorManager.getColor(op);
+            ExternalResourceDescriptor desc =
+                    new ExternalResourceDescriptor(frame,
+                            FilesTrackerDefinitions.TYPE.getName() + ":" + hashString,
+                            path,
+                            ExternalResourceType.FILESTORE.name(),
+                            FilesTrackerDefinitions.TYPE.getName(),
+                            color, false);
+            descriptors.add(desc);
+        }
+
+        return descriptors;
+    }
 }

@@ -46,7 +46,7 @@ public aspect CommandHandlerOperationCollectionAspect extends MethodOperationCol
         operation.put("commandType", command.getClass().getName());
         return operation;
     }
-    
+
     @Override
     public final String getPluginName() {
         return AxonPluginRuntimeDescriptor.PLUGIN_NAME;

@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.springsource.insight.plugins</groupId>
-	<artifactId>insight-plugin-eclipse-persistence</artifactId>
-	<name>com.springsource.insight.plugins:eclipse-persistence</name>
-	<packaging>jar</packaging>
-	
-	<parent>
-		<groupId>com.springsource.insight</groupId>
-		<artifactId>community-plugins</artifactId>
-		<version>2.0.0-CI-SNAPSHOT</version>
-		<relativePath>..</relativePath>
-	</parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.springsource.insight.plugins</groupId>
+    <artifactId>insight-plugin-eclipse-persistence</artifactId>
+    <name>com.springsource.insight.plugins:eclipse-persistence</name>
+    <packaging>jar</packaging>
+
+    <parent>
+        <groupId>com.springsource.insight</groupId>
+        <artifactId>community-plugins</artifactId>
+        <version>2.0.0-CI-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
 
     <properties>
         <eclipse.persistence.version>2.2.0</eclipse.persistence.version>
         <spring.data.commons.version>1.1.0.RELEASE</spring.data.commons.version>
         <spring.data.jpa.version>1.0.3.RELEASE</spring.data.jpa.version>
-    </properties>	
+    </properties>
 
     <repositories>
-            <!--  required since artifacts not always published in ibiblio... -->
+        <!--  required since artifacts not always published in ibiblio... -->
         <repository>
             <id>EclipseLink-Repo</id>
             <name>EclipseLink repo</name>
@@ -28,8 +29,8 @@
         </repository>
     </repositories>
 
-	<dependencies>
-            <!-- EclipseLink dependencies -->
+    <dependencies>
+        <!-- EclipseLink dependencies -->
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>org.eclipse.persistence.core</artifactId>
@@ -54,7 +55,7 @@
             <version>${eclipse.persistence.version}</version>
             <scope>provided</scope>
         </dependency>
-            <!-- can also use hibernate-jpa-2.0-api-1.0.0.Final -->
+        <!-- can also use hibernate-jpa-2.0-api-1.0.0.Final -->
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>javax.persistence</artifactId>
@@ -62,7 +63,7 @@
             <scope>provided</scope>
         </dependency>
 
-			<!-- Test dependencies -->
+        <!-- Test dependencies -->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-commons-core</artifactId>
@@ -75,7 +76,7 @@
             <version>${spring.data.jpa.version}</version>
             <scope>test</scope>
             <exclusions>
-                    <!-- we are using our own version -->
+                <!-- we are using our own version -->
                 <exclusion>
                     <groupId>org.aspectj</groupId>
                     <artifactId>aspectjrt</artifactId>
@@ -91,10 +92,10 @@
         <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
-            <scope>test</scope>            
-        </dependency>       
-            <!-- Replacement of commons-logging with a native slf4j 
-                 - Required by Spring framework (and others) -->
+            <scope>test</scope>
+        </dependency>
+        <!-- Replacement of commons-logging with a native slf4j
+             - Required by Spring framework (and others) -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
@@ -104,7 +105,7 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <scope>test</scope>
-        </dependency>       
+        </dependency>
 
         <dependency> <!-- used by Spring -->
             <groupId>javax.inject</groupId>
@@ -142,25 +143,27 @@
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
         </dependency>
-	</dependencies>
-	
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-                    	<manifest>
-                    		<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                    	</manifest>
-						<manifestEntries>
-							<Insight-Plugin-Descriptor>com.springsource.insight.plugin.eclipse.persistence.EclipsePersistencePluginRuntimeDescriptor</Insight-Plugin-Descriptor>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Insight-Plugin-Descriptor>
+                                com.springsource.insight.plugin.eclipse.persistence.EclipsePersistencePluginRuntimeDescriptor
+                            </Insight-Plugin-Descriptor>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

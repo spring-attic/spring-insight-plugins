@@ -22,12 +22,12 @@ import org.springframework.stereotype.Repository;
  * Causes all {@link org.springframework.stereotype.Repository} annotated classes to be instrumented
  */
 public aspect RepositoryMethodOperationCollectionAspect extends StereotypedSpringBeanMethodOperationCollectionAspectSupport {
-	public RepositoryMethodOperationCollectionAspect () {
-		super(Repository.class);
-	}
+    public RepositoryMethodOperationCollectionAspect() {
+        super(Repository.class);
+    }
 
-	public pointcut collectionPoint()
-		: execution(public * (@Repository *).*(..))
-	   && !excludedLifecyclePointcuts()
-	    ;
+    public pointcut collectionPoint()
+            : execution(public * (@Repository *).*(..))
+            && !excludedLifecyclePointcuts()
+            ;
 }

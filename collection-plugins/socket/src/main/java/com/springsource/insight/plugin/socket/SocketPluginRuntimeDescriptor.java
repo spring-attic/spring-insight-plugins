@@ -24,23 +24,25 @@ import com.springsource.insight.util.ArrayUtil;
 
 public class SocketPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "socket";
-    private static final SocketPluginRuntimeDescriptor	INSTANCE=new SocketPluginRuntimeDescriptor();
-    private static final List<? extends ExternalResourceAnalyzer>	extResAnalyzers=
-       		ArrayUtil.asUnmodifiableList(SocketExternalResourceAnalyzer.getInstance());
-    private SocketPluginRuntimeDescriptor () {
-    	super();
+    private static final SocketPluginRuntimeDescriptor INSTANCE = new SocketPluginRuntimeDescriptor();
+    private static final List<? extends ExternalResourceAnalyzer> extResAnalyzers =
+            ArrayUtil.asUnmodifiableList(SocketExternalResourceAnalyzer.getInstance());
+
+    private SocketPluginRuntimeDescriptor() {
+        super();
     }
 
     public static final SocketPluginRuntimeDescriptor getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;
     }
+
     @Override
     public Collection<? extends ExternalResourceAnalyzer> getExternalResourceAnalyzers() {
-    	return extResAnalyzers;
+        return extResAnalyzers;
     }
 }

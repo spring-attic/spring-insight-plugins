@@ -29,76 +29,76 @@ import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
 import com.springsource.insight.util.StringUtil;
 
 /**
- * 
+ *
  */
 public abstract aspect RestOperationCollectionSupport extends AbstractSpringWebAspectSupport {
-	public static final OperationType	TYPE=OperationType.valueOf("spring_rest_template");
-	/**
-	 * Placeholder value used if unable to resolve the operation URI value
-	 * @see #resolveOperationURI(JoinPoint)
-	 */
-	public static final String	UNKNOWN_URI="uri:unknown";
+    public static final OperationType TYPE = OperationType.valueOf("spring_rest_template");
+    /**
+     * Placeholder value used if unable to resolve the operation URI value
+     * @see #resolveOperationURI(JoinPoint)
+     */
+    public static final String UNKNOWN_URI = "uri:unknown";
 
-	private final String	defaultMethod;
+    private final String defaultMethod;
 
-	protected RestOperationCollectionSupport (String accessType) {
-		if (StringUtil.isEmpty(accessType)) {
-			throw new IllegalStateException("No access method specified");
-		}
-		
-		defaultMethod = accessType;
-	}
+    protected RestOperationCollectionSupport(String accessType) {
+        if (StringUtil.isEmpty(accessType)) {
+            throw new IllegalStateException("No access method specified");
+        }
 
-	public abstract pointcut accessPoint ();
+        defaultMethod = accessType;
+    }
 
-	// NOTE: we use cflowbelow in case the intercepted methods delegate to one another
-	public pointcut collectionPoint()
-		: accessPoint() && (!cflowbelow(accessPoint()))
-		;
+    public abstract pointcut accessPoint();
 
-	public final String getMethod () {
-		return defaultMethod;
-	}
+    // NOTE: we use cflowbelow in case the intercepted methods delegate to one another
+    public pointcut collectionPoint()
+            : accessPoint() && (!cflowbelow(accessPoint()))
+            ;
 
-	@Override
-	protected Operation createOperation(JoinPoint jp) {
-		String	method=resolveOperationMethod(jp);
-		String	uri=resolveOperationURI(jp);
-		String	label=resolveOperationLabel(method, uri, jp);
-		return OperationCollectionUtil.methodOperation(new Operation().type(TYPE), jp)
-					.label(label)
-					.put("method", method)
-					.put(OperationFields.URI, uri)
-					;
-	}
+    public final String getMethod() {
+        return defaultMethod;
+    }
 
-	protected String resolveOperationLabel(String method, String uri, JoinPoint jp) {
-		return createLabel(method, uri);
-	}
+    @Override
+    protected Operation createOperation(JoinPoint jp) {
+        String method = resolveOperationMethod(jp);
+        String uri = resolveOperationURI(jp);
+        String label = resolveOperationLabel(method, uri, jp);
+        return OperationCollectionUtil.methodOperation(new Operation().type(TYPE), jp)
+                .label(label)
+                .put("method", method)
+                .put(OperationFields.URI, uri)
+                ;
+    }
 
-	protected String resolveOperationMethod(JoinPoint jp) {
-		return getMethod();
-	}
+    protected String resolveOperationLabel(String method, String uri, JoinPoint jp) {
+        return createLabel(method, uri);
+    }
 
-	static String resolveOperationURI(JoinPoint jp) {
-		Object[]	args=jp.getArgs();
-		Object		uri=args[0];	// all RestOperations calls have URI as 1st argument
-		if (uri instanceof String) {
-			return (String) uri;
-		} else if (uri instanceof URI) {
-			return ((URI) uri).toString();
-		} else if (uri instanceof URL) {
-			return ((URL) uri).toExternalForm();
-		} else {
-			return UNKNOWN_URI;
-		}
-	}
+    protected String resolveOperationMethod(JoinPoint jp) {
+        return getMethod();
+    }
 
-    static String createLabel (String method, String url) {
-    	return new StringBuilder(StringUtil.getSafeLength(method) + 1 + StringUtil.getSafeLength(url))
-    				.append(method.toUpperCase())
-    				.append(' ')
-    				.append(url)
-    			.toString();
+    static String resolveOperationURI(JoinPoint jp) {
+        Object[] args = jp.getArgs();
+        Object uri = args[0];    // all RestOperations calls have URI as 1st argument
+        if (uri instanceof String) {
+            return (String) uri;
+        } else if (uri instanceof URI) {
+            return ((URI) uri).toString();
+        } else if (uri instanceof URL) {
+            return ((URL) uri).toExternalForm();
+        } else {
+            return UNKNOWN_URI;
+        }
+    }
+
+    static String createLabel(String method, String url) {
+        return new StringBuilder(StringUtil.getSafeLength(method) + 1 + StringUtil.getSafeLength(url))
+                .append(method.toUpperCase())
+                .append(' ')
+                .append(url)
+                .toString();
     }
 }

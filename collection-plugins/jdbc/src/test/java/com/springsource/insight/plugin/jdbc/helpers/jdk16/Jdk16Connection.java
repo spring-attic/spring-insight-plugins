@@ -29,83 +29,83 @@ import java.util.concurrent.Executor;
 import com.springsource.insight.plugin.jdbc.helpers.AbstractConnection;
 
 /**
- * 
+ *
  */
 public class Jdk16Connection extends AbstractConnection {
-	public Jdk16Connection () {
-		super();
-	}
+    public Jdk16Connection() {
+        super();
+    }
 
-	public <T> T unwrap(Class<T> iface) throws SQLException {
-		return null;
-	}
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        return null;
+    }
 
-	public boolean isWrapperFor(Class<?> iface) throws SQLException {
-		return false;
-	}
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        return false;
+    }
 
-	public Clob createClob() throws SQLException {
-		return null;
-	}
+    public Clob createClob() throws SQLException {
+        return null;
+    }
 
-	public Blob createBlob() throws SQLException {
-		return null;
-	}
+    public Blob createBlob() throws SQLException {
+        return null;
+    }
 
-	public NClob createNClob() throws SQLException {
-		return null;
-	}
+    public NClob createNClob() throws SQLException {
+        return null;
+    }
 
-	public SQLXML createSQLXML() throws SQLException {
-		return null;
-	}
+    public SQLXML createSQLXML() throws SQLException {
+        return null;
+    }
 
-	public boolean isValid(int timeout) throws SQLException {
-		return false;
-	}
+    public boolean isValid(int timeout) throws SQLException {
+        return false;
+    }
 
-	public void setClientInfo(String name, String value) throws SQLClientInfoException {
-		// do nothing
-	}
+    public void setClientInfo(String name, String value) throws SQLClientInfoException {
+        // do nothing
+    }
 
-	public void setClientInfo(Properties properties) throws SQLClientInfoException {
-		// do nothing
-	}
+    public void setClientInfo(Properties properties) throws SQLClientInfoException {
+        // do nothing
+    }
 
-	public String getClientInfo(String name) throws SQLException {
-		return null;
-	}
+    public String getClientInfo(String name) throws SQLException {
+        return null;
+    }
 
-	public Properties getClientInfo() throws SQLException {
-		return null;
-	}
+    public Properties getClientInfo() throws SQLException {
+        return null;
+    }
 
-	public Array createArrayOf(String typeName, Object[] elements) throws SQLException {
-		return null;
-	}
+    public Array createArrayOf(String typeName, Object[] elements) throws SQLException {
+        return null;
+    }
 
-	public Struct createStruct(String typeName, Object[] attributes) throws SQLException {
-		return null;
-	}
+    public Struct createStruct(String typeName, Object[] attributes) throws SQLException {
+        return null;
+    }
 
-	public void setSchema(String schema) throws SQLException {
-		// ignored
-	}
+    public void setSchema(String schema) throws SQLException {
+        // ignored
+    }
 
-	public String getSchema() throws SQLException {
-		return null;
-	}
+    public String getSchema() throws SQLException {
+        return null;
+    }
 
-	public void abort(Executor executor) throws SQLException {
-		// ignored
-	}
+    public void abort(Executor executor) throws SQLException {
+        // ignored
+    }
 
-	public void setNetworkTimeout(Executor executor, int milliseconds)
-			throws SQLException {
-		// ignored
-	}
+    public void setNetworkTimeout(Executor executor, int milliseconds)
+            throws SQLException {
+        // ignored
+    }
 
-	public int getNetworkTimeout() throws SQLException {
-		return 0;
-	}
+    public int getNetworkTimeout() throws SQLException {
+        return 0;
+    }
 }

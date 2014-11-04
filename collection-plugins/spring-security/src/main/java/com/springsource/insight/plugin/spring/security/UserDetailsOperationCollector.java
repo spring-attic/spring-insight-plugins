@@ -24,14 +24,14 @@ import com.springsource.insight.intercept.trace.ObscuredValueMarker;
 import com.springsource.insight.util.StringUtil;
 
 /**
- * 
+ *
  */
 public class UserDetailsOperationCollector extends ObscuringOperationCollector {
     /**
      * The name of the {@link OperationMap} under which the result {@link UserDetails}
      * is mapped in the {@link Operation} (provided {@link #collectExtraInformation()})
      */
-    public static final String  RESULT_MAP_NAME="userResult";
+    public static final String RESULT_MAP_NAME = "userResult";
 
     public UserDetailsOperationCollector() {
         super();
@@ -44,7 +44,7 @@ public class UserDetailsOperationCollector extends ObscuringOperationCollector {
     @Override
     protected void markSensitiveReturnValueAttributes(Operation op, Object returnValue) {
         if (returnValue instanceof UserDetails) {
-            UserDetails details=(UserDetails) returnValue;
+            UserDetails details = (UserDetails) returnValue;
             markSensitiveDetails(details);
             if (collectExtraInformation()) {
                 encodeUserDetails(op.createMap(RESULT_MAP_NAME), details);
@@ -52,17 +52,18 @@ public class UserDetailsOperationCollector extends ObscuringOperationCollector {
         }
     }
 
-    void markSensitiveDetails (UserDetails details) {
+    void markSensitiveDetails(UserDetails details) {
         markSensitiveDetails(obscuredMarker, details);
     }
+
     // used for username/password arguments
-    void markSensitiveString (String strValue) {
+    void markSensitiveString(String strValue) {
         if (!StringUtil.isEmpty(strValue)) {
             obscuredMarker.markObscured(strValue);
         }
     }
 
-    static void markSensitiveDetails (ObscuredValueMarker marker, UserDetails details) {
+    static void markSensitiveDetails(ObscuredValueMarker marker, UserDetails details) {
         if (details == null) {
             return;
         }
@@ -70,19 +71,19 @@ public class UserDetailsOperationCollector extends ObscuringOperationCollector {
         marker.markObscured(details.getUsername());
         marker.markObscured(details.getPassword());
     }
-    
-    static OperationMap encodeUserDetails (OperationMap map, UserDetails details) {
+
+    static OperationMap encodeUserDetails(OperationMap map, UserDetails details) {
         if (details == null) {
             return map;
         }
 
         map.putAnyNonEmpty("username", details.getUsername())
-           .putAnyNonEmpty("password", details.getPassword())
-           .put("accountNonExpired", details.isAccountNonExpired())
-           .put("accountNonLocked", details.isAccountNonLocked())
-           .put("credentialsNonExpired", details.isCredentialsNonExpired())
-           .put("enabled", details.isEnabled())
-           ;
+                .putAnyNonEmpty("password", details.getPassword())
+                .put("accountNonExpired", details.isAccountNonExpired())
+                .put("accountNonLocked", details.isAccountNonLocked())
+                .put("credentialsNonExpired", details.isCredentialsNonExpired())
+                .put("enabled", details.isEnabled())
+        ;
         updateGrantedAuthorities(map, details.getAuthorities());
         return map;
     }

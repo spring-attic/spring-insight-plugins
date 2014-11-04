@@ -23,27 +23,27 @@ import com.foo.example.ExampleService;
 import com.springsource.insight.plugin.springcore.beans.InsightService;
 
 public class ServiceMethodOperationCollectionAspectTest extends StereotypeOperationCollectionAspectTestSupport {
-	public ServiceMethodOperationCollectionAspectTest () {
-		super(Service.class);
-	}
+    public ServiceMethodOperationCollectionAspectTest() {
+        super(Service.class);
+    }
 
     @Test
     public void testNonInsightComponentCollected() {
         assertStereotypeOperation(new ExampleService(), true);
     }
 
-	@Test
-	public void testInsightComponentNotCollected () {
-		assertStereotypeOperation(new InsightService(), false);
-	}
+    @Test
+    public void testInsightComponentNotCollected() {
+        assertStereotypeOperation(new InsightService(), false);
+    }
 
-	@Test
-	public void testLifecycleMethodsNotCollected() throws Exception {
-		assertLifecycleMethodsNotIntercepted(new ExampleService());
-	}
+    @Test
+    public void testLifecycleMethodsNotCollected() throws Exception {
+        assertLifecycleMethodsNotIntercepted(new ExampleService());
+    }
 
-	@Override
-	public ServiceMethodOperationCollectionAspect getAspect() {
-		return ServiceMethodOperationCollectionAspect.aspectOf();
-	}
+    @Override
+    public ServiceMethodOperationCollectionAspect getAspect() {
+        return ServiceMethodOperationCollectionAspect.aspectOf();
+    }
 }

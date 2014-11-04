@@ -21,31 +21,31 @@ import org.aspectj.lang.annotation.SuppressAjWarnings;
 import org.springframework.core.task.AsyncTaskExecutor;
 
 /**
- * 
+ *
  */
 public aspect SpringAsyncTaskExecutorCollectionAspect extends ExecuteMethodCollectionAspect {
-    public SpringAsyncTaskExecutorCollectionAspect () {
+    public SpringAsyncTaskExecutorCollectionAspect() {
         super();
     }
 
-    public pointcut executePoint () : execution(* AsyncTaskExecutor+.execute(Runnable,long));
-    public pointcut submitPoint ()  : execution(* AsyncTaskExecutor+.submit(Runnable));
+    public pointcut executePoint(): execution(* AsyncTaskExecutor+.execute(Runnable,long));
+    public pointcut submitPoint(): execution(* AsyncTaskExecutor+.submit(Runnable));
 
-    public pointcut collectionPoint ()
-        : executePoint() || submitPoint()
-        ;
+    public pointcut collectionPoint()
+            : executePoint() || submitPoint()
+            ;
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     Future<?> around (Runnable runner)
-        : submitPoint() && args(runner) {
-        Runnable    effectiveRunner=resolveRunner(runner, thisJoinPointStaticPart);
+            : submitPoint() && args(runner) {
+        Runnable effectiveRunner = resolveRunner(runner, thisJoinPointStaticPart);
         return proceed(effectiveRunner);
     }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
-    Object around(Runnable runner,long timeout)
-        : executePoint() && args(runner,timeout) {
-        Runnable    effectiveRunner=resolveRunner(runner, thisJoinPointStaticPart);
+    Object around(Runnable runner, long timeout)
+            : executePoint() && args(runner,timeout) {
+        Runnable effectiveRunner = resolveRunner(runner, thisJoinPointStaticPart);
         return proceed(effectiveRunner, timeout);
     }
 

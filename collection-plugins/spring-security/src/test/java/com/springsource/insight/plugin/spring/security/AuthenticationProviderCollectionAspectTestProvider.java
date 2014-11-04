@@ -26,11 +26,12 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 
 /**
- * 
+ *
  */
 public class AuthenticationProviderCollectionAspectTestProvider implements AuthenticationProvider {
-    private final Logger    logger=Logger.getLogger(getClass().getName());
-    private final boolean   useAuthCopy;
+    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final boolean useAuthCopy;
+
     public AuthenticationProviderCollectionAspectTestProvider(final boolean copyAuth) {
         useAuthCopy = copyAuth;
     }
@@ -38,16 +39,17 @@ public class AuthenticationProviderCollectionAspectTestProvider implements Authe
     public Authentication authenticate(Authentication authentication)
             throws AuthenticationException {
         logger.info("authenticate() enter: " + authentication);
-        Authentication  result=authentication;
+        Authentication result = authentication;
         if (useAuthCopy)
             result = new TestingAuthenticationToken(authentication.getPrincipal(),
-                            authentication.getCredentials(),
-                            new ArrayList<GrantedAuthority>(authentication.getAuthorities()));
+                    authentication.getCredentials(),
+                    new ArrayList<GrantedAuthority>(authentication.getAuthorities()));
         if (!result.isAuthenticated())
             result.setAuthenticated(true);
         logger.info("authenticate() finished: " + result);
         return result;
     }
+
     public boolean supports(Class<? extends Object> authentication) {
         return TestingAuthenticationToken.class.isAssignableFrom(authentication);
     }

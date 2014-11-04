@@ -23,9 +23,9 @@
 </#if>
 
 <#if operation.exception??>
-	<@insight.group label="Exception details">
-		<@insight.entry name="Exception" value=operation.exception/>
-	</@insight.group>
+    <@insight.group label="Exception details">
+        <@insight.entry name="Exception" value=operation.exception/>
+    </@insight.group>
 </#if>
 
 <@insight.sourceCodeLocation location=operation.sourceCodeLocation />

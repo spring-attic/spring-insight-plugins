@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:insight="http://www.springframework.org/schema/insight-idk"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:insight="http://www.springframework.org/schema/insight-idk"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
-    <insight:plugin name="javax-management" version="${project.version}" publisher="SpringSource" />
+    <insight:plugin name="javax-management" version="${project.version}" publisher="SpringSource"/>
 
-    <insight:operation-view operation="javax-mgmt-attr" template="com/springsource/insight/plugin/jmx/javax-mgmt-attr.ftl"/>
-    <insight:operation-view operation="javax-mgmt-invoke" template="com/springsource/insight/plugin/jmx/javax-mgmt-invoke.ftl"/>
-    
+    <insight:operation-view operation="javax-mgmt-attr"
+                            template="com/springsource/insight/plugin/jmx/javax-mgmt-attr.ftl"/>
+    <insight:operation-view operation="javax-mgmt-invoke"
+                            template="com/springsource/insight/plugin/jmx/javax-mgmt-invoke.ftl"/>
+
     <bean id="jmxInvocationEndPointAnalyzer"
           class="com.springsource.insight.plugin.jmx.JmxInvocationEndPointAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="jmxPluginRuntimeDescriptor"
           class="com.springsource.insight.plugin.jmx.JmxPluginRuntimeDescriptor"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
 </beans>

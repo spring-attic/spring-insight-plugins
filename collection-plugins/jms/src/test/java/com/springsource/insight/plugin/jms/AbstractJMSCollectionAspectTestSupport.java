@@ -27,61 +27,61 @@ import com.springsource.insight.intercept.trace.ObscuredValueMarker;
 import com.springsource.insight.util.ListUtil;
 
 /**
- * 
+ *
  */
 public abstract class AbstractJMSCollectionAspectTestSupport extends OperationCollectionAspectTestSupport {
-	private ObscuredValueMarker	originalMarker;
-	private final ObscuredValueSetMarker	replaceMarker=new ObscuredValueSetMarker();
+    private ObscuredValueMarker originalMarker;
+    private final ObscuredValueSetMarker replaceMarker = new ObscuredValueSetMarker();
 
-	protected AbstractJMSCollectionAspectTestSupport() {
-		super();
-	}
+    protected AbstractJMSCollectionAspectTestSupport() {
+        super();
+    }
 
     @Before
     @Override
     public void setUp() {
-    	super.setUp();
-    	
-    	AbstractJMSCollectionAspect.OBFUSCATED_HEADERS.clear();
-    	AbstractJMSCollectionAspect.OBFUSCATED_PROPERTIES.clear();
+        super.setUp();
 
-    	AbstractJMSCollectionAspect	aspectInstance=getJmsCollectionAspect();
-    	originalMarker = aspectInstance.getSensitiveValueMarker();
-    	replaceMarker.clear();
-    	aspectInstance.setSensitiveValueMarker(replaceMarker);
+        AbstractJMSCollectionAspect.OBFUSCATED_HEADERS.clear();
+        AbstractJMSCollectionAspect.OBFUSCATED_PROPERTIES.clear();
+
+        AbstractJMSCollectionAspect aspectInstance = getJmsCollectionAspect();
+        originalMarker = aspectInstance.getSensitiveValueMarker();
+        replaceMarker.clear();
+        aspectInstance.setSensitiveValueMarker(replaceMarker);
     }
 
     @After
     @Override
     public void restore() {
-    	AbstractJMSCollectionAspect	aspectInstance=getJmsCollectionAspect();
-    	aspectInstance.setSensitiveValueMarker(originalMarker);
-    	originalMarker = null;
+        AbstractJMSCollectionAspect aspectInstance = getJmsCollectionAspect();
+        aspectInstance.setSensitiveValueMarker(originalMarker);
+        originalMarker = null;
 
-    	AbstractJMSCollectionAspect.OBFUSCATED_HEADERS.clear();
-    	AbstractJMSCollectionAspect.OBFUSCATED_PROPERTIES.clear();
+        AbstractJMSCollectionAspect.OBFUSCATED_HEADERS.clear();
+        AbstractJMSCollectionAspect.OBFUSCATED_PROPERTIES.clear();
 
-    	super.restore();
+        super.restore();
     }
 
-    protected void assertObfuscatedValuesState (Map<String,?> attrs, boolean obfuscated) {
-    	AbstractJMSCollectionAspect	aspectInstance=getJmsCollectionAspect();
-    	ObscuredValueSetMarker		markedObjects=(ObscuredValueSetMarker) aspectInstance.getSensitiveValueMarker();
-    	if (!obfuscated) {
-    		assertEquals("Unexpected obfuscated values: " + markedObjects, 0, ListUtil.size(markedObjects));
-    		return;
-    	}
+    protected void assertObfuscatedValuesState(Map<String, ?> attrs, boolean obfuscated) {
+        AbstractJMSCollectionAspect aspectInstance = getJmsCollectionAspect();
+        ObscuredValueSetMarker markedObjects = (ObscuredValueSetMarker) aspectInstance.getSensitiveValueMarker();
+        if (!obfuscated) {
+            assertEquals("Unexpected obfuscated values: " + markedObjects, 0, ListUtil.size(markedObjects));
+            return;
+        }
 
-    	for (Map.Entry<String,?> ae : attrs.entrySet()) {
-    		String	key=ae.getKey();
-    		Object	value=ae.getValue();
-    		assertTrue("Value for key=" + key + " not marked as obfuscated", markedObjects.remove(value));
-    	}
-    	
-    	assertTrue("Orphan obfuscated values: " + markedObjects, markedObjects.isEmpty());
+        for (Map.Entry<String, ?> ae : attrs.entrySet()) {
+            String key = ae.getKey();
+            Object value = ae.getValue();
+            assertTrue("Value for key=" + key + " not marked as obfuscated", markedObjects.remove(value));
+        }
+
+        assertTrue("Orphan obfuscated values: " + markedObjects, markedObjects.isEmpty());
     }
 
-	public AbstractJMSCollectionAspect getJmsCollectionAspect() {
-		return (AbstractJMSCollectionAspect) getAspect();
-	}
+    public AbstractJMSCollectionAspect getJmsCollectionAspect() {
+        return (AbstractJMSCollectionAspect) getAspect();
+    }
 }

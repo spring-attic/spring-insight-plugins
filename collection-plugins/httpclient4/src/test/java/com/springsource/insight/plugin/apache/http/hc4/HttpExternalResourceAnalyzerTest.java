@@ -41,7 +41,7 @@ import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.time.TimeRange;
 
 /**
- * 
+ *
  */
 public class HttpExternalResourceAnalyzerTest extends AbstractCollectionTestSupport {
     private final HttpExternalResourceAnalyzer analyzer = HttpExternalResourceAnalyzer.getInstance();
@@ -102,7 +102,7 @@ public class HttpExternalResourceAnalyzerTest extends AbstractCollectionTestSupp
                 parent,
                 op,
                 TimeRange.milliTimeRange(0, 1),
-                Collections.<Frame> emptyList());
+                Collections.<Frame>emptyList());
     }
 
     static Trace createTrace(Frame root) {

@@ -38,43 +38,43 @@ import com.springsource.insight.util.StringUtil;
 public aspect HttpURLConnectionOperationCollectionAspect
         extends SocketOperationCollectionAspectSupport {
 
-    public HttpURLConnectionOperationCollectionAspect () {
+    public HttpURLConnectionOperationCollectionAspect() {
         super();
     }
 
     // we have to use 'call' since HttpURLConnection is a core class
-    public pointcut collectionPoint() : call(* HttpURLConnection+.connect());
+    public pointcut collectionPoint(): call(* HttpURLConnection+.connect());
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        HttpURLConnection   conn=(HttpURLConnection) jp.getTarget();
-        URL                 url=conn.getURL();
-        String              host=url.getHost();
-        int                 port=url.getPort();
+        HttpURLConnection conn = (HttpURLConnection) jp.getTarget();
+        URL url = conn.getURL();
+        String host = url.getHost();
+        int port = url.getPort();
         if (port <= 0) {
             port = url.getDefaultPort();
         }
 
-        Operation   op=createOperation(super.createOperation(jp), SocketDefinitions.CONNECT_ACTION, host, port);
+        Operation op = createOperation(super.createOperation(jp), SocketDefinitions.CONNECT_ACTION, host, port);
         op.put("method", conn.getRequestMethod())
-          .put(OperationFields.URI, url.toExternalForm())
-          ;
+                .put(OperationFields.URI, url.toExternalForm())
+        ;
         if (collectExtraInformation()) {
             fillInMessageHeaders(op.createList("request"), conn.getRequestProperties());
         }
-        
+
         return op;
     }
 
-    OperationList fillInMessageHeaders (OperationList headers, Map<String,? extends Collection<String>> hdrsMap) {
+    OperationList fillInMessageHeaders(OperationList headers, Map<String, ? extends Collection<String>> hdrsMap) {
         if (MapUtil.size(hdrsMap) <= 0) {
             return headers;
         }
 
-        SocketCollectOperationContext	context=getSocketCollectOperationContext();
-        for (Map.Entry<String,? extends Collection<String>> hdrEntry : hdrsMap.entrySet()) {
-            String              name=hdrEntry.getKey();
-            Collection<String>  valsList=hdrEntry.getValue();
+        SocketCollectOperationContext context = getSocketCollectOperationContext();
+        for (Map.Entry<String, ? extends Collection<String>> hdrEntry : hdrsMap.entrySet()) {
+            String name = hdrEntry.getKey();
+            Collection<String> valsList = hdrEntry.getValue();
             if (ListUtil.size(valsList) <= 0) {
                 continue;
             }
@@ -87,11 +87,11 @@ public aspect HttpURLConnectionOperationCollectionAspect
                 OperationUtils.addNameValuePair(headers, name, value);
 
                 if (context.updateObscuredHeaderValue(name, value) && _logger.isLoggable(Level.FINE)) {
-                   _logger.fine("fillInMessageHeaders(" + name + ") obscured: " + value);
+                    _logger.fine("fillInMessageHeaders(" + name + ") obscured: " + value);
                 }
             }
         }
-        
+
         return headers;
     }
 }

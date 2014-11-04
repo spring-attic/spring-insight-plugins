@@ -24,21 +24,21 @@ import com.springsource.insight.intercept.trace.Frame;
 /**
  */
 public class Ejb3LocalServiceEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
-	private static final Ejb3LocalServiceEndPointAnalyzer	INSTANCE=new Ejb3LocalServiceEndPointAnalyzer();
+    private static final Ejb3LocalServiceEndPointAnalyzer INSTANCE = new Ejb3LocalServiceEndPointAnalyzer();
 
     private Ejb3LocalServiceEndPointAnalyzer() {
         super(Ejb3LocalServiceDefinitions.TYPE);
     }
 
     public static final Ejb3LocalServiceEndPointAnalyzer getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override
-	protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
-        Operation 		op=frame.getOperation();
-        EndPointName  	endPointName=EndPointName.valueOf(op);
-        String        	example=EndPointAnalysis.getHttpExampleRequest(frame);
+    protected EndPointAnalysis makeEndPoint(Frame frame, int depth) {
+        Operation op = frame.getOperation();
+        EndPointName endPointName = EndPointName.valueOf(op);
+        String example = EndPointAnalysis.getHttpExampleRequest(frame);
         return new EndPointAnalysis(endPointName, op.getLabel(), example, getOperationScore(op, depth), op);
     }
 }

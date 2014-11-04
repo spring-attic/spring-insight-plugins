@@ -6,21 +6,22 @@
     <artifactId>community</artifactId>
     <version>2.0.0-CI-SNAPSHOT</version>
     <name>com.springsource.insight:parent</name>
-    <description>Spring Insight parent project. Defines dependencies and common configuration for the build process.</description>
+    <description>Spring Insight parent project. Defines dependencies and common configuration for the build process.
+    </description>
     <packaging>pom</packaging>
 
     <properties>
         <insight.root.dir>${project.parent.basedir}/..</insight.root.dir>
-			<!-- source code compliance level -->
-		<java.source.version>1.5</java.source.version>
-			<!-- target code compliance level -->
- 		<java.target.version>${java.source.version}</java.target.version>
-        <spring.framework.version>3.2.1.RELEASE</spring.framework.version>
-        <spring.security.version>3.1.3.RELEASE</spring.security.version>
-		<spring.webflow.version>2.3.1.RELEASE</spring.webflow.version>
-        <spring.integration.version>2.2.1.RELEASE</spring.integration.version>
-        <spring.data.commons.version>1.1.0.RELEASE</spring.data.commons.version>
-        <aspectj.version>1.7.3</aspectj.version>
+        <!-- source code compliance level -->
+        <java.source.version>1.5</java.source.version>
+        <!-- target code compliance level -->
+        <java.target.version>${java.source.version}</java.target.version>
+        <spring.framework.version>4.1.1.RELEASE</spring.framework.version>
+        <spring.security.version>3.2.5.RELEASE</spring.security.version>
+        <spring.webflow.version>2.3.4.RELEASE</spring.webflow.version>
+        <spring.integration.version>4.0.4.RELEASE</spring.integration.version>
+        <spring.data.commons.version>1.9.0.RELEASE</spring.data.commons.version>
+        <aspectj.version>1.8.4.BUILD-SNAPSHOT</aspectj.version>
         <junit.version>4.11</junit.version>
         <mockito.version>1.9.5</mockito.version>
         <commons.logging.version>1.1.1</commons.logging.version>
@@ -30,13 +31,14 @@
         <clover2.version>2.6.3</clover2.version>
         <slf4j.version>1.7.2</slf4j.version>
         <servlet-api.version>2.5</servlet-api.version>
-		<jetty-api.version>6.1.25</jetty-api.version>
+        <javax.servlet-api.version>3.0.1</javax.servlet-api.version>
+        <jetty-api.version>6.1.25</jetty-api.version>
         <freemarker.version>2.3.15</freemarker.version>
         <jstl.version>1.2</jstl.version>
         <cglib.version>2.2</cglib.version>
         <activemq.version>5.4.2</activemq.version>
         <xbean.version>3.5</xbean.version>
-        <catalina.version>6.0.18</catalina.version>
+        <catalina.version>6.0.41</catalina.version>
         <h2.version>1.2.147</h2.version>
         <hsqldb.version>1.8.0.10</hsqldb.version>
         <hibernate.version>3.6.0.Final</hibernate.version>
@@ -47,7 +49,7 @@
         <ehcache.version>2.3.0</ehcache.version>
         <groovy.version>1.7.3</groovy.version>
         <gmaven.plugin.version>1.0</gmaven.plugin.version>
-		<surefire.plugin.version>2.13</surefire.plugin.version>
+        <surefire.plugin.version>2.13</surefire.plugin.version>
         <injection.plugin.version>1.0.2</injection.plugin.version>
         <vfabric.license.client.version>1.0.0.M8</vfabric.license.client.version>
         <rabbitmq.version>2.5.1</rabbitmq.version>
@@ -61,17 +63,17 @@
         <cloudfoundry.version>0.7.0</cloudfoundry.version>
         <httpclinet.version>4.1.1</httpclinet.version>
         <javax.jms.version>1.1</javax.jms.version>
-		<javax.inject.version>1</javax.inject.version>
+        <javax.inject.version>1</javax.inject.version>
 
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <build.timestamp>${maven.build.timestamp}</build.timestamp>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<excluded.tests.group>com.springsource.insight.util.test.MicroBenchmark</excluded.tests.group>
+        <excluded.tests.group>com.springsource.insight.util.test.MicroBenchmark</excluded.tests.group>
 
-		<snapshot.repo.id>spring-snapshot</snapshot.repo.id>
+        <snapshot.repo.id>spring-snapshot</snapshot.repo.id>
         <snapshot.repo.name>Spring Snapshot Repository</snapshot.repo.name>
-		<snapshot.repo.url>http://private.maven.springsource.com/snapshot</snapshot.repo.url>
+        <snapshot.repo.url>http://private.maven.springsource.com/snapshot</snapshot.repo.url>
         <snapshot.dist.url>s3://private.maven.springsource.com/snapshot</snapshot.dist.url>
 
         <milestone.repo.id>spring-milestone</milestone.repo.id>
@@ -79,79 +81,79 @@
         <milestone.repo.url>http://private.maven.springsource.com/milestone</milestone.repo.url>
         <milestone.dist.url>s3://private.maven.springsource.com/milestone</milestone.dist.url>
 
-		<release.repo.id>spring-release</release.repo.id>
+        <release.repo.id>spring-release</release.repo.id>
         <release.repo.name>Spring Release Repository</release.repo.name>
         <release.repo.url>http://private.maven.springsource.com/release</release.repo.url>
         <release.dist.url>s3://private.maven.springsource.com/release</release.dist.url>
     </properties>
 
     <profiles>
-		<profile>
-			<id>force-deploy-artifacts</id>
-			<activation>
-				<jdk>1.5</jdk>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-deploy-plugin</artifactId>
-							<!-- NOTE: by default we deploy only 1.5 compiled artifacts -->
-						<configuration>
-							<skip>false</skip>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
+        <profile>
+            <id>force-deploy-artifacts</id>
+            <activation>
+                <jdk>1.5</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <!-- NOTE: by default we deploy only 1.5 compiled artifacts -->
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 
         <profile>
             <id>jdk15</id>
             <activation>
                 <jdk>1.5</jdk>
             </activation>
-			<build>
-				<pluginManagement>
-					<plugins>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-compiler-plugin</artifactId>
-							<configuration>
-								<testExcludes>
-									<exclude>**/jdk16/*.java</exclude>
-								</testExcludes>
-							</configuration>
-						</plugin>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-surefire-plugin</artifactId>
-							<configuration>
-								<excludes>
-									<exclude>**/jdk16/*.java</exclude>
-								</excludes>
-							</configuration>
-						</plugin>
-						<plugin>
-							<groupId>org.codehaus.mojo</groupId>
-							<artifactId>aspectj-maven-plugin</artifactId>
-							<configuration>
-								<excludes>
-									<exclude>**/jdk16/*.java</exclude>
-									<exclude>**/jdk16/*.aj</exclude>
-								</excludes>
-							</configuration>
-						</plugin>
-					</plugins>
-				</pluginManagement>
-			</build>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-compiler-plugin</artifactId>
+                            <configuration>
+                                <testExcludes>
+                                    <exclude>**/jdk16/*.java</exclude>
+                                </testExcludes>
+                            </configuration>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-surefire-plugin</artifactId>
+                            <configuration>
+                                <excludes>
+                                    <exclude>**/jdk16/*.java</exclude>
+                                </excludes>
+                            </configuration>
+                        </plugin>
+                        <plugin>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>aspectj-maven-plugin</artifactId>
+                            <configuration>
+                                <excludes>
+                                    <exclude>**/jdk16/*.java</exclude>
+                                    <exclude>**/jdk16/*.aj</exclude>
+                                </excludes>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
         </profile>
 
-		<profile>
-			<id>with-micro-benchmarks</id>
-			<properties>
-				<excluded.tests.group>java.lang.String</excluded.tests.group>
-			</properties>
-		</profile>
+        <profile>
+            <id>with-micro-benchmarks</id>
+            <properties>
+                <excluded.tests.group>java.lang.String</excluded.tests.group>
+            </properties>
+        </profile>
 
         <profile>
             <id>fast</id>
@@ -164,17 +166,17 @@
         <profile>
             <id>enable-private-snapshots</id>
             <repositories>
-		        <repository>	<!-- NOTE: these values must match the properties -->
-		            <id>spring-public-snapshot</id>
-		            <name>Spring Public Snapshot Repository</name>
-		            <url>http://private.maven.springsource.com/snapshot</url>
-		            <snapshots>
-		                <enabled>true</enabled>
-		            </snapshots>
-		            <releases>
-		                <updatePolicy>never</updatePolicy>
-		            </releases>
-		        </repository>
+                <repository>    <!-- NOTE: these values must match the properties -->
+                    <id>spring-public-snapshot</id>
+                    <name>Spring Public Snapshot Repository</name>
+                    <url>http://private.maven.springsource.com/snapshot</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                    <releases>
+                        <updatePolicy>never</updatePolicy>
+                    </releases>
+                </repository>
             </repositories>
         </profile>
 
@@ -182,34 +184,34 @@
             <id>mark-scm-revision</id>
             <build>
                 <plugins>
-		            <plugin>
-		                <groupId>org.codehaus.mojo</groupId>
-		                <artifactId>buildnumber-maven-plugin</artifactId>
-		                <executions>
-		                    <execution>
-		                        <phase>validate</phase>
-		                        <goals>
-		                            <goal>create</goal>
-		                        </goals>
-		                        <configuration>
-		                             <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
-		                             <revisionOnScmFailure>NO-SHA-1</revisionOnScmFailure>
-		                        </configuration>
-		                    </execution>
-		                </executions>
-		            </plugin>
-		            <plugin>
-		                <groupId>org.apache.maven.plugins</groupId>
-		                <artifactId>maven-jar-plugin</artifactId>
-		                <configuration>
-		                    <archive>
-		                        <!-- Extra attributes added to the MANIFEST.MF file -->
-		                        <manifestEntries>
-		                            <SCM-Revision-Id>${buildNumber}</SCM-Revision-Id>
-		                        </manifestEntries>
-		                    </archive>
-		                </configuration>
-		            </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>buildnumber-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>create</goal>
+                                </goals>
+                                <configuration>
+                                    <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
+                                    <revisionOnScmFailure>NO-SHA-1</revisionOnScmFailure>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <configuration>
+                            <archive>
+                                <!-- Extra attributes added to the MANIFEST.MF file -->
+                                <manifestEntries>
+                                    <SCM-Revision-Id>${buildNumber}</SCM-Revision-Id>
+                                </manifestEntries>
+                            </archive>
+                        </configuration>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-war-plugin</artifactId>
@@ -238,24 +240,24 @@
             </build>
         </profile>
 
-		<profile>
-			<id>with-javadoc</id>
+        <profile>
+            <id>with-javadoc</id>
             <build>
                 <plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<executions>
-							<execution>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
-		</profile>
+        </profile>
     </profiles>
 
     <organization>
@@ -264,7 +266,15 @@
     </organization>
 
     <repositories>
-        <repository>	<!-- NOTE: these values must match the properties -->
+        <repository>
+            <id>maven.springframework.org</id>
+            <name>SpringSource snapshots</name>
+            <url>http://maven.springframework.org/snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>    <!-- NOTE: these values must match the properties -->
             <id>spring-release</id>
             <name>Spring Release Repository</name>
             <url>http://maven.springframework.org/release</url>
@@ -275,7 +285,7 @@
                 <updatePolicy>never</updatePolicy>
             </releases>
         </repository>
-        <repository>	<!-- NOTE: these values must match the properties -->
+        <repository>    <!-- NOTE: these values must match the properties -->
             <id>spring-milestone</id>
             <name>Spring Milestone Repository</name>
             <url>http://maven.springframework.org/milestone</url>
@@ -346,7 +356,7 @@
     </repositories>
 
     <pluginRepositories>
-        <pluginRepository>	<!-- NOTE: these values must match the properties -->
+        <pluginRepository>    <!-- NOTE: these values must match the properties -->
             <id>spring-release</id>
             <name>Spring Release Repository</name>
             <url>http://maven.springframework.org/release</url>
@@ -358,7 +368,7 @@
             </releases>
         </pluginRepository>
         <!-- Milestone repository for the aspectj milestone release -->
-        <pluginRepository>	<!-- NOTE: these values must match the properties -->
+        <pluginRepository>    <!-- NOTE: these values must match the properties -->
             <id>spring-milestone</id>
             <name>Spring Milestone Repository</name>
             <url>http://maven.springframework.org/milestone</url>
@@ -391,312 +401,325 @@
                 <updatePolicy>never</updatePolicy>
             </releases>
         </pluginRepository>
+        <pluginRepository>
+            <id>maven.springframework.org</id>
+            <name>SpringSource snapshots</name>
+            <url>http://maven.springframework.org/snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
     </pluginRepositories>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>${junit.version}</version>
-			</dependency>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.mockito</groupId>
-				<artifactId>mockito-all</artifactId>
-				<version>${mockito.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>${mockito.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.hsqldb</groupId>
-				<artifactId>hsqldb</artifactId>
-				<version>${hsqldb.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.hsqldb</groupId>
+                <artifactId>hsqldb</artifactId>
+                <version>${hsqldb.version}</version>
+            </dependency>
 
-	        <dependency>
-				<groupId>commons-io</groupId>
-				<artifactId>commons-io</artifactId>
-				<version>${commons.io.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-dbcp</groupId>
-				<artifactId>commons-dbcp</artifactId>
-				<version>${commons.dbcp.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>commons-logging</groupId>
-				<artifactId>commons-logging</artifactId>
-				<version>${commons.logging.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons.io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-dbcp</groupId>
+                <artifactId>commons-dbcp</artifactId>
+                <version>${commons.dbcp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>${commons.logging.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>servlet-api</artifactId>
-				<version>${servlet-api.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>javax.jms</groupId>
-				<artifactId>jms</artifactId>
-				<version>${javax.jms.version}</version>
-			</dependency>
-			<dependency> <!-- used by Spring -->
-				<groupId>javax.inject</groupId>
-				<artifactId>javax.inject</artifactId>
-				<version>${javax.inject.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>jstl</artifactId>
-				<version>${jstl.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>javax.servlet.jsp</groupId>
-				<artifactId>jsp-api</artifactId>
-				<version>2.2</version>
-			</dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>${servlet-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${javax.servlet-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.jms</groupId>
+                <artifactId>jms</artifactId>
+                <version>${javax.jms.version}</version>
+            </dependency>
+            <dependency> <!-- used by Spring -->
+                <groupId>javax.inject</groupId>
+                <artifactId>javax.inject</artifactId>
+                <version>${javax.inject.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>jstl</artifactId>
+                <version>${jstl.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet.jsp</groupId>
+                <artifactId>jsp-api</artifactId>
+                <version>2.2</version>
+            </dependency>
 
-	        <dependency>
-				<groupId>org.aspectj</groupId>
-				<artifactId>aspectjweaver</artifactId>
-				<version>${aspectj.version}</version>
-			</dependency>
-	        <dependency>
-				<groupId>org.aspectj</groupId>
-				<artifactId>aspectjrt</artifactId>
-				<version>${aspectj.version}</version>
-			</dependency>
-	        <dependency>
-				<groupId>org.aspectj</groupId>
-				<artifactId>aspectjtools</artifactId>
-				<version>${aspectj.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>${aspectj.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjrt</artifactId>
+                <version>${aspectj.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjtools</artifactId>
+                <version>${aspectj.version}</version>
+            </dependency>
 
-	        <dependency>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>jetty</artifactId>
-				<version>${jetty-api.version}</version>
-				<exclusions>
-				    <exclusion>	<!-- we provide our own -->
-						<groupId>org.mortbay.jetty</groupId>
-						<artifactId>servlet-api</artifactId>
-				    </exclusion>
-				</exclusions>
-			</dependency>
-	        <dependency>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>jetty-util</artifactId>
-				<version>${jetty-api.version}</version>
-				<exclusions>
-				    <exclusion>	<!-- we provide our own -->
-						<groupId>org.mortbay.jetty</groupId>
-						<artifactId>servlet-api</artifactId>
-				    </exclusion>
-				</exclusions>
-			</dependency>
+            <dependency>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty</artifactId>
+                <version>${jetty-api.version}</version>
+                <exclusions>
+                    <exclusion>    <!-- we provide our own -->
+                        <groupId>org.mortbay.jetty</groupId>
+                        <artifactId>servlet-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-util</artifactId>
+                <version>${jetty-api.version}</version>
+                <exclusions>
+                    <exclusion>    <!-- we provide our own -->
+                        <groupId>org.mortbay.jetty</groupId>
+                        <artifactId>servlet-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
 
-			<dependency> <!-- Required also by various frameworks (e.g., Spring) -->
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-api</artifactId>
-				<version>${slf4j.version}</version>
-			</dependency>
-				<!-- Replacement of commons-logging with a native slf4j
-					 - Required by Spring framework (and others) -->
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>jcl-over-slf4j</artifactId>
-				<version>${slf4j.version}</version>
-			</dependency>
-			<dependency> <!-- Required also by various frameworks (e.g., Spring) -->
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-simple</artifactId>
-				<version>${slf4j.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-log4j12</artifactId>
-				<version>${slf4j.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>jul-to-slf4j</artifactId>
-				<version>${slf4j.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-nop</artifactId>
-				<version>${slf4j.version}</version>
-			</dependency>
+            <dependency> <!-- Required also by various frameworks (e.g., Spring) -->
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <!-- Replacement of commons-logging with a native slf4j
+                 - Required by Spring framework (and others) -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency> <!-- Required also by various frameworks (e.g., Spring) -->
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jul-to-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-nop</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>log4j-over-slf4j</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
 
-			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>${log4j.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>javax.jms</groupId>
-						<artifactId>jms</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>com.sun.jmx</groupId>
-						<artifactId>jmxri</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>com.sun.jdmk</groupId>
-						<artifactId>jmxtools</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>ant</groupId>
-						<artifactId>ant-nodeps</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>ant</groupId>
-						<artifactId>ant-junit</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>ant-contrib</groupId>
-						<artifactId>ant-contrib</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>${log4j.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.jms</groupId>
+                        <artifactId>jms</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.sun.jmx</groupId>
+                        <artifactId>jmxri</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.sun.jdmk</groupId>
+                        <artifactId>jmxtools</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>ant</groupId>
+                        <artifactId>ant-nodeps</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>ant</groupId>
+                        <artifactId>ant-junit</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>ant-contrib</groupId>
+                        <artifactId>ant-contrib</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
 
-			<dependency>
-				<groupId>org.codehaus.jackson</groupId>
-				<artifactId>jackson-core-asl</artifactId>
-				<version>${jackson.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.codehaus.jackson</groupId>
-				<artifactId>jackson-mapper-asl</artifactId>
-				<version>${jackson.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-core-asl</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.jackson</groupId>
+                <artifactId>jackson-mapper-asl</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.freemarker</groupId>
-				<artifactId>freemarker</artifactId>
-				<version>${freemarker.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>${freemarker.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-entitymanager</artifactId>
-				<version>${hibernate.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-core</artifactId>
-				<version>${hibernate.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-entitymanager</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-core</artifactId>
-				<version>${spring.framework.version}</version>
-				<exclusions>
-					<exclusion> <!-- Provided by the J2SE -->
-						<groupId>xml-apis</groupId>
-						<artifactId>xml-apis</artifactId>
-					</exclusion>
-						<!-- excluded since we provide our
-							own dependencies versions for them -
-							usually jcl-over-slf4j	-->
-					<exclusion>
-						<groupId>commons-logging</groupId>
-						<artifactId>commons-logging</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-aop</artifactId>
-				<version>${spring.framework.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-aspects</artifactId>
-				<version>${spring.framework.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-beans</artifactId>
-				<version>${spring.framework.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-context</artifactId>
-				<version>${spring.framework.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-context-support</artifactId>
-				<version>${spring.framework.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-expression</artifactId>
-				<version>${spring.framework.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-instrument</artifactId>
-				<version>${spring.framework.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-jdbc</artifactId>
-				<version>${spring.framework.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-jms</artifactId>
-				<version>${spring.framework.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-orm</artifactId>
-				<version>${spring.framework.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-oxm</artifactId>
-				<version>${spring.framework.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-tx</artifactId>
-				<version>${spring.framework.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-web</artifactId>
-				<version>${spring.framework.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-webmvc</artifactId>
-				<version>${spring.framework.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-test</artifactId>
-				<version>${spring.framework.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${spring.framework.version}</version>
+                <exclusions>
+                    <exclusion> <!-- Provided by the J2SE -->
+                        <groupId>xml-apis</groupId>
+                        <artifactId>xml-apis</artifactId>
+                    </exclusion>
+                    <!-- excluded since we provide our
+                        own dependencies versions for them -
+                        usually jcl-over-slf4j	-->
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-aop</artifactId>
+                <version>${spring.framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-aspects</artifactId>
+                <version>${spring.framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-beans</artifactId>
+                <version>${spring.framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring.framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context-support</artifactId>
+                <version>${spring.framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-expression</artifactId>
+                <version>${spring.framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-instrument</artifactId>
+                <version>${spring.framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-jdbc</artifactId>
+                <version>${spring.framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-jms</artifactId>
+                <version>${spring.framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-orm</artifactId>
+                <version>${spring.framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-oxm</artifactId>
+                <version>${spring.framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-tx</artifactId>
+                <version>${spring.framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${spring.framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webmvc</artifactId>
+                <version>${spring.framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${spring.framework.version}</version>
+            </dependency>
 
-	        <dependency>
-	            <groupId>org.springframework.webflow</groupId>
-	            <artifactId>spring-webflow</artifactId>
-	            <version>${spring.webflow.version}</version>
-	            <exclusions>
-	                <exclusion> <!-- we use jcl-over-slf4j in the tests -->
-	                    <groupId>commons-logging</groupId>
-	                    <artifactId>commons-logging</artifactId>
-	                </exclusion>
-	            </exclusions>
-	        </dependency>
+            <dependency>
+                <groupId>org.springframework.webflow</groupId>
+                <artifactId>spring-webflow</artifactId>
+                <version>${spring.webflow.version}</version>
+                <exclusions>
+                    <exclusion> <!-- we use jcl-over-slf4j in the tests -->
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.webflow</groupId>
                 <artifactId>spring-binding</artifactId>
@@ -713,11 +736,11 @@
                 <version>${spring.webflow.version}</version>
             </dependency>
 
-	        <dependency>
-	            <groupId>org.springframework.integration</groupId>
-	            <artifactId>spring-integration-core</artifactId>
-	            <version>${spring.integration.version}</version>
-	        </dependency>
+            <dependency>
+                <groupId>org.springframework.integration</groupId>
+                <artifactId>spring-integration-core</artifactId>
+                <version>${spring.integration.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.integration</groupId>
                 <artifactId>spring-integration-ip</artifactId>
@@ -728,21 +751,21 @@
                 <artifactId>spring-integration-stream</artifactId>
                 <version>${spring.integration.version}</version>
             </dependency>
-	        <dependency>
-	            <groupId>org.springframework.integration</groupId>
-	            <artifactId>spring-integration-jms</artifactId>
-	            <version>${spring.integration.version}</version>
-	        </dependency>
+            <dependency>
+                <groupId>org.springframework.integration</groupId>
+                <artifactId>spring-integration-jms</artifactId>
+                <version>${spring.integration.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.integration</groupId>
                 <artifactId>spring-integration-jmx</artifactId>
                 <version>${spring.integration.version}</version>
             </dependency>
-	        <dependency>
-	            <groupId>org.springframework.integration</groupId>
-	            <artifactId>spring-integration-http</artifactId>
-	            <version>${spring.integration.version}</version>
-	        </dependency>
+            <dependency>
+                <groupId>org.springframework.integration</groupId>
+                <artifactId>spring-integration-http</artifactId>
+                <version>${spring.integration.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.integration</groupId>
                 <artifactId>spring-integration-test</artifactId>
@@ -754,83 +777,83 @@
                 <version>${spring.integration.version}</version>
             </dependency>
 
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-core</artifactId>
-				<version>${spring.security.version}</version>
-				<exclusions>
-						<!-- we use our own versions for these -->
-					<exclusion>
-						<groupId>org.aspectj</groupId>
-						<artifactId>aspectjrt</artifactId>
-					</exclusion>
-						<!-- excluded since we provide our
-							own dependencies versions for them -
-							usually jcl-over-slf4j	-->
-					<exclusion>
-						<groupId>commons-logging</groupId>
-						<artifactId>commons-logging</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-config</artifactId>
-				<version>${spring.security.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-web</artifactId>
-				<version>${spring.security.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-ldap</artifactId>
-				<version>${spring.security.version}</version>
-					<!-- we use our own versions for these -->
-				<exclusions>
-					<exclusion>
-						<groupId>org.aspectj</groupId>
-						<artifactId>aspectjrt</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.aspectj</groupId>
-						<artifactId>aspectjtools</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.aspectj</groupId>
-						<artifactId>aspectjweaver</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-core</artifactId>
+                <version>${spring.security.version}</version>
+                <exclusions>
+                    <!-- we use our own versions for these -->
+                    <exclusion>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjrt</artifactId>
+                    </exclusion>
+                    <!-- excluded since we provide our
+                        own dependencies versions for them -
+                        usually jcl-over-slf4j	-->
+                    <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-config</artifactId>
+                <version>${spring.security.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-web</artifactId>
+                <version>${spring.security.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-ldap</artifactId>
+                <version>${spring.security.version}</version>
+                <!-- we use our own versions for these -->
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjrt</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjtools</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjweaver</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
 
-			<!-- amqp -->
-			<dependency>
-				<groupId>org.springframework.amqp</groupId>
-				<artifactId>spring-amqp</artifactId>
-				<version>${org.springframework.amqp.version}</version>
-			</dependency>
+            <!-- amqp -->
+            <dependency>
+                <groupId>org.springframework.amqp</groupId>
+                <artifactId>spring-amqp</artifactId>
+                <version>${org.springframework.amqp.version}</version>
+            </dependency>
 
-				<!-- Rabbitmq -->
-			<dependency>
-				<groupId>com.rabbitmq</groupId>
-				<artifactId>amqp-client</artifactId>
-				<version>${rabbitmq.version}</version>
-			</dependency>
+            <!-- Rabbitmq -->
+            <dependency>
+                <groupId>com.rabbitmq</groupId>
+                <artifactId>amqp-client</artifactId>
+                <version>${rabbitmq.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.springframework.amqp</groupId>
-				<artifactId>spring-rabbit</artifactId>
-				<version>${org.springframework.amqp.version}</version>
-			</dependency>
+            <dependency>
+                <groupId>org.springframework.amqp</groupId>
+                <artifactId>spring-rabbit</artifactId>
+                <version>${org.springframework.amqp.version}</version>
+            </dependency>
 
-			<dependency>
-				<groupId>org.springframework.data</groupId>
-				<artifactId>spring-data-commons-core</artifactId>
-				<version>${spring.data.commons.version}</version>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-commons</artifactId>
+                <version>${spring.data.commons.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <extensions>
@@ -851,8 +874,8 @@
                     <configuration>
                         <lifecycleMappingMetadata>
                             <pluginExecutions>
-                                    <!-- TODO remove this definition when same gmaven
-                                        plugin used throughout (see below) -->
+                                <!-- TODO remove this definition when same gmaven
+                                    plugin used throughout (see below) -->
                                 <pluginExecution>
                                     <pluginExecutionFilter>
                                         <groupId>org.codehaus.groovy.maven</groupId>
@@ -1016,7 +1039,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>aspectj-maven-plugin</artifactId>
-                    <version>1.4</version>
+                    <version>1.7</version>
                     <!-- As per Andy Clement's recommendation and also as per the plugin's documentation -->
                     <dependencies>
                         <dependency>
@@ -1030,27 +1053,28 @@
                             <version>${aspectj.version}</version>
                         </dependency>
                     </dependencies>
-					<configuration>
-						<source>${java.source.version}</source>
-						<target>${java.target.version}</target>
-						<outxml>true</outxml>
-					</configuration>
- 					<executions>
-						<execution>
-							<id>compile-aspects</id>
-							<goals>
-								<goal>compile</goal>
-							</goals>
-						</execution>
-						<execution>
-							<id>compile-test-aspects</id>
-							<!-- see http://jira.codehaus.org/browse/MASPECTJ-92 workaround -->
-							<phase>process-test-sources</phase>
-							<goals>
-								<goal>test-compile</goal>
-							</goals>
-						</execution>
-					</executions>
+                    <configuration>
+                        <source>${java.source.version}</source>
+                        <target>${java.target.version}</target>
+                        <complianceLevel>${java.source.version}</complianceLevel>
+                        <outxml>true</outxml>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>compile-aspects</id>
+                            <goals>
+                                <goal>compile</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>compile-test-aspects</id>
+                            <!-- see http://jira.codehaus.org/browse/MASPECTJ-92 workaround -->
+                            <phase>process-test-sources</phase>
+                            <goals>
+                                <goal>test-compile</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -1059,18 +1083,18 @@
                     <configuration>
                         <packagingExcludes>WEB-INF/web.xml</packagingExcludes>
                         <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
-	                    <archive>
-	                        <!-- Extra attributes added to the MANIFEST.MF file -->
-	                        <manifestEntries>
-	                            <!-- see Package constructor using Manifest -->
-	                            <Implementation-Title>${project.artifactId}</Implementation-Title>
-	                            <Implementation-Version>${project.version}</Implementation-Version>
-	                            <Implementation-Vendor>Insight</Implementation-Vendor>
-	                               <!-- NOTE: this name must match the one used in InsightVersion class -->
-	                            <Release-Timestamp>${buildtimestamp}</Release-Timestamp>
-								<Maven-Version>${maven.version}</Maven-Version>
-	                        </manifestEntries>
-	                    </archive>
+                        <archive>
+                            <!-- Extra attributes added to the MANIFEST.MF file -->
+                            <manifestEntries>
+                                <!-- see Package constructor using Manifest -->
+                                <Implementation-Title>${project.artifactId}</Implementation-Title>
+                                <Implementation-Version>${project.version}</Implementation-Version>
+                                <Implementation-Vendor>Insight</Implementation-Vendor>
+                                <!-- NOTE: this name must match the one used in InsightVersion class -->
+                                <Release-Timestamp>${buildtimestamp}</Release-Timestamp>
+                                <Maven-Version>${maven.version}</Maven-Version>
+                            </manifestEntries>
+                        </archive>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -1130,57 +1154,57 @@
                     <artifactId>maven-scm-plugin</artifactId>
                     <version>1.7</version>
                 </plugin>
-	            <plugin>
-	                <groupId>org.codehaus.mojo</groupId>
-	                <artifactId>buildnumber-maven-plugin</artifactId>
-	                <version>1.1</version>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
+                    <version>1.1</version>
                 </plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>2.9</version>
-					<configuration>
-	                    <archive>
-	                        <!-- Extra attributes added to the MANIFEST.MF file -->
-	                        <manifestEntries>
-	                            <!-- see Package constructor using Manifest -->
-	                            <Implementation-Title>${project.artifactId}</Implementation-Title>
-	                            <Implementation-Version>${project.version}</Implementation-Version>
-	                            <Implementation-Vendor>Insight</Implementation-Vendor>
-	                               <!-- NOTE: this name must match the one used in InsightVersion class -->
-	                            <Release-Timestamp>${buildtimestamp}</Release-Timestamp>
-	                        </manifestEntries>
-	                    </archive>
-						<quiet>true</quiet>
-						<links>
-							<link>http://docs.mockito.googlecode.com/hg/${mockito.version}</link>
-							<link>http://kentbeck.github.com/junit/javadoc/${junit.version}</link>
-						</links>
-					</configuration>
-				</plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.9</version>
+                    <configuration>
+                        <archive>
+                            <!-- Extra attributes added to the MANIFEST.MF file -->
+                            <manifestEntries>
+                                <!-- see Package constructor using Manifest -->
+                                <Implementation-Title>${project.artifactId}</Implementation-Title>
+                                <Implementation-Version>${project.version}</Implementation-Version>
+                                <Implementation-Vendor>Insight</Implementation-Vendor>
+                                <!-- NOTE: this name must match the one used in InsightVersion class -->
+                                <Release-Timestamp>${buildtimestamp}</Release-Timestamp>
+                            </manifestEntries>
+                        </archive>
+                        <quiet>true</quiet>
+                        <links>
+                            <link>http://docs.mockito.googlecode.com/hg/${mockito.version}</link>
+                            <link>http://kentbeck.github.com/junit/javadoc/${junit.version}</link>
+                        </links>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>1.1.1</version>
-				<executions>
-					<execution>
-						<id>enforce-versions</id>
-						<goals>
-							<goal>enforce</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<rules>
-						<requireMavenVersion>
-							<version>[3.0,)</version>
-						</requireMavenVersion>
-					</rules>
-				</configuration>
-			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.1.1</version>
+                <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <rules>
+                        <requireMavenVersion>
+                            <version>[3.0,)</version>
+                        </requireMavenVersion>
+                    </rules>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -1190,7 +1214,7 @@
                         <id>maven-version</id>
                         <phase>initialize</phase>
                         <goals>
-                          <goal>maven-version</goal>
+                            <goal>maven-version</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -1201,7 +1225,7 @@
                 <version>${gmaven.plugin.version}</version>
                 <executions>
                     <!-- Works only for Maven 3.x -->
-					<execution>
+                    <execution>
                         <id>detect-insight-root-dir</id>
                         <phase>initialize</phase>
                         <goals>
@@ -1209,7 +1233,7 @@
                         </goals>
                         <configuration>
                             <source>
-							<![CDATA[
+                                <![CDATA[
                                 for (java.io.File file=new java.io.File(new java.net.URI('${project.baseUri}')); file != null; file = file.getParentFile()) {
                                     if (!file.isDirectory()) {
                                         continue
@@ -1235,7 +1259,7 @@
                         </goals>
                         <configuration>
                             <source>
-							<![CDATA[
+                                <![CDATA[
                                 project.properties['buildtimestamp'] = java.text.MessageFormat.format("{0,date,yyyyMMddHHmmss}", new Date())
 							]]>
                             </source>
@@ -1243,14 +1267,15 @@
                     </execution>
                     <execution>
                         <id>resolve-distribution-details</id>
-                        <phase>install</phase>	<!-- A pre-deploy phase - had it existed - would have been better -->
+                        <phase>install</phase>
+                        <!-- A pre-deploy phase - had it existed - would have been better -->
                         <goals>
                             <goal>execute</goal>
                         </goals>
                         <configuration>
-								<!-- see http://maven.apache.org/ref/3.0.4/maven-core/apidocs/org/apache/maven/execution/MavenSession.html -->
+                            <!-- see http://maven.apache.org/ref/3.0.4/maven-core/apidocs/org/apache/maven/execution/MavenSession.html -->
                             <source>
-							<![CDATA[
+                                <![CDATA[
 								if (!session.goals.contains("deploy")) {
 									return;
 								}
@@ -1286,20 +1311,20 @@
                     </execution>
                 </executions>
             </plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>2.1.2</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>jar-no-fork</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.1.2</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -1321,7 +1346,9 @@
                             <goal>sources</goal>
                         </goals>
                         <configuration>
-                            <markersDirectory>${settings.localRepository}/com/springsource/insight/dependency-maven-plugin-markers</markersDirectory>
+                            <markersDirectory>
+                                ${settings.localRepository}/com/springsource/insight/dependency-maven-plugin-markers
+                            </markersDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -1333,17 +1360,17 @@
                 <configuration>
                     <archive>
                         <addMavenDescriptor>true</addMavenDescriptor>
-						<!-- Generate index file for quicker access -->
-						<index>true</index>
-						<!-- Extra attributes added to the MANIFEST.MF file -->
-						<manifestEntries>
-							<!-- see Package constructor using Manifest -->
-							<Implementation-Title>${project.artifactId}</Implementation-Title>
-							<Implementation-Version>${project.version}</Implementation-Version>
-							<Implementation-Vendor>Insight</Implementation-Vendor>
-							<Release-Timestamp>${buildtimestamp}</Release-Timestamp>
+                        <!-- Generate index file for quicker access -->
+                        <index>true</index>
+                        <!-- Extra attributes added to the MANIFEST.MF file -->
+                        <manifestEntries>
+                            <!-- see Package constructor using Manifest -->
+                            <Implementation-Title>${project.artifactId}</Implementation-Title>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Implementation-Vendor>Insight</Implementation-Vendor>
+                            <Release-Timestamp>${buildtimestamp}</Release-Timestamp>
                             <Maven-Version>${maven.version}</Maven-Version>
-						</manifestEntries>
+                        </manifestEntries>
                     </archive>
                     <excludes>
                         <exclude>**/.gitignore</exclude>
@@ -1352,43 +1379,44 @@
                 </configuration>
             </plugin>
             <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-surefire-plugin</artifactId>
-              <version>${surefire.plugin.version}</version>
-              <configuration>
-					<runOrder>alphabetical</runOrder>
-					<includes>
-						<include>**/*Test.java</include>
-					</includes>
-					<excludedGroups>${excluded.tests.group}</excludedGroups>
-                  <forkMode>once</forkMode><!-- at least once -->
-                        <!-- avoid inherent multi-threaded tests -->
-                  <perCoreThreadCount>false</perCoreThreadCount>
-                  <threadCount>1</threadCount>
-				  <systemPropertyVariables>
-						<java.io.tmpdir>${project.build.directory}${file.separator}temp</java.io.tmpdir>
-						<java.awt.headless>true</java.awt.headless>
-				  </systemPropertyVariables>
-              </configuration>
-					<!-- need to include it to ensure grouping detection -->
-			  <dependencies>
-				 <dependency>
-					<groupId>org.apache.maven.surefire</groupId>
-					<artifactId>surefire-junit47</artifactId>
-					<version>${surefire.plugin.version}</version>
-				 </dependency>
-			  </dependencies>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.plugin.version}</version>
+                <configuration>
+                    <runOrder>alphabetical</runOrder>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
+                    <excludedGroups>${excluded.tests.group}</excludedGroups>
+                    <forkMode>once</forkMode>
+                    <!-- at least once -->
+                    <!-- avoid inherent multi-threaded tests -->
+                    <perCoreThreadCount>false</perCoreThreadCount>
+                    <threadCount>1</threadCount>
+                    <systemPropertyVariables>
+                        <java.io.tmpdir>${project.build.directory}${file.separator}temp</java.io.tmpdir>
+                        <java.awt.headless>true</java.awt.headless>
+                    </systemPropertyVariables>
+                </configuration>
+                <!-- need to include it to ensure grouping detection -->
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit47</artifactId>
+                        <version>${surefire.plugin.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
                 <version>2.7</version>
-					<!-- NOTE: by default we do not deploy anything not compiled in 1.5
-					   - see special profile activate for 1.5 -->
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
+                <!-- NOTE: by default we do not deploy anything not compiled in 1.5
+                   - see special profile activate for 1.5 -->
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -1415,10 +1443,10 @@
     </scm>
 
 
-        <!-- Note: these values are placeholders - the real values are
-            set by a gmaven-plugin execution bound to the 'install' phase
-            provided a 'deploy' goal has been specified in the Maven
-            invocation commmand -->
+    <!-- Note: these values are placeholders - the real values are
+        set by a gmaven-plugin execution bound to the 'install' phase
+        provided a 'deploy' goal has been specified in the Maven
+        invocation commmand -->
     <distributionManagement>
         <repository>
             <id>insight-releases</id>

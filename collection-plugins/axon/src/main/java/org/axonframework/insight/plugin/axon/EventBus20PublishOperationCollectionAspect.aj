@@ -46,7 +46,7 @@ public aspect EventBus20PublishOperationCollectionAspect extends AbstractOperati
         Axon20OperationUtils.addMetaDataTo(op, message);
         return op;
     }
-    
+
     @Override
     public final String getPluginName() {
         return AxonPluginRuntimeDescriptor.PLUGIN_NAME;

@@ -26,42 +26,42 @@ import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class UntypedActorOperationCollectionAspectTest extends AbstractAkkaOperationCollectionAspectTestSupport {
-	public UntypedActorOperationCollectionAspectTest() {
-		super();
-	}
+    public UntypedActorOperationCollectionAspectTest() {
+        super();
+    }
 
     @Test
     public void testCreateOperation() throws Exception {
-	ActorRef ref = createActorRef();
-	ref.tell(getClass());
+        ActorRef ref = createActorRef();
+        ref.tell(getClass());
 
-	Thread.sleep(1000);
-	
-	Operation operation = getLastEntered();
-	Operation expected = new Operation().type(AkkaDefinitions.OperationTypes.AKKA_OP_UNTYPED_ACTOR)
-		.put(AkkaDefinitions.Labels.MESSAGE, Class.class.getName())
-		.label(getUntypedActorClass().getSimpleName() + "#onReceive(" + Class.class.getSimpleName() + ")")
-		.put(AkkaDefinitions.Labels.SYSTEM, actorSystem.name())
-		.put(AkkaDefinitions.Labels.ACTOR, getUntypedActorClass().getSimpleName())
-		.put(AkkaDefinitions.Labels.ACTOR + AkkaDefinitions.Labels.PATH, getActorRefPath())
-		.put(AkkaDefinitions.Labels.SENDER + AkkaDefinitions.Labels.PATH, getDeadLettersPath());
-	assertUntypedActorOperation(expected, operation);
+        Thread.sleep(1000);
+
+        Operation operation = getLastEntered();
+        Operation expected = new Operation().type(AkkaDefinitions.OperationTypes.AKKA_OP_UNTYPED_ACTOR)
+                .put(AkkaDefinitions.Labels.MESSAGE, Class.class.getName())
+                .label(getUntypedActorClass().getSimpleName() + "#onReceive(" + Class.class.getSimpleName() + ")")
+                .put(AkkaDefinitions.Labels.SYSTEM, actorSystem.name())
+                .put(AkkaDefinitions.Labels.ACTOR, getUntypedActorClass().getSimpleName())
+                .put(AkkaDefinitions.Labels.ACTOR + AkkaDefinitions.Labels.PATH, getActorRefPath())
+                .put(AkkaDefinitions.Labels.SENDER + AkkaDefinitions.Labels.PATH, getDeadLettersPath());
+        assertUntypedActorOperation(expected, operation);
     }
 
     @Override
     public OperationCollectionAspectSupport getAspect() {
-	return UntypedActorOperationCollectionAspect.aspectOf();
+        return UntypedActorOperationCollectionAspect.aspectOf();
     }
 
     private void assertUntypedActorOperation(Operation expected, Operation operation) {
-	Map<String, Object> map = operation.asMap();
-	for (Entry<String, Object> expectedEntry : expected.asMap().entrySet()) {
-	    String key = expectedEntry.getKey();
-	    Object resultValue = map.get(key);
-	    if (resultValue == null || !expectedEntry.getValue().equals(resultValue)) {
-		fail("expcted key-value '" + expectedEntry + "' but got '" + key + "=" + resultValue + "'");
-	    }
-	}
+        Map<String, Object> map = operation.asMap();
+        for (Entry<String, Object> expectedEntry : expected.asMap().entrySet()) {
+            String key = expectedEntry.getKey();
+            Object resultValue = map.get(key);
+            if (resultValue == null || !expectedEntry.getValue().equals(resultValue)) {
+                fail("expcted key-value '" + expectedEntry + "' but got '" + key + "=" + resultValue + "'");
+            }
+        }
     }
 
 }

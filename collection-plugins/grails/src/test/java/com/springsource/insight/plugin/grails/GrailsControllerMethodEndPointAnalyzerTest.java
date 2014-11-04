@@ -34,21 +34,21 @@ import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.intercept.trace.TraceId;
 
 public class GrailsControllerMethodEndPointAnalyzerTest extends Assert {
-    private static final ApplicationName app = ApplicationName.valueOf("app");    
-    private static final GrailsControllerMethodEndPointAnalyzer endPointAnalyzer=GrailsControllerMethodEndPointAnalyzer.getInstance();
+    private static final ApplicationName app = ApplicationName.valueOf("app");
+    private static final GrailsControllerMethodEndPointAnalyzer endPointAnalyzer = GrailsControllerMethodEndPointAnalyzer.getInstance();
     private Operation grailsOp;
-    
-    public GrailsControllerMethodEndPointAnalyzerTest () {
-    	super();
+
+    public GrailsControllerMethodEndPointAnalyzerTest() {
+        super();
     }
 
     @Before
     public void setUp() {
         grailsOp = new Operation()
-        		.type(GrailsControllerMethodEndPointAnalyzer.TYPE)
-        		.label("MyController#myAction")
+                .type(GrailsControllerMethodEndPointAnalyzer.TYPE)
+                .label("MyController#myAction")
                 .sourceCodeLocation(new SourceCodeLocation("org.shortController", "myAction", 111))
-                ;
+        ;
     }
 
     @Test
@@ -61,10 +61,10 @@ public class GrailsControllerMethodEndPointAnalyzerTest extends Assert {
         assertNotNull("No simple frame", simpleFrame);
         Frame httpFrame = b.exit();
         Trace trace = Trace.newInstance(app, TraceId.valueOf("0"), httpFrame);
-        EndPointAnalysis	ep=endPointAnalyzer.locateEndPoint(trace);
+        EndPointAnalysis ep = endPointAnalyzer.locateEndPoint(trace);
         assertNull("Unexpected result: " + ep, ep);
     }
-    
+
     @Test
     public void locateEndPointNoHttp() {
         FrameBuilder b = new SimpleFrameBuilder();
@@ -76,7 +76,7 @@ public class GrailsControllerMethodEndPointAnalyzerTest extends Assert {
         Trace trace = Trace.newInstance(app, TraceId.valueOf("0"), rootFrame);
         assertEndpointAnalysis(trace, grailsFrame, null);
     }
-    
+
     @Test
     public void locateEndPointHttpComesBeforeGrails() {
         FrameBuilder b = new SimpleFrameBuilder();
@@ -96,33 +96,33 @@ public class GrailsControllerMethodEndPointAnalyzerTest extends Assert {
         Operation httpOp = new Operation().type(OperationType.HTTP);
         b.enter(httpOp);
         b.enter(grailsOp);
-        Frame grailsFrame = b.exit();        
+        Frame grailsFrame = b.exit();
         assertNotNull("No grails frame", grailsFrame);
         Frame httpFrame = b.exit();
         Trace trace = Trace.newInstance(app, TraceId.valueOf("0"), httpFrame);
-        assertEndpointAnalysis(trace, grailsFrame, httpFrame); 
+        assertEndpointAnalysis(trace, grailsFrame, httpFrame);
     }
 
-    private static EndPointAnalysis assertEndpointAnalysis (Trace trace, Frame grailsFrame, Frame httpFrame) {
-    	EndPointAnalysis	ep=endPointAnalyzer.locateEndPoint(trace);
-    	assertNotNull("No analysis", ep);
+    private static EndPointAnalysis assertEndpointAnalysis(Trace trace, Frame grailsFrame, Frame httpFrame) {
+        EndPointAnalysis ep = endPointAnalyzer.locateEndPoint(trace);
+        assertNotNull("No analysis", ep);
 
-    	Operation 		operation = grailsFrame.getOperation();
-        String 			resourceKey = GrailsControllerMethodEndPointAnalyzer.makeResourceKey(operation.getSourceCodeLocation());
-        EndPointName	epName=EndPointName.valueOf(resourceKey);
+        Operation operation = grailsFrame.getOperation();
+        String resourceKey = GrailsControllerMethodEndPointAnalyzer.makeResourceKey(operation.getSourceCodeLocation());
+        EndPointName epName = EndPointName.valueOf(resourceKey);
         assertEquals("Mismatched endpoint name", epName, ep.getEndPointName());
 
-    	assertEquals("Mismatched label", operation.getLabel(), ep.getResourceLabel());
-    	assertEquals("Mismatched score", EndPointAnalysis.depth2score(FrameUtil.getDepth(grailsFrame)), ep.getScore());
+        assertEquals("Mismatched label", operation.getLabel(), ep.getResourceLabel());
+        assertEquals("Mismatched score", EndPointAnalysis.depth2score(FrameUtil.getDepth(grailsFrame)), ep.getScore());
 
-    	if (httpFrame == null) {
-    		assertEquals("Mismatched grails example", operation.getLabel(), ep.getExample());
-    	} else {
-    		String	expected=EndPointAnalysis.createHttpExampleRequest(httpFrame);
-    		assertEquals("Mismatched http example", expected, ep.getExample());
-    	}
+        if (httpFrame == null) {
+            assertEquals("Mismatched grails example", operation.getLabel(), ep.getExample());
+        } else {
+            String expected = EndPointAnalysis.createHttpExampleRequest(httpFrame);
+            assertEquals("Mismatched http example", expected, ep.getExample());
+        }
 
-    	return ep;
+        return ep;
     }
 
 }

@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Fubar {
-    public Fubar () {
+    public Fubar() {
         super();
     }
 }

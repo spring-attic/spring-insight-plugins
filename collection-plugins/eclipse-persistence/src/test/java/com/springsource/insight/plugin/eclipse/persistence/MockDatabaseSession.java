@@ -60,11 +60,11 @@ import org.eclipse.persistence.sessions.factories.ReferenceMode;
 import com.springsource.insight.util.logging.AbstractLoggingClass;
 
 /**
- * 
+ *
  */
-@SuppressWarnings({ "rawtypes", "deprecation" }) 
+@SuppressWarnings({"rawtypes", "deprecation"})
 public class MockDatabaseSession extends AbstractLoggingClass implements DatabaseSession {
-    private Login   login;
+    private Login login;
 
     public MockDatabaseSession() {
         super();
@@ -281,11 +281,12 @@ public class MockDatabaseSession extends AbstractLoggingClass implements Databas
             return (DatabaseLogin) this.login;
         }
 
-        DatabaseLogin   dblogin=new DatabaseLogin();
+        DatabaseLogin dblogin = new DatabaseLogin();
         dblogin.setUserName(this.login.getUserName());
         dblogin.setPassword(this.login.getPassword());
         return dblogin;
     }
+
     public void setLogin(@SuppressWarnings("hiding") Login login) {
         this.login = login;
     }
@@ -341,7 +342,7 @@ public class MockDatabaseSession extends AbstractLoggingClass implements Databas
     public Object handleException(RuntimeException exception)
             throws RuntimeException {
         _logger.warning("handleException(" + exception.getClass().getSimpleName() + ")"
-                     + ": " + exception.getMessage());
+                + ": " + exception.getMessage());
         throw exception;
     }
 

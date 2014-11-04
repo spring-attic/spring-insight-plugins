@@ -24,10 +24,10 @@ public aspect GemFireLightPointcuts {
      * Query point cut
      */
     public pointcut queryCollectionPoint(): execution(* Query.execute*(..));
-    
+
     /**
      * Remote point cut
      */
-    public pointcut remoteCollectionPoint () : execution(void AbstractOp.sendMessage(Connection));
-    
+    public pointcut remoteCollectionPoint(): execution(void AbstractOp.sendMessage(Connection));
+
 }

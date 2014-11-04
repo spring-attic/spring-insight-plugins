@@ -50,133 +50,133 @@ import com.springsource.insight.util.StringUtil;
  * Additional parsers are very welcome.
  */
 public abstract class DatabaseJDBCURIAnalyzer extends AbstractExternalResourceAnalyzer {
-	protected DatabaseJDBCURIAnalyzer(OperationType type) {
-	    super(type);
-	}
-	
-	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> dbFrames) {
-		if (ListUtil.size(dbFrames) <= 0) {
-		    return Collections.emptyList();
-		}
+    protected DatabaseJDBCURIAnalyzer(OperationType type) {
+        super(type);
+    }
 
-		List<ExternalResourceDescriptor> dbDescriptors=new ArrayList<ExternalResourceDescriptor>(dbFrames.size());
-		for (Frame dbFrame : dbFrames) {
-		    Operation op=dbFrame.getOperation();
-			String    uri=op.get(OperationFields.CONNECTION_URL, String.class);
-			if (StringUtil.isEmpty(uri)) {
-				continue;
-			}
-			dbDescriptors.addAll(extractMeaningfulNames(dbFrame, uri)); 
-		}
-		
-		return dbDescriptors;
-	}
+    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> dbFrames) {
+        if (ListUtil.size(dbFrames) <= 0) {
+            return Collections.emptyList();
+        }
 
-	/**
-	 * The spec only defines a jdbc url as "jdbc:[vendor].*"
-	 * so we try several methods for extracting useful information, some of which
-	 * actually work.
-	 */
-	public List<ExternalResourceDescriptor> extractMeaningfulNames(Frame frame, String connectionString) {
-		// hope some parser recognizes the string
-		List<ExternalResourceDescriptor> parserRecognizedDescriptors = getParserRecognizedDescriptors(frame, connectionString);
-		if (ListUtil.size(parserRecognizedDescriptors) > 0) {
-			return parserRecognizedDescriptors;
-		}
-		
-		return getFallbackDescriptor(frame, connectionString);
-	}
+        List<ExternalResourceDescriptor> dbDescriptors = new ArrayList<ExternalResourceDescriptor>(dbFrames.size());
+        for (Frame dbFrame : dbFrames) {
+            Operation op = dbFrame.getOperation();
+            String uri = op.get(OperationFields.CONNECTION_URL, String.class);
+            if (StringUtil.isEmpty(uri)) {
+                continue;
+            }
+            dbDescriptors.addAll(extractMeaningfulNames(dbFrame, uri));
+        }
 
-	static List<ExternalResourceDescriptor> getFallbackDescriptor(Frame frame, String connectionString) {
-		String workingConnectionString = connectionString.replaceFirst("jdbc:", "");
-		int indexOfFirstColon = workingConnectionString.indexOf(':');
-		if (indexOfFirstColon <= 0) {
-			return Collections.emptyList();
-		}
+        return dbDescriptors;
+    }
 
-		String jdbcScheme = workingConnectionString.substring(0, indexOfFirstColon);
-		String jdbcHash = MD5NameGenerator.getName(connectionString);
+    /**
+     * The spec only defines a jdbc url as "jdbc:[vendor].*"
+     * so we try several methods for extracting useful information, some of which
+     * actually work.
+     */
+    public List<ExternalResourceDescriptor> extractMeaningfulNames(Frame frame, String connectionString) {
+        // hope some parser recognizes the string
+        List<ExternalResourceDescriptor> parserRecognizedDescriptors = getParserRecognizedDescriptors(frame, connectionString);
+        if (ListUtil.size(parserRecognizedDescriptors) > 0) {
+            return parserRecognizedDescriptors;
+        }
 
-		String host = null;
-		int port = -1;
-		// Try to parse the string as a real uri
-		URI uri = extractURI(workingConnectionString);
-		if (uri != null) {
-			host = uri.getHost();
-			port = uri.getPort();			
-		}
-		
-		ColorManager	colorManager=ColorManager.getInstance();
-		Operation		op=frame.getOperation();
-		String 			color=colorManager.getColor(op);
-        
-		// for  Non-URI based and special cases the host and port remain default
-		ExternalResourceDescriptor hashed =
-				new ExternalResourceDescriptor(frame, jdbcScheme + ":1:" + jdbcHash, "", ExternalResourceType.DATABASE.name(), jdbcScheme, host, port, color, false);
-		return Collections.singletonList(hashed);
-	}
+        return getFallbackDescriptor(frame, connectionString);
+    }
 
-	static List<ExternalResourceDescriptor> getParserRecognizedDescriptors(Frame frame, String connectionString) {		
-		Collection<? extends JdbcUrlMetaData> urlMetaDataList = DatabaseType.parse(connectionString);
-		if (ListUtil.size(urlMetaDataList) <= 0) {
-			return Collections.emptyList();
-		}
+    static List<ExternalResourceDescriptor> getFallbackDescriptor(Frame frame, String connectionString) {
+        String workingConnectionString = connectionString.replaceFirst("jdbc:", "");
+        int indexOfFirstColon = workingConnectionString.indexOf(':');
+        if (indexOfFirstColon <= 0) {
+            return Collections.emptyList();
+        }
 
-		List<ExternalResourceDescriptor> externalResourceDescriptors = new ArrayList<ExternalResourceDescriptor>(urlMetaDataList.size());
-		int 			instance = 1;
-		ColorManager	colorManager=ColorManager.getInstance();
-		Operation		op=frame.getOperation();
-		String 			color=colorManager.getColor(op);
-		for (JdbcUrlMetaData urlMetaData : urlMetaDataList) {
-			String databaseName = urlMetaData.getDatabaseName();
-			String vendor = urlMetaData.getVendorName();
-			String host = urlMetaData.getHost();
-			int port = urlMetaData.getPort();
-			String jdbcHash = MD5NameGenerator.getName(connectionString);
-                
-			ExternalResourceDescriptor descriptor=new ExternalResourceDescriptor(frame, 
-																				 vendor + ":" + instance + ":" + jdbcHash,
-																				 databaseName,
-																				 ExternalResourceType.DATABASE.name(),
-																				 vendor,
-																				 host,
-																				 port,
-																				 color, false);
-			externalResourceDescriptors.add(descriptor);
-			//using the same instance index as we're assuming no more than one parser will ever succeed in parsing the same url
-			instance++;
-		}
+        String jdbcScheme = workingConnectionString.substring(0, indexOfFirstColon);
+        String jdbcHash = MD5NameGenerator.getName(connectionString);
 
-		return externalResourceDescriptors;
-	}
-	
-	/*
-	 * Try to pull a uri out of the jdbc url. If no uri is to be found, return null
-	 */
-	static URI extractURI(String possibleURI) {
-		for (String workingName = possibleURI; StringUtil.getSafeLength(workingName) > 0; ) {
-			int	colonPos=workingName.indexOf(':');
-			if (colonPos < 0) {
-				break;
-			}
+        String host = null;
+        int port = -1;
+        // Try to parse the string as a real uri
+        URI uri = extractURI(workingConnectionString);
+        if (uri != null) {
+            host = uri.getHost();
+            port = uri.getPort();
+        }
 
-			try {
-				// extract a host/port if we can
-				URI uri = new URI(workingName);
-				if (uri.getHost() != null){
-					return uri;			
-				}
-			} catch (URISyntaxException e) {
-				// swallow anything that scares us
-			}
+        ColorManager colorManager = ColorManager.getInstance();
+        Operation op = frame.getOperation();
+        String color = colorManager.getColor(op);
 
-			if (colonPos >= (workingName.length() - 1)) {
-				break;
-			}
+        // for  Non-URI based and special cases the host and port remain default
+        ExternalResourceDescriptor hashed =
+                new ExternalResourceDescriptor(frame, jdbcScheme + ":1:" + jdbcHash, "", ExternalResourceType.DATABASE.name(), jdbcScheme, host, port, color, false);
+        return Collections.singletonList(hashed);
+    }
 
-			workingName = workingName.substring(colonPos + 1, workingName.length());
-		}
+    static List<ExternalResourceDescriptor> getParserRecognizedDescriptors(Frame frame, String connectionString) {
+        Collection<? extends JdbcUrlMetaData> urlMetaDataList = DatabaseType.parse(connectionString);
+        if (ListUtil.size(urlMetaDataList) <= 0) {
+            return Collections.emptyList();
+        }
 
-		return null;
-	}
+        List<ExternalResourceDescriptor> externalResourceDescriptors = new ArrayList<ExternalResourceDescriptor>(urlMetaDataList.size());
+        int instance = 1;
+        ColorManager colorManager = ColorManager.getInstance();
+        Operation op = frame.getOperation();
+        String color = colorManager.getColor(op);
+        for (JdbcUrlMetaData urlMetaData : urlMetaDataList) {
+            String databaseName = urlMetaData.getDatabaseName();
+            String vendor = urlMetaData.getVendorName();
+            String host = urlMetaData.getHost();
+            int port = urlMetaData.getPort();
+            String jdbcHash = MD5NameGenerator.getName(connectionString);
+
+            ExternalResourceDescriptor descriptor = new ExternalResourceDescriptor(frame,
+                    vendor + ":" + instance + ":" + jdbcHash,
+                    databaseName,
+                    ExternalResourceType.DATABASE.name(),
+                    vendor,
+                    host,
+                    port,
+                    color, false);
+            externalResourceDescriptors.add(descriptor);
+            //using the same instance index as we're assuming no more than one parser will ever succeed in parsing the same url
+            instance++;
+        }
+
+        return externalResourceDescriptors;
+    }
+
+    /*
+     * Try to pull a uri out of the jdbc url. If no uri is to be found, return null
+     */
+    static URI extractURI(String possibleURI) {
+        for (String workingName = possibleURI; StringUtil.getSafeLength(workingName) > 0; ) {
+            int colonPos = workingName.indexOf(':');
+            if (colonPos < 0) {
+                break;
+            }
+
+            try {
+                // extract a host/port if we can
+                URI uri = new URI(workingName);
+                if (uri.getHost() != null) {
+                    return uri;
+                }
+            } catch (URISyntaxException e) {
+                // swallow anything that scares us
+            }
+
+            if (colonPos >= (workingName.length() - 1)) {
+                break;
+            }
+
+            workingName = workingName.substring(colonPos + 1, workingName.length());
+        }
+
+        return null;
+    }
 }

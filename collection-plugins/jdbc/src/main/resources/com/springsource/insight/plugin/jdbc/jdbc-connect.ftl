@@ -5,7 +5,7 @@
     <@insight.entry name="Label" value=operation.label />
     <@insight.entry name="Connection URL" value=operation.connectionUrl />
     <@insight.entry name="Parameters" if=operation.params??>
-        <!-- jdbc parameters can be indexed or mapped -->
+    <!-- jdbc parameters can be indexed or mapped -->
         <#if operation.params?is_enumerable>
             <@insight.list type="ordered" collection=operation.params />
         <#elseif operation.params?is_hash>

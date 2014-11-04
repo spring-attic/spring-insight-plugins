@@ -25,11 +25,11 @@ import com.springsource.insight.plugin.jdbc.parser.JdbcUrlMetaData;
 import com.springsource.insight.plugin.jdbc.parser.SimpleJdbcUrlMetaData;
 
 public class SqlFirePeerParser extends AbstractSqlParser {
-    public static final String	VENDOR="sqlfire";
+    public static final String VENDOR = "sqlfire";
     private static final Pattern LOCATORS = Pattern.compile(".*locators=.*", Pattern.CASE_INSENSITIVE);
     private static final Pattern LOCATOR = Pattern.compile("([^\\[]+)\\[(\\d+)\\]", Pattern.CASE_INSENSITIVE);
     private static final Pattern MULTICAST = Pattern.compile(".*mcast-port=(\\d+).*", Pattern.CASE_INSENSITIVE);
-    
+
     public SqlFirePeerParser() {
         super(VENDOR);
     }
@@ -40,24 +40,24 @@ public class SqlFirePeerParser extends AbstractSqlParser {
      */
     public List<JdbcUrlMetaData> parse(String connectionUrl, String vendorName) {
         List<JdbcUrlMetaData> parsedUrls = new ArrayList<JdbcUrlMetaData>();
-        
+
         Matcher locatorMatcher = LOCATORS.matcher(connectionUrl);
-        Matcher multiMatcher   = MULTICAST.matcher(connectionUrl);
-        
+        Matcher multiMatcher = MULTICAST.matcher(connectionUrl);
+
         if (locatorMatcher.matches()) {
             String[] parts = connectionUrl.split(";");
-            
-            for(String part : parts) {
+
+            for (String part : parts) {
                 if (part.indexOf("locators=") > -1) {
                     String[] innerParts = part.split("=");
                     if (innerParts.length > 1) {
                         String[] locators = innerParts[1].split(",");
-                        
-                        for(String locator : locators) {
+
+                        for (String locator : locators) {
                             Matcher m = LOCATOR.matcher(locator);
                             if (m.matches()) {
-                            	String	host=m.group(1).trim();
-                            	int		port=parsePort(connectionUrl, m.group(2).trim());
+                                String host = m.group(1).trim();
+                                int port = parsePort(connectionUrl, m.group(2).trim());
                                 parsedUrls.add(new SimpleJdbcUrlMetaData(host, port, null, connectionUrl, vendorName));
                             }
                         }
@@ -72,7 +72,7 @@ public class SqlFirePeerParser extends AbstractSqlParser {
                 parsedUrls.add(simpleJdbcUrlMetaData);
             }
         }
-        
+
         return parsedUrls.isEmpty() ? null : parsedUrls;
     }
 }

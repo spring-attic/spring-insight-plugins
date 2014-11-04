@@ -30,19 +30,19 @@ public class DBDummy extends DB {
     }
 
     @Override
-	public CommandResult command(com.mongodb.DBObject cmd)
+    public CommandResult command(com.mongodb.DBObject cmd)
             throws com.mongodb.MongoException {
         return null;
     }
 
     @Override
-	public CommandResult command(com.mongodb.DBObject cmd, int options)
+    public CommandResult command(com.mongodb.DBObject cmd, int options)
             throws com.mongodb.MongoException {
         return null;
     }
 
     @Override
-	public CommandResult command(java.lang.String cmd)
+    public CommandResult command(java.lang.String cmd)
             throws com.mongodb.MongoException {
         return null;
     }
@@ -50,17 +50,17 @@ public class DBDummy extends DB {
 
     @Override
     public void requestStart() {
-    	// do nothing
+        // do nothing
     }
 
     @Override
     public void requestDone() {
-    	// do nothing
+        // do nothing
     }
 
     @Override
     public void requestEnsureConnection() {
-    	// do nothing
+        // do nothing
     }
 
     @Override

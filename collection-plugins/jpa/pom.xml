@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.springsource.insight.plugins</groupId>
-	<artifactId>insight-plugin-jpa</artifactId>
-	<name>com.springsource.insight.plugins:jpa</name>
-	<packaging>jar</packaging>
-	
-	<parent>
-		<groupId>com.springsource.insight</groupId>
-		<artifactId>community-plugins</artifactId>
-		<version>2.0.0-CI-SNAPSHOT</version>
-		<relativePath>..</relativePath>
-	</parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.springsource.insight.plugins</groupId>
+    <artifactId>insight-plugin-jpa</artifactId>
+    <name>com.springsource.insight.plugins:jpa</name>
+    <packaging>jar</packaging>
+
+    <parent>
+        <groupId>com.springsource.insight</groupId>
+        <artifactId>community-plugins</artifactId>
+        <version>2.0.0-CI-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
 
     <properties>
-        <spring.data.commons.version>1.1.0.RELEASE</spring.data.commons.version>
-        <spring.data.jpa.version>1.0.3.RELEASE</spring.data.jpa.version>
-    </properties>	
+        <spring.data.commons.version>1.9.0.RELEASE</spring.data.commons.version>
+        <spring.data.jpa.version>1.7.0.RELEASE</spring.data.jpa.version>
+    </properties>
 
-	<dependencies>
+    <dependencies>
 
-			<!-- NOTE: we try to be as compatible as possible with 1.0
-                even though we use 2.0 for our tests
-			-->
+        <!-- NOTE: we try to be as compatible as possible with 1.0
+            even though we use 2.0 for our tests
+        -->
         <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.0-api</artifactId>
@@ -30,7 +31,7 @@
             <scope>provided</scope>
         </dependency>
 
-			<!-- Test dependencies -->
+        <!-- Test dependencies -->
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
@@ -39,10 +40,10 @@
         <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
-            <scope>test</scope>            
-        </dependency>       
-            <!-- Replacement of commons-logging with a native slf4j 
-                 - Required by Spring framework (and others) -->
+            <scope>test</scope>
+        </dependency>
+        <!-- Replacement of commons-logging with a native slf4j
+             - Required by Spring framework (and others) -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
@@ -52,7 +53,7 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <scope>test</scope>
-        </dependency>       
+        </dependency>
 
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -63,7 +64,7 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
             <scope>test</scope>
-        </dependency>        
+        </dependency>
 
         <dependency> <!-- used by Spring -->
             <groupId>javax.inject</groupId>
@@ -106,32 +107,33 @@
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
         </dependency>
-	</dependencies>
-	
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-                    	<manifest>
-                    		<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                    	</manifest>
-						<manifestEntries>
-							<Insight-Plugin-Descriptor>com.springsource.insight.plugin.jpa.JpaPluginRuntimeDescriptor</Insight-Plugin-Descriptor>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin>
-           <plugin>
-				<groupId>com.mycila.maven-license-plugin</groupId>
-				<artifactId>maven-license-plugin</artifactId>
-				<configuration>
-				    <header>../../aslHeader.txt</header>
-				</configuration>
-		    </plugin>
-		</plugins>
-	</build>
-	
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Insight-Plugin-Descriptor>com.springsource.insight.plugin.jpa.JpaPluginRuntimeDescriptor
+                            </Insight-Plugin-Descriptor>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <configuration>
+                    <header>../../aslHeader.txt</header>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

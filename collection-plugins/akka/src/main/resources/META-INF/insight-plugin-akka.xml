@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:insight="http://www.springframework.org/schema/insight-idk"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:insight="http://www.springframework.org/schema/insight-idk"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
 						http://www.springframework.org/schema/beans/spring-beans.xsd
 						http://www.springframework.org/schema/insight-idk 
 						http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
-	<insight:plugin name="akka" version="${project.version}" publisher="SpringSource" />
-	
-	<insight:operation-group operation="akka_actor_ref" group="Akka"/>
-	<insight:operation-group operation="akka_untyped_actor" group="Akka"/>
-	
-	<insight:operation-view operation="akka_untyped_actor" template="com/springsource/insight/plugin/akka/akka.ftl"/>
+    <insight:plugin name="akka" version="${project.version}" publisher="SpringSource"/>
 
-	<bean id="akkaPluginUntypedActorEndPointAnalyzer"
+    <insight:operation-group operation="akka_actor_ref" group="Akka"/>
+    <insight:operation-group operation="akka_untyped_actor" group="Akka"/>
+
+    <insight:operation-view operation="akka_untyped_actor" template="com/springsource/insight/plugin/akka/akka.ftl"/>
+
+    <bean id="akkaPluginUntypedActorEndPointAnalyzer"
           class="com.springsource.insight.plugin.akka.AkkaUntypedActorEndPointAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
 
     <bean id="akkaPluginRuntimeDescriptor"
           class="com.springsource.insight.plugin.akka.AkkaPluginRuntimeDescriptor"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
 </beans>
 

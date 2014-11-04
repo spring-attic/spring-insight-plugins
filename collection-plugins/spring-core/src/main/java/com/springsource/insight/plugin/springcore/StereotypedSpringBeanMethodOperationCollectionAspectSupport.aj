@@ -24,35 +24,35 @@ import com.springsource.insight.collection.method.AnnotationDrivenMethodOperatio
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public abstract aspect StereotypedSpringBeanMethodOperationCollectionAspectSupport
-				extends SpringCoreOperationCollectionAspect {
-	public static final String	COMP_TYPE_ATTR="componentType";
-	protected final Class<? extends Annotation>	stereoTypeClass;
+        extends SpringCoreOperationCollectionAspect {
+    public static final String COMP_TYPE_ATTR = "componentType";
+    protected final Class<? extends Annotation> stereoTypeClass;
 
-	protected StereotypedSpringBeanMethodOperationCollectionAspectSupport (Class<? extends Annotation> annClass) {
-		if ((stereoTypeClass=annClass) == null) {
-			throw new IllegalStateException("No stereotype class provided");
-		}
-	}
+    protected StereotypedSpringBeanMethodOperationCollectionAspectSupport(Class<? extends Annotation> annClass) {
+        if ((stereoTypeClass = annClass) == null) {
+            throw new IllegalStateException("No stereotype class provided");
+        }
+    }
 
-	protected pointcut excludedLifecyclePointcuts ()
-		: ApplicationListenerMethodOperationCollectionAspect.appListener()
-	   || InitializingBeanOperationCollectionAspect.beanInitialization()
-	   || EventPublisingOperationCollectionAspect.publishingPoint()
-	   || AnnotationDrivenMethodOperationCollectionAspect.collectionPoint()
-	/*
-	 * We exclude all Insight beans since if we want insight-on-insight we
-	 * cannot use this aspect as it may cause infinite recursion
-	 */
-	   || within(com.springsource.insight..*)
-	    ;
+    protected pointcut excludedLifecyclePointcuts()
+            : ApplicationListenerMethodOperationCollectionAspect.appListener()
+            || InitializingBeanOperationCollectionAspect.beanInitialization()
+            || EventPublisingOperationCollectionAspect.publishingPoint()
+            || AnnotationDrivenMethodOperationCollectionAspect.collectionPoint()
+            /*
+            * We exclude all Insight beans since if we want insight-on-insight we
+            * cannot use this aspect as it may cause infinite recursion
+            */
+            || within(com.springsource.insight..*)
+            ;
 
-	@Override
-	protected Operation createOperation(JoinPoint jp) {
-		return super.createOperation(jp)
-					.put(COMP_TYPE_ATTR, stereoTypeClass.getSimpleName())
-					;
-	}
+    @Override
+    protected Operation createOperation(JoinPoint jp) {
+        return super.createOperation(jp)
+                .put(COMP_TYPE_ATTR, stereoTypeClass.getSimpleName())
+                ;
+    }
 }

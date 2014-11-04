@@ -49,15 +49,15 @@ import com.springsource.insight.util.logging.InsightLogger;
  */
 public aspect JdbcDriverConnectOperationCollectionAspect extends AbstractOperationCollectionAspect {
     private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
-    static final CollectionSettingName  OBFUSCATED_PROPERTIES_SETTING=
+    static final CollectionSettingName OBFUSCATED_PROPERTIES_SETTING =
             new CollectionSettingName("obfuscated.connect.properties", "jdbc", "Comma separated list driver connection properties to be obscured");
     /**
      * Default properties being obfuscated
      * @see Driver#connect(String, Properties)
      */
-    static final String DEFAULT_OBFUSCATED_PROPERTIES_LIST="user,password";
+    static final String DEFAULT_OBFUSCATED_PROPERTIES_LIST = "user,password";
     // NOTE: using a synchronized set in order to allow modification while running
-    static final Set<String>    OBFUSCATED_PROPERTIES=
+    static final Set<String> OBFUSCATED_PROPERTIES =
             Collections.synchronizedSet(new TreeSet<String>(String.CASE_INSENSITIVE_ORDER) {
                 private static final long serialVersionUID = 1L;
 
@@ -65,30 +65,31 @@ public aspect JdbcDriverConnectOperationCollectionAspect extends AbstractOperati
                     addAll(StringUtil.explode(DEFAULT_OBFUSCATED_PROPERTIES_LIST, ","));
                 }
             });
+
     // register a collection setting update listener to update the obfuscated headers
     static {
         CollectionSettingsRegistry registry = CollectionSettingsRegistry.getInstance();
         registry.addListener(new CollectionSettingsUpdateListener() {
-                public void incrementalUpdate (CollectionSettingName name, Serializable value) {
-                   if (OBFUSCATED_PROPERTIES_SETTING.equals(name) && (value instanceof String)) {
-                       Collection<String>	newValues=StringUtil.explode((String) value, ",", true, true);
-                       if ((OBFUSCATED_PROPERTIES.size() != newValues.size())
-                        || (!OBFUSCATED_PROPERTIES.containsAll(newValues))) {
-                           InsightLogger   LOG=InsightLogManager.getLogger(JdbcDriverConnectOperationCollectionAspect.class.getName());
-                           LOG.info("incrementalUpdate(" + name + ")" + OBFUSCATED_PROPERTIES + " => [" + value + "]");
-                           OBFUSCATED_PROPERTIES.clear();
-                    	   OBFUSCATED_PROPERTIES.addAll(newValues);
-                       }
-                   }
+            public void incrementalUpdate(CollectionSettingName name, Serializable value) {
+                if (OBFUSCATED_PROPERTIES_SETTING.equals(name) && (value instanceof String)) {
+                    Collection<String> newValues = StringUtil.explode((String) value, ",", true, true);
+                    if ((OBFUSCATED_PROPERTIES.size() != newValues.size())
+                            || (!OBFUSCATED_PROPERTIES.containsAll(newValues))) {
+                        InsightLogger LOG = InsightLogManager.getLogger(JdbcDriverConnectOperationCollectionAspect.class.getName());
+                        LOG.info("incrementalUpdate(" + name + ")" + OBFUSCATED_PROPERTIES + " => [" + value + "]");
+                        OBFUSCATED_PROPERTIES.clear();
+                        OBFUSCATED_PROPERTIES.addAll(newValues);
+                    }
                 }
-            });
+            }
+        });
         registry.register(OBFUSCATED_PROPERTIES_SETTING, DEFAULT_OBFUSCATED_PROPERTIES_LIST);
     }
 
     private ObscuredValueMarker obscuredMarker =
             new FrameBuilderHintObscuredValueMarker(configuration.getFrameBuilder());
 
-    public JdbcDriverConnectOperationCollectionAspect () {
+    public JdbcDriverConnectOperationCollectionAspect() {
         super(new JdbcDriverConnectOperationCollector());
     }
 
@@ -97,7 +98,7 @@ public aspect JdbcDriverConnectOperationCollectionAspect extends AbstractOperati
         return JdbcRuntimePluginDescriptor.PLUGIN_NAME;
     }
 
-    ObscuredValueMarker getSensitiveValueMarker () {
+    ObscuredValueMarker getSensitiveValueMarker() {
         return obscuredMarker;
     }
 
@@ -105,22 +106,21 @@ public aspect JdbcDriverConnectOperationCollectionAspect extends AbstractOperati
         this.obscuredMarker = marker;
     }
 
-    public pointcut connect () : execution(* Driver+.connect(String,Properties));
-    public pointcut collectionPoint() : connect();
+    public pointcut connect(): execution(* Driver+.connect(String,Properties));
+    public pointcut collectionPoint(): connect();
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Object      target=jp.getTarget();
-        Object[]    args=jp.getArgs();
-        String      url=(String) args[0];
-        Operation   op=ConnectionsTracker.createOperation(jp, url, "create")
-                            .put("driverClass", target.getClass().getName())
-                            ;
+        Object target = jp.getTarget();
+        Object[] args = jp.getArgs();
+        String url = (String) args[0];
+        Operation op = ConnectionsTracker.createOperation(jp, url, "create")
+                .put("driverClass", target.getClass().getName());
         if (collectExtraInformation()) {
-            OperationMap    props=addConnectionProperties(op, (Properties) args[1]);
+            OperationMap props = addConnectionProperties(op, (Properties) args[1]);
             for (String key : props.keySet()) {
                 if (OBFUSCATED_PROPERTIES.contains(key)) {
-                    Object  value=props.get(key);
+                    Object value = props.get(key);
                     obscuredMarker.markObscured(value);
                 }
             }
@@ -129,32 +129,32 @@ public aspect JdbcDriverConnectOperationCollectionAspect extends AbstractOperati
         return op;
     }
 
-    boolean collectExtraInformation ()
-    {
+    boolean collectExtraInformation() {
         return FrameBuilder.OperationCollectionLevel.HIGH.equals(configuration.getCollectionLevel());
     }
 
-    static OperationMap addConnectionProperties (Operation op, Properties props) {
-        OperationMap    connProps=op.createMap("params");
+    static OperationMap addConnectionProperties(Operation op, Properties props) {
+        OperationMap connProps = op.createMap("params");
         if (MapUtil.size(props) <= 0) {   // OK if no properties specified...
             return connProps;
         }
 
-        for (Map.Entry<?,?> pe : props.entrySet()) {
-            Object  key=pe.getKey(), value=pe.getValue();
+        for (Map.Entry<?, ?> pe : props.entrySet()) {
+            Object key = pe.getKey(), value = pe.getValue();
             if (!(key instanceof String)) {
                 continue;
             }
 
             connProps.putAnyNonEmpty((String) key, value);
         }
-        
+
         return connProps;
     }
 
     static class JdbcDriverConnectOperationCollector extends DefaultOperationCollector {
-        private final ConnectionsTracker    tracker=ConnectionsTracker.getInstance();
-        JdbcDriverConnectOperationCollector () {
+        private final ConnectionsTracker tracker = ConnectionsTracker.getInstance();
+
+        JdbcDriverConnectOperationCollector() {
             super();
         }
 
@@ -165,7 +165,7 @@ public aspect JdbcDriverConnectOperationCollectionAspect extends AbstractOperati
             }
         }
     }
-    
+
     @Override
     public boolean isMetricsGenerator() {
         return true; // This provides an external resource

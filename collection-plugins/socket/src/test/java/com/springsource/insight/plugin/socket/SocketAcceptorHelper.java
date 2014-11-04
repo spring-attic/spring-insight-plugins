@@ -24,51 +24,52 @@ import java.util.logging.Logger;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public abstract class SocketAcceptorHelper<T> implements Runnable, Closeable {
-    private Operation       operation;
-    private IOException     exception;
-    private final int       port;
-    protected final Logger    logger=Logger.getLogger(getClass().getName());
+    private Operation operation;
+    private IOException exception;
+    private final int port;
+    protected final Logger logger = Logger.getLogger(getClass().getName());
+
     protected SocketAcceptorHelper(final int listenPort) {
         port = listenPort;
     }
 
-    public int getListenPort () {
+    public int getListenPort() {
         return port;
     }
 
-    public Operation getOperation () {
+    public Operation getOperation() {
         return operation;
     }
 
-    public IOException getException () {
+    public IOException getException() {
         return exception;
     }
 
     public void run() {
         try {
             logger.info("Start wait on " + getListenPort());
-            T  connection=waitForConnection();
+            T connection = waitForConnection();
             try {
-                Socket      sock=resolveClientSocket(connection);
-                InetAddress addr=sock.getInetAddress();
-                String      addrValue=addr.getHostAddress();
+                Socket sock = resolveClientSocket(connection);
+                InetAddress addr = sock.getInetAddress();
+                String addrValue = addr.getHostAddress();
                 logger.info("Accepted connection from " + addrValue);
                 operation = SocketDefinitions.initializeOperation(
-                                new Operation(), SocketDefinitions.ACCEPT_ACTION, addrValue, getListenPort());
+                        new Operation(), SocketDefinitions.ACCEPT_ACTION, addrValue, getListenPort());
             } finally {
                 close(connection);
             }
-        } catch(IOException e) {
+        } catch (IOException e) {
             exception = e;
         }
     }
 
-    protected abstract void close (T conn) throws IOException;
+    protected abstract void close(T conn) throws IOException;
 
-    protected abstract Socket resolveClientSocket (T conn) throws IOException;
+    protected abstract Socket resolveClientSocket(T conn) throws IOException;
 
-    protected abstract T waitForConnection () throws IOException;
+    protected abstract T waitForConnection() throws IOException;
 }

@@ -23,25 +23,25 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
 
 public aspect ControllerOperationCollectionAspect extends AbstractControllerOperationCollectionAspect {
-	/**
-	 * Name of the {@link OperationMap} used to hold any model argument found
-	 * in the invocation
-	 */
-	public static final String	MODEL_ARGUMENT_NAME="modelArgument";
+    /**
+     * Name of the {@link OperationMap} used to hold any model argument found
+     * in the invocation
+     */
+    public static final String MODEL_ARGUMENT_NAME = "modelArgument";
 
-    public ControllerOperationCollectionAspect () {
-    	super(false);
+    public ControllerOperationCollectionAspect() {
+        super(false);
     }
-    
-	public pointcut collectionPoint() : execution(@RequestMapping * *(..));
 
-	@Override
-	public Operation createOperation(JoinPoint jp) {
-		Operation	op=super.createOperation(jp);
-		if (ControllerOperationCollector.collectExtraInformation()) {
-			ControllerOperationCollector.collectModelInformation(op, MODEL_ARGUMENT_NAME, jp.getArgs());
-		}
+    public pointcut collectionPoint(): execution(@RequestMapping * *(..));
 
-		return op;
-	}
+    @Override
+    public Operation createOperation(JoinPoint jp) {
+        Operation op = super.createOperation(jp);
+        if (ControllerOperationCollector.collectExtraInformation()) {
+            ControllerOperationCollector.collectModelInformation(op, MODEL_ARGUMENT_NAME, jp.getArgs());
+        }
+
+        return op;
+    }
 }

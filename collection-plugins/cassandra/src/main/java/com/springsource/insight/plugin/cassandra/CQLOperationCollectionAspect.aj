@@ -40,41 +40,41 @@ public privileged aspect CQLOperationCollectionAspect extends AbstractCassandraO
         super();
     }
 
-    public pointcut collectionPoint() : execution(public CqlResult org.apache.cassandra.thrift.Cassandra.Client.execute_cql_query(ByteBuffer, Compression)) ||
-    									execution(public CqlResult org.apache.cassandra.thrift.Cassandra.Client.execute_prepared_cql_query(int, List)) ||
-    									execution(public CqlPreparedResult org.apache.cassandra.thrift.Cassandra.Client.prepare_cql_query(ByteBuffer, Compression));
+    public pointcut collectionPoint(): execution(public CqlResult org.apache.cassandra.thrift.Cassandra.Client.execute_cql_query(ByteBuffer, Compression)) ||
+            execution(public CqlResult org.apache.cassandra.thrift.Cassandra.Client.execute_prepared_cql_query(int, List)) ||
+            execution(public CqlPreparedResult org.apache.cassandra.thrift.Cassandra.Client.prepare_cql_query(ByteBuffer, Compression));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-    	Object[] args = jp.getArgs();
-    	String method=jp.getSignature().getName(); //method name
-    	
-		Operation operation = OperationUtils.createOperation(OperationCollectionTypes.CQL_TYPE, method, getSourceCodeLocation(jp)); 
-		// get transport info
-		OperationUtils.putTransportInfo(operation, ((Cassandra.Client)jp.getTarget()).getInputProtocol());
+        Object[] args = jp.getArgs();
+        String method = jp.getSignature().getName(); //method name
 
-		// get query data
-		if (!method.equals("execute_prepared_cql_query")) {
-			String query=OperationUtils.getString((ByteBuffer)args[0]);
-			operation.put("query", (query!=null)?query:"");
-			operation.putAnyNonEmpty("compression", (args[1]!=null)?((Compression)args[1]).name():null);
-		} else {
-			operation.put("queryId",((Number)args[0]).intValue());
-			@SuppressWarnings("unchecked")
-			Collection<ByteBuffer> params=(Collection<ByteBuffer>)args[1];
-			if (ListUtil.size(params) > 0 ) {
-				OperationList opList=operation.createList("params");
-				for(ByteBuffer param: params) {
-					opList.add(OperationUtils.getString(param));
-				}
-			}
-		}
-		
-		return operation;
+        Operation operation = OperationUtils.createOperation(OperationCollectionTypes.CQL_TYPE, method, getSourceCodeLocation(jp));
+        // get transport info
+        OperationUtils.putTransportInfo(operation, ((Cassandra.Client) jp.getTarget()).getInputProtocol());
+
+        // get query data
+        if (!method.equals("execute_prepared_cql_query")) {
+            String query = OperationUtils.getString((ByteBuffer) args[0]);
+            operation.put("query", (query != null) ? query : "");
+            operation.putAnyNonEmpty("compression", (args[1] != null) ? ((Compression) args[1]).name() : null);
+        } else {
+            operation.put("queryId", ((Number) args[0]).intValue());
+            @SuppressWarnings("unchecked")
+            Collection<ByteBuffer> params = (Collection<ByteBuffer>) args[1];
+            if (ListUtil.size(params) > 0) {
+                OperationList opList = operation.createList("params");
+                for (ByteBuffer param : params) {
+                    opList.add(OperationUtils.getString(param));
+                }
+            }
+        }
+
+        return operation;
     }
-    
-	@Override
+
+    @Override
     public String getPluginName() {
-		return CassandraPluginRuntimeDescriptor.PLUGIN_NAME;
-	}
+        return CassandraPluginRuntimeDescriptor.PLUGIN_NAME;
+    }
 }

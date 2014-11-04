@@ -19,16 +19,16 @@ package il.co.springsource.insight;
 import org.springframework.context.ApplicationEvent;
 
 /**
- * 
+ *
  */
 public abstract class MyEventHolder {
     protected ApplicationEvent lastEvent;
 
-	protected MyEventHolder() {
-		super();
-	}
+    protected MyEventHolder() {
+        super();
+    }
 
-	public ApplicationEvent getLastEvent() {
+    public ApplicationEvent getLastEvent() {
         return lastEvent;
     }
 }

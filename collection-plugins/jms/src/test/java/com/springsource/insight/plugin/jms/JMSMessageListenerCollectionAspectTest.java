@@ -34,7 +34,7 @@ import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class JMSMessageListenerCollectionAspectTest extends AbstractJMSCollectionAspectTestSupport {
-    public JMSMessageListenerCollectionAspectTest () {
+    public JMSMessageListenerCollectionAspectTest() {
         super();
     }
 
@@ -70,7 +70,7 @@ public class JMSMessageListenerCollectionAspectTest extends AbstractJMSCollectio
         return JMSMessageListenerCollectionAspect.aspectOf();
     }
 
-    private void runListenerTest (boolean obscureAttrs) throws JMSException {
+    private void runListenerTest(boolean obscureAttrs) throws JMSException {
         Queue queue = mock(Queue.class);
         DestinationType type = DestinationType.Queue;
 
@@ -114,13 +114,13 @@ public class JMSMessageListenerCollectionAspectTest extends AbstractJMSCollectio
     }
 
     private static class MockMessageListener implements MessageListener {
-        private Message	lastMessage;
+        private Message lastMessage;
 
-        public MockMessageListener () {
+        public MockMessageListener() {
             super();
         }
 
-        Message getLastMessage () {
+        Message getLastMessage() {
             return lastMessage;
         }
 

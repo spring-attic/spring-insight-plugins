@@ -32,37 +32,37 @@ public class DummyAbstractRedisCollection<E> extends AbstractRedisCollection<E> 
     }
 
     @Override
-	public boolean add(E e) {
+    public boolean add(E e) {
         return false;
     }
 
     @Override
-	public boolean addAll(Collection<? extends E> collection) {
+    public boolean addAll(Collection<? extends E> collection) {
         return false;
     }
 
     @Override
-	public boolean remove(Object object) {
+    public boolean remove(Object object) {
         return false;
     }
 
     @Override
-	public boolean removeAll(Collection<?> collection) {
+    public boolean removeAll(Collection<?> collection) {
         return false;
     }
 
     @Override
-	public void clear() {
-    	// ignored
+    public void clear() {
+        // ignored
     }
 
     @Override
-	public Iterator<E> iterator() {
+    public Iterator<E> iterator() {
         return null;
     }
 
     @Override
-	public int size() {
+    public int size() {
         return 1;
     }
 

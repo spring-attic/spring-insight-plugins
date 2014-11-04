@@ -25,23 +25,23 @@ import com.springsource.insight.intercept.operation.OperationType;
 
 public aspect GrailsControllerOperationCollectionAspect extends AbstractOperationCollectionAspect {
     private static final OperationType TYPE = GrailsControllerMethodEndPointAnalyzer.TYPE;
-    
+
     public GrailsControllerOperationCollectionAspect() {
         super(new GrailsControllerMetricCollector());
     }
 
-    public pointcut collectionPoint() : GrailsControllerPointcuts.handleURIMethod();
+    public pointcut collectionPoint(): GrailsControllerPointcuts.handleURIMethod();
 
     @Override
     public Operation createOperation(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
-        String requestUri = (String)args[0];
-        GrailsWebRequest webRequest = (GrailsWebRequest)args[1];        
+        String requestUri = (String) args[0];
+        GrailsWebRequest webRequest = (GrailsWebRequest) args[1];
         GrailsControllerStateKeeper.setThreadLocalWebRequest(webRequest);
         return new Operation()
-            .type(TYPE)
-            .put("requestUri", requestUri)
-            .put("requestMethod", webRequest.getRequest().getMethod());
+                .type(TYPE)
+                .put("requestUri", requestUri)
+                .put("requestMethod", webRequest.getRequest().getMethod());
     }
 
     @Override

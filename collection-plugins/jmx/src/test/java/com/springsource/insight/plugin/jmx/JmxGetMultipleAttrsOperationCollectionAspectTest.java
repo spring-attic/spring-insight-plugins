@@ -41,76 +41,76 @@ import com.springsource.insight.util.MapUtil;
 
 
 /**
- * 
+ *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(JmxOperationCollectionTestSupport.TEST_CONTEXT)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class JmxGetMultipleAttrsOperationCollectionAspectTest extends JmxMultiAttributeCollectionTestSupport {
-	public JmxGetMultipleAttrsOperationCollectionAspectTest() {
-		super(JmxPluginRuntimeDescriptor.GET_ACTION);
-	}
+    public JmxGetMultipleAttrsOperationCollectionAspectTest() {
+        super(JmxPluginRuntimeDescriptor.GET_ACTION);
+    }
 
-	@Test
-	public void testGetDirectAttributesList() throws Exception {
-		testGetMultipleAttributes(mbeanServer);
-	}
+    @Test
+    public void testGetDirectAttributesList() throws Exception {
+        testGetMultipleAttributes(mbeanServer);
+    }
 
-	@Test	// make sure cflowbelow activated
-	public void testGetDelegatedAttributesList() throws Exception {
-		testGetMultipleAttributes(new DelegatingMBeanServer(mbeanServer));
-	}
+    @Test    // make sure cflowbelow activated
+    public void testGetDelegatedAttributesList() throws Exception {
+        testGetMultipleAttributes(new DelegatingMBeanServer(mbeanServer));
+    }
 
-	private void testGetMultipleAttributes(MBeanServer server) throws Exception {
-		Map<ObjectName,MBeanInfo>	beansMap=getBeansMap(server);
-		assertFalse("No beans", MapUtil.size(beansMap) <= 0);
-		
-		int	beansCount=0;
-		for (Map.Entry<ObjectName, MBeanInfo> je : beansMap.entrySet()) {
-			ObjectName		name=je.getKey();
-			MBeanInfo		info=je.getValue();
-			List<String>	attrsNames=getReadableAttributes(info);
-			if (ListUtil.size(attrsNames) <= 0) {
-				_logger.info("Skip " + name.getCanonicalName() + " - no readable attributes");
-				continue;
-			}
-			
-			for (int index=0; index < Byte.SIZE; index++) {
-				Collections.shuffle(attrsNames);
+    private void testGetMultipleAttributes(MBeanServer server) throws Exception {
+        Map<ObjectName, MBeanInfo> beansMap = getBeansMap(server);
+        assertFalse("No beans", MapUtil.size(beansMap) <= 0);
 
-				String[]	attributes=attrsNames.toArray(new String[attrsNames.size()]);
-				try {
-					final AttributeList	values;
-					try {
-						values = server.getAttributes(name, attributes);
-						_logger.info("getAttributes(" + name.getCanonicalName() + ")"
-								   + Arrays.toString(attributes)
-								   + " - count=" + ListUtil.size(values));
-						if (index == 0) {
-							beansCount++;
-						}
-					} catch(Exception e) {
-						Throwable	t=ExceptionUtils.peelThrowable(e);
-						_logger.warning("Failed (" + t.getClass().getSimpleName() + "]"
-									  + " to retrieve " + name.getCanonicalName()
-									  + " attributes=" + Arrays.toString(attributes)
-									  + ": " + t.getMessage());
-						break;
-					}
-					
-					Operation	op=assertAttributesListOperation(name, attributes);
-					assertEncodedManagedAttributes(op, name, values);
-				} finally {
-					Mockito.reset(spiedOperationCollector);
-				}
-			}
-		}
-		
-		assertTrue("No beans accessed", beansCount > 0);
-	}
+        int beansCount = 0;
+        for (Map.Entry<ObjectName, MBeanInfo> je : beansMap.entrySet()) {
+            ObjectName name = je.getKey();
+            MBeanInfo info = je.getValue();
+            List<String> attrsNames = getReadableAttributes(info);
+            if (ListUtil.size(attrsNames) <= 0) {
+                _logger.info("Skip " + name.getCanonicalName() + " - no readable attributes");
+                continue;
+            }
 
-	@Override
-	public JmxGetMultipleAttrsOperationCollectionAspect getAspect() {
-		return JmxGetMultipleAttrsOperationCollectionAspect.aspectOf();
-	}
+            for (int index = 0; index < Byte.SIZE; index++) {
+                Collections.shuffle(attrsNames);
+
+                String[] attributes = attrsNames.toArray(new String[attrsNames.size()]);
+                try {
+                    final AttributeList values;
+                    try {
+                        values = server.getAttributes(name, attributes);
+                        _logger.info("getAttributes(" + name.getCanonicalName() + ")"
+                                + Arrays.toString(attributes)
+                                + " - count=" + ListUtil.size(values));
+                        if (index == 0) {
+                            beansCount++;
+                        }
+                    } catch (Exception e) {
+                        Throwable t = ExceptionUtils.peelThrowable(e);
+                        _logger.warning("Failed (" + t.getClass().getSimpleName() + "]"
+                                + " to retrieve " + name.getCanonicalName()
+                                + " attributes=" + Arrays.toString(attributes)
+                                + ": " + t.getMessage());
+                        break;
+                    }
+
+                    Operation op = assertAttributesListOperation(name, attributes);
+                    assertEncodedManagedAttributes(op, name, values);
+                } finally {
+                    Mockito.reset(spiedOperationCollector);
+                }
+            }
+        }
+
+        assertTrue("No beans accessed", beansCount > 0);
+    }
+
+    @Override
+    public JmxGetMultipleAttrsOperationCollectionAspect getAspect() {
+        return JmxGetMultipleAttrsOperationCollectionAspect.aspectOf();
+    }
 }

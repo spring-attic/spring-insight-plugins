@@ -19,16 +19,16 @@ import com.springsource.insight.plugin.jdbc.parser.AbstractSqlPatternParser;
 import com.springsource.insight.plugin.jdbc.parser.SqlParserPattern;
 
 public class OracleParser extends AbstractSqlPatternParser {
-	public static final int	DEFAULT_CONNECTION_PORT=1521;
-	public static final String	VENDOR="oracle", SUB_TYPE="thin";
+    public static final int DEFAULT_CONNECTION_PORT = 1521;
+    public static final String VENDOR = "oracle", SUB_TYPE = "thin";
 
-	public OracleParser() {
+    public OracleParser() {
         super(VENDOR, DEFAULT_CONNECTION_PORT,
-        	  create(".*@//(.*?)(:(.*))?/(.*)"),
-        	  create(".*@(.*?)(:(.*))?:(.*)"));
+                create(".*@//(.*?)(:(.*))?/(.*)"),
+                create(".*@(.*?)(:(.*))?:(.*)"));
     }
-	
-	protected static final SqlParserPattern create(String pattern) {
-		return create(VENDOR, SUB_TYPE, pattern, 1, 3, 4);
-	}
+
+    protected static final SqlParserPattern create(String pattern) {
+        return create(VENDOR, SUB_TYPE, pattern, 1, 3, 4);
+    }
 }

@@ -23,16 +23,17 @@ import com.springsource.insight.collection.test.OperationCollectionAspectTestSup
 /**
  */
 public abstract class RmiOperationCollectionAspectTestSupport extends OperationCollectionAspectTestSupport {
-	protected final TestRegistry	registry=new TestRegistry();
-	protected RmiOperationCollectionAspectTestSupport() {
-		super();
-	}
+    protected final TestRegistry registry = new TestRegistry();
 
-	@Before
-	@Override
-	public void setUp () {
-		super.setUp();
-		registry.clear();
-	}
+    protected RmiOperationCollectionAspectTestSupport() {
+        super();
+    }
+
+    @Before
+    @Override
+    public void setUp() {
+        super.setUp();
+        registry.clear();
+    }
 
 }

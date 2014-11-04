@@ -32,34 +32,34 @@ import com.springsource.insight.util.StringFormatterUtils;
  * Serves as base class for aspects that instrument multiple attributes set/get
  */
 public abstract aspect JmxMultiAttributeOperationCollectionSupport extends JmxSingleAttributeOperationCollectionSupport {
-	protected JmxMultiAttributeOperationCollectionSupport(String actionName) {
-		super(actionName);
-	}
+    protected JmxMultiAttributeOperationCollectionSupport(String actionName) {
+        super(actionName);
+    }
 
-	protected JmxMultiAttributeOperationCollectionSupport(String actionName, OperationCollector collector) {
-		super(actionName, collector);
-	}
-	
-	protected Operation createAttributeOperation(JoinPoint jp, ObjectName name, String ...attrs) {
-		return createAttributeOperation(jp, name, createNamesList(attrs));
-	}
+    protected JmxMultiAttributeOperationCollectionSupport(String actionName, OperationCollector collector) {
+        super(actionName, collector);
+    }
 
-	protected Operation createAttributeOperation(JoinPoint jp, ObjectName name, AttributeList attrs) {
-		return createAttributeOperation(jp, name, createNamesList(attrs));
-	}
+    protected Operation createAttributeOperation(JoinPoint jp, ObjectName name, String... attrs) {
+        return createAttributeOperation(jp, name, createNamesList(attrs));
+    }
 
-	static final String createNamesList(AttributeList attrs) {
-		int			numAttrs=ListUtil.size(attrs);
-		String[]	attrsNames=new String[numAttrs];
-		for (int index=0; index < numAttrs; index++) {
-			Attribute	attr=(Attribute) attrs.get(index);
-			attrsNames[index] = attr.getName();
-		}
-		
-		return createNamesList(attrsNames);
-	}
+    protected Operation createAttributeOperation(JoinPoint jp, ObjectName name, AttributeList attrs) {
+        return createAttributeOperation(jp, name, createNamesList(attrs));
+    }
 
-	static final String createNamesList(String ... names) {
-		return StringFormatterUtils.arrayToDelimitedString(names);
-	}
+    static final String createNamesList(AttributeList attrs) {
+        int numAttrs = ListUtil.size(attrs);
+        String[] attrsNames = new String[numAttrs];
+        for (int index = 0; index < numAttrs; index++) {
+            Attribute attr = (Attribute) attrs.get(index);
+            attrsNames[index] = attr.getName();
+        }
+
+        return createNamesList(attrsNames);
+    }
+
+    static final String createNamesList(String... names) {
+        return StringFormatterUtils.arrayToDelimitedString(names);
+    }
 }

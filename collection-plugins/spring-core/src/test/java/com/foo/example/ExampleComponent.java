@@ -19,15 +19,15 @@ package com.foo.example;
 import org.springframework.stereotype.Component;
 
 /**
- * 
+ *
  */
 @Component
 public class ExampleComponent extends AbstractBean {
-	public ExampleComponent() {
-		super();
-	}
+    public ExampleComponent() {
+        super();
+    }
 
-	public void run () {
-		logger.info("run(" + getClass().getSimpleName() + ")");
-	}
+    public void run() {
+        logger.info("run(" + getClass().getSimpleName() + ")");
+    }
 }

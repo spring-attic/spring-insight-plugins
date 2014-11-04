@@ -28,21 +28,21 @@ public aspect InitializingBeanOperationCollectionAspect extends SpringLifecycleM
     }
 
     public pointcut afterPropertiesSet()
-        : execution(* InitializingBean+.afterPropertiesSet());
+            : execution(* InitializingBean+.afterPropertiesSet());
 
     public pointcut postConstruct()
-        : execution(@PostConstruct * *(..));
+            : execution(@PostConstruct * *(..));
 
     public pointcut beanInitialization()
-    	: afterPropertiesSet() || postConstruct();
+            : afterPropertiesSet() || postConstruct();
 
-    public pointcut collectionPoint() :
-    	beanInitialization() &&
-        !AnnotationDrivenMethodOperationCollectionAspect.collectionPoint();
+    public pointcut collectionPoint():
+            beanInitialization() &&
+                    !AnnotationDrivenMethodOperationCollectionAspect.collectionPoint();
 
-	@Override
-	protected String resolveEventData(Object event) {
-		return PostConstruct.class.getSimpleName();
-	}
+    @Override
+    protected String resolveEventData(Object event) {
+        return PostConstruct.class.getSimpleName();
+    }
 }
 

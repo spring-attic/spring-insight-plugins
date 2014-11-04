@@ -29,39 +29,39 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.SourceCodeLocation;
 
 public class LegacyControllerOperationCollectionAspectTest extends AbstractControllerOperationCollectionAspectTestSupport {
-	public LegacyControllerOperationCollectionAspectTest () {
-		super(true);
-	}
+    public LegacyControllerOperationCollectionAspectTest() {
+        super(true);
+    }
 
     @Test
     public void testControllerMonitored() {
-    	ExampleController	testController=new ExampleController(createTestModelMap("testControllerMonitored"), "testControllerMonitored");
+        ExampleController testController = new ExampleController(createTestModelMap("testControllerMonitored"), "testControllerMonitored");
         testController.handleRequest(null, null);
 
-        Operation	op=assertEncodeReturnModelValues(testController);
+        Operation op = assertEncodeReturnModelValues(testController);
         assertControllerView(op, testController.returnView);
 
-        SourceCodeLocation	source=op.getSourceCodeLocation();
+        SourceCodeLocation source = op.getSourceCodeLocation();
         assertEquals("Mismatched source class", ExampleController.class.getName(), source.getClassName());
         assertEquals("Mismatched method name", "handleRequest", source.getMethodName());
     }
-    
+
     static class ExampleControllerBase extends TestSupportController implements Controller {
         public ExampleControllerBase(Map<String, ?> outgoingModel, String outgoingView) {
-			super(outgoingModel, outgoingView);
-		}
+            super(outgoingModel, outgoingView);
+        }
 
-		public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) {
-        	return new ModelAndView(returnView, returnModel);
+        public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) {
+            return new ModelAndView(returnView, returnModel);
         }
     }
-    
+
     static class ExampleController extends ExampleControllerBase {
-    	public ExampleController (Map<String, ?> outgoingModel, String outgoingView) {
-    		super(outgoingModel, outgoingView);
-    	}
+        public ExampleController(Map<String, ?> outgoingModel, String outgoingView) {
+            super(outgoingModel, outgoingView);
+        }
     }
-    
+
     @Override
     public LegacyControllerOperationCollectionAspect getAspect() {
         return LegacyControllerOperationCollectionAspect.aspectOf();

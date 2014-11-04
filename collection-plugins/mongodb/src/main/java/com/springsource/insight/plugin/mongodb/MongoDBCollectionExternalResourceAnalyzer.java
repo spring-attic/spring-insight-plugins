@@ -20,14 +20,14 @@ import com.springsource.insight.intercept.operation.OperationType;
 
 
 public class MongoDBCollectionExternalResourceAnalyzer extends AbstractMongoDBExternalResourceAnalyzer {
-	public static final OperationType TYPE = OperationType.valueOf("mongo_collection_operation");
-	private static final MongoDBCollectionExternalResourceAnalyzer	INSTANCE=new MongoDBCollectionExternalResourceAnalyzer();
-	
-	private MongoDBCollectionExternalResourceAnalyzer() {
-		super(TYPE);
-	}
+    public static final OperationType TYPE = OperationType.valueOf("mongo_collection_operation");
+    private static final MongoDBCollectionExternalResourceAnalyzer INSTANCE = new MongoDBCollectionExternalResourceAnalyzer();
 
-	public static final MongoDBCollectionExternalResourceAnalyzer getInstance() {
-		return INSTANCE;
-	}
+    private MongoDBCollectionExternalResourceAnalyzer() {
+        super(TYPE);
+    }
+
+    public static final MongoDBCollectionExternalResourceAnalyzer getInstance() {
+        return INSTANCE;
+    }
 }

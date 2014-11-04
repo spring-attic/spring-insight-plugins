@@ -24,22 +24,23 @@ import com.springsource.insight.util.ArrayUtil;
 
 public class HadoopPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "hadoop";
-    private static final HadoopPluginRuntimeDescriptor	INSTANCE=new HadoopPluginRuntimeDescriptor();
-    private static final List<? extends ExternalResourceAnalyzer>	extResAnalyzers=
-       		ArrayUtil.asUnmodifiableList(HadoopExternalResourceAnalyzer.getInstance());
-    private HadoopPluginRuntimeDescriptor () {
-    	super();
+    private static final HadoopPluginRuntimeDescriptor INSTANCE = new HadoopPluginRuntimeDescriptor();
+    private static final List<? extends ExternalResourceAnalyzer> extResAnalyzers =
+            ArrayUtil.asUnmodifiableList(HadoopExternalResourceAnalyzer.getInstance());
+
+    private HadoopPluginRuntimeDescriptor() {
+        super();
     }
 
     public static final HadoopPluginRuntimeDescriptor getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
-    
+
     @Override
     public Collection<? extends ExternalResourceAnalyzer> getExternalResourceAnalyzers() {
-    	return extResAnalyzers;
+        return extResAnalyzers;
     }
-    
+
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;

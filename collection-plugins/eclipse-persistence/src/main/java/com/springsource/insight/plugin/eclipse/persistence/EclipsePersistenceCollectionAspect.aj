@@ -25,29 +25,29 @@ import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.util.StringUtil;
 
 /**
- * 
+ *
  */
 public abstract aspect EclipsePersistenceCollectionAspect extends MethodOperationCollectionAspect {
-	protected final OperationType	opType;
-	protected final String			labelPrefix;
+    protected final OperationType opType;
+    protected final String labelPrefix;
 
-	protected EclipsePersistenceCollectionAspect (OperationType type, String lblPrefix) {
-		this(JoinPointFinalizer.getJoinPointFinalizerInstance(), type, lblPrefix);
-	}
+    protected EclipsePersistenceCollectionAspect(OperationType type, String lblPrefix) {
+        this(JoinPointFinalizer.getJoinPointFinalizerInstance(), type, lblPrefix);
+    }
 
-	protected EclipsePersistenceCollectionAspect (JoinPointFinalizer finalizerInstance, OperationType type, String lblPrefix) {
-		super(finalizerInstance);
+    protected EclipsePersistenceCollectionAspect(JoinPointFinalizer finalizerInstance, OperationType type, String lblPrefix) {
+        super(finalizerInstance);
 
-		if ((opType=type) == null) {
-			throw new IllegalStateException("No operation type provided");
-		}
-		
-		if (StringUtil.isEmpty(lblPrefix)) {
-			throw new IllegalStateException("No label prefix provided");
-		}
+        if ((opType = type) == null) {
+            throw new IllegalStateException("No operation type provided");
+        }
 
-		labelPrefix = lblPrefix;
-	}
+        if (StringUtil.isEmpty(lblPrefix)) {
+            throw new IllegalStateException("No label prefix provided");
+        }
+
+        labelPrefix = lblPrefix;
+    }
 
     @Override
     public String getPluginName() {
@@ -55,10 +55,10 @@ public abstract aspect EclipsePersistenceCollectionAspect extends MethodOperatio
     }
 
     protected Operation createOperation(JoinPoint jp, String actionName) {
-    	return super.createOperation(jp)
-    				.type(opType)
-    				.label(labelPrefix + " " + actionName)
-                    .put(EclipsePersistenceDefinitions.ACTION_ATTR, actionName)
-    				;
+        return super.createOperation(jp)
+                .type(opType)
+                .label(labelPrefix + " " + actionName)
+                .put(EclipsePersistenceDefinitions.ACTION_ATTR, actionName)
+                ;
     }
 }

@@ -42,7 +42,7 @@ public abstract class AbstractJMSResourceAnalyzer implements ExternalResourceAna
      * we return a score of {@link EndPointAnalysis#CEILING_LAYER_SCORE} so as
      * to let other endpoints &quot;beat&quot; this one
      */
-    public static final int	DEFAULT_SCORE = EndPointAnalysis.CEILING_LAYER_SCORE;
+    public static final int DEFAULT_SCORE = EndPointAnalysis.CEILING_LAYER_SCORE;
 
     protected final JMSPluginOperationType operationType;
     protected final boolean isIncoming;
@@ -51,13 +51,13 @@ public abstract class AbstractJMSResourceAnalyzer implements ExternalResourceAna
         this.operationType = type;
         this.isIncoming = incoming;
     }
-    
-    public OperationType getOperationType(){
-		return operationType.getOperationType();
-	}
+
+    public OperationType getOperationType() {
+        return operationType.getOperationType();
+    }
 
     public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace) {
-        return locateExternalResourceName(trace,  locateFrames(trace));
+        return locateExternalResourceName(trace, locateFrames(trace));
     }
 
     public Collection<Frame> locateFrames(Trace trace) {
@@ -69,8 +69,8 @@ public abstract class AbstractJMSResourceAnalyzer implements ExternalResourceAna
             return Collections.emptyList();
         }
 
-        List<ExternalResourceDescriptor> queueDescriptors=new ArrayList<ExternalResourceDescriptor>(queueFrames.size());
-        ColorManager					 colorManager=ColorManager.getInstance();
+        List<ExternalResourceDescriptor> queueDescriptors = new ArrayList<ExternalResourceDescriptor>(queueFrames.size());
+        ColorManager colorManager = ColorManager.getInstance();
         for (Frame queueFrame : queueFrames) {
             ExternalResourceDescriptor descriptor = createExternalResourceDescriptor(colorManager, queueFrame);
             queueDescriptors.add(descriptor);
@@ -79,7 +79,7 @@ public abstract class AbstractJMSResourceAnalyzer implements ExternalResourceAna
         return queueDescriptors;
     }
 
-    ExternalResourceDescriptor createExternalResourceDescriptor (ColorManager colorManager, Frame queueFrame) {
+    ExternalResourceDescriptor createExternalResourceDescriptor(ColorManager colorManager, Frame queueFrame) {
         Operation op = queueFrame.getOperation();
         String label = buildLabel(op);
 
@@ -119,8 +119,8 @@ public abstract class AbstractJMSResourceAnalyzer implements ExternalResourceAna
         StringBuilder sb = new StringBuilder(StringUtil.getSafeLength(destType) + 1 + StringUtil.getSafeLength(destName));
 
         sb.append(destType)
-        .append('#')
-        .append(destName);
+                .append('#')
+                .append(destName);
 
         return sb.toString();
     }
@@ -129,8 +129,8 @@ public abstract class AbstractJMSResourceAnalyzer implements ExternalResourceAna
         StringBuilder sb = new StringBuilder(StringUtil.getSafeLength(label) + 5 /* max. port string length */ + StringUtil.getSafeLength(host));
 
         sb.append(label)
-        .append(host)
-        .append(port);
+                .append(host)
+                .append(port);
 
         return MD5NameGenerator.getName(sb.toString());
     }

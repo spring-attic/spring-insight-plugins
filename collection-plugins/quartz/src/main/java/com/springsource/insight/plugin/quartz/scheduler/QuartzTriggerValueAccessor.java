@@ -18,50 +18,50 @@ package com.springsource.insight.plugin.quartz.scheduler;
 import java.util.Date;
 
 /**
- * 
+ *
  */
 public class QuartzTriggerValueAccessor extends AbstractQuartzValueAccessor {
-	private static class LazyFieldHolder {
-		static final QuartzTriggerValueAccessor	accessor=new QuartzTriggerValueAccessor();
-	}
+    private static class LazyFieldHolder {
+        static final QuartzTriggerValueAccessor accessor = new QuartzTriggerValueAccessor();
+    }
 
-	public static QuartzTriggerValueAccessor getInstance () {
-		return LazyFieldHolder.accessor;
-	}
+    public static QuartzTriggerValueAccessor getInstance() {
+        return LazyFieldHolder.accessor;
+    }
 
-	QuartzTriggerValueAccessor () {
-		super("org.quartz.Trigger");
-	}
-	
-	public Object getKey (Object trigger) {
-		return getProperty(trigger, "key", Object.class);
-	}
+    QuartzTriggerValueAccessor() {
+        super("org.quartz.Trigger");
+    }
 
-	public String getDescription (Object trigger) {
-		return getProperty(trigger, "description", String.class);
-	}
+    public Object getKey(Object trigger) {
+        return getProperty(trigger, "key", Object.class);
+    }
 
-	public String getCalendarName  (Object trigger) {
-		return getProperty(trigger, "calendarName", String.class);
-	}
+    public String getDescription(Object trigger) {
+        return getProperty(trigger, "description", String.class);
+    }
 
-	public Number getPriority (Object trigger) {
-		return getProperty(trigger, "priority", Number.class);
-	}
+    public String getCalendarName(Object trigger) {
+        return getProperty(trigger, "calendarName", String.class);
+    }
 
-	public Date getStartTime (Object trigger) {
-		return getProperty(trigger, "startTime", Date.class);
-	}
+    public Number getPriority(Object trigger) {
+        return getProperty(trigger, "priority", Number.class);
+    }
 
-	public Date getEndTime (Object trigger) {
-		return getProperty(trigger, "endTime", Date.class);
-	}
+    public Date getStartTime(Object trigger) {
+        return getProperty(trigger, "startTime", Date.class);
+    }
 
-	public Date getPreviousFireTime (Object trigger) {
-		return getProperty(trigger, "previousFireTime", Date.class);
-	}
+    public Date getEndTime(Object trigger) {
+        return getProperty(trigger, "endTime", Date.class);
+    }
 
-	public Date getNextFireTime (Object trigger) {
-		return getProperty(trigger, "nextFireTime", Date.class);
-	}
+    public Date getPreviousFireTime(Object trigger) {
+        return getProperty(trigger, "previousFireTime", Date.class);
+    }
+
+    public Date getNextFireTime(Object trigger) {
+        return getProperty(trigger, "nextFireTime", Date.class);
+    }
 }

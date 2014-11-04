@@ -39,28 +39,30 @@ import com.springsource.insight.util.time.TimeRange;
 public class RequestResponseSizeMetricsGeneratorTest extends AbstractCollectionTestSupport {
     private final TimeRange timeRange = new TimeRange(1304387418963003000l, 1304387419123224000l);
     private final RequestResponseSizeMetricsGenerator gen = RequestResponseSizeMetricsGenerator.getInstance();
-    
+
     public RequestResponseSizeMetricsGeneratorTest() {
-    	super();
+        super();
     }
 
     @Test
     public void generateMetrics() {
-        Trace trace = mock(Trace.class);        
+        Trace trace = mock(Trace.class);
         when(trace.getFirstFrameOfType(OperationType.HTTP)).thenReturn(makeHttpFrame());
         when(trace.getRange()).thenReturn(timeRange);
-        
+
         List<MetricsBag> mbs = gen.generateMetrics(trace, ResourceKey.valueOf("EndPoint", "epName"));
-       assertEquals(1, mbs.size());
-       
+        assertEquals(1, mbs.size());
+
         MetricsBag mb = mbs.get(0);
-        
+
         List<String> keys = mb.getMetricKeys();
-        assertEquals(2, keys.size());        
-        boolean foundReq = false, foundRes = false;        
+        assertEquals(2, keys.size());
+        boolean foundReq = false, foundRes = false;
         for (String key : keys) {
-            if (!foundReq) foundReq = key.equals(RequestResponseSizeMetricsGenerator.ENDPOINT_REQUEST_SIZE) ? true : false;
-            if (!foundRes) foundRes = key.equals(RequestResponseSizeMetricsGenerator.ENDPOINT_RESPONSE_SIZE) ? true : false;
+            if (!foundReq)
+                foundReq = key.equals(RequestResponseSizeMetricsGenerator.ENDPOINT_REQUEST_SIZE) ? true : false;
+            if (!foundRes)
+                foundRes = key.equals(RequestResponseSizeMetricsGenerator.ENDPOINT_RESPONSE_SIZE) ? true : false;
         }
         assertTrue(foundRes && foundReq);
 
@@ -80,19 +82,19 @@ public class RequestResponseSizeMetricsGeneratorTest extends AbstractCollectionT
 
     @Test
     public void noHttpFrame() {
-        Trace trace = mock(Trace.class);        
+        Trace trace = mock(Trace.class);
         when(trace.getFirstFrameOfType(OperationType.HTTP)).thenReturn(null);
-        
+
         assertEquals(0, gen.generateMetrics(trace, ResourceKey.valueOf("EndPoint", "epName")).size());
     }
-    
+
     private Frame makeHttpFrame() {
-        Operation op = new Operation().type(OperationType.HTTP);        
+        Operation op = new Operation().type(OperationType.HTTP);
         OperationMap req = op.createMap("request");
-        req.put("contentLength", 1000);        
+        req.put("contentLength", 1000);
         OperationMap res = op.createMap("response");
-        res.put("contentSize", 4000l);                
+        res.put("contentSize", 4000l);
         return new SimpleFrame(FrameId.valueOf(1), null, op, timeRange, Collections.<Frame>emptyList());
     }
-    
+
 }

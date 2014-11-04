@@ -20,33 +20,33 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
 
 public class RabbitMQConsumerResourceAnalyzer extends AbstractRabbitMQResourceAnalyzer {
-	private static final RabbitMQConsumerResourceAnalyzer	INSTANCE=new RabbitMQConsumerResourceAnalyzer();
+    private static final RabbitMQConsumerResourceAnalyzer INSTANCE = new RabbitMQConsumerResourceAnalyzer();
 
-	private RabbitMQConsumerResourceAnalyzer() {
+    private RabbitMQConsumerResourceAnalyzer() {
         super(RabbitPluginOperationType.CONSUME, true);
     }
 
-	public static final RabbitMQConsumerResourceAnalyzer getInstance() {
-		return INSTANCE;
-	}
+    public static final RabbitMQConsumerResourceAnalyzer getInstance() {
+        return INSTANCE;
+    }
 
     @Override
     protected String getRoutingKey(Operation op) {
         OperationMap envelopeMap = op.get("envelope", OperationMap.class);
         if (envelopeMap == null) {
-        	return null;
+            return null;
         } else {
-        	return envelopeMap.get("routingKey", String.class);
+            return envelopeMap.get("routingKey", String.class);
         }
     }
-    
+
     @Override
     protected String getExchange(Operation op) {
         OperationMap envelopeMap = op.get("envelope", OperationMap.class);
         if (envelopeMap == null) {
-        	return null;
+            return null;
         } else {
-        	return envelopeMap.get("exchange", String.class);
+            return envelopeMap.get("exchange", String.class);
         }
     }
 }

@@ -40,7 +40,7 @@ public class SimpleJdbcUrlMetaData implements JdbcUrlMetaData {
         // we can calculate the hash code since all members are final
         this.hashValue = calcHash();
     }
-    
+
     public String getHost() {
         return host;
     }
@@ -71,7 +71,7 @@ public class SimpleJdbcUrlMetaData implements JdbcUrlMetaData {
         result = prime * result + ((vendorName == null) ? 0 : vendorName.hashCode());
         return result;
     }
-    
+
     @Override
     public int hashCode() {
         return hashValue;
@@ -88,11 +88,11 @@ public class SimpleJdbcUrlMetaData implements JdbcUrlMetaData {
 
         SimpleJdbcUrlMetaData other = (SimpleJdbcUrlMetaData) obj;
         return ObjectUtil.typedEquals(getConnectionUrl(), other.getConnectionUrl())
-        	&& ObjectUtil.typedEquals(getDatabaseName(), other.getDatabaseName())
-        	&& ObjectUtil.typedEquals(getHost(), other.getHost())
-        	&& ObjectUtil.typedEquals(getVendorName(), other.getVendorName())
-        	&& (getPort() == other.getPort())
-        	 ;
+                && ObjectUtil.typedEquals(getDatabaseName(), other.getDatabaseName())
+                && ObjectUtil.typedEquals(getHost(), other.getHost())
+                && ObjectUtil.typedEquals(getVendorName(), other.getVendorName())
+                && (getPort() == other.getPort())
+                ;
     }
 
     @Override

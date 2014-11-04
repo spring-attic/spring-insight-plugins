@@ -23,7 +23,7 @@ import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 /**
- * 
+ *
  */
 public class AkkaPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
 
@@ -31,24 +31,24 @@ public class AkkaPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
 
     private static final AkkaPluginRuntimeDescriptor INSTANCE = new AkkaPluginRuntimeDescriptor();
     private Collection<? extends EndPointAnalyzer> analyzers = Collections
-	    .singleton(AkkaUntypedActorEndPointAnalyzer.getInstance());
+            .singleton(AkkaUntypedActorEndPointAnalyzer.getInstance());
 
     private AkkaPluginRuntimeDescriptor() {
-	super();
+        super();
     }
 
     public static final AkkaPluginRuntimeDescriptor getInstance() {
-	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override
     public String getPluginName() {
-	return PLUGIN_NAME;
+        return PLUGIN_NAME;
     }
 
     @Override
     public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
-	return analyzers;
+        return analyzers;
     }
 
 }

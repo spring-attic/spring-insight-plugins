@@ -23,20 +23,21 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationType;
 
 /**
- * 
+ *
  */
 public abstract class EclipsePersistenceCollectionTestSupport
-            extends OperationCollectionAspectTestSupport {
-    protected final DatabaseSession mockSession=new MockDatabaseSession();
+        extends OperationCollectionAspectTestSupport {
+    protected final DatabaseSession mockSession = new MockDatabaseSession();
+
     protected EclipsePersistenceCollectionTestSupport() {
         super();
     }
 
-    protected Operation assertPersistenceOperation (String testName, OperationType opType, String action) {
-        Operation   op=getLastEntered();
+    protected Operation assertPersistenceOperation(String testName, OperationType opType, String action) {
+        Operation op = getLastEntered();
         assertNotNull(testName + ": No operation extracted", op);
         assertEquals(testName + ": Mismatched operation type", opType, op.getType());
-        assertEquals(testName + ": Mismatched action value", action, op.get(EclipsePersistenceDefinitions.ACTION_ATTR,String.class));
+        assertEquals(testName + ": Mismatched action value", action, op.get(EclipsePersistenceDefinitions.ACTION_ATTR, String.class));
         return op;
     }
 }

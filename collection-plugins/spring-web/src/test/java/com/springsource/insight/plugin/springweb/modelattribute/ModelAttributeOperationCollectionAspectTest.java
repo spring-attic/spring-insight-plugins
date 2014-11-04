@@ -29,16 +29,16 @@ import com.springsource.insight.intercept.operation.Operation;
 public class ModelAttributeOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
     private static final ExampleController testController = new ExampleController();
 
-	public ModelAttributeOperationCollectionAspectTest () {
-		super();
-	}
+    public ModelAttributeOperationCollectionAspectTest() {
+        super();
+    }
 
     @Test
     public void testModelAttributeMethodWithComplexReturnTypeMonitored() {
         testController.namedAccountSpecialAccount();
         assertModelAttributeOperation("specialAccount", Account.class.getName());
     }
-    
+
     @Test
     public void testModelAttributeMethodWithSimpleReturnTypeMonitored() {
         testController.namedStringSpecialString();
@@ -62,21 +62,21 @@ public class ModelAttributeOperationCollectionAspectTest extends OperationCollec
         return ModelAttributeOperationCollectionAspect.aspectOf();
     }
 
-    private Operation assertModelAttributeOperation (String name, String value) {
-    	Operation	op=getLastEntered();
-    	assertNotNull("No extracted operation", op);
-    	assertEquals("Mismatched operation type", ModelAttributeOperationCollector.TYPE, op.getType());
-    	assertEquals("Mismatched attribute name", name, op.get(ModelAttributeOperationCollector.MODEL_ATTR_NAME, String.class));
-    	assertEquals("Mismatched attribute value", value, op.get(ModelAttributeOperationCollector.MODEL_ATTR_VALUE, String.class));
+    private Operation assertModelAttributeOperation(String name, String value) {
+        Operation op = getLastEntered();
+        assertNotNull("No extracted operation", op);
+        assertEquals("Mismatched operation type", ModelAttributeOperationCollector.TYPE, op.getType());
+        assertEquals("Mismatched attribute name", name, op.get(ModelAttributeOperationCollector.MODEL_ATTR_NAME, String.class));
+        assertEquals("Mismatched attribute value", value, op.get(ModelAttributeOperationCollector.MODEL_ATTR_VALUE, String.class));
 
-    	return op;
+        return op;
     }
 
     @Controller
     static class ExampleController {
-    	ExampleController () {
-    		super();
-    	}
+        ExampleController() {
+            super();
+        }
 
         @ModelAttribute("specialAccount")
         public Account namedAccountSpecialAccount() {
@@ -87,21 +87,21 @@ public class ModelAttributeOperationCollectionAspectTest extends OperationCollec
         public String namedStringSpecialString() {
             return "testString";
         }
-        
+
         @ModelAttribute
         public Account unnamedAttributeAccount() {
             return new Account();
         }
-        
+
         @ModelAttribute
         public List<Account> unnamedAttributeListAccount() {
             return new ArrayList<Account>();
         }
     }
-    
+
     static class Account {
-    	Account () {
-    		super();
-		}
+        Account() {
+            super();
+        }
     }
 }

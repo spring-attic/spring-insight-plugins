@@ -31,11 +31,11 @@ import com.springsource.insight.intercept.trace.ObscuredValueMarker;
 import com.springsource.insight.util.ListUtil;
 
 /**
- * 
+ *
  */
 public abstract class ObscuringOperationCollector extends DefaultOperationCollector {
     private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
-    public static final String  GRANTED_AUTHS_LIST_NAME="grantedAuthorities";
+    public static final String GRANTED_AUTHS_LIST_NAME = "grantedAuthorities";
     protected ObscuredValueMarker obscuredMarker;
 
     protected ObscuringOperationCollector() {
@@ -53,8 +53,7 @@ public abstract class ObscuringOperationCollector extends DefaultOperationCollec
         this.obscuredMarker = marker;
     }
 
-    boolean collectExtraInformation ()
-    {
+    boolean collectExtraInformation() {
         return FrameBuilder.OperationCollectionLevel.HIGH.equals(configuration.getCollectionLevel());
     }
 
@@ -64,17 +63,17 @@ public abstract class ObscuringOperationCollector extends DefaultOperationCollec
         markSensitiveReturnValueAttributes(op, returnValue);
     }
 
-    protected abstract void markSensitiveReturnValueAttributes (Operation op, Object returnValue);
+    protected abstract void markSensitiveReturnValueAttributes(Operation op, Object returnValue);
 
-    static OperationList updateGrantedAuthorities (Operation op, Collection<? extends GrantedAuthority> authsList) {
+    static OperationList updateGrantedAuthorities(Operation op, Collection<? extends GrantedAuthority> authsList) {
         return updateGrantedAuthorities(op.createList(GRANTED_AUTHS_LIST_NAME), authsList);
     }
 
-    static OperationList updateGrantedAuthorities (OperationMap op, Collection<? extends GrantedAuthority> authsList) {
+    static OperationList updateGrantedAuthorities(OperationMap op, Collection<? extends GrantedAuthority> authsList) {
         return updateGrantedAuthorities(op.createList(GRANTED_AUTHS_LIST_NAME), authsList);
     }
 
-    static OperationList updateGrantedAuthorities (OperationList grantedList, Collection<? extends GrantedAuthority> authsList) {
+    static OperationList updateGrantedAuthorities(OperationList grantedList, Collection<? extends GrantedAuthority> authsList) {
         if (ListUtil.size(authsList) > 0) {
             for (final GrantedAuthority ga : authsList) {
                 grantedList.add(ga.getAuthority());

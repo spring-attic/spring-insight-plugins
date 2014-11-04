@@ -20,22 +20,22 @@ import org.junit.Test;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 
 public class ActionOperationCollectionAspectTest extends GenericOperationCollectionTestSupport {
-	public ActionOperationCollectionAspectTest () {
-		super();
-	}
+    public ActionOperationCollectionAspectTest() {
+        super();
+    }
 
-	/*
-	 * tests view render 
-	 */
-	@Test
-	public void testView() throws Exception {
-		// Step 1: Execute test
-		tester.doAction();
-		validate(OperationCollectionTypes.ACTION_TYPE, "view");
-	}
-	
-	@Override
-	public OperationCollectionAspectSupport getAspect() {
-		return ActionOperationCollectionAspect.aspectOf();
-	}
+    /*
+     * tests view render
+     */
+    @Test
+    public void testView() throws Exception {
+        // Step 1: Execute test
+        tester.doAction();
+        validate(OperationCollectionTypes.ACTION_TYPE, "view");
+    }
+
+    @Override
+    public OperationCollectionAspectSupport getAspect() {
+        return ActionOperationCollectionAspect.aspectOf();
+    }
 }

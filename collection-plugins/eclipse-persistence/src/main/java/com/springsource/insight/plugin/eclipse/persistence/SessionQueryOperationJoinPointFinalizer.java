@@ -24,41 +24,41 @@ import com.springsource.insight.util.ArrayUtil;
 import com.springsource.insight.util.StringFormatterUtils;
 
 /**
- * 
+ *
  */
 class SessionQueryOperationJoinPointFinalizer extends JoinPointFinalizer {
-	private static final SessionQueryOperationJoinPointFinalizer	INSTANCE=new SessionQueryOperationJoinPointFinalizer();
+    private static final SessionQueryOperationJoinPointFinalizer INSTANCE = new SessionQueryOperationJoinPointFinalizer();
 
-	private SessionQueryOperationJoinPointFinalizer() {
-		super();
-	}
+    private SessionQueryOperationJoinPointFinalizer() {
+        super();
+    }
 
-	@Override
-	protected Object resolveArgumentListValue(OperationList argsList, int index, Object orgVal, Object argVal) {
-		return resolveQueryNameFromArgument(argVal);
-	}
+    @Override
+    protected Object resolveArgumentListValue(OperationList argsList, int index, Object orgVal, Object argVal) {
+        return resolveQueryNameFromArgument(argVal);
+    }
 
-	public static final SessionQueryOperationJoinPointFinalizer getSessionQueryOperationJoinPointFinalizer() {
-		return INSTANCE;
-	}
+    public static final SessionQueryOperationJoinPointFinalizer getSessionQueryOperationJoinPointFinalizer() {
+        return INSTANCE;
+    }
 
-    static String resolveQueryName (Object ... args) {
+    static String resolveQueryName(Object... args) {
         if (ArrayUtil.length(args) <= 0) {
             return EclipsePersistenceDefinitions.UNKNOWN_ACTION;
         } else {
-        	return resolveQueryNameFromArgument(args[0]);
+            return resolveQueryNameFromArgument(args[0]);
         }
     }
 
-    static String resolveQueryNameFromArgument (Object arg0) {
-    	if (arg0 == null) {
-    		return StringFormatterUtils.NULL_VALUE_STRING;
-    	} else if (arg0 instanceof String) {
+    static String resolveQueryNameFromArgument(Object arg0) {
+        if (arg0 == null) {
+            return StringFormatterUtils.NULL_VALUE_STRING;
+        } else if (arg0 instanceof String) {
             return (String) arg0;
         } else if (arg0 instanceof DatabaseQuery) {
             return ((DatabaseQuery) arg0).getName();
         } else { // TODO consider logging a warning
-        	return arg0.getClass().getSimpleName();
+            return arg0.getClass().getSimpleName();
         }
     }
 }

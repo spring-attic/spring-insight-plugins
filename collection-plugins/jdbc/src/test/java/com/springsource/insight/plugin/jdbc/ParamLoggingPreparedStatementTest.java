@@ -42,11 +42,12 @@ import com.springsource.insight.intercept.operation.OperationList;
 @ContextConfiguration("classpath:jdbc-test-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ParamLoggingPreparedStatementTest
-    	extends OperationCollectionAspectTestSupport {
-    @Autowired DataSource dataSource;
+        extends OperationCollectionAspectTestSupport {
+    @Autowired
+    DataSource dataSource;
 
-    public ParamLoggingPreparedStatementTest () {
-    	super();
+    public ParamLoggingPreparedStatementTest() {
+        super();
     }
 
     @Test
@@ -63,13 +64,13 @@ public class ParamLoggingPreparedStatementTest
                     return Boolean.valueOf(ps.execute());
                 } else {
                     throw new RuntimeException("foo");
-                } 
+                }
             }
         };
-        PreparedStatement delegator = (PreparedStatement) Proxy.newProxyInstance(PreparedStatement.class.getClassLoader(), 
-                                                                                 new Class[] { PreparedStatement.class },
-                                                                                 handler);
-        
+        PreparedStatement delegator = (PreparedStatement) Proxy.newProxyInstance(PreparedStatement.class.getClassLoader(),
+                new Class[]{PreparedStatement.class},
+                handler);
+
         delegator.setString(1, "Agim");
         delegator.execute();
 
@@ -79,7 +80,7 @@ public class ParamLoggingPreparedStatementTest
         assertEquals(1, parameters.size());
         assertEquals("Agim", parameters.get(0));
     }
-    
+
     @Override
     public OperationCollectionAspectSupport getAspect() {
         return JdbcPreparedStatementOperationCollectionAspect.aspectOf();

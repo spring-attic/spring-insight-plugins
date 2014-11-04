@@ -1,39 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:insight="http://www.springframework.org/schema/insight-idk"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:insight="http://www.springframework.org/schema/insight-idk"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
-	<insight:plugin name="eclipse-persistence" version="${project.version}" publisher="SpringSource" />
+    <insight:plugin name="eclipse-persistence" version="${project.version}" publisher="SpringSource"/>
 
-	<insight:operation-group group="Database" operation="eclipse-persistence-tx" />
-    <insight:operation-view operation="eclipse-persistence-tx" template="com/springsource/insight/plugin/eclipse/persistence/tx.ftl"/>
+    <insight:operation-group group="Database" operation="eclipse-persistence-tx"/>
+    <insight:operation-view operation="eclipse-persistence-tx"
+                            template="com/springsource/insight/plugin/eclipse/persistence/tx.ftl"/>
     <bean id="eclipsePersistenceTransactionOperationMetricsGenerator"
           class="com.springsource.insight.plugin.eclipse.persistence.TransactionOperationMetricsGenerator"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
 
-    <insight:operation-group group="Database" operation="eclipse-persistence-db" />
-    <insight:operation-view operation="eclipse-persistence-db" template="com/springsource/insight/plugin/eclipse/persistence/db.ftl"/>
+    <insight:operation-group group="Database" operation="eclipse-persistence-db"/>
+    <insight:operation-view operation="eclipse-persistence-db"
+                            template="com/springsource/insight/plugin/eclipse/persistence/db.ftl"/>
     <bean id="eclipsePersistenceDatabaseSessionMetricsGenerator"
           class="com.springsource.insight.plugin.eclipse.persistence.DatabaseSessionMetricsGenerator"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
 
-    <insight:operation-group group="Database" operation="eclipse-persistence-query" />
-    <insight:operation-view operation="eclipse-persistence-query" template="com/springsource/insight/plugin/eclipse/persistence/query.ftl"/>
+    <insight:operation-group group="Database" operation="eclipse-persistence-query"/>
+    <insight:operation-view operation="eclipse-persistence-query"
+                            template="com/springsource/insight/plugin/eclipse/persistence/query.ftl"/>
     <bean id="eclipsePersistenceSessionQueryMetricsGenerator"
           class="com.springsource.insight.plugin.eclipse.persistence.SessionQueryMetricsGenerator"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
 
     <bean id="eclipsePersistencePluginRuntimeDescriptor"
           class="com.springsource.insight.plugin.eclipse.persistence.EclipsePersistencePluginRuntimeDescriptor"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
 </beans>

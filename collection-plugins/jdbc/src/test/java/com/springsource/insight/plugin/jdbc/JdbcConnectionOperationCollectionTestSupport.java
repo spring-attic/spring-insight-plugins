@@ -31,26 +31,26 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 
 /**
- * 
+ *
  */
 public abstract class JdbcConnectionOperationCollectionTestSupport
         extends OperationCollectionAspectTestSupport {
-    protected static String       connectUrl;
-    protected static Driver       connectDriver;
-    protected static final Properties   connectProps=new Properties();
-    protected static final ConnectionsTracker  tracker=ConnectionsTracker.getInstance();
+    protected static String connectUrl;
+    protected static Driver connectDriver;
+    protected static final Properties connectProps = new Properties();
+    protected static final ConnectionsTracker tracker = ConnectionsTracker.getInstance();
 
     protected JdbcConnectionOperationCollectionTestSupport() {
         super();
     }
 
     @BeforeClass
-    public static void initDrivers ()
+    public static void initDrivers()
             throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException {
-        Thread      curThread=Thread.currentThread();
-        ClassLoader loader=curThread.getContextClassLoader();
-        Properties  props=new Properties();
-        InputStream in=loader.getResourceAsStream("jdbc.properties");
+        Thread curThread = Thread.currentThread();
+        ClassLoader loader = curThread.getContextClassLoader();
+        Properties props = new Properties();
+        InputStream in = loader.getResourceAsStream("jdbc.properties");
         assertNotNull("Cannot find driver propreties file", in);
         try {
             props.load(in);
@@ -58,9 +58,9 @@ public abstract class JdbcConnectionOperationCollectionTestSupport
             in.close();
         }
 
-        String  driverClassName=props.getProperty("jdbc.driverClassName");
-        if ((connectDriver=findDriverInstance(driverClassName)) == null) {
-            Class<?>    driverClass=loader.loadClass(driverClassName);
+        String driverClassName = props.getProperty("jdbc.driverClassName");
+        if ((connectDriver = findDriverInstance(driverClassName)) == null) {
+            Class<?> driverClass = loader.loadClass(driverClassName);
             connectDriver = (Driver) driverClass.newInstance();
             DriverManager.registerDriver(connectDriver);
             System.out.println("Registered " + driverClassName);
@@ -69,33 +69,33 @@ public abstract class JdbcConnectionOperationCollectionTestSupport
         connectUrl = props.getProperty("jdbc.url");
         assertTrue("Missing jdbc connect url", (connectUrl != null) && (connectUrl.length() > 0));
 
-        String  username = props.getProperty("jdbc.username");
+        String username = props.getProperty("jdbc.username");
         if (username != null) {
             connectProps.put("user", username);
         }
 
-        String  password=props.getProperty("jdbc.password");
+        String password = props.getProperty("jdbc.password");
         if (password != null)
             connectProps.put("password", password);
     }
 
     protected void startTracking(Connection conn, String url) {
-    	tracker.startTracking(conn, url);
+        tracker.startTracking(conn, url);
     }
 
-    protected Operation assertCloseDetails (String url) {
+    protected Operation assertCloseDetails(String url) {
         return assertConnectDetails(url, "close");
     }
-    
-    protected Operation assertCloseDetails (Operation op, String url) {
+
+    protected Operation assertCloseDetails(Operation op, String url) {
         return assertConnectDetails(op, url, "close");
     }
 
-    protected Operation assertConnectDetails (String url, String action) {
+    protected Operation assertConnectDetails(String url, String action) {
         return assertConnectDetails(getLastEntered(), url, action);
     }
 
-    protected static Operation assertConnectDetails (Operation op, String url, String action) {
+    protected static Operation assertConnectDetails(Operation op, String url, String action) {
         assertNotNull("No operation extracted", op);
         assertEquals("Mismatched operation type", JdbcDriverExternalResourceAnalyzer.TYPE, op.getType());
         assertEquals("Mismatched connect URL", url, op.get(OperationFields.CONNECTION_URL, String.class));
@@ -103,29 +103,29 @@ public abstract class JdbcConnectionOperationCollectionTestSupport
         return op;
     }
 
-    protected String assertTrackedConnection (Connection conn, String url) {
-        String result=tracker.checkTrackingState(conn);
+    protected String assertTrackedConnection(Connection conn, String url) {
+        String result = tracker.checkTrackingState(conn);
         assertEquals("Mismatched tracked value", url, result);
         return url;
     }
 
-    protected Connection assertConnectionNotTracked (Connection conn) {
-        String result=tracker.checkTrackingState(conn);
+    protected Connection assertConnectionNotTracked(Connection conn) {
+        String result = tracker.checkTrackingState(conn);
         assertNull("Connection marked as tracking " + result, result);
         return conn;
     }
 
-    private static Driver findDriverInstance (String driverClassName) {
+    private static Driver findDriverInstance(String driverClassName) {
         assertTrue("Missing driver class name", (driverClassName != null) && (driverClassName.length() > 0));
-        for (Enumeration<Driver>    drivers=DriverManager.getDrivers();
-               (drivers != null) && drivers.hasMoreElements(); ) {
-           Driver  driver=drivers.nextElement();
-           String  driverType=driver.getClass().getName();
-           System.out.println("Found driver " + driverType);
-           if (driverClassName.equals(driverType))
-               return driver;
+        for (Enumeration<Driver> drivers = DriverManager.getDrivers();
+             (drivers != null) && drivers.hasMoreElements(); ) {
+            Driver driver = drivers.nextElement();
+            String driverType = driver.getClass().getName();
+            System.out.println("Found driver " + driverType);
+            if (driverClassName.equals(driverType))
+                return driver;
         }
-        
+
         return null;
     }
 }

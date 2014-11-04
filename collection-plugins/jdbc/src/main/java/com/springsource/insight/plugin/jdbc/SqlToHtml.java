@@ -20,38 +20,39 @@ import org.springframework.web.util.HtmlUtils;
 
 /**
  * Simple class to convert a string of sql into HTML.
- * 
+ * <p/>
  * The SQL will first be encoded to be properly displayed in HTML.
- * 
+ * <p/>
  * Following that, specific keywords (SELECT, INSERT, etc.) will be wrapped with
  * &lt;span&gt; tags containing a user specified class.
- * 
+ * <p/>
  * e.g.:
- *      SqlToHtml.toHtml("select *", "myClass") -&gt;
- *   yields:
- *      &lt;span class='myClass myClass-select'&gt;SELECT &lt;/span&gt;*
+ * SqlToHtml.toHtml("select *", "myClass") -&gt;
+ * yields:
+ * &lt;span class='myClass myClass-select'&gt;SELECT &lt;/span&gt;*
  */
 public class SqlToHtml {
-    
-    private static final String[][] KEYWORDS = { { "SELECT ", "-select" },
-                                                { "INSERT ", "-insert" },
-                                                { "UPDATE ", "-update" },
-                                                { "DELETE ", "-delete" },
-                                                { "CREATE TABLE ", "-createTable" },
-                                                { "CREATE INDEX ", "-createIndex" },
-                                                { "FROM ", "-from" },
-                                                { "WHERE ", "-where" },
-                                                { "ORDER BY ", "-orderBy" },
-                                                { "GROUP BY ", "-groupBy" },
-                                                { "HAVING ", "-having" },
-                                                { "SET ", "-set" } };
-    private final SQLFormatter  formatter=new SQLFormatter();
-    public SqlToHtml () {
+
+    private static final String[][] KEYWORDS = {{"SELECT ", "-select"},
+            {"INSERT ", "-insert"},
+            {"UPDATE ", "-update"},
+            {"DELETE ", "-delete"},
+            {"CREATE TABLE ", "-createTable"},
+            {"CREATE INDEX ", "-createIndex"},
+            {"FROM ", "-from"},
+            {"WHERE ", "-where"},
+            {"ORDER BY ", "-orderBy"},
+            {"GROUP BY ", "-groupBy"},
+            {"HAVING ", "-having"},
+            {"SET ", "-set"}};
+    private final SQLFormatter formatter = new SQLFormatter();
+
+    public SqlToHtml() {
         super();
     }
 
     public String toHtml(String query, String keywordClass) {
-        String  sql=formatter.prettyPrint(query);
+        String sql = formatter.prettyPrint(query);
         sql = HtmlUtils.htmlEscape(sql);
         for (int i = 0; i < KEYWORDS.length; i++) {
             String keyword = KEYWORDS[i][0];
@@ -68,13 +69,13 @@ public class SqlToHtml {
 
     private String makeSpanTag(String keywordClass, String selectorSuffix) {
         return new StringBuilder()
-                    .append("<span class='")
-                    .append(keywordClass)
-                    .append(" ")
-                    .append(keywordClass)
-                    .append(selectorSuffix)
-                    .append("'>")
-                    .toString();
+                .append("<span class='")
+                .append(keywordClass)
+                .append(" ")
+                .append(keywordClass)
+                .append(selectorSuffix)
+                .append("'>")
+                .toString();
     }
 
 }

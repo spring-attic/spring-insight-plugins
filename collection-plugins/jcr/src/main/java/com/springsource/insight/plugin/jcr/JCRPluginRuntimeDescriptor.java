@@ -24,17 +24,17 @@ import com.springsource.insight.util.ArrayUtil;
 
 
 public class JCRPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
-	public static final String PLUGIN_NAME = "jcr";
-	private static final JCRPluginRuntimeDescriptor	INSTANCE=new JCRPluginRuntimeDescriptor();
-	private static final List<? extends EndPointAnalyzer>	epAnalyzers=ArrayUtil.asUnmodifiableList(JCREndPointAnalyzer.getInstance());
+    public static final String PLUGIN_NAME = "jcr";
+    private static final JCRPluginRuntimeDescriptor INSTANCE = new JCRPluginRuntimeDescriptor();
+    private static final List<? extends EndPointAnalyzer> epAnalyzers = ArrayUtil.asUnmodifiableList(JCREndPointAnalyzer.getInstance());
 
-	private JCRPluginRuntimeDescriptor () {
-		super();
-	}
+    private JCRPluginRuntimeDescriptor() {
+        super();
+    }
 
-	public static final JCRPluginRuntimeDescriptor getInstance() {
-		return INSTANCE;
-	}
+    public static final JCRPluginRuntimeDescriptor getInstance() {
+        return INSTANCE;
+    }
 
     @Override
     public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {

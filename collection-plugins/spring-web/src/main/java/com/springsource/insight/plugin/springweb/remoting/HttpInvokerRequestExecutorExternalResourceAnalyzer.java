@@ -37,7 +37,7 @@ import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.StringUtil;
 
 /**
- * 
+ *
  */
 public class HttpInvokerRequestExecutorExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
     public static final OperationType HTTP_INVOKER = OperationType.valueOf("http_invoker");
@@ -51,7 +51,7 @@ public class HttpInvokerRequestExecutorExternalResourceAnalyzer extends Abstract
      * done in order to avoid ambiguity if both the HTTP invoker aspect and the
      * framework plugin are applied to the same trace, and thus may generate
      * equivalent (though not same) external resource descriptors
-     * 
+     *
      * @see org.springframework.remoting.httpinvoker.SimpleHttpInvokerRequestExecutor
      */
     public static final String DIRECT_CALL_ATTR = "directInvocationCall";
@@ -119,7 +119,7 @@ public class HttpInvokerRequestExecutorExternalResourceAnalyzer extends Abstract
                     false);
         } catch (URISyntaxException e) {
             if (_logger.isLoggable(Level.FINE)) {
-            	_logger.fine("createExternalResourceDescriptor(" + url + "): " + e.getMessage());
+                _logger.fine("createExternalResourceDescriptor(" + url + "): " + e.getMessage());
             }
 
             return null;

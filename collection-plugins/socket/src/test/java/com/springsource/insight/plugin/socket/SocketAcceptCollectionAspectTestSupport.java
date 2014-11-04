@@ -35,63 +35,64 @@ public abstract class SocketAcceptCollectionAspectTestSupport extends AbstractCo
         super();
     }
 
-    protected void runAcceptorTest (String testName, SocketAcceptorHelper<?> acceptor) throws IOException, InterruptedException {
-        SocketOperationCollectionAspectSupport  aspectInstance=getAspect();
-        SocketCollectOperationContext           context=aspectInstance.getSocketCollectOperationContext();
-        TestCollector                           collector=new TestCollector(context);
+    protected void runAcceptorTest(String testName, SocketAcceptorHelper<?> acceptor) throws IOException, InterruptedException {
+        SocketOperationCollectionAspectSupport aspectInstance = getAspect();
+        SocketCollectOperationContext context = aspectInstance.getSocketCollectOperationContext();
+        TestCollector collector = new TestCollector(context);
         aspectInstance.setCollector(collector);
 
-        Thread  t=new Thread(acceptor, "t" + testName);
+        Thread t = new Thread(acceptor, "t" + testName);
         t.start();
         try {
-            SocketAddress connectAddress=new InetSocketAddress("localhost", acceptor.getListenPort());
-            Socket        socket=new Socket();
+            SocketAddress connectAddress = new InetSocketAddress("localhost", acceptor.getListenPort());
+            Socket socket = new Socket();
             socket.connect(connectAddress, 125);
             socket.close(); // just in case it somehow succeeded
 
-	        t.join(TimeUnit.SECONDS.toMillis(5L));
-	        assertFalse(testName + ": Accepting thread still alive", t.isAlive());
-	        
-	        Operation   opCollected=collector.getCollectedOperation();
-	        assertNotNull(testName + ": No operation collected", opCollected);
-	        assertEquals(testName + ": Mismatched types", SocketDefinitions.TYPE, opCollected.getType());
-	
-	        Operation opAccepted=acceptor.getOperation();
-	        assertNotNull(testName + ": No operation accepted", opAccepted);
-	        
-	        for (String attrName : new String[] {
-	                SocketDefinitions.ACTION_ATTR,
-	                SocketDefinitions.ADDRESS_ATTR,
-	                SocketDefinitions.PORT_ATTR
-	            }) {
-	            Object  valCollected=opCollected.get(attrName),
-	                    valAccepted=opAccepted.get(attrName);
-	            assertEquals(testName + ": Mismatched values for " + attrName, valCollected, valAccepted);
-	        }
-        
+            t.join(TimeUnit.SECONDS.toMillis(5L));
+            assertFalse(testName + ": Accepting thread still alive", t.isAlive());
+
+            Operation opCollected = collector.getCollectedOperation();
+            assertNotNull(testName + ": No operation collected", opCollected);
+            assertEquals(testName + ": Mismatched types", SocketDefinitions.TYPE, opCollected.getType());
+
+            Operation opAccepted = acceptor.getOperation();
+            assertNotNull(testName + ": No operation accepted", opAccepted);
+
+            for (String attrName : new String[]{
+                    SocketDefinitions.ACTION_ATTR,
+                    SocketDefinitions.ADDRESS_ATTR,
+                    SocketDefinitions.PORT_ATTR
+            }) {
+                Object valCollected = opCollected.get(attrName),
+                        valAccepted = opAccepted.get(attrName);
+                assertEquals(testName + ": Mismatched values for " + attrName, valCollected, valAccepted);
+            }
+
         } finally {
             acceptor.close();
         }
     }
 
     public abstract SocketOperationCollectionAspectSupport getAspect();
-    
+
     /**
      * A &quot;poor-man's&quot; replacement for argument-captor since we cannot
      * use it due to conflicts between the connect and accept aspects which are
      * invoked both
      */
     static class TestCollector extends SocketAcceptOperationCollector {
-        private volatile Operation   collectedOperation;
+        private volatile Operation collectedOperation;
+
         public TestCollector(SocketCollectOperationContext context) {
             super(context);
         }
 
-        public Operation getCollectedOperation () {
+        public Operation getCollectedOperation() {
             if ((collectedOperation != null) && collectedOperation.isFinalizable()) {
                 collectedOperation.finalizeConstruction();
             }
-            
+
             return collectedOperation;
         }
 
@@ -107,6 +108,6 @@ public abstract class SocketAcceptCollectionAspectTestSupport extends AbstractCo
             super.processNormalExit(op, returnValue);
             collectedOperation = op;
         }
-        
+
     }
 }

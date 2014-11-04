@@ -29,30 +29,30 @@ import com.springsource.insight.intercept.operation.Operation;
  */
 public abstract aspect TrailingMethodOperationCollectionAspect
         extends TrailingAbstractOperationCollectionAspect {
-	protected final JoinPointFinalizer	finalizer;
+    protected final JoinPointFinalizer finalizer;
 
     protected TrailingMethodOperationCollectionAspect() {
         this(JoinPointFinalizer.getJoinPointFinalizerInstance());
     }
 
     protected TrailingMethodOperationCollectionAspect(JoinPointFinalizer finalizerInstance) {
-    	this(finalizerInstance, new DefaultOperationCollector());
+        this(finalizerInstance, new DefaultOperationCollector());
     }
 
     protected TrailingMethodOperationCollectionAspect(OperationCollector collector) {
-    	this(JoinPointFinalizer.getJoinPointFinalizerInstance(), collector);
+        this(JoinPointFinalizer.getJoinPointFinalizerInstance(), collector);
     }
 
     protected TrailingMethodOperationCollectionAspect(JoinPointFinalizer finalizerInstance, OperationCollector collector) {
         super(collector);
-        
-        if ((finalizer=finalizerInstance) == null) {
-        	throw new IllegalStateException("No finalizer instance provided");
+
+        if ((finalizer = finalizerInstance) == null) {
+            throw new IllegalStateException("No finalizer instance provided");
         }
     }
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        return finalizer.registerWithSelf(new Operation(),  jp);
+        return finalizer.registerWithSelf(new Operation(), jp);
     }
 }

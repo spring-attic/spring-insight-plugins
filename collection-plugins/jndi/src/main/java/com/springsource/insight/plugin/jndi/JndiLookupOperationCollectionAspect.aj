@@ -23,23 +23,23 @@ import javax.naming.Name;
  * Intercepts {@link Context} <code>lookup</code> and <code>lookupLink</code> calls
  */
 public aspect JndiLookupOperationCollectionAspect extends JndiOperationCollectionSupport {
-	public JndiLookupOperationCollectionAspect () {
-		super(JndiPluginRuntimeDescriptor.LOOKUP);
-	}
+    public JndiLookupOperationCollectionAspect() {
+        super(JndiPluginRuntimeDescriptor.LOOKUP);
+    }
 
     /*
      * Using call instead of execution since usually JDK core classes are used
      * - e.g., InitialDirContext - and we cannot instrument them
      */
-	public pointcut lookupCalls ()
-		: call(* Context+.lookup(String))
-	   || call(* Context+.lookup(Name))
-	   || call(* Context+.lookupLink(String))
-	   || call(* Context+.lookupLink(Name))
-		;
+    public pointcut lookupCalls()
+            : call(* Context+.lookup(String))
+            || call(* Context+.lookup(Name))
+            || call(* Context+.lookupLink(String))
+            || call(* Context+.lookupLink(Name))
+            ;
 
-	// NOTE: we use cflowbelow because the methods might delegate to one another
-	public pointcut collectionPoint()
-		: lookupCalls() && (!cflowbelow(lookupCalls()))
-		;
+    // NOTE: we use cflowbelow because the methods might delegate to one another
+    public pointcut collectionPoint()
+            : lookupCalls() && (!cflowbelow(lookupCalls()))
+            ;
 }

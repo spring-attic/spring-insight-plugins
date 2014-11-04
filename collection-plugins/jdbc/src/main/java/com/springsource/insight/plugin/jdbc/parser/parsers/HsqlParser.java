@@ -24,15 +24,15 @@ import com.springsource.insight.plugin.jdbc.parser.JdbcUrlMetaData;
 import com.springsource.insight.plugin.jdbc.parser.SimpleJdbcUrlMetaData;
 
 public class HsqlParser extends AbstractSqlParser {
-	public static final String	VENDOR="hsqldb";
+    public static final String VENDOR = "hsqldb";
     private static final String CONNECTION_TYPE = "connection_type";
     private static final String HOST = "host";
     private static final String PORT = "port";
     private static final String DATABASE = "database";
     public static final int DEFAULT_CONNECTION_PORT = 9001;
 
-    public HsqlParser () {
-    	super(VENDOR, DEFAULT_CONNECTION_PORT);
+    public HsqlParser() {
+        super(VENDOR, DEFAULT_CONNECTION_PORT);
     }
 
     public List<JdbcUrlMetaData> parse(final String connectionUrl, String vendorName) {

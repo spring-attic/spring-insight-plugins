@@ -39,44 +39,44 @@ import org.apache.thrift.transport.TTransportException;
 import com.springsource.insight.plugin.cassandra.embeded.EmbeddedCassandraService;
 
 public class CassandraUnitTests {
-	// NOTE !!! must match the values in the yaml file
-	public static final String	TEST_HOST="127.0.0.1";
-	public static final int	RPC_PORT=7365;
+    // NOTE !!! must match the values in the yaml file
+    public static final String TEST_HOST = "127.0.0.1";
+    public static final int RPC_PORT = 7365;
 
-	private static EmbeddedCassandraService cassandra;
-	private static CassandraUnitTests instance;
-	private static Cassandra.Client lastClient;
-	
+    private static EmbeddedCassandraService cassandra;
+    private static CassandraUnitTests instance;
+    private static Cassandra.Client lastClient;
+
     public static CassandraUnitTests getInstance() throws Exception {
-		if (instance==null) {
-			instance=new CassandraUnitTests();
-			
-	        cassandra = new EmbeddedCassandraService();
-	        cassandra.init();
-	        Thread t = new Thread(cassandra);
-	        t.setDaemon(true);
-	        t.start();
-		}
-        
+        if (instance == null) {
+            instance = new CassandraUnitTests();
+
+            cassandra = new EmbeddedCassandraService();
+            cassandra.init();
+            Thread t = new Thread(cassandra);
+            t.setDaemon(true);
+            t.start();
+        }
+
         return instance;
     }
-	
-	private Cassandra.Client getClient() throws TTransportException {
-		if (lastClient==null) {
-			TTransport tr = new TFramedTransport(new TSocket(TEST_HOST, RPC_PORT));
-			lastClient=new Cassandra.Client(new TBinaryProtocol(tr));
-			tr.open();
-		}
+
+    private Cassandra.Client getClient() throws TTransportException {
+        if (lastClient == null) {
+            TTransport tr = new TFramedTransport(new TSocket(TEST_HOST, RPC_PORT));
+            lastClient = new Cassandra.Client(new TBinaryProtocol(tr));
+            tr.open();
+        }
         return lastClient;
-	}
-	
-	public void testConnection() throws TTransportException {
-		getClient();
-	}
-	
-	public void testSystemAddKeyspace() throws TTransportException {
-		Cassandra.Client client = getClient();
-        
+    }
+
+    public void testConnection() throws TTransportException {
+        getClient();
+    }
+
+    public void testSystemAddKeyspace() throws TTransportException {
+        Cassandra.Client client = getClient();
+
         String keyspace = "Keyspace1";
         // create keyspace
         KsDef ksdef = new KsDef(keyspace, SimpleStrategy.class.getName(), new ArrayList<CfDef>());
@@ -86,46 +86,45 @@ public class CassandraUnitTests {
         }
         //Set replication factor, the value MUST be an integer
         ksdef.strategy_options.put("replication_factor", "1");
-        
+
         try {
-	    	client.system_add_keyspace(ksdef);
-		}
-		catch(Exception e) {
-			System.err.println("testSystemAddKeyspace: " + e.getClass().getSimpleName() + ": " + e.getMessage());
-		}
-	}
-	
-	public void testSetKeyspace() throws Exception {
-		Cassandra.Client client = getClient();
-        
+            client.system_add_keyspace(ksdef);
+        } catch (Exception e) {
+            System.err.println("testSystemAddKeyspace: " + e.getClass().getSimpleName() + ": " + e.getMessage());
+        }
+    }
+
+    public void testSetKeyspace() throws Exception {
+        Cassandra.Client client = getClient();
+
         String keyspace = "Keyspace1";
         client.set_keyspace(keyspace);
-	}
-	
-	public void testSystemAddColumnFamily() throws TTransportException  {
-		Cassandra.Client client = getClient();
-		
+    }
+
+    public void testSystemAddColumnFamily() throws TTransportException {
+        Cassandra.Client client = getClient();
+
         String keyspace = "Keyspace1";
         //record id
         String columnFamily = "Standard1";
         // create columnfamily
         try {
-        	client.system_add_column_family(new CfDef(keyspace, columnFamily));
-		} catch(Exception e) {
-			System.err.println("testSystemAddColumnFamily: " + e.getClass().getSimpleName() + ": " + e.getMessage());
-		}
-	}
-	
-	public void testInsert() throws Exception {
-    	// prepare keyspace
-    	testSystemAddKeyspace();
+            client.system_add_column_family(new CfDef(keyspace, columnFamily));
+        } catch (Exception e) {
+            System.err.println("testSystemAddColumnFamily: " + e.getClass().getSimpleName() + ": " + e.getMessage());
+        }
+    }
 
-    	// set keyspace
-    	testSetKeyspace();
-    	// prepare keyfamily
-    	testSystemAddColumnFamily();
-    	
-    	Cassandra.Client client = getClient();   
+    public void testInsert() throws Exception {
+        // prepare keyspace
+        testSystemAddKeyspace();
+
+        // set keyspace
+        testSetKeyspace();
+        // prepare keyfamily
+        testSystemAddColumnFamily();
+
+        Cassandra.Client client = getClient();
 
         //record id
         String key_user_id = "1";
@@ -137,18 +136,17 @@ public class CassandraUnitTests {
 
         ColumnParent columnParent = new ColumnParent(columnFamily);
         try {
-        	client.insert(ByteBuffer.wrap(key_user_id.getBytes()), columnParent,nameColumn,ConsistencyLevel.ALL);
-		}
-		catch(Exception e) {
-			System.err.println("testInsert: " + e.getClass().getSimpleName() + ": " + e.getMessage());
-		}
-	}
-	
+            client.insert(ByteBuffer.wrap(key_user_id.getBytes()), columnParent, nameColumn, ConsistencyLevel.ALL);
+        } catch (Exception e) {
+            System.err.println("testInsert: " + e.getClass().getSimpleName() + ": " + e.getMessage());
+        }
+    }
+
     public void testGetSlice() throws Exception {
-    	testInsert();
-    	
-    	Cassandra.Client client = getClient();
-    	
+        testInsert();
+
+        Cassandra.Client client = getClient();
+
         //record id
         String key_user_id = "1";
         String columnFamily = "Standard1";
@@ -170,6 +168,6 @@ public class CassandraUnitTests {
             for (KeySlice ks : keySlices) {
                     System.out.println(new String(ks.getKey()));
             }*/
-       //client.getInputProtocol().getTransport().close();
+        //client.getInputProtocol().getTransport().close();
     }
 }

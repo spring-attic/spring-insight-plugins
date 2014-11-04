@@ -24,20 +24,20 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
 
 /**
- * 
+ *
  */
 public aspect ClientHttpRequestCollectionOperationAspect extends AbstractSpringWebAspectSupport {
-	public ClientHttpRequestCollectionOperationAspect () {
-		super(new ClientHttpRequestOperationCollector());
-	}
-	
-	public pointcut collectionPoint () : execution(* ClientHttpRequest+.execute());
+    public ClientHttpRequestCollectionOperationAspect() {
+        super(new ClientHttpRequestOperationCollector());
+    }
 
-	@Override
-	protected Operation createOperation(JoinPoint jp) {
-		ClientHttpRequestOperationCollector	collector=(ClientHttpRequestOperationCollector) getCollector();
-		ClientHttpRequest					request=(ClientHttpRequest) jp.getTarget();
-		return collector.fillRequestDetails(OperationCollectionUtil.methodOperation(
-				new Operation().type(ClientHttpRequestOperationCollector.TYPE), jp), request);
-	}
+    public pointcut collectionPoint(): execution(* ClientHttpRequest+.execute());
+
+    @Override
+    protected Operation createOperation(JoinPoint jp) {
+        ClientHttpRequestOperationCollector collector = (ClientHttpRequestOperationCollector) getCollector();
+        ClientHttpRequest request = (ClientHttpRequest) jp.getTarget();
+        return collector.fillRequestDetails(OperationCollectionUtil.methodOperation(
+                new Operation().type(ClientHttpRequestOperationCollector.TYPE), jp), request);
+    }
 }

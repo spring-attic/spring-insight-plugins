@@ -39,11 +39,11 @@ import com.springsource.insight.intercept.trace.FrameBuilder;
 import com.springsource.insight.util.StringFormatterUtils;
 
 /**
- * 
+ *
  */
 public class ClientHttpRequestOperationCollector extends DefaultOperationCollector {
-    public static final OperationType	TYPE=OperationType.valueOf("spring_client_reqhttp");
-    private static final InterceptConfiguration	configuration=InterceptConfiguration.getInstance();
+    public static final OperationType TYPE = OperationType.valueOf("spring_client_reqhttp");
+    private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
     private HttpObfuscator obfuscator = HttpObfuscator.getInstance();
 
     public ClientHttpRequestOperationCollector() {
@@ -75,14 +75,14 @@ public class ClientHttpRequestOperationCollector extends DefaultOperationCollect
     OperationMap fillInResponseDetails(OperationMap op, ClientHttpResponse response) {
         try {
             op.put(ClientHttpRequestTraceErrorAnalyzer.STATUS_CODE_ATTR, response.getRawStatusCode());
-        } catch(IOException e) {
+        } catch (IOException e) {
             op.put(ClientHttpRequestTraceErrorAnalyzer.STATUS_CODE_ATTR, -1);
         }
 
         if (collectExtraInformation()) {
             try {
                 op.putAnyNonEmpty(ClientHttpRequestTraceErrorAnalyzer.REASON_PHRASE_ATTR, response.getStatusText());
-            } catch(IOException e) {
+            } catch (IOException e) {
                 op.putAnyNonEmpty(ClientHttpRequestTraceErrorAnalyzer.REASON_PHRASE_ATTR, StringFormatterUtils.formatStackTrace(e));
             }
             fillMethodHeaders(op.createList("headers"), response.getHeaders());
@@ -92,18 +92,18 @@ public class ClientHttpRequestOperationCollector extends DefaultOperationCollect
     }
 
     Operation fillRequestDetails(Operation op, ClientHttpRequest request) {
-        URI			uri=request.getURI();
-        HttpMethod	method=request.getMethod();
+        URI uri = request.getURI();
+        HttpMethod method = request.getMethod();
         op.label(method + " " + uri.toString());
         fillRequestDetails(op.createMap("request"), request);
         return op;
     }
 
     OperationMap fillRequestDetails(OperationMap op, ClientHttpRequest request) {
-        URI			uri=request.getURI();
-        HttpMethod	method=request.getMethod();
+        URI uri = request.getURI();
+        HttpMethod method = request.getMethod();
         op.put(OperationFields.URI, uri.toString())
-        .put("method", method.name())
+                .put("method", method.name())
         ;
 
         if (collectExtraInformation()) {
@@ -120,25 +120,25 @@ public class ClientHttpRequestOperationCollector extends DefaultOperationCollect
 
         HttpObfuscator obfs = getHttpObfuscator();
         for (String key : hdrs.keySet()) {
-            String	value=hdrs.getFirst(key);
+            String value = hdrs.getFirst(key);
             OperationUtils.addNameValuePair(op, key, value);
             if (obfs.processHeader(key, value)) {
-                continue;	// debug breakpoint
+                continue;    // debug breakpoint
             }
         }
 
         return op;
     }
 
-    boolean collectExtraInformation () {
+    boolean collectExtraInformation() {
         return FrameBuilder.OperationCollectionLevel.HIGH.equals(configuration.getCollectionLevel());
     }
 
-    static Set<String> toHeaderNameSet (String value) {
-        Set<String> result=new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-        String[]    names=value.split(",");
+    static Set<String> toHeaderNameSet(String value) {
+        Set<String> result = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+        String[] names = value.split(",");
         for (String headerName : names) {
-            String   trimmedValue=headerName.trim(); // in case extra whitespace
+            String trimmedValue = headerName.trim(); // in case extra whitespace
             if (trimmedValue.length() > 0) {
                 result.add(trimmedValue);
             }

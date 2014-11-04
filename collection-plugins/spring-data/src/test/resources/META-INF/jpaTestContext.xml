@@ -20,79 +20,84 @@
            http://www.springframework.org/schema/util
            http://www.springframework.org/schema/util/spring-util.xsd">
 
-        <!-- Enabled annotation-based beans definitions -->               
-    <context:annotation-config />
+    <!-- Enabled annotation-based beans definitions -->
+    <context:annotation-config/>
 
-        <!-- Import properties from a file -->
+    <!-- Import properties from a file -->
     <context:property-placeholder location="classpath:META-INF/jpaTestContext.properties"
                                   system-properties-mode="OVERRIDE"
-                                  ignore-unresolvable="true" />
-        <!-- convert the configuration string value to the actual used type -->
-    <util:constant  id="hibernateConnectionIsolationLevel"
-                    static-field="java.sql.Connection.${hibernate.connection_isolation}" />
+                                  ignore-unresolvable="true"/>
+    <!-- convert the configuration string value to the actual used type -->
+    <util:constant id="hibernateConnectionIsolationLevel"
+                   static-field="java.sql.Connection.${hibernate.connection_isolation}"/>
 
     <bean id="dataSource"
           class="org.apache.commons.dbcp.BasicDataSource"
           destroy-method="close"
-            p:driverClassName="${jdbc.driverClassName}"
-            p:url="${jdbc.url}hibernate"
-            p:username="${jdbc.username}"
-            p:password="${jdbc.password}"
-            p:maxActive="${jdbc.max.active.conns}"
-            p:initialSize="${jdbc.initial.active.conns}"
-            p:maxWait="${jdbc.max.conn.wait}" />
+          p:driverClassName="${jdbc.driverClassName}"
+          p:url="${jdbc.url}hibernate"
+          p:username="${jdbc.username}"
+          p:password="${jdbc.password}"
+          p:maxActive="${jdbc.max.active.conns}"
+          p:initialSize="${jdbc.initial.active.conns}"
+          p:maxWait="${jdbc.max.conn.wait}"/>
 
-        <!-- create initial tables structure and populate them -->
+    <!-- create initial tables structure and populate them -->
     <jdbc:initialize-database data-source="dataSource">
-        <jdbc:script location="classpath:db/hsqldb/dbInit.sql" />
+        <jdbc:script location="classpath:db/hsqldb/dbInit.sql"/>
     </jdbc:initialize-database>
 
     <bean id="jpaPersistenceUnitManager"
           class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager"
-            p:defaultDataSource-ref="dataSource"
-        />
+          p:defaultDataSource-ref="dataSource"
+            />
 
     <bean id="jpaAdapter"
           class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"
-            p:databasePlatform="${hibernate.dialect}"
-            p:showSql="true"
-        />
+          p:databasePlatform="${hibernate.dialect}"
+          p:showSql="true"
+            />
 
-    <bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+    <bean id="jpaDialect" class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>
 
-    <util:properties id="jpaProperties" >
+    <util:properties id="jpaProperties">
         <prop key="#{ T(org.hibernate.cfg.Environment).DIALECT }">${hibernate.dialect}</prop>
         <prop key="#{ T(org.hibernate.cfg.Environment).HBM2DDL_AUTO }">${hibernate.hbm2ddl.auto}</prop>
         <prop key="#{ T(org.hibernate.cfg.Environment).SHOW_SQL }">${hibernate.show_sql}</prop>
         <prop key="#{ T(org.hibernate.cfg.Environment).FORMAT_SQL }">${hibernate.format_sql}</prop>
         <prop key="#{ T(org.hibernate.cfg.Environment).CACHE_PROVIDER }">${hibernate.cache_provider_class}</prop>
-        <prop key="#{ T(org.hibernate.cfg.Environment).QUERY_TRANSLATOR }">org.hibernate.hql.ast.ASTQueryTranslatorFactory</prop>
+        <prop key="#{ T(org.hibernate.cfg.Environment).QUERY_TRANSLATOR }">
+            org.hibernate.hql.ast.ASTQueryTranslatorFactory
+        </prop>
         <prop key="#{ T(org.hibernate.cfg.Environment).USE_QUERY_CACHE }">true</prop>
-        <prop key="#{ T(org.hibernate.cfg.Environment).DEFAULT_BATCH_FETCH_SIZE }">${hibernate.default_batch_fetch_size}</prop>
-        <prop key="#{ T(org.hibernate.cfg.Environment).ISOLATION }">#{ hibernateConnectionIsolationLevel }</prop>           
+        <prop key="#{ T(org.hibernate.cfg.Environment).DEFAULT_BATCH_FETCH_SIZE }">
+            ${hibernate.default_batch_fetch_size}
+        </prop>
+        <prop key="#{ T(org.hibernate.cfg.Environment).ISOLATION }">#{ hibernateConnectionIsolationLevel }</prop>
         <prop key="#{ T(org.hibernate.cfg.Environment).AUTOCOMMIT }">${hibernate.connection_autocommit}</prop>
-        <prop key="#{ T(org.hibernate.cfg.Environment).RELEASE_CONNECTIONS }">${hibernate.connection_release_mode}</prop>
+        <prop key="#{ T(org.hibernate.cfg.Environment).RELEASE_CONNECTIONS }">${hibernate.connection_release_mode}
+        </prop>
     </util:properties>
 
-    <bean id="jpaEntityManagerFactory"
-            class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
-            p:persistenceUnitManager-ref="jpaPersistenceUnitManager"
-            p:jpaProperties-ref="jpaProperties"
-            p:jpaDialect-ref="jpaDialect"
-            p:jpaVendorAdapter-ref="jpaAdapter"
-        />
+    <bean id="entityManagerFactory"
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+          p:persistenceUnitManager-ref="jpaPersistenceUnitManager"
+          p:jpaProperties-ref="jpaProperties"
+          p:jpaDialect-ref="jpaDialect"
+          p:jpaVendorAdapter-ref="jpaAdapter"
+            />
 
-        <!-- bean post-processor(s) for JPA persistence annotations -->
-    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+    <!-- bean post-processor(s) for JPA persistence annotations -->
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
     <bean id="transactionManager"
           class="org.springframework.orm.jpa.JpaTransactionManager"
-            p:entityManagerFactory-ref="jpaEntityManagerFactory"
-        />
+          p:entityManagerFactory-ref="entityManagerFactory"
+            />
 
     <!-- enable the configuration of transactional behavior based on annotations -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <jpa:repositories base-package="com.springsource.insight.plugin.springdata.dao"
-                      transaction-manager-ref="transactionManager" />
+                      transaction-manager-ref="transactionManager"/>
 </beans>

@@ -17,11 +17,11 @@
 package com.springsource.insight.plugin.eclipse.persistence;
 
 /**
- * 
+ *
  */
 public class TransactionOperationMetricsGeneratorTest
         extends EclipsePersistenceMetricsGeneratorTestSupport {
-    public TransactionOperationMetricsGeneratorTest () {
+    public TransactionOperationMetricsGeneratorTest() {
         super(TransactionOperationMetricsGenerator.getInstance());
     }
 }

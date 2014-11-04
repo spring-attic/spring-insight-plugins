@@ -32,23 +32,23 @@ public privileged aspect InterceptOperationCollectionAspect extends AbstractOper
         super();
     }
 
-    public pointcut collectionPoint() :
-    	execution(String com.opensymphony.xwork2.interceptor.Interceptor+.intercept(ActionInvocation))
-    	// do not collect internal Struts2 interceptors
-		&& !within(com.opensymphony.xwork2.interceptor..*) && !within(org.apache.struts2.interceptor..*);
+    public pointcut collectionPoint():
+            execution(String com.opensymphony.xwork2.interceptor.Interceptor+.intercept(ActionInvocation))
+                    // do not collect internal Struts2 interceptors
+                    && !within(com.opensymphony.xwork2.interceptor..*) && !within(org.apache.struts2.interceptor..*);
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-    	String interceptor=jp.getThis().getClass().getName();
-        
-    	return new Operation().type(OperationCollectionTypes.INTERCEPT_TYPE.type)
-    						.label(OperationCollectionTypes.INTERCEPT_TYPE.label+" ["+interceptor+"]")
-    						.sourceCodeLocation(getSourceCodeLocation(jp))
-    						.put("interceptor",interceptor);  // interceptor signature: ClassName
+        String interceptor = jp.getThis().getClass().getName();
+
+        return new Operation().type(OperationCollectionTypes.INTERCEPT_TYPE.type)
+                .label(OperationCollectionTypes.INTERCEPT_TYPE.label + " [" + interceptor + "]")
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .put("interceptor", interceptor);  // interceptor signature: ClassName
     }
-	    
-	@Override
+
+    @Override
     public String getPluginName() {
-		return Struts2PluginRuntimeDescriptor.PLUGIN_NAME;
-	}
+        return Struts2PluginRuntimeDescriptor.PLUGIN_NAME;
+    }
 }

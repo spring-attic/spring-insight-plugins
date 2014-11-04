@@ -24,23 +24,25 @@ import com.springsource.insight.util.ArrayUtil;
 
 public class Neo4jPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "spring-neo4j";
-    private static final Neo4jPluginRuntimeDescriptor	INSTANCE=new Neo4jPluginRuntimeDescriptor();
-    private static final List<? extends ExternalResourceAnalyzer>	extResAnalyzers=
-       		ArrayUtil.asUnmodifiableList(Neo4jExternalResourceAnalyzer.getInstance());
-    private Neo4jPluginRuntimeDescriptor () {
-    	super();
+    private static final Neo4jPluginRuntimeDescriptor INSTANCE = new Neo4jPluginRuntimeDescriptor();
+    private static final List<? extends ExternalResourceAnalyzer> extResAnalyzers =
+            ArrayUtil.asUnmodifiableList(Neo4jExternalResourceAnalyzer.getInstance());
+
+    private Neo4jPluginRuntimeDescriptor() {
+        super();
     }
 
     public static final Neo4jPluginRuntimeDescriptor getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override
     public String getPluginName() {
         return PLUGIN_NAME;
     }
+
     @Override
     public Collection<? extends ExternalResourceAnalyzer> getExternalResourceAnalyzers() {
-    	return extResAnalyzers;
+        return extResAnalyzers;
     }
 }

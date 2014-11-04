@@ -25,7 +25,7 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.trace.ObscuredValueMarker;
 
 /**
- * 
+ *
  */
 public abstract aspect AbstractAuthenticationCollectionAspect extends MethodOperationCollectionAspect {
     /**
@@ -35,9 +35,9 @@ public abstract aspect AbstractAuthenticationCollectionAspect extends MethodOper
      * endpoint name than <code>authenticate</code> call. The assumption is
      * that some &quot;login&quot; method of a service will be called
      */
-	public static final int	AUTHENTICATION_SCORE=EndPointAnalysis.CEILING_LAYER_SCORE + 1;
+    public static final int AUTHENTICATION_SCORE = EndPointAnalysis.CEILING_LAYER_SCORE + 1;
 
-    protected AbstractAuthenticationCollectionAspect () {
+    protected AbstractAuthenticationCollectionAspect() {
         super(new AuthenticationProviderOperationCollector());
     }
 
@@ -47,27 +47,27 @@ public abstract aspect AbstractAuthenticationCollectionAspect extends MethodOper
     }
 
     void setSensitiveValueMarker(ObscuredValueMarker marker) {
-        AuthenticationProviderOperationCollector    collector=(AuthenticationProviderOperationCollector) getCollector();
+        AuthenticationProviderOperationCollector collector = (AuthenticationProviderOperationCollector) getCollector();
         collector.setSensitiveValueMarker(marker);
     }
 
-    protected Operation createAuthenticationOperation (Operation op, Authentication credentials) {
+    protected Operation createAuthenticationOperation(Operation op, Authentication credentials) {
         op.type(SpringSecurityDefinitions.AUTH_OP)
-          .label("Authenticate")
-          .put(EndPointAnalysis.SCORE_FIELD, AUTHENTICATION_SCORE)
-          .putAnyNonEmpty("principal", credentials.getPrincipal())
-          .putAnyNonEmpty("credentials", credentials.getCredentials())
-          ;
+                .label("Authenticate")
+                .put(EndPointAnalysis.SCORE_FIELD, AUTHENTICATION_SCORE)
+                .putAnyNonEmpty("principal", credentials.getPrincipal())
+                .putAnyNonEmpty("credentials", credentials.getCredentials())
+        ;
 
         AuthenticationProviderOperationCollector collector = (AuthenticationProviderOperationCollector) getCollector();
         collector.markSensitiveValues(credentials);
         return op;
     }
 
-    protected Authentication extractAuthenticationData (JoinPoint jp) {
+    protected Authentication extractAuthenticationData(JoinPoint jp) {
         return (Authentication) jp.getArgs()[0];
     }
-    
+
     @Override
     public String getPluginName() {
         return SpringSecurityPluginRuntimeDescriptor.PLUGIN_NAME;

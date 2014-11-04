@@ -24,7 +24,7 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.trace.ObscuredValueMarker;
 
 /**
- * 
+ *
  */
 public class AuthenticationProviderOperationCollector extends ObscuringOperationCollector {
     public AuthenticationProviderOperationCollector() {
@@ -37,9 +37,9 @@ public class AuthenticationProviderOperationCollector extends ObscuringOperation
 
     // fill in some data from the return value
     @Override
-    protected void markSensitiveReturnValueAttributes (Operation op, Object returnValue) {
+    protected void markSensitiveReturnValueAttributes(Operation op, Object returnValue) {
         if (returnValue != null) {  // OK to return null to indicate authentication failure
-            Authentication  auth=(Authentication) returnValue;
+            Authentication auth = (Authentication) returnValue;
             markSensitiveValues(auth);
             op.put("authenticated", auth.isAuthenticated());
             updateGrantedAuthorities(op, auth.getAuthorities());
@@ -48,11 +48,11 @@ public class AuthenticationProviderOperationCollector extends ObscuringOperation
         }
     }
 
-    void markSensitiveValues (Authentication auth) {
+    void markSensitiveValues(Authentication auth) {
         markSensitiveValues(obscuredMarker, auth);
     }
 
-    static void markSensitiveValues (ObscuredValueMarker marker, Authentication auth) {
+    static void markSensitiveValues(ObscuredValueMarker marker, Authentication auth) {
         // can happen if AuthenticationProvider#authenticate returns null to indicate a failure 
         if (auth == null) {
             return;
@@ -60,7 +60,7 @@ public class AuthenticationProviderOperationCollector extends ObscuringOperation
 
         markSensitivePrincipalValues(marker, auth);
 
-        Object  principal=auth.getPrincipal();
+        Object principal = auth.getPrincipal();
         if (principal instanceof Principal) {
             markSensitivePrincipalValues(marker, (Principal) principal);
         } else {
@@ -68,8 +68,8 @@ public class AuthenticationProviderOperationCollector extends ObscuringOperation
         }
         marker.markObscured(auth.getCredentials());
     }
-    
-    static void markSensitivePrincipalValues (ObscuredValueMarker marker, Principal principal) {
+
+    static void markSensitivePrincipalValues(ObscuredValueMarker marker, Principal principal) {
         if (principal == null) {
             return;
         }

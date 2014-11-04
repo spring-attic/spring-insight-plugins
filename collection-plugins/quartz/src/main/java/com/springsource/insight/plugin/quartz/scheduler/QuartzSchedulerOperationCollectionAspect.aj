@@ -33,122 +33,123 @@ import com.springsource.insight.util.StringUtil;
 public aspect QuartzSchedulerOperationCollectionAspect extends MethodOperationCollectionAspect {
     private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
 
-    public QuartzSchedulerOperationCollectionAspect () {
-    	super();
+    public QuartzSchedulerOperationCollectionAspect() {
+        super();
     }
 
     public pointcut collectionPoint()
-        : execution(* org.quartz.Job+.execute(..))
-        ;
+            : execution(* org.quartz.Job+.execute(..))
+            ;
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Operation   op=super.createOperation(jp).type(QuartzSchedulerDefinitions.TYPE);
-        Object[]	args=jp.getArgs();
+        Operation op = super.createOperation(jp).type(QuartzSchedulerDefinitions.TYPE);
+        Object[] args = jp.getArgs();
         return createOperation(op, args[0]);
     }
 
-    Operation createOperation (Operation op, Object context) {
-    	QuartzJobExecutionContextValueAccessor	contextAccessor=QuartzJobExecutionContextValueAccessor.getInstance();
-    	try {
-	        op.putAnyNonEmpty("fireTime", safeCloneDate(contextAccessor.getFireTime(context)))
-	          .putAnyNonEmpty("refireCount", contextAccessor.getRefireCount(context))
-	          .putAnyNonEmpty("scheduledFireTime", safeCloneDate(contextAccessor.getScheduledFireTime(context)))
-	          .putAnyNonEmpty("previousFireTime", safeCloneDate(contextAccessor.getPreviousFireTime(context)))
-	          .putAnyNonEmpty("nextFireTime", safeCloneDate(contextAccessor.getNextFireTime(context)))
-	          ;
-    	} catch(Error e) {
-    		_logger.warning("Failed (" + e.getClass().getSimpleName() + ")"
-    				      + " to populate context values: " + e.getMessage());
-    	}
-
-        Object	jobDetail=contextAccessor.getJobDetail(context);
+    Operation createOperation(Operation op, Object context) {
+        QuartzJobExecutionContextValueAccessor contextAccessor = QuartzJobExecutionContextValueAccessor.getInstance();
         try {
-        	createOperationJobDetail(op, jobDetail);
-    	} catch(Error e) {
-    		_logger.warning("Failed (" + e.getClass().getSimpleName() + ")"
-    				     + " to populate job details values: " + e.getMessage());
-    	}
+            op.putAnyNonEmpty("fireTime", safeCloneDate(contextAccessor.getFireTime(context)))
+                    .putAnyNonEmpty("refireCount", contextAccessor.getRefireCount(context))
+                    .putAnyNonEmpty("scheduledFireTime", safeCloneDate(contextAccessor.getScheduledFireTime(context)))
+                    .putAnyNonEmpty("previousFireTime", safeCloneDate(contextAccessor.getPreviousFireTime(context)))
+                    .putAnyNonEmpty("nextFireTime", safeCloneDate(contextAccessor.getNextFireTime(context)))
+            ;
+        } catch (Error e) {
+            _logger.warning("Failed (" + e.getClass().getSimpleName() + ")"
+                    + " to populate context values: " + e.getMessage());
+        }
+
+        Object jobDetail = contextAccessor.getJobDetail(context);
+        try {
+            createOperationJobDetail(op, jobDetail);
+        } catch (Error e) {
+            _logger.warning("Failed (" + e.getClass().getSimpleName() + ")"
+                    + " to populate job details values: " + e.getMessage());
+        }
 
         if (collectExtraInformation()) {
             try {
-            	createOperationTrigger(op, contextAccessor.getTrigger(context), jobDetail);
-        	} catch(Error e) {
-        		_logger.warning("Failed (" + e.getClass().getSimpleName() + ")"
-        				      + " to populate trigger values: " + e.getMessage());
-        	}
+                createOperationTrigger(op, contextAccessor.getTrigger(context), jobDetail);
+            } catch (Error e) {
+                _logger.warning("Failed (" + e.getClass().getSimpleName() + ")"
+                        + " to populate trigger values: " + e.getMessage());
+            }
         }
 
         return op;
     }
 
-    Operation createOperationJobDetail (Operation op, Object detail) {
-    	QuartzJobDetailValueAccessor	detailAccessor=QuartzJobDetailValueAccessor.getInstance();
-        String description=detailAccessor.getDescription(detail);
-        Object jobKey=detailAccessor.getKey(detail);
-        Class<?> jobClass=detailAccessor.getJobClass(detail);
+    Operation createOperationJobDetail(Operation op, Object detail) {
+        QuartzJobDetailValueAccessor detailAccessor = QuartzJobDetailValueAccessor.getInstance();
+        String description = detailAccessor.getDescription(detail);
+        Object jobKey = detailAccessor.getKey(detail);
+        Class<?> jobClass = detailAccessor.getJobClass(detail);
 
-        QuartzKeyValueAccessor	keyAccessor=QuartzKeyValueAccessor.getInstance();
-   		String jobGroup=keyAccessor.getGroup(jobKey);
-   		String jobName=keyAccessor.getName(jobKey);
-        String fullName=keyAccessor.getFullName(jobKey);
+        QuartzKeyValueAccessor keyAccessor = QuartzKeyValueAccessor.getInstance();
+        String jobGroup = keyAccessor.getGroup(jobKey);
+        String jobName = keyAccessor.getName(jobKey);
+        String fullName = keyAccessor.getFullName(jobKey);
 
         return op.label(fullName + (StringUtil.isEmpty(description) ? "" : " - " + description))
-        		 .putAnyNonEmpty("name", jobName)
-        		 .putAnyNonEmpty("group", jobGroup)
-        		 .putAnyNonEmpty("fullName", fullName)
-        		 .putAnyNonEmpty("description", description)
-        		 .putAnyNonEmpty("jobClass", (jobClass == null) ? null : jobClass.getName())
-        		 ;
+                .putAnyNonEmpty("name", jobName)
+                .putAnyNonEmpty("group", jobGroup)
+                .putAnyNonEmpty("fullName", fullName)
+                .putAnyNonEmpty("description", description)
+                .putAnyNonEmpty("jobClass", (jobClass == null) ? null : jobClass.getName())
+                ;
     }
 
-    OperationMap createOperationTrigger (Operation op, Object trigger, Object jobDetail) {
-    	QuartzTriggerValueAccessor	triggerAccessor=QuartzTriggerValueAccessor.getInstance();
-    	Object	triggerKey=triggerAccessor.getKey(trigger);
+    OperationMap createOperationTrigger(Operation op, Object trigger, Object jobDetail) {
+        QuartzTriggerValueAccessor triggerAccessor = QuartzTriggerValueAccessor.getInstance();
+        Object triggerKey = triggerAccessor.getKey(trigger);
 
-        QuartzKeyValueAccessor	keyAccessor=QuartzKeyValueAccessor.getInstance();
-   		String 	triggerGroup=keyAccessor.getGroup(triggerKey);
-   		String 	triggerName=keyAccessor.getName(triggerKey);
-   		String	triggerFullName=keyAccessor.getFullName(triggerKey);
+        QuartzKeyValueAccessor keyAccessor = QuartzKeyValueAccessor.getInstance();
+        String triggerGroup = keyAccessor.getGroup(triggerKey);
+        String triggerName = keyAccessor.getName(triggerKey);
+        String triggerFullName = keyAccessor.getFullName(triggerKey);
 
-    	QuartzJobDetailValueAccessor	detailAccessor=QuartzJobDetailValueAccessor.getInstance();
-   		Object	jobKey=detailAccessor.getKey(jobDetail);
-   		String 	jobGroup=keyAccessor.getGroup(jobKey);
-   		String 	jobName=keyAccessor.getName(jobKey);
-   		String	jobFullName=keyAccessor.getFullName(jobKey);
-    	
-   		return op.createMap("trigger")
-                 .putAnyNonEmpty("priority", triggerAccessor.getPriority(trigger))
-                 .putAnyNonEmpty("description", triggerAccessor.getDescription(trigger))
-   
-                 .putAnyNonEmpty("name", triggerName)
-                 .putAnyNonEmpty("group", triggerGroup)
-                 .putAnyNonEmpty("fullName", triggerFullName)
-                
-                 .putAnyNonEmpty("jobName", jobName)
-                 .putAnyNonEmpty("jobGroup", jobGroup)
-                 .putAnyNonEmpty("fullJobName", jobFullName)
-                
-                 .putAnyNonEmpty("calendarName", triggerAccessor.getCalendarName(trigger))
-                 .putAnyNonEmpty("startTime", safeCloneDate(triggerAccessor.getStartTime(trigger)))
-                 .putAnyNonEmpty("endTime", safeCloneDate(triggerAccessor.getEndTime(trigger)))
-                 .putAnyNonEmpty("previousFireTime", safeCloneDate(triggerAccessor.getPreviousFireTime(trigger)))
-                 .putAnyNonEmpty("nextFireTime", safeCloneDate(triggerAccessor.getNextFireTime(trigger)))
-                 ;
+        QuartzJobDetailValueAccessor detailAccessor = QuartzJobDetailValueAccessor.getInstance();
+        Object jobKey = detailAccessor.getKey(jobDetail);
+        String jobGroup = keyAccessor.getGroup(jobKey);
+        String jobName = keyAccessor.getName(jobKey);
+        String jobFullName = keyAccessor.getFullName(jobKey);
+
+        return op.createMap("trigger")
+                .putAnyNonEmpty("priority", triggerAccessor.getPriority(trigger))
+                .putAnyNonEmpty("description", triggerAccessor.getDescription(trigger))
+
+                .putAnyNonEmpty("name", triggerName)
+                .putAnyNonEmpty("group", triggerGroup)
+                .putAnyNonEmpty("fullName", triggerFullName)
+
+                .putAnyNonEmpty("jobName", jobName)
+                .putAnyNonEmpty("jobGroup", jobGroup)
+                .putAnyNonEmpty("fullJobName", jobFullName)
+
+                .putAnyNonEmpty("calendarName", triggerAccessor.getCalendarName(trigger))
+                .putAnyNonEmpty("startTime", safeCloneDate(triggerAccessor.getStartTime(trigger)))
+                .putAnyNonEmpty("endTime", safeCloneDate(triggerAccessor.getEndTime(trigger)))
+                .putAnyNonEmpty("previousFireTime", safeCloneDate(triggerAccessor.getPreviousFireTime(trigger)))
+                .putAnyNonEmpty("nextFireTime", safeCloneDate(triggerAccessor.getNextFireTime(trigger)))
+                ;
     }
+
     /*
      *  We clone the dates in order to take a "snapshot" of them, in case
      *  they are actually re-used by their owner
      */
-    static Date safeCloneDate (Date value) {
+    static Date safeCloneDate(Date value) {
         if (value == null) {
             return null;
         } else {
-        	return (Date) value.clone();
+            return (Date) value.clone();
         }
     }
 
-    boolean collectExtraInformation () {
+    boolean collectExtraInformation() {
         return FrameBuilder.OperationCollectionLevel.HIGH.equals(configuration.getCollectionLevel());
     }
 

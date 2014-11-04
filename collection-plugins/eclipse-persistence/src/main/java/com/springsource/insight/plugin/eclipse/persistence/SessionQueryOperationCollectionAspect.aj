@@ -22,20 +22,20 @@ import org.eclipse.persistence.sessions.Session;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public aspect SessionQueryOperationCollectionAspect extends EclipsePersistenceCollectionAspect {
-    public SessionQueryOperationCollectionAspect () {
+    public SessionQueryOperationCollectionAspect() {
         super(SessionQueryOperationJoinPointFinalizer.getSessionQueryOperationJoinPointFinalizer(), EclipsePersistenceDefinitions.QUERY, "Execute query");
     }
 
-    public pointcut executeQuery () : execution(* Session+.executeQuery(..));
+    public pointcut executeQuery(): execution(* Session+.executeQuery(..));
     // using cflowbelow in case methods delegate from one another
-    public pointcut collectionPoint() : executeQuery() && (!cflowbelow(executeQuery()));
+    public pointcut collectionPoint(): executeQuery() && (!cflowbelow(executeQuery()));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        String  queryName=SessionQueryOperationJoinPointFinalizer.resolveQueryName(jp.getArgs());
+        String queryName = SessionQueryOperationJoinPointFinalizer.resolveQueryName(jp.getArgs());
         return createOperation(jp, queryName);
     }
 }

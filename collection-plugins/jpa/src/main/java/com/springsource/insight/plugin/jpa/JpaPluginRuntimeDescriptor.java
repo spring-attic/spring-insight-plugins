@@ -20,14 +20,14 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 
 public class JpaPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "jpa";
-    private static final JpaPluginRuntimeDescriptor	INSTANCE=new JpaPluginRuntimeDescriptor();
+    private static final JpaPluginRuntimeDescriptor INSTANCE = new JpaPluginRuntimeDescriptor();
 
-    private JpaPluginRuntimeDescriptor () {
-    	super();
+    private JpaPluginRuntimeDescriptor() {
+        super();
     }
 
     public static final JpaPluginRuntimeDescriptor getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     @Override

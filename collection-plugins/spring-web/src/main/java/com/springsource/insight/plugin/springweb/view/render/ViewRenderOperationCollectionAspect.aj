@@ -34,30 +34,30 @@ import com.springsource.insight.util.StringFormatterUtils;
 public aspect ViewRenderOperationCollectionAspect extends AbstractSpringWebAspectSupport {
     static final OperationType TYPE = OperationType.valueOf("view_render");
 
-    public ViewRenderOperationCollectionAspect () {
-    	super();
+    public ViewRenderOperationCollectionAspect() {
+        super();
     }
-    
+
     // Specifying generic parameters causes a mismatch for Spring 2.5 applications
-    public pointcut collectionPoint() 
-        : execution(void View.render(Map/*<String, ?>*/, HttpServletRequest, HttpServletResponse));
-    
+    public pointcut collectionPoint()
+            : execution(void View.render(Map/*<String, ?>*/, HttpServletRequest, HttpServletResponse));
+
     @Override
-	protected Operation createOperation(JoinPoint jp) {
-        View view = (View)jp.getThis();
+    protected Operation createOperation(JoinPoint jp) {
+        View view = (View) jp.getThis();
         String resolvedView = ViewUtils.getViewDescription(view);
         String viewType = view.getClass().getName();
         String contentType = view.getContentType();
-        Operation operation =  new Operation()
-            .label("Render view " + resolvedView)
-            .type(TYPE)
-            .sourceCodeLocation(getSourceCodeLocation(jp))
-            .put("resolvedView", resolvedView)
-            .put("viewType", viewType)
-            .put("contentType", contentType);
+        Operation operation = new Operation()
+                .label("Render view " + resolvedView)
+                .type(TYPE)
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .put("resolvedView", resolvedView)
+                .put("viewType", viewType)
+                .put("contentType", contentType);
         // TODO move into a finalizer
         OperationMap model = operation.createMap("model");
-        for (Map.Entry<String, String> entry : StringFormatterUtils.formatMap((Map<?,?>)jp.getArgs()[0]).entrySet()) {
+        for (Map.Entry<String, String> entry : StringFormatterUtils.formatMap((Map<?, ?>) jp.getArgs()[0]).entrySet()) {
             model.put(entry.getKey(), entry.getValue());
         }
         return operation;

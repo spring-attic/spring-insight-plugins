@@ -25,30 +25,30 @@ import com.springsource.insight.util.DataPoint;
 import com.springsource.insight.util.time.TimeUtil;
 
 public class MailSendMetricsGenerator extends AbstractExternalResourceMetricsGenerator {
-	public static final String  MAIL_SIZE_METRIC = "mailSize:type=bytes";
-	private static final MailSendMetricsGenerator	INSTANCE=new MailSendMetricsGenerator();
+    public static final String MAIL_SIZE_METRIC = "mailSize:type=bytes";
+    private static final MailSendMetricsGenerator INSTANCE = new MailSendMetricsGenerator();
 
-	private MailSendMetricsGenerator() {
-		super(MailDefinitions.SEND_OPERATION);
-	}
+    private MailSendMetricsGenerator() {
+        super(MailDefinitions.SEND_OPERATION);
+    }
 
-	public static final MailSendMetricsGenerator getInstance() {
-		return INSTANCE;
-	}
+    public static final MailSendMetricsGenerator getInstance() {
+        return INSTANCE;
+    }
 
-	@Override
-	protected void addExtraFrameMetrics(Trace trace, Frame opTypeFrame, MetricsBag mb) {
-		// Add the message size data point
-		Operation	op=opTypeFrame.getOperation();
-		Number 		contentSize=op.get("size", Number.class);
-		// OK if missing - the size is collected only if extra information is enabled
-		if (contentSize == null) {
-		    return;
-		}
+    @Override
+    protected void addExtraFrameMetrics(Trace trace, Frame opTypeFrame, MetricsBag mb) {
+        // Add the message size data point
+        Operation op = opTypeFrame.getOperation();
+        Number contentSize = op.get("size", Number.class);
+        // OK if missing - the size is collected only if extra information is enabled
+        if (contentSize == null) {
+            return;
+        }
 
         mb.add(MAIL_SIZE_METRIC, PointType.GAUGE);
-		int time = TimeUtil.nanosToSeconds(trace.getRange().getStart());
-		DataPoint responseSizePoint = new DataPoint(time, contentSize.doubleValue());
-		mb.add(responseSizePoint, MAIL_SIZE_METRIC);		
-	}
+        int time = TimeUtil.nanosToSeconds(trace.getRange().getStart());
+        DataPoint responseSizePoint = new DataPoint(time, contentSize.doubleValue());
+        mb.add(responseSizePoint, MAIL_SIZE_METRIC);
+    }
 }

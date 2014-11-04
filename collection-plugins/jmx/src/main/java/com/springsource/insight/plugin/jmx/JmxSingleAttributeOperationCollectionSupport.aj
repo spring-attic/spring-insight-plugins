@@ -31,32 +31,32 @@ import com.springsource.insight.util.StringUtil;
  * Serves as base class for aspects that instrument a single attribute get/set
  */
 public abstract aspect JmxSingleAttributeOperationCollectionSupport extends JmxAttributeOperationCollectionSupport {
-	protected JmxSingleAttributeOperationCollectionSupport(String actionName) {
-		super(actionName);
-	}
+    protected JmxSingleAttributeOperationCollectionSupport(String actionName) {
+        super(actionName);
+    }
 
-	protected JmxSingleAttributeOperationCollectionSupport(String actionName, OperationCollector collector) {
-		super(actionName, collector);
-	}
+    protected JmxSingleAttributeOperationCollectionSupport(String actionName, OperationCollector collector) {
+        super(actionName, collector);
+    }
 
-	protected Operation createAttributeOperation(JoinPoint jp, ObjectName name, String attrName) {
-		return createAttributeOperation(jp, name)
-					.label(createLabel(action, attrName))
-					.putAnyNonEmpty(JmxPluginRuntimeDescriptor.ATTR_NAME_PROP, attrName)
-					;
-	}
-	
-	static final String createLabel(String actionName, String attrName) {
-		try {
-			return StringFormatterUtils.appendCapitalized(
-						new StringBuilder(StringUtil.getSafeLength(actionName) + StringUtil.getSafeLength(attrName) + 1),
-						actionName)
-					.append(' ').append(attrName)
-					.toString()
-					;
-		} catch(IOException e) {
-			throw new RuntimeException("createLabel(" + actionName + ")[" + attrName + "]"
-									+ " unexpected " + e.getClass().getSimpleName() + ": " + e.getMessage(), e);		
-		}
-	}
+    protected Operation createAttributeOperation(JoinPoint jp, ObjectName name, String attrName) {
+        return createAttributeOperation(jp, name)
+                .label(createLabel(action, attrName))
+                .putAnyNonEmpty(JmxPluginRuntimeDescriptor.ATTR_NAME_PROP, attrName)
+                ;
+    }
+
+    static final String createLabel(String actionName, String attrName) {
+        try {
+            return StringFormatterUtils.appendCapitalized(
+                    new StringBuilder(StringUtil.getSafeLength(actionName) + StringUtil.getSafeLength(attrName) + 1),
+                    actionName)
+                    .append(' ').append(attrName)
+                    .toString()
+                    ;
+        } catch (IOException e) {
+            throw new RuntimeException("createLabel(" + actionName + ")[" + attrName + "]"
+                    + " unexpected " + e.getClass().getSimpleName() + ": " + e.getMessage(), e);
+        }
+    }
 }

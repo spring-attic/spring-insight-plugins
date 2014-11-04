@@ -24,39 +24,39 @@ import com.springsource.insight.intercept.metrics.MetricsBag;
 import com.springsource.insight.util.IDataPoint;
 
 public abstract class AbstractRabbitMQMetricsGeneratorTest extends AbstractMetricsGeneratorTest {
-	protected AbstractRabbitMQMetricsGeneratorTest(AbstractRabbitMetricsGenerator generator) {
-		super(generator);
-	}    
+    protected AbstractRabbitMQMetricsGeneratorTest(AbstractRabbitMetricsGenerator generator) {
+        super(generator);
+    }
 
-	@Override
-	protected void validateMetricsBags(List<MetricsBag> mbs) {
-		AbstractRabbitMetricsGenerator genRabbit = (AbstractRabbitMetricsGenerator)gen;
-		assertEquals(2, mbs.size());
-		assertExternalResourceMetricBag(genRabbit, mbs.get(0));
-		assertExternalResourceMetricBag(genRabbit, mbs.get(1));
+    @Override
+    protected void validateMetricsBags(List<MetricsBag> mbs) {
+        AbstractRabbitMetricsGenerator genRabbit = (AbstractRabbitMetricsGenerator) gen;
+        assertEquals(2, mbs.size());
+        assertExternalResourceMetricBag(genRabbit, mbs.get(0));
+        assertExternalResourceMetricBag(genRabbit, mbs.get(1));
 
-		
-	}
 
-	private void assertExternalResourceMetricBag(AbstractRabbitMetricsGenerator genRabbit, MetricsBag mb) {
-		assertEquals("opExtKey", mb.getResourceKey().getName());
-		List<String> keys = mb.getMetricKeys();
-		assertEquals(3, keys.size());
+    }
 
-		assertTrue(keys.get(0).equals(AbstractMetricsGenerator.EXECUTION_TIME));
-		List<IDataPoint> points = mb.getPoints(AbstractMetricsGenerator.EXECUTION_TIME);
-		assertEquals(1, points.size());
-		assertEquals(160.0 , points.get(0).getValue(), 0.01);
+    private void assertExternalResourceMetricBag(AbstractRabbitMetricsGenerator genRabbit, MetricsBag mb) {
+        assertEquals("opExtKey", mb.getResourceKey().getName());
+        List<String> keys = mb.getMetricKeys();
+        assertEquals(3, keys.size());
 
-		assertTrue(keys.get(1).equals(AbstractMetricsGenerator.INVOCATION_COUNT));
-		points = mb.getPoints(AbstractMetricsGenerator.INVOCATION_COUNT);
-		assertEquals(1, points.size());
-		assertEquals(1.0 , points.get(0).getValue(), 0.01);
+        assertTrue(keys.get(0).equals(AbstractMetricsGenerator.EXECUTION_TIME));
+        List<IDataPoint> points = mb.getPoints(AbstractMetricsGenerator.EXECUTION_TIME);
+        assertEquals(1, points.size());
+        assertEquals(160.0, points.get(0).getValue(), 0.01);
 
-		assertTrue(keys.get(2).equals(genRabbit.createMetricKey()));        
-		points = mb.getPoints(genRabbit.createMetricKey());
-		assertEquals(1, points.size());
-		assertEquals(1d, points.get(0).getValue(), 0);
-	}
+        assertTrue(keys.get(1).equals(AbstractMetricsGenerator.INVOCATION_COUNT));
+        points = mb.getPoints(AbstractMetricsGenerator.INVOCATION_COUNT);
+        assertEquals(1, points.size());
+        assertEquals(1.0, points.get(0).getValue(), 0.01);
+
+        assertTrue(keys.get(2).equals(genRabbit.createMetricKey()));
+        points = mb.getPoints(genRabbit.createMetricKey());
+        assertEquals(1, points.size());
+        assertEquals(1d, points.get(0).getValue(), 0);
+    }
 
 }

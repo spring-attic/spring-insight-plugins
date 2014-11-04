@@ -19,12 +19,12 @@ package com.springsource.insight.plugin.springweb.rest;
 import org.springframework.web.client.RestOperations;
 
 /**
- * 
+ *
  */
 public aspect RestDeleteOperationCollectionAspect extends RestOperationCollectionSupport {
-	public RestDeleteOperationCollectionAspect () {
-		super("DELETE");
-	}
+    public RestDeleteOperationCollectionAspect() {
+        super("DELETE");
+    }
 
-	public pointcut accessPoint () : execution(* RestOperations+.delete(..));
+    public pointcut accessPoint(): execution(* RestOperations+.delete(..));
 }

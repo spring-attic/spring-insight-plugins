@@ -25,8 +25,8 @@ import com.springsource.insight.collection.OperationCollector;
 
 class DefaultRunnableResolver implements RunnableResolver {
     static final DefaultRunnableResolver DEFAULT = new DefaultRunnableResolver();
-    
-    public DefaultRunnableResolver () {
+
+    public DefaultRunnableResolver() {
         super();
     }
 

@@ -29,48 +29,48 @@ import com.springsource.insight.util.StringFormatterUtils;
 
 public abstract aspect AbstractGemFireCollectionAspect extends AbstractOperationCollectionAspect {
 
-	private OperationType type;
-	private String labelPrefix;
+    private OperationType type;
+    private String labelPrefix;
 
-	public AbstractGemFireCollectionAspect(GemFireType gemFireType) {
-		this.type = gemFireType.getType();
-		labelPrefix = new StringBuilder(GemFireDefenitions.GEMFIRE.length() + gemFireType.getLabel().length() + 3)
-		                .append(GemFireDefenitions.GEMFIRE)
-		                .append(": ")
-		                .append(gemFireType.getLabel())
-		                .append('.')
-		                .toString();
-	}
-	
+    public AbstractGemFireCollectionAspect(GemFireType gemFireType) {
+        this.type = gemFireType.getType();
+        labelPrefix = new StringBuilder(GemFireDefenitions.GEMFIRE.length() + gemFireType.getLabel().length() + 3)
+                .append(GemFireDefenitions.GEMFIRE)
+                .append(": ")
+                .append(gemFireType.getLabel())
+                .append('.')
+                .toString();
+    }
+
     protected Operation createBasicOperation(final JoinPoint jp) {
-        Signature sig=jp.getSignature();
-        Object[] args=jp.getArgs();    
-    
+        Signature sig = jp.getSignature();
+        Object[] args = jp.getArgs();
+
         String label = createLabel(sig);
         Operation op = new Operation().label(label)
-                                      .type(type)
-                                      .sourceCodeLocation(getSourceCodeLocation(jp));
-        	
+                .type(type)
+                .sourceCodeLocation(getSourceCodeLocation(jp));
+
         if (addArgs()) {
             OperationList opList = op.createList("args");
-            
+
             for (Object arg : args) {
                 opList.add(StringFormatterUtils.formatObjectAndTrim(arg));
             }
         }
-        
+
         return op;
     }
-    
+
     protected String createLabel(final Signature sig) {
         String sigName = sig.getName();
         return new StringBuilder(labelPrefix.length() + sigName.length() + 2)
-                         .append(labelPrefix)
-                         .append(sig.getName())
-                         .append("()")
-                         .toString();
+                .append(labelPrefix)
+                .append(sig.getName())
+                .append("()")
+                .toString();
     }
-    
+
     protected boolean addArgs() {
         return true;
     }

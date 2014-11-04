@@ -24,52 +24,52 @@ import org.junit.Test;
 import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 import com.springsource.insight.intercept.operation.Operation;
 
-public class MessageOperationMapTest extends AbstractCollectionTestSupport  {
+public class MessageOperationMapTest extends AbstractCollectionTestSupport {
 
     @Test
     public void basic() {
         MessageOperationMap map = new MessageOperationMap(1);
-        
+
         Message message = mock(Message.class);
-        
+
         Operation op = new Operation();
         MessageWrapper wrapper = MessageWrapper.instance(message);
-        
+
         map.put(wrapper, op, "sig");
         assertEquals(1, map.size());
-        
-        Operation mapOp = map.get(MessageWrapper.instance(message)); 
+
+        Operation mapOp = map.get(MessageWrapper.instance(message));
         assertNotNull(mapOp);
         assertEquals(op, mapOp);
         assertTrue(map.isRelevant("sig", mapOp));
-        
+
         map.remove(MessageWrapper.instance(message));
-        
+
         assertTrue(map.isEmpty());
     }
-    
+
     @Test
     public void testClean() {
         MessageOperationMap map = new MessageOperationMap(1);
         Message message = mock(Message.class);
-        
+
         Operation op = new Operation();
         MessageWrapper wrapper = MessageWrapper.instance(message);
-        
+
         map.put(wrapper, op, "sig");
-        
+
         //GC message
         message = null;
         System.runFinalization();
         System.gc();
-        
+
         message = mock(Message.class);
         wrapper = MessageWrapper.instance(message);
-        
+
         map.put(wrapper, op, "sig");
         assertEquals(1, map.size());
-        
-        Operation mapOp = map.get(MessageWrapper.instance(message)); 
+
+        Operation mapOp = map.get(MessageWrapper.instance(message));
         assertNotNull(mapOp);
         assertEquals(op, mapOp);
         assertTrue(map.isRelevant("sig", mapOp));

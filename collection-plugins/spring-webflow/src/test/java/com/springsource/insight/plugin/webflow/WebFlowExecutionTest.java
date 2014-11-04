@@ -30,90 +30,90 @@ import org.springframework.webflow.test.execution.AbstractXmlFlowExecutionTests;
 
 public class WebFlowExecutionTest extends AbstractXmlFlowExecutionTests {
 
-	@Override
-	protected FlowDefinitionResource getResource(FlowDefinitionResourceFactory resourceFactory) {
-		return resourceFactory.createFileResource("target/test-classes/webflow-test.xml");
-	}
+    @Override
+    protected FlowDefinitionResource getResource(FlowDefinitionResourceFactory resourceFactory) {
+        return resourceFactory.createFileResource("target/test-classes/webflow-test.xml");
+    }
 
-	@Override
-	protected void configureFlowBuilderContext(MockFlowBuilderContext builderContext) {
-		builderContext.registerBean("personBean", new DummyPersonBean());
-		builderContext.registerBean("personDao", new DummyPersonDaoBean());
-	}
+    @Override
+    protected void configureFlowBuilderContext(MockFlowBuilderContext builderContext) {
+        builderContext.registerBean("personBean", new DummyPersonBean());
+        builderContext.registerBean("personDao", new DummyPersonDaoBean());
+    }
 
-	@Test
-	public void testState() {
-		MockExternalContext ctx = new MockExternalContext();
-		setCurrentState("dummy1");
-		getFlowScope().put("person", new DummyPersonBean());
-		ctx.setEventId("*");
-		resumeFlow(ctx);
+    @Test
+    public void testState() {
+        MockExternalContext ctx = new MockExternalContext();
+        setCurrentState("dummy1");
+        getFlowScope().put("person", new DummyPersonBean());
+        ctx.setEventId("*");
+        resumeFlow(ctx);
 
-		assertFlowExecutionActive();
-		assertCurrentStateEquals("dummy2");
-	}
+        assertFlowExecutionActive();
+        assertCurrentStateEquals("dummy2");
+    }
 
-	@Test
-	public void testAction() {
-		MockExternalContext ctx = new MockExternalContext();
-		MutableAttributeMap input = new LocalAttributeMap();
-		input.put("id", "1");
-		startFlow(input, ctx);
+    @Test
+    public void testAction() {
+        MockExternalContext ctx = new MockExternalContext();
+        MutableAttributeMap input = new LocalAttributeMap();
+        input.put("id", "1");
+        startFlow(input, ctx);
 
-		assertFlowExecutionActive();
-		assertCurrentStateEquals("personForm");
-		Object person=getFlowAttribute("person");
-		assertTrue(person instanceof DummyPersonBean);
-		assertTrue(((DummyPersonBean)person).name.equals("person1"));
-	}
+        assertFlowExecutionActive();
+        assertCurrentStateEquals("personForm");
+        Object person = getFlowAttribute("person");
+        assertTrue(person instanceof DummyPersonBean);
+        assertTrue(((DummyPersonBean) person).name.equals("person1"));
+    }
 
-	@Test
-	public void testFullFlow() {
-		MockExternalContext ctx = new MockExternalContext();
-		MutableAttributeMap input = new LocalAttributeMap();
-		input.put("id", "1");
-		startFlow(input, ctx);
+    @Test
+    public void testFullFlow() {
+        MockExternalContext ctx = new MockExternalContext();
+        MutableAttributeMap input = new LocalAttributeMap();
+        input.put("id", "1");
+        startFlow(input, ctx);
 
-		ctx.setEventId("cancel");
-		resumeFlow(ctx);
+        ctx.setEventId("cancel");
+        resumeFlow(ctx);
 
-		assertFlowExecutionEnded();
-	}
+        assertFlowExecutionEnded();
+    }
 
-	@Test
-	public void testTransition() {
-		MockExternalContext ctx = new MockExternalContext();
-		setCurrentState("personForm");
-		getFlowScope().put("person", new DummyPersonBean());
-		ctx.setEventId("cancel");
-		resumeFlow(ctx);
+    @Test
+    public void testTransition() {
+        MockExternalContext ctx = new MockExternalContext();
+        setCurrentState("personForm");
+        getFlowScope().put("person", new DummyPersonBean());
+        ctx.setEventId("cancel");
+        resumeFlow(ctx);
 
-		assertFlowExecutionEnded();
-	}
+        assertFlowExecutionEnded();
+    }
 
-	public class DummyPersonBean {
-		public String name;
+    public class DummyPersonBean {
+        public String name;
 
-		public DummyPersonBean() {
-			name="new";
-		}
+        public DummyPersonBean() {
+            name = "new";
+        }
 
-		public DummyPersonBean(String nameValue) {
-			this.name=nameValue;
-		}
-	}
+        public DummyPersonBean(String nameValue) {
+            this.name = nameValue;
+        }
+    }
 
-	public class DummyPersonDaoBean {
-		public DummyPersonBean findPersonById(Integer id) {
-			return new DummyPersonBean("person"+id);
-		}
+    public class DummyPersonDaoBean {
+        public DummyPersonBean findPersonById(Integer id) {
+            return new DummyPersonBean("person" + id);
+        }
 
-		public DummyPersonBean save(DummyPersonBean person) {
-			return person;
-		}
+        public DummyPersonBean save(DummyPersonBean person) {
+            return person;
+        }
 
-		public Collection<DummyPersonBean> findPersons() {
-			return new ArrayList<DummyPersonBean>();
-		}
-	}
+        public Collection<DummyPersonBean> findPersons() {
+            return new ArrayList<DummyPersonBean>();
+        }
+    }
 }

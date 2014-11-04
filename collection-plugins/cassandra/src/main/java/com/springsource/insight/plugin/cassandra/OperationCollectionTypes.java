@@ -19,26 +19,26 @@ package com.springsource.insight.plugin.cassandra;
 import com.springsource.insight.intercept.operation.OperationType;
 
 /**
- * Collection operations types for Hadoop 
+ * Collection operations types for Hadoop
  */
 public enum OperationCollectionTypes {
-	CONNECT_TYPE("cassandra_connect", "Cassandra Connection: "),
-	GET_TYPE("cassandra_get", "Cassandra GetOperation: "),
-	UPDATE_TYPE("cassandra_update", "Cassandra: "),
-	REMOVE_TYPE("cassandra_remove", "Cassandra: "),
-	CQL_TYPE("cassandra_cql", "Cassandra: CQL"),
-	SYSTEM_TYPE("cassandra_system", "Cassandra SystemOperation: ");
+    CONNECT_TYPE("cassandra_connect", "Cassandra Connection: "),
+    GET_TYPE("cassandra_get", "Cassandra GetOperation: "),
+    UPDATE_TYPE("cassandra_update", "Cassandra: "),
+    REMOVE_TYPE("cassandra_remove", "Cassandra: "),
+    CQL_TYPE("cassandra_cql", "Cassandra: CQL"),
+    SYSTEM_TYPE("cassandra_system", "Cassandra SystemOperation: ");
 
 
-	final public OperationType type;
-	final public String label;
+    final public OperationType type;
+    final public String label;
 
-	private OperationCollectionTypes(String typeId, String labelValue) {
-		this.type=OperationType.valueOf(typeId);
-		this.label = labelValue;
-	}
-	
-	public String getValue() {
-		return type.getName();
-	}
+    private OperationCollectionTypes(String typeId, String labelValue) {
+        this.type = OperationType.valueOf(typeId);
+        this.label = labelValue;
+    }
+
+    public String getValue() {
+        return type.getName();
+    }
 }

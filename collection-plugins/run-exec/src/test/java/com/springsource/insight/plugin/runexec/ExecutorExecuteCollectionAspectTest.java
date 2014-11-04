@@ -37,65 +37,65 @@ public class ExecutorExecuteCollectionAspectTest
     }
 
     @Test
-    public void testBasicCollection () throws InterruptedException {
-        final TestExecutor  executor=new TestExecutor(false, false);
-        final Runnable      runner=new TestRunnable("testBasicCollection");
+    public void testBasicCollection() throws InterruptedException {
+        final TestExecutor executor = new TestExecutor(false, false);
+        final Runnable runner = new TestRunnable("testBasicCollection");
         executor.execute(runner);
 
         assertFirstExecutionOperation(RunExecDefinitions.EXEC_OP, executor.waitForThread());
-        
-        final Runnable  command=executor.getLastRunCommand();
+
+        final Runnable command = executor.getLastRunCommand();
         assertNotSame("Run command not wrapped", runner, command);
         assertTrue("Run command not a wrapper", command instanceof RunnableWrapper);
     }
 
     @Test
-    public void testDirectWrappedRunner () throws InterruptedException {
+    public void testDirectWrappedRunner() throws InterruptedException {
         runWrappedRunnerTest(false);
     }
 
     @Test
-    public void testAsyncWrappedRunner () throws InterruptedException {
+    public void testAsyncWrappedRunner() throws InterruptedException {
         runWrappedRunnerTest(true);
     }
 
     @Test
-    public void testThreadPoolExecutor () throws InterruptedException {
-        Executor            executor=new ThreadPoolExecutor(5, 5, 5L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(5));
-        SignallingRunnable  runner=new SignallingRunnable("testThreadPoolExecutor");
+    public void testThreadPoolExecutor() throws InterruptedException {
+        Executor executor = new ThreadPoolExecutor(5, 5, 5L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(5));
+        SignallingRunnable runner = new SignallingRunnable("testThreadPoolExecutor");
         executor.execute(runner);
 
         {
-            Operation       op=assertLastExecutionOperation(runner);
-            List<Operation> opsList=TEST_COLLECTOR.getCollectedOperations();
+            Operation op = assertLastExecutionOperation(runner);
+            List<Operation> opsList = TEST_COLLECTOR.getCollectedOperations();
             assertEquals("Mismatched number of operations generated", 2, opsList.size());
-    
-            SourceCodeLocation  scl=op.getSourceCodeLocation();
+
+            SourceCodeLocation scl = op.getSourceCodeLocation();
             assertEquals("Mismatched class name", SignallingRunnable.class.getName(), scl.getClassName());
             assertEquals("Mismatched method name", "run", scl.getMethodName());
         }
-        
+
         {
-            Operation           op=assertCurrentThreadExecution();
-            SourceCodeLocation  scl=op.getSourceCodeLocation();
+            Operation op = assertCurrentThreadExecution();
+            SourceCodeLocation scl = op.getSourceCodeLocation();
             assertEquals("Mismatched class name", getClass().getName(), scl.getClassName());
             assertEquals("Mismatched method name", "execute", scl.getMethodName());
         }
     }
 
-    private void runWrappedRunnerTest (boolean runAsync) throws InterruptedException {
-        final TestExecutor  executor=new TestExecutor(true, runAsync);
+    private void runWrappedRunnerTest(boolean runAsync) throws InterruptedException {
+        final TestExecutor executor = new TestExecutor(true, runAsync);
         executor.execute(new TestRunnable("runWrappedRunnerTest(async=" + runAsync + ")"));
 
         /*
          * NOTE: last entered is the run operation since we execute using the same
          * collector
          */
-        Operation       op=assertLastExecutionOperation(executor.waitForThread());
-        List<Operation> opsList=TEST_COLLECTOR.getCollectedOperations();
+        Operation op = assertLastExecutionOperation(executor.waitForThread());
+        List<Operation> opsList = TEST_COLLECTOR.getCollectedOperations();
         assertEquals("Mismatched number of operations generated", 2, opsList.size());
 
-        SourceCodeLocation  scl=op.getSourceCodeLocation();
+        SourceCodeLocation scl = op.getSourceCodeLocation();
         assertEquals("Mismatched class name", TestRunnable.class.getName(), scl.getClassName());
         assertEquals("Mismatched method name", "run", scl.getMethodName());
     }

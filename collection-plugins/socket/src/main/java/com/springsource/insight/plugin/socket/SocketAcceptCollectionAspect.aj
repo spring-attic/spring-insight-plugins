@@ -23,11 +23,11 @@ import org.aspectj.lang.JoinPoint;
  * Intercepts calls to {@link ServerSocket#accept(){ 
  */
 public aspect SocketAcceptCollectionAspect extends SocketAcceptCollectionAspectSupport {
-    public SocketAcceptCollectionAspect () {
+    public SocketAcceptCollectionAspect() {
         super();
     }
-    
-    public pointcut collectionPoint() : call(* ServerSocket+.accept());
+
+    public pointcut collectionPoint(): call(* ServerSocket+.accept());
 
     @Override
     protected ServerSocket resolveServerSocket(JoinPoint jp) {

@@ -26,10 +26,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.springsource.insight.plugin.springdata.model.TestEntity;
 
 /**
- * 
+ *
  */
-public interface TestEntityRepository extends CrudRepository<TestEntity,Long> {
-    @Transactional(readOnly=true)
-    List<TestEntity> findEntitiesInRange (@Param("startTime") Date startTime,
-                                          @Param("endTime")   Date endTime);
+public interface TestEntityRepository extends CrudRepository<TestEntity, Long> {
+    @Transactional(readOnly = true)
+    List<TestEntity> findEntitiesInRange(@Param("startTime") Date startTime,
+                                         @Param("endTime") Date endTime);
 }

@@ -20,9 +20,9 @@ import com.springsource.insight.intercept.trace.TraceSource;
 
 public class JmsTraceSourceAnalyzerTest extends AbstractTraceSourceAnalyzerTestSupport {
 
-	public JmsTraceSourceAnalyzerTest() {
-		super(JmsTraceSourceAnalyzer.getInstance(), TraceSource.MESSAGE_BUS, JMSPluginOperationType.LISTENER_RECEIVE.getOperationType(),
-                                                                             JMSPluginOperationType.RECEIVE.getOperationType(),
-                                                                             JMSPluginOperationType.SEND.getOperationType());
-	}
+    public JmsTraceSourceAnalyzerTest() {
+        super(JmsTraceSourceAnalyzer.getInstance(), TraceSource.MESSAGE_BUS, JMSPluginOperationType.LISTENER_RECEIVE.getOperationType(),
+                JMSPluginOperationType.RECEIVE.getOperationType(),
+                JMSPluginOperationType.SEND.getOperationType());
+    }
 }

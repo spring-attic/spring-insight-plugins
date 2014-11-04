@@ -29,18 +29,18 @@ public aspect ApplicationListenerMethodOperationCollectionAspect extends SpringE
     }
 
     public pointcut appListener()
-        : execution(* ApplicationListener+.onApplicationEvent(..));
+            : execution(* ApplicationListener+.onApplicationEvent(..));
 
     public pointcut delegatingGenericListenerAdapter()
-        : execution(* GenericApplicationListenerAdapter+.onApplicationEvent(..));
+            : execution(* GenericApplicationListenerAdapter+.onApplicationEvent(..));
 
     public pointcut sourceFilteringListener()
-        : execution(* SourceFilteringListener+.onApplicationEvent(..));
+            : execution(* SourceFilteringListener+.onApplicationEvent(..));
 
-    public pointcut collectionPoint() : 
-        appListener() && 
-        !delegatingGenericListenerAdapter() && 
-        !sourceFilteringListener() && 
-        !AnnotationDrivenMethodOperationCollectionAspect.collectionPoint();
+    public pointcut collectionPoint():
+            appListener() &&
+                    !delegatingGenericListenerAdapter() &&
+                    !sourceFilteringListener() &&
+                    !AnnotationDrivenMethodOperationCollectionAspect.collectionPoint();
 }
 

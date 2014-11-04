@@ -24,34 +24,34 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.util.StringUtil;
 
 /**
- * 
+ *
  */
 public aspect TransactionOperationCollectionAspect extends EclipsePersistenceCollectionAspect {
-    public TransactionOperationCollectionAspect () {
+    public TransactionOperationCollectionAspect() {
         super(EclipsePersistenceDefinitions.TX, "Transaction");
     }
 
     public pointcut collectionPoint()
-        : execution(* DatabaseSession+.beginTransaction())
-       || execution(* DatabaseSession+.commitTransaction())
-       || execution(* DatabaseSession+.rollbackTransaction())
-        ;
+            : execution(* DatabaseSession+.beginTransaction())
+            || execution(* DatabaseSession+.commitTransaction())
+            || execution(* DatabaseSession+.rollbackTransaction())
+            ;
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Signature   sig=jp.getSignature();
-        String      methodName=sig.getName(), actionName=getTransactionAction(methodName);
+        Signature sig = jp.getSignature();
+        String methodName = sig.getName(), actionName = getTransactionAction(methodName);
         return createOperation(jp, actionName);
     }
 
-    static String getTransactionAction (String methodName) {
+    static String getTransactionAction(String methodName) {
         if (StringUtil.isEmpty(methodName)) {
             return EclipsePersistenceDefinitions.UNKNOWN_ACTION;
         }
-        
-        int tPos=methodName.indexOf('T');
+
+        int tPos = methodName.indexOf('T');
         if ((tPos <= 0) || (tPos >= (methodName.length() - 1))) { // if missing or is first or is last)
-           return methodName;
+            return methodName;
         }
 
         return methodName.substring(0, tPos);

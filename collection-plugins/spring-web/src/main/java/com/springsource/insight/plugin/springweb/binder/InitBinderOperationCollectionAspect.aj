@@ -25,13 +25,13 @@ import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
 
 public aspect InitBinderOperationCollectionAspect extends AbstractSpringWebAspectSupport {
     public static final OperationType TYPE = OperationType.valueOf("init_binder");
-    private InitBinderOperationFinalizer	finalizer;
+    private InitBinderOperationFinalizer finalizer;
 
-    public InitBinderOperationCollectionAspect () {
-    	finalizer = InitBinderOperationFinalizer.getInstance();
+    public InitBinderOperationCollectionAspect() {
+        finalizer = InitBinderOperationFinalizer.getInstance();
     }
-    
-    public pointcut collectionPoint() : execution(@InitBinder * *(..));
+
+    public pointcut collectionPoint(): execution(@InitBinder * *(..));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {

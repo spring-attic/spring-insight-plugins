@@ -23,20 +23,20 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.plugin.springweb.view.ViewUtils;
 
 /**
- * 
+ *
  */
 class ViewResolverMetricCollector extends DefaultOperationCollector {
-	ViewResolverMetricCollector() {
-		super();
-	}
+    ViewResolverMetricCollector() {
+        super();
+    }
 
     @Override
     public void processNormalExit(Operation op, Object returnValue) {
         if (returnValue instanceof View) {
             View view = (View) returnValue;
             op.put("resolvedView", ViewUtils.getViewDescription(view))
-              .putAnyNonEmpty("contentType", view.getContentType())
-              ;
+                    .putAnyNonEmpty("contentType", view.getContentType())
+            ;
         }
     }
 }

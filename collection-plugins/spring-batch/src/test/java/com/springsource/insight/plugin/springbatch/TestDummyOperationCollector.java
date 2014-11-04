@@ -23,15 +23,16 @@ import com.springsource.insight.collection.OperationCollector;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public class TestDummyOperationCollector implements OperationCollector {
-    private final List<Operation>   opsList=new ArrayList<Operation>();
+    private final List<Operation> opsList = new ArrayList<Operation>();
+
     public TestDummyOperationCollector() {
-       super();
+        super();
     }
 
-    List<Operation> getCapturedOperations () {
+    List<Operation> getCapturedOperations() {
         return opsList;
     }
 
@@ -56,6 +57,6 @@ public class TestDummyOperationCollector implements OperationCollector {
     }
 
     public void exitAndDiscard(Object returnValue) {
-    	// ignored
+        // ignored
     }
 }

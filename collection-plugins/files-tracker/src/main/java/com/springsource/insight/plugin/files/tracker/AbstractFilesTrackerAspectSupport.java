@@ -41,71 +41,70 @@ import com.springsource.insight.util.logging.InsightLogManager;
 import com.springsource.insight.util.logging.InsightLogger;
 
 /**
- * 
+ *
  */
 public abstract class AbstractFilesTrackerAspectSupport extends OperationCollectionAspectSupport {
     private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
 
-    public static final int DEFAULT_FILE_CACHE_SIZE=256;
-    public static final boolean DEFAULT_SUPPRESS_MAPPINGS_WARNINGS_VALUE=true;
+    public static final int DEFAULT_FILE_CACHE_SIZE = 256;
+    public static final boolean DEFAULT_SUPPRESS_MAPPINGS_WARNINGS_VALUE = true;
     /**
      * Default logging {@link Level} for tracker
      */
-    public static final Level  DEFAULT_LEVEL=Level.OFF;
+    public static final Level DEFAULT_LEVEL = Level.OFF;
 
-    static final FilesCache filesCache=new FilesCache(DEFAULT_FILE_CACHE_SIZE);
+    static final FilesCache filesCache = new FilesCache(DEFAULT_FILE_CACHE_SIZE);
     /**
      * A {@link Map} of the currently open files - key=the owning instance {@link CacheKey},
      * value=the file path
      */
-    static Map<CacheKey,String>   trackedFilesMap=Collections.synchronizedMap(filesCache);
-    private static volatile Level  logLevel=DEFAULT_LEVEL;
+    static Map<CacheKey, String> trackedFilesMap = Collections.synchronizedMap(filesCache);
+    private static volatile Level logLevel = DEFAULT_LEVEL;
 
-    protected static final CollectionSettingName    MAX_TRACKED_FILES_SETTING =
+    protected static final CollectionSettingName MAX_TRACKED_FILES_SETTING =
             new CollectionSettingName("max.tracked.files", FilesTrackerPluginRuntimeDescriptor.PLUGIN_NAME, "Controls the number of concurrently tracked files (default=" + DEFAULT_FILE_CACHE_SIZE + ")");
-    protected static final CollectionSettingName    MAPPINGS_TRACKER_LOG_SETTING =
+    protected static final CollectionSettingName MAPPINGS_TRACKER_LOG_SETTING =
             new CollectionSettingName("mappings.tracker.loglevel", FilesTrackerPluginRuntimeDescriptor.PLUGIN_NAME, "The java.util.logging.Level value to use for logging tracked files (default=" + DEFAULT_LEVEL + ")");
 
     // register a collection setting update listener and register the initial defaults
     static {
         CollectionSettingsRegistry registry = CollectionSettingsRegistry.getInstance();
         registry.addListener(new CollectionSettingsUpdateListener() {
-	            @SuppressWarnings("synthetic-access")
-	            public void incrementalUpdate (CollectionSettingName name, Serializable value) {
-	                InsightLogger  LOG=InsightLogManager.getLogger(AbstractFilesTrackerAspectSupport.class.getName());
-	                if (MAX_TRACKED_FILES_SETTING.equals(name)) {
-	                    int newCapacity=CollectionSettingsRegistry.getIntegerSettingValue(value);
-	                    if (newCapacity <= 0) {
-	                        throw new IllegalArgumentException("Negative capacity N/A: " + value);
-	                    }
-	                    
-	                    int     prevCapacity=filesCache.updateMaxCapacity(newCapacity);
-	                    if (prevCapacity != newCapacity) {
-	                    	LOG.info("incrementalUpdate(" + name + ") " + prevCapacity + " => " + newCapacity);
-	                    }
-	                } else if (MAPPINGS_TRACKER_LOG_SETTING.equals(name)) {
-	                    Level newValue=CollectionSettingsRegistry.getLogLevelSetting(value);
-	                    if (newValue != logLevel) {
-	                        LOG.info("incrementalUpdate(" + name + ") " + logLevel + " => " + newValue);
-	                    }
-	                    logLevel = newValue;
-	                }
-	            }
-	        });
+            @SuppressWarnings("synthetic-access")
+            public void incrementalUpdate(CollectionSettingName name, Serializable value) {
+                InsightLogger LOG = InsightLogManager.getLogger(AbstractFilesTrackerAspectSupport.class.getName());
+                if (MAX_TRACKED_FILES_SETTING.equals(name)) {
+                    int newCapacity = CollectionSettingsRegistry.getIntegerSettingValue(value);
+                    if (newCapacity <= 0) {
+                        throw new IllegalArgumentException("Negative capacity N/A: " + value);
+                    }
+
+                    int prevCapacity = filesCache.updateMaxCapacity(newCapacity);
+                    if (prevCapacity != newCapacity) {
+                        LOG.info("incrementalUpdate(" + name + ") " + prevCapacity + " => " + newCapacity);
+                    }
+                } else if (MAPPINGS_TRACKER_LOG_SETTING.equals(name)) {
+                    Level newValue = CollectionSettingsRegistry.getLogLevelSetting(value);
+                    if (newValue != logLevel) {
+                        LOG.info("incrementalUpdate(" + name + ") " + logLevel + " => " + newValue);
+                    }
+                    logLevel = newValue;
+                }
+            }
+        });
         registry.register(MAX_TRACKED_FILES_SETTING, Integer.valueOf(DEFAULT_FILE_CACHE_SIZE));
         registry.register(MAPPINGS_TRACKER_LOG_SETTING, DEFAULT_LEVEL);
     }
 
-    protected AbstractFilesTrackerAspectSupport () {
+    protected AbstractFilesTrackerAspectSupport() {
         super();
     }
 
-    boolean collectExtraInformation ()
-    {
+    boolean collectExtraInformation() {
         return FrameBuilder.OperationCollectionLevel.HIGH.equals(configuration.getCollectionLevel());
     }
 
-    Operation registerOperation (Operation op) {
+    Operation registerOperation(Operation op) {
         if (op == null) {
             return op;
         }
@@ -116,93 +115,96 @@ public abstract class AbstractFilesTrackerAspectSupport extends OperationCollect
          * plugin is to track the files. Furthermore, actually measuring the
          * duration of the open/close calls seems too complex (at least for now)
          */
-        OperationCollector  collector=getCollector();
+        OperationCollector collector = getCollector();
         collector.enter(op);
         collector.exitNormal();
         return op;
     }
 
-    Operation createOperation (JoinPoint.StaticPart staticPart, String action, String filePath) {
+    Operation createOperation(JoinPoint.StaticPart staticPart, String action, String filePath) {
         return new Operation()
-                    .type(FilesTrackerDefinitions.TYPE)
-                    .sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(staticPart))
-                    .put(FilesTrackerDefinitions.OPTYPE_ATTR, action)
-                    .put(FilesTrackerDefinitions.PATH_ATTR, filePath)
-                    ;
+                .type(FilesTrackerDefinitions.TYPE)
+                .sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(staticPart))
+                .put(FilesTrackerDefinitions.OPTYPE_ATTR, action)
+                .put(FilesTrackerDefinitions.PATH_ATTR, filePath)
+                ;
     }
 
-    Operation addExtraInformation (Operation op, File f) {
+    Operation addExtraInformation(Operation op, File f) {
         if ((op == null) || (f == null)) {
             return op;
         }
 
-        boolean exists=f.exists();
+        boolean exists = f.exists();
         op.put("exists", exists);
         // files being written might not exist
         if (exists) {
             op.put("size", f.length())
-              .put("lastModified", f.lastModified())
-              .put("isFile", f.isFile())
-              .put("isDirectory", f.isDirectory())
-              .put("isAbsolute", f.isAbsolute())
-              .put("isHidden", f.isHidden())
-              .put("isReadable", f.canRead())
-              .put("isWriteable", f.canWrite())
+                    .put("lastModified", f.lastModified())
+                    .put("isFile", f.isFile())
+                    .put("isDirectory", f.isDirectory())
+                    .put("isAbsolute", f.isAbsolute())
+                    .put("isHidden", f.isHidden())
+                    .put("isReadable", f.canRead())
+                    .put("isWriteable", f.canWrite())
 // only for J2SE 1.6   .put("isExecutable", f.canExecute())
-              ;
+            ;
         }
 
         return op;
     }
+
     /**
      * @param instance The {@link Closeable} instance created to access the file -
-     * ignored if <code>null</code> 
-     * @param f The accessed {@link File} - ignored if <code>null</code>
-     * @param mode The file access mode
+     *                 ignored if <code>null</code>
+     * @param f        The accessed {@link File} - ignored if <code>null</code>
+     * @param mode     The file access mode
      * @return The previously tracked file path by the accessor instance -
      * <code>null</code> if no such file (which is the normal expected value)
      */
-    protected String mapOpenedFile (Closeable instance, File f, String mode) {
+    protected String mapOpenedFile(Closeable instance, File f, String mode) {
         return mapOpenedFile(instance, (f == null) ? null : f.getAbsolutePath(), mode);
     }
+
     /**
      * @param instance The {@link Closeable} instance created to access the file -
-     * ignored if <code>null</code> 
+     *                 ignored if <code>null</code>
      * @param filePath The accessed file path - ignored if <code>null</code>/empty
-     * @param mode The file access mode
+     * @param mode     The file access mode
      * @return The previously tracked file path by the accessor instance -
      * <code>null</code> if no such file (which is the normal expected value)
      */
-    protected String mapOpenedFile (Closeable instance, String filePath, String mode) {
+    protected String mapOpenedFile(Closeable instance, String filePath, String mode) {
         if ((filePath == null) || (filePath.length() <= 0)) {
             return null;
         }
 
-        CacheKey    k=CacheKey.getFileKey(instance);
+        CacheKey k = CacheKey.getFileKey(instance);
         if (k == null) {
             return null;
         }
 
-        String  prev=trackedFilesMap.put(k, filePath);
+        String prev = trackedFilesMap.put(k, filePath);
         if ((logLevel != null) && (!Level.OFF.equals(logLevel)) && _logger.isLoggable(logLevel)) {
             _logger.log(logLevel, "mapOpenedFile(" + filePath + ")[" + mode + "]@" + k + " => " + prev);
         }
 
         return prev;
     }
+
     /**
      * @param instance The {@link Closeable} instance being closed - ignored
-     * if <code>null</code> 
+     *                 if <code>null</code>
      * @return The file path being accessed by the instance - <code>null</code>
-     * if unknown file 
+     * if unknown file
      */
-    protected String unmapClosedFile (Closeable instance) {
-        CacheKey    k=CacheKey.getFileKey(instance);
+    protected String unmapClosedFile(Closeable instance) {
+        CacheKey k = CacheKey.getFileKey(instance);
         if (k == null) {
             return null;
         }
 
-        String    filePath=trackedFilesMap.remove(k);
+        String filePath = trackedFilesMap.remove(k);
         if ((logLevel != null) && (!Level.OFF.equals(logLevel)) && _logger.isLoggable(logLevel)) {
             _logger.log(logLevel, "unmapClosedFile(" + k + "): " + filePath);
         }
@@ -210,18 +212,18 @@ public abstract class AbstractFilesTrackerAspectSupport extends OperationCollect
         return filePath;
     }
 
-    protected String createOperationLabel (Operation op) {
+    protected String createOperationLabel(Operation op) {
         if (op == null) {
             return null;
         } else {
             return createOperationLabel(op.get(FilesTrackerDefinitions.OPTYPE_ATTR, String.class),
-                                        op.get(FilesTrackerDefinitions.PATH_ATTR, String.class));
+                    op.get(FilesTrackerDefinitions.PATH_ATTR, String.class));
         }
     }
 
-    static final String createOperationLabel (String action, String path) {
-        String  displayAction=StringUtil.capitalize(action);
-        String  displayPath=StringUtil.chopHeadAndEllipsify(path, StringFormatterUtils.MAX_PARAM_LENGTH);
+    static final String createOperationLabel(String action, String path) {
+        String displayAction = StringUtil.capitalize(action);
+        String displayPath = StringUtil.chopHeadAndEllipsify(path, StringFormatterUtils.MAX_PARAM_LENGTH);
         return displayAction + " " + displayPath;
     }
 
@@ -235,21 +237,22 @@ public abstract class AbstractFilesTrackerAspectSupport extends OperationCollect
      * of the tracked files map does not grow indefinitely. The map itself is
      * not synchronized but it is <U>wrapped</U> into one.
      */
-    static final class FilesCache extends LinkedHashMap<CacheKey,String> {
+    static final class FilesCache extends LinkedHashMap<CacheKey, String> {
         private static final long serialVersionUID = 1034264756856652293L;
 
-        private volatile int   maxCapacity;
+        private volatile int maxCapacity;
+
         public FilesCache(int maxCapacityValue) {
             super(maxCapacityValue);
             this.maxCapacity = maxCapacityValue;
         }
 
-        public int getMaxCapacity () {
+        public int getMaxCapacity() {
             return this.maxCapacity;
         }
 
-        public int updateMaxCapacity (int maxCapacityValue) {
-            int prev=this.maxCapacity;
+        public int updateMaxCapacity(int maxCapacityValue) {
+            int prev = this.maxCapacity;
             this.maxCapacity = maxCapacityValue;
             return prev;
         }
@@ -261,11 +264,10 @@ public abstract class AbstractFilesTrackerAspectSupport extends OperationCollect
     }
 
     static final class CacheKey {
-        private final String    name;
-        private final int       value, hash;
+        private final String name;
+        private final int value, hash;
 
-        private CacheKey (Closeable instance)
-        {
+        private CacheKey(Closeable instance) {
             name = instance.getClass().getName();
             value = System.identityHashCode(instance);
             // we can calculate the hash now since all values are final
@@ -291,7 +293,7 @@ public abstract class AbstractFilesTrackerAspectSupport extends OperationCollect
                 return false;
             }
 
-            CacheKey    other=(CacheKey) obj;
+            CacheKey other = (CacheKey) obj;
             if (name.equals(other.name) && (value == other.value)) {
                 return true;
             }
@@ -304,14 +306,14 @@ public abstract class AbstractFilesTrackerAspectSupport extends OperationCollect
             return name + "@" + Integer.toHexString(value);
         }
 
-        static CacheKey getFileKey (Closeable instance) {
+        static CacheKey getFileKey(Closeable instance) {
             if (instance == null)
                 return null;
             else
                 return new CacheKey(instance);
         }
     }
-    
+
     @Override
     public boolean isMetricsGenerator() {
         return true; // This provides an external resource

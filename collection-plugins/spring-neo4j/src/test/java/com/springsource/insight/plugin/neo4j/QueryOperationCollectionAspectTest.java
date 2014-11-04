@@ -29,52 +29,52 @@ import com.springsource.insight.intercept.operation.Operation;
 @ContextConfiguration(OperationCollectionAspectTests.TEST_CONTEXT)
 @Transactional
 public class QueryOperationCollectionAspectTest extends AbstractNeo4jCollectionAspectTestSupport {
-	@Autowired
-	OperationCollectionAspectTests tests;
-	
-	
-	public QueryOperationCollectionAspectTest () {
-		super();
-	}
+    @Autowired
+    OperationCollectionAspectTests tests;
 
-	@Override
-	public OperationCollectionAspectSupport getAspect() {
-		return QueryOperationCollectionAspect.aspectOf();
-	}
-	
-	@Test
-	public void testRun1() throws Exception {
-		// Step 1: Execute test
-		tests.test_Query1();
 
-		// Step 2:  Get the Operation that was just created by our aspect
-		Operation op = getLastEntered();
-		assertNotNull("No Neo4J.Query operation data is intercepted",op);
+    public QueryOperationCollectionAspectTest() {
+        super();
+    }
 
-		// Step 3:  Validate
-		assertEquals("Invalid operation type", OperationCollectionTypes.QUERY_TYPE.type, op.getType());
-		
-		assertEquals("Invalid Label", OperationCollectionTypes.QUERY_TYPE.label+"query", op.getLabel());
-		
-		assertNotNull("Parameter 'statement' does not exists", op.get("statement"));
-		assertNotNull("Parameter 'params' does not exists", op.get("params"));
-	}
-	
-	@Test
-	public void testRun2() throws Exception {
-		// Step 1: Execute test
-		tests.test_Query2();
+    @Override
+    public OperationCollectionAspectSupport getAspect() {
+        return QueryOperationCollectionAspect.aspectOf();
+    }
 
-		// Step 2:  Get the Operation that was just created by our aspect
-		Operation op = getLastEntered();
-		assertNotNull("No Neo4J.Query operation data is intercepted",op);
+    @Test
+    public void testRun1() throws Exception {
+        // Step 1: Execute test
+        tests.test_Query1();
 
-		// Step 3:  Validate
-		assertEquals("Invalid operation type", OperationCollectionTypes.QUERY_TYPE.type, op.getType());
-		
-		assertEquals("Invalid Label", OperationCollectionTypes.QUERY_TYPE.label+"execute", op.getLabel());
-		
-		assertNotNull("Parameter 'statement' does not exists", op.get("statement"));
-		assertNotNull("Parameter 'params' does not exists", op.get("params"));
-	}
+        // Step 2:  Get the Operation that was just created by our aspect
+        Operation op = getLastEntered();
+        assertNotNull("No Neo4J.Query operation data is intercepted", op);
+
+        // Step 3:  Validate
+        assertEquals("Invalid operation type", OperationCollectionTypes.QUERY_TYPE.type, op.getType());
+
+        assertEquals("Invalid Label", OperationCollectionTypes.QUERY_TYPE.label + "query", op.getLabel());
+
+        assertNotNull("Parameter 'statement' does not exists", op.get("statement"));
+        assertNotNull("Parameter 'params' does not exists", op.get("params"));
+    }
+
+    @Test
+    public void testRun2() throws Exception {
+        // Step 1: Execute test
+        tests.test_Query2();
+
+        // Step 2:  Get the Operation that was just created by our aspect
+        Operation op = getLastEntered();
+        assertNotNull("No Neo4J.Query operation data is intercepted", op);
+
+        // Step 3:  Validate
+        assertEquals("Invalid operation type", OperationCollectionTypes.QUERY_TYPE.type, op.getType());
+
+        assertEquals("Invalid Label", OperationCollectionTypes.QUERY_TYPE.label + "execute", op.getLabel());
+
+        assertNotNull("Parameter 'statement' does not exists", op.get("statement"));
+        assertNotNull("Parameter 'params' does not exists", op.get("params"));
+    }
 }

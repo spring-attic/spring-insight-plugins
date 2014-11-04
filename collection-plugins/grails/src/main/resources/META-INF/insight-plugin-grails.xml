@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:insight="http://www.springframework.org/schema/insight-idk"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:insight="http://www.springframework.org/schema/insight-idk"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
-	<insight:plugin name="grails" version="${project.version}" publisher="SpringSource" />
+    <insight:plugin name="grails" version="${project.version}" publisher="SpringSource"/>
 
-	<insight:operation-view operation="grails_controller_method" template="com/springsource/insight/plugin/grails/grails_controller_method.ftl"/>
-	<insight:operation-group group="Web" operation="grails_controller_method" />
+    <insight:operation-view operation="grails_controller_method"
+                            template="com/springsource/insight/plugin/grails/grails_controller_method.ftl"/>
+    <insight:operation-group group="Web" operation="grails_controller_method"/>
 
     <bean id="grailsPluginControllerMethodEndPointAnalyzer"
           class="com.springsource.insight.plugin.grails.GrailsControllerMethodEndPointAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="grailsPluginRuntimeDescriptor"
           class="com.springsource.insight.plugin.grails.GrailsPluginRuntimeDescriptor"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
 
 </beans>

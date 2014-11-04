@@ -22,71 +22,71 @@ import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.operation.SourceCodeLocation;
 
 /**
- * 
+ *
  */
 public final class RunExecDefinitions {
     public RunExecDefinitions() {
-       super();
+        super();
     }
 
-    public static final OperationType   RUN_OP=OperationType.valueOf("run-runnable"),
-                                        TIMER_OP=OperationType.valueOf("run-timer"),
-                                        EXEC_OP=OperationType.valueOf("exec-runnable");
-    
-    // a few common attributes
-    public static final String  THREADNAME_ATTR="threadName",
-                                RUNNERID_ATTR="runnerId",
-                                SPAWNLOC_ATTR="spawnLocation",
-                                LINE_NUMBER_ATTR="lineNumber";
+    public static final OperationType RUN_OP = OperationType.valueOf("run-runnable"),
+            TIMER_OP = OperationType.valueOf("run-timer"),
+            EXEC_OP = OperationType.valueOf("exec-runnable");
 
-    public static String createRunnerId (Runnable runner) {
+    // a few common attributes
+    public static final String THREADNAME_ATTR = "threadName",
+            RUNNERID_ATTR = "runnerId",
+            SPAWNLOC_ATTR = "spawnLocation",
+            LINE_NUMBER_ATTR = "lineNumber";
+
+    public static String createRunnerId(Runnable runner) {
         return createRunnerId(runner, resolveRunnerClass(runner));
     }
 
-    public static OperationMap setSpawnLocation (Operation op, Runnable runner) {
-        Class<?>            runnerClass=resolveRunnerClass(runner);
-        SourceCodeLocation  scl=new SourceCodeLocation(runnerClass.getName(), "run", (-1));
+    public static OperationMap setSpawnLocation(Operation op, Runnable runner) {
+        Class<?> runnerClass = resolveRunnerClass(runner);
+        SourceCodeLocation scl = new SourceCodeLocation(runnerClass.getName(), "run", (-1));
         return setSpawnLocation(op, scl);
     }
 
-    public static Class<?> resolveRunnerClass (Runnable runner) {
-        Class<?>  runClass=runner.getClass();
-        String    simpleName=runClass.getSimpleName();
+    public static Class<?> resolveRunnerClass(Runnable runner) {
+        Class<?> runClass = runner.getClass();
+        String simpleName = runClass.getSimpleName();
         // null/empty simple name usually means a proxy or an anonymous inner class
         if ((simpleName == null) || (simpleName.length() <= 0) || simpleName.contains("$Proxy$")) {
             return Runnable.class;
         }
- 
+
         return runClass;
     }
-    
-    public static String createRunnerId (Runnable runner, Class<?> runnerClass) {
+
+    public static String createRunnerId(Runnable runner, Class<?> runnerClass) {
         return runnerClass.getName() + "@" + System.identityHashCode(runner);
     }
 
-    public static OperationMap setSpawnLocation (Operation op, SourceCodeLocation spawnLocation) {
+    public static OperationMap setSpawnLocation(Operation op, SourceCodeLocation spawnLocation) {
         return setSpawnLocation(op.createMap(SPAWNLOC_ATTR), spawnLocation);
     }
 
-    public static OperationMap setSpawnLocation (OperationMap op, SourceCodeLocation spawnLocation) {
+    public static OperationMap setSpawnLocation(OperationMap op, SourceCodeLocation spawnLocation) {
         return op.put(OperationFields.CLASS_NAME, spawnLocation.getClassName())
-                 .put(OperationFields.METHOD_NAME, spawnLocation.getMethodName())
-                 .put(LINE_NUMBER_ATTR, spawnLocation.getLineNumber())
-                 ;
+                .put(OperationFields.METHOD_NAME, spawnLocation.getMethodName())
+                .put(LINE_NUMBER_ATTR, spawnLocation.getLineNumber())
+                ;
     }
 
-    public static SourceCodeLocation getSpawnLocation (Operation op) {
+    public static SourceCodeLocation getSpawnLocation(Operation op) {
         return getSpawnLocation(op.get(SPAWNLOC_ATTR, OperationMap.class));
     }
 
-    public static SourceCodeLocation getSpawnLocation (OperationMap op) {
+    public static SourceCodeLocation getSpawnLocation(OperationMap op) {
         if (op == null) {   // means information N/A
             return null;
         }
 
-        String  className=op.get(OperationFields.CLASS_NAME, String.class),
-                methodName=op.get(OperationFields.METHOD_NAME, String.class);
-        Integer lineNumber=op.get(LINE_NUMBER_ATTR, Integer.class);
+        String className = op.get(OperationFields.CLASS_NAME, String.class),
+                methodName = op.get(OperationFields.METHOD_NAME, String.class);
+        Integer lineNumber = op.get(LINE_NUMBER_ATTR, Integer.class);
         return new SourceCodeLocation(className, methodName, lineNumber.intValue());
     }
 }

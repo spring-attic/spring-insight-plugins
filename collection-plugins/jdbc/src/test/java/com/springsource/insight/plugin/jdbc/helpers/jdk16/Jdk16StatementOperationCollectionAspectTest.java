@@ -32,36 +32,36 @@ import com.springsource.insight.plugin.jdbc.helpers.AbstractStatement;
  * for JDK 1.6 and above
  */
 public class Jdk16StatementOperationCollectionAspectTest extends JdbcStatementOperationCollectionTestSupport {
-	public Jdk16StatementOperationCollectionAspectTest () {
-		super();
-	}
+    public Jdk16StatementOperationCollectionAspectTest() {
+        super();
+    }
 
-	@Test
+    @Test
     public void testGetMetadataRunsSqlQuery() throws SQLException {
-    	final AbstractStatement	metaDataStmt=new Jdk16Statement();
-    	final AtomicInteger	callsCount=new AtomicInteger(0);
-    	final DatabaseMetaData	metaData=new Jdk16DatabaseMetaData() {
-			@Override
-			public String getURL() throws SQLException {
-				callsCount.incrementAndGet();
-				return "jdbc:test:call=" + metaDataStmt.execute("SHOW META DATA");
-			}
-    	};
-    	Connection	metaDataConn=new Jdk16Connection() {
-			@Override
-			public DatabaseMetaData getMetaData() throws SQLException {
-				return metaData;
-			}
-		};
-		metaDataStmt.setConnection(metaDataConn);
+        final AbstractStatement metaDataStmt = new Jdk16Statement();
+        final AtomicInteger callsCount = new AtomicInteger(0);
+        final DatabaseMetaData metaData = new Jdk16DatabaseMetaData() {
+            @Override
+            public String getURL() throws SQLException {
+                callsCount.incrementAndGet();
+                return "jdbc:test:call=" + metaDataStmt.execute("SHOW META DATA");
+            }
+        };
+        Connection metaDataConn = new Jdk16Connection() {
+            @Override
+            public DatabaseMetaData getMetaData() throws SQLException {
+                return metaData;
+            }
+        };
+        metaDataStmt.setConnection(metaDataConn);
 
-		AbstractStatement	orgStmt=new Jdk16Statement();
-		orgStmt.setConnection(metaDataConn);
+        AbstractStatement orgStmt = new Jdk16Statement();
+        orgStmt.setConnection(metaDataConn);
 
-		final String sql = "select * from appointment where owner = 'Agim' and dateTime = '2009-06-01'";
-    	assertTrue("Failed to executed dummy SQL", orgStmt.execute(sql));
-    	assertEquals("Mismatched meta data calls count", 1, callsCount.intValue());
-    	assertJdbcOperation(sql);
+        final String sql = "select * from appointment where owner = 'Agim' and dateTime = '2009-06-01'";
+        assertTrue("Failed to executed dummy SQL", orgStmt.execute(sql));
+        assertEquals("Mismatched meta data calls count", 1, callsCount.intValue());
+        assertJdbcOperation(sql);
     }
 
     @Override

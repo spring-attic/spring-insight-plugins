@@ -23,42 +23,42 @@ import com.springsource.insight.plugin.jdbc.parser.DatabaseType;
 import com.springsource.insight.plugin.jdbc.parser.SimpleSqlUrlParser;
 
 /**
- * 
+ *
  */
 public abstract class SimpleSqlUrlParserTestSupport<P extends SimpleSqlUrlParser> extends SqlParserTestImpl<P> {
-	protected SimpleSqlUrlParserTestSupport(DatabaseType dbType, P parserInstance) {
-		super(dbType, parserInstance, createDefaultTestCases(parserInstance));
-	}
+    protected SimpleSqlUrlParserTestSupport(DatabaseType dbType, P parserInstance) {
+        super(dbType, parserInstance, createDefaultTestCases(parserInstance));
+    }
 
-	protected static final Collection<SqlTestEntry> createDefaultTestCases (SimpleSqlUrlParser parser) {
-		  return Arrays.asList(
-				  new SqlTestEntry(parser.getUrlPrefix() + "//neptune.acme.com/test",
-						  "neptune.acme.com",
-						  parser.getDefaultPort(),
-						  "test"),
-				 new SqlTestEntry(parser.getUrlPrefix() + "//neptune.acme.com:7365/test",
-				  		   "neptune.acme.com",
-				  		   7365,
-				  		   "test"),
-				 new SqlTestEntry(parser.getUrlPrefix() + "//neptune.acme.com",
-				  		   "neptune.acme.com",
-				  		   parser.getDefaultPort(),
-				  		   parser.getDefaultDatbaseName()),
-				 new SqlTestEntry(parser.getUrlPrefix() + "//:7365/test",
-				  		   parser.getDefaultHost(),
-				  		   7365,
-				  		   "test"),
-				 new SqlTestEntry(parser.getUrlPrefix() + "test",
-				  		   parser.getDefaultHost(),
-				  		   parser.getDefaultPort(),
-				  		   "test"),
-				  new SqlTestEntry(parser.getUrlPrefix() + "//host:7365/database?user=userName&password=pass",
-				   		    "host",
-				   		    7365,
-				   		    "database"),
-				  new SqlTestEntry(parser.getUrlPrefix() + "//host/database?charSet=LATIN1&compatible=7.2",
-		  		    	    "host",
-				  		     parser.getDefaultPort(),
-		  		    		 "database"));
-	}
+    protected static final Collection<SqlTestEntry> createDefaultTestCases(SimpleSqlUrlParser parser) {
+        return Arrays.asList(
+                new SqlTestEntry(parser.getUrlPrefix() + "//neptune.acme.com/test",
+                        "neptune.acme.com",
+                        parser.getDefaultPort(),
+                        "test"),
+                new SqlTestEntry(parser.getUrlPrefix() + "//neptune.acme.com:7365/test",
+                        "neptune.acme.com",
+                        7365,
+                        "test"),
+                new SqlTestEntry(parser.getUrlPrefix() + "//neptune.acme.com",
+                        "neptune.acme.com",
+                        parser.getDefaultPort(),
+                        parser.getDefaultDatbaseName()),
+                new SqlTestEntry(parser.getUrlPrefix() + "//:7365/test",
+                        parser.getDefaultHost(),
+                        7365,
+                        "test"),
+                new SqlTestEntry(parser.getUrlPrefix() + "test",
+                        parser.getDefaultHost(),
+                        parser.getDefaultPort(),
+                        "test"),
+                new SqlTestEntry(parser.getUrlPrefix() + "//host:7365/database?user=userName&password=pass",
+                        "host",
+                        7365,
+                        "database"),
+                new SqlTestEntry(parser.getUrlPrefix() + "//host/database?charSet=LATIN1&compatible=7.2",
+                        "host",
+                        parser.getDefaultPort(),
+                        "database"));
+    }
 }

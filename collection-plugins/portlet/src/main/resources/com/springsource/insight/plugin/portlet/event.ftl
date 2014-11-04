@@ -4,11 +4,11 @@
 <@insight.group label="Details">
     <@insight.entry name="Portlet Name" value=operation.name/>
     <@insight.entry name="Portlet Mode" value=operation.mode/>
-    
+
     <@insight.entry name="Event Name" value=operation.eventName/>
     <@insight.entry name="Event Value" value=operation.eventValue/>
     <@insight.entry name="Event Phase" value=operation.eventPhase/>
-    
+
     <@insight.entry name="Window State" value=operation.winState/>
     <@insight.entry name="Window ID" value=operation.winId/>
 </@insight.group>
@@ -26,7 +26,7 @@
 </#if>
 
 <#if operation.exception??>
-	<@insight.group label="Exception Details">
-		<@insight.entry name="Exception" value=operation.exception/>
-	</@insight.group>
+    <@insight.group label="Exception Details">
+        <@insight.entry name="Exception" value=operation.exception/>
+    </@insight.group>
 </#if>

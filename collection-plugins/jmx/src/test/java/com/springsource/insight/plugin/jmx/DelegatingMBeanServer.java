@@ -44,227 +44,228 @@ import javax.management.loading.ClassLoaderRepository;
 import com.springsource.insight.util.ArrayUtil;
 
 /**
- * 
+ *
  */
 public class DelegatingMBeanServer implements MBeanServer {
-	private final MBeanServer	server;
-	/**
-	 * 
-	 */
-	public DelegatingMBeanServer(MBeanServer s) {
-		if ((server=s) == null) {
-			throw new IllegalStateException("No delegate");
-		}
-	}
+    private final MBeanServer server;
 
-	public ObjectInstance createMBean(String className, ObjectName name)
-			throws ReflectionException, InstanceAlreadyExistsException,
-			MBeanRegistrationException, MBeanException,
-			NotCompliantMBeanException {
-		return server.createMBean(className, name);
-	}
+    /**
+     *
+     */
+    public DelegatingMBeanServer(MBeanServer s) {
+        if ((server = s) == null) {
+            throw new IllegalStateException("No delegate");
+        }
+    }
 
-	public ObjectInstance createMBean(String className, ObjectName name, ObjectName loaderName)
-			throws ReflectionException,
-			InstanceAlreadyExistsException, MBeanRegistrationException,
-			MBeanException, NotCompliantMBeanException,
-			InstanceNotFoundException {
-		return server.createMBean(className, name, loaderName);
-	}
+    public ObjectInstance createMBean(String className, ObjectName name)
+            throws ReflectionException, InstanceAlreadyExistsException,
+            MBeanRegistrationException, MBeanException,
+            NotCompliantMBeanException {
+        return server.createMBean(className, name);
+    }
 
-	public ObjectInstance createMBean(String className, ObjectName name, Object[] params, String[] signature)
-			throws ReflectionException,
-			InstanceAlreadyExistsException, MBeanRegistrationException,
-			MBeanException, NotCompliantMBeanException {
-		return server.createMBean(className, name, params, signature);
-	}
+    public ObjectInstance createMBean(String className, ObjectName name, ObjectName loaderName)
+            throws ReflectionException,
+            InstanceAlreadyExistsException, MBeanRegistrationException,
+            MBeanException, NotCompliantMBeanException,
+            InstanceNotFoundException {
+        return server.createMBean(className, name, loaderName);
+    }
 
-	public ObjectInstance createMBean(String className, ObjectName name, ObjectName loaderName, Object[] params, String[] signature)
-			throws ReflectionException, InstanceAlreadyExistsException,
-			MBeanRegistrationException, MBeanException,
-			NotCompliantMBeanException, InstanceNotFoundException {
-		return server.createMBean(className, name, loaderName, params, signature);
-	}
+    public ObjectInstance createMBean(String className, ObjectName name, Object[] params, String[] signature)
+            throws ReflectionException,
+            InstanceAlreadyExistsException, MBeanRegistrationException,
+            MBeanException, NotCompliantMBeanException {
+        return server.createMBean(className, name, params, signature);
+    }
 
-	public ObjectInstance registerMBean(Object object, ObjectName name)
-			throws InstanceAlreadyExistsException, MBeanRegistrationException,
-			NotCompliantMBeanException {
-		return server.registerMBean(object, name);
-	}
+    public ObjectInstance createMBean(String className, ObjectName name, ObjectName loaderName, Object[] params, String[] signature)
+            throws ReflectionException, InstanceAlreadyExistsException,
+            MBeanRegistrationException, MBeanException,
+            NotCompliantMBeanException, InstanceNotFoundException {
+        return server.createMBean(className, name, loaderName, params, signature);
+    }
 
-	public void unregisterMBean(ObjectName name)
-			throws InstanceNotFoundException, MBeanRegistrationException {
-		server.unregisterMBean(name);
-	}
+    public ObjectInstance registerMBean(Object object, ObjectName name)
+            throws InstanceAlreadyExistsException, MBeanRegistrationException,
+            NotCompliantMBeanException {
+        return server.registerMBean(object, name);
+    }
 
-	public ObjectInstance getObjectInstance(ObjectName name)
-			throws InstanceNotFoundException {
-		return server.getObjectInstance(name);
-	}
+    public void unregisterMBean(ObjectName name)
+            throws InstanceNotFoundException, MBeanRegistrationException {
+        server.unregisterMBean(name);
+    }
 
-	public Set<ObjectInstance> queryMBeans(ObjectName name, QueryExp query) {
-		return server.queryMBeans(name, query);
-	}
+    public ObjectInstance getObjectInstance(ObjectName name)
+            throws InstanceNotFoundException {
+        return server.getObjectInstance(name);
+    }
 
-	public Set<ObjectName> queryNames(ObjectName name, QueryExp query) {
-		return server.queryNames(name, query);
-	}
+    public Set<ObjectInstance> queryMBeans(ObjectName name, QueryExp query) {
+        return server.queryMBeans(name, query);
+    }
 
-	public boolean isRegistered(ObjectName name) {
-		return server.isRegistered(name);
-	}
+    public Set<ObjectName> queryNames(ObjectName name, QueryExp query) {
+        return server.queryNames(name, query);
+    }
 
-	public Integer getMBeanCount() {
-		return server.getMBeanCount();
-	}
+    public boolean isRegistered(ObjectName name) {
+        return server.isRegistered(name);
+    }
 
-	public Object getAttribute(ObjectName name, String attribute)
-			throws MBeanException, AttributeNotFoundException,
-			InstanceNotFoundException, ReflectionException {
-		return server.getAttribute(name, attribute);
-	}
+    public Integer getMBeanCount() {
+        return server.getMBeanCount();
+    }
 
-	public AttributeList getAttributes(ObjectName name, String[] attributes)
-			throws InstanceNotFoundException, ReflectionException {
-		AttributeList	result=new AttributeList(ArrayUtil.length(attributes));
-		for (String a : attributes) {
-			try {
-				Object	value=getAttribute(name, a);
-				result.add(new Attribute(a, value));
-			} catch(AttributeNotFoundException e) {
-				throw new ReflectionException(e, "No attribute: " + name.getCanonicalName() + "[" + a + "]");
-			}  catch(MBeanException e) {
-				throw new ReflectionException(e, "Bad MBean: "  + name.getCanonicalName() + "[" + a + "]: " + e.getMessage());
-			}
-		}
-		return result;
-	}
+    public Object getAttribute(ObjectName name, String attribute)
+            throws MBeanException, AttributeNotFoundException,
+            InstanceNotFoundException, ReflectionException {
+        return server.getAttribute(name, attribute);
+    }
 
-	public void setAttribute(ObjectName name, Attribute attribute)
-			throws InstanceNotFoundException, AttributeNotFoundException,
-			InvalidAttributeValueException, MBeanException, ReflectionException {
-		server.setAttribute(name, attribute);
+    public AttributeList getAttributes(ObjectName name, String[] attributes)
+            throws InstanceNotFoundException, ReflectionException {
+        AttributeList result = new AttributeList(ArrayUtil.length(attributes));
+        for (String a : attributes) {
+            try {
+                Object value = getAttribute(name, a);
+                result.add(new Attribute(a, value));
+            } catch (AttributeNotFoundException e) {
+                throw new ReflectionException(e, "No attribute: " + name.getCanonicalName() + "[" + a + "]");
+            } catch (MBeanException e) {
+                throw new ReflectionException(e, "Bad MBean: " + name.getCanonicalName() + "[" + a + "]: " + e.getMessage());
+            }
+        }
+        return result;
+    }
 
-	}
+    public void setAttribute(ObjectName name, Attribute attribute)
+            throws InstanceNotFoundException, AttributeNotFoundException,
+            InvalidAttributeValueException, MBeanException, ReflectionException {
+        server.setAttribute(name, attribute);
 
-	public AttributeList setAttributes(ObjectName name, AttributeList attributes)
-			throws InstanceNotFoundException, ReflectionException {
-		for (Object a : attributes) {
-			Attribute	attr=(Attribute) a;
-			try {
-				setAttribute(name, attr);
-			} catch(AttributeNotFoundException e) {
-				throw new ReflectionException(e, "No attribute: " + name.getCanonicalName() + "[" + attr.getName() + "]");
-			} catch(InvalidAttributeValueException e) {
-				throw new ReflectionException(e, "Bad value for "  + name.getCanonicalName() + "[" + attr.getName() + "]: " + attr.getValue());
-			} catch(MBeanException e) {
-				throw new ReflectionException(e, "Bad MBean: "  + name.getCanonicalName() + "[" + attr.getName() + "]=" + attr.getValue() + ": " + e.getMessage());
-			}
-		}
-		return attributes;
-	}
+    }
 
-	public Object invoke(ObjectName name, String operationName, Object[] params, String[] signature)
-			throws InstanceNotFoundException, MBeanException, ReflectionException {
-		return server.invoke(name, operationName, params, signature);
-	}
+    public AttributeList setAttributes(ObjectName name, AttributeList attributes)
+            throws InstanceNotFoundException, ReflectionException {
+        for (Object a : attributes) {
+            Attribute attr = (Attribute) a;
+            try {
+                setAttribute(name, attr);
+            } catch (AttributeNotFoundException e) {
+                throw new ReflectionException(e, "No attribute: " + name.getCanonicalName() + "[" + attr.getName() + "]");
+            } catch (InvalidAttributeValueException e) {
+                throw new ReflectionException(e, "Bad value for " + name.getCanonicalName() + "[" + attr.getName() + "]: " + attr.getValue());
+            } catch (MBeanException e) {
+                throw new ReflectionException(e, "Bad MBean: " + name.getCanonicalName() + "[" + attr.getName() + "]=" + attr.getValue() + ": " + e.getMessage());
+            }
+        }
+        return attributes;
+    }
 
-	public String getDefaultDomain() {
-		return server.getDefaultDomain();
-	}
+    public Object invoke(ObjectName name, String operationName, Object[] params, String[] signature)
+            throws InstanceNotFoundException, MBeanException, ReflectionException {
+        return server.invoke(name, operationName, params, signature);
+    }
 
-	public String[] getDomains() {
-		return server.getDomains();
-	}
+    public String getDefaultDomain() {
+        return server.getDefaultDomain();
+    }
 
-	public void addNotificationListener(ObjectName name, NotificationListener listener, NotificationFilter filter, Object handback)
-			throws InstanceNotFoundException {
-		server.addNotificationListener(name, listener, filter, handback);
-	}
+    public String[] getDomains() {
+        return server.getDomains();
+    }
 
-	public void addNotificationListener(ObjectName name, ObjectName listener, NotificationFilter filter, Object handback)
-			throws InstanceNotFoundException {
-		server.addNotificationListener(name, listener, filter, handback);
-	}
+    public void addNotificationListener(ObjectName name, NotificationListener listener, NotificationFilter filter, Object handback)
+            throws InstanceNotFoundException {
+        server.addNotificationListener(name, listener, filter, handback);
+    }
 
-	public void removeNotificationListener(ObjectName name, ObjectName listener)
-			throws InstanceNotFoundException, ListenerNotFoundException {
-		server.removeNotificationListener(name, listener);
-	}
+    public void addNotificationListener(ObjectName name, ObjectName listener, NotificationFilter filter, Object handback)
+            throws InstanceNotFoundException {
+        server.addNotificationListener(name, listener, filter, handback);
+    }
 
-	public void removeNotificationListener(ObjectName name, ObjectName listener, NotificationFilter filter, Object handback)
-			throws InstanceNotFoundException, ListenerNotFoundException {
-		server.removeNotificationListener(name, listener, filter, handback);
-	}
+    public void removeNotificationListener(ObjectName name, ObjectName listener)
+            throws InstanceNotFoundException, ListenerNotFoundException {
+        server.removeNotificationListener(name, listener);
+    }
 
-	public void removeNotificationListener(ObjectName name, NotificationListener listener)
-			throws InstanceNotFoundException, ListenerNotFoundException {
-		server.removeNotificationListener(name, listener);
-	}
+    public void removeNotificationListener(ObjectName name, ObjectName listener, NotificationFilter filter, Object handback)
+            throws InstanceNotFoundException, ListenerNotFoundException {
+        server.removeNotificationListener(name, listener, filter, handback);
+    }
 
-	public void removeNotificationListener(ObjectName name, NotificationListener listener, NotificationFilter filter, Object handback)
-			throws InstanceNotFoundException, ListenerNotFoundException {
-		server.removeNotificationListener(name, listener, filter, handback);
-	}
+    public void removeNotificationListener(ObjectName name, NotificationListener listener)
+            throws InstanceNotFoundException, ListenerNotFoundException {
+        server.removeNotificationListener(name, listener);
+    }
 
-	public MBeanInfo getMBeanInfo(ObjectName name)
-			throws InstanceNotFoundException, IntrospectionException, ReflectionException {
-		return server.getMBeanInfo(name);
-	}
+    public void removeNotificationListener(ObjectName name, NotificationListener listener, NotificationFilter filter, Object handback)
+            throws InstanceNotFoundException, ListenerNotFoundException {
+        server.removeNotificationListener(name, listener, filter, handback);
+    }
 
-	public boolean isInstanceOf(ObjectName name, String className)
-			throws InstanceNotFoundException {
-		return server.isInstanceOf(name, className);
-	}
+    public MBeanInfo getMBeanInfo(ObjectName name)
+            throws InstanceNotFoundException, IntrospectionException, ReflectionException {
+        return server.getMBeanInfo(name);
+    }
 
-	public Object instantiate(String className) throws ReflectionException, MBeanException {
-		return server.instantiate(className);
-	}
+    public boolean isInstanceOf(ObjectName name, String className)
+            throws InstanceNotFoundException {
+        return server.isInstanceOf(name, className);
+    }
 
-	public Object instantiate(String className, ObjectName loaderName)
-			throws ReflectionException, MBeanException, InstanceNotFoundException {
-		return server.instantiate(className, loaderName);
-	}
+    public Object instantiate(String className) throws ReflectionException, MBeanException {
+        return server.instantiate(className);
+    }
 
-	public Object instantiate(String className, Object[] params, String[] signature)
-			throws ReflectionException, MBeanException {
-		return server.instantiate(className, params, signature);
-	}
+    public Object instantiate(String className, ObjectName loaderName)
+            throws ReflectionException, MBeanException, InstanceNotFoundException {
+        return server.instantiate(className, loaderName);
+    }
 
-	public Object instantiate(String className, ObjectName loaderName, Object[] params, String[] signature)
-			throws ReflectionException, MBeanException, InstanceNotFoundException {
-		return server.instantiate(className, loaderName, params, signature);
-	}
+    public Object instantiate(String className, Object[] params, String[] signature)
+            throws ReflectionException, MBeanException {
+        return server.instantiate(className, params, signature);
+    }
 
-	@Deprecated
-	public ObjectInputStream deserialize(ObjectName name, byte[] data)
-			throws InstanceNotFoundException, OperationsException {
-		return server.deserialize(name, data);
-	}
+    public Object instantiate(String className, ObjectName loaderName, Object[] params, String[] signature)
+            throws ReflectionException, MBeanException, InstanceNotFoundException {
+        return server.instantiate(className, loaderName, params, signature);
+    }
 
-	@Deprecated
-	public ObjectInputStream deserialize(String className, byte[] data)
-			throws OperationsException, ReflectionException {
-		return server.deserialize(className, data);
-	}
+    @Deprecated
+    public ObjectInputStream deserialize(ObjectName name, byte[] data)
+            throws InstanceNotFoundException, OperationsException {
+        return server.deserialize(name, data);
+    }
 
-	@Deprecated
-	public ObjectInputStream deserialize(String className, ObjectName loaderName, byte[] data)
-			throws InstanceNotFoundException, OperationsException, ReflectionException {
-		return server.deserialize(className, loaderName, data);
-	}
+    @Deprecated
+    public ObjectInputStream deserialize(String className, byte[] data)
+            throws OperationsException, ReflectionException {
+        return server.deserialize(className, data);
+    }
 
-	public ClassLoader getClassLoaderFor(ObjectName mbeanName)
-			throws InstanceNotFoundException {
-		return server.getClassLoaderFor(mbeanName);
-	}
+    @Deprecated
+    public ObjectInputStream deserialize(String className, ObjectName loaderName, byte[] data)
+            throws InstanceNotFoundException, OperationsException, ReflectionException {
+        return server.deserialize(className, loaderName, data);
+    }
 
-	public ClassLoader getClassLoader(ObjectName loaderName)
-			throws InstanceNotFoundException {
-		return server.getClassLoader(loaderName);
-	}
+    public ClassLoader getClassLoaderFor(ObjectName mbeanName)
+            throws InstanceNotFoundException {
+        return server.getClassLoaderFor(mbeanName);
+    }
 
-	public ClassLoaderRepository getClassLoaderRepository() {
-		return server.getClassLoaderRepository();
-	}
+    public ClassLoader getClassLoader(ObjectName loaderName)
+            throws InstanceNotFoundException {
+        return server.getClassLoader(loaderName);
+    }
+
+    public ClassLoaderRepository getClassLoaderRepository() {
+        return server.getClassLoaderRepository();
+    }
 }

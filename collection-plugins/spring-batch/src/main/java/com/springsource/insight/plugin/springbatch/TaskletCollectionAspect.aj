@@ -26,22 +26,22 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public aspect TaskletCollectionAspect extends SpringBatchOperationCollectionAspect {
-    public TaskletCollectionAspect () {
+    public TaskletCollectionAspect() {
         super(Tasklet.class);
     }
 
-    public pointcut collectionPoint() : execution(* Tasklet+.execute(StepContribution,ChunkContext));
+    public pointcut collectionPoint(): execution(* Tasklet+.execute(StepContribution,ChunkContext));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Object[]        args=jp.getArgs();
-        ChunkContext    chunkContext=(ChunkContext) args[1];
-        StepContext     stepContext=chunkContext.getStepContext();
-        StepExecution   stepExecution=stepContext.getStepExecution();
-        String          stepName=stepExecution.getStepName();
+        Object[] args = jp.getArgs();
+        ChunkContext chunkContext = (ChunkContext) args[1];
+        StepContext stepContext = chunkContext.getStepContext();
+        StepExecution stepExecution = stepContext.getStepExecution();
+        String stepName = stepExecution.getStepName();
         return fillStepExecutionDetails(createOperation(jp, stepName), stepExecution);
     }
 

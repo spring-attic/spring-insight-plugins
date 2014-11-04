@@ -22,7 +22,7 @@ import java.io.IOException;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public abstract class FilesOpenTrackerAspectTestSupport extends FilesTrackerAspectTestSupport {
     protected FilesOpenTrackerAspectTestSupport() {
@@ -30,9 +30,9 @@ public abstract class FilesOpenTrackerAspectTestSupport extends FilesTrackerAspe
     }
 
     @Override
-    protected Operation assertFileTrackingOperation (Closeable instance, String filePath, String opcode, String mode) throws IOException {
-        Operation   op=super.assertFileTrackingOperation(instance, filePath, opcode, mode);
-        String      expected=FileOpenTrackerAspectSupport.createOperationLabel(opcode, mode, filePath);
+    protected Operation assertFileTrackingOperation(Closeable instance, String filePath, String opcode, String mode) throws IOException {
+        Operation op = super.assertFileTrackingOperation(instance, filePath, opcode, mode);
+        String expected = FileOpenTrackerAspectSupport.createOperationLabel(opcode, mode, filePath);
         assertEquals("Mismatched operation label", expected, op.getLabel());
         return op;
     }

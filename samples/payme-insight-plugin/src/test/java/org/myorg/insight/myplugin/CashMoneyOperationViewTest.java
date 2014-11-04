@@ -30,22 +30,22 @@ import com.springsource.insight.intercept.operation.SourceCodeLocation;
 /**
  * This tests the view-rendering portion of a plugin.  If your plugin defines its own
  * Operation, it should also provide a corresponding view to be rendered in the UI.
- * 
+ *
  * @see CashMoneyOperation
  * @see cash_money_operation.ftl
  */
-@ContextConfiguration(locations = { "classpath:META-INF/insight-plugin-myplugin.xml", 
-                                    "classpath:META-INF/test-app-context.xml" },
-                      loader = WebApplicationContextLoader.class)
+@ContextConfiguration(locations = {"classpath:META-INF/insight-plugin-myplugin.xml",
+        "classpath:META-INF/test-app-context.xml"},
+        loader = WebApplicationContextLoader.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 public class CashMoneyOperationViewTest extends AbstractOperationViewTestSupport {
-    
+
     private static final OperationType TYPE = OperationType.valueOf("cash_money_operation");
-    
+
     public CashMoneyOperationViewTest() {
         super(OperationType.valueOf("cash_money_operation"));
     }
-    
+
     /**
      * This tests that {@link CashMoneyOperation} can be rendered via the FreeMarker
      * template.
@@ -54,17 +54,17 @@ public class CashMoneyOperationViewTest extends AbstractOperationViewTestSupport
     public void testLocalViewWithStatus() throws Exception {
         SourceCodeLocation scl = new SourceCodeLocation("MyClass", "methodName", 45);
         Operation operation = new Operation()
-            .type(TYPE)
-            .sourceCodeLocation(scl)
-            .label("Cash Balance Set: " + 1002)
-            .put("newBalance", 1002);
-        
+                .type(TYPE)
+                .sourceCodeLocation(scl)
+                .label("Cash Balance Set: " + 1002)
+                .put("newBalance", 1002);
+
         String content = getRenderingOf(operation);
         System.err.println(content);
-        
+
         // Simply test for some expected contents within the HTML.
         assertTrue(content.contains("New Balance"));
-        assertTrue(content.contains("1,002"));        
-    }    
+        assertTrue(content.contains("1,002"));
+    }
 }
 

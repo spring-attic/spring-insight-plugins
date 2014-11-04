@@ -24,7 +24,7 @@ import org.hibernate.event.FlushEventListener;
 public class DummyFlushEventListenerImpl implements FlushEventListener {
     private static final long serialVersionUID = 4095933424078388536L;
 
-    public DummyFlushEventListenerImpl () {
+    public DummyFlushEventListenerImpl() {
         super();
     }
 

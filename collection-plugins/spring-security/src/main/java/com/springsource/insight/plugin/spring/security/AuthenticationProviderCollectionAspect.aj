@@ -20,12 +20,12 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 
 /**
- * 
+ *
  */
 public aspect AuthenticationProviderCollectionAspect extends AbstractAuthenticationCollectionAspect {
-    public AuthenticationProviderCollectionAspect () {
+    public AuthenticationProviderCollectionAspect() {
         super();
     }
 
-    public pointcut collectionPoint() : execution(* AuthenticationProvider+.authenticate(Authentication));
+    public pointcut collectionPoint(): execution(* AuthenticationProvider+.authenticate(Authentication));
 }

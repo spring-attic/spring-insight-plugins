@@ -20,15 +20,15 @@ import com.springsource.insight.intercept.endpoint.EndPointAnalysis;
 import com.springsource.insight.intercept.operation.OperationType;
 
 /**
- * 
+ *
  */
 public final class SpringSecurityDefinitions {
     private SpringSecurityDefinitions() {
         // no instance
     }
 
-	public static final int	SECURITY_OPERATION_ENDPOINT_SCORE=EndPointAnalysis.CEILING_LAYER_SCORE;
+    public static final int SECURITY_OPERATION_ENDPOINT_SCORE = EndPointAnalysis.CEILING_LAYER_SCORE;
 
-    public static final OperationType   AUTH_OP=OperationType.valueOf("spring-authenticate"),
-                                        USER_OP=OperationType.valueOf("spring-user-details");
+    public static final OperationType AUTH_OP = OperationType.valueOf("spring-authenticate"),
+            USER_OP = OperationType.valueOf("spring-user-details");
 }

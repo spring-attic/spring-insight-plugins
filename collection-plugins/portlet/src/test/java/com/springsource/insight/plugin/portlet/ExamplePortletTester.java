@@ -34,33 +34,33 @@ import com.springsource.insight.util.FileUtil;
  * Portlet1 test case
  */
 public class ExamplePortletTester extends PortletUnitTestCase {
-	public static final String CONTEXT_NAME = "test";
-	public static final String	TEST_HOST="localhost";
-	public static final int	TEST_PORT=8989;
-	public static final String	TEST_URL="http://" + TEST_HOST + ":" + TEST_PORT + "/" + CONTEXT_NAME;
+    public static final String CONTEXT_NAME = "test";
+    public static final String TEST_HOST = "localhost";
+    public static final int TEST_PORT = 8989;
+    public static final String TEST_URL = "http://" + TEST_HOST + ":" + TEST_PORT + "/" + CONTEXT_NAME;
 
-	private Server server;
-	
+    private Server server;
+
     public ExamplePortletTester() {
         super(ExamplePortlet.NAME);
     }
-    
+
     @Override
-	public void setUp() throws Exception {
-    	if (tester==null) {
-    		tester = new WebTester();
-    	}
+    public void setUp() throws Exception {
+        if (tester == null) {
+            tester = new WebTester();
+        }
 
-    	File	tmpDir=FileUtil.getTmpDir();
-    	if (!tmpDir.exists()) {
-    		if (!tmpDir.mkdirs()) {
-    			System.err.println("Failed to ensure existence of " + tmpDir.getAbsolutePath());
-    		} else {
-    			System.out.println("Created " + tmpDir.getAbsolutePath());
-    		}
-    	}
+        File tmpDir = FileUtil.getTmpDir();
+        if (!tmpDir.exists()) {
+            if (!tmpDir.mkdirs()) {
+                System.err.println("Failed to ensure existence of " + tmpDir.getAbsolutePath());
+            } else {
+                System.out.println("Created " + tmpDir.getAbsolutePath());
+            }
+        }
 
-    	System.setProperty("org.apache.pluto.embedded.portletId", ExamplePortlet.NAME);
+        System.setProperty("org.apache.pluto.embedded.portletId", ExamplePortlet.NAME);
         server = new Server(TEST_PORT);
         WebAppContext webapp = new WebAppContext("src/test/webapp", "/" + CONTEXT_NAME);
         webapp.setDefaultsDescriptor("/WEB-INF/jetty-pluto-web-default.xml");
@@ -73,9 +73,9 @@ public class ExamplePortletTester extends PortletUnitTestCase {
         server.start();
         getTestContext().setBaseUrl(TEST_URL);
     }
-    
+
     @Override
-	public void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         server.stop();
     }
 
@@ -86,16 +86,16 @@ public class ExamplePortletTester extends PortletUnitTestCase {
         renderPortlet();
         assertTextPresent("Welcome, this is the example portlet in view mode");
     }
-    
+
     public void doEdit() throws Exception {
         renderPortlet(PortletMode.EDIT);
         assertTextPresent("This is the example portlet in edit mode");
     }
-    
+
     public void doAction() throws Exception {
         renderPortlet();
         assertTextPresent("Welcome, this is the example portlet in view mode");
-        
+
         assertFormPresent("answerForm");
         // This form should have two text fields. We'll populate these with data
         setWorkingForm("answerForm");

@@ -25,32 +25,32 @@ import com.springsource.insight.intercept.operation.OperationMap;
 
 
 public class StartOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-	public StartOperationCollectionAspectTest () {
-		super();
-	}
+    public StartOperationCollectionAspectTest() {
+        super();
+    }
 
-	@Test
-	public void testFullFlow() {
-		// Step 1: Execute test
-		WebFlowExecutionTest webFlow=new WebFlowExecutionTest();
-		webFlow.testFullFlow();
+    @Test
+    public void testFullFlow() {
+        // Step 1: Execute test
+        WebFlowExecutionTest webFlow = new WebFlowExecutionTest();
+        webFlow.testFullFlow();
 
-		// Step 2:  Get the Operation that was just created by our aspect
-		Operation op = getLastEntered();
+        // Step 2:  Get the Operation that was just created by our aspect
+        Operation op = getLastEntered();
 
-		// Step 3:  Validate
-		assertNotNull(op);
-		assert op.getType().getName().equals("wf-start");
+        // Step 3:  Validate
+        assertNotNull(op);
+        assert op.getType().getName().equals("wf-start");
 
-		assertNotNull(op.get("flowId"));
-		assertNotNull(op.get("initParams"));
+        assertNotNull(op.get("flowId"));
+        assertNotNull(op.get("initParams"));
 
-		OperationMap map=(OperationMap) op.get("initParams");
-		assertNotNull(map.get("id"));
-	}
+        OperationMap map = (OperationMap) op.get("initParams");
+        assertNotNull(map.get("id"));
+    }
 
-	@Override
-	public OperationCollectionAspectSupport getAspect() {
-		return StartOperationCollectionAspect.aspectOf();
-	}
+    @Override
+    public OperationCollectionAspectSupport getAspect() {
+        return StartOperationCollectionAspect.aspectOf();
+    }
 }

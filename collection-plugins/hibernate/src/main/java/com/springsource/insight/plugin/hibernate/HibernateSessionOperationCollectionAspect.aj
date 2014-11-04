@@ -30,14 +30,14 @@ import com.springsource.insight.intercept.plugin.CollectionSettingsRegistry;
 import com.springsource.insight.intercept.plugin.CollectionSettingsUpdateListener;
 
 public aspect HibernateSessionOperationCollectionAspect
-		extends AbstractOperationCollectionAspect
-		implements CollectionSettingsUpdateListener {
-    
+        extends AbstractOperationCollectionAspect
+        implements CollectionSettingsUpdateListener {
+
     protected static final OperationType TYPE = OperationType.valueOf("hibernate");
     protected static final CollectionSettingName cs = new CollectionSettingName("statistics",
-    		HibernatePluginRuntimeDescriptor.PLUGIN_NAME,
+            HibernatePluginRuntimeDescriptor.PLUGIN_NAME,
             "Provides additional statistics from Session.getStatistics");
-    protected final AtomicBoolean collectStatistics=new AtomicBoolean(true);
+    protected final AtomicBoolean collectStatistics = new AtomicBoolean(true);
 
     /**
      * Example usage of disabling a plugin based upon some versioning criteria
@@ -52,55 +52,55 @@ public aspect HibernateSessionOperationCollectionAspect
         registry.register(cs, Boolean.TRUE);
     }
 
-    public pointcut flushExecute() 
-        : execution(void Session.flush());
+    public pointcut flushExecute()
+            : execution(void Session.flush());
 
     public pointcut saveExecute()
-        : execution(* Session.save(..));
-    
+            : execution(* Session.save(..));
+
     public pointcut updateExecute()
-    	: execution(void Session.update(..));
+            : execution(void Session.update(..));
 
     public pointcut deleteExecute()
-    	: execution(void Session.delete(..));
+            : execution(void Session.delete(..));
 
     public pointcut loadExecute()
-    	: execution(Object Session.load(..));
-   
+            : execution(Object Session.load(..));
+
     public pointcut isDirtyExecute()
-    	: execution(boolean Session.isDirty());
-    
+            : execution(boolean Session.isDirty());
+
     public pointcut getExecute()
-    	: execution(Object Session.get(..));
+            : execution(Object Session.get(..));
 
     /**
      * Many of the basic hibernate methods are chained,
      * so we use cflowbelow to cull subsequent calls.
      */
-    public pointcut collectionPoint() 
-	    : (flushExecute() && !cflowbelow(flushExecute()))
-	    || (saveExecute() && !cflowbelow(saveExecute()))
-	    || (updateExecute() && !cflowbelow(updateExecute()))
-	    || (deleteExecute() && !cflowbelow(deleteExecute()))
-	    || (isDirtyExecute() && !cflowbelow(isDirtyExecute()))
-	    || (getExecute() && !cflowbelow(getExecute()))         
-	    || (loadExecute() && !cflowbelow(loadExecute()))
-	    ;
-    
+    public pointcut collectionPoint()
+            : (flushExecute() && !cflowbelow(flushExecute()))
+            || (saveExecute() && !cflowbelow(saveExecute()))
+            || (updateExecute() && !cflowbelow(updateExecute()))
+            || (deleteExecute() && !cflowbelow(deleteExecute()))
+            || (isDirtyExecute() && !cflowbelow(isDirtyExecute()))
+            || (getExecute() && !cflowbelow(getExecute()))
+            || (loadExecute() && !cflowbelow(loadExecute()))
+            ;
+
     @Override
     protected Operation createOperation(JoinPoint jp) {
         String method = jp.getSignature().getName();
         Session session = (Session) jp.getThis();
         Operation op = new Operation()
-            .type(TYPE)
-            .label("Hibernate Session." + method)
-            .sourceCodeLocation(getSourceCodeLocation(jp))
-            .put("method", method)
-            .put("flushMode", session.getFlushMode().toString());
+                .type(TYPE)
+                .label("Hibernate Session." + method)
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .put("method", method)
+                .put("flushMode", session.getFlushMode().toString());
         if (collectStatistics.get()) {
             SessionStatistics stats = session.getStatistics();
             op = op.put("entityCount", stats.getEntityCount())
-                   .put("collectionCount", stats.getCollectionCount());
+                    .put("collectionCount", stats.getCollectionCount());
         }
 
         return op;
@@ -111,13 +111,13 @@ public aspect HibernateSessionOperationCollectionAspect
      */
     public void incrementalUpdate(CollectionSettingName name, Serializable value) {
         if (cs.equals(name)) {
-            boolean	newValue=CollectionSettingsRegistry.getBooleanSettingValue(value);
-            boolean	prevValue=collectStatistics.getAndSet(newValue);
+            boolean newValue = CollectionSettingsRegistry.getBooleanSettingValue(value);
+            boolean prevValue = collectStatistics.getAndSet(newValue);
             if (prevValue != newValue) {
-            	_logger.info("incrementalUpdate(" + name + ") " + prevValue + " => " + newValue);
+                _logger.info("incrementalUpdate(" + name + ") " + prevValue + " => " + newValue);
             }
         }
-   }
+    }
 
     @Override
     public String getPluginName() {

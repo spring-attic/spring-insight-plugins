@@ -10,7 +10,7 @@
                 <xs:element maxOccurs="unbounded" minOccurs="0" ref="cacheManagerPeerProviderFactory"/>
                 <xs:element maxOccurs="unbounded" minOccurs="0" ref="cacheManagerPeerListenerFactory"/>
                 <xs:element maxOccurs="1" minOccurs="0" ref="terracottaConfig"/>
-                <xs:element maxOccurs= "1" minOccurs="0" ref="defaultCache"/>
+                <xs:element maxOccurs="1" minOccurs="0" ref="defaultCache"/>
                 <xs:element maxOccurs="unbounded" minOccurs="0" ref="cache"/>
             </xs:sequence>
             <xs:attribute name="name" use="optional"/>
@@ -28,7 +28,7 @@
             <xs:attribute name="path" use="optional"/>
         </xs:complexType>
     </xs:element>
-     <xs:element name="transactionManagerLookup">
+    <xs:element name="transactionManagerLookup">
         <xs:complexType>
             <xs:attribute name="class" use="required"/>
             <xs:attribute name="properties" use="optional"/>
@@ -141,7 +141,7 @@
             <xs:attribute name="timeToLiveSeconds" type="xs:integer" use="optional"/>
             <xs:attribute name="maxElementsOnDisk" type="xs:integer" use="optional"/>
             <xs:attribute name="maxEntriesLocalDisk" type="xs:integer" use="optional"/>
-            <xs:attribute name="transactionalMode" type="transactionalMode" use="optional" default="off" />
+            <xs:attribute name="transactionalMode" type="transactionalMode" use="optional" default="off"/>
             <xs:attribute name="statistics" type="xs:boolean" use="optional" default="false"/>
             <xs:attribute name="copyOnRead" type="xs:boolean" use="optional" default="false"/>
             <xs:attribute name="copyOnWrite" type="xs:boolean" use="optional" default="false"/>
@@ -208,13 +208,13 @@
     </xs:element>
 
     <xs:element name="searchable">
-      <xs:complexType>
-        <xs:sequence>
-          <xs:element minOccurs="0" maxOccurs="unbounded" ref="searchAttribute"/>
-        </xs:sequence>
-        <xs:attribute name="keys" use="optional" type="xs:boolean" default="true"/>
-        <xs:attribute name="values" use="optional" type="xs:boolean" default="true"/>
-      </xs:complexType>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" maxOccurs="unbounded" ref="searchAttribute"/>
+            </xs:sequence>
+            <xs:attribute name="keys" use="optional" type="xs:boolean" default="true"/>
+            <xs:attribute name="values" use="optional" type="xs:boolean" default="true"/>
+        </xs:complexType>
     </xs:element>
 
     <xs:element name="pinning">
@@ -246,8 +246,8 @@
     </xs:element>
     <xs:simpleType name="consistencyType">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="strong" />
-            <xs:enumeration value="eventual" />
+            <xs:enumeration value="strong"/>
+            <xs:enumeration value="eventual"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:element name="nonstop">
@@ -269,9 +269,9 @@
     </xs:element>
     <xs:simpleType name="timeoutBehaviorType">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="noop" />
-            <xs:enumeration value="exception" />
-            <xs:enumeration value="localReads" />
+            <xs:enumeration value="noop"/>
+            <xs:enumeration value="exception"/>
+            <xs:enumeration value="localReads"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="monitoringType">
@@ -283,21 +283,21 @@
     </xs:simpleType>
     <xs:simpleType name="pinningStoreType">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="localHeap" />
-            <xs:enumeration value="localMemory" />
-            <xs:enumeration value="inCache" />
+            <xs:enumeration value="localHeap"/>
+            <xs:enumeration value="localMemory"/>
+            <xs:enumeration value="inCache"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="terracottaCacheValueType">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="serialization" />
-            <xs:enumeration value="identity" />
+            <xs:enumeration value="serialization"/>
+            <xs:enumeration value="identity"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="storageStrategyType">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="classic" />
-            <xs:enumeration value="DCV2" />
+            <xs:enumeration value="classic"/>
+            <xs:enumeration value="DCV2"/>
         </xs:restriction>
     </xs:simpleType>
 
@@ -312,7 +312,7 @@
 
     <xs:element name="cacheWriter">
         <xs:complexType>
-            <xs:sequence >
+            <xs:sequence>
                 <xs:element minOccurs="0" maxOccurs="1" ref="cacheWriterFactory"/>
             </xs:sequence>
             <xs:attribute name="writeMode" use="optional" type="writeModeType" default="write-through"/>
@@ -331,8 +331,8 @@
     </xs:element>
     <xs:simpleType name="writeModeType">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="write-through" />
-            <xs:enumeration value="write-behind" />
+            <xs:enumeration value="write-through"/>
+            <xs:enumeration value="write-behind"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:element name="cacheWriterFactory">
@@ -345,13 +345,13 @@
 
     <xs:element name="copyStrategy">
         <xs:complexType>
-            <xs:attribute name="class" use="required" type="xs:string" />
+            <xs:attribute name="class" use="required" type="xs:string"/>
         </xs:complexType>
     </xs:element>
 
     <xs:element name="elementValueComparator">
         <xs:complexType>
-            <xs:attribute name="class" use="required" type="xs:string" />
+            <xs:attribute name="class" use="required" type="xs:string"/>
         </xs:complexType>
     </xs:element>
 

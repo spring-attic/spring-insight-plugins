@@ -40,13 +40,13 @@ import com.springsource.insight.util.logging.AbstractLoggingClass;
 
 public final class JdbcQueryExternalResourceGenerator extends AbstractLoggingClass implements CollectionSettingsUpdateListener {
     private final CollectionSettingsRegistry registry;
-    private final Collection<ApplicationName> disabledApps=Collections.synchronizedSet(new TreeSet<ApplicationName>());
-    private final Collection<ApplicationName> knownApps=Collections.synchronizedSet(new TreeSet<ApplicationName>());
-    private final AtomicBoolean active=new AtomicBoolean();
+    private final Collection<ApplicationName> disabledApps = Collections.synchronizedSet(new TreeSet<ApplicationName>());
+    private final Collection<ApplicationName> knownApps = Collections.synchronizedSet(new TreeSet<ApplicationName>());
+    private final AtomicBoolean active = new AtomicBoolean();
 
     private static final class LazyFieldHolder {
         @SuppressWarnings("synthetic-access")
-		static final JdbcQueryExternalResourceGenerator INSTANCE = new JdbcQueryExternalResourceGenerator();
+        static final JdbcQueryExternalResourceGenerator INSTANCE = new JdbcQueryExternalResourceGenerator();
     }
 
     public static final JdbcQueryExternalResourceGenerator getInstance() {
@@ -59,8 +59,8 @@ public final class JdbcQueryExternalResourceGenerator extends AbstractLoggingCla
 
     // package visibility for unit tests
     JdbcQueryExternalResourceGenerator(CollectionSettingsRegistry reg) {
-        if ((registry=reg) == null) {
-        	throw new IllegalStateException("No registry provide");
+        if ((registry = reg) == null) {
+            throw new IllegalStateException("No registry provide");
         }
 
         registry.addListener(this);
@@ -141,28 +141,28 @@ public final class JdbcQueryExternalResourceGenerator extends AbstractLoggingCla
 
         if (CollectionSettingNames.CS_QUERY_EXRTERNAL_RESOURCE_NAME.equals(name)) {
             boolean newValue = CollectionSettingsRegistry.getBooleanSettingValue(value);
-            boolean	prevValue = active.getAndSet(newValue);
+            boolean prevValue = active.getAndSet(newValue);
             if (prevValue != newValue) {
-            	_logger.info("incrementalUpdate(" + name + ") " + prevValue + " => " + newValue);
+                _logger.info("incrementalUpdate(" + name + ") " + prevValue + " => " + newValue);
             }
             return;
         }
-            
+
         String key = name.getKey();
         if (!key.startsWith(CollectionSettingNames.APP_QUERY_EXRTERNAL_RESOURCE_KEY_NAME)) {
-        	return;
+            return;
         }
-                
+
         String appNameStr = key.substring(CollectionSettingNames.APP_QUERY_EXRTERNAL_RESOURCE_KEY_NAME.length());
         ApplicationName appName = ApplicationName.valueOf(appNameStr);
         if (knownApps.add(appName)) {
-        	_logger.info("incrementalUpdate(" + appName + ") new application");
+            _logger.info("incrementalUpdate(" + appName + ") new application");
         }
 
         boolean newEnabledValue = CollectionSettingsRegistry.getBooleanSettingValue(value);
-        boolean	prevEnabledValue = newEnabledValue ? disabledApps.remove(appName) : disabledApps.add(appName);
+        boolean prevEnabledValue = newEnabledValue ? disabledApps.remove(appName) : disabledApps.add(appName);
         if (prevEnabledValue != newEnabledValue) {
-        	_logger.info("incrementalUpdate(" + appName + ") " + prevEnabledValue + " => " + newEnabledValue);
+            _logger.info("incrementalUpdate(" + appName + ") " + prevEnabledValue + " => " + newEnabledValue);
         }
     }
 

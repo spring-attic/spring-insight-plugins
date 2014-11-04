@@ -41,78 +41,77 @@ public privileged aspect JobClientOperationCollectionAspect extends AbstractOper
         super();
     }
 
-    public pointcut collectionPoint() : execution(public RunningJob org.apache.hadoop.mapred.JobClient.runJob(JobConf)) ||
-    									execution(public RunningJob org.apache.hadoop.mapred.JobClient.submitJob(..));
+    public pointcut collectionPoint(): execution(public RunningJob org.apache.hadoop.mapred.JobClient.runJob(JobConf)) ||
+            execution(public RunningJob org.apache.hadoop.mapred.JobClient.submitJob(..));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-    	Object[] args = jp.getArgs();
-    	
-		Operation operation = new Operation().type(OperationCollectionTypes.JOB_TYPE.type)
-    						.label(OperationCollectionTypes.JOB_TYPE.label)
-    						.sourceCodeLocation(getSourceCodeLocation(jp));
-		
-		Configuration config;
-		if (args[0] instanceof JobConf) {
-			JobConf jobConf=(JobConf)args[0];
-			config=jobConf;
-			
-			operation.put("jobName", jobConf.getJobName()); 
-			
-			operation.putAnyNonEmpty("mapper", getClassName(jobConf.getMapperClass()));
-			operation.putAnyNonEmpty("reducer", getClassName(jobConf.getReducerClass()));
-			operation.put("mapper_tasks", jobConf.getNumMapTasks());
-			operation.put("reducer_tasks", jobConf.getNumReduceTasks());
-			
-			operation.putAnyNonEmpty("inputFormat", getClassName(jobConf.getInputFormat().getClass()));
-			Path[] inPaths=FileInputFormat.getInputPaths(jobConf);
-			if (inPaths!=null && inPaths.length>0) {
-				OperationList list=operation.createList("inputPath");
-				for (Path path: inPaths) {
-					list.add(path.getName());
-				}
-			}
-			operation.putAnyNonEmpty("outputFormat", getClassName(jobConf.getOutputFormat().getClass()));
-			Path outPath=FileOutputFormat.getOutputPath(jobConf);
-			if (outPath!=null) {
-				operation.put("outputPath", outPath.getName());
-			}
-			
-			operation.putAnyNonEmpty("mapperOutKey", getClassName(jobConf.getMapOutputKeyClass()));
-			operation.putAnyNonEmpty("mapperOutValue", getClassName(jobConf.getMapOutputValueClass()));
-			operation.putAnyNonEmpty("reducerOutKey", getClassName(jobConf.getOutputKeyClass()));
-			operation.putAnyNonEmpty("reducerOutValue", getClassName(jobConf.getOutputValueClass()));
-		}
-		else {
-			//configuration from external config file
-			config=((JobClient)jp.getTarget()).getConf();
-			
-			operation.putAnyNonEmpty("jobConfigFile", args[0]);
-		}
-		
-		// set configuration data
-		Iterator<Map.Entry<String,String>> params=config.iterator();
-		if (params.hasNext()) {
-			OperationMap confMap=operation.createMap("config");
-			while(params.hasNext()) {
-				Map.Entry<String,String> prop=params.next();
-				confMap.put(prop.getKey(), prop.getValue());
-			}
-		}
-		
-		return operation;
-    }
-    
-    private String getClassName(Class<?> claz) {
-    	if (claz==null) {
-    		return null;
-    	}
+        Object[] args = jp.getArgs();
 
-    	return claz.getName();
+        Operation operation = new Operation().type(OperationCollectionTypes.JOB_TYPE.type)
+                .label(OperationCollectionTypes.JOB_TYPE.label)
+                .sourceCodeLocation(getSourceCodeLocation(jp));
+
+        Configuration config;
+        if (args[0] instanceof JobConf) {
+            JobConf jobConf = (JobConf) args[0];
+            config = jobConf;
+
+            operation.put("jobName", jobConf.getJobName());
+
+            operation.putAnyNonEmpty("mapper", getClassName(jobConf.getMapperClass()));
+            operation.putAnyNonEmpty("reducer", getClassName(jobConf.getReducerClass()));
+            operation.put("mapper_tasks", jobConf.getNumMapTasks());
+            operation.put("reducer_tasks", jobConf.getNumReduceTasks());
+
+            operation.putAnyNonEmpty("inputFormat", getClassName(jobConf.getInputFormat().getClass()));
+            Path[] inPaths = FileInputFormat.getInputPaths(jobConf);
+            if (inPaths != null && inPaths.length > 0) {
+                OperationList list = operation.createList("inputPath");
+                for (Path path : inPaths) {
+                    list.add(path.getName());
+                }
+            }
+            operation.putAnyNonEmpty("outputFormat", getClassName(jobConf.getOutputFormat().getClass()));
+            Path outPath = FileOutputFormat.getOutputPath(jobConf);
+            if (outPath != null) {
+                operation.put("outputPath", outPath.getName());
+            }
+
+            operation.putAnyNonEmpty("mapperOutKey", getClassName(jobConf.getMapOutputKeyClass()));
+            operation.putAnyNonEmpty("mapperOutValue", getClassName(jobConf.getMapOutputValueClass()));
+            operation.putAnyNonEmpty("reducerOutKey", getClassName(jobConf.getOutputKeyClass()));
+            operation.putAnyNonEmpty("reducerOutValue", getClassName(jobConf.getOutputValueClass()));
+        } else {
+            //configuration from external config file
+            config = ((JobClient) jp.getTarget()).getConf();
+
+            operation.putAnyNonEmpty("jobConfigFile", args[0]);
+        }
+
+        // set configuration data
+        Iterator<Map.Entry<String, String>> params = config.iterator();
+        if (params.hasNext()) {
+            OperationMap confMap = operation.createMap("config");
+            while (params.hasNext()) {
+                Map.Entry<String, String> prop = params.next();
+                confMap.put(prop.getKey(), prop.getValue());
+            }
+        }
+
+        return operation;
     }
-    
-	@Override
+
+    private String getClassName(Class<?> claz) {
+        if (claz == null) {
+            return null;
+        }
+
+        return claz.getName();
+    }
+
+    @Override
     public String getPluginName() {
-		return HadoopPluginRuntimeDescriptor.PLUGIN_NAME;
-	}
+        return HadoopPluginRuntimeDescriptor.PLUGIN_NAME;
+    }
 }

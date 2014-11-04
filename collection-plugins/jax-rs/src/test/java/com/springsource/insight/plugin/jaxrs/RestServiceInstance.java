@@ -29,26 +29,28 @@ public class RestServiceInstance {
         super();
     }
 
-    public void initialize () {
+    public void initialize() {
         // do nothing
     }
 
     @GET
-    public Date getCurrentDate () {
+    public Date getCurrentDate() {
         return new Date(System.currentTimeMillis());
     }
 
-    @GET @Path(RestServiceDefinitions.YESTERDAY_PATH)
-    public Date getYesterdayDate (@PathParam("{now}") long now, boolean ignoredValue) {
+    @GET
+    @Path(RestServiceDefinitions.YESTERDAY_PATH)
+    public Date getYesterdayDate(@PathParam("{now}") long now, boolean ignoredValue) {
         return new Date(now - 86400000L);
     }
 
-    @GET @Path(RestServiceDefinitions.TOMORROW_PATH)
-    public Date getTomorrowDate (@PathParam("{now}") long now, boolean ignoredValue) {
+    @GET
+    @Path(RestServiceDefinitions.TOMORROW_PATH)
+    public Date getTomorrowDate(@PathParam("{now}") long now, boolean ignoredValue) {
         return new Date(now + 86400000L);
     }
 
-    public void destroy () {
+    public void destroy() {
         // do nothing
     }
 }

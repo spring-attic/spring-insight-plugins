@@ -18,10 +18,11 @@ package com.springsource.insight.plugin.runexec;
 import java.util.TimerTask;
 
 /**
- * 
+ *
  */
 public class TestRunnable extends TimerTask {
-    private final String    _testName;
+    private final String _testName;
+
     public TestRunnable(final String testName) {
         _testName = testName;
     }
@@ -29,8 +30,8 @@ public class TestRunnable extends TimerTask {
     @Override
     public void run() {
         System.out.append('\t').append(Thread.currentThread().getName())
-                  .append(" - run: ").println(_testName)
-                  ;
+                .append(" - run: ").println(_testName)
+        ;
     }
 
 }

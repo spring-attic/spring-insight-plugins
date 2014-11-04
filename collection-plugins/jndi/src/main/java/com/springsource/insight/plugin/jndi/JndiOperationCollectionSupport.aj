@@ -35,81 +35,80 @@ import com.springsource.insight.util.ArrayUtil;
 import com.springsource.insight.util.StringUtil;
 
 /**
- * 
+ *
  */
 public abstract aspect JndiOperationCollectionSupport extends TrailingAbstractOperationCollectionAspect {
     protected static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
-    protected static final String UNKNOWN_NAME="<unknown>";
-    protected final OperationType	type;
+    protected static final String UNKNOWN_NAME = "<unknown>";
+    protected final OperationType type;
     protected final JndiResourceCollectionFilter filter;
-    
-	protected JndiOperationCollectionSupport (OperationType opType) {
-		this(opType, JndiResourceCollectionFilter.getIntance());
-	}
 
-	protected JndiOperationCollectionSupport (OperationType opType, JndiResourceCollectionFilter resourceFilter) {
-		if ((type=opType) == null) {
-			throw new IllegalStateException("No operation type specified");
-		}
+    protected JndiOperationCollectionSupport(OperationType opType) {
+        this(opType, JndiResourceCollectionFilter.getIntance());
+    }
 
-		if ((filter=resourceFilter) == null) {
-			throw new IllegalStateException("No resource filter specified");
-		}
-	}
+    protected JndiOperationCollectionSupport(OperationType opType, JndiResourceCollectionFilter resourceFilter) {
+        if ((type = opType) == null) {
+            throw new IllegalStateException("No operation type specified");
+        }
 
-	@Override
-	protected Operation createOperation(JoinPoint jp) {
-		String		name=getName(jp);
-		if (StringUtil.isEmpty(name) || (!filter.accept(name))) {
-			return null;
-		}
+        if ((filter = resourceFilter) == null) {
+            throw new IllegalStateException("No resource filter specified");
+        }
+    }
 
-		Signature	sig=jp.getSignature();
-		String		action=sig.getName();
-		Operation	op=new Operation()
-							.type(type)
-							.sourceCodeLocation(getSourceCodeLocation(jp))
-							.label(StringUtil.capitalize(action) + " " + (StringUtil.isEmpty(name) ? UNKNOWN_NAME : name))
-							.put("action", action)
-							.putAnyNonEmpty("name", name)
-							;
-		if (collectExtraInformation()) {
-			Context	ctx=(Context) jp.getTarget();
-			try {
-				Map<?,?>		env=ctx.getEnvironment();
-				OperationMap	map=op.createMap("environment");
-				map.putAnyAll(env);
-			} catch(NamingException e) {
-				// ignored
-			}
-		}
+    @Override
+    protected Operation createOperation(JoinPoint jp) {
+        String name = getName(jp);
+        if (StringUtil.isEmpty(name) || (!filter.accept(name))) {
+            return null;
+        }
 
-		return op;
-	}
+        Signature sig = jp.getSignature();
+        String action = sig.getName();
+        Operation op = new Operation()
+                .type(type)
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .label(StringUtil.capitalize(action) + " " + (StringUtil.isEmpty(name) ? UNKNOWN_NAME : name))
+                .put("action", action)
+                .putAnyNonEmpty("name", name);
+        if (collectExtraInformation()) {
+            Context ctx = (Context) jp.getTarget();
+            try {
+                Map<?, ?> env = ctx.getEnvironment();
+                OperationMap map = op.createMap("environment");
+                map.putAnyAll(env);
+            } catch (NamingException e) {
+                // ignored
+            }
+        }
 
-	protected boolean collectExtraInformation () {
+        return op;
+    }
+
+    protected boolean collectExtraInformation() {
         return FrameBuilder.OperationCollectionLevel.HIGH.equals(configuration.getCollectionLevel());
     }
 
-	protected String getName (JoinPoint jp) {
-		return getName(jp.getArgs());
-	}
+    protected String getName(JoinPoint jp) {
+        return getName(jp.getArgs());
+    }
 
-	protected String getName (Object ... args) {
-		if (ArrayUtil.length(args) <= 0) {
-			return null;
-		}
+    protected String getName(Object... args) {
+        if (ArrayUtil.length(args) <= 0) {
+            return null;
+        }
 
-		Object	arg0=args[0];
-		if ((arg0 instanceof String) || (arg0 instanceof Name)) {
-			return arg0.toString();
-		} else {
-			return null;
-		}
-	}
+        Object arg0 = args[0];
+        if ((arg0 instanceof String) || (arg0 instanceof Name)) {
+            return arg0.toString();
+        } else {
+            return null;
+        }
+    }
 
-	@Override
-	public final String getPluginName() {
-		return JndiPluginRuntimeDescriptor.PLUGIN_NAME;
-	}
+    @Override
+    public final String getPluginName() {
+        return JndiPluginRuntimeDescriptor.PLUGIN_NAME;
+    }
 }

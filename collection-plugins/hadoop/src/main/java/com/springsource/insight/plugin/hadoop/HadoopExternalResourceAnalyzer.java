@@ -30,37 +30,37 @@ import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.ListUtil;
 
 public class HadoopExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-	private static final HadoopExternalResourceAnalyzer	INSTANCE=new HadoopExternalResourceAnalyzer();
+    private static final HadoopExternalResourceAnalyzer INSTANCE = new HadoopExternalResourceAnalyzer();
 
-	private HadoopExternalResourceAnalyzer() {
-	    super(OperationCollectionTypes.MAP_TYPE.type);
-	}
+    private HadoopExternalResourceAnalyzer() {
+        super(OperationCollectionTypes.MAP_TYPE.type);
+    }
 
-	public static final HadoopExternalResourceAnalyzer getInstance() {
-		return INSTANCE;
-	}
+    public static final HadoopExternalResourceAnalyzer getInstance() {
+        return INSTANCE;
+    }
 
-	public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> frames) {
-		if (ListUtil.size(frames) <= 0) {
-		    return Collections.emptyList();
-		}
+    public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> frames) {
+        if (ListUtil.size(frames) <= 0) {
+            return Collections.emptyList();
+        }
 
-		List<ExternalResourceDescriptor> queueDescriptors = new ArrayList<ExternalResourceDescriptor>(frames.size());
-		for (Frame cacheFrame : frames) {
-			Operation op = cacheFrame.getOperation();
-			String host = op.get("host", String.class, null);
-			if (host!=null) {
-				String hashString = MD5NameGenerator.getName(host);
-	            String color = colorManager.getColor(op);
-	            
-				ExternalResourceDescriptor descriptor =
-				        new ExternalResourceDescriptor(cacheFrame, "server:" + hashString, host,
-	                       			                   ExternalResourceType.OTHER.name(), "HadoopMapper",
-	                       			                   host, 0, color, false);
-				queueDescriptors.add(descriptor);
-			}
-		}
+        List<ExternalResourceDescriptor> queueDescriptors = new ArrayList<ExternalResourceDescriptor>(frames.size());
+        for (Frame cacheFrame : frames) {
+            Operation op = cacheFrame.getOperation();
+            String host = op.get("host", String.class, null);
+            if (host != null) {
+                String hashString = MD5NameGenerator.getName(host);
+                String color = colorManager.getColor(op);
 
-		return queueDescriptors;
-	}
+                ExternalResourceDescriptor descriptor =
+                        new ExternalResourceDescriptor(cacheFrame, "server:" + hashString, host,
+                                ExternalResourceType.OTHER.name(), "HadoopMapper",
+                                host, 0, color, false);
+                queueDescriptors.add(descriptor);
+            }
+        }
+
+        return queueDescriptors;
+    }
 }

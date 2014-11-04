@@ -34,12 +34,12 @@ import com.springsource.insight.intercept.trace.ObscuredValueMarker;
 
 
 /**
- * 
+ *
  */
 public class DatabaseSessionOperationCollectionAspectTest
         extends EclipsePersistenceCollectionTestSupport {
     private ObscuredValueMarker originalMarker;
-    private final ObscuredValueSetMarker	replaceMarker=new ObscuredValueSetMarker();
+    private final ObscuredValueSetMarker replaceMarker = new ObscuredValueSetMarker();
 
     public DatabaseSessionOperationCollectionAspectTest() {
         super();
@@ -47,10 +47,10 @@ public class DatabaseSessionOperationCollectionAspectTest
 
     @Before
     @Override
-    public void setUp () {
+    public void setUp() {
         super.setUp();
-        
-        DatabaseSessionOperationCollectionAspect    aspectInstance=getAspect();
+
+        DatabaseSessionOperationCollectionAspect aspectInstance = getAspect();
         originalMarker = aspectInstance.getSensitiveValueMarker();
         replaceMarker.clear();
         aspectInstance.setSensitiveValueMarker(replaceMarker);
@@ -59,23 +59,23 @@ public class DatabaseSessionOperationCollectionAspectTest
     @After
     @Override
     public void restore() {
-        DatabaseSessionOperationCollectionAspect    aspectInstance=getAspect();
+        DatabaseSessionOperationCollectionAspect aspectInstance = getAspect();
         aspectInstance.setSensitiveValueMarker(originalMarker);
         super.restore();
     }
 
     @Test
-    public void testLogin () {
-        DatabaseSessionOperationCollectionAspect  aspectInstance=getAspect();
-        ObscuredValueSetMarker                    marker=(ObscuredValueSetMarker) aspectInstance.getSensitiveValueMarker();
+    public void testLogin() {
+        DatabaseSessionOperationCollectionAspect aspectInstance = getAspect();
+        ObscuredValueSetMarker marker = (ObscuredValueSetMarker) aspectInstance.getSensitiveValueMarker();
         for (LoginAction action : LoginAction.values()) {
-            Login   mockLogin=Mockito.mock(Login.class);
+            Login mockLogin = Mockito.mock(Login.class);
             Mockito.when(mockLogin.getUserName()).thenReturn("username:" + action.name());
             Mockito.when(mockLogin.getPassword()).thenReturn("password:" + action.name());
             mockSession.setLogin(mockLogin);
             action.executeAction(mockSession, mockLogin);
 
-            Operation   op=assertDatabaseSessionOperation(action.name(), "login");
+            Operation op = assertDatabaseSessionOperation(action.name(), "login");
             action.assertExecutionResult(op, mockLogin, marker);
 
             // prepare for next iteration
@@ -85,7 +85,7 @@ public class DatabaseSessionOperationCollectionAspectTest
     }
 
     @Test
-    public void testLogout () {
+    public void testLogout() {
         mockSession.logout();
         assertDatabaseSessionOperation("testLogout", "logout");
     }
@@ -95,42 +95,42 @@ public class DatabaseSessionOperationCollectionAspectTest
         return DatabaseSessionOperationCollectionAspect.aspectOf();
     }
 
-    protected Operation assertDatabaseSessionOperation (String testName, String action) {
+    protected Operation assertDatabaseSessionOperation(String testName, String action) {
         return assertPersistenceOperation(testName, EclipsePersistenceDefinitions.DB, action);
     }
 
     static enum LoginAction {
-        LOGINEMPTY(0,false) {
+        LOGINEMPTY(0, false) {
             @Override
-            public void executeAction (DatabaseSession session, Login login) throws DatabaseException {
+            public void executeAction(DatabaseSession session, Login login) throws DatabaseException {
                 session.login();
             }
         },
-        LOGINLOGIN(1,false) {
+        LOGINLOGIN(1, false) {
             @Override
-            public void executeAction (DatabaseSession session, Login login) throws DatabaseException {
+            public void executeAction(DatabaseSession session, Login login) throws DatabaseException {
                 session.login(login);
             }
         },
-        LOGINUSERPASS(2,true) {
+        LOGINUSERPASS(2, true) {
             @Override
-            public void executeAction (DatabaseSession session, Login login) throws DatabaseException {
+            public void executeAction(DatabaseSession session, Login login) throws DatabaseException {
                 session.login(login.getUserName(), login.getPassword());
             }
         };
 
-        private final int   numArgs;
-        private final boolean   obscured;
+        private final int numArgs;
+        private final boolean obscured;
 
         LoginAction(@SuppressWarnings("hiding") int numArgs, @SuppressWarnings("hiding") boolean obscured) {
             this.numArgs = numArgs;
             this.obscured = obscured;
         }
 
-        public abstract void executeAction (DatabaseSession session, Login login) throws DatabaseException;
+        public abstract void executeAction(DatabaseSession session, Login login) throws DatabaseException;
 
-        public OperationList assertExecutionResult (Operation op, Login login, Collection<?> markedValues) {
-            OperationList   argsList=op.get(OperationFields.ARGUMENTS, OperationList.class);
+        public OperationList assertExecutionResult(Operation op, Login login, Collection<?> markedValues) {
+            OperationList argsList = op.get(OperationFields.ARGUMENTS, OperationList.class);
             assertNotNull(name() + ": No arguments extracted", argsList);
             assertEquals(name() + ": Mismatched number of arguments", numArgs, argsList.size());
             if (obscured) {

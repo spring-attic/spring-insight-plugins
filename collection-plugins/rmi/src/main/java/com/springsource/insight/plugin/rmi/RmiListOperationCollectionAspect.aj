@@ -30,44 +30,44 @@ import com.springsource.insight.util.ExceptionUtils;
  */
 public aspect RmiListOperationCollectionAspect extends OperationCollectionAspectSupport {
 
-	public RmiListOperationCollectionAspect() {
-		super();
-	}
+    public RmiListOperationCollectionAspect() {
+        super();
+    }
 
-	public pointcut list() : execution (* Registry.list());
-	
-	String[] around()
- 	   : list() && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart)) {
-		Operation op = new Operation()
-							.type(RmiDefinitions.RMI_LIST)
-							.label("List bound remotes")
-							.sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(thisJoinPoint));
-		OperationCollector collector = getCollector();
-		collector.enter(op);
-		try {
-			String[] res = proceed();
-		
-			OperationList names = op.createList(RmiDefinitions.LIST_ATTR);
-			if (ArrayUtil.length(res) > 0) {
-				for (String name : res) {
-					names.add(name);
-				}
-			}
-		
-			collector.exitNormal(res);
-			return res;
-		} catch (Exception e) {
-			collector.exitAbnormal(e);
-			ExceptionUtils.rethrowException(e);
-			return null;
-		}
-		
-		
-	}
+    public pointcut list(): execution (* Registry.list());
 
-	@Override
-	public String getPluginName() {
-		return RmiPluginRuntimeDescriptor.PLUGIN_NAME;
-	}
+    String[] around()
+            : list() && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart)) {
+        Operation op = new Operation()
+                .type(RmiDefinitions.RMI_LIST)
+                .label("List bound remotes")
+                .sourceCodeLocation(OperationCollectionUtil.getSourceCodeLocation(thisJoinPoint));
+        OperationCollector collector = getCollector();
+        collector.enter(op);
+        try {
+            String[] res = proceed();
+
+            OperationList names = op.createList(RmiDefinitions.LIST_ATTR);
+            if (ArrayUtil.length(res) > 0) {
+                for (String name : res) {
+                    names.add(name);
+                }
+            }
+
+            collector.exitNormal(res);
+            return res;
+        } catch (Exception e) {
+            collector.exitAbnormal(e);
+            ExceptionUtils.rethrowException(e);
+            return null;
+        }
+
+
+    }
+
+    @Override
+    public String getPluginName() {
+        return RmiPluginRuntimeDescriptor.PLUGIN_NAME;
+    }
 
 }

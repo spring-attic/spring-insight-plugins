@@ -21,17 +21,17 @@ import java.nio.channels.SocketChannel;
 import org.aspectj.lang.JoinPoint;
 
 /**
- * 
+ *
  */
 public aspect SocketChannelConnectCollectionAspect extends SocketConnectCollectionAspectSupport {
-    public SocketChannelConnectCollectionAspect () {
+    public SocketChannelConnectCollectionAspect() {
         super();
     }
-    
+
     public pointcut collectionPoint()
-        : call(* SocketChannel+.connect(SocketAddress))
-       || call(static * java.nio.channels.SocketChannel.open(SocketAddress))
-        ;
+            : call(* SocketChannel+.connect(SocketAddress))
+            || call(static * java.nio.channels.SocketChannel.open(SocketAddress))
+            ;
 
     @Override
     protected SocketAddress resolveConnectAddress(JoinPoint jp) {

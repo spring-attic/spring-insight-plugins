@@ -19,18 +19,18 @@ import com.springsource.insight.collection.test.OperationCollectionAspectTestSup
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public abstract class JdbcStatementOperationCollectionTestSupport extends OperationCollectionAspectTestSupport {
-	protected JdbcStatementOperationCollectionTestSupport () {
-		super();
-	}
-    
-    protected Operation assertJdbcOperation (String sql) {
+    protected JdbcStatementOperationCollectionTestSupport() {
+        super();
+    }
+
+    protected Operation assertJdbcOperation(String sql) {
         return assertJdbcOperation(getLastEntered(), sql);
     }
-    
-    protected Operation assertJdbcOperation (Operation operation, String sql) {
+
+    protected Operation assertJdbcOperation(Operation operation, String sql) {
         assertNotNull("No operation collected", operation);
         assertEquals("Mismatched type", JdbcOperationExternalResourceAnalyzer.TYPE, operation.getType());
         assertEquals("Mismatched SQL statement", sql, operation.get("sql", String.class));

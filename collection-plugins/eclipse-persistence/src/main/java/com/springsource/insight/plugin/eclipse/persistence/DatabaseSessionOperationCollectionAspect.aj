@@ -27,18 +27,18 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.trace.ObscuredValueMarker;
 
 /**
- * 
+ *
  */
 public aspect DatabaseSessionOperationCollectionAspect extends EclipsePersistenceCollectionAspect {
     private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
     private ObscuredValueMarker obscuredMarker =
             new FrameBuilderHintObscuredValueMarker(configuration.getFrameBuilder());
 
-    public DatabaseSessionOperationCollectionAspect () {
+    public DatabaseSessionOperationCollectionAspect() {
         super(EclipsePersistenceDefinitions.DB, "Session");
     }
 
-    ObscuredValueMarker getSensitiveValueMarker () {
+    ObscuredValueMarker getSensitiveValueMarker() {
         return obscuredMarker;
     }
 
@@ -46,21 +46,21 @@ public aspect DatabaseSessionOperationCollectionAspect extends EclipsePersistenc
         this.obscuredMarker = marker;
     }
 
-    public pointcut loginPoint ()
-        : execution(* DatabaseSession+.login())
-       || execution(* DatabaseSession+.login(String,String))
-       || execution(* DatabaseSession+.login(Login))
-        ;
+    public pointcut loginPoint()
+            : execution(* DatabaseSession+.login())
+            || execution(* DatabaseSession+.login(String,String))
+            || execution(* DatabaseSession+.login(Login))
+            ;
 
     public pointcut collectionPoint()
-        : (loginPoint() && (!cflowbelow(loginPoint()))) // in case the methods delegate from one another
-       || execution(* DatabaseSession+.logout())
-        ;
+            : (loginPoint() && (!cflowbelow(loginPoint()))) // in case the methods delegate from one another
+            || execution(* DatabaseSession+.logout())
+            ;
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Signature   sig=jp.getSignature();
-        String      methodName=sig.getName();
+        Signature sig = jp.getSignature();
+        String methodName = sig.getName();
 
         /* Obscure the username/password values if the relevant login variant used
          * NOTE !!! we are relying on the fact the the Login argument variant cannot
@@ -68,7 +68,7 @@ public aspect DatabaseSessionOperationCollectionAspect extends EclipsePersistenc
          * MethodOperationCollectionAspect
          */
         if ("login".equals(methodName)) {
-            Object[]    args=jp.getArgs();
+            Object[] args = jp.getArgs();
             if ((args != null) && (args.length == 2)) {
                 if (args[0] instanceof String) {
                     obscuredMarker.markObscured(args[0]);

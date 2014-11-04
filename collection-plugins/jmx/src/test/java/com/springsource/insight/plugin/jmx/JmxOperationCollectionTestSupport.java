@@ -38,54 +38,56 @@ import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.StringUtil;
 
 /**
- * 
+ *
  */
 public abstract class JmxOperationCollectionTestSupport extends OperationCollectionAspectTestSupport {
-	public static final String	TEST_CONTEXT="classpath:META-INF/jmx-plugin-test-context.xml";
-	public static final Comparator<ObjectName>	BY_CANONICAL_NAME_COMPARATOR=new Comparator<ObjectName>() {
-			public int compare(ObjectName o1, ObjectName o2) {
-				String	n1=(o1 == null) ? null : o1.getCanonicalName();
-				String	n2=(o1 == null) ? null : o2.getCanonicalName();
-				return StringUtil.safeCompare(n1, n2);
-			}
-		};
-	@Autowired protected MBeanServer	mbeanServer;
-	@Autowired protected SpringMBeanComponent	springMBean;
+    public static final String TEST_CONTEXT = "classpath:META-INF/jmx-plugin-test-context.xml";
+    public static final Comparator<ObjectName> BY_CANONICAL_NAME_COMPARATOR = new Comparator<ObjectName>() {
+        public int compare(ObjectName o1, ObjectName o2) {
+            String n1 = (o1 == null) ? null : o1.getCanonicalName();
+            String n2 = (o1 == null) ? null : o2.getCanonicalName();
+            return StringUtil.safeCompare(n1, n2);
+        }
+    };
+    @Autowired
+    protected MBeanServer mbeanServer;
+    @Autowired
+    protected SpringMBeanComponent springMBean;
 
-	protected JmxOperationCollectionTestSupport() {
-		super();
-	}
+    protected JmxOperationCollectionTestSupport() {
+        super();
+    }
 
-	protected Operation assertBeanOperation(ObjectName name) {
-		Operation	op=getLastEntered();
-		assertNotNull("No operation extracted", op);
-		assertEquals("Mismatched bean name", name.getCanonicalName(), op.get(JmxPluginRuntimeDescriptor.BEAN_NAME_PROP, String.class));
-		return op;
-	}
+    protected Operation assertBeanOperation(ObjectName name) {
+        Operation op = getLastEntered();
+        assertNotNull("No operation extracted", op);
+        assertEquals("Mismatched bean name", name.getCanonicalName(), op.get(JmxPluginRuntimeDescriptor.BEAN_NAME_PROP, String.class));
+        return op;
+    }
 
-	public static final Map<ObjectName,MBeanInfo> getBeansMap(MBeanServer server)
-			throws IntrospectionException, InstanceNotFoundException, ReflectionException {
-		Collection<ObjectName>	names=listBeans(server);
-		if (ListUtil.size(names) <= 0) {
-			return Collections.emptyMap();
-		}
-		
-		Map<ObjectName,MBeanInfo>	map=new TreeMap<ObjectName, MBeanInfo>(BY_CANONICAL_NAME_COMPARATOR);
-		for (ObjectName	n : names) {
-			MBeanInfo	info=server.getMBeanInfo(n);
-			if (info == null) {
-				continue;
-			}
-			
-			MBeanInfo	prev=map.put(n, info);
-			assertNullValue("Multiple information for " + n, prev);
-		}
-		
-		return map;
-	}
+    public static final Map<ObjectName, MBeanInfo> getBeansMap(MBeanServer server)
+            throws IntrospectionException, InstanceNotFoundException, ReflectionException {
+        Collection<ObjectName> names = listBeans(server);
+        if (ListUtil.size(names) <= 0) {
+            return Collections.emptyMap();
+        }
 
-	public static final Set<ObjectName> listBeans(MBeanServer server) {
-		assertNotNull("No server available", server);
-		return server.queryNames(null, null);
-	}
+        Map<ObjectName, MBeanInfo> map = new TreeMap<ObjectName, MBeanInfo>(BY_CANONICAL_NAME_COMPARATOR);
+        for (ObjectName n : names) {
+            MBeanInfo info = server.getMBeanInfo(n);
+            if (info == null) {
+                continue;
+            }
+
+            MBeanInfo prev = map.put(n, info);
+            assertNullValue("Multiple information for " + n, prev);
+        }
+
+        return map;
+    }
+
+    public static final Set<ObjectName> listBeans(MBeanServer server) {
+        assertNotNull("No server available", server);
+        return server.queryNames(null, null);
+    }
 }

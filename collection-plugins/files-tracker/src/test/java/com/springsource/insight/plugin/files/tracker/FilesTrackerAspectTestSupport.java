@@ -34,20 +34,20 @@ import com.springsource.insight.plugin.files.tracker.AbstractFilesTrackerAspectS
 import com.springsource.insight.util.StringUtil;
 
 /**
- * 
+ *
  */
 public abstract class FilesTrackerAspectTestSupport extends OperationCollectionAspectTestSupport {
     protected FilesTrackerAspectTestSupport() {
         super();
     }
 
-    protected void assertFileTrackingOperation (Closeable instance, File file, String opcode, String mode) throws IOException {
+    protected void assertFileTrackingOperation(Closeable instance, File file, String opcode, String mode) throws IOException {
         assertFileTrackingOperation(instance, file.getAbsolutePath(), opcode, mode);
     }
 
-    protected Operation assertFileTrackingOperation (Closeable instance, String filePath, String opcode, String mode) throws IOException {
+    protected Operation assertFileTrackingOperation(Closeable instance, String filePath, String opcode, String mode) throws IOException {
         try {
-            Operation op=getLastEntered();
+            Operation op = getLastEntered();
             assertNotNull("No operation extracted", op);
             assertEquals("Mismatched operation type", FilesTrackerDefinitions.TYPE, op.getType());
             assertEquals("Mismatched path", filePath, op.get(FilesTrackerDefinitions.PATH_ATTR, String.class));
@@ -55,27 +55,27 @@ public abstract class FilesTrackerAspectTestSupport extends OperationCollectionA
             // we expect only the file path to be tracked
             assertEquals("Tracking map too big", 1, AbstractFilesTrackerAspectSupport.trackedFilesMap.size());
             assertTrue("Tracking map does not contain input path",
-                              AbstractFilesTrackerAspectSupport.trackedFilesMap.containsValue(filePath));
-            
+                    AbstractFilesTrackerAspectSupport.trackedFilesMap.containsValue(filePath));
+
             if (!StringUtil.isEmpty(mode)) {
                 assertEquals("Mismatched mode", mode, op.get(FilesTrackerDefinitions.MODE_ATTR, String.class));
             }
-            
+
             return op;
         } finally {
             instance.close();
 
             // after close the tracked files map must be empty - this indirectly tests the closing aspect
-            Map<?,?>	trackingMap=AbstractFilesTrackerAspectSupport.trackedFilesMap;
+            Map<?, ?> trackingMap = AbstractFilesTrackerAspectSupport.trackedFilesMap;
             assertTrue("Tracking map not empty for file=" + filePath + "[" + opcode + "/" + mode + "]: " + trackingMap, trackingMap.isEmpty());
         }
     }
 
-    protected void runSynchronizedAspectPerformance (FileAccessor accessor) {
-        for (int threads : new int[] {1,4}) {
-            final Map<CacheKey,String>  orgCache=AbstractFilesTrackerAspectSupport.trackedFilesMap;
+    protected void runSynchronizedAspectPerformance(FileAccessor accessor) {
+        for (int threads : new int[]{1, 4}) {
+            final Map<CacheKey, String> orgCache = AbstractFilesTrackerAspectSupport.trackedFilesMap;
             try {
-                FilesCache  cache=new FilesCache(5);
+                FilesCache cache = new FilesCache(5);
                 AbstractFilesTrackerAspectSupport.trackedFilesMap =
                         (threads > 1) ? Collections.synchronizedMap(cache) : cache;
                 runSynchronizedAspectPerformance(accessor, threads);
@@ -86,22 +86,22 @@ public abstract class FilesTrackerAspectTestSupport extends OperationCollectionA
         }
     }
 
-    protected void runSynchronizedAspectPerformance (final FileAccessor accessor, int threads) {
-        final Runtime   RUNTIME=Runtime.getRuntime();
+    protected void runSynchronizedAspectPerformance(final FileAccessor accessor, int threads) {
+        final Runtime RUNTIME = Runtime.getRuntime();
 
         System.out.println("-------------- Synchronized=" + (threads > 1) + " Threads: " + threads + " ------------------");
         System.out.printf("%10s %20s %20s %20s", "Num. calls/th", "Duration (nano)", "Duration/th", "Used memory (B)");
         System.out.println();
-        for (final int  NUM_CALLS : new int[] { 100, 1000, 2500 }) {
+        for (final int NUM_CALLS : new int[]{100, 1000, 2500}) {
             Runnable runner = new Runnable() {
                 public void run() {
-                    for (int    cIndex=0; cIndex < NUM_CALLS; cIndex++) {
+                    for (int cIndex = 0; cIndex < NUM_CALLS; cIndex++) {
                         try {
-                            Closeable   instance=accessor.createInstance();
+                            Closeable instance = accessor.createInstance();
                             instance.close();
                         } catch (Exception e) {
                             fail(e.getClass().getSimpleName() + " error while running multi-threaded test"
-                               + " at index=" + cIndex + " out of " + NUM_CALLS + " calls: " + e.getMessage());
+                                    + " at index=" + cIndex + " out of " + NUM_CALLS + " calls: " + e.getMessage());
                         }
                     }
                     InterceptConfiguration.getInstance().getFrameBuilder().dump();
@@ -110,11 +110,11 @@ public abstract class FilesTrackerAspectTestSupport extends OperationCollectionA
             ExecutorService exec = Executors.newFixedThreadPool(threads);
             encourageGC();
             List<Future<?>> futureList = new ArrayList<Future<?>>(threads);
-            long    startTime=System.nanoTime(), startFree=RUNTIME.freeMemory();
+            long startTime = System.nanoTime(), startFree = RUNTIME.freeMemory();
 
             for (int i = 0; i < threads; i++)
                 futureList.add(exec.submit(runner));
-            for (Future<?> f: futureList) {
+            for (Future<?> f : futureList) {
                 try {
                     // see javadoc for ExecutorService#submit...
                     assertNullValue("Unexpected Future termination value", f.get());
@@ -122,16 +122,16 @@ public abstract class FilesTrackerAspectTestSupport extends OperationCollectionA
                     fail(e.getClass().getSimpleName() + " error while checking multi-threaded termination: " + e.getMessage());
                 }
             }
-            long    endTime=System.nanoTime(), endFree=RUNTIME.freeMemory();
+            long endTime = System.nanoTime(), endFree = RUNTIME.freeMemory();
             System.out.printf("%10d %20d %20d %20d",
-                              Integer.valueOf(NUM_CALLS), Long.valueOf(endTime - startTime),
-                              Long.valueOf((endTime - startTime)/threads),
-                              Long.valueOf(startFree - endFree));
+                    Integer.valueOf(NUM_CALLS), Long.valueOf(endTime - startTime),
+                    Long.valueOf((endTime - startTime) / threads),
+                    Long.valueOf(startFree - endFree));
             System.out.println();
         }
     }
 
     protected static interface FileAccessor {
-        Closeable createInstance () throws IOException;
+        Closeable createInstance() throws IOException;
     }
 }

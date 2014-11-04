@@ -29,16 +29,16 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-@Entity(name="TestEntity")
+@Entity(name = "TestEntity")
 @NamedQueries({
-    @NamedQuery(name="TestEntity.findEntitiesInRange",
-                query="SELECT e FROM TestEntity e WHERE e.creationDate BETWEEN :startTime AND :endTime")
+        @NamedQuery(name = "TestEntity.findEntitiesInRange",
+                query = "SELECT e FROM TestEntity e WHERE e.creationDate BETWEEN :startTime AND :endTime")
 })
 public class TestEntity implements Serializable, Cloneable, Comparable<TestEntity> {
     private static final long serialVersionUID = 592907608114565723L;
 
-    private Date    creationDate;
-    private Long    id;
+    private Date creationDate;
+    private Long id;
 
     public TestEntity() {
         this(new Date(System.currentTimeMillis()));
@@ -49,8 +49,8 @@ public class TestEntity implements Serializable, Cloneable, Comparable<TestEntit
     }
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name="id",nullable=false,unique=true)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", nullable = false, unique = true)
     public Long getId() {
         return id;
     }
@@ -59,7 +59,7 @@ public class TestEntity implements Serializable, Cloneable, Comparable<TestEntit
         this.id = id;
     }
 
-    @Column(name="creationDate",nullable=false)
+    @Column(name = "creationDate", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     public Date getCreationDate() {
         return creationDate;
@@ -75,7 +75,7 @@ public class TestEntity implements Serializable, Cloneable, Comparable<TestEntit
         if (o == null)
             return -1;
 
-        Date    thisDate=this.getCreationDate(), otherDate=o.getCreationDate();
+        Date thisDate = this.getCreationDate(), otherDate = o.getCreationDate();
         if (thisDate == null) {
             return (otherDate == null) ? 0 : (+1);
         } else if (otherDate == null) {
@@ -87,7 +87,7 @@ public class TestEntity implements Serializable, Cloneable, Comparable<TestEntit
 
     @Override
     public int hashCode() {
-        Date    d=getCreationDate();
+        Date d = getCreationDate();
         return (d == null) ? 0 : d.hashCode();
     }
 
@@ -106,14 +106,14 @@ public class TestEntity implements Serializable, Cloneable, Comparable<TestEntit
     @Override
     public TestEntity clone() {
         try {
-            TestEntity  cloned=getClass().cast(super.clone());
-            Date        clonedDate=cloned.getCreationDate();
+            TestEntity cloned = getClass().cast(super.clone());
+            Date clonedDate = cloned.getCreationDate();
             if (clonedDate != null) {
                 cloned.setCreationDate((Date) clonedDate.clone());
             }
-            
+
             return cloned;
-        } catch(CloneNotSupportedException e) {
+        } catch (CloneNotSupportedException e) {
             throw new IllegalStateException("Failed to clone " + toString() + ": " + e.getMessage());
         }
     }

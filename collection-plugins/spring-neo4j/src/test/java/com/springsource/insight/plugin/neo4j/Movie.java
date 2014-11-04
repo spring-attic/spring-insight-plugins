@@ -28,21 +28,21 @@ public class Movie {
     int id;
     String title;
     int year;
-    
+
     public Movie() {
-    	super();
+        super();
     }
-    
+
     public Movie(int movieId, String movieTitle, int movieYear) {
-    	this.id=movieId;
-    	this.title=movieTitle;
-    	this.year=movieYear;
+        this.id = movieId;
+        this.title = movieTitle;
+        this.year = movieYear;
     }
-    
+
     public Long getNodeId() {
-    	return this.nodeId;
+        return this.nodeId;
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

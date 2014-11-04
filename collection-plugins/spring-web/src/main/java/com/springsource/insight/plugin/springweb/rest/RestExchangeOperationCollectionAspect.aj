@@ -19,12 +19,12 @@ package com.springsource.insight.plugin.springweb.rest;
 import org.springframework.web.client.RestOperations;
 
 /**
- * 
+ *
  */
 public aspect RestExchangeOperationCollectionAspect extends RestIndirectOperationCollectionSupport {
-	public RestExchangeOperationCollectionAspect () {
-		super("EXCHANGE");
-	}
+    public RestExchangeOperationCollectionAspect() {
+        super("EXCHANGE");
+    }
 
-	public pointcut accessPoint () : execution(* RestOperations+.exchange(..));
+    public pointcut accessPoint(): execution(* RestOperations+.exchange(..));
 }

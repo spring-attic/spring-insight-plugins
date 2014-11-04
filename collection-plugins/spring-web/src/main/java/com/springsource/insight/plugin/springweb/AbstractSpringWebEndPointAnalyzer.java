@@ -24,15 +24,15 @@ import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.trace.Frame;
 
 /**
- * 
+ *
  */
 public abstract class AbstractSpringWebEndPointAnalyzer extends AbstractSingleTypeEndpointAnalyzer {
-	protected AbstractSpringWebEndPointAnalyzer(OperationType type) {
-		super(type);
-	}
+    protected AbstractSpringWebEndPointAnalyzer(OperationType type) {
+        super(type);
+    }
 
-	@Override
-	protected EndPointAnalysis makeEndPoint(Frame controllerFrame, int depth) {
+    @Override
+    protected EndPointAnalysis makeEndPoint(Frame controllerFrame, int depth) {
         Operation controllerOp = controllerFrame.getOperation();
         String examplePath = EndPointAnalysis.getHttpExampleRequest(controllerFrame);
         EndPointName endPointName = EndPointName.valueOf(controllerOp);

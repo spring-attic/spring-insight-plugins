@@ -28,7 +28,7 @@ import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
 
 /**
- * 
+ *
  */
 public class EntityTransactionCollectionAspectTest
         extends OperationCollectionAspectTestSupport {
@@ -37,15 +37,15 @@ public class EntityTransactionCollectionAspectTest
     }
 
     @Test
-    public void testTransactionAction () {
+    public void testTransactionAction() {
         for (TransactionAction action : TransactionAction.values()) {
             action.execute(mockTransaction);
 
-            String      actionName=action.name().toLowerCase();
-            Operation   op=getLastEntered();
+            String actionName = action.name().toLowerCase();
+            Operation op = getLastEntered();
             assertNotNull(actionName + ": No operation extracted", op);
             assertEquals(actionName + ": Mismatched operation type", JpaDefinitions.TX_ENTITY, op.getType());
-            assertEquals(actionName + ": Mismatched action name", actionName, op.get(OperationFields.METHOD_NAME,String.class));
+            assertEquals(actionName + ": Mismatched action name", actionName, op.get(OperationFields.METHOD_NAME, String.class));
             Mockito.reset(spiedOperationCollector); // prepare for next iteration
         }
     }
@@ -58,28 +58,29 @@ public class EntityTransactionCollectionAspectTest
     private static enum TransactionAction {
         BEGIN {
             @Override
-            public void execute (EntityTransaction transaction) {
+            public void execute(EntityTransaction transaction) {
                 transaction.begin();
             }
         },
         COMMIT {
             @Override
-            public void execute (EntityTransaction transaction) {
+            public void execute(EntityTransaction transaction) {
                 transaction.commit();
             }
         },
         ROLLBACK {
             @Override
-            public void execute (EntityTransaction transaction) {
+            public void execute(EntityTransaction transaction) {
                 transaction.rollback();
             }
         };
-        
-        public abstract void execute (EntityTransaction transaction);
+
+        public abstract void execute(EntityTransaction transaction);
     }
 
-    private static final EntityTransaction mockTransaction=new EntityTransaction() {
-        private final Logger    logger=Logger.getLogger(EntityTransaction.class.getName());
+    private static final EntityTransaction mockTransaction = new EntityTransaction() {
+        private final Logger logger = Logger.getLogger(EntityTransaction.class.getName());
+
         public void begin() {
             logger.info("BEGIN");
         }
@@ -93,6 +94,7 @@ public class EntityTransactionCollectionAspectTest
         }
 
         private boolean rollbackOnly;
+
         public void setRollbackOnly() {
             rollbackOnly = true;
         }

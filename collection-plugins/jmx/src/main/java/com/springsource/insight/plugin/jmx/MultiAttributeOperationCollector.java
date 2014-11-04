@@ -32,32 +32,32 @@ import com.springsource.insight.util.StringFormatterUtils;
  * return value
  */
 public class MultiAttributeOperationCollector extends DefaultOperationCollector {
-	public MultiAttributeOperationCollector() {
-		super();
-	}
+    public MultiAttributeOperationCollector() {
+        super();
+    }
 
-	@Override
-	protected void processNormalExit(Operation op, Object returnValue) {
-		if (returnValue instanceof AttributeList) {
-			encodeManagedAttributes(op, (AttributeList) returnValue);
-		}
-	}
+    @Override
+    protected void processNormalExit(Operation op, Object returnValue) {
+        if (returnValue instanceof AttributeList) {
+            encodeManagedAttributes(op, (AttributeList) returnValue);
+        }
+    }
 
-	static OperationList encodeManagedAttributes(Operation op, AttributeList attrList) {
-		return encodeManagedAttributes(op.createList(JmxPluginRuntimeDescriptor.ATTR_LIST_PROP), attrList);
-	}
-	
-	static OperationList encodeManagedAttributes(OperationList op, AttributeList attrList) {
-		if (ListUtil.size(attrList) <= 0) {
-			op.clear();
-			return op;
-		}
-		
-		for (Object a : attrList) {
-			Attribute	attr=(Attribute) a;
-			OperationUtils.addNameValuePair(op, attr.getName(), StringFormatterUtils.formatObject(attr.getValue()));
-		}
-		
-		return op;
-	}
+    static OperationList encodeManagedAttributes(Operation op, AttributeList attrList) {
+        return encodeManagedAttributes(op.createList(JmxPluginRuntimeDescriptor.ATTR_LIST_PROP), attrList);
+    }
+
+    static OperationList encodeManagedAttributes(OperationList op, AttributeList attrList) {
+        if (ListUtil.size(attrList) <= 0) {
+            op.clear();
+            return op;
+        }
+
+        for (Object a : attrList) {
+            Attribute attr = (Attribute) a;
+            OperationUtils.addNameValuePair(op, attr.getName(), StringFormatterUtils.formatObject(attr.getValue()));
+        }
+
+        return op;
+    }
 }

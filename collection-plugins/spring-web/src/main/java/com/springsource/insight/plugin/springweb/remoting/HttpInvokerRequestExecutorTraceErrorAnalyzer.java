@@ -26,32 +26,32 @@ import com.springsource.insight.intercept.trace.TraceError;
 import com.springsource.insight.util.StringUtil;
 
 /**
- * 
+ *
  */
 public class HttpInvokerRequestExecutorTraceErrorAnalyzer extends AbstractTraceErrorAnalyzer {
-	private static final HttpInvokerRequestExecutorTraceErrorAnalyzer	INSTANCE=new HttpInvokerRequestExecutorTraceErrorAnalyzer();
+    private static final HttpInvokerRequestExecutorTraceErrorAnalyzer INSTANCE = new HttpInvokerRequestExecutorTraceErrorAnalyzer();
 
-	private HttpInvokerRequestExecutorTraceErrorAnalyzer() {
-		super(HttpInvokerRequestExecutorExternalResourceAnalyzer.HTTP_INVOKER);
-	}
+    private HttpInvokerRequestExecutorTraceErrorAnalyzer() {
+        super(HttpInvokerRequestExecutorExternalResourceAnalyzer.HTTP_INVOKER);
+    }
 
-	public static final HttpInvokerRequestExecutorTraceErrorAnalyzer getInstance() {
-		return INSTANCE;
-	}
+    public static final HttpInvokerRequestExecutorTraceErrorAnalyzer getInstance() {
+        return INSTANCE;
+    }
 
-	@Override
-	public TraceError locateFrameError(Frame frame) {
-		Operation	op=frame.getOperation();
-		String		remoteError=op.get(HttpInvokerRequestExecutorOperationCollector.REMOTE_EXCEPTION, String.class);
-		if (StringUtil.isEmpty(remoteError)) {
-			return null;
-		} else {
-			return new TraceError(remoteError);
-		}
-	}
+    @Override
+    public TraceError locateFrameError(Frame frame) {
+        Operation op = frame.getOperation();
+        String remoteError = op.get(HttpInvokerRequestExecutorOperationCollector.REMOTE_EXCEPTION, String.class);
+        if (StringUtil.isEmpty(remoteError)) {
+            return null;
+        } else {
+            return new TraceError(remoteError);
+        }
+    }
 
-	@Override	// if ANY remote invocation failed, then declare the trace an error
-	public Collection<Frame> locateFrames(Trace trace) {
-		return trace.getAllFramesOfType(HttpInvokerRequestExecutorExternalResourceAnalyzer.HTTP_INVOKER);
-	}
+    @Override    // if ANY remote invocation failed, then declare the trace an error
+    public Collection<Frame> locateFrames(Trace trace) {
+        return trace.getAllFramesOfType(HttpInvokerRequestExecutorExternalResourceAnalyzer.HTTP_INVOKER);
+    }
 }

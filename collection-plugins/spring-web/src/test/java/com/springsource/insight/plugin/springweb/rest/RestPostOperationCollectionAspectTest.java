@@ -25,60 +25,60 @@ import org.junit.Test;
 
 
 /**
- * 
+ *
  */
 public class RestPostOperationCollectionAspectTest extends RestOperationCollectionTestSupport {
-	public RestPostOperationCollectionAspectTest() {
-		super();
-	}
+    public RestPostOperationCollectionAspectTest() {
+        super();
+    }
 
-	@Test
-	public void testPostForLocationNoArgs() throws Exception {
-		assertRestOperationResult(opsInstance.postForLocation(new URI(createTestURI("testPostForLocationNoArgs")), this));
-	}
+    @Test
+    public void testPostForLocationNoArgs() throws Exception {
+        assertRestOperationResult(opsInstance.postForLocation(new URI(createTestURI("testPostForLocationNoArgs")), this));
+    }
 
-	@Test
-	public void testPostForLocationVarArgs() throws Exception {
-		assertRestOperationResult(opsInstance.postForLocation(createTestURI("testPostForLocationVarArgs"), this, new Date()));
-	}
+    @Test
+    public void testPostForLocationVarArgs() throws Exception {
+        assertRestOperationResult(opsInstance.postForLocation(createTestURI("testPostForLocationVarArgs"), this, new Date()));
+    }
 
-	@Test
-	public void testPostForLocationArgsMap() throws Exception {
-		assertRestOperationResult(opsInstance.postForLocation(createTestURI("testHeadForHeadersArgsMap"), this, Collections.singletonMap("now", new Date())));
-	}
+    @Test
+    public void testPostForLocationArgsMap() throws Exception {
+        assertRestOperationResult(opsInstance.postForLocation(createTestURI("testHeadForHeadersArgsMap"), this, Collections.singletonMap("now", new Date())));
+    }
 
-	@Test
-	public void testPostForEntityNoArgs() throws Exception {
-		assertRestOperationResult(opsInstance.postForEntity(new URI(createTestURI("testPostForEntityNoArgs")), this, Serializable.class));
-	}
+    @Test
+    public void testPostForEntityNoArgs() throws Exception {
+        assertRestOperationResult(opsInstance.postForEntity(new URI(createTestURI("testPostForEntityNoArgs")), this, Serializable.class));
+    }
 
-	@Test
-	public void testPostForEntityVarArgs() throws Exception {
-		assertRestOperationResult(opsInstance.postForEntity(createTestURI("testPostForEntityVarArgs"), this, Serializable.class, new Date()));
-	}
+    @Test
+    public void testPostForEntityVarArgs() throws Exception {
+        assertRestOperationResult(opsInstance.postForEntity(createTestURI("testPostForEntityVarArgs"), this, Serializable.class, new Date()));
+    }
 
-	@Test
-	public void testPostForEntityArgsMap() throws Exception {
-		assertRestOperationResult(opsInstance.postForEntity(createTestURI("testPostForEntityArgsMap"), this, Serializable.class, Collections.singletonMap("now", new Date())));
-	}
+    @Test
+    public void testPostForEntityArgsMap() throws Exception {
+        assertRestOperationResult(opsInstance.postForEntity(createTestURI("testPostForEntityArgsMap"), this, Serializable.class, Collections.singletonMap("now", new Date())));
+    }
 
-	@Test
-	public void testPostForObjectNoArgs() throws Exception {
-		assertRestOperationResult(opsInstance.postForObject(new URI(createTestURI("testPostForObjectNoArgs")), this, Serializable.class));
-	}
+    @Test
+    public void testPostForObjectNoArgs() throws Exception {
+        assertRestOperationResult(opsInstance.postForObject(new URI(createTestURI("testPostForObjectNoArgs")), this, Serializable.class));
+    }
 
-	@Test
-	public void testPostForObjectVarArgs() throws Exception {
-		assertRestOperationResult(opsInstance.postForObject(createTestURI("testPostForObjectVarArgs"), this, Serializable.class, new Date()));
-	}
+    @Test
+    public void testPostForObjectVarArgs() throws Exception {
+        assertRestOperationResult(opsInstance.postForObject(createTestURI("testPostForObjectVarArgs"), this, Serializable.class, new Date()));
+    }
 
-	@Test
-	public void testPostForObjectArgsMap() throws Exception {
-		assertRestOperationResult(opsInstance.postForObject(createTestURI("testPostForObjectArgsMap"), this, Serializable.class, Collections.singletonMap("now", new Date())));
-	}
+    @Test
+    public void testPostForObjectArgsMap() throws Exception {
+        assertRestOperationResult(opsInstance.postForObject(createTestURI("testPostForObjectArgsMap"), this, Serializable.class, Collections.singletonMap("now", new Date())));
+    }
 
-	@Override
-	public RestPostOperationCollectionAspect getAspect() {
-		return RestPostOperationCollectionAspect.aspectOf();
-	}
+    @Override
+    public RestPostOperationCollectionAspect getAspect() {
+        return RestPostOperationCollectionAspect.aspectOf();
+    }
 }

@@ -25,7 +25,7 @@ import com.springsource.insight.collection.test.OperationCollectionAspectTestSup
 import com.springsource.insight.intercept.operation.OperationList;
 
 /**
- * 
+ *
  */
 public abstract class SpringSecurityCollectionTestSupport
         extends OperationCollectionAspectTestSupport {
@@ -34,15 +34,15 @@ public abstract class SpringSecurityCollectionTestSupport
         super();
     }
 
-    protected OperationList assertGrantedAuthoritiesInstances (OperationList grantedList, Collection<? extends GrantedAuthority> grants) {
+    protected OperationList assertGrantedAuthoritiesInstances(OperationList grantedList, Collection<? extends GrantedAuthority> grants) {
         return assertGrantedAuthorities(grantedList, AuthorityUtils.authorityListToSet(grants));
     }
 
-    protected OperationList assertGrantedAuthorities (OperationList grantedList, Collection<String> grants) {
+    protected OperationList assertGrantedAuthorities(OperationList grantedList, Collection<String> grants) {
         assertNotNull("Missing granted authorities", grantedList);
         assertEquals("Mismatched granted authorities size", grants.size(), grantedList.size());
-        for (int index=0; index < grantedList.size(); index++) {
-            String  ga=grantedList.get(index, String.class);
+        for (int index = 0; index < grantedList.size(); index++) {
+            String ga = grantedList.get(index, String.class);
             assertNotNull("Empty granted authority #" + index, ga);
             assertTrue("Missing authority " + ga, grants.contains(ga));
         }

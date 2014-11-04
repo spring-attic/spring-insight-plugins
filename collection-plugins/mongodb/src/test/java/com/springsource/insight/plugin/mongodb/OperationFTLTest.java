@@ -39,9 +39,9 @@ import com.springsource.insight.intercept.operation.OperationFields;
 
 /**
  */
-@ContextConfiguration(locations = { "classpath:META-INF/insight-plugin-mongodb.xml",
-                                    "classpath:META-INF/test-app-context.xml" },
-                      loader = WebApplicationContextLoader.class)
+@ContextConfiguration(locations = {"classpath:META-INF/insight-plugin-mongodb.xml",
+        "classpath:META-INF/test-app-context.xml"},
+        loader = WebApplicationContextLoader.class)
 @RunWith(SpringJUnit4ClassRunner.class)
 public class OperationFTLTest extends AbstractOperationViewTestSupport {
     public OperationFTLTest() {
@@ -49,7 +49,7 @@ public class OperationFTLTest extends AbstractOperationViewTestSupport {
     }
 
     @SuppressWarnings("boxing")
-	@Test
+    @Test
     public void testView() throws Exception {
         JoinPoint jp = mock(JoinPoint.class);
         Signature sig = mock(Signature.class);

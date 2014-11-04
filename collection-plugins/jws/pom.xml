@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.springsource.insight.plugins</groupId>
     <artifactId>insight-plugin-jws</artifactId>
     <name>com.springsource.insight.plugins:jws</name>
     <packaging>jar</packaging>
-    
-	<parent>
-		<groupId>com.springsource.insight</groupId>
-		<artifactId>community-plugins</artifactId>
-		<version>2.0.0-CI-SNAPSHOT</version>
-		<relativePath>..</relativePath>
-	</parent>
+
+    <parent>
+        <groupId>com.springsource.insight</groupId>
+        <artifactId>community-plugins</artifactId>
+        <version>2.0.0-CI-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
 
     <properties>
         <spring.ws.version>2.0.4.RELEASE</spring.ws.version>
     </properties>
 
     <dependencies>
-            <!-- NOTE: this dependency is only required as long as
-                J2SE 1.5 version is used. In 1.6+ it is built-in -->
+        <!-- NOTE: this dependency is only required as long as
+            J2SE 1.5 version is used. In 1.6+ it is built-in -->
         <dependency>
             <groupId>javax.jws</groupId>
             <artifactId>jsr181-api</artifactId>
             <version>1.0-MR1</version>
             <scope>provided</scope>
         </dependency>
-                <!-- Spring web services -->
+        <!-- Spring web services -->
         <dependency>
             <groupId>org.springframework.ws</groupId>
             <artifactId>spring-ws-core</artifactId>
@@ -51,10 +52,10 @@
                 </exclusion>
             </exclusions>
         </dependency>
-                <!-- required by spring-ws directly or indirectly
-                we specify them explicitly to ensure that we use the
-                same spring version as the other components
-                -->
+        <!-- required by spring-ws directly or indirectly
+        we specify them explicitly to ensure that we use the
+        same spring version as the other components
+        -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
@@ -90,7 +91,7 @@
             <artifactId>spring-webmvc</artifactId>
             <scope>provided</scope>
         </dependency>
-       
+
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -121,11 +122,12 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <archive>
-                    	<manifest>
-                    		<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                    	</manifest>
-                        <manifestEntries>                            
-							<Insight-Plugin-Descriptor>com.springsource.insight.plugin.jws.JwsPluginRuntimeDescriptor</Insight-Plugin-Descriptor>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Insight-Plugin-Descriptor>com.springsource.insight.plugin.jws.JwsPluginRuntimeDescriptor
+                            </Insight-Plugin-Descriptor>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -139,5 +141,5 @@
             </plugin>
         </plugins>
     </build>
-    
+
 </project>

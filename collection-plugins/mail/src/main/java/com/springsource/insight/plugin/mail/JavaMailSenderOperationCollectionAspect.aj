@@ -30,94 +30,94 @@ import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.util.ArrayUtil;
 
 /**
- * 
+ *
  */
 public aspect JavaMailSenderOperationCollectionAspect extends MailOperationCollectionSupport {
-	public JavaMailSenderOperationCollectionAspect () {
-		super();
-	}
+    public JavaMailSenderOperationCollectionAspect() {
+        super();
+    }
 
-	public pointcut sendPoint ()
-		: execution(* JavaMailSender+.send(..))
-	   || execution(* MailSender+.send(..))
-	    ;
-	// using cflowbelow in case methods delegate to one another
-	public pointcut collectionPoint() : sendPoint() && (!cflowbelow(sendPoint()));
+    public pointcut sendPoint()
+            : execution(* JavaMailSender+.send(..))
+            || execution(* MailSender+.send(..))
+            ;
+    // using cflowbelow in case methods delegate to one another
+    public pointcut collectionPoint(): sendPoint() && (!cflowbelow(sendPoint()));
 
-	@Override
-	protected Operation createOperation(JoinPoint jp) {
-		return populateMessageDetails(super.createOperation(jp), jp.getArgs()[0]);
-	}
+    @Override
+    protected Operation createOperation(JoinPoint jp) {
+        return populateMessageDetails(super.createOperation(jp), jp.getArgs()[0]);
+    }
 
-	protected Operation populateMessageDetails(Operation op, Object msg) {
-		if (msg == null) {
-			return op;
-		}
+    protected Operation populateMessageDetails(Operation op, Object msg) {
+        if (msg == null) {
+            return op;
+        }
 
-		if (msg instanceof Object[]) {
-			Object[]	msgs=(Object[]) msg;
-			if (ArrayUtil.length(msgs) <= 0) {
-				return op;
-			}
-			return populateMessageDetails(op, ((Object[]) msg)[0]);
-		}
+        if (msg instanceof Object[]) {
+            Object[] msgs = (Object[]) msg;
+            if (ArrayUtil.length(msgs) <= 0) {
+                return op;
+            }
+            return populateMessageDetails(op, ((Object[]) msg)[0]);
+        }
 
-		if (msg instanceof Message) {
-			Message	mailMessage=(Message) msg;
-			addMessageDetails(op, mailMessage);
+        if (msg instanceof Message) {
+            Message mailMessage = (Message) msg;
+            addMessageDetails(op, mailMessage);
 
-			if (collectExtraInformation()) {
-				addAddresses(op, mailMessage);
-			}
-		} else if (msg instanceof SimpleMailMessage) {
-			SimpleMailMessage	simpleMessage=(SimpleMailMessage) msg;
-			addMessageDetails(op, simpleMessage);
+            if (collectExtraInformation()) {
+                addAddresses(op, mailMessage);
+            }
+        } else if (msg instanceof SimpleMailMessage) {
+            SimpleMailMessage simpleMessage = (SimpleMailMessage) msg;
+            addMessageDetails(op, simpleMessage);
 
-			if (collectExtraInformation()) {
-				addAddresses(op, simpleMessage);
-			}
-		} else if (msg instanceof MimeMessagePreparator) {
-			op.label("Send prepared message");
-		}
-		
-		return op;
-	}
+            if (collectExtraInformation()) {
+                addAddresses(op, simpleMessage);
+            }
+        } else if (msg instanceof MimeMessagePreparator) {
+            op.label("Send prepared message");
+        }
 
-	protected Operation addAddresses(Operation op, SimpleMailMessage msg) {
-		addAddresses("from", op.createList(MailDefinitions.SEND_SENDERS), msg.getFrom());
-		
-		OperationList	recips=op.createList(MailDefinitions.SEND_RECIPS);
-		addAddresses("to", recips, msg.getTo());
-		addAddresses("cc", recips, msg.getCc());
-		addAddresses("bcc", recips, msg.getBcc());
-		addAddresses("replyTo", recips, msg.getReplyTo());
-		return op;
-	}
+        return op;
+    }
 
-	protected OperationList addAddresses (String type, OperationList op, String ... addrs) {
+    protected Operation addAddresses(Operation op, SimpleMailMessage msg) {
+        addAddresses("from", op.createList(MailDefinitions.SEND_SENDERS), msg.getFrom());
+
+        OperationList recips = op.createList(MailDefinitions.SEND_RECIPS);
+        addAddresses("to", recips, msg.getTo());
+        addAddresses("cc", recips, msg.getCc());
+        addAddresses("bcc", recips, msg.getBcc());
+        addAddresses("replyTo", recips, msg.getReplyTo());
+        return op;
+    }
+
+    protected OperationList addAddresses(String type, OperationList op, String... addrs) {
         if (ArrayUtil.length(addrs) <= 0) {
             return op;
         }
 
         for (String a : addrs) {
-        	addRecipient(op, type, a);
+            addRecipient(op, type, a);
         }
 
         return op;
-	}
+    }
 
-	protected OperationMap addMessageDetails(Operation op, SimpleMailMessage msg) {
+    protected OperationMap addMessageDetails(Operation op, SimpleMailMessage msg) {
         op.label(createLabel(msg));
-		return addMessageDetails(op.createMap(MailDefinitions.SEND_DETAILS), msg);
-	}
+        return addMessageDetails(op.createMap(MailDefinitions.SEND_DETAILS), msg);
+    }
 
-	protected OperationMap addMessageDetails(OperationMap op, SimpleMailMessage msg) {
-		return op.putAnyNonEmpty(MailDefinitions.SEND_SUBJECT, msg.getSubject())
-				 .put(MailDefinitions.SEND_DATE, MailDefinitions.getSendDate(msg.getSentDate()))
-				 ;
-	}
+    protected OperationMap addMessageDetails(OperationMap op, SimpleMailMessage msg) {
+        return op.putAnyNonEmpty(MailDefinitions.SEND_SUBJECT, msg.getSubject())
+                .put(MailDefinitions.SEND_DATE, MailDefinitions.getSendDate(msg.getSentDate()))
+                ;
+    }
 
-	static String createLabel (SimpleMailMessage msg) {
-		return "Send Mail: " + msg.getSubject();
-	}
+    static String createLabel(SimpleMailMessage msg) {
+        return "Send Mail: " + msg.getSubject();
+    }
 }

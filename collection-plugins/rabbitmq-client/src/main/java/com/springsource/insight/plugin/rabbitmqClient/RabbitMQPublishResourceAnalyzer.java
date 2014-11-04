@@ -19,21 +19,21 @@ package com.springsource.insight.plugin.rabbitmqClient;
 import com.springsource.insight.intercept.operation.Operation;
 
 public class RabbitMQPublishResourceAnalyzer extends AbstractRabbitMQResourceAnalyzer {
-    private static final RabbitMQPublishResourceAnalyzer	INSTANCE=new RabbitMQPublishResourceAnalyzer();
+    private static final RabbitMQPublishResourceAnalyzer INSTANCE = new RabbitMQPublishResourceAnalyzer();
 
-	private RabbitMQPublishResourceAnalyzer() {
-		super(RabbitPluginOperationType.PUBLISH, false);
-	}
+    private RabbitMQPublishResourceAnalyzer() {
+        super(RabbitPluginOperationType.PUBLISH, false);
+    }
 
-	public static final RabbitMQPublishResourceAnalyzer getInstance() {
-		return INSTANCE;
-	}
+    public static final RabbitMQPublishResourceAnalyzer getInstance() {
+        return INSTANCE;
+    }
 
-	@Override
+    @Override
     protected String getRoutingKey(Operation op) {
         return op.get("routingKey", String.class);
     }
-    
+
     @Override
     protected String getExchange(Operation op) {
         return op.get("exchange", String.class);

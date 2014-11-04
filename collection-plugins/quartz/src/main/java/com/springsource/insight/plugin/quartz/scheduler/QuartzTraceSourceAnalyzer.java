@@ -19,13 +19,13 @@ import com.springsource.insight.intercept.trace.AbstractTraceSourceAnalyzer;
 import com.springsource.insight.intercept.trace.TraceSource;
 
 public class QuartzTraceSourceAnalyzer extends AbstractTraceSourceAnalyzer {
-	private static final QuartzTraceSourceAnalyzer INSTANCE = new QuartzTraceSourceAnalyzer();
-	
-	private QuartzTraceSourceAnalyzer() {
-		super(TraceSource.SCHEDULER, QuartzSchedulerDefinitions.TYPE);
-	}
-	
-	public static final QuartzTraceSourceAnalyzer getInstance() {
-		return INSTANCE;
-	}
+    private static final QuartzTraceSourceAnalyzer INSTANCE = new QuartzTraceSourceAnalyzer();
+
+    private QuartzTraceSourceAnalyzer() {
+        super(TraceSource.SCHEDULER, QuartzSchedulerDefinitions.TYPE);
+    }
+
+    public static final QuartzTraceSourceAnalyzer getInstance() {
+        return INSTANCE;
+    }
 }

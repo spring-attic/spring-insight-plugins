@@ -3,14 +3,14 @@
 
 <@insight.group label="GemFire Remote Operation">
     <@insight.entry name="Message Type">
-    	${operation.message_type?html}
+    ${operation.message_type?html}
     </@insight.entry>
     <@insight.entry name="Host">
-    	${operation.host?html}
+    ${operation.host?html}
     </@insight.entry>
     <@insight.entry name="Port">
-    	${operation.port?html}
-    </@insight.entry>    
+    ${operation.port?html}
+    </@insight.entry>
     <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
 </@insight.group>
 

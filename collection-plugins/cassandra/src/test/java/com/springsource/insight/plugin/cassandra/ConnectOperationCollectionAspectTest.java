@@ -19,19 +19,19 @@ import org.junit.Test;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 
-public class ConnectOperationCollectionAspectTest extends AbstractOperationCollectionAspectTest{
-	public ConnectOperationCollectionAspectTest () {
-		super();
-	}
+public class ConnectOperationCollectionAspectTest extends AbstractOperationCollectionAspectTest {
+    public ConnectOperationCollectionAspectTest() {
+        super();
+    }
 
-	@Override
-	public OperationCollectionAspectSupport getAspect() {
-		return ConnectOperationCollectionAspect.aspectOf();
-	}
-	
-	@Test
-	public void testConnection() throws Exception {
-		CassandraUnitTests.getInstance().testConnection();
-		validate(OperationCollectionTypes.CONNECT_TYPE.type);
-	}
+    @Override
+    public OperationCollectionAspectSupport getAspect() {
+        return ConnectOperationCollectionAspect.aspectOf();
+    }
+
+    @Test
+    public void testConnection() throws Exception {
+        CassandraUnitTests.getInstance().testConnection();
+        validate(OperationCollectionTypes.CONNECT_TYPE.type);
+    }
 }

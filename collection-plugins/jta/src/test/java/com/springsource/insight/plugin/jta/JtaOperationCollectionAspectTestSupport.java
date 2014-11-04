@@ -25,51 +25,51 @@ import com.springsource.insight.intercept.operation.SourceCodeLocation;
 import com.springsource.insight.intercept.operation.method.JoinPointBreakDown;
 
 /**
- * 
+ *
  */
 public abstract class JtaOperationCollectionAspectTestSupport
         extends OperationCollectionAspectTestSupport {
-    protected static final Class<?>[] EMPTY_CLASSES={ };
+    protected static final Class<?>[] EMPTY_CLASSES = {};
 
     protected JtaOperationCollectionAspectTestSupport() {
         super();
     }
 
-    protected <E extends Enum<E> & Runnable & ParameterTypeDescriptor> void runAspectOperations (Class<E> opsClass) {
+    protected <E extends Enum<E> & Runnable & ParameterTypeDescriptor> void runAspectOperations(Class<E> opsClass) {
         for (E testCase : opsClass.getEnumConstants()) {
-            String  testName=testCase.name(), action=testName.toLowerCase();
+            String testName = testCase.name(), action = testName.toLowerCase();
             testCase.run();
             assertTransactionOperation(testName, action, testCase.getArgTypes());
             Mockito.reset(spiedOperationCollector); // prepare for next iteration
         }
     }
 
-    protected Operation assertTransactionOperation (String testName, String action, Class<?> ... argTypes) {
-        Operation   op=getLastEntered();
+    protected Operation assertTransactionOperation(String testName, String action, Class<?>... argTypes) {
+        Operation op = getLastEntered();
         assertNotNull(testName + ": No operation", op);
 
-        JtaOperationCollectionAspect    aspectInstance=getJtaOperationCollectionAspect();
+        JtaOperationCollectionAspect aspectInstance = getJtaOperationCollectionAspect();
         assertEquals(testName + ": Mismatched operation type", aspectInstance.getOperationType(), op.getType());
 
-        Class<?>    txClass=aspectInstance.getTransactionClass();
+        Class<?> txClass = aspectInstance.getTransactionClass();
         assertEquals(testName + ": Mismatched full class name", txClass.getName(), op.get(OperationFields.CLASS_NAME, String.class));
         assertEquals(testName + ": Mismatched short class name", txClass.getSimpleName(), op.get(OperationFields.SHORT_CLASS_NAME, String.class));
         assertEquals(testName + ": Mismatched action", action, op.get(JtaDefinitions.ACTION_ATTR, String.class));
 
-        SourceCodeLocation  scl=new SourceCodeLocation(op.get(OperationFields.CLASS_NAME, String.class),
-                                                       op.get(OperationFields.METHOD_NAME, String.class),
-                                                       (-1));
+        SourceCodeLocation scl = new SourceCodeLocation(op.get(OperationFields.CLASS_NAME, String.class),
+                op.get(OperationFields.METHOD_NAME, String.class),
+                (-1));
         assertEquals(testName + ": Mismatched method signature",
-                            JoinPointBreakDown.getMethodStringFromArgs(scl, argTypes),
-                            op.get(OperationFields.METHOD_SIGNATURE, String.class));
+                JoinPointBreakDown.getMethodStringFromArgs(scl, argTypes),
+                op.get(OperationFields.METHOD_SIGNATURE, String.class));
         return op;
     }
 
-    JtaOperationCollectionAspect getJtaOperationCollectionAspect () {
+    JtaOperationCollectionAspect getJtaOperationCollectionAspect() {
         return (JtaOperationCollectionAspect) getAspect();
     }
-    
+
     protected static interface ParameterTypeDescriptor {
-        Class<?>[] getArgTypes ();
+        Class<?>[] getArgTypes();
     }
 }

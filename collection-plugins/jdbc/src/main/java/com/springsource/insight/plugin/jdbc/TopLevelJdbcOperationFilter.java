@@ -31,14 +31,14 @@ import com.springsource.insight.intercept.trace.Trace;
 
 public class TopLevelJdbcOperationFilter implements OperationFilter {
     private static final OperationType TYPE = JdbcOperationExternalResourceAnalyzer.TYPE;
-    private static final TopLevelJdbcOperationFilter	INSTANCE=new TopLevelJdbcOperationFilter();
+    private static final TopLevelJdbcOperationFilter INSTANCE = new TopLevelJdbcOperationFilter();
 
-    private TopLevelJdbcOperationFilter () {
-    	super();
+    private TopLevelJdbcOperationFilter() {
+        super();
     }
 
     public static final TopLevelJdbcOperationFilter getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     public String getFilterLabel() {
@@ -53,7 +53,7 @@ public class TopLevelJdbcOperationFilter implements OperationFilter {
         Set<Frame> frames = topLevelFramesOfType(trace.getRootFrame(), TYPE);
         return frameIDs(frames);
     }
-    
+
     public Set<FrameId> excludeFrames(Trace trace) {
         Set<Frame> frames = new HashSet<Frame>();
         for (Frame topLevelFrame : topLevelFramesOfType(trace.getRootFrame(), TYPE)) {
@@ -65,5 +65,5 @@ public class TopLevelJdbcOperationFilter implements OperationFilter {
     public boolean isInversable() {
         return false;
     }
-    
+
 }

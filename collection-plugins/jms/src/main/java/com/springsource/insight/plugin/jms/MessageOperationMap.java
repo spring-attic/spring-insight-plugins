@@ -26,33 +26,32 @@ import com.springsource.insight.intercept.operation.Operation;
 
 /**
  * A composite class around a {@code synchronized} {@link HashMap}.<br><br>
- * 
- * This class is used by the {@code JMSProducerCollectionAspect} to prevent the situations where we the client invoke producer.send<br> 
+ * <p/>
+ * This class is used by the {@code JMSProducerCollectionAspect} to prevent the situations where we the client invoke producer.send<br>
  * and the producer implementation invoke another send method.
- * 
  */
 class MessageOperationMap {
     /**
      * Default size limit
      */
     private static final int DEFAULT_LIMIT = 100000;
-    
+
     private Map<MessageWrapper, Operation> map;
-    
+
     /**
      * Holds the map size limit
      */
     private int limit;
-    
+
     /**
      * Semaphore to be used in the map clean operation.
      * Only one thread can clean the map
      */
     private Semaphore semaphore;
-    
+
     /**
      * Create a map with a given limit
-     * 
+     *
      * @param mapLimit map size limit
      */
     MessageOperationMap(int mapLimit) {
@@ -60,14 +59,14 @@ class MessageOperationMap {
         this.limit = mapLimit;
         this.semaphore = new Semaphore(1);
     }
-    
+
     /**
      * Create a map with {@link MessageOperationMap#DEFAULT_LIMIT}
      */
     MessageOperationMap() {
         this(DEFAULT_LIMIT);
     }
-    
+
     void put(MessageWrapper wrapper, Operation op, String sig) {
         if (map.size() >= limit) {
             if (!cleanMap()) {
@@ -77,12 +76,12 @@ class MessageOperationMap {
         op.put("sig", sig);
         map.put(wrapper, op);
     }
-    
+
     boolean isRelevant(String sig, Operation op) {
         String opSig = op.get("sig", String.class);
         return sig.equals(opSig);
     }
-    
+
     private boolean cleanMap() {
         if (semaphore.tryAcquire()) {
             try {
@@ -92,11 +91,11 @@ class MessageOperationMap {
                         toRemove.add(wrapper);
                     }
                 }
-                
+
                 for (MessageWrapper wrapper : toRemove) {
                     map.remove(wrapper);
                 }
-                
+
                 return true;
             } finally {
                 semaphore.release();
@@ -104,14 +103,14 @@ class MessageOperationMap {
         }
         return false;
     }
-    
+
     /**
      * see {@link Map#size()}
      */
     public int size() {
         return map.size();
     }
-    
+
     /**
      * see {@link Map#remove()}
      */
@@ -125,7 +124,7 @@ class MessageOperationMap {
     public boolean isEmpty() {
         return map.isEmpty();
     }
-    
+
     /**
      * see  {@link Map#get()}
      */

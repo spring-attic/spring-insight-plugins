@@ -24,20 +24,22 @@ import org.springframework.test.context.ContextConfiguration;
 import com.springsource.insight.idk.test.AbstractExposedIdkPuginsTestSupport;
 
 /**
- * Makes sure that the exposed singletons are indeed visible 
+ * Makes sure that the exposed singletons are indeed visible
  */
-@ContextConfiguration(locations={ "classpath:META-INF/insight-plugin-jmx.xml" })
+@ContextConfiguration(locations = {"classpath:META-INF/insight-plugin-jmx.xml"})
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ExposedJmxPluginSpringBeanTest
-		extends AbstractExposedIdkPuginsTestSupport<JmxPluginRuntimeDescriptor> {
+        extends AbstractExposedIdkPuginsTestSupport<JmxPluginRuntimeDescriptor> {
     /* NOTE: all beans are autowired with required=false since we want
      * to have specific tests for each and we don't want to fail ALL the
      * tests if one bean is missing
      */
-	@Autowired(required=false) protected JmxPluginRuntimeDescriptor	jmxPluginRuntimeDescriptor;
-	@Autowired(required=false) protected JmxInvocationEndPointAnalyzer	jmxInvocationEndPointAnalyzer;
+    @Autowired(required = false)
+    protected JmxPluginRuntimeDescriptor jmxPluginRuntimeDescriptor;
+    @Autowired(required = false)
+    protected JmxInvocationEndPointAnalyzer jmxInvocationEndPointAnalyzer;
 
-	public ExposedJmxPluginSpringBeanTest() {
-		super(JmxPluginRuntimeDescriptor.class);
-	}
+    public ExposedJmxPluginSpringBeanTest() {
+        super(JmxPluginRuntimeDescriptor.class);
+    }
 }

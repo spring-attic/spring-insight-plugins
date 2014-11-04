@@ -30,24 +30,24 @@ import akka.dispatch.Promise;
 import akka.pattern.PromiseActorRef;
 
 public class PromiseActorRefPropertyExtractorTest {
-	public PromiseActorRefPropertyExtractorTest() {
-		super();
-	}
+    public PromiseActorRefPropertyExtractorTest() {
+        super();
+    }
 
     @Test
     public void testExtractProperties() {
-	PromiseActorRef ref = createActorRef();
-	Map<String, Object> result = PromiseActorRefPropertyExtractor.INSTANCE.extractProperties(ref);
-	assertEquals("not the expected result", Collections.singletonMap("local", Boolean.TRUE), result);
+        PromiseActorRef ref = createActorRef();
+        Map<String, Object> result = PromiseActorRefPropertyExtractor.INSTANCE.extractProperties(ref);
+        assertEquals("not the expected result", Collections.singletonMap("local", Boolean.TRUE), result);
     }
 
     private PromiseActorRef createActorRef() {
-	ActorRefProvider refProvider = mock(ActorRefProvider.class, RETURNS_DEFAULTS);
-	@SuppressWarnings("unchecked")
-	Promise<Object> promise = mock(Promise.class, RETURNS_SMART_NULLS);
+        ActorRefProvider refProvider = mock(ActorRefProvider.class, RETURNS_DEFAULTS);
+        @SuppressWarnings("unchecked")
+        Promise<Object> promise = mock(Promise.class, RETURNS_SMART_NULLS);
 
-	PromiseActorRef ref = new PromiseActorRef(refProvider, promise);
-	return ref;
+        PromiseActorRef ref = new PromiseActorRef(refProvider, promise);
+        return ref;
     }
 
 }

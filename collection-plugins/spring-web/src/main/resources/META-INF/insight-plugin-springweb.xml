@@ -1,66 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:insight="http://www.springframework.org/schema/insight-idk"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:insight="http://www.springframework.org/schema/insight-idk"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
-	<insight:plugin name="spring-web" version="${project.version}" publisher="SpringSource" />
+    <insight:plugin name="spring-web" version="${project.version}" publisher="SpringSource"/>
 
-	<insight:operation-view operation="init_binder" template="com/springsource/insight/plugin/springweb/binder/init_binder.ftl"/>
-	<insight:operation-view operation="model_attribute" template="com/springsource/insight/plugin/springweb/modelattribute/model_attribute.ftl"/>
-	<insight:operation-view operation="view_render" template="com/springsource/insight/plugin/springweb/view/render/view_render.ftl"/>
-	<insight:operation-view operation="view_resolver" template="com/springsource/insight/plugin/springweb/view/resolver/view_resolver.ftl"/>
-	<insight:operation-view operation="web_request" template="com/springsource/insight/plugin/springweb/request/web_request.ftl"/>
-    <insight:operation-view operation="controller_method" template="com/springsource/insight/plugin/springweb/controller/controller_method.ftl"/>
-    <insight:operation-view operation="controller_validator" template="com/springsource/insight/plugin/springweb/validation/controller_validator.ftl"/>
-    <insight:operation-view operation="http_invoker" template="com/springsource/insight/plugin/springweb/remoting/http_invoker.ftl"/>
-    <insight:operation-view operation="spring_client_reqhttp" template="com/springsource/insight/plugin/springweb/http/spring_client_reqhttp.ftl"/>
-    <insight:operation-view operation="spring_http_connfactory" template="com/springsource/insight/plugin/springweb/http/spring_http_connfactory.ftl"/>
-    <insight:operation-view operation="spring_rest_template" template="com/springsource/insight/plugin/springweb/rest/spring_rest_template.ftl"/>
+    <insight:operation-view operation="init_binder"
+                            template="com/springsource/insight/plugin/springweb/binder/init_binder.ftl"/>
+    <insight:operation-view operation="model_attribute"
+                            template="com/springsource/insight/plugin/springweb/modelattribute/model_attribute.ftl"/>
+    <insight:operation-view operation="view_render"
+                            template="com/springsource/insight/plugin/springweb/view/render/view_render.ftl"/>
+    <insight:operation-view operation="view_resolver"
+                            template="com/springsource/insight/plugin/springweb/view/resolver/view_resolver.ftl"/>
+    <insight:operation-view operation="web_request"
+                            template="com/springsource/insight/plugin/springweb/request/web_request.ftl"/>
+    <insight:operation-view operation="controller_method"
+                            template="com/springsource/insight/plugin/springweb/controller/controller_method.ftl"/>
+    <insight:operation-view operation="controller_validator"
+                            template="com/springsource/insight/plugin/springweb/validation/controller_validator.ftl"/>
+    <insight:operation-view operation="http_invoker"
+                            template="com/springsource/insight/plugin/springweb/remoting/http_invoker.ftl"/>
+    <insight:operation-view operation="spring_client_reqhttp"
+                            template="com/springsource/insight/plugin/springweb/http/spring_client_reqhttp.ftl"/>
+    <insight:operation-view operation="spring_http_connfactory"
+                            template="com/springsource/insight/plugin/springweb/http/spring_http_connfactory.ftl"/>
+    <insight:operation-view operation="spring_rest_template"
+                            template="com/springsource/insight/plugin/springweb/rest/spring_rest_template.ftl"/>
 
-	<insight:operation-group group="Web" operation="init_binder" />
-	<insight:operation-group group="Web" operation="controller_method" />
-	<insight:operation-group group="Web" operation="model_attribute" />
-	<insight:operation-group group="Web" operation="view_render" />
-	<insight:operation-group group="Web" operation="view_resolver" />
-    <insight:operation-group group="Web" operation="controller_validator" />
-    <insight:operation-group group="Web" operation="spring_client_reqhttp" />
+    <insight:operation-group group="Web" operation="init_binder"/>
+    <insight:operation-group group="Web" operation="controller_method"/>
+    <insight:operation-group group="Web" operation="model_attribute"/>
+    <insight:operation-group group="Web" operation="view_render"/>
+    <insight:operation-group group="Web" operation="view_resolver"/>
+    <insight:operation-group group="Web" operation="controller_validator"/>
+    <insight:operation-group group="Web" operation="spring_client_reqhttp"/>
 
     <bean id="springWebPluginClientHttpRequestExternalResourceAnalyzer"
           class="com.springsource.insight.plugin.springweb.http.ClientHttpRequestExternalResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="springWebPluginClientHttpRequestTraceErrorAnalyzer"
           class="com.springsource.insight.plugin.springweb.http.ClientHttpRequestTraceErrorAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="springWebPluginHttpRemotingExternalResourceAnalyzer"
           class="com.springsource.insight.plugin.springweb.remoting.HttpInvokerRequestExecutorExternalResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="springWebPluginHttpRemotingErrorsAnalyzer"
           class="com.springsource.insight.plugin.springweb.remoting.HttpInvokerRequestExecutorTraceErrorAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="springWebPluginControllerEndPointAnalyzer"
           class="com.springsource.insight.plugin.springweb.controller.ControllerEndPointAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="springWebPluginValidationErrorsMetricsGenerato"
           class="com.springsource.insight.plugin.springweb.validation.ValidationErrorsMetricsGenerator"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="springWebPluginRuntimeDescriptor"
           class="com.springsource.insight.plugin.springweb.SpringWebPluginRuntimeDescriptor"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
 
 </beans>

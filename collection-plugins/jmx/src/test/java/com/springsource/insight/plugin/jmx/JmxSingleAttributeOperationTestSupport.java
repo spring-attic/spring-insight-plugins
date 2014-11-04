@@ -21,19 +21,19 @@ import javax.management.ObjectName;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public abstract class JmxSingleAttributeOperationTestSupport extends JmxAttributeOperationTestSupport {
-	protected JmxSingleAttributeOperationTestSupport(String actionName) {
-		super(actionName);
-	}
+    protected JmxSingleAttributeOperationTestSupport(String actionName) {
+        super(actionName);
+    }
 
-	protected Operation assertAttributeOperation(ObjectName name, String attrName) {
-		Operation	op=assertBeanOperation(name);
-		assertEquals("Mismatched operation type", JmxPluginRuntimeDescriptor.ATTR, op.getType());
-		assertEquals("Mismatched label", JmxSingleAttributeOperationCollectionSupport.createLabel(action, attrName), op.getLabel());
-		assertEquals("Mismatched action", action, op.get(JmxPluginRuntimeDescriptor.ACTION_PROP, String.class));
-		assertEquals("Mismatched attribute name", attrName, op.get(JmxPluginRuntimeDescriptor.ATTR_NAME_PROP, String.class));
-		return op;
-	}
+    protected Operation assertAttributeOperation(ObjectName name, String attrName) {
+        Operation op = assertBeanOperation(name);
+        assertEquals("Mismatched operation type", JmxPluginRuntimeDescriptor.ATTR, op.getType());
+        assertEquals("Mismatched label", JmxSingleAttributeOperationCollectionSupport.createLabel(action, attrName), op.getLabel());
+        assertEquals("Mismatched action", action, op.get(JmxPluginRuntimeDescriptor.ACTION_PROP, String.class));
+        assertEquals("Mismatched attribute name", attrName, op.get(JmxPluginRuntimeDescriptor.ATTR_NAME_PROP, String.class));
+        return op;
+    }
 }

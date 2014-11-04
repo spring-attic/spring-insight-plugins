@@ -20,8 +20,8 @@ import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import com.springsource.insight.collection.method.MethodOperationsCollected;
 
 /**
- * 
+ *
  */
 public aspect EndpointMethodOperationCollectionAspect {
-    declare @type: @Endpoint * : @MethodOperationsCollected;
+    declare @type: @Endpoint * :@MethodOperationsCollected;
 }

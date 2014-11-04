@@ -30,51 +30,51 @@ import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.ListUtil;
 
 /**
- * 
+ *
  */
 public class ValidationErrorsMetricsGenerator extends AbstractMetricsGenerator {
-	public static final OperationType	TYPE=OperationType.valueOf("controller_validator");
-	public static final String	METRIC_KEY=ValidationJoinPointFinalizer.ERRORS_COUNT + ":type=counter";
-	private static final ValidationErrorsMetricsGenerator	INSTANCE=new ValidationErrorsMetricsGenerator();
+    public static final OperationType TYPE = OperationType.valueOf("controller_validator");
+    public static final String METRIC_KEY = ValidationJoinPointFinalizer.ERRORS_COUNT + ":type=counter";
+    private static final ValidationErrorsMetricsGenerator INSTANCE = new ValidationErrorsMetricsGenerator();
 
-	private ValidationErrorsMetricsGenerator () {
-		super(TYPE);
-	}
+    private ValidationErrorsMetricsGenerator() {
+        super(TYPE);
+    }
 
-	public static final ValidationErrorsMetricsGenerator getInstance() {
-		return INSTANCE;
-	}
+    public static final ValidationErrorsMetricsGenerator getInstance() {
+        return INSTANCE;
+    }
 
-	@Override
-	public List<MetricsBag> generateMetrics(Trace trace, ResourceKey endpointResourceKey, Collection<Frame> frames) {
-		if (ListUtil.size(frames) <= 0) {
-			return Collections.emptyList();
-		}
+    @Override
+    public List<MetricsBag> generateMetrics(Trace trace, ResourceKey endpointResourceKey, Collection<Frame> frames) {
+        if (ListUtil.size(frames) <= 0) {
+            return Collections.emptyList();
+        }
 
-		int	totalErrors=0;
-		for (Frame frame : frames) {
-			Operation	op=frame.getOperation();
-			Number		errorsCount=op.get(ValidationJoinPointFinalizer.ERRORS_COUNT, Number.class);
-			int			numErrors=(errorsCount == null) ? 0 : errorsCount.intValue();
-			if (numErrors <= 0) {
-				continue;
-			} else {
-				totalErrors += numErrors;
-			}
-		}
+        int totalErrors = 0;
+        for (Frame frame : frames) {
+            Operation op = frame.getOperation();
+            Number errorsCount = op.get(ValidationJoinPointFinalizer.ERRORS_COUNT, Number.class);
+            int numErrors = (errorsCount == null) ? 0 : errorsCount.intValue();
+            if (numErrors <= 0) {
+                continue;
+            } else {
+                totalErrors += numErrors;
+            }
+        }
 
-		if (totalErrors <= 0) {
-			return Collections.emptyList();
-		}
+        if (totalErrors <= 0) {
+            return Collections.emptyList();
+        }
 
-		MetricsBag    mb=MetricsBag.create(endpointResourceKey, trace.getRange());
-		addCounterMetricToBag(trace, mb, METRIC_KEY, totalErrors);
-		return Collections.singletonList(mb);
-	}
+        MetricsBag mb = MetricsBag.create(endpointResourceKey, trace.getRange());
+        addCounterMetricToBag(trace, mb, METRIC_KEY, totalErrors);
+        return Collections.singletonList(mb);
+    }
 
-	@Override
-	public Collection<Frame> locateFrames(Trace trace) {
-		return trace.getAllFramesOfType(getOperationType());
-	}
+    @Override
+    public Collection<Frame> locateFrames(Trace trace) {
+        return trace.getAllFramesOfType(getOperationType());
+    }
 
 }

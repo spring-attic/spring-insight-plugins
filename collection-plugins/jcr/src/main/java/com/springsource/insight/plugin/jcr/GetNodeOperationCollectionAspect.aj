@@ -32,60 +32,60 @@ import com.springsource.insight.util.ArrayUtil;
  * This aspect intercepts all JCR GetNode(s) requests
  */
 public privileged aspect GetNodeOperationCollectionAspect extends AbstractOperationCollectionAspect {
-    public GetNodeOperationCollectionAspect () {
-    	super();
+    public GetNodeOperationCollectionAspect() {
+        super();
     }
 
-	public pointcut getNode(): execution(public Node javax.jcr.Node+.getNode(String)) && if(GetNodeOperationCollectionAspect.isGetItemEnabled(thisJoinPoint));
-	public pointcut getNodes(): execution(public NodeIterator javax.jcr.Node+.getNodes(..));
-	public pointcut getItem(): execution(public Item javax.jcr.Session+.getItem(String));
-	
-	public pointcut collectionPoint() : getNode() || getNodes() || getItem();
-	
-	public static boolean isGetItemEnabled(JoinPoint jp) {
-    	Item item=(Item)jp.getTarget();
-    	try {
-			return !item.getSession().getUserID().equals("system"); // filter get requests in chain
-		} catch (RepositoryException e) {
-			return false;
-		}
+    public pointcut getNode(): execution(public Node javax.jcr.Node+.getNode(String)) && if(GetNodeOperationCollectionAspect.isGetItemEnabled(thisJoinPoint));
+    public pointcut getNodes(): execution(public NodeIterator javax.jcr.Node+.getNodes(..));
+    public pointcut getItem(): execution(public Item javax.jcr.Session+.getItem(String));
+
+    public pointcut collectionPoint(): getNode() || getNodes() || getItem();
+
+    public static boolean isGetItemEnabled(JoinPoint jp) {
+        Item item = (Item) jp.getTarget();
+        try {
+            return !item.getSession().getUserID().equals("system"); // filter get requests in chain
+        } catch (RepositoryException e) {
+            return false;
+        }
     }
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-    	String method=jp.getSignature().getName(); //method name
-    	Object targ=jp.getTarget();
-    			
-    	Operation op=new Operation().type(OperationCollectionTypes.GET_TYPE.type)
-    								.label(OperationCollectionTypes.GET_TYPE.label+method)
-    								.sourceCodeLocation(getSourceCodeLocation(jp))
-    								.putAnyNonEmpty("workspace", JCRCollectionUtils.getWorkspaceName(targ));
+        String method = jp.getSignature().getName(); //method name
+        Object targ = jp.getTarget();
 
-    	try {
-			if (targ instanceof Item) {
-				op.putAnyNonEmpty("path", ((Item)targ).getPath()); //relating node path
-			}
-		} catch (RepositoryException e) {
-			//ignore
-		}
+        Operation op = new Operation().type(OperationCollectionTypes.GET_TYPE.type)
+                .label(OperationCollectionTypes.GET_TYPE.label + method)
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .putAnyNonEmpty("workspace", JCRCollectionUtils.getWorkspaceName(targ));
 
-    	//add request parameters
-    	Object[] args = jp.getArgs();
-    	if (ArrayUtil.length(args) > 0) {
-	    	if (method.equals("getNode")) {
-	    		op.putAnyNonEmpty("relPath", args[0]);
-	    	} else if (method.equals("getNodes")) {
-	    		op.putAnyNonEmpty("namePattern", args[0]);
-	    	} else if (method.equals("getItem")) {
-	        	op.putAnyNonEmpty("absPath", args[0]);
-	    	}
-    	}
+        try {
+            if (targ instanceof Item) {
+                op.putAnyNonEmpty("path", ((Item) targ).getPath()); //relating node path
+            }
+        } catch (RepositoryException e) {
+            //ignore
+        }
 
-    	return op;
+        //add request parameters
+        Object[] args = jp.getArgs();
+        if (ArrayUtil.length(args) > 0) {
+            if (method.equals("getNode")) {
+                op.putAnyNonEmpty("relPath", args[0]);
+            } else if (method.equals("getNodes")) {
+                op.putAnyNonEmpty("namePattern", args[0]);
+            } else if (method.equals("getItem")) {
+                op.putAnyNonEmpty("absPath", args[0]);
+            }
+        }
+
+        return op;
     }
 
-	@Override
-	public String getPluginName() {
-		return JCRPluginRuntimeDescriptor.PLUGIN_NAME;
-	}
+    @Override
+    public String getPluginName() {
+        return JCRPluginRuntimeDescriptor.PLUGIN_NAME;
+    }
 }

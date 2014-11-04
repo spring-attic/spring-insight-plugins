@@ -23,25 +23,25 @@ import org.springframework.batch.core.job.flow.FlowExecutor;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public aspect FlowOperationCollectionAspect extends SpringBatchOperationCollectionAspect {
-    public FlowOperationCollectionAspect () {
+    public FlowOperationCollectionAspect() {
         super(Flow.class);
     }
 
     public pointcut collectionPoint()
-        : execution(* Flow+.start(FlowExecutor))
-       || execution(* Flow+.resume(String,FlowExecutor))
-        ;
+            : execution(* Flow+.start(FlowExecutor))
+            || execution(* Flow+.resume(String,FlowExecutor))
+            ;
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Flow            flow=(Flow) jp.getTarget();
-        Operation       op=createOperation(jp, flow.getName());
-        Object[]        args=jp.getArgs();
-        String          action=op.get(SpringBatchDefinitions.ACTION_ATTR, String.class);
-        FlowExecutor    flowExecutor;
+        Flow flow = (Flow) jp.getTarget();
+        Operation op = createOperation(jp, flow.getName());
+        Object[] args = jp.getArgs();
+        String action = op.get(SpringBatchDefinitions.ACTION_ATTR, String.class);
+        FlowExecutor flowExecutor;
         if ("resume".equals(action)) {
             flowExecutor = (FlowExecutor) args[1];
             op.putAnyNonEmpty("flowState", args[0]);
@@ -51,5 +51,5 @@ public aspect FlowOperationCollectionAspect extends SpringBatchOperationCollecti
 
         return fillStepExecutionDetails(op, flowExecutor.getStepExecution());
     }
-   
+
 }

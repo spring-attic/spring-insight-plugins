@@ -34,25 +34,25 @@ public aspect StartOperationCollectionAspect extends AbstractOperationCollection
         super();
     }
 
-    public pointcut collectionPoint() 
-    	: execution(void org.springframework.webflow.engine.impl.FlowExecutionImpl.start(Flow, MutableAttributeMap, RequestControlContext));
+    public pointcut collectionPoint()
+            : execution(void org.springframework.webflow.engine.impl.FlowExecutionImpl.start(Flow, MutableAttributeMap, RequestControlContext));
 
     @Override
-	protected Operation createOperation(JoinPoint jp) {
-    	Object[] args = jp.getArgs();
-    	Flow flow = (Flow)args[0];
-    	MutableAttributeMap params=(MutableAttributeMap)args[1];
-        
-    	Operation  operation = new Operation().type(OperationCollectionTypes.START_TYPE.type)
-    										.label(OperationCollectionTypes.START_TYPE.label+" ["+flow.getId()+"]")
-    										.sourceCodeLocation(getSourceCodeLocation(jp));
-            
+    protected Operation createOperation(JoinPoint jp) {
+        Object[] args = jp.getArgs();
+        Flow flow = (Flow) args[0];
+        MutableAttributeMap params = (MutableAttributeMap) args[1];
+
+        Operation operation = new Operation().type(OperationCollectionTypes.START_TYPE.type)
+                .label(OperationCollectionTypes.START_TYPE.label + " [" + flow.getId() + "]")
+                .sourceCodeLocation(getSourceCodeLocation(jp));
+
         operation.put("flowId", flow.getId());
-        
-        if (params!=null && !params.isEmpty()) {
-        	operation.createMap("initParams").putAnyAll(params.asMap());
+
+        if (params != null && !params.isEmpty()) {
+            operation.createMap("initParams").putAnyAll(params.asMap());
         }
-        
+
         return operation;
     }
 

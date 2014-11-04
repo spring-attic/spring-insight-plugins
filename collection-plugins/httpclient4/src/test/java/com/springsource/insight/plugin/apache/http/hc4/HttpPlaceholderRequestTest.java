@@ -23,7 +23,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * 
+ *
  */
 public class HttpPlaceholderRequestTest extends Assert {
     public HttpPlaceholderRequestTest() {
@@ -31,35 +31,35 @@ public class HttpPlaceholderRequestTest extends Assert {
     }
 
     @Test
-    public void testPlaceholderContents () {
-        RequestLine reqLine=HttpPlaceholderRequest.PLACEHOLDER.getRequestLine();
+    public void testPlaceholderContents() {
+        RequestLine reqLine = HttpPlaceholderRequest.PLACEHOLDER.getRequestLine();
         assertEquals("Mismatched method", HttpClientDefinitions.PLACEHOLDER_METHOD_NAME, reqLine.getMethod());
         assertEquals("Mismatched URI", HttpClientDefinitions.PLACEHOLDER_URI_VALUE, reqLine.getUri());
 
-        ProtocolVersion protoVer=reqLine.getProtocolVersion();
+        ProtocolVersion protoVer = reqLine.getProtocolVersion();
         assertEquals("Mismatched protocol", "HTTP", protoVer.getProtocol());
         assertEquals("Mismatched major version", 1, protoVer.getMajor());
         assertEquals("Mismatched minor version", 1, protoVer.getMinor());
     }
 
     @Test
-    public void testNullOrEmptyArgs () {
+    public void testNullOrEmptyArgs() {
         assertSame("Mismatched null values result",
-                   HttpPlaceholderRequest.PLACEHOLDER,
-                   HttpPlaceholderRequest.resolveHttpRequest((Object[]) null));
+                HttpPlaceholderRequest.PLACEHOLDER,
+                HttpPlaceholderRequest.resolveHttpRequest((Object[]) null));
         assertSame("Mismatched empty values result",
-                   HttpPlaceholderRequest.PLACEHOLDER,
-                   HttpPlaceholderRequest.resolveHttpRequest(new Object[] { }));
+                HttpPlaceholderRequest.PLACEHOLDER,
+                HttpPlaceholderRequest.resolveHttpRequest(new Object[]{}));
     }
 
     @Test
-    public void testOnNoRequestValue () {
+    public void testOnNoRequestValue() {
         assertSame(HttpPlaceholderRequest.PLACEHOLDER, HttpPlaceholderRequest.resolveHttpRequest("hello", Long.valueOf(System.nanoTime())));
     }
 
     @Test
-    public void testOnExistingValue () {
-        HttpRequest req=new HttpGet("http://localhost");
+    public void testOnExistingValue() {
+        HttpRequest req = new HttpGet("http://localhost");
         assertSame(req, HttpPlaceholderRequest.resolveHttpRequest("hello", req, Long.valueOf(System.nanoTime())));
     }
 }

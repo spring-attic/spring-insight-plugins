@@ -23,7 +23,7 @@ import com.springsource.insight.intercept.operation.Operation;
 
 
 /**
- * 
+ *
  */
 public class JobOperationCollectionAspectTest
         extends SpringBatchOperationCollectionAspectTestSupport {
@@ -33,12 +33,12 @@ public class JobOperationCollectionAspectTest
     }
 
     @Test
-    public void testExecute () {
-        Job     job=new TestDummyJob("testExecute");
-        String  jobName=job.getName();
+    public void testExecute() {
+        Job job = new TestDummyJob("testExecute");
+        String jobName = job.getName();
         job.execute(TestDummyJobRepository.createJobExecutionInstance(jobName));
-        
-        Operation   op=assertOperationDetails(getLastEntered(), "execute", jobName);
+
+        Operation op = assertOperationDetails(getLastEntered(), "execute", jobName);
         assertOperationPath(op, jobName, null);
     }
 

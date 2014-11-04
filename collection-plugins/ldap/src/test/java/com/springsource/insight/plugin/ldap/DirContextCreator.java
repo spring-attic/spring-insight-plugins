@@ -19,8 +19,8 @@ import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 
 /**
- * 
+ *
  */
 public interface DirContextCreator {
-    DirContext createDirContext () throws NamingException;
+    DirContext createDirContext() throws NamingException;
 }

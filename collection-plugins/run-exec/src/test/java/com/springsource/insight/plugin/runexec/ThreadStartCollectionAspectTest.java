@@ -18,61 +18,61 @@ package com.springsource.insight.plugin.runexec;
 import org.junit.Test;
 
 /**
- * 
+ *
  */
 public class ThreadStartCollectionAspectTest
         extends ExecutionCollectionAspectTestSupport {
-    private static final Runnable DUMMY_RUNNER=new Runnable() {
-            public void run () { /* do nothing */ }
-        };
-    private static final ThreadGroup    DUMMY_GROUP=new ThreadGroup("ThreadStartCollectionAspectTest");
+    private static final Runnable DUMMY_RUNNER = new Runnable() {
+        public void run() { /* do nothing */ }
+    };
+    private static final ThreadGroup DUMMY_GROUP = new ThreadGroup("ThreadStartCollectionAspectTest");
 
     public ThreadStartCollectionAspectTest() {
         super();
     }
 
     @Test
-    public void testThreadStart () throws InterruptedException {
-        SignallingRunnable  runner=new SignallingRunnable("testThreadStart");
-        Thread              thread=new Thread(runner, "tThreadStartTest");
+    public void testThreadStart() throws InterruptedException {
+        SignallingRunnable runner = new SignallingRunnable("testThreadStart");
+        Thread thread = new Thread(runner, "tThreadStartTest");
         thread.start();
-        
-        Thread  sigThread=runner.waitForThread(true);
+
+        Thread sigThread = runner.waitForThread(true);
         assertSame("Mismatched runner threads", thread, sigThread);
         assertLastExecutionOperation(sigThread);
     }
 
     @Test
-    public void testRunnableReplacement () {
+    public void testRunnableReplacement() {
         assertRunnableReplacement(new Thread(DUMMY_RUNNER), DUMMY_RUNNER);
     }
 
     @Test
-    public void testNamedRunnableReplacement () {
+    public void testNamedRunnableReplacement() {
         assertRunnableReplacement(new Thread(DUMMY_RUNNER, "testNamedRunnableReplacement"), DUMMY_RUNNER);
     }
 
     @Test
-    public void testGroupRunnableReplacement () {
+    public void testGroupRunnableReplacement() {
         assertRunnableReplacement(new Thread(DUMMY_GROUP, DUMMY_RUNNER), DUMMY_RUNNER);
     }
 
     @Test
-    public void testGroupNamedRunnableReplacement () {
+    public void testGroupNamedRunnableReplacement() {
         assertRunnableReplacement(new Thread(DUMMY_GROUP, DUMMY_RUNNER, "testGroupNamedRunnableReplacement"), DUMMY_RUNNER);
     }
 
     @Test
-    public void testGroupNamedRunnableReplacementWithStackSize () {
+    public void testGroupNamedRunnableReplacementWithStackSize() {
         assertRunnableReplacement(new Thread(DUMMY_GROUP, DUMMY_RUNNER, "testGroupNamedRunnableReplacementWithStackSize", 4 * Short.MAX_VALUE), DUMMY_RUNNER);
     }
 
-    private void assertRunnableReplacement (Thread thread, Runnable runner) {
-        ThreadStartCollectionAspect aspectInstance=getAspect();
-        Runnable                    threadTarget=aspectInstance.extractThreadTarget(thread);
+    private void assertRunnableReplacement(Thread thread, Runnable runner) {
+        ThreadStartCollectionAspect aspectInstance = getAspect();
+        Runnable threadTarget = aspectInstance.extractThreadTarget(thread);
         assertTrue("Thread target not replaced", threadTarget instanceof RunnableWrapper);
 
-        Runnable    command=((RunnableWrapper) threadTarget).getRunner();
+        Runnable command = ((RunnableWrapper) threadTarget).getRunner();
         assertSame("Mismatched command instance", runner, command);
     }
 

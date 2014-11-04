@@ -29,6 +29,6 @@ public class AxonVersion {
     final static boolean IS_AXON_1X;
 
     static {
-    	IS_AXON_1X = ClassUtil.isPresent("org.axonframework.domain.Event", AxonVersion.class);
+        IS_AXON_1X = ClassUtil.isPresent("org.axonframework.domain.Event", AxonVersion.class);
     }
 }

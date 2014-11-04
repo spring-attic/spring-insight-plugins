@@ -40,154 +40,154 @@ import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.util.ArrayUtil;
 
 /**
- * 
+ *
  */
 public class JavaMailSenderOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-	private TestJavaMailSender	sender;
+    private TestJavaMailSender sender;
 
-	public JavaMailSenderOperationCollectionAspectTest() {
-		super();
-	}
+    public JavaMailSenderOperationCollectionAspectTest() {
+        super();
+    }
 
-	@Before
-	@Override
-	public void setUp () {
-		super.setUp();
-		sender = new TestJavaMailSender();
-	}
+    @Before
+    @Override
+    public void setUp() {
+        super.setUp();
+        sender = new TestJavaMailSender();
+    }
 
-	@Test
-	public void testSendSimpleMessageInstance() throws Exception {
-		SimpleMailMessage	msg=createSimpleMailMessage("testSendSimpleMessageInstance", "from@a", "to@a", "cc@a", "bcc@a", "replyTo@a");
-		sender.send(msg);
-		assertSendOperation(msg);
-	}
+    @Test
+    public void testSendSimpleMessageInstance() throws Exception {
+        SimpleMailMessage msg = createSimpleMailMessage("testSendSimpleMessageInstance", "from@a", "to@a", "cc@a", "bcc@a", "replyTo@a");
+        sender.send(msg);
+        assertSendOperation(msg);
+    }
 
-	@Test
-	public void testSendSimpleMessageArray() throws Exception {
-		SimpleMailMessage	msg=createSimpleMailMessage("testSendSimpleMessageArray", "from@a", "to@a", "cc@a", "bcc@a", "replyTo@a");
-		sender.send(new SimpleMailMessage[] { msg });
-		assertSendOperation(msg);
-	}
+    @Test
+    public void testSendSimpleMessageArray() throws Exception {
+        SimpleMailMessage msg = createSimpleMailMessage("testSendSimpleMessageArray", "from@a", "to@a", "cc@a", "bcc@a", "replyTo@a");
+        sender.send(new SimpleMailMessage[]{msg});
+        assertSendOperation(msg);
+    }
 
-	@Override
-	public JavaMailSenderOperationCollectionAspect getAspect() {
-		return JavaMailSenderOperationCollectionAspect.aspectOf();
-	}
+    @Override
+    public JavaMailSenderOperationCollectionAspect getAspect() {
+        return JavaMailSenderOperationCollectionAspect.aspectOf();
+    }
 
-	protected Operation assertSendOperation (SimpleMailMessage msg) {
-		Operation	op=getLastEntered();
-		assertNotNull("No operation collected", op);
-		assertEquals("Mismatched operation type", MailDefinitions.SEND_OPERATION, op.getType());
-		assertEquals("Mismatched label", JavaMailSenderOperationCollectionAspect.createLabel(msg), op.getLabel());
-		assertSenders(op, msg);
-		assertRecipients(op, msg);
-		return op;
-	}
+    protected Operation assertSendOperation(SimpleMailMessage msg) {
+        Operation op = getLastEntered();
+        assertNotNull("No operation collected", op);
+        assertEquals("Mismatched operation type", MailDefinitions.SEND_OPERATION, op.getType());
+        assertEquals("Mismatched label", JavaMailSenderOperationCollectionAspect.createLabel(msg), op.getLabel());
+        assertSenders(op, msg);
+        assertRecipients(op, msg);
+        return op;
+    }
 
-	protected OperationList assertSenders (Operation op, SimpleMailMessage msg) {
-		return assertSenders(op.get(MailDefinitions.SEND_SENDERS, OperationList.class), msg);
-	}
+    protected OperationList assertSenders(Operation op, SimpleMailMessage msg) {
+        return assertSenders(op.get(MailDefinitions.SEND_SENDERS, OperationList.class), msg);
+    }
 
-	protected OperationList assertSenders (OperationList op, SimpleMailMessage msg) {
-		return assertAddresses("from", op, msg.getFrom());
-	}
+    protected OperationList assertSenders(OperationList op, SimpleMailMessage msg) {
+        return assertAddresses("from", op, msg.getFrom());
+    }
 
-	protected Operation assertRecipients (Operation op, SimpleMailMessage msg) {
-		OperationList	recips=op.get(MailDefinitions.SEND_RECIPS, OperationList.class);
-		assertNotNull("Missing recipients list", recips);
-		assertAddresses("to", recips, msg.getTo());
-		assertAddresses("cc", recips, msg.getCc());
-		assertAddresses("bcc", recips, msg.getBcc());
-		assertAddresses("replyTo", recips, msg.getReplyTo());
-		return op;
-	}
-	
-	protected OperationList assertAddresses (String type, OperationList op, String ... addrs) {
-		assertNotNull(type + ": no address list", op);
+    protected Operation assertRecipients(Operation op, SimpleMailMessage msg) {
+        OperationList recips = op.get(MailDefinitions.SEND_RECIPS, OperationList.class);
+        assertNotNull("Missing recipients list", recips);
+        assertAddresses("to", recips, msg.getTo());
+        assertAddresses("cc", recips, msg.getCc());
+        assertAddresses("bcc", recips, msg.getBcc());
+        assertAddresses("replyTo", recips, msg.getReplyTo());
+        return op;
+    }
 
-		Set<String>	addrSet=new TreeSet<String>(Arrays.asList(addrs));
-		for (int	index=0; index < op.size(); index++) {
-			OperationMap	map=op.get(index, OperationMap.class);
-			assertNotNull(type + ": missing recipient at index " + index, map);
-			
-			String	rType=map.get(MailDefinitions.RECIP_TYPE, String.class);
-			String	value=map.get(MailDefinitions.RECIP_VALUE, String.class);
-			if (!type.equals(rType)) {
-				continue;
-			}
+    protected OperationList assertAddresses(String type, OperationList op, String... addrs) {
+        assertNotNull(type + ": no address list", op);
 
-			assertNotNull(type + ": missing recipient value at index " + index, value);
-			assertTrue(type + ": missing recipient " + value, addrSet.remove(value));
-		}
-		
-		assertEquals(type + ": orphan addresses - " + addrSet, 0, addrSet.size());
-		return op;
-	}
+        Set<String> addrSet = new TreeSet<String>(Arrays.asList(addrs));
+        for (int index = 0; index < op.size(); index++) {
+            OperationMap map = op.get(index, OperationMap.class);
+            assertNotNull(type + ": missing recipient at index " + index, map);
 
-	static SimpleMailMessage createSimpleMailMessage (String subject, String from, String to, String cc, String bcc, String replyTo) {
-		SimpleMailMessage	msg=new SimpleMailMessage();
-		msg.setFrom(from);
-		msg.setSubject(subject);
-		msg.setSentDate(new Date());
-		msg.setTo(to);
-		msg.setCc(cc);
-		msg.setBcc(bcc);
-		msg.setReplyTo(replyTo);
-		msg.setText("Blah");
-		return msg;
-	}
+            String rType = map.get(MailDefinitions.RECIP_TYPE, String.class);
+            String value = map.get(MailDefinitions.RECIP_VALUE, String.class);
+            if (!type.equals(rType)) {
+                continue;
+            }
 
-	static class TestJavaMailSender implements JavaMailSender {
-		private List<Object>	sent;
+            assertNotNull(type + ": missing recipient value at index " + index, value);
+            assertTrue(type + ": missing recipient " + value, addrSet.remove(value));
+        }
 
-		public TestJavaMailSender () {
-			super();
-		}
-		
-		List<Object> getSentMessages () {
-			return sent;
-		}
+        assertEquals(type + ": orphan addresses - " + addrSet, 0, addrSet.size());
+        return op;
+    }
 
-		private void setMessages (Object ... msgs) {
-			assertTrue("No messages sent", ArrayUtil.length(msgs) > 0);
-			assertNull("Multiple sends", sent);
-			sent = Arrays.asList(msgs);
-		}
+    static SimpleMailMessage createSimpleMailMessage(String subject, String from, String to, String cc, String bcc, String replyTo) {
+        SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setFrom(from);
+        msg.setSubject(subject);
+        msg.setSentDate(new Date());
+        msg.setTo(to);
+        msg.setCc(cc);
+        msg.setBcc(bcc);
+        msg.setReplyTo(replyTo);
+        msg.setText("Blah");
+        return msg;
+    }
 
-		public void send(SimpleMailMessage simpleMessage) throws MailException {
-			send(new SimpleMailMessage[] { simpleMessage });	// delegated on purpose to check cflowbelow
-		}
+    static class TestJavaMailSender implements JavaMailSender {
+        private List<Object> sent;
 
-		public void send(SimpleMailMessage[] simpleMessages)
-				throws MailException {
-			setMessages((Object[]) simpleMessages);
-		}
+        public TestJavaMailSender() {
+            super();
+        }
 
-		public void send(MimeMessage mimeMessage) throws MailException {
-			send(new MimeMessage[] { mimeMessage });	// delegated on purpose to check cflowbelow
-		}
+        List<Object> getSentMessages() {
+            return sent;
+        }
 
-		public void send(MimeMessage[] mimeMessages) throws MailException {
-			setMessages((Object[]) mimeMessages);
-		}
+        private void setMessages(Object... msgs) {
+            assertTrue("No messages sent", ArrayUtil.length(msgs) > 0);
+            assertNull("Multiple sends", sent);
+            sent = Arrays.asList(msgs);
+        }
 
-		public void send(MimeMessagePreparator mimeMessagePreparator)
-				throws MailException {
-			send(new MimeMessagePreparator[] { mimeMessagePreparator });	// delegated on purpose to check cflowbelow
-		}
+        public void send(SimpleMailMessage simpleMessage) throws MailException {
+            send(new SimpleMailMessage[]{simpleMessage});    // delegated on purpose to check cflowbelow
+        }
 
-		public void send(MimeMessagePreparator[] mimeMessagePreparators)
-				throws MailException {
-			setMessages((Object[]) mimeMessagePreparators);
-		}
+        public void send(SimpleMailMessage[] simpleMessages)
+                throws MailException {
+            setMessages((Object[]) simpleMessages);
+        }
 
-		public MimeMessage createMimeMessage() {
-			throw new UnsupportedOperationException("N/A");
-		}
+        public void send(MimeMessage mimeMessage) throws MailException {
+            send(new MimeMessage[]{mimeMessage});    // delegated on purpose to check cflowbelow
+        }
 
-		public MimeMessage createMimeMessage(InputStream contentStream) throws MailException {
-			throw new MailPreparationException("N/A");
-		}
-	}
+        public void send(MimeMessage[] mimeMessages) throws MailException {
+            setMessages((Object[]) mimeMessages);
+        }
+
+        public void send(MimeMessagePreparator mimeMessagePreparator)
+                throws MailException {
+            send(new MimeMessagePreparator[]{mimeMessagePreparator});    // delegated on purpose to check cflowbelow
+        }
+
+        public void send(MimeMessagePreparator[] mimeMessagePreparators)
+                throws MailException {
+            setMessages((Object[]) mimeMessagePreparators);
+        }
+
+        public MimeMessage createMimeMessage() {
+            throw new UnsupportedOperationException("N/A");
+        }
+
+        public MimeMessage createMimeMessage(InputStream contentStream) throws MailException {
+            throw new MailPreparationException("N/A");
+        }
+    }
 }

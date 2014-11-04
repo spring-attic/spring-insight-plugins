@@ -25,7 +25,7 @@ import org.mockito.Mockito;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public class JpaEntityManagerDomainObjectAspectTest
         extends JpaEntityManagerCollectionTestSupport {
@@ -35,37 +35,37 @@ public class JpaEntityManagerDomainObjectAspectTest
     }
 
     @Test
-    public void testResolveDomainClassOnNoArgs () {
+    public void testResolveDomainClassOnNoArgs() {
         assertEquals("Mismatched null result",
-                            void.class,
-                            JpaEntityManagerDomainObjectAspect.resolveDomainClass((Object[]) null));
+                void.class,
+                JpaEntityManagerDomainObjectAspect.resolveDomainClass((Object[]) null));
         assertEquals("Mismatched empty result",
-                            void.class,
-                            JpaEntityManagerDomainObjectAspect.resolveDomainClass(new Object[] { }));
+                void.class,
+                JpaEntityManagerDomainObjectAspect.resolveDomainClass(new Object[]{}));
     }
 
     @Test
-    public void testResolveDomainClassOnArguments () {
+    public void testResolveDomainClassOnArguments() {
         assertSame("Mismatched result on one argument",
-                          String.class,
-                          JpaEntityManagerDomainObjectAspect.resolveDomainClass("123456"));
+                String.class,
+                JpaEntityManagerDomainObjectAspect.resolveDomainClass("123456"));
         assertSame("Mismatched result on multiple arguments",
-                          Long.class,
-                          JpaEntityManagerDomainObjectAspect.resolveDomainClass(
-                                  Long.valueOf(System.currentTimeMillis()), "123456", Runtime.getRuntime()));
+                Long.class,
+                JpaEntityManagerDomainObjectAspect.resolveDomainClass(
+                        Long.valueOf(System.currentTimeMillis()), "123456", Runtime.getRuntime()));
     }
 
     @Test
-    public void testDomainObjectActions () {
+    public void testDomainObjectActions() {
         for (DomainObjectAction action : DomainObjectAction.values()) {
-            String  testName="testDomainObjectActions(" + action + ")";
-            Object  entity=new TestEntity();
+            String testName = "testDomainObjectActions(" + action + ")";
+            Object entity = new TestEntity();
             action.executeAction(entityManager, entity);
 
-            Operation   op=assertManagerOperation(testName, action.getActionName());
+            Operation op = assertManagerOperation(testName, action.getActionName());
             assertEquals(testName + ": Mismatched domain class",
-                                entity.getClass().getName(),
-                                op.get(JpaDefinitions.DOMAIN_CLASS_ATTR, String.class));
+                    entity.getClass().getName(),
+                    op.get(JpaDefinitions.DOMAIN_CLASS_ATTR, String.class));
             Mockito.reset(spiedOperationCollector); // prepare for next iteration
         }
     }
@@ -75,45 +75,45 @@ public class JpaEntityManagerDomainObjectAspectTest
         return JpaEntityManagerDomainObjectAspect.aspectOf();
     }
 
-    protected Operation assertManagerOperation (String testName, String action) {
+    protected Operation assertManagerOperation(String testName, String action) {
         return assertManagerOperation(testName, action, JpaDefinitions.DOMAIN_GROUP);
     }
 
     static enum DomainObjectAction {
         PERSIST {
             @Override
-            public void executeAction (EntityManager em, Object entity) {
+            public void executeAction(EntityManager em, Object entity) {
                 em.persist(entity);
             }
         },
         MERGE {
             @Override
-            public void executeAction (EntityManager em, Object entity) {
+            public void executeAction(EntityManager em, Object entity) {
                 em.merge(entity);
             }
         },
         REMOVE {
             @Override
-            public void executeAction (EntityManager em, Object entity) {
+            public void executeAction(EntityManager em, Object entity) {
                 em.remove(entity);
             }
         },
         LOCK {
             @Override
-            public void executeAction (EntityManager em, Object entity) {
+            public void executeAction(EntityManager em, Object entity) {
                 em.lock(entity, LockModeType.READ);
             }
         },
         REFRESH {
             @Override
-            public void executeAction (EntityManager em, Object entity) {
+            public void executeAction(EntityManager em, Object entity) {
                 em.refresh(entity);
             }
         };
-        
-        public abstract void executeAction (EntityManager em, Object entity);
 
-        public String getActionName () {
+        public abstract void executeAction(EntityManager em, Object entity);
+
+        public String getActionName() {
             return name().toLowerCase();
         }
     }

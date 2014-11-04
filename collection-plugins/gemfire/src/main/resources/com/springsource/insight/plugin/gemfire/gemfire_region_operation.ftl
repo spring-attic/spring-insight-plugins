@@ -6,10 +6,10 @@
         <@insight.list type="ordered" collection=operation.args />
     </@insight.entry>
     <@insight.entry name="Return Value">
-    	${operation.returnValue?html}
+    ${operation.returnValue?html}
     </@insight.entry>
     <@insight.entry name="Full Path">
-    	${operation.fullPath?html}
+    ${operation.fullPath?html}
     </@insight.entry>
     <@insight.entry name="Server" if=operation.servers?has_content>
         <@insight.list type="ordered" collection=operation.servers />

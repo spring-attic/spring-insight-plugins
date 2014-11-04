@@ -28,7 +28,7 @@ public abstract class AbstractSqlParser implements JdbcUrlParser {
     protected AbstractSqlParser(String vendor) {
         this(vendor, DEFAULT_DB_NAME);
     }
-    
+
     protected AbstractSqlParser(String vendor, String dbName) {
         this(vendor, dbName, DEFAULT_HOST, DEFAULT_PORT);
     }
@@ -38,34 +38,34 @@ public abstract class AbstractSqlParser implements JdbcUrlParser {
     }
 
     protected AbstractSqlParser(String vendor, String host, int port) {
-    	this(vendor, DEFAULT_DB_NAME, host, port);
+        this(vendor, DEFAULT_DB_NAME, host, port);
     }
-    
-    protected AbstractSqlParser(String vendor, String dbName, String host, int port) {
-    	if (StringUtil.isEmpty(vendor)) {
-    		throw new IllegalStateException("No vendor name specified");
-    	}
 
-    	vendorName = vendor;
-		urlPrefix = createUrlPrefix(vendor);
+    protected AbstractSqlParser(String vendor, String dbName, String host, int port) {
+        if (StringUtil.isEmpty(vendor)) {
+            throw new IllegalStateException("No vendor name specified");
+        }
+
+        vendorName = vendor;
+        urlPrefix = createUrlPrefix(vendor);
         defaultDBName = dbName;
         defaultHost = host;
         defaultPort = port;
         defaultPortString = String.valueOf(port);
     }
 
-	/**
-	 * @return <code>jdbc:{@link #getVendorName()}:</code>
-	 */
-	public String getUrlPrefix () {
-		return urlPrefix;
-	}
+    /**
+     * @return <code>jdbc:{@link #getVendorName()}:</code>
+     */
+    public String getUrlPrefix() {
+        return urlPrefix;
+    }
 
     public String getVendorName() {
-		return vendorName;
-	}
+        return vendorName;
+    }
 
-	public String getDefaultDatbaseName() {
+    public String getDefaultDatbaseName() {
         return defaultDBName;
     }
 
@@ -77,13 +77,14 @@ public abstract class AbstractSqlParser implements JdbcUrlParser {
         return defaultPort;
     }
 
-    public String getDefaultPortString () {
-    	return defaultPortString;
+    public String getDefaultPortString() {
+        return defaultPortString;
     }
 
-    protected String createUrlPrefix (String vendor) {
-    	return JDBC_PREFIX + ":" + vendor + ":";
+    protected String createUrlPrefix(String vendor) {
+        return JDBC_PREFIX + ":" + vendor + ":";
     }
+
     /**
      * @param connectionUrl The original connection URL
      * @return The rest of the URL with the <code>jdbc</code> and vendor
@@ -91,24 +92,24 @@ public abstract class AbstractSqlParser implements JdbcUrlParser {
      * not starts with the required prefix
      * @see #getUrlPrefix()
      */
-    protected String stripUrlPrefix (String connectionUrl) {
-		String	prefix=getUrlPrefix();
-		if (StringUtil.isEmpty(connectionUrl) || (!connectionUrl.startsWith(prefix))) {
-			return null;
-		}
+    protected String stripUrlPrefix(String connectionUrl) {
+        String prefix = getUrlPrefix();
+        if (StringUtil.isEmpty(connectionUrl) || (!connectionUrl.startsWith(prefix))) {
+            return null;
+        }
 
-		return connectionUrl.substring(prefix.length());
+        return connectionUrl.substring(prefix.length());
     }
 
-    protected int parsePort (String connectionUrl, String portValue) {
-    	if (StringUtil.isEmpty(portValue)) {
-    		return getDefaultPort();
-    	}
+    protected int parsePort(String connectionUrl, String portValue) {
+        if (StringUtil.isEmpty(portValue)) {
+            return getDefaultPort();
+        }
 
-    	try {
-    		return Integer.parseInt(portValue);
-    	} catch(NumberFormatException e) {
-    		return (-1);	// signal the error
-    	}
+        try {
+            return Integer.parseInt(portValue);
+        } catch (NumberFormatException e) {
+            return (-1);    // signal the error
+        }
     }
 }

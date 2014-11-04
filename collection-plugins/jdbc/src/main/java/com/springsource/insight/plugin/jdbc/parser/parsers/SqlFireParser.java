@@ -18,7 +18,7 @@ package com.springsource.insight.plugin.jdbc.parser.parsers;
 import com.springsource.insight.plugin.jdbc.parser.AbstractSqlPatternParser;
 
 public class SqlFireParser extends AbstractSqlPatternParser {
-    public static final String	VENDOR="sqlfire";
+    public static final String VENDOR = "sqlfire";
 
     public SqlFireParser() {
         super(VENDOR, create(VENDOR, "//([^:]+):([^/]+)/?.*", 1, 2, -1));

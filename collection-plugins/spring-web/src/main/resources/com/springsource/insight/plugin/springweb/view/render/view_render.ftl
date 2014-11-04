@@ -10,7 +10,7 @@
                 <@insight.entry name=key value=operation.model[key] />
             </@insight.group>
         <#else>
-            <em>empty</em>
+        <em>empty</em>
         </#if>
     </@insight.entry>
     <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />

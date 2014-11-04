@@ -22,27 +22,27 @@ import org.aspectj.lang.Signature;
 import com.springsource.insight.intercept.operation.Operation;
 
 /**
- * 
+ *
  */
 public aspect CommonsLoggingOperationCollectionAspect extends LoggingMethodOperationCollectionAspect {
-    public pointcut errorLogFlow ()
-        : execution(* Log+.error(Object))
-       || execution(* Log+.error(Object,Throwable))
-       || execution(* Log+.fatal(Object))
-       || execution(* Log+.fatal(Object,Throwable))
-        ;
+    public pointcut errorLogFlow()
+            : execution(* Log+.error(Object))
+            || execution(* Log+.error(Object,Throwable))
+            || execution(* Log+.fatal(Object))
+            || execution(* Log+.fatal(Object,Throwable))
+            ;
 
     public pointcut collectionPoint()
-        : errorLogFlow()
-       && (!cflowbelow(errorLogFlow()))
-        ;
+            : errorLogFlow()
+            && (!cflowbelow(errorLogFlow()))
+            ;
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
-        Signature   sig=jp.getSignature();
-        Object[]    args=jp.getArgs();
+        Signature sig = jp.getSignature();
+        Object[] args = jp.getArgs();
         return createOperation(jp, Log.class, sig.getName().toUpperCase(),
-                                String.valueOf(args[0]), (args.length > 1) ? (Throwable) args[1] : null);
+                String.valueOf(args[0]), (args.length > 1) ? (Throwable) args[1] : null);
     }
-   
+
 }

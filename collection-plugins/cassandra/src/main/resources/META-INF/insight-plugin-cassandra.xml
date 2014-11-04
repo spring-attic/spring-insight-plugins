@@ -1,59 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:insight="http://www.springframework.org/schema/insight-idk"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:insight="http://www.springframework.org/schema/insight-idk"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
-	<insight:plugin name="cassandra" version="${project.version}" publisher="SpringSource" />
+    <insight:plugin name="cassandra" version="${project.version}" publisher="SpringSource"/>
 
-    <insight:operation-view operation="cassandra_connect" template="com/springsource/insight/plugin/cassandra/conn.ftl"/>
-	<insight:operation-view operation="cassandra_get" template="com/springsource/insight/plugin/cassandra/get.ftl"/>
-	<insight:operation-view operation="cassandra_update" template="com/springsource/insight/plugin/cassandra/update.ftl"/>
-	<insight:operation-view operation="cassandra_remove" template="com/springsource/insight/plugin/cassandra/remove.ftl"/>
-	<insight:operation-view operation="cassandra_cql" template="com/springsource/insight/plugin/cassandra/cql.ftl"/>
-	<insight:operation-view operation="cassandra_system" template="com/springsource/insight/plugin/cassandra/system.ftl"/>
-	
-    <insight:operation-group group="DB" operation="cassandra_connect" />
-	<insight:operation-group group="DB" operation="cassandra_get" />
-	<insight:operation-group group="DB" operation="cassandra_update" />
-	<insight:operation-group group="DB" operation="cassandra_remove" />
-	<insight:operation-group group="DB" operation="cassandra_cql" />
-	<insight:operation-group group="DB" operation="cassandra_system" />
+    <insight:operation-view operation="cassandra_connect"
+                            template="com/springsource/insight/plugin/cassandra/conn.ftl"/>
+    <insight:operation-view operation="cassandra_get" template="com/springsource/insight/plugin/cassandra/get.ftl"/>
+    <insight:operation-view operation="cassandra_update"
+                            template="com/springsource/insight/plugin/cassandra/update.ftl"/>
+    <insight:operation-view operation="cassandra_remove"
+                            template="com/springsource/insight/plugin/cassandra/remove.ftl"/>
+    <insight:operation-view operation="cassandra_cql" template="com/springsource/insight/plugin/cassandra/cql.ftl"/>
+    <insight:operation-view operation="cassandra_system"
+                            template="com/springsource/insight/plugin/cassandra/system.ftl"/>
+
+    <insight:operation-group group="DB" operation="cassandra_connect"/>
+    <insight:operation-group group="DB" operation="cassandra_get"/>
+    <insight:operation-group group="DB" operation="cassandra_update"/>
+    <insight:operation-group group="DB" operation="cassandra_remove"/>
+    <insight:operation-group group="DB" operation="cassandra_cql"/>
+    <insight:operation-group group="DB" operation="cassandra_system"/>
 
     <bean id="cassandraConnectExternalResourceAnalyzer"
           class="com.springsource.insight.plugin.cassandra.CassandraConnectExternalResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="cassandraCQLExternalResourceAnalyzer"
           class="com.springsource.insight.plugin.cassandra.CassandraCQLExternalResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="cassandraGetExternalResourceAnalyzer"
           class="com.springsource.insight.plugin.cassandra.CassandraGetExternalResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="cassandraSystemExternalResourceAnalyzer"
           class="com.springsource.insight.plugin.cassandra.CassandraSystemExternalResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="cassandraUpdateExternalResourceAnalyzer"
           class="com.springsource.insight.plugin.cassandra.CassandraUpdateExternalResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="cassandraRemoveExternalResourceAnalyzer"
           class="com.springsource.insight.plugin.cassandra.CassandraRemoveExternalResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
     <bean id="cassandraPluginRuntimeDescriptor"
           class="com.springsource.insight.plugin.cassandra.CassandraPluginRuntimeDescriptor"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
 </beans>

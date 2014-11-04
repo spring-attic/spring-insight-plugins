@@ -29,72 +29,72 @@ import com.springsource.insight.intercept.operation.Operation;
 @ContextConfiguration(OperationCollectionAspectTests.TEST_CONTEXT)
 @Transactional
 public class LookupOperationCollectionAspectTest extends AbstractNeo4jCollectionAspectTestSupport {
-	@Autowired
-	OperationCollectionAspectTests tests;
-	
-	
-	public LookupOperationCollectionAspectTest () {
-		super();
-	}
+    @Autowired
+    OperationCollectionAspectTests tests;
 
-	@Override
-	public OperationCollectionAspectSupport getAspect() {
-		return LookupOperationCollectionAspect.aspectOf();
-	}
-	
-	@Test
-	public void testRun1() throws Exception {
-		// Step 1: Execute test
-		tests.test_Lookup1();
 
-		// Step 2:  Get the Operation that was just created by our aspect
-		Operation op = getLastEntered();
-		assertNotNull("No Neo4J.Lookup operation data is intercepted",op);
+    public LookupOperationCollectionAspectTest() {
+        super();
+    }
 
-		// Step 3:  Validate
-		assertEquals("Invalid operation type", OperationCollectionTypes.LOOKUP_TYPE.type, op.getType());
-		
-		assertEquals("Invalid Label", OperationCollectionTypes.LOOKUP_TYPE.label, op.getLabel());
-		
-		assertNotNull("Parameter 'indexName' does not exists", op.get("indexName"));
-		assertNotNull("Parameter 'query' does not exists", op.get("query"));
-	}
-	
-	@Test
-	public void testRun2() throws Exception {
-		// Step 1: Execute test
-		tests.test_Lookup2();
+    @Override
+    public OperationCollectionAspectSupport getAspect() {
+        return LookupOperationCollectionAspect.aspectOf();
+    }
 
-		// Step 2:  Get the Operation that was just created by our aspect
-		Operation op = getLastEntered();
-		assertNotNull("No Neo4J.Lookup operation data is intercepted",op);
+    @Test
+    public void testRun1() throws Exception {
+        // Step 1: Execute test
+        tests.test_Lookup1();
 
-		// Step 3:  Validate
-		assertEquals("Invalid operation type", OperationCollectionTypes.LOOKUP_TYPE.type, op.getType());
-		
-		assertEquals("Invalid Label", OperationCollectionTypes.LOOKUP_TYPE.label, op.getLabel());
-		
-		assertNotNull("Parameter 'indexName' does not exists", op.get("indexName"));
-		assertNotNull("Parameter 'field' does not exists", op.get("field"));
-		assertNotNull("Parameter 'value' does not exists", op.get("value"));
-	}
-	
-	@Test
-	public void testRun3() throws Exception {
-		// Step 1: Execute test
-		tests.test_Lookup3();
+        // Step 2:  Get the Operation that was just created by our aspect
+        Operation op = getLastEntered();
+        assertNotNull("No Neo4J.Lookup operation data is intercepted", op);
 
-		// Step 2:  Get the Operation that was just created by our aspect
-		Operation op = getLastEntered();
-		assertNotNull("No Neo4J.Lookup operation data is intercepted",op);
+        // Step 3:  Validate
+        assertEquals("Invalid operation type", OperationCollectionTypes.LOOKUP_TYPE.type, op.getType());
 
-		// Step 3:  Validate
-		assertEquals("Invalid operation type", OperationCollectionTypes.LOOKUP_TYPE.type, op.getType());
-		
-		assertEquals("Invalid Label", OperationCollectionTypes.LOOKUP_TYPE.label, op.getLabel());
-		
-		assertNotNull("Parameter 'indexedType' does not exists", op.get("indexedType"));
-		assertNotNull("Parameter 'propertyName' does not exists", op.get("propertyName"));
-		assertNotNull("Parameter 'value' does not exists", op.get("value"));
-	}
+        assertEquals("Invalid Label", OperationCollectionTypes.LOOKUP_TYPE.label, op.getLabel());
+
+        assertNotNull("Parameter 'indexName' does not exists", op.get("indexName"));
+        assertNotNull("Parameter 'query' does not exists", op.get("query"));
+    }
+
+    @Test
+    public void testRun2() throws Exception {
+        // Step 1: Execute test
+        tests.test_Lookup2();
+
+        // Step 2:  Get the Operation that was just created by our aspect
+        Operation op = getLastEntered();
+        assertNotNull("No Neo4J.Lookup operation data is intercepted", op);
+
+        // Step 3:  Validate
+        assertEquals("Invalid operation type", OperationCollectionTypes.LOOKUP_TYPE.type, op.getType());
+
+        assertEquals("Invalid Label", OperationCollectionTypes.LOOKUP_TYPE.label, op.getLabel());
+
+        assertNotNull("Parameter 'indexName' does not exists", op.get("indexName"));
+        assertNotNull("Parameter 'field' does not exists", op.get("field"));
+        assertNotNull("Parameter 'value' does not exists", op.get("value"));
+    }
+
+    @Test
+    public void testRun3() throws Exception {
+        // Step 1: Execute test
+        tests.test_Lookup3();
+
+        // Step 2:  Get the Operation that was just created by our aspect
+        Operation op = getLastEntered();
+        assertNotNull("No Neo4J.Lookup operation data is intercepted", op);
+
+        // Step 3:  Validate
+        assertEquals("Invalid operation type", OperationCollectionTypes.LOOKUP_TYPE.type, op.getType());
+
+        assertEquals("Invalid Label", OperationCollectionTypes.LOOKUP_TYPE.label, op.getLabel());
+
+        assertNotNull("Parameter 'indexedType' does not exists", op.get("indexedType"));
+        assertNotNull("Parameter 'propertyName' does not exists", op.get("propertyName"));
+        assertNotNull("Parameter 'value' does not exists", op.get("value"));
+    }
 }

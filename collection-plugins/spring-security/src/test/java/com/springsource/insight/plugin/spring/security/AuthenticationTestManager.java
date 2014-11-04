@@ -24,11 +24,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
 /**
- * 
+ *
  */
 public class AuthenticationTestManager implements AuthenticationManager {
-    private final Logger    logger=Logger.getLogger(getClass().getName());
-    private final boolean   useAuthCopy;
+    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final boolean useAuthCopy;
+
     public AuthenticationTestManager(final boolean copyAuth) {
         useAuthCopy = copyAuth;
     }
@@ -36,11 +37,11 @@ public class AuthenticationTestManager implements AuthenticationManager {
     public Authentication authenticate(Authentication authentication)
             throws AuthenticationException {
         logger.info("authenticate() enter: " + authentication);
-        Authentication  result=authentication;
+        Authentication result = authentication;
         if (useAuthCopy)
             result = new UsernamePasswordAuthenticationToken(authentication.getPrincipal(),
-                                                             authentication.getCredentials(),
-                                                             authentication.getAuthorities());
+                    authentication.getCredentials(),
+                    authentication.getAuthorities());
         if (!result.isAuthenticated())
             result.setAuthenticated(true);
         logger.info("authenticate() finished: " + result);

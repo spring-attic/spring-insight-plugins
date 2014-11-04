@@ -23,16 +23,16 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Used to store PreparedStatements and associated JdbcOperations in memory
  * via WeakReference.
- *
+ * <p/>
  * If a user calls connection.prepareStatement() and never calls execute(),
  * the prepared statement must still be purged from memory.
- * 
+ * <p/>
  * This class provides thread-safe, synchronized access.
- * 
+ * <p/>
  * You must be confident that these keys and values are not purged
  * too early. See the notes on their use in other classes to verify this
  * behavior.
- *
+ * <p/>
  * We may also be able to replace this with the standard WeakHashMap
  * implementation, though that implementation should then be synchronized.
  */
@@ -40,26 +40,26 @@ public class WeakKeyHashMap<K, V> {
     private final ConcurrentHashMap<WeakRef<K, V>, WeakRef<K, V>> map = new ConcurrentHashMap<WeakRef<K, V>, WeakRef<K, V>>();
     private final ReferenceQueue<V> refQueue = new ReferenceQueue<V>();
 
-    public WeakKeyHashMap () {
-    	super();
+    public WeakKeyHashMap() {
+        super();
     }
 
     public int size() {
         return map.size();
     }
-    
+
     public V put(K key, V val) {
         WeakRef<K, V> newRef = new WeakRef<K, V>(key, refQueue, val);
         WeakRef<K, V> oldRef = map.put(newRef, newRef);
-        V	prev=null;
+        V prev = null;
         if (oldRef != null) {
             // System.out.println("** Overwrote old reference to statement=" + dumpObj(key));
-        	prev = oldRef.getHardRef();
+            prev = oldRef.getHardRef();
         }
         cleanupRefQueue();
         return prev;
     }
-    
+
     public V get(K key) {
         WeakRef<K, V> lookupRef = new WeakRef<K, V>(key, refQueue, null);
         WeakRef<K, V> ref = map.get(lookupRef);
@@ -77,18 +77,18 @@ public class WeakKeyHashMap<K, V> {
         WeakRef<K, V> ref = map.remove(lookupRef);
         if (ref == null) {
             // System.out.println("** Reference no longer available anyway to statement=" + dumpObj(key));
-        	return null;
+            return null;
         } else {
-        	return ref.getHardRef();
+            return ref.getHardRef();
         }
     }
 
     private void cleanupRefQueue() {
         @SuppressWarnings("rawtypes")
-		Reference ref;
+        Reference ref;
         while ((ref = refQueue.poll()) != null) {
             @SuppressWarnings("unchecked")
-			WeakRef<K, V> softRef = (WeakRef<K, V>)ref;
+            WeakRef<K, V> softRef = (WeakRef<K, V>) ref;
             if (map.remove(softRef) == null) {
                 // System.out.println("Remove cleared ref, but it wasn't found in our map!");
             }
@@ -98,34 +98,34 @@ public class WeakKeyHashMap<K, V> {
     public static String dumpObj(Object obj) {
         return obj.getClass() + ":" + System.identityHashCode(obj);
     }
-    
+
     private static class WeakRef<A, B> extends WeakReference<A> {
         private final int hashCode;
         private final B hardRef;
-        
-        @SuppressWarnings({ "unchecked", "rawtypes"})
-		public WeakRef(A obj, ReferenceQueue queue, B hardReference) {
+
+        @SuppressWarnings({"unchecked", "rawtypes"})
+        public WeakRef(A obj, ReferenceQueue queue, B hardReference) {
             super(obj, queue);
             this.hashCode = System.identityHashCode(obj);
             this.hardRef = hardReference;
         }
-        
+
         public B getHardRef() {
             return hardRef;
         }
-        
+
         @Override
         public int hashCode() {
             return hashCode;
         }
-        
+
         @Override
         public boolean equals(Object other) {
             if (other == null) {
                 return false;
             }
             @SuppressWarnings("rawtypes")
-			WeakRef o = (WeakRef)other;
+            WeakRef o = (WeakRef) other;
             return o.get() == get();
         }
     }

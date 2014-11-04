@@ -45,29 +45,29 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * 
+ *
  */
 public class TestLdapContext implements LdapContext {
-    private static final NamingEnumeration<SearchResult> EMPTY_SEARCH_RESULT=
+    private static final NamingEnumeration<SearchResult> EMPTY_SEARCH_RESULT =
             new EmptyNamingEnumeration<SearchResult>();
-    private static final NamingEnumeration<NameClassPair>   EMPTY_NAMECLASS_PAIR=
+    private static final NamingEnumeration<NameClassPair> EMPTY_NAMECLASS_PAIR =
             new EmptyNamingEnumeration<NameClassPair>();
-    private static final NamingEnumeration<Binding> EMPTY_BINDINGS=
+    private static final NamingEnumeration<Binding> EMPTY_BINDINGS =
             new EmptyNamingEnumeration<Binding>();
-    private static final NameParser DEFAULT_NAME_PARSER=new NameParser() {
-            public Name parse(String name) throws NamingException {
-                return createName(name);
-            }
-        };
+    private static final NameParser DEFAULT_NAME_PARSER = new NameParser() {
+        public Name parse(String name) throws NamingException {
+            return createName(name);
+        }
+    };
 
-    private final Hashtable<Object,Object> environment;
-    private static final String[]   EMPTY_STRINGS={ };
-    private final Log   logger=LogFactory.getLog(getClass());
-    private Control[]   requestControls;
+    private final Hashtable<Object, Object> environment;
+    private static final String[] EMPTY_STRINGS = {};
+    private final Log logger = LogFactory.getLog(getClass());
+    private Control[] requestControls;
     private boolean closed;
 
-    public TestLdapContext(@SuppressWarnings("hiding") Hashtable<?,?> environment) {
-        this.environment = new Hashtable<Object,Object>(environment);
+    public TestLdapContext(@SuppressWarnings("hiding") Hashtable<?, ?> environment) {
+        this.environment = new Hashtable<Object, Object>(environment);
     }
 
     public Attributes getAttributes(String name) throws NamingException {
@@ -102,7 +102,7 @@ public class TestLdapContext implements LdapContext {
     public void modifyAttributes(Name name, ModificationItem[] mods)
             throws NamingException {
         for (ModificationItem item : mods) {
-            BasicAttributes attrs=new BasicAttributes();
+            BasicAttributes attrs = new BasicAttributes();
             attrs.put(item.getAttribute());
             modifyAttributes(name, item.getModificationOp(), attrs);
         }
@@ -350,7 +350,7 @@ public class TestLdapContext implements LdapContext {
     }
 
     public Hashtable<?, ?> getEnvironment() throws NamingException {
-        return new Hashtable<Object,Object>(environment);
+        return new Hashtable<Object, Object>(environment);
     }
 
     public void close() throws NamingException {
@@ -410,32 +410,32 @@ public class TestLdapContext implements LdapContext {
         return requestControls;
     }
 
-    private void ensureOpen () throws NamingException {
+    private void ensureOpen() throws NamingException {
         if (closed) {
             throw new NamingException("Context marked as closed");
         }
     }
-    
-    protected static Name createName (String name) throws InvalidNameException {
+
+    protected static Name createName(String name) throws InvalidNameException {
         return new LdapName(name);
     }
-    
-    private void logAttributes (String location, Attributes attrs) throws NamingException {
-        NamingEnumeration<? extends Attribute> values=attrs.getAll();
+
+    private void logAttributes(String location, Attributes attrs) throws NamingException {
+        NamingEnumeration<? extends Attribute> values = attrs.getAll();
         try {
             while ((values != null) && values.hasMore()) {
-                Attribute       aValue=values.next();
-                String          id=aValue.getID();
-                Collection<?>   valsList=Collections.list(aValue.getAll());
+                Attribute aValue = values.next();
+                String id = aValue.getID();
+                Collection<?> valsList = Collections.list(aValue.getAll());
                 logger.trace(location + "[" + id + "]: " + valsList);
             }
         } finally {
             values.close();
         }
     }
-    
+
     private static class EmptyNamingEnumeration<V> implements NamingEnumeration<V> {
-        EmptyNamingEnumeration () {
+        EmptyNamingEnumeration() {
             super();
         }
 

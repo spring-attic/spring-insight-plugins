@@ -24,29 +24,29 @@ import com.springsource.insight.intercept.operation.Operation;
 
 
 public class ActionOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-	public ActionOperationCollectionAspectTest () {
-		super();
-	}
+    public ActionOperationCollectionAspectTest() {
+        super();
+    }
 
-	@Test
-	public void test1() {
-		// Step 1: Execute test
-		WebFlowExecutionTest webFlow=new WebFlowExecutionTest();
-		webFlow.testAction();
+    @Test
+    public void test1() {
+        // Step 1: Execute test
+        WebFlowExecutionTest webFlow = new WebFlowExecutionTest();
+        webFlow.testAction();
 
-		// Step 2:  Get the Operation that was just created by our aspect
-		Operation op = getLastEntered();
+        // Step 2:  Get the Operation that was just created by our aspect
+        Operation op = getLastEntered();
 
-		// Step 3:  Validate
-		assertNotNull(op);
-		assert op.getType().getName().equals("wf-action");
+        // Step 3:  Validate
+        assertNotNull(op);
+        assert op.getType().getName().equals("wf-action");
 
-		assertNotNull(op.get("action"));
-		assert "flowScope.person=personDao.findPersonById(id)".equals(op.get("action"));
-	}
+        assertNotNull(op.get("action"));
+        assert "flowScope.person=personDao.findPersonById(id)".equals(op.get("action"));
+    }
 
-	@Override
-	public OperationCollectionAspectSupport getAspect() {
-		return ActionOperationCollectionAspect.aspectOf();
-	}
+    @Override
+    public OperationCollectionAspectSupport getAspect() {
+        return ActionOperationCollectionAspect.aspectOf();
+    }
 }

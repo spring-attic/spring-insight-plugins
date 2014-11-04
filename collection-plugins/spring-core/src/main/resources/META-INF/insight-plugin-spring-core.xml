@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:insight="http://www.springframework.org/schema/insight-idk"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:insight="http://www.springframework.org/schema/insight-idk"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
-	<insight:plugin name="spring-core" version="${project.version}" publisher="SpringSource" />
+    <insight:plugin name="spring-core" version="${project.version}" publisher="SpringSource"/>
 
-    <insight:operation-view operation="spring_app_listener" template="com/springsource/insight/plugin/springcore/spring_app_listener.ftl"/>
-    <insight:operation-view operation="spring_classpath_scan" template="com/springsource/insight/plugin/springcore/spring_classpath_scan.ftl"/>
-    <insight:operation-view operation="spring_event_publish" template="com/springsource/insight/plugin/springcore/spring_event_publish.ftl"/>
-    <insight:operation-view operation="spring_bean_lifecycle" template="com/springsource/insight/plugin/springcore/spring_bean_lifecycle.ftl"/>
+    <insight:operation-view operation="spring_app_listener"
+                            template="com/springsource/insight/plugin/springcore/spring_app_listener.ftl"/>
+    <insight:operation-view operation="spring_classpath_scan"
+                            template="com/springsource/insight/plugin/springcore/spring_classpath_scan.ftl"/>
+    <insight:operation-view operation="spring_event_publish"
+                            template="com/springsource/insight/plugin/springcore/spring_event_publish.ftl"/>
+    <insight:operation-view operation="spring_bean_lifecycle"
+                            template="com/springsource/insight/plugin/springcore/spring_bean_lifecycle.ftl"/>
 
     <bean id="springCorePluginRuntimeDescriptor"
           class="com.springsource.insight.plugin.springcore.SpringCorePluginRuntimeDescriptor"
           factory-method="getInstance"
           lazy-init="true"
-        />
+            />
 
 </beans>

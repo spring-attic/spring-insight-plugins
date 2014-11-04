@@ -25,7 +25,7 @@ import org.junit.Test;
 
 
 /**
- * 
+ *
  */
 public class SocketChannelConnectCollectionAspectTest
         extends SocketConnectCollectionAspectTestSupport {
@@ -34,32 +34,32 @@ public class SocketChannelConnectCollectionAspectTest
     }
 
     @Test
-    public void testStaticChannelOpen () {
-        final SocketAddress connectAddress=new InetSocketAddress(TEST_HOST, TEST_PORT);
+    public void testStaticChannelOpen() {
+        final SocketAddress connectAddress = new InetSocketAddress(TEST_HOST, TEST_PORT);
         try {
-            SocketChannel channel=SocketChannel.open(connectAddress);
+            SocketChannel channel = SocketChannel.open(connectAddress);
             Assert.fail("Unexpected success to connect to " + connectAddress);
             channel.close();
-        } catch(IOException e) {
+        } catch (IOException e) {
             // ignored since we don't really expect it to succeed
         }
-        
+
         assertConnectOperation(connectAddress);
     }
 
     @Test
-    public void testChannelConnectMethod () throws IOException {
-        final SocketAddress connectAddress=new InetSocketAddress(TEST_HOST, TEST_PORT);
-        SocketChannel channel=SocketChannel.open();
+    public void testChannelConnectMethod() throws IOException {
+        final SocketAddress connectAddress = new InetSocketAddress(TEST_HOST, TEST_PORT);
+        SocketChannel channel = SocketChannel.open();
         try {
             if (channel.connect(connectAddress))
                 Assert.fail("Unexpected success to connect to " + connectAddress);
-        } catch(IOException e) {
+        } catch (IOException e) {
             // ignored since we don't really expect it to succeed
         } finally {
             channel.close();
         }
-        
+
         assertConnectOperation(connectAddress);
     }
 

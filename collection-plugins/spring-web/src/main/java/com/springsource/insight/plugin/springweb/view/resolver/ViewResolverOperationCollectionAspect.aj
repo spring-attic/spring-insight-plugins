@@ -28,12 +28,12 @@ import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
 
 public aspect ViewResolverOperationCollectionAspect extends AbstractSpringWebAspectSupport {
     private static final OperationType TYPE = OperationType.valueOf("view_resolver");
-    
+
     public ViewResolverOperationCollectionAspect() {
         super(new ViewResolverMetricCollector());
     }
 
-    public pointcut collectionPoint() :  execution(View ViewResolver+.resolveViewName(String, Locale));
+    public pointcut collectionPoint():  execution(View ViewResolver+.resolveViewName(String, Locale));
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
@@ -42,11 +42,11 @@ public aspect ViewResolverOperationCollectionAspect extends AbstractSpringWebAsp
         Locale locale = (Locale) args[1];
 
         return new Operation()
-            .label("Resolve view \"" + viewName + "\"")
-            .type(TYPE)
-            .sourceCodeLocation(getSourceCodeLocation(jp))
-            .put("viewName", viewName)
-            .put("locale", locale.toString())
-            ;
+                .label("Resolve view \"" + viewName + "\"")
+                .type(TYPE)
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .put("viewName", viewName)
+                .put("locale", locale.toString())
+                ;
     }
 }
