@@ -26,7 +26,7 @@ import com.springsource.insight.plugin.integration.tcp.TcpConnectionExternalReso
 import com.springsource.insight.util.ArrayUtil;
 
 public class IntegrationPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
-    public static final String PLUGIN_NAME = "spring-integration";
+    public static final String PLUGIN_NAME = "spring-integration2";
     private static final IntegrationPluginRuntimeDescriptor INSTANCE = new IntegrationPluginRuntimeDescriptor();
     private static final List<? extends EndPointAnalyzer> epAnalyzers = ArrayUtil.asUnmodifiableList(IntegrationEndPointAnalyzer.getInstance());
     private static final List<? extends ExternalResourceAnalyzer> extResAnalyzers =

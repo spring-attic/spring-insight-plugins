@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.springsource.insight.plugins</groupId>
-    <artifactId>insight-plugin-spring-integration4</artifactId>
+    <artifactId>insight-plugin-spring-integration</artifactId>
     <name>com.springsource.insight.plugins:spring-integration</name>
     <packaging>jar</packaging>
 

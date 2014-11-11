@@ -22,7 +22,9 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
+import com.rabbitmq.client.*;
 import org.junit.Test;
 
 import com.rabbitmq.client.AMQP.Basic.RecoverOk;
@@ -36,17 +38,6 @@ import com.rabbitmq.client.AMQP.Exchange.UnbindOk;
 import com.rabbitmq.client.AMQP.Queue.PurgeOk;
 import com.rabbitmq.client.AMQP.Tx.CommitOk;
 import com.rabbitmq.client.AMQP.Tx.RollbackOk;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.ConfirmListener;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.Consumer;
-import com.rabbitmq.client.Envelope;
-import com.rabbitmq.client.FlowListener;
-import com.rabbitmq.client.GetResponse;
-import com.rabbitmq.client.Method;
-import com.rabbitmq.client.ReturnListener;
-import com.rabbitmq.client.ShutdownListener;
-import com.rabbitmq.client.ShutdownSignalException;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationMap;
@@ -140,9 +131,14 @@ public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollec
         public void handleShutdownSignal(String arg0, ShutdownSignalException arg1) {
             // do nothing
         }
+
+        public void handleRecoverOk(String consumerTag) {
+
+        }
     }
 
     private static final class MockChannel implements Channel {
+
         private Envelope envelope;
         private BasicProperties props;
         private byte[] body;
@@ -153,70 +149,191 @@ public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollec
             this.body = body;
         }
 
-        public void addShutdownListener(ShutdownListener arg0) {
-            // do nothing
+        public int getChannelNumber() {
+            return 0;
         }
 
-        public ShutdownSignalException getCloseReason() {
+        public Connection getConnection() {
             return null;
         }
 
-        public boolean isOpen() {
+        public void close() throws IOException {
+
+        }
+
+        public void close(int closeCode, String closeMessage) throws IOException {
+
+        }
+
+        public boolean flowBlocked() {
             return false;
         }
 
-        public void notifyListeners() {
-            // do nothing
-        }
-
-        public void removeShutdownListener(ShutdownListener arg0) {
-            // do nothing
-        }
-
         public void abort() throws IOException {
-            // do nothing
+
         }
 
-        public void abort(int arg0, String arg1) throws IOException {
-            // do nothing
+        public void abort(int closeCode, String closeMessage) throws IOException {
+
         }
 
-        public void asyncRpc(Method arg0) throws IOException {
-            // do nothing
+        public void addReturnListener(ReturnListener listener) {
+
         }
 
-        public void basicAck(long arg0, boolean arg1) throws IOException {
-            // do nothing
+        public boolean removeReturnListener(ReturnListener listener) {
+            return false;
         }
 
-        public void basicCancel(String arg0) throws IOException {
-            // do nothing
+        public void clearReturnListeners() {
+
         }
 
-        public String basicConsume(String arg0, Consumer arg1)
-                throws IOException {
+        public void addFlowListener(FlowListener listener) {
+
+        }
+
+        public boolean removeFlowListener(FlowListener listener) {
+            return false;
+        }
+
+        public void clearFlowListeners() {
+
+        }
+
+        public void addConfirmListener(ConfirmListener listener) {
+
+        }
+
+        public boolean removeConfirmListener(ConfirmListener listener) {
+            return false;
+        }
+
+        public void clearConfirmListeners() {
+
+        }
+
+        public Consumer getDefaultConsumer() {
             return null;
         }
 
-        public String basicConsume(String arg0, boolean arg1, Consumer arg2)
-                throws IOException {
+        public void setDefaultConsumer(Consumer consumer) {
+
+        }
+
+        public void basicQos(int prefetchSize, int prefetchCount, boolean global) throws IOException {
+
+        }
+
+        public void basicQos(int prefetchCount, boolean global) throws IOException {
+
+        }
+
+        public void basicQos(int prefetchCount) throws IOException {
+
+        }
+
+        public void basicPublish(String exchange, String routingKey, BasicProperties props, byte[] body) throws IOException {
+
+        }
+
+        public void basicPublish(String exchange, String routingKey, boolean mandatory, BasicProperties props, byte[] body) throws IOException {
+
+        }
+
+        public void basicPublish(String exchange, String routingKey, boolean mandatory, boolean immediate, BasicProperties props, byte[] body) throws IOException {
+
+        }
+
+        public DeclareOk exchangeDeclare(String exchange, String type) throws IOException {
             return null;
         }
 
-        public String basicConsume(String arg0, boolean arg1, String arg2,
-                                   Consumer arg3) throws IOException {
+        public DeclareOk exchangeDeclare(String exchange, String type, boolean durable) throws IOException {
             return null;
         }
 
-        public String basicConsume(String arg0, boolean arg1, String arg2,
-                                   boolean arg3, boolean arg4, Map<String, Object> arg5,
-                                   Consumer arg6) throws IOException {
+        public DeclareOk exchangeDeclare(String exchange, String type, boolean durable, boolean autoDelete, Map<String, Object> arguments) throws IOException {
             return null;
         }
 
-        public GetResponse basicGet(String arg0, boolean arg1)
-                throws IOException {
+        public DeclareOk exchangeDeclare(String exchange, String type, boolean durable, boolean autoDelete, boolean internal, Map<String, Object> arguments) throws IOException {
+            return null;
+        }
 
+        public DeclareOk exchangeDeclarePassive(String name) throws IOException {
+            return null;
+        }
+
+        public DeleteOk exchangeDelete(String exchange, boolean ifUnused) throws IOException {
+            return null;
+        }
+
+        public DeleteOk exchangeDelete(String exchange) throws IOException {
+            return null;
+        }
+
+        public BindOk exchangeBind(String destination, String source, String routingKey) throws IOException {
+            return null;
+        }
+
+        public BindOk exchangeBind(String destination, String source, String routingKey, Map<String, Object> arguments) throws IOException {
+            return null;
+        }
+
+        public UnbindOk exchangeUnbind(String destination, String source, String routingKey) throws IOException {
+            return null;
+        }
+
+        public UnbindOk exchangeUnbind(String destination, String source, String routingKey, Map<String, Object> arguments) throws IOException {
+            return null;
+        }
+
+        public AMQP.Queue.DeclareOk queueDeclare() throws IOException {
+            return null;
+        }
+
+        public AMQP.Queue.DeclareOk queueDeclare(String queue, boolean durable, boolean exclusive, boolean autoDelete, Map<String, Object> arguments) throws IOException {
+            return null;
+        }
+
+        public AMQP.Queue.DeclareOk queueDeclarePassive(String queue) throws IOException {
+            return null;
+        }
+
+        public AMQP.Queue.DeleteOk queueDelete(String queue) throws IOException {
+            return null;
+        }
+
+        public AMQP.Queue.DeleteOk queueDelete(String queue, boolean ifUnused, boolean ifEmpty) throws IOException {
+            return null;
+        }
+
+        public AMQP.Queue.BindOk queueBind(String queue, String exchange, String routingKey) throws IOException {
+            return null;
+        }
+
+        public AMQP.Queue.BindOk queueBind(String queue, String exchange, String routingKey, Map<String, Object> arguments) throws IOException {
+            return null;
+        }
+
+
+        public AMQP.Queue.UnbindOk queueUnbind(String queue, String exchange, String routingKey) throws IOException {
+            return null;
+        }
+
+
+        public AMQP.Queue.UnbindOk queueUnbind(String queue, String exchange, String routingKey, Map<String, Object> arguments) throws IOException {
+            return null;
+        }
+
+
+        public PurgeOk queuePurge(String queue) throws IOException {
+            return null;
+        }
+
+
+        public GetResponse basicGet(String queue, boolean autoAck) throws IOException {
             GetResponse resp = mock(GetResponse.class);
             when(resp.getBody()).thenReturn(body);
             when(resp.getEnvelope()).thenReturn(envelope);
@@ -225,233 +342,143 @@ public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollec
             return resp;
         }
 
-        public void basicNack(long arg0, boolean arg1, boolean arg2)
-                throws IOException {
-            // do nothing
+
+        public void basicAck(long deliveryTag, boolean multiple) throws IOException {
+
         }
 
-        public void basicPublish(String arg0, String arg1,
-                                 BasicProperties arg2, byte[] arg3) throws IOException {
-            // do nothing
+
+        public void basicNack(long deliveryTag, boolean multiple, boolean requeue) throws IOException {
+
         }
 
-        public void basicPublish(String arg0, String arg1, boolean arg2,
-                                 boolean arg3, BasicProperties arg4, byte[] arg5)
-                throws IOException {
-            // do nothing
+
+        public void basicReject(long deliveryTag, boolean requeue) throws IOException {
+
         }
 
-        public void basicQos(int arg0) throws IOException {
-            // do nothing
+
+        public String basicConsume(String queue, Consumer callback) throws IOException {
+            return null;
         }
 
-        public void basicQos(int arg0, int arg1, boolean arg2)
-                throws IOException {
-            // do nothing
+
+        public String basicConsume(String queue, boolean autoAck, Consumer callback) throws IOException {
+            return null;
         }
+
+
+        public String basicConsume(String queue, boolean autoAck, Map<String, Object> arguments, Consumer callback) throws IOException {
+            return null;
+        }
+
+
+        public String basicConsume(String queue, boolean autoAck, String consumerTag, Consumer callback) throws IOException {
+            return null;
+        }
+
+
+        public String basicConsume(String queue, boolean autoAck, String consumerTag, boolean noLocal, boolean exclusive, Map<String, Object> arguments, Consumer callback) throws IOException {
+            return null;
+        }
+
+
+        public void basicCancel(String consumerTag) throws IOException {
+
+        }
+
 
         public RecoverOk basicRecover() throws IOException {
             return null;
         }
 
-        public RecoverOk basicRecover(boolean arg0) throws IOException {
+
+        public RecoverOk basicRecover(boolean requeue) throws IOException {
             return null;
         }
 
-        public void basicRecoverAsync(boolean arg0) throws IOException {
-            // do nothing
+
+        public void basicRecoverAsync(boolean requeue) throws IOException {
+
         }
 
-        public void basicReject(long arg0, boolean arg1) throws IOException {
-            // do nothing
-        }
 
-        public void close() throws IOException {
-            // do nothing
-        }
-
-        public void close(int arg0, String arg1) throws IOException {
-            // do nothing
-        }
-
-        public SelectOk confirmSelect() throws IOException {
+        public AMQP.Tx.SelectOk txSelect() throws IOException {
             return null;
         }
 
-        public BindOk exchangeBind(String arg0, String arg1, String arg2)
-                throws IOException {
-            return null;
-        }
-
-        public BindOk exchangeBind(String arg0, String arg1, String arg2,
-                                   Map<String, Object> arg3) throws IOException {
-            return null;
-        }
-
-        public DeclareOk exchangeDeclare(String arg0, String arg1)
-                throws IOException {
-            return null;
-        }
-
-        public DeclareOk exchangeDeclare(String arg0, String arg1, boolean arg2)
-                throws IOException {
-            return null;
-        }
-
-        public DeclareOk exchangeDeclare(String arg0, String arg1,
-                                         boolean arg2, boolean arg3, Map<String, Object> arg4)
-                throws IOException {
-            return null;
-        }
-
-        public DeclareOk exchangeDeclare(String arg0, String arg1,
-                                         boolean arg2, boolean arg3, boolean arg4,
-                                         Map<String, Object> arg5) throws IOException {
-            return null;
-        }
-
-        public DeclareOk exchangeDeclarePassive(String arg0) throws IOException {
-            return null;
-        }
-
-        public DeleteOk exchangeDelete(String arg0) throws IOException {
-            return null;
-        }
-
-        public DeleteOk exchangeDelete(String arg0, boolean arg1)
-                throws IOException {
-            return null;
-        }
-
-        public UnbindOk exchangeUnbind(String arg0, String arg1, String arg2)
-                throws IOException {
-            return null;
-        }
-
-        public UnbindOk exchangeUnbind(String arg0, String arg1, String arg2,
-                                       Map<String, Object> arg3) throws IOException {
-            return null;
-        }
-
-        public FlowOk flow(boolean arg0) throws IOException {
-            return null;
-        }
-
-        public int getChannelNumber() {
-            return 0;
-        }
-
-        public ConfirmListener getConfirmListener() {
-            return null;
-        }
-
-        public Connection getConnection() {
-            return null;
-        }
-
-        public Consumer getDefaultConsumer() {
-            return null;
-        }
-
-        public FlowOk getFlow() {
-            return null;
-        }
-
-        public FlowListener getFlowListener() {
-            return null;
-        }
-
-        public long getNextPublishSeqNo() {
-            return 0;
-        }
-
-        public ReturnListener getReturnListener() {
-            return null;
-        }
-
-        public com.rabbitmq.client.AMQP.Queue.BindOk queueBind(String arg0,
-                                                               String arg1, String arg2) throws IOException {
-            return null;
-        }
-
-        public com.rabbitmq.client.AMQP.Queue.BindOk queueBind(String arg0,
-                                                               String arg1, String arg2, Map<String, Object> arg3)
-                throws IOException {
-            return null;
-        }
-
-        public com.rabbitmq.client.AMQP.Queue.DeclareOk queueDeclare()
-                throws IOException {
-            return null;
-        }
-
-        public com.rabbitmq.client.AMQP.Queue.DeclareOk queueDeclare(
-                String arg0, boolean arg1, boolean arg2, boolean arg3,
-                Map<String, Object> arg4) throws IOException {
-            return null;
-        }
-
-        public com.rabbitmq.client.AMQP.Queue.DeclareOk queueDeclarePassive(
-                String arg0) throws IOException {
-            return null;
-        }
-
-        public com.rabbitmq.client.AMQP.Queue.DeleteOk queueDelete(String arg0)
-                throws IOException {
-            return null;
-        }
-
-        public com.rabbitmq.client.AMQP.Queue.DeleteOk queueDelete(String arg0,
-                                                                   boolean arg1, boolean arg2) throws IOException {
-            return null;
-        }
-
-        public PurgeOk queuePurge(String arg0) throws IOException {
-            return null;
-        }
-
-        public com.rabbitmq.client.AMQP.Queue.UnbindOk queueUnbind(String arg0,
-                                                                   String arg1, String arg2) throws IOException {
-            return null;
-        }
-
-        public com.rabbitmq.client.AMQP.Queue.UnbindOk queueUnbind(String arg0,
-                                                                   String arg1, String arg2, Map<String, Object> arg3)
-                throws IOException {
-            return null;
-        }
-
-        public Method rpc(Method arg0) throws IOException {
-            return null;
-        }
-
-        public void setConfirmListener(ConfirmListener arg0) {
-            // do nothing
-        }
-
-        public void setDefaultConsumer(Consumer arg0) {
-            // do nothing
-        }
-
-        public void setFlowListener(FlowListener arg0) {
-            // do nothing
-        }
-
-        public void setReturnListener(ReturnListener arg0) {
-            // do nothing
-        }
 
         public CommitOk txCommit() throws IOException {
             return null;
         }
 
+
         public RollbackOk txRollback() throws IOException {
             return null;
         }
 
-        public com.rabbitmq.client.AMQP.Tx.SelectOk txSelect()
-                throws IOException {
+
+        public SelectOk confirmSelect() throws IOException {
             return null;
         }
-    }
-}
+
+
+        public long getNextPublishSeqNo() {
+            return 0;
+        }
+
+
+        public boolean waitForConfirms() throws InterruptedException {
+            return false;
+        }
+
+
+        public boolean waitForConfirms(long timeout) throws InterruptedException, TimeoutException {
+            return false;
+        }
+
+
+        public void waitForConfirmsOrDie() throws IOException, InterruptedException {
+
+        }
+
+
+        public void waitForConfirmsOrDie(long timeout) throws IOException, InterruptedException, TimeoutException {
+
+        }
+
+
+        public void asyncRpc(Method method) throws IOException {
+
+        }
+
+
+        public Command rpc(Method method) throws IOException {
+            return null;
+        }
+
+
+        public void addShutdownListener(ShutdownListener listener) {
+
+        }
+
+
+        public void removeShutdownListener(ShutdownListener listener) {
+
+        }
+
+
+        public ShutdownSignalException getCloseReason() {
+            return null;
+        }
+
+
+        public void notifyListeners() {
+
+        }
+
+
+        public boolean isOpen() {
+            return false;
+        }
+    }}

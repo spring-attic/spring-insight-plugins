@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
 
-    <insight:plugin name="spring-integration" version="${project.version}" publisher="SpringSource"/>
+    <insight:plugin name="spring-integration2" version="${project.version}" publisher="SpringSource"/>
 
     <insight:operation-group group="Spring Integration" operation="integration_operation"/>
     <insight:operation-group group="Spring Integration" operation="integration_tcpconn"/>

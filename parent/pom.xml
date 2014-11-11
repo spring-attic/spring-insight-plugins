@@ -21,7 +21,7 @@
         <spring.webflow.version>2.3.4.RELEASE</spring.webflow.version>
         <spring.integration.version>4.0.4.RELEASE</spring.integration.version>
         <spring.data.commons.version>1.9.0.RELEASE</spring.data.commons.version>
-        <aspectj.version>1.8.4.BUILD-SNAPSHOT</aspectj.version>
+        <aspectj.version>1.8.4</aspectj.version>
         <junit.version>4.11</junit.version>
         <mockito.version>1.9.5</mockito.version>
         <commons.logging.version>1.1.1</commons.logging.version>
@@ -29,7 +29,7 @@
         <commons.math.version>2.1</commons.math.version>
         <commons.io.version>1.4</commons.io.version>
         <clover2.version>2.6.3</clover2.version>
-        <slf4j.version>1.7.2</slf4j.version>
+        <slf4j.version>1.7.5</slf4j.version>
         <servlet-api.version>2.5</servlet-api.version>
         <javax.servlet-api.version>3.0.1</javax.servlet-api.version>
         <jetty-api.version>6.1.25</jetty-api.version>
@@ -38,29 +38,29 @@
         <cglib.version>2.2</cglib.version>
         <activemq.version>5.4.2</activemq.version>
         <xbean.version>3.5</xbean.version>
-        <catalina.version>6.0.41</catalina.version>
+        <catalina.version>6.0.18</catalina.version>
         <h2.version>1.2.147</h2.version>
         <hsqldb.version>1.8.0.10</hsqldb.version>
         <hibernate.version>3.6.0.Final</hibernate.version>
         <commons.dbcp.version>1.2.2</commons.dbcp.version>
         <liquibase.version>2.0.1</liquibase.version>
-        <gemfire.version>6.5.1</gemfire.version>
-        <spring.gemfire.version>1.0.0.RELEASE</spring.gemfire.version>
+        <gemfire.version>8.0.0</gemfire.version>
+        <spring.gemfire.version>1.4.0.RELEASE</spring.gemfire.version>
         <ehcache.version>2.3.0</ehcache.version>
         <groovy.version>1.7.3</groovy.version>
         <gmaven.plugin.version>1.0</gmaven.plugin.version>
         <surefire.plugin.version>2.13</surefire.plugin.version>
         <injection.plugin.version>1.0.2</injection.plugin.version>
         <vfabric.license.client.version>1.0.0.M8</vfabric.license.client.version>
-        <rabbitmq.version>2.5.1</rabbitmq.version>
-        <shade.plugin.version>2.1</shade.plugin.version>
-        <jackson.version>1.9.9</jackson.version>
-        <org.springframework.amqp.version>1.0.0.RELEASE</org.springframework.amqp.version>
+        <rabbitmq.version>3.3.4</rabbitmq.version>
+        <shade.plugin.version>2.3</shade.plugin.version>
+        <jackson.version>2.2.0</jackson.version>
+        <org.springframework.amqp.version>1.2.1.RELEASE</org.springframework.amqp.version>
         <commons.codec.version>1.5</commons.codec.version>
         <json-lib.version>2.2.3</json-lib.version>
         <!-- maven-rpm-plugin .. while not the newest, does not have bugs the newer versions have -->
         <rpm.version>2.0-beta-4</rpm.version>
-        <cloudfoundry.version>0.7.0</cloudfoundry.version>
+        <cloudfoundry.version>0.8.5</cloudfoundry.version>
         <httpclinet.version>4.1.1</httpclinet.version>
         <javax.jms.version>1.1</javax.jms.version>
         <javax.inject.version>1</javax.inject.version>
@@ -586,15 +586,19 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-
             <dependency>
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-core-asl</artifactId>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-mapper-asl</artifactId>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
 
