@@ -32,35 +32,34 @@ import com.springsource.insight.plugin.integration.tcp.TcpConnectionOperationCol
 import com.springsource.insight.plugin.integration.tcp.TcpConnectionOperationCollector;
 
 /**
- * 
+ *
  */
 public class TcpConnectionOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-	private static final TcpConnectionExternalResourceAnalyzer	analyzer=TcpConnectionExternalResourceAnalyzer.getInstance();
+    private static final TcpConnectionExternalResourceAnalyzer analyzer = TcpConnectionExternalResourceAnalyzer.getInstance();
 
-	public TcpConnectionOperationCollectionAspectTest() {
-		super();
-	}
+    public TcpConnectionOperationCollectionAspectTest() {
+        super();
+    }
 
-	@Test
-	public void testConnectionCreationCollected () throws Exception {
-		Operation	op=assertConnectionOperation((ConnectionFactory) new TcpTestConnectionFactory("localhost", 7365, false));
-		assertExternalResourceAnalysis(op);
-	}
+    @Test
+    public void testConnectionCreationCollected() throws Exception {
+        Operation op = assertConnectionOperation((ConnectionFactory) new TcpTestConnectionFactory("localhost", 7365, false));
+        assertExternalResourceAnalysis(op);
+    }
 
-	@Test
-	public void testMissingPortExternalResourceAnalyzer()
-	{
-		assertExternalResourceAnalysis(new Operation()
-					.type(TcpConnectionExternalResourceAnalyzer.TYPE)
-					.label("testMissingPortExternalResourceAnalyzer")
-					.put(TcpConnectionOperationCollector.HOST_ADDRESS_ATTR, "37.77.34.7")
-					.put(OperationFields.URI, "tcp://localhost:7365")
-				);
-	}
+    @Test
+    public void testMissingPortExternalResourceAnalyzer() {
+        assertExternalResourceAnalysis(new Operation()
+                        .type(TcpConnectionExternalResourceAnalyzer.TYPE)
+                        .label("testMissingPortExternalResourceAnalyzer")
+                        .put(TcpConnectionOperationCollector.HOST_ADDRESS_ATTR, "37.77.34.7")
+                        .put(OperationFields.URI, "tcp://localhost:7365")
+        );
+    }
 
-	private ExternalResourceDescriptor assertExternalResourceAnalysis (Operation op) {
-        Frame						frame=createMockOperationWrapperFrame(op);
-        ExternalResourceDescriptor	desc=analyzer.extractExternalResourceDescriptor(frame);
+    private ExternalResourceDescriptor assertExternalResourceAnalysis(Operation op) {
+        Frame frame = createMockOperationWrapperFrame(op);
+        ExternalResourceDescriptor desc = analyzer.extractExternalResourceDescriptor(frame);
         assertNotNull("No resource", desc);
         assertSame("Mismatched frame", frame, desc.getFrame());
         assertEquals("Mismatched host", op.get(TcpConnectionOperationCollector.HOST_ADDRESS_ATTR, String.class), desc.getHost());
@@ -69,38 +68,38 @@ public class TcpConnectionOperationCollectionAspectTest extends OperationCollect
         assertFalse("Not outgoing", desc.isIncoming());
         assertFalse("Unexpected parent", desc.isParent());
 
-        String	uri=op.get(OperationFields.URI, String.class);
+        String uri = op.get(OperationFields.URI, String.class);
         assertEquals("Mismatched name", MD5NameGenerator.getName(uri), desc.getName());
         assertEquals("Mismatched label", op.getLabel() + " " + uri, desc.getLabel());
         return desc;
-	}
+    }
 
-	private Operation assertConnectionOperation (ConnectionFactory factory) throws Exception {
-		TcpConnection	conn=factory.getConnection();
-		Operation		op=assertConnectionOperation(conn);
-		assertEquals("Mismatched label", conn.getClass().getSimpleName() + "#getConnection", op.getLabel());
-		return op;
-	}
+    private Operation assertConnectionOperation(ConnectionFactory factory) throws Exception {
+        TcpConnection conn = factory.getConnection();
+        Operation op = assertConnectionOperation(conn);
+        assertEquals("Mismatched label", conn.getClass().getSimpleName() + "#getConnection", op.getLabel());
+        return op;
+    }
 
-	private Operation assertConnectionOperation (TcpConnection conn) {
-		Operation	op=getLastEntered();
-		assertNotNull("No operation collected", op);
-		assertEquals("Mismatched operation type", TcpConnectionExternalResourceAnalyzer.TYPE, op.getType());
-		assertEquals("Mismatched host", conn.getHostAddress(), op.get(TcpConnectionOperationCollector.HOST_ADDRESS_ATTR, String.class));
-		
-		Number	port=op.get(TcpConnectionOperationCollector.PORT_ATTR, Number.class);
-		assertNotNull("No port value", port);
-		assertEquals("Mismatched port value", conn.getPort(), port.intValue());
-		assertEquals("Mismatched server state", Boolean.valueOf(conn.isServer()), op.get(TcpConnectionOperationCollector.SERVER_ATTR, Boolean.class));
-		
-        String	uri=op.get(OperationFields.URI, String.class);
+    private Operation assertConnectionOperation(TcpConnection conn) {
+        Operation op = getLastEntered();
+        assertNotNull("No operation collected", op);
+        assertEquals("Mismatched operation type", TcpConnectionExternalResourceAnalyzer.TYPE, op.getType());
+        assertEquals("Mismatched host", conn.getHostAddress(), op.get(TcpConnectionOperationCollector.HOST_ADDRESS_ATTR, String.class));
+
+        Number port = op.get(TcpConnectionOperationCollector.PORT_ATTR, Number.class);
+        assertNotNull("No port value", port);
+        assertEquals("Mismatched port value", conn.getPort(), port.intValue());
+        assertEquals("Mismatched server state", Boolean.valueOf(conn.isServer()), op.get(TcpConnectionOperationCollector.SERVER_ATTR, Boolean.class));
+
+        String uri = op.get(OperationFields.URI, String.class);
         assertEquals("Mismatched URI", "tcp://" + conn.getHostAddress() + ":" + conn.getPort(), uri);
 
-		return op;
-	}
+        return op;
+    }
 
-	@Override
-	public TcpConnectionOperationCollectionAspect getAspect() {
-		return TcpConnectionOperationCollectionAspect.aspectOf();
-	}
+    @Override
+    public TcpConnectionOperationCollectionAspect getAspect() {
+        return TcpConnectionOperationCollectionAspect.aspectOf();
+    }
 }

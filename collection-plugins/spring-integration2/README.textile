@@ -1,0 +1,15 @@
+h3. Spring Integration Plugin Spring Insight
+
+This plugin provides information from the core Spring Integration libraries.
+It provides a new endpoint for analysis.
+
+h2. Compatibility
+
+This plugin is compatible with the 1.9+ versions of insight. 
+
+h2. Installation
+
+This is a core plugin of Insight 1.9+.
+
+For both the Dashboard and Insight Agent. You should see the
+plugin listed under the administration panel.

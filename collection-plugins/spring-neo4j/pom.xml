@@ -16,6 +16,9 @@
     
     <properties>
         <neo4j.version>1.6</neo4j.version>
+        <spring.data.neo4j.version>2.0.2.RELEASE</spring.data.neo4j.version>
+        <spring.data.commons.core.version>1.2.1.RELEASE</spring.data.commons.core.version>
+        <spring.framework.version>4.1.1.RELEASE</spring.framework.version>
     </properties>
 
     <repositories>
@@ -51,7 +54,7 @@
 		<dependency>
 			 <groupId>org.springframework.data</groupId>
 			 <artifactId>spring-data-neo4j</artifactId>
-			 <version>2.0.2.RELEASE</version>
+			 <version>${spring.data.neo4j.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -71,14 +74,14 @@
                 NOTE: we override the default version since we need
                 a more advanced version 
              -->
-            <version>1.2.1.RELEASE</version>
+            <version>${spring.data.commons.core.version}</version>
             <scope>provided</scope>
         </dependency>
         
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-neo4j-rest</artifactId>
-            <version>2.0.2.RELEASE</version>
+            <version>${spring.data.neo4j.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.codehaus.jackson</groupId>
@@ -124,8 +127,15 @@
 		<dependency>
 		    <groupId>org.springframework</groupId>
 		    <artifactId>spring-test</artifactId>
+            <version>${spring.framework.version}</version>
 		    <scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.framework.version}</version>
+            <scope>test</scope>
+        </dependency>
 		<dependency>
 		    <groupId>org.neo4j</groupId>
 		    <artifactId>neo4j-cypher</artifactId>

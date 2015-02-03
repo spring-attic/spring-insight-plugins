@@ -22,27 +22,27 @@ import java.util.Map;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 
 /**
- * 
+ *
  */
 public privileged aspect GatewayMethodInboundMessageMapperAspect {
-    
-    declare parents: org.springframework.integration.gateway.GatewayMethodInboundMessageMapper+ implements HasMethod;
 
-	/* ------------------------------------------------------------------------------------------------------------- *
-	 * HasMethod and HasRequestMapper - add support to proxy gateways. Proxy gateways are just interfaces, in-order 
-	 * to expose the real gateway interface name, and the real method name we must expose:
-	 * 1. MessagingGatewaySupport#requestMapper - done with HasRequestMapper
-	 * 2. GatewayMethodInboundMessageMapper#method - done with HasMethod
-	 * ------------------------------------------------------------------------------------------------------------- */
-	
-	@SuppressWarnings("rawtypes")
-	@SuppressAjWarnings
-	after(Method method, Map map, org.springframework.integration.gateway.GatewayMethodInboundMessageMapper gatewayMapper) : 
-		execution(public org.springframework.integration.gateway.GatewayMethodInboundMessageMapper+.new(Method, Map))
-		&& args(method, map) && target(gatewayMapper) {
-	    
-	    if (gatewayMapper instanceof HasMethod) {
-	        ((HasMethod)gatewayMapper).__setInsightMethod(method);
-	    }
-	}
+    declare parents:org.springframework.integration.gateway.GatewayMethodInboundMessageMapper+implements HasMethod;
+
+    /* ------------------------------------------------------------------------------------------------------------- *
+     * HasMethod and HasRequestMapper - add support to proxy gateways. Proxy gateways are just interfaces, in-order
+     * to expose the real gateway interface name, and the real method name we must expose:
+     * 1. MessagingGatewaySupport#requestMapper - done with HasRequestMapper
+     * 2. GatewayMethodInboundMessageMapper#method - done with HasMethod
+     * ------------------------------------------------------------------------------------------------------------- */
+
+    @SuppressWarnings("rawtypes")
+    @SuppressAjWarnings
+    after(Method method, Map map, org.springframework.integration.gateway.GatewayMethodInboundMessageMapper gatewayMapper):
+            execution(public org.springframework.integration.gateway.GatewayMethodInboundMessageMapper+.new(Method, Map))
+                    && args(method, map) && target(gatewayMapper) {
+
+        if (gatewayMapper instanceof HasMethod) {
+            ((HasMethod) gatewayMapper).__setInsightMethod(method);
+        }
+    }
 }

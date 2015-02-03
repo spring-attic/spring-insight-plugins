@@ -74,7 +74,7 @@
         <prop key="#{ T(org.hibernate.cfg.Environment).RELEASE_CONNECTIONS }">${hibernate.connection_release_mode}</prop>
     </util:properties>
 
-    <bean id="jpaEntityManagerFactory"
+    <bean id="entityManagerFactory"
             class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
             p:persistenceUnitManager-ref="jpaPersistenceUnitManager"
             p:jpaProperties-ref="jpaProperties"
@@ -87,7 +87,7 @@
 
     <bean id="transactionManager"
           class="org.springframework.orm.jpa.JpaTransactionManager"
-            p:entityManagerFactory-ref="jpaEntityManagerFactory"
+            p:entityManagerFactory-ref="entityManagerFactory"
         />
 
     <!-- enable the configuration of transactional behavior based on annotations -->

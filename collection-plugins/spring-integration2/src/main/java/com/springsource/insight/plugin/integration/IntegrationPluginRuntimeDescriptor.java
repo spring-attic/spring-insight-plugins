@@ -24,7 +24,7 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 import com.springsource.insight.util.ArrayUtil;
 
 public class IntegrationPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
-    public static final String PLUGIN_NAME = "spring-integration";
+    public static final String PLUGIN_NAME = "spring-integration2";
     private static final IntegrationPluginRuntimeDescriptor	INSTANCE=new IntegrationPluginRuntimeDescriptor();
     private static final List<? extends EndPointAnalyzer>	epAnalyzers=ArrayUtil.asUnmodifiableList(IntegrationEndPointAnalyzer.getInstance());
 

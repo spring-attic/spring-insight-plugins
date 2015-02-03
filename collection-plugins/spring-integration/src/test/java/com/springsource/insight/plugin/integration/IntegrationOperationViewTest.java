@@ -19,8 +19,8 @@ package com.springsource.insight.plugin.integration;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.integration.Message;
-import org.springframework.integration.message.GenericMessage;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.GenericMessage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -31,17 +31,17 @@ import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.operation.SourceCodeLocation;
 
 /**
- * This tests the view-rendering portion of the Spring Integration plugin. 
+ * This tests the view-rendering portion of the Spring Integration plugin.
  */
-@ContextConfiguration(locations = { "classpath:META-INF/insight-plugin-spring-integration.xml", 
-                                    "classpath:META-INF/test-app-context.xml" },
-                      loader = WebApplicationContextLoader.class)
+@ContextConfiguration(locations = {"classpath:META-INF/insight-plugin-spring-integration.xml",
+        "classpath:META-INF/test-app-context.xml"},
+        loader = WebApplicationContextLoader.class)
 @RunWith(SpringJUnit4ClassRunner.class)
-public class IntegrationOperationViewTest extends AbstractOperationViewTestSupport {    
+public class IntegrationOperationViewTest extends AbstractOperationViewTestSupport {
     public IntegrationOperationViewTest() {
         super(OperationType.valueOf("integration_operation"));
     }
-    
+
     /**
      * This tests that Integration Operations can be rendered via the FreeMarker
      * template.
@@ -50,26 +50,26 @@ public class IntegrationOperationViewTest extends AbstractOperationViewTestSuppo
     public void testLocalViewWithStatus() throws Exception {
         SourceCodeLocation scl = new SourceCodeLocation("MyClass", "methodName", 45);
         Message<String> message = new GenericMessage<String>("TestMessage");
-        String beanName="testChannel";
-        String beanType="Channel";
+        String beanName = "testChannel";
+        String beanType = "Channel";
         Operation operation = new Operation()
-			.type(getOperationType())
-			.sourceCodeLocation(scl)
-			.label(beanName + "#" + scl.getMethodName() + "()")
-			.put("siComponentType", beanType)
-			.put("beanName", beanName)
-			.put("payloadType", "java.lang.String")
-			.put("idHeader", message.getHeaders().getId().toString());
-            
+                .type(getOperationType())
+                .sourceCodeLocation(scl)
+                .label(beanName + "#" + scl.getMethodName() + "()")
+                .put("siComponentType", beanType)
+                .put("beanName", beanName)
+                .put("payloadType", "java.lang.String")
+                .put("idHeader", message.getHeaders().getId().toString());
+
         String content = getRenderingOf(operation);
         System.err.println(content);
-        
+
         // Simply test for some expected contents within the HTML.
         assertTrue(content.contains("java.lang.String"));
         assertTrue(content.contains(message.getHeaders().getId().toString()));
         assertTrue(content.contains("Channel"));
-        assertTrue(content.contains("testChan"));    
+        assertTrue(content.contains("testChan"));
         assertFalse(content.contains("Result Message ID"));
-    }    
+    }
 }
 

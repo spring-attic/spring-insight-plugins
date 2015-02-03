@@ -24,48 +24,48 @@ import org.springframework.integration.mapping.InboundMessageMapper;
 import com.springsource.insight.collection.test.AbstractCollectionTestSupport;
 
 /**
- * 
+ *
  */
 public class InboundMessageMapperAspectTest extends AbstractCollectionTestSupport {
-	public InboundMessageMapperAspectTest() {
-		super();
-	}
+    public InboundMessageMapperAspectTest() {
+        super();
+    }
 
-	@Test
-	public void testHasRequestMapperIntroduction() {
-		MessagingGatewaySupport	support=new TestMessagingGatewaySupport();
-		assertInstanceOf(support.getClass().getSimpleName() + " " + HasRequestMapper.class.getSimpleName() + " ?",
-						 support, HasRequestMapper.class);
-	}
+    @Test
+    public void testHasRequestMapperIntroduction() {
+        MessagingGatewaySupport support = new TestMessagingGatewaySupport();
+        assertInstanceOf(support.getClass().getSimpleName() + " " + HasRequestMapper.class.getSimpleName() + " ?",
+                support, HasRequestMapper.class);
+    }
 
-	@Test
-	public void testRequestMapperTagging() {
-		InboundMessageMapper<?> expected=Mockito.mock(InboundMessageMapper.class);
-		MessagingGatewaySupport	support=new TestMessagingGatewaySupport();
-		support.setRequestMapper(expected);
-		
-		assertInstanceOf(support.getClass().getSimpleName() + " " + HasRequestMapper.class.getSimpleName() + " ?",
-				 		 support, HasRequestMapper.class);
-		HasRequestMapper	mapperAccess=(HasRequestMapper) support;
-		Object				actual=mapperAccess.__getRequestMapper();
-		assertSame("Mismatched mapper instances", expected, actual);
-	}
+    @Test
+    public void testRequestMapperTagging() {
+        InboundMessageMapper<?> expected = Mockito.mock(InboundMessageMapper.class);
+        MessagingGatewaySupport support = new TestMessagingGatewaySupport();
+        support.setRequestMapper(expected);
 
-	public static class TestMessagingGatewaySupport extends MessagingGatewaySupport {
-		private InboundMessageMapper<?>	lastSetMapper;
+        assertInstanceOf(support.getClass().getSimpleName() + " " + HasRequestMapper.class.getSimpleName() + " ?",
+                support, HasRequestMapper.class);
+        HasRequestMapper mapperAccess = (HasRequestMapper) support;
+        Object actual = mapperAccess.__getRequestMapper();
+        assertSame("Mismatched mapper instances", expected, actual);
+    }
 
-		public TestMessagingGatewaySupport() {
-			super();
-		}
+    public static class TestMessagingGatewaySupport extends MessagingGatewaySupport {
+        private InboundMessageMapper<?> lastSetMapper;
 
-		@Override
-		public void setRequestMapper(InboundMessageMapper<?> requestMapper) {
-			super.setRequestMapper(requestMapper);
-			lastSetMapper = requestMapper;
-		}
-		
-		public InboundMessageMapper<?> getLastSetMapper() {
-			return lastSetMapper;
-		}
-	}
+        public TestMessagingGatewaySupport() {
+            super();
+        }
+
+        @Override
+        public void setRequestMapper(InboundMessageMapper<?> requestMapper) {
+            super.setRequestMapper(requestMapper);
+            lastSetMapper = requestMapper;
+        }
+
+        public InboundMessageMapper<?> getLastSetMapper() {
+            return lastSetMapper;
+        }
+    }
 }

@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.springframework.integration.Message;
-import org.springframework.integration.MessageHeaders;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
 
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.collection.OperationCollector;
@@ -32,69 +32,71 @@ import com.springsource.insight.util.ExtraReflectionUtils;
 import com.springsource.insight.util.ReflectionUtils;
 
 /**
- * 
+ *
  */
 public abstract aspect AbstractIntegrationOperationCollectionAspect extends AbstractOperationCollectionAspect {
-	private static final Field	headersMapField;
-	static {
-		if ((headersMapField=ExtraReflectionUtils.getAccessibleField(MessageHeaders.class, "headers", Map.class)) == null) {
-			Logger	logger=Logger.getLogger(AbstractIntegrationOperationCollectionAspect.class.getName());
-			logger.warning("Cannot find message headers field");
-		}
-	}
+    private static final Field headersMapField;
 
-	protected AbstractIntegrationOperationCollectionAspect() {
-		super();
-	}
+    static {
+        if ((headersMapField = ExtraReflectionUtils.getAccessibleField(MessageHeaders.class, "headers", Map.class)) == null) {
+            Logger	logger=Logger.getLogger(AbstractIntegrationOperationCollectionAspect.class.getName());
+            logger.warning("Cannot find message headers field");
+        }
+    }
 
-	protected AbstractIntegrationOperationCollectionAspect(OperationCollector collector) {
-		super(collector);
-	}
+    protected AbstractIntegrationOperationCollectionAspect() {
+        super();
+    }
 
-	protected void colorForward (final Operation op, final Message<?> msg) {
-		colorForward(op, (msg == null) ? null : msg.getHeaders());
-	}
+    protected AbstractIntegrationOperationCollectionAspect(OperationCollector collector) {
+        super(collector);
+    }
 
-	protected void colorForward (final Operation op, final MessageHeaders hdrs) {
-		colorForward(new ColorParams() {
-			@SuppressWarnings("synthetic-access")
-			public void setColor(String key, String value) {
-				if ((hdrs == null) || (headersMapField == null)) {
-					return;
-				}
+    protected void colorForward(final Operation op, final Message<?> msg) {
+        colorForward(op, (msg == null) ? null : msg.getHeaders());
+    }
 
-				try {
-					Map<String, Object>	map=(Map<String, Object>) ReflectionUtils.getField(headersMapField, hdrs);
-					Object				prev=map.put(key, value);
-					if (prev != null) {
-						Logger	logger=Logger.getLogger(AbstractIntegrationOperationCollectionAspect.class.getName());
-						if (logger.isLoggable(Level.FINE)) {
-							logger.fine("colorForward(" + key + ")[" + prev + "] => " + value);
-						}
-					}
-				} catch(RuntimeException e) {
-					Logger	logger=Logger.getLogger(AbstractIntegrationOperationCollectionAspect.class.getName());
-					if (logger.isLoggable(Level.FINE)) {
-						logger.fine("colorForward(" + key + ")[" + value + "]"
-								+ " failed (" + e.getClass().getSimpleName() + ")"
-								+ " to access headers field: " + e.getMessage());
-					}
-				}
-			}
-			
-			public Operation getOperation() {
-				return op;
-			}
-		});
-	}
+    protected void colorForward(final Operation op, final MessageHeaders hdrs) {
+        colorForward(new ColorParams() {
+            @SuppressWarnings("synthetic-access")
+            public void setColor(String key, String value) {
+                if ((hdrs == null) || (headersMapField == null)) {
+                    return;
+                }
+
+                try {
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> map = (Map<String, Object>) ReflectionUtils.getField(headersMapField, hdrs);
+                    Object prev = map.put(key, value);
+                    if (prev != null) {
+                        Logger	logger=Logger.getLogger(AbstractIntegrationOperationCollectionAspect.class.getName());
+                        if (logger.isLoggable(Level.FINE)) {
+                            logger.fine("colorForward(" + key + ")[" + prev + "] => " + value);
+                        }
+                    }
+                } catch (RuntimeException e) {
+                    Logger	logger=Logger.getLogger(AbstractIntegrationOperationCollectionAspect.class.getName());
+                    if (logger.isLoggable(Level.FINE)) {
+                        logger.fine("colorForward(" + key + ")[" + value + "]"
+                                + " failed (" + e.getClass().getSimpleName() + ")"
+                                + " to access headers field: " + e.getMessage());
+                    }
+                }
+            }
+
+            public Operation getOperation() {
+                return op;
+            }
+        });
+    }
 
     @Override
     public final String getPluginName() {
         return IntegrationPluginRuntimeDescriptor.PLUGIN_NAME;
     }
-    
+
     @Override
-    public boolean isMetricsGenerator(){
+    public boolean isMetricsGenerator() {
         return true; // This provides an external resource
     }
 }

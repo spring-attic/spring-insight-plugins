@@ -34,27 +34,27 @@ import com.springsource.insight.intercept.trace.TraceId;
 
 /**
  */
-public class IntegrationEndPointAnalyzerTest extends AbstractCollectionTestSupport{
-    private final ApplicationName app = ApplicationName.valueOf("app");    
-    private final IntegrationEndPointAnalyzer endPointAnalyzer=IntegrationEndPointAnalyzer.getInstance();
-	private final List<OperationType> operationTypes = IntegrationEndPointAnalyzer.SI_OPS;
-    
-	public IntegrationEndPointAnalyzerTest () {
-		super();
-	}
+public class IntegrationEndPointAnalyzerTest extends AbstractCollectionTestSupport {
+    private final ApplicationName app = ApplicationName.valueOf("app");
+    private final IntegrationEndPointAnalyzer endPointAnalyzer = IntegrationEndPointAnalyzer.getInstance();
+    private final List<OperationType> operationTypes = IntegrationEndPointAnalyzer.SI_OPS;
+
+    public IntegrationEndPointAnalyzerTest() {
+        super();
+    }
 
     @Test
     public void locateChannelEndPoint() throws Exception {
-        String beanName="test";
-        String beanType="Channel";
+        String beanName = "test";
+        String beanType = "Channel";
         Operation operation = new Operation()
-			.type(this.operationTypes.get(0))
-			.label("MessageChannel#" + beanName)
-			.put("siComponentType", beanType)
-			.put("beanName", beanName)
-			.put("payloadType", "java.lang.String")
-			.put("idHeader", "123");
-            
+                .type(this.operationTypes.get(0))
+                .label("MessageChannel#" + beanName)
+                .put("siComponentType", beanType)
+                .put("beanName", beanName)
+                .put("payloadType", "java.lang.String")
+                .put("idHeader", "123");
+
         FrameBuilder b = new SimpleFrameBuilder();
         b.enter(operation);
         b.enter(new Operation());
@@ -62,23 +62,23 @@ public class IntegrationEndPointAnalyzerTest extends AbstractCollectionTestSuppo
         b.exit();
         Frame integrationFrame = b.exit();
         Trace trace = Trace.newInstance(app, TraceId.valueOf("0"), integrationFrame);
-        EndPointAnalysis endPoint = endPointAnalyzer.locateEndPoint(trace); 
+        EndPointAnalysis endPoint = endPointAnalyzer.locateEndPoint(trace);
         assertEquals(EndPointName.valueOf("MessageChannel#test"), endPoint.getEndPointName());
         assertEquals(integrationFrame.getRange(), trace.getRange());
     }
-    
+
     @Test
     public void locateHandlerEndPoint() throws Exception {
-        String beanName="test";
-        String beanType="MessageHandler";
+        String beanName = "test";
+        String beanType = "MessageHandler";
         Operation operation = new Operation()
-			.type(this.operationTypes.get(0))
-			.label("MessageHandler#" + beanName)
-			.put("siComponentType", beanType)
-			.put("beanName", beanName)
-			.put("payloadType", "java.lang.String")
-			.put("idHeader", "123");
-        
+                .type(this.operationTypes.get(0))
+                .label("MessageHandler#" + beanName)
+                .put("siComponentType", beanType)
+                .put("beanName", beanName)
+                .put("payloadType", "java.lang.String")
+                .put("idHeader", "123");
+
         FrameBuilder b = new SimpleFrameBuilder();
         b.enter(operation);
         b.enter(new Operation());
@@ -86,9 +86,9 @@ public class IntegrationEndPointAnalyzerTest extends AbstractCollectionTestSuppo
         b.exit();
         Frame integrationFrame = b.exit();
         Trace trace = Trace.newInstance(app, TraceId.valueOf("0"), integrationFrame);
-        EndPointAnalysis endPoint = endPointAnalyzer.locateEndPoint(trace); 
+        EndPointAnalysis endPoint = endPointAnalyzer.locateEndPoint(trace);
         assertEquals(EndPointName.valueOf("MessageHandler#test"), endPoint.getEndPointName());
         assertEquals(integrationFrame.getRange(), trace.getRange());
     }
-    
+
 }

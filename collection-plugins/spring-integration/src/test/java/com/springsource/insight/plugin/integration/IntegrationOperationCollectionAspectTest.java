@@ -19,13 +19,13 @@ package com.springsource.insight.plugin.integration;
 import java.util.UUID;
 
 import org.junit.Test;
-import org.springframework.integration.Message;
-import org.springframework.integration.MessageChannel;
-import org.springframework.integration.MessageHeaders;
-import org.springframework.integration.MessagingException;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.MessagingException;
 import org.springframework.integration.context.IntegrationObjectSupport;
-import org.springframework.integration.core.MessageHandler;
-import org.springframework.integration.message.GenericMessage;
+import org.springframework.messaging.MessageHandler;
+import org.springframework.messaging.support.GenericMessage;
 import org.springframework.integration.transformer.Transformer;
 
 import com.springsource.insight.collection.test.OperationCollectionAspectTestSupport;
@@ -35,14 +35,14 @@ import com.springsource.insight.intercept.operation.OperationType;
 /**
  * This test verifies that Integration operations correctly captured by
  * the aspect, {@link IntegrationOperationCollectionAspect}.
- * 
+ *
  * @author Gary Russell
  */
 public class IntegrationOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
-    public IntegrationOperationCollectionAspectTest () {
-    	super();
+    public IntegrationOperationCollectionAspectTest() {
+        super();
     }
-    
+
     @Test
     public void testChannelCollected() {
         MyChannel channel = new MyChannel();
@@ -67,36 +67,36 @@ public class IntegrationOperationCollectionAspectTest extends OperationCollectio
         transformer.setBeanName("testTransform");
         transformer.transformedMessage = new GenericMessage<String>("Transformed");
         Message<String> message = new GenericMessage<String>("Test");
-        Message<?>		result = transformer.transform(message);
+        Message<?> result = transformer.transform(message);
         assertSame("Mismatched transformed instance", transformer.transformedMessage, result);
         assertIntegrationOperation("Transformer", "testTransform", message, SpringIntegrationDefinitions.SI_OPERATION_TYPE);
     }
 
-    private Operation assertIntegrationOperation (String compType, String beanName, Message<String> message, OperationType type) {
+    private Operation assertIntegrationOperation(String compType, String beanName, Message<String> message, OperationType type) {
         Operation op = getLastEntered();
         assertNotNull("No operation", op);
         assertEquals("Mismatched type", type, op.getType());
 
-        assertEquals("Mismatched component type", compType, op.get("siComponentType", String.class));        
+        assertEquals("Mismatched component type", compType, op.get("siComponentType", String.class));
         assertEquals("Mismatched bean name", beanName, op.get("beanName", String.class));
 
-        MessageHeaders	hdrs=message.getHeaders();
-        UUID			msgId=hdrs.getId();
+        MessageHeaders hdrs = message.getHeaders();
+        UUID msgId = hdrs.getId();
         assertEquals("Mismatched message id", msgId.toString(), op.get("idHeader", String.class));
         assertEquals("Mismatched payload type", "java.lang.String", op.get("payloadType", String.class));
-        
+
         return op;
     }
-    
+
     @Override
     public IntegrationOperationCollectionAspect getAspect() {
         return IntegrationOperationCollectionAspect.aspectOf();
     }
 
     private static class MyChannel extends IntegrationObjectSupport implements MessageChannel {
-    	public MyChannel () {
-    		super();
-    	}
+        public MyChannel() {
+            super();
+        }
 
         public boolean send(Message<?> message) {
             return this.send(message, -1);
@@ -106,25 +106,25 @@ public class IntegrationOperationCollectionAspectTest extends OperationCollectio
             return false;
         }
     }
-    
+
     private static class MyHandler extends IntegrationObjectSupport implements MessageHandler {
-    	public MyHandler () {
-    		super();
-    	}
+        public MyHandler() {
+            super();
+        }
 
         public void handleMessage(Message<?> message) throws MessagingException {
-        	// do nothing
+            // do nothing
         }
     }
-    
+
     private static class MyTransformer extends IntegrationObjectSupport implements Transformer {
         Message<String> transformedMessage;
 
-    	public MyTransformer () {
-    		super();
-    	}
+        public MyTransformer() {
+            super();
+        }
 
-		public Message<?> transform(Message<?> message) {
+        public Message<?> transform(Message<?> message) {
             return transformedMessage;
         }
     }

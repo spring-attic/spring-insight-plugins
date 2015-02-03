@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
  * Marker interface used as an ITD
  */
 public interface HasMethod {
-	void __setInsightMethod(Method method);
-	Method __getInsightMethod();
+    void __setInsightMethod(Method method);
+
+    Method __getInsightMethod();
 }

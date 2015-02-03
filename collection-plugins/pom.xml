@@ -64,6 +64,7 @@
 		<module>spring-batch</module>
 		<module>spring-core</module>
 		<module>spring-data</module>
+		<module>spring-integration2</module>
 		<module>spring-integration</module>
 		<module>spring-security</module>
 		<module>spring-tx</module>
