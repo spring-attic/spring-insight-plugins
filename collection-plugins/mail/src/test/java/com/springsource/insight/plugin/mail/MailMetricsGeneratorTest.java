@@ -42,7 +42,7 @@ public class MailMetricsGeneratorTest extends AbstractMetricsGeneratorTest {
 
         List<IDataPoint> points = mb.getPoints(AbstractMetricsGenerator.EXECUTION_TIME);
         assertEquals(1, points.size());
-        assertEquals(160.0, points.get(0).getValue(), .0001);
+        assertEquals(160.0, points.get(0).getValue(), .5);
 
         points = mb.getPoints(AbstractMetricsGenerator.INVOCATION_COUNT);
         assertEquals(1, points.size());

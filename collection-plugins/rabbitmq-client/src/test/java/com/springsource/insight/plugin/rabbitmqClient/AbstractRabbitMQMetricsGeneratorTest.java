@@ -46,7 +46,7 @@ public abstract class AbstractRabbitMQMetricsGeneratorTest extends AbstractMetri
         assertTrue(keys.get(0).equals(AbstractMetricsGenerator.EXECUTION_TIME));
         List<IDataPoint> points = mb.getPoints(AbstractMetricsGenerator.EXECUTION_TIME);
         assertEquals(1, points.size());
-        assertEquals(160.0, points.get(0).getValue(), 0.01);
+        assertEquals(160.0, points.get(0).getValue(), 0.5);
 
         assertTrue(keys.get(1).equals(AbstractMetricsGenerator.INVOCATION_COUNT));
         points = mb.getPoints(AbstractMetricsGenerator.INVOCATION_COUNT);
