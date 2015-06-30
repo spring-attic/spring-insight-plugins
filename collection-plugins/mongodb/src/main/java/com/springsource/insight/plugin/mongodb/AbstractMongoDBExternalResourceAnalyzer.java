@@ -58,7 +58,7 @@ public abstract class AbstractMongoDBExternalResourceAnalyzer extends AbstractEx
             dbDescriptors.add(new ExternalResourceDescriptor(dbFrame,
                     "mongo:" + mongoHash,
                     dbName,
-                    ExternalResourceType.DATABASE.name(),
+                    ExternalResourceType.DOCSTORE.name(),
                     MONGODB_VENDOR,
                     host,
                     port,

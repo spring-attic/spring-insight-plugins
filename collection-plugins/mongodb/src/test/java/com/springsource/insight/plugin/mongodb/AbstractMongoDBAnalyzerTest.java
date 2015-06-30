@@ -72,7 +72,7 @@ public abstract class AbstractMongoDBAnalyzerTest extends AbstractCollectionTest
 
         ExternalResourceDescriptor externalResourceDescriptor = results.get(0);
         assertEquals(frame, externalResourceDescriptor.getFrame());
-        assertEquals(ExternalResourceType.DATABASE.name(), externalResourceDescriptor.getType());
+        assertEquals(ExternalResourceType.DOCSTORE.name(), externalResourceDescriptor.getType());
         assertEquals("mongo:" + MD5NameGenerator.getName("dbNamelocalhost" + 6379), externalResourceDescriptor.getName());
         assertEquals(AbstractMongoDBExternalResourceAnalyzer.MONGODB_VENDOR, externalResourceDescriptor.getVendor());
         assertEquals("dbName", externalResourceDescriptor.getLabel());
@@ -116,7 +116,7 @@ public abstract class AbstractMongoDBAnalyzerTest extends AbstractCollectionTest
         ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);
         assertEquals(op2, descriptor.getFrame().getOperation());
         assertEquals("dbName2", descriptor.getLabel());
-        assertEquals(ExternalResourceType.DATABASE.name(), descriptor.getType());
+        assertEquals(ExternalResourceType.DOCSTORE.name(), descriptor.getType());
         assertEquals("MongoDB", descriptor.getVendor());
         assertEquals(null, descriptor.getHost());
         assertEquals(6379, descriptor.getPort());
@@ -127,7 +127,7 @@ public abstract class AbstractMongoDBAnalyzerTest extends AbstractCollectionTest
         descriptor = externalResourceDescriptors.get(1);
         assertEquals(op1, descriptor.getFrame().getOperation());
         assertEquals("dbName", descriptor.getLabel());
-        assertEquals(ExternalResourceType.DATABASE.name(), descriptor.getType());
+        assertEquals(ExternalResourceType.DOCSTORE.name(), descriptor.getType());
         assertEquals("MongoDB", descriptor.getVendor());
         assertEquals("127.0.0.1", descriptor.getHost());
         assertEquals(6379, descriptor.getPort());
