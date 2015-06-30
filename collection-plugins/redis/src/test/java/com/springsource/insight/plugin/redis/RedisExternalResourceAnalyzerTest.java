@@ -71,7 +71,7 @@ public class RedisExternalResourceAnalyzerTest extends AbstractCollectionTestSup
         ExternalResourceDescriptor externalResourceDescriptor = externalResourceDescriptors.get(0);
 
         assertEquals(frame, externalResourceDescriptor.getFrame());
-        assertEquals(ExternalResourceType.DATABASE.name(), externalResourceDescriptor.getType());
+        assertEquals(ExternalResourceType.KVSTORE.name(), externalResourceDescriptor.getType());
         assertEquals("redis:" + MD5NameGenerator.getName("dbNamelocalhost" + 6379), externalResourceDescriptor.getName());
         assertEquals("Redis", externalResourceDescriptor.getVendor());
         assertEquals("dbName", externalResourceDescriptor.getLabel());
@@ -115,7 +115,7 @@ public class RedisExternalResourceAnalyzerTest extends AbstractCollectionTestSup
         ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);
         assertEquals(op2, descriptor.getFrame().getOperation());
         assertEquals("dbName2", descriptor.getLabel());
-        assertEquals(ExternalResourceType.DATABASE.name(), descriptor.getType());
+        assertEquals(ExternalResourceType.KVSTORE.name(), descriptor.getType());
         assertEquals("Redis", descriptor.getVendor());
         assertEquals(null, descriptor.getHost());
         assertEquals(6379, descriptor.getPort());
@@ -126,7 +126,7 @@ public class RedisExternalResourceAnalyzerTest extends AbstractCollectionTestSup
         descriptor = externalResourceDescriptors.get(1);
         assertEquals(op1, descriptor.getFrame().getOperation());
         assertEquals("dbName", descriptor.getLabel());
-        assertEquals(ExternalResourceType.DATABASE.name(), descriptor.getType());
+        assertEquals(ExternalResourceType.KVSTORE.name(), descriptor.getType());
         assertEquals("Redis", descriptor.getVendor());
         assertEquals("127.0.0.1", descriptor.getHost());
         assertEquals(6379, descriptor.getPort());

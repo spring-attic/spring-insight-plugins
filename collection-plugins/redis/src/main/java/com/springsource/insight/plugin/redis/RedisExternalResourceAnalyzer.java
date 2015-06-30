@@ -64,7 +64,7 @@ public class RedisExternalResourceAnalyzer extends AbstractExternalResourceAnaly
             dbDescriptors.add(new ExternalResourceDescriptor(dbFrame,
                     "redis:" + redisHash,
                     dbName,
-                    ExternalResourceType.DATABASE.name(),
+                    ExternalResourceType.KVSTORE.name(),
                     "Redis",
                     host,
                     port,
