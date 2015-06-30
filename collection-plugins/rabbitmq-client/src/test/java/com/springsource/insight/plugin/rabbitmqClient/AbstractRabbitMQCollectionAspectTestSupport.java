@@ -44,7 +44,7 @@ public abstract class AbstractRabbitMQCollectionAspectTestSupport
         assertEquals("Mismatched body length", ArrayUtil.length(body), op.getInt("bytes", (-1)));
         assertEquals("Mismatched label", opLabel, op.getLabel());
 
-        for (String propName : new String[]{"connectionUrl", "serverVersion", "clientVersion"}) {
+        for (String propName : new String[]{ "serverVersion", "clientVersion"}) {
             assertNullValue(propName, op.get(propName));
         }
 

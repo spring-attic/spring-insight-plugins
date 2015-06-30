@@ -20,6 +20,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
@@ -49,16 +52,18 @@ public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollec
 
     @Test
     public void testHandleDelivery() throws IOException {
-        MockConsumer consumer = new MockConsumer();
-
         String consumerTag = "1";
         Envelope envelope = new Envelope(1l, false, "exchange", "routingKey");
         BasicProperties props = create();
         byte[] body = new byte[25];
+
+        MockChannel channel = new MockChannel(envelope, props, body);
+        MockConsumer consumer = new MockConsumer(channel);
+
         assertTrue(RabbitMQConsumerCollectionAspect.opHolder.isEmpty());
         consumer.handleDelivery(consumerTag, envelope, props, body);
         assertTrue(RabbitMQConsumerCollectionAspect.opHolder.isEmpty());
-        assertOperation(envelope, props, body, AbstractRabbitMQResourceAnalyzer.RABBIT + "-" + RabbitMQConsumerCollectionAspect.LABEL_PREFIX + "null (exchange#routingKey)");
+        assertOperation(envelope, props, body, AbstractRabbitMQResourceAnalyzer.RABBIT + "-" + RabbitMQConsumerCollectionAspect.LABEL_PREFIX + "[] (exchange#routingKey)");
     }
 
     @Test
@@ -106,37 +111,127 @@ public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollec
         return RabbitMQConsumerCollectionAspect.aspectOf();
     }
 
-    static final class MockConsumer implements Consumer {
-        public void handleCancel(String arg0) throws IOException {
-            // do nothing
-        }
+    static final class MockConsumer extends DefaultConsumer {
 
-        public void handleCancelOk(String arg0) {
-            // do nothing
-        }
-
-        public void handleConsumeOk(String arg0) {
-            // do nothing
-        }
-
-        public void handleDelivery(String consumerTag, Envelope envelope,
-                                   BasicProperties props, byte[] body) throws IOException {
-            // do nothing
-        }
-
-        public void handleRecoverOk() {
-            // do nothing
-        }
-
-        public void handleShutdownSignal(String arg0, ShutdownSignalException arg1) {
-            // do nothing
-        }
-
-        public void handleRecoverOk(String consumerTag) {
-
+        public MockConsumer(Channel channel) {
+            super(channel);
         }
     }
+    private static final class MockConnection implements Connection {
 
+        public InetAddress getAddress() {
+            try {
+                return Inet4Address.getByName(AbstractRabbitMQResourceAnalyzerTest.TEST_HOST);
+            } catch (UnknownHostException e) {
+                return null;
+            }
+        }
+
+        public int getPort() {
+            return AbstractRabbitMQResourceAnalyzerTest.TEST_PORT;
+        }
+
+        public int getChannelMax() {
+            return 0;
+        }
+
+        public int getFrameMax() {
+            return 0;
+        }
+
+        public int getHeartbeat() {
+            return 0;
+        }
+
+        public Map<String, Object> getClientProperties() {
+            return null;
+        }
+
+        public Map<String, Object> getServerProperties() {
+            return null;
+        }
+
+        public Channel createChannel() throws IOException {
+            return null;
+        }
+
+        public Channel createChannel(int channelNumber) throws IOException {
+            return null;
+        }
+
+        public void close() throws IOException {
+
+        }
+
+        public void close(int closeCode, String closeMessage) throws IOException {
+
+        }
+
+        public void close(int timeout) throws IOException {
+
+        }
+
+        public void close(int closeCode, String closeMessage, int timeout) throws IOException {
+
+        }
+
+        public void abort() {
+
+        }
+
+        public void abort(int closeCode, String closeMessage) {
+
+        }
+
+        public void abort(int timeout) {
+
+        }
+
+        public void abort(int closeCode, String closeMessage, int timeout) {
+
+        }
+
+        public void addBlockedListener(BlockedListener listener) {
+
+        }
+
+        public boolean removeBlockedListener(BlockedListener listener) {
+            return false;
+        }
+
+        public void clearBlockedListeners() {
+
+        }
+
+        public ExceptionHandler getExceptionHandler() {
+            return null;
+        }
+
+        public void addShutdownListener(ShutdownListener listener) {
+
+        }
+
+        public void removeShutdownListener(ShutdownListener listener) {
+
+        }
+
+        public ShutdownSignalException getCloseReason() {
+            return null;
+        }
+
+        public void notifyListeners() {
+
+        }
+
+        public boolean isOpen() {
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            return "amqp://" + AbstractRabbitMQResourceAnalyzerTest.TEST_HOST + ":" + AbstractRabbitMQResourceAnalyzerTest.TEST_PORT + "/virtualhost";
+        }
+    }
     private static final class MockChannel implements Channel {
 
         private Envelope envelope;
@@ -154,7 +249,7 @@ public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollec
         }
 
         public Connection getConnection() {
-            return null;
+            return new MockConnection();
         }
 
         public void close() throws IOException {
@@ -476,7 +571,6 @@ public class RabbitMQConsumerCollectionAspectTest extends AbstractRabbitMQCollec
         public void notifyListeners() {
 
         }
-
 
         public boolean isOpen() {
             return false;

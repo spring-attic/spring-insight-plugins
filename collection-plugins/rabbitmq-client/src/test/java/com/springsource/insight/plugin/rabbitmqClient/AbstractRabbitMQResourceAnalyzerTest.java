@@ -38,8 +38,8 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends AbstractColle
     private final RabbitPluginOperationType operationType;
     private final boolean isIncoming;
     private final AbstractRabbitMQResourceAnalyzer analyzer;
-    protected static final String TEST_EXCHANGE = "e", TEST_ROUTING_KEY = "rk", TEST_HOST = "127.0.0.1", TEST_TEMP_ROUTING_KEY = "amq.gen-rk77";
-    protected static final int TEST_PORT = 5672;
+    public static final String TEST_EXCHANGE = "e", TEST_ROUTING_KEY = "rk", TEST_HOST = "127.0.0.1", TEST_TEMP_ROUTING_KEY = "amq.gen-rk77";
+    public static final int TEST_PORT = 5672;
 
     public AbstractRabbitMQResourceAnalyzerTest(AbstractRabbitMQResourceAnalyzer analyzerInstance) {
         if ((analyzer = analyzerInstance) == null) {
@@ -54,7 +54,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends AbstractColle
         Operation op = createOperation();
         KeyValPair<String, String> props = addOperationProps(op, false, true, Boolean.FALSE);
         Trace trace = createValidTrace(op);
-        assertTwoExternalResourceDescriptors(trace, props, op, true);
+        assertOneExternalResourceDescriptors(trace, props, op, true);
     }
 
     @Test
@@ -62,7 +62,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends AbstractColle
         Operation op = createOperation();
         KeyValPair<String, String> props = addOperationProps(op, true, false, Boolean.FALSE);
         Trace trace = createValidTrace(op);
-        assertTwoExternalResourceDescriptors(trace, props, op, false);
+        assertOneExternalResourceDescriptors(trace, props, op, false);
     }
 
     @Test
@@ -70,7 +70,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends AbstractColle
         Operation op = createOperation();
         KeyValPair<String, String> props = addOperationProps(op, true, true, Boolean.FALSE);
         Trace trace = createValidTrace(op);
-        assertTwoExternalResourceDescriptors(trace, props, op, false);
+        assertOneExternalResourceDescriptors(trace, props, op, false);
     }
 
     @Test
@@ -98,15 +98,13 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends AbstractColle
                 (List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
         assertEquals("Mismatched number of resources", 2, externalResourceDescriptors.size());
 
-        assertParentChildExternalResourceDescriptors(trace, op2, props2, externalResourceDescriptors.get(0), OTHER_HOST, OTHER_PORT, false);
-        assertParentChildExternalResourceDescriptors(trace, op1, props1, externalResourceDescriptors.get(1), TEST_HOST, TEST_PORT, false);
     }
 
     @Test
     public void testExchangeLabel() {
         Operation op = createOperation();
         KeyValPair<String, String> props = addOperationProps(op, false, true, Boolean.FALSE);
-        assertEquals("Mismatched label", "Exchange#e",
+        assertEquals("Mismatched label", "e",
                 AbstractRabbitMQResourceAnalyzer.buildLabel(props.getKey(), props.getValue()));
     }
 
@@ -114,7 +112,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends AbstractColle
     public void testRoutingKeyLabel() {
         Operation op = createOperation();
         KeyValPair<String, String> props = addOperationProps(op, true, false, Boolean.FALSE);
-        assertEquals("Mismatched label", "Exchange#" + AbstractRabbitMQResourceAnalyzer.NO_EXCHANGE + " RoutingKey#rk",
+        assertEquals("Mismatched label", "" + AbstractRabbitMQResourceAnalyzer.NO_EXCHANGE + "-rk",
                 AbstractRabbitMQResourceAnalyzer.buildLabel(props.getKey(), props.getValue()));
     }
 
@@ -122,7 +120,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends AbstractColle
     public void testExchangeAndRoutingKeyLabel() {
         Operation op = createOperation();
         KeyValPair<String, String> props = addOperationProps(op, true, true, Boolean.FALSE);
-        assertEquals("Mismatched label", "Exchange#e RoutingKey#rk",
+        assertEquals("Mismatched label", "e-rk",
                 AbstractRabbitMQResourceAnalyzer.buildLabel(props.getKey(), props.getValue()));
     }
 
@@ -130,7 +128,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends AbstractColle
     public void testExchangeAndTempRoutingKeyLabel() {
         Operation op = createOperation();
         KeyValPair<String, String> props = addOperationProps(op, true, true, Boolean.TRUE);
-        assertEquals("Mismatched label", "Exchange#e RoutingKey#" + AbstractRabbitMQResourceAnalyzer.UNNAMED_TEMP_QUEUE_LABEL,
+        assertEquals("Mismatched label", "e-" + AbstractRabbitMQResourceAnalyzer.UNNAMED_TEMP_QUEUE_LABEL,
                 AbstractRabbitMQResourceAnalyzer.buildLabel(props.getKey(), props.getValue()));
     }
 
@@ -140,25 +138,10 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends AbstractColle
     /////////////////////
 
 
-    void assertTwoExternalResourceDescriptors(Trace trace, KeyValPair<String, String> props, Operation op, boolean isChildDummyResource) {
+    void assertOneExternalResourceDescriptors(Trace trace, KeyValPair<String, String> props, Operation op, boolean isChildDummyResource) {
         Collection<ExternalResourceDescriptor> externalResourceDescriptors = analyzer.locateExternalResourceName(trace);
         assertEquals("Mismatched num. of resources", 1, ListUtil.size(externalResourceDescriptors));
 
-        assertParentChildExternalResourceDescriptors(trace, op, props,
-                ListUtil.getFirstMember(externalResourceDescriptors), TEST_HOST, TEST_PORT, isChildDummyResource);
-    }
-
-    void assertParentChildExternalResourceDescriptors(Trace trace, Operation op, KeyValPair<String, String> props,
-                                                      ExternalResourceDescriptor descriptorParent, String host, int port, boolean isChildDummyResource) {
-
-        assertExternalResourceDescriptorContent(descriptorParent, props, op, false, true, host, port, trace, false, false);
-
-        List<ExternalResourceDescriptor> children = descriptorParent.getChildren();
-        assertEquals("Mismatched number of children for " + descriptorParent, 1, ListUtil.size(children));
-
-        ExternalResourceDescriptor descriptorChild = children.get(0);
-        assertExternalResourceDescriptorContent(descriptorChild, props, op, true, false, host, port, trace, isChildDummyResource, true);
-        assertEquals("Mismatched parent name", descriptorParent.getName(), descriptorChild.getParentResourceName());
     }
 
     ExternalResourceDescriptor assertExternalResourceDescriptorContent(ExternalResourceDescriptor descriptor,
@@ -172,6 +155,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends AbstractColle
         String label = AbstractRabbitMQResourceAnalyzer.buildLabel(
                 useExchange ? props.getKey() : null,
                 useRoutingKey ? finalRoutingKey : null);
+        String connectionUrl = "amqp://" + host + ":"+ port + "/virtualhost";
 
         if (!isChild) {
             label = AbstractRabbitMQResourceAnalyzer.buildExternalResourceLabel(label);
@@ -184,7 +168,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends AbstractColle
         assertEquals("Mismatched port", port, descriptor.getPort());
 
         assertEquals("Mismatched hash value", AbstractRabbitMQResourceAnalyzer.buildExternalResourceName(
-                props.getKey(), finalRoutingKey, useRoutingKey, host, port), descriptor.getName());
+                props.getKey(), finalRoutingKey, connectionUrl), descriptor.getName());
         assertEquals("Mismatched direction", Boolean.valueOf(isIncoming), Boolean.valueOf(descriptor.isIncoming()));
         return descriptor;
     }
@@ -233,6 +217,7 @@ public abstract class AbstractRabbitMQResourceAnalyzerTest extends AbstractColle
                 .label(operationType.getLabel())
                 .putAnyNonEmpty("host", host)
                 .put("port", port)
+                .put("connectionUrl",  "amqp://" + host + ":"+ port + "/virtualhost")
                 ;
     }
 }

@@ -153,12 +153,9 @@ public abstract class AbstractRabbitMQCollectionAspect extends OperationCollecti
         InetAddress address = conn.getAddress();
         String host = address.getHostAddress();
         int port = conn.getPort();
-        final String connectionUrl;
-        if (conn instanceof AMQConnection) {
-            connectionUrl = conn.toString();
-        } else {
-            connectionUrl = "amqp://" + host + ":" + port;
-        }
+
+        final String connectionUrl = conn.toString();
+
 
         op.put("host", host);
         op.put("port", port);

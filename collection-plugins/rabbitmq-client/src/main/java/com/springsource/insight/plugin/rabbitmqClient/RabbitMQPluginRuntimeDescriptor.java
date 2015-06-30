@@ -18,6 +18,7 @@ package com.springsource.insight.plugin.rabbitmqClient;
 import java.util.Collection;
 import java.util.List;
 
+import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.metrics.MetricsGenerator;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
@@ -35,6 +36,8 @@ public class RabbitMQPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     private static final List<? extends MetricsGenerator> mGenerators =
             ArrayUtil.asUnmodifiableList(RabbitMQConsumerMetricsGenerator.getInstance(),
                     RabbitMQPublishMetricsGenerator.getInstance());
+    private static final List<? extends EndPointAnalyzer> epAnalyzers =
+            ArrayUtil.asUnmodifiableList(RabbitMQEndPointAnalyzer.getInstance());
 
     private RabbitMQPluginRuntimeDescriptor() {
         super();
@@ -62,5 +65,10 @@ public class RabbitMQPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     @Override
     public Collection<? extends MetricsGenerator> getMetricsGenerators() {
         return mGenerators;
+    }
+
+    @Override
+    public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
+        return epAnalyzers;
     }
 }

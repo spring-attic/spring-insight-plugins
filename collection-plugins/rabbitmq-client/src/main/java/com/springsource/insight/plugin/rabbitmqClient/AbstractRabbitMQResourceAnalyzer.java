@@ -16,6 +16,8 @@
 
 package com.springsource.insight.plugin.rabbitmqClient;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -98,43 +100,48 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements ExternalResour
             Operation op = queueFrame.getOperation();
             String host = op.get("host", String.class);
             int port = op.getInt("port", (-1));
+            String connectionUrl = op.get("connectionUrl", String.class);
+            String vhost = getVirtualHost(port, connectionUrl);
             String color = colorManager.getColor(op);
 
             String finalExchange = getFinalExchangeName(getExchange(op));
             String finalRoutingKey = getFinalRoutingKey(getRoutingKey(op));
-            String exchangeResourceName = buildExternalResourceName(finalExchange, finalRoutingKey, false, host, port);
+            String exchangeResourceName = buildExternalResourceName(finalExchange, finalRoutingKey, vhost);
 
             ExternalResourceDescriptor externalResourceExchangeDescriptor =
                     new ExternalResourceDescriptor(queueFrame,
                             exchangeResourceName,
-                            buildExternalResourceLabel(buildLabel(finalExchange, null)),
+                            buildExternalResourceLabel(buildLabel(finalExchange, finalRoutingKey)),
                             ExternalResourceType.QUEUE.name(),
                             RABBIT,
                             host,
                             port,
                             color, isIncoming);
             queueDescriptors.add(externalResourceExchangeDescriptor);
-
-            // even if there is no routing key, i.e in the Insight world there is no child resource,
-            // we still report a dummy one so that AppInsight has a consistent API
-            String childRoutingKey = finalRoutingKey;
-            if (isTrimEmpty(getRoutingKey(op))) {
-                childRoutingKey = NO_ROUTING_KEY;
-            }
-
-            ExternalResourceDescriptor externalResourceRoutingKeyDescriptor =
-                    new ExternalResourceDescriptor(queueFrame,
-                            buildExternalResourceName(finalExchange, childRoutingKey, true, host, port),
-                            buildLabel(null, childRoutingKey),
-                            ExternalResourceType.QUEUE.name(),
-                            RABBIT,
-                            host,
-                            port,
-                            color, isIncoming, externalResourceExchangeDescriptor);
-            externalResourceExchangeDescriptor.setChildren(Collections.singletonList(externalResourceRoutingKeyDescriptor));
         }
 
         return queueDescriptors;
+    }
+
+    private String getVirtualHost(int port, String connectionUrl) {
+
+        // The connectionURL returned from rabbit AMQConnection looks like this:
+        // "amqp://" + this.username + "@" + getHostAddress() + ":" + getPort() + _virtualHost;
+        // So we need to parse it carefully :-)
+
+        int i = connectionUrl.lastIndexOf(':');
+        if (i < 0)
+            return "";
+
+        String portvhost = connectionUrl.substring(i+1);
+        if (port == -1)
+            return portvhost;
+
+        String portStr = Integer.toString(port);
+        if (portStr.length() < portvhost.length())
+            return portvhost.substring(portStr.length());
+        return "";
+
     }
 
 
@@ -159,33 +166,32 @@ public abstract class AbstractRabbitMQResourceAnalyzer implements ExternalResour
         return routingKey;
     }
 
-    public static String buildExternalResourceName(String finalExchange, String finalRoutingKey, boolean useRoutingKey, String host, int port) {
-
-        return RABBIT + ":" + MD5NameGenerator.getName(finalExchange + (useRoutingKey ? finalRoutingKey : "") + host + port);
+    public static String buildExternalResourceName(String finalExchange, String finalRoutingKey, String vhost) {
+        return RABBIT + ":" + finalExchange + ":" + (finalRoutingKey != null ? finalRoutingKey : "")  + ":" + vhost;
     }
 
     public static String buildExternalResourceLabel(String label) {
-        return RABBIT + "-" + label;
+        return label;
     }
 
     public static String buildLabel(String finalExchange, String finalRoutingKey) {
 
         StringBuilder sb = new StringBuilder(StringUtil.getSafeLength(finalExchange)
                 + StringUtil.getSafeLength(finalRoutingKey)
-                + 24 /* extra text */);
+                + 2);
 
 
         boolean hasExchange = !isTrimEmpty(finalExchange);
         if (hasExchange) {
-            sb.append("Exchange#").append(finalExchange);
+            sb.append(finalExchange);
         }
 
         boolean hasRoutingKey = !isTrimEmpty(finalRoutingKey);
         if (hasRoutingKey) {
             if (hasExchange) {
-                sb.append(' ');
+                sb.append('-');
             }
-            sb.append("RoutingKey#").append(finalRoutingKey);
+            sb.append(finalRoutingKey);
         }
 
         return sb.toString();

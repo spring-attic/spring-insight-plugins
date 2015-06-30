@@ -21,6 +21,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.springsource.insight.collection.OperationCollectionUtil;
+import com.springsource.insight.intercept.operation.method.JoinPointBreakDown;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
@@ -94,7 +96,8 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
     before(String queue, boolean ack)
             : basicGet(queue, ack) {
         Channel channel = (Channel) thisJoinPoint.getThis();
-        Operation op = createOperation(thisJoinPoint);
+        Operation op = OperationCollectionUtil.methodOperation(thisJoinPoint);
+        op.type(pluginOpType.getOperationType()).label(pluginOpType.getLabel());
         op.put(CONSUMED_QUEUES, queue);
         opHolder.put(channel, op);
         getCollector().enter(op);
@@ -146,7 +149,9 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
             conn = dconsumer.getChannel().getConnection();
         }
 
-        Operation op = createOperation(thisJoinPoint);
+        Operation op = OperationCollectionUtil.methodOperation(thisJoinPoint);
+        op.type(pluginOpType.getOperationType()).label(pluginOpType.getLabel());
+
         if (conn != null) {
             applyConnectionData(op, conn);
             if (consumer instanceof HasQueues) {
