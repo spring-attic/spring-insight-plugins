@@ -29,6 +29,7 @@ public class JdbcOperationFinalizerTest extends AbstractCollectionTestSupport {
         super();
     }
 
+    @Test
     public void testSetParameterInSequence() {
         Operation operation = getTestOperation("testSetParameterInSequence");
         JdbcOperationFinalizer.addParam(operation, 1, "a"); // this is 1-based index

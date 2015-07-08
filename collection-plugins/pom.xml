@@ -24,6 +24,7 @@
                 <module>akka</module>
                 <module>axon</module>
                 <module>cassandra</module>
+                <module>cassandra12</module>
                 <module>hadoop</module>
                 <module>redis</module>
                 <module>spring-neo4j</module>

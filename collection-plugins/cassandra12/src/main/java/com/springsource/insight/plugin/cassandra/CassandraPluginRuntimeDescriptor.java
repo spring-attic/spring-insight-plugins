@@ -25,7 +25,7 @@ import com.springsource.insight.intercept.trace.TraceErrorAnalyzer;
 import com.springsource.insight.util.ArrayUtil;
 
 public class CassandraPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
-    public static final String PLUGIN_NAME = "cassandra";
+    public static final String PLUGIN_NAME = "cassandra12";
     private static final CassandraPluginRuntimeDescriptor INSTANCE = new CassandraPluginRuntimeDescriptor();
     private static final List<? extends ExternalResourceAnalyzer> extResAnalyzers =
             ArrayUtil.asUnmodifiableList(CassandraConnectExternalResourceAnalyzer.getInstance(),

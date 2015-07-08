@@ -3,8 +3,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.springsource.insight.plugins</groupId>
-    <artifactId>insight-plugin-cassandra</artifactId>
-    <name>com.springsource.insight.plugins:cassandra</name>
+    <artifactId>insight-plugin-cassandra12</artifactId>
+    <name>com.springsource.insight.plugins:cassandra12</name>
     <packaging>jar</packaging>
 
     <parent>
