@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:insight="http://www.springframework.org/schema/insight-idk"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/insight-idk http://www.springframework.org/schema/insight-idk/insight-idk-1.0.xsd">
+
+    <insight:plugin name="cassandra" version="${project.version}" publisher="SpringSource"/>
+
+    <insight:operation-view operation="cassandra" template="com/springsource/insight/plugin/cassandra/cassandra.ftl"/>
+    <insight:operation-view operation="cassandra-connect" template="com/springsource/insight/plugin/cassandra/cassandra-connect.ftl"/>
+
+    <insight:operation-group group="Database" operation="cassandra"/>
+    <insight:operation-group group="Database" operation="cassandra-connect"/>
+
+    <bean name="cqlToHtml" class="com.springsource.insight.plugin.cassandra.CQLToHtml"/>
+
+    <bean id="cassandraExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.cassandra.CassandraExternalResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+            />
+
+    <bean id="cassandraPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.cassandra.CassandraRuntimePluginDescriptor"
+          factory-method="getInstance"
+          lazy-init="true"
+            />
+
+</beans>
