@@ -47,19 +47,23 @@ public class MockSession implements Session {
     }
 
     public ResultSet execute(Statement statement) {
-        return null;
+        return executeAsync(statement).getUninterruptibly();
     }
 
     public ResultSetFuture executeAsync(String query) {
-        return null;
+        SimpleStatement simple = new SimpleStatement(query);
+        simple.setKeyspace(getLoggedKeyspace());
+        return executeAsync(simple);
     }
 
     public ResultSetFuture executeAsync(String query, Object... values) {
-        return null;
+        SimpleStatement simple = new SimpleStatement(query,values);
+        simple.setKeyspace(getLoggedKeyspace());
+        return executeAsync(simple);
     }
 
     public ResultSetFuture executeAsync(Statement statement) {
-        return null;
+        return new MockResultSetFuture();
     }
 
     public PreparedStatement prepare(String query) {

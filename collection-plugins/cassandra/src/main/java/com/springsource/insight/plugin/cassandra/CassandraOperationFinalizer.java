@@ -47,7 +47,7 @@ public class CassandraOperationFinalizer {
 
     public static final String UNKNOWN_CQL = "UNKNOWN";
 
-    private static final WeakKeyHashMap<Statement, Operation> storage = new WeakKeyHashMap<Statement, Operation>();
+    static final WeakKeyHashMap<Statement, Operation> storage = new WeakKeyHashMap<Statement, Operation>();
 
     private CassandraOperationFinalizer() {
         throw new UnsupportedOperationException("No instance");

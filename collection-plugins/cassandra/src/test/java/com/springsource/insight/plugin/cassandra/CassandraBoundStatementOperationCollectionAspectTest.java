@@ -60,6 +60,7 @@ public class CassandraBoundStatementOperationCollectionAspectTest {
         OperationMap params = operation.get(CassandraOperationFinalizer.PARAMS_VALUES, OperationMap.class);
         assertNotNull(params);
         assertEquals("params", params.size(), 3);
+        CassandraOperationFinalizer.remove(bind);
     }
 
     @Test
@@ -80,6 +81,7 @@ public class CassandraBoundStatementOperationCollectionAspectTest {
         assertEquals("OperationType", CassandraExternalResourceAnalyzer.TYPE, operation.getType());
         String cql = operation.get("cql", String.class);
         assertEquals("cql", preparedStatement.getQueryString(), cql);
+        CassandraOperationFinalizer.remove(bind);
     }
 
     @Test
@@ -103,6 +105,7 @@ public class CassandraBoundStatementOperationCollectionAspectTest {
         OperationMap params = operation.get(CassandraOperationFinalizer.PARAMS_VALUES, OperationMap.class);
         assertNotNull(params);
         assertEquals("params", params.size(), 3);
+        CassandraOperationFinalizer.remove(bind);
     }
 
     @Test
@@ -130,6 +133,7 @@ public class CassandraBoundStatementOperationCollectionAspectTest {
         OperationMap params = operation.get(CassandraOperationFinalizer.PARAMS_VALUES, OperationMap.class);
         assertNotNull(params);
         assertEquals("params", params.size(), 3);
+        CassandraOperationFinalizer.remove(bind);
     }
     @Test
     public void testBoundStatementSetByNameParameter() {
@@ -156,6 +160,7 @@ public class CassandraBoundStatementOperationCollectionAspectTest {
         OperationMap params = operation.get(CassandraOperationFinalizer.PARAMS_VALUES, OperationMap.class);
         assertNotNull(params);
         assertEquals("params", params.size(), 3);
+        CassandraOperationFinalizer.remove(bind);
     }
 
 

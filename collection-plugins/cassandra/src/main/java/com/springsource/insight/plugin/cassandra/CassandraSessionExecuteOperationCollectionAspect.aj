@@ -17,6 +17,7 @@ package com.springsource.insight.plugin.cassandra;
 
 
 import com.datastax.driver.core.*;
+import com.datastax.driver.core.Session;
 
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.intercept.operation.OperationList;
@@ -46,14 +47,24 @@ public aspect CassandraSessionExecuteOperationCollectionAspect extends Operation
         && args(statement)
         ;
 
+    public pointcut executeStatementAsync(Session session, Statement statement)
+        : collect()
+        && execution(* Session.executeAsync(Statement))
+        && (!cflow(executeStatement(Session, Statement)))
+        && this(session)
+        && args(statement)
+        ;
+
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     before(Session session, Statement statement)
-            : executeStatement(session, statement) {
+            : ( executeStatement(session, statement) ||
+            executeStatementAsync(session, statement) ) {
 
         if ((statement instanceof BoundStatement) ||
             (statement instanceof SimpleStatement)) {
             beforeBoundOrSimpleStatementExecute(thisJoinPoint, session, statement);
+            CassandraOperationFinalizer.remove(statement);
         } else if (statement instanceof RegularStatement) {
             beforeRegularStatementExecute(thisJoinPoint, session, (RegularStatement)statement);
         } else if (statement instanceof BatchStatement) {
@@ -65,12 +76,8 @@ public aspect CassandraSessionExecuteOperationCollectionAspect extends Operation
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after(Session session, Statement statement) returning(Object returnValue)
-            : executeStatement(session, statement) {
-
-        if ((statement instanceof BoundStatement) ||
-                (statement instanceof SimpleStatement)) {
-            CassandraOperationFinalizer.remove(statement);
-        }
+            : ( executeStatement(session, statement) ||
+            executeStatementAsync(session, statement) ) {
 
         getCollector().exitNormal(returnValue);
 
@@ -78,12 +85,8 @@ public aspect CassandraSessionExecuteOperationCollectionAspect extends Operation
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after(Session session, Statement statement) throwing(Throwable exception)
-            : executeStatement(session, statement) {
-
-        if ((statement instanceof BoundStatement) ||
-                (statement instanceof SimpleStatement)) {
-            CassandraOperationFinalizer.remove(statement);
-        }
+            : ( executeStatement(session, statement) ||
+            executeStatementAsync(session, statement) ) {
 
         getCollector().exitAbnormal(exception);
     }

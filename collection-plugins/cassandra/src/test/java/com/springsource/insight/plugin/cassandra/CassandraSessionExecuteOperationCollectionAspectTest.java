@@ -39,6 +39,7 @@ public class CassandraSessionExecuteOperationCollectionAspectTest extends Operat
         Session session = new MockSession();
         String cqlQuery = "SELECT * FROM keyspace.table";
         session.execute(cqlQuery);
+        assertEquals(0,CassandraOperationFinalizer.storage.size());
         Operation operation = getLastEntered();
         assertNotNull(operation);
         assertNotNull(operation.getLabel());
@@ -57,6 +58,7 @@ public class CassandraSessionExecuteOperationCollectionAspectTest extends Operat
         Session session = new MockSession();
         String cqlQuery = "SELECT * FROM keyspace.table";
         session.execute(cqlQuery,"arg1", new Date(), UUID.randomUUID());
+        assertEquals(0,CassandraOperationFinalizer.storage.size());
         Operation operation = getLastEntered();
         assertNotNull(operation);
         assertNotNull(operation.getLabel());
@@ -80,6 +82,7 @@ public class CassandraSessionExecuteOperationCollectionAspectTest extends Operat
         PreparedStatement preparedStatement = new MockPreparedStatement();
         BoundStatement boundStatement = preparedStatement.bind();
         session.execute(boundStatement);
+        assertEquals(0,CassandraOperationFinalizer.storage.size());
         Operation operation = getLastEntered();
         assertNotNull(operation);
         assertNotNull(operation.getLabel());
@@ -102,6 +105,7 @@ public class CassandraSessionExecuteOperationCollectionAspectTest extends Operat
         SimpleStatement simple = new SimpleStatement(queryString);
         simple.setKeyspace("LoggedKeyspace");
         session.execute(simple);
+        assertEquals(0,CassandraOperationFinalizer.storage.size());
         Operation operation = getLastEntered();
         assertNotNull(operation);
         assertNotNull(operation.getLabel());
@@ -127,7 +131,7 @@ public class CassandraSessionExecuteOperationCollectionAspectTest extends Operat
         batch.add(simple1);
         batch.add(simple2);
         session.execute(batch);
-
+        assertEquals(0,CassandraOperationFinalizer.storage.size());
         Operation operation = getLastEntered();
         assertNotNull(operation);
         assertNotNull(operation.getLabel());
@@ -147,7 +151,7 @@ public class CassandraSessionExecuteOperationCollectionAspectTest extends Operat
         Session session = new MockSession();
         TestRegularStatement regularStatement = new TestRegularStatement();
         session.execute(regularStatement);
-
+        assertEquals(0,CassandraOperationFinalizer.storage.size());
         Operation operation = getLastEntered();
         assertNotNull(operation);
         assertNotNull(operation.getLabel());
@@ -167,7 +171,7 @@ public class CassandraSessionExecuteOperationCollectionAspectTest extends Operat
         Insert insert = QueryBuilder.insertInto("keyspace", "table")
                 .ifNotExists().value("foo", "bar");
         session.execute(insert);
-
+        assertEquals(0,CassandraOperationFinalizer.storage.size());
         Operation operation = getLastEntered();
         assertNotNull(operation);
         assertNotNull(operation.getLabel());
@@ -180,6 +184,88 @@ public class CassandraSessionExecuteOperationCollectionAspectTest extends Operat
         assertEquals("port", session.getCluster().getConfiguration().getProtocolOptions().getPort(), operation.getInt(CassandraOperationFinalizer.PORT, -1));
 
     }
+
+    @Test
+    public void testExecuteAsyncQuery() {
+        Session session = new MockSession();
+        String cqlQuery = "SELECT * FROM keyspace.table";
+        session.executeAsync(cqlQuery);
+        assertEquals(0,CassandraOperationFinalizer.storage.size());
+        Operation operation = getLastEntered();
+        assertNotNull(operation);
+        assertNotNull(operation.getLabel());
+        assertEquals("OperationType", CassandraExternalResourceAnalyzer.TYPE, operation.getType());
+        String cql = operation.get("cql", String.class);
+        assertEquals("cql", cqlQuery, cql);
+        assertEquals("keyspace", session.getLoggedKeyspace(), operation.get(CassandraOperationFinalizer.KEYSPACE,String.class));
+        assertEquals("clustername", session.getCluster().getMetadata().getClusterName(), operation.get(CassandraOperationFinalizer.CLUSTER_NAME,String.class));
+        assertEquals("port", session.getCluster().getConfiguration().getProtocolOptions().getPort(), operation.getInt(CassandraOperationFinalizer.PORT, -1));
+
+    }
+    @Test
+    public void testExecuteAsyncQueryWithArgs() {
+
+        Session session = new MockSession();
+        String cqlQuery = "SELECT * FROM keyspace.table";
+        session.executeAsync(cqlQuery, "arg1", new Date(), UUID.randomUUID());
+        assertEquals(0,CassandraOperationFinalizer.storage.size());
+        Operation operation = getLastEntered();
+        assertNotNull(operation);
+        assertNotNull(operation.getLabel());
+        assertEquals("OperationType", CassandraExternalResourceAnalyzer.TYPE, operation.getType());
+        String cql = operation.get("cql", String.class);
+        assertEquals("cql", cqlQuery, cql);
+        assertEquals("keyspace", session.getLoggedKeyspace(), operation.get(CassandraOperationFinalizer.KEYSPACE, String.class));
+        assertEquals("clustername", session.getCluster().getMetadata().getClusterName(), operation.get(CassandraOperationFinalizer.CLUSTER_NAME, String.class));
+        assertEquals("port", session.getCluster().getConfiguration().getProtocolOptions().getPort(), operation.getInt(CassandraOperationFinalizer.PORT, -1));
+
+        OperationMap params = operation.get(CassandraOperationFinalizer.PARAMS_VALUES, OperationMap.class);
+        assertNotNull(params);
+        assertEquals("params", params.size(), 3);
+
+    }
+    @Test
+    public void testExecuteAsyncBoundStatement() {
+
+        Session session = new MockSession();
+        PreparedStatement preparedStatement = new MockPreparedStatement();
+        BoundStatement boundStatement = preparedStatement.bind();
+        session.executeAsync(boundStatement);
+        assertEquals(0,CassandraOperationFinalizer.storage.size());
+        Operation operation = getLastEntered();
+        assertNotNull(operation);
+        assertNotNull(operation.getLabel());
+        assertEquals("OperationType", CassandraExternalResourceAnalyzer.TYPE, operation.getType());
+        String cql = operation.get("cql", String.class);
+        assertEquals("cql", preparedStatement.getQueryString(), cql);
+
+        assertEquals("keyspace", boundStatement.getKeyspace(), operation.get(CassandraOperationFinalizer.KEYSPACE, String.class));
+        assertEquals("clustername", session.getCluster().getMetadata().getClusterName(), operation.get(CassandraOperationFinalizer.CLUSTER_NAME, String.class));
+        assertEquals("port", session.getCluster().getConfiguration().getProtocolOptions().getPort(), operation.getInt(CassandraOperationFinalizer.PORT, -1));
+
+    }
+
+    @Test
+    public void testExecuteAsyncBuiltStatement() {
+
+        Session session = new MockSession();
+        Insert insert = QueryBuilder.insertInto("keyspace", "table")
+                .ifNotExists().value("foo", "bar");
+        session.executeAsync(insert);
+        assertEquals(0,CassandraOperationFinalizer.storage.size());
+        Operation operation = getLastEntered();
+        assertNotNull(operation);
+        assertNotNull(operation.getLabel());
+        assertEquals("OperationType", CassandraExternalResourceAnalyzer.TYPE, operation.getType());
+        String cql = operation.get("cql", String.class);
+        assertEquals("cql", insert.getQueryString(), cql);
+
+        assertEquals("keyspace", insert.getKeyspace(), operation.get(CassandraOperationFinalizer.KEYSPACE, String.class));
+        assertEquals("clustername", session.getCluster().getMetadata().getClusterName(), operation.get(CassandraOperationFinalizer.CLUSTER_NAME, String.class));
+        assertEquals("port", session.getCluster().getConfiguration().getProtocolOptions().getPort(), operation.getInt(CassandraOperationFinalizer.PORT, -1));
+
+    }
+
 
     @Override
     public OperationCollectionAspectSupport getAspect() {
