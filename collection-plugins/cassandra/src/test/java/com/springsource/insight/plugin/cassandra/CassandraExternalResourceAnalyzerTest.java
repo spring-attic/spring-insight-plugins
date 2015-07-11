@@ -54,9 +54,9 @@ public class CassandraExternalResourceAnalyzerTest {
         assertNotNull(descriptor.getFrame());
         assertFalse(descriptor.isIncoming());
         assertEquals(descriptor.getType(), ExternalResourceType.MAPSTORE.toString());
-        assertEquals("External resource name", CassandraExternalResourceAnalyzer.VENDOR + ":" + clusterName , descriptor.getName());
+        assertEquals("External resource name", CassandraExternalResourceAnalyzer.VENDOR + ":" + clusterName + ":" + keyspace, descriptor.getName());
         assertEquals("port", 1234, descriptor.getPort());
-        assertEquals("host", "127.0.0.1", descriptor.getHost());
+        assertEquals("host", clusterName, descriptor.getHost());
     }
 
     @Test
@@ -75,9 +75,9 @@ public class CassandraExternalResourceAnalyzerTest {
         assertFalse(descriptor.isIncoming());
         assertEquals(descriptor.getType(), ExternalResourceType.MAPSTORE.toString());
         assertEquals("External resource name", CassandraExternalResourceAnalyzer.VENDOR + ":"
-                + CassandraExternalResourceAnalyzer.DEFAULT_CLUSTER_NAME , descriptor.getName());
+                + CassandraExternalResourceAnalyzer.DEFAULT_CLUSTER_NAME + ":" + keyspace , descriptor.getName());
         assertEquals("port", 1234, descriptor.getPort());
-        assertEquals("host", "127.0.0.1", descriptor.getHost());
+        assertEquals("host", CassandraExternalResourceAnalyzer.DEFAULT_CLUSTER_NAME, descriptor.getHost());
     }
 
     private Trace createTrace(Frame frame) {

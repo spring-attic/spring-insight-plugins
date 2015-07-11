@@ -38,7 +38,8 @@ public class CassandraExternalResourceAnalyzer extends AbstractExternalResourceA
 
     public static final OperationType TYPE = OperationType.valueOf("cassandra");
     public static final String VENDOR = "cassandra";
-    public static final String DEFAULT_CLUSTER_NAME = "DEFAULT_CLUSTER";
+    public static final String DEFAULT_CLUSTER_NAME = "UNNAMED_CLUSTER";
+    public static final String DEFAULT_KEYSPACE_NAME = "UNKNOWN_KEYSPACE";
 
     private static final CassandraExternalResourceAnalyzer INSTANCE = new CassandraExternalResourceAnalyzer();
 
@@ -64,17 +65,18 @@ public class CassandraExternalResourceAnalyzer extends AbstractExternalResourceA
         for (Frame dbFrame : dbFrames) {
             Operation op = dbFrame.getOperation();
             String clusterName = op.get(CassandraOperationFinalizer.CLUSTER_NAME, String.class);
+            String keyspace = op.get(CassandraOperationFinalizer.KEYSPACE, String.class);
             int port = op.getInt(CassandraOperationFinalizer.PORT, -1);
             OperationList hosts = op.get(CassandraOperationFinalizer.HOSTS, OperationList.class);
 
-            dbDescriptors.add(getDescriptor(dbFrame, hosts, port, clusterName));
+            dbDescriptors.add(getDescriptor(dbFrame, hosts, port, clusterName, keyspace));
         }
 
         return dbDescriptors;
     }
 
 
-    private ExternalResourceDescriptor getDescriptor(Frame frame, OperationList hosts, int port, String clusterName) {
+    private ExternalResourceDescriptor getDescriptor(Frame frame, OperationList hosts, int port, String clusterName, String keyspace) {
 
         ColorManager colorManager = ColorManager.getInstance();
         Operation op = frame.getOperation();
@@ -83,16 +85,20 @@ public class CassandraExternalResourceAnalyzer extends AbstractExternalResourceA
         if (StringUtil.isEmpty(clusterName))
             clusterName = DEFAULT_CLUSTER_NAME;
 
+        clusterName = clusterName.replace(" ","_");
+        if (StringUtil.isEmpty(keyspace))
+            keyspace = DEFAULT_KEYSPACE_NAME;
+
         String host = "127.0.0.1";
         if (hosts != null && hosts.size() > 0 )
             host = hosts.get(0, String.class);
 
         ExternalResourceDescriptor descriptor = new ExternalResourceDescriptor(frame,
-                VENDOR + ":" + clusterName,
-                clusterName,
+                VENDOR + ":" + clusterName + ":" + keyspace,
+                keyspace,
                 ExternalResourceType.MAPSTORE.name(),
                 VENDOR,
-                host,
+                clusterName,
                 port,
                 color, false);
 
