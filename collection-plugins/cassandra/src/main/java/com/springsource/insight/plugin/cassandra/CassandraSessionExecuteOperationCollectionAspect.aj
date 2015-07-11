@@ -19,6 +19,7 @@ package com.springsource.insight.plugin.cassandra;
 import com.datastax.driver.core.*;
 import com.datastax.driver.core.Session;
 
+import com.datastax.driver.core.querybuilder.BuiltStatement;
 import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.intercept.operation.OperationList;
 import org.aspectj.lang.JoinPoint;
@@ -64,6 +65,9 @@ public aspect CassandraSessionExecuteOperationCollectionAspect extends Operation
         if ((statement instanceof BoundStatement) ||
             (statement instanceof SimpleStatement)) {
             beforeBoundOrSimpleStatementExecute(thisJoinPoint, session, statement);
+            CassandraOperationFinalizer.remove(statement);
+        } else if (statement instanceof BuiltStatement) {
+            beforeBuiltStatementExecute(thisJoinPoint, session, (BuiltStatement)statement);
             CassandraOperationFinalizer.remove(statement);
         } else if (statement instanceof RegularStatement) {
             beforeRegularStatementExecute(thisJoinPoint, session, (RegularStatement)statement);
@@ -123,6 +127,26 @@ public aspect CassandraSessionExecuteOperationCollectionAspect extends Operation
         return operation;
     }
 
+    private void beforeBuiltStatementExecute(JoinPoint jp, Session session, BuiltStatement statement) {
+
+        Operation operation = CassandraOperationFinalizer.get(statement);
+        String cql = statement.getQueryString();
+        if (operation == null) {
+            // Handle Built statement with no arguments ..
+            // as these are not woven by *StatementOperationCollectionAspects
+            operation = createOperation(jp, session, cql, null);
+
+        } else {
+            // Grab cql and add to operation, should be complete now
+            operation.label(CassandraOperationFinalizer.createLabel(cql))
+                    .put("cql", cql);
+        }
+
+        addClusterInfo(operation, session, statement);
+
+        getCollector().enter(operation);
+    }
+
     private void beforeBoundOrSimpleStatementExecute(JoinPoint jp, Session session, Statement statement) {
 
         Operation operation = CassandraOperationFinalizer.get(statement);
@@ -146,8 +170,8 @@ public aspect CassandraSessionExecuteOperationCollectionAspect extends Operation
 
     private void beforeRegularStatementExecute(JoinPoint jp, Session session, RegularStatement statement) {
 
-        // SimpleStatements are handled above
-        // This handles BuiltStatements or anything derived from RegularStatement
+        // SimpleStatements, Builtstatements, BoundStatements are handled above
+        // This handles anything else derived from RegularStatement
         Operation operation = createOperation(jp, session, statement.getQueryString(), null);
         addClusterInfo(operation, session, statement);
         getCollector().enter(operation);
