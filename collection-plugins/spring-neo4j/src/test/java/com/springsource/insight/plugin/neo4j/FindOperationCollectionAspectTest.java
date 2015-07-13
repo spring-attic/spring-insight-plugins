@@ -58,5 +58,6 @@ public class FindOperationCollectionAspectTest extends AbstractNeo4jCollectionAs
 
         assertNotNull("Parameter 'entityClass' does not exists", op.get("entityClass"));
         assertNotNull("Parameter 'entityId' does not exists", op.get("entityId"));
+        assertNotNull("Parameter 'service' does not exist", op.get("service"));
     }
 }

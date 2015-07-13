@@ -13,42 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.springsource.insight.plugin.neo4j;
 
-import org.aspectj.lang.JoinPoint;
-import org.neo4j.graphdb.traversal.TraversalDescription;
-import org.springframework.data.neo4j.support.Neo4jTemplate;
 import com.springsource.insight.collection.AbstractOperationCollectionAspect;
 import com.springsource.insight.intercept.operation.Operation;
+import org.aspectj.lang.JoinPoint;
+import org.neo4j.graphdb.RelationshipType;
+import org.springframework.data.neo4j.support.Neo4jTemplate;
 
-/**
- * This aspect create insight operation for Neo4J Template traverse()
- */
-public privileged aspect TraverseOperationCollectionAspect extends AbstractOperationCollectionAspect {
-    public TraverseOperationCollectionAspect() {
+
+public privileged aspect SaveOperationCollectionAspect extends AbstractOperationCollectionAspect {
+    public SaveOperationCollectionAspect() {
         super();
     }
 
-    public pointcut collectionPoint(): execution(* Neo4jTemplate+.traverse(*, TraversalDescription));
+    public pointcut collectionPoint(): execution(* Neo4jTemplate+.save(*,*))
+            ;
+
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
         Object[] args = jp.getArgs();
+        Operation op = new Operation()
+                .type(OperationCollectionTypes.SAVE_TYPE.type)
+                .label(OperationCollectionTypes.SAVE_TYPE.label + jp.getSignature().getName())
+                .sourceCodeLocation(getSourceCodeLocation(jp))
+                .put("entityClass", args[0].getClass().getSimpleName());
+        if (args[1] != null) {
+            RelationshipType rt = (RelationshipType)args[1];
+            op.putAnyNonEmpty("relationship", rt.name());
+        }
 
-        Operation op = new Operation().type(OperationCollectionTypes.TRAVERSE_TYPE.type)
-                .label(OperationCollectionTypes.TRAVERSE_TYPE.label)
-                .sourceCodeLocation(getSourceCodeLocation(jp));
-
-        TraversalDescription desc = (TraversalDescription) args[args.length - 1];
-        op.put("start", args[0].toString());
-        op.put("traversalDescription", desc.toString());
 
         Neo4jTemplate template = (Neo4jTemplate) jp.getTarget();
         Neo4JOperationCollectionSupport.addServiceInfo(template, op);
         return op;
     }
-
     @Override
     public String getPluginName() {
         return Neo4JPluginRuntimeDescriptor.PLUGIN_NAME;

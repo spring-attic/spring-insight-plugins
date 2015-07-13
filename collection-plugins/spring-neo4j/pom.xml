@@ -15,10 +15,7 @@
     </parent>
 
     <properties>
-        <neo4j.version>1.6</neo4j.version>
-        <spring.data.neo4j.version>2.0.2.RELEASE</spring.data.neo4j.version>
-        <spring.data.commons.core.version>1.2.1.RELEASE</spring.data.commons.core.version>
-        <spring.framework.version>4.1.1.RELEASE</spring.framework.version>
+        <spring.data.neo4j.version>3.2.3.RELEASE</spring.data.neo4j.version>
     </properties>
 
     <repositories>
@@ -67,16 +64,6 @@
             </exclusions>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-commons-core</artifactId>
-            <!--
-                NOTE: we override the default version since we need
-                a more advanced version 
-             -->
-            <version>${spring.data.commons.core.version}</version>
-            <scope>provided</scope>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework.data</groupId>
@@ -108,19 +95,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-rest-graphdb</artifactId>
-            <version>${neo4j.version}</version>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${spring.framework.version}</version>
@@ -132,13 +106,6 @@
             <version>${spring.framework.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-cypher</artifactId>
-            <version>${neo4j.version}</version>
-            <scope>test</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -152,6 +119,12 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.0.0.GA</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -186,7 +159,7 @@
                         </manifest>
                         <manifestEntries>
                             <Insight-Plugin-Descriptor>
-                                com.springsource.insight.plugin.neo4j.Neo4jPluginRuntimeDescriptor
+                                com.springsource.insight.plugin.neo4j.Neo4JPluginRuntimeDescriptor
                             </Insight-Plugin-Descriptor>
                         </manifestEntries>
                     </archive>

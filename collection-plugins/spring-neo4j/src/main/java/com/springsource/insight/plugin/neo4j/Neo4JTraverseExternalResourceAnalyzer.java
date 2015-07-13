@@ -13,25 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.springsource.insight.plugin.neo4j;
 
-import com.springsource.insight.intercept.operation.OperationType;
+public class Neo4JTraverseExternalResourceAnalyzer extends Neo4JExternalResourceAnalyzer {
 
+    private static final Neo4JTraverseExternalResourceAnalyzer INSTANCE = new Neo4JTraverseExternalResourceAnalyzer();
 
-public enum OperationCollectionTypes {
-    QUERY_TYPE("neo4j-query", "Neo4j: "),
-    FIND_TYPE("neo4j-find", "Neo4j: "),
-    LOOKUP_TYPE("neo4j-lookup", "Neo4j: Lookup"),
-    TRAVERSE_TYPE("neo4j-traverse", "Neo4j: Traverse"),
-    SAVE_TYPE("neo4j-save", "Neo4j: ");
+    private Neo4JTraverseExternalResourceAnalyzer() {
+        super(OperationCollectionTypes.TRAVERSE_TYPE.type);
+    }
 
-
-    final public OperationType type;
-    final public String label;
-
-    private OperationCollectionTypes(String typeId, String labelValue) {
-        this.type = OperationType.valueOf(typeId);
-        this.label = labelValue;
+    public static final Neo4JTraverseExternalResourceAnalyzer getInstance() {
+        return INSTANCE;
     }
 }

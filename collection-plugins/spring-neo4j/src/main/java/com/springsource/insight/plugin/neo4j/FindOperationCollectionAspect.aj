@@ -30,7 +30,9 @@ public privileged aspect FindOperationCollectionAspect extends AbstractOperation
         super();
     }
 
-    public pointcut collectionPoint(): execution(* Neo4jTemplate+.find*(.., Class));
+    public pointcut collectionPoint(): ( execution(* Neo4jTemplate+.find*(.., Class))
+            || execution(* Neo4jTemplate+.findByIndexedValue(..)))
+            ;
 
     @Override
     protected Operation createOperation(JoinPoint jp) {
@@ -38,18 +40,25 @@ public privileged aspect FindOperationCollectionAspect extends AbstractOperation
         Operation op = new Operation()
                 .type(OperationCollectionTypes.FIND_TYPE.type)
                 .label(OperationCollectionTypes.FIND_TYPE.label + jp.getSignature().getName())
-                .sourceCodeLocation(getSourceCodeLocation(jp))
-                .put("entityClass", ((Class<?>) args[args.length - 1]).getName());
+                .sourceCodeLocation(getSourceCodeLocation(jp));
+
 
         if (args.length == 2) {
-            op.put("entityId", ((Number) args[0]).longValue());
+            op.put("entityId", ((Number) args[0]).longValue())
+            .put("entityClass", ((Class<?>) args[args.length - 1]).getName());
+        } else if (args.length == 3) {
+            op.put("entityClass", ((Class<?>) args[0]).getName())
+            .put("propertyName", (String)args[1])
+            .putAny("propertyValue", args[2]);
         }
 
+        Neo4jTemplate template = (Neo4jTemplate) jp.getTarget();
+        Neo4JOperationCollectionSupport.addServiceInfo(template, op);
         return op;
     }
 
     @Override
     public String getPluginName() {
-        return Neo4jPluginRuntimeDescriptor.PLUGIN_NAME;
+        return Neo4JPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

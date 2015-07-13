@@ -11,6 +11,6 @@
     </#if>
     <@insight.entry name="Traversal Description" value=operation.traversalDescription />
     <@insight.entry name="Exception" value=operation.exception if=operation.exception?? />
-    <@insight.sourceCodeLocation location=operation.sourceCodeLocation />
 </@insight.group>
+<@insight.sourceCodeLocation location=operation.sourceCodeLocation />
 

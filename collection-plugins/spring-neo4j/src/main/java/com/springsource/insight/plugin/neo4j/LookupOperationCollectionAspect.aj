@@ -53,12 +53,13 @@ public privileged aspect LookupOperationCollectionAspect extends AbstractOperati
             } else
                 op.put("query", value);
         }
-
+        Neo4jTemplate template = (Neo4jTemplate) jp.getTarget();
+        Neo4JOperationCollectionSupport.addServiceInfo(template, op);
         return op;
     }
 
     @Override
     public String getPluginName() {
-        return Neo4jPluginRuntimeDescriptor.PLUGIN_NAME;
+        return Neo4JPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

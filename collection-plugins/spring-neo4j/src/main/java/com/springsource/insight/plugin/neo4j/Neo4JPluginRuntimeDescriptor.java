@@ -22,17 +22,23 @@ import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
 import com.springsource.insight.util.ArrayUtil;
 
-public class Neo4jPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
+public class Neo4JPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "spring-neo4j";
-    private static final Neo4jPluginRuntimeDescriptor INSTANCE = new Neo4jPluginRuntimeDescriptor();
+    private static final Neo4JPluginRuntimeDescriptor INSTANCE = new Neo4JPluginRuntimeDescriptor();
     private static final List<? extends ExternalResourceAnalyzer> extResAnalyzers =
-            ArrayUtil.asUnmodifiableList(Neo4jExternalResourceAnalyzer.getInstance());
+            ArrayUtil.asUnmodifiableList(
+                    Neo4JFindExternalResourceAnalyzer.getInstance(),
+                    Neo4JQueryExternalResourceAnalyzer.getInstance(),
+                    Neo4JLookupExternalResourceAnalyzer.getInstance(),
+                    Neo4JTraverseExternalResourceAnalyzer.getInstance(),
+                    Neo4JSaveExternalResourceAnalyzer.getInstance()
+                    );
 
-    private Neo4jPluginRuntimeDescriptor() {
+    private Neo4JPluginRuntimeDescriptor() {
         super();
     }
 
-    public static final Neo4jPluginRuntimeDescriptor getInstance() {
+    public static final Neo4JPluginRuntimeDescriptor getInstance() {
         return INSTANCE;
     }
 

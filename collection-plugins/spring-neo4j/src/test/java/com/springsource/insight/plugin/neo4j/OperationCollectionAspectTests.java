@@ -43,7 +43,7 @@ public class OperationCollectionAspectTests {
     }
 
     public void test_Init() {
-        template.setInfrastructure(template.getInfrastructure());
+        template = new Neo4jTemplate(template.getInfrastructure());
     }
 
     @Test
@@ -83,14 +83,7 @@ public class OperationCollectionAspectTests {
         template.query("start n=node(0) return n", map("paramKey", "paramValue"));
     }
 
-    @Test
-    public void test_Query2() {
-        try {
-            template.execute("sampleStatement", map("paramKey", "paramValue"));
-        } catch (Exception e) {
-            // ignored
-        }
-    }
+
 
     @Test
     public void test_Traverse1() {

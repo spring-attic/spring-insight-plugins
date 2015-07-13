@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.topology.AbstractExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
@@ -33,15 +34,11 @@ import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.StringUtil;
 
 
-public class Neo4jExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-    private static final Neo4jExternalResourceAnalyzer INSTANCE = new Neo4jExternalResourceAnalyzer();
+public abstract class Neo4JExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
 
-    private Neo4jExternalResourceAnalyzer() {
-        super(OperationCollectionTypes.INIT_TYPE.type);
-    }
-
-    public static final Neo4jExternalResourceAnalyzer getInstance() {
-        return INSTANCE;
+    private static String NEO4J_VENDOR = "Neo4J";
+    protected Neo4JExternalResourceAnalyzer(OperationType type) {
+        super(type);
     }
 
     public Collection<ExternalResourceDescriptor> locateExternalResourceName(Trace trace, Collection<Frame> frames) {
@@ -58,29 +55,31 @@ public class Neo4jExternalResourceAnalyzer extends AbstractExternalResourceAnaly
 
             String hashString = MD5NameGenerator.getName(service);
             String color = colorManager.getColor(op);
+            String label = null;
 
-            ExternalResourceType resType = ExternalResourceType.DATABASE;
+            ExternalResourceType resType = ExternalResourceType.GRAPH_DATABASE;
             if (service.indexOf("EmbeddedGraphDatabase") >= 0) {
                 resType = ExternalResourceType.FILESTORE;
+                label = service;
             }
 
             int port = -1;
             String host = "localhost";
-
-            String serviceUri = op.get("serviceUri", String.class);
-            if (!StringUtil.isEmpty(serviceUri)) {
+            if (resType == ExternalResourceType.GRAPH_DATABASE) {
                 try {
-                    URI url = new URI(serviceUri);
+                    URI url = new URI(service);
                     host = url.getHost();
                     port = url.getPort();
+
                 } catch (URISyntaxException e) {
                     // invalid uri
                 }
+                label =  host + "-" + port;
             }
 
             ExternalResourceDescriptor descriptor =
-                    new ExternalResourceDescriptor(cacheFrame, "server:" + hashString, service,
-                            resType.name(), "Neo4J",
+                    new ExternalResourceDescriptor(cacheFrame, "neo4j:" + hashString, label,
+                            resType.name(), NEO4J_VENDOR,
                             host, port, color, false);
             queueDescriptors.add(descriptor);
         }

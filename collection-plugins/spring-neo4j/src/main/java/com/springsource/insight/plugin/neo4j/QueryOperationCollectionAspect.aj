@@ -50,11 +50,14 @@ public privileged aspect QueryOperationCollectionAspect extends AbstractOperatio
         OperationMap map = op.createMap("params");
         map.putAnyAll((Map<String, Object>) args[1]);
 
+        Neo4jTemplate template = (Neo4jTemplate) jp.getTarget();
+        Neo4JOperationCollectionSupport.addServiceInfo(template, op);
+
         return op;
     }
 
     @Override
     public String getPluginName() {
-        return Neo4jPluginRuntimeDescriptor.PLUGIN_NAME;
+        return Neo4JPluginRuntimeDescriptor.PLUGIN_NAME;
     }
 }

@@ -7,26 +7,45 @@
 
     <insight:plugin name="spring-neo4j" version="${project.version}" publisher="SpringSource"/>
 
-    <insight:operation-view operation="neo4j-init" template="com/springsource/insight/plugin/neo4j/init.ftl"/>
     <insight:operation-view operation="neo4j-query" template="com/springsource/insight/plugin/neo4j/query.ftl"/>
     <insight:operation-view operation="neo4j-find" template="com/springsource/insight/plugin/neo4j/find.ftl"/>
     <insight:operation-view operation="neo4j-lookup" template="com/springsource/insight/plugin/neo4j/lookup.ftl"/>
     <insight:operation-view operation="neo4j-traverse" template="com/springsource/insight/plugin/neo4j/traverse.ftl"/>
+    <insight:operation-view operation="neo4j-save" template="com/springsource/insight/plugin/neo4j/save.ftl"/>
 
-    <insight:operation-group group="DB" operation="neo4j-init"/>
     <insight:operation-group group="DB" operation="neo4j-query"/>
     <insight:operation-group group="DB" operation="neo4j-find"/>
     <insight:operation-group group="DB" operation="neo4j-lookup"/>
     <insight:operation-group group="DB" operation="neo4j-traverse"/>
+    <insight:operation-group group="DB" operation="neo4j-save"/>
 
     <bean id="springNeo4jPluginRuntimeDescriptor"
-          class="com.springsource.insight.plugin.neo4j.Neo4jPluginRuntimeDescriptor"
+          class="com.springsource.insight.plugin.neo4j.Neo4JPluginRuntimeDescriptor"
           factory-method="getInstance"
           lazy-init="true"
             />
-
-    <bean id="springNeo4jExternalResourceAnalyzer"
-          class="com.springsource.insight.plugin.neo4j.Neo4jExternalResourceAnalyzer"
+    <bean id="springNeo4jFindExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.neo4j.Neo4JFindExternalResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+            />
+    <bean id="springNeo4jLookupExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.neo4j.Neo4JLookupExternalResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+            />
+    <bean id="springNeo4jTraverseExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.neo4j.Neo4JTraverseExternalResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+            />
+    <bean id="springNeo4jQueryExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.neo4j.Neo4JQueryExternalResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+            />
+    <bean id="springNeo4jSaveExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.neo4j.Neo4JSaveExternalResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
             />

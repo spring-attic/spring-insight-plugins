@@ -60,21 +60,4 @@ public class QueryOperationCollectionAspectTest extends AbstractNeo4jCollectionA
         assertNotNull("Parameter 'params' does not exists", op.get("params"));
     }
 
-    @Test
-    public void testRun2() throws Exception {
-        // Step 1: Execute test
-        tests.test_Query2();
-
-        // Step 2:  Get the Operation that was just created by our aspect
-        Operation op = getLastEntered();
-        assertNotNull("No Neo4J.Query operation data is intercepted", op);
-
-        // Step 3:  Validate
-        assertEquals("Invalid operation type", OperationCollectionTypes.QUERY_TYPE.type, op.getType());
-
-        assertEquals("Invalid Label", OperationCollectionTypes.QUERY_TYPE.label + "execute", op.getLabel());
-
-        assertNotNull("Parameter 'statement' does not exists", op.get("statement"));
-        assertNotNull("Parameter 'params' does not exists", op.get("params"));
-    }
 }
