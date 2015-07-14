@@ -126,7 +126,7 @@ public class JaxrsOperationCollectionAspectTest extends OperationCollectionAspec
             testService.destroy();
         }
     }
-    
+
     @Override   // co-variant return
     public JaxrsOperationCollectionAspect getAspect() {
         return JaxrsOperationCollectionAspect.aspectOf();

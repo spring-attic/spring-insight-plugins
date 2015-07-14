@@ -18,6 +18,7 @@ package com.springsource.insight.plugin.jms;
 import java.util.Collection;
 import java.util.List;
 
+import com.springsource.insight.intercept.endpoint.EndPointAnalyzer;
 import com.springsource.insight.intercept.metrics.MetricsGenerator;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceAnalyzer;
@@ -37,6 +38,8 @@ public class JmsPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
             ArrayUtil.asUnmodifiableList(JMSListenerReceiveMetricsGenerator.getInstance(),
                     JMSReceiveMetricsGenerator.getInstance(),
                     JMSSendMetricsGenerator.getInstance());
+    private static final List<? extends EndPointAnalyzer> epAnalyzers =
+            ArrayUtil.asUnmodifiableList(JMSEndPointAnalyzer.getInstance());
 
     private JmsPluginRuntimeDescriptor() {
         super();
@@ -64,6 +67,11 @@ public class JmsPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     @Override
     public Collection<? extends MetricsGenerator> getMetricsGenerators() {
         return mGenerators;
+    }
+
+    @Override
+    public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
+        return epAnalyzers;
     }
 
 }
