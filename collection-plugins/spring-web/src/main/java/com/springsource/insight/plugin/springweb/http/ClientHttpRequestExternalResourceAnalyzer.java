@@ -40,7 +40,7 @@ import com.springsource.insight.util.StringUtil;
  *
  */
 public class ClientHttpRequestExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-    public static final OperationType TYPE = OperationType.valueOf("spring_http_connfactory");
+    public static final OperationType TYPE = OperationType.valueOf("spring_client_reqhttp");
     public static final int IPPORT_HTTP = 80;
     private static final ClientHttpRequestExternalResourceAnalyzer INSTANCE = new ClientHttpRequestExternalResourceAnalyzer();
 
@@ -91,7 +91,7 @@ public class ClientHttpRequestExternalResourceAnalyzer extends AbstractExternalR
             String name = "http://" + host + ":" + port;
             return new ExternalResourceDescriptor(frame,
                     MD5NameGenerator.getName(name),
-                    url,
+                    name,
                     ExternalResourceType.WEB_SERVER.name(),
                     null,
                     host,

@@ -42,7 +42,6 @@ import com.springsource.insight.util.StringFormatterUtils;
  *
  */
 public class ClientHttpRequestOperationCollector extends DefaultOperationCollector {
-    public static final OperationType TYPE = OperationType.valueOf("spring_client_reqhttp");
     private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
     private HttpObfuscator obfuscator = HttpObfuscator.getInstance();
 

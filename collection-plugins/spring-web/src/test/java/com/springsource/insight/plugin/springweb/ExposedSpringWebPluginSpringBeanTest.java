@@ -16,6 +16,7 @@
 
 package com.springsource.insight.plugin.springweb;
 
+import com.springsource.insight.plugin.springweb.rest.RestOperationExternalResourceAnalyzer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -51,6 +52,8 @@ public class ExposedSpringWebPluginSpringBeanTest
     protected ClientHttpRequestTraceErrorAnalyzer clientHttpRequestTraceErrorAnalyzer;
     @Autowired(required = false)
     protected ClientHttpRequestExternalResourceAnalyzer clientHttpRequestExternalResourceAnalyzer;
+    @Autowired(required = false)
+    protected RestOperationExternalResourceAnalyzer restOperationExternalResourceAnalyzer;
 
     public ExposedSpringWebPluginSpringBeanTest() {
         super(SpringWebPluginRuntimeDescriptor.class);

@@ -34,7 +34,7 @@ public class ClientHttpRequestTraceErrorAnalyzer extends AbstractTraceErrorAnaly
     private static final ClientHttpRequestTraceErrorAnalyzer INSTANCE = new ClientHttpRequestTraceErrorAnalyzer();
 
     private ClientHttpRequestTraceErrorAnalyzer() {
-        super(ClientHttpRequestOperationCollector.TYPE);
+        super(ClientHttpRequestExternalResourceAnalyzer.TYPE);
     }
 
     public static final ClientHttpRequestTraceErrorAnalyzer getInstance() {
@@ -43,7 +43,7 @@ public class ClientHttpRequestTraceErrorAnalyzer extends AbstractTraceErrorAnaly
 
     @Override    // if ANY invocation was an error then declare a trace error
     public Collection<Frame> locateFrames(Trace trace) {
-        return trace.getAllFramesOfType(ClientHttpRequestOperationCollector.TYPE);
+        return trace.getAllFramesOfType(ClientHttpRequestExternalResourceAnalyzer.TYPE);
     }
 
     @Override

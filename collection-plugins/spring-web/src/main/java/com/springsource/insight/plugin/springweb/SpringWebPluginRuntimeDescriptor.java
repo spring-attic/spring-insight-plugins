@@ -29,6 +29,7 @@ import com.springsource.insight.plugin.springweb.http.ClientHttpRequestExternalR
 import com.springsource.insight.plugin.springweb.http.ClientHttpRequestTraceErrorAnalyzer;
 import com.springsource.insight.plugin.springweb.remoting.HttpInvokerRequestExecutorExternalResourceAnalyzer;
 import com.springsource.insight.plugin.springweb.remoting.HttpInvokerRequestExecutorTraceErrorAnalyzer;
+import com.springsource.insight.plugin.springweb.rest.RestOperationExternalResourceAnalyzer;
 import com.springsource.insight.plugin.springweb.validation.ValidationErrorsMetricsGenerator;
 import com.springsource.insight.util.ArrayUtil;
 
@@ -42,7 +43,8 @@ public class SpringWebPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
                     HttpInvokerRequestExecutorTraceErrorAnalyzer.getInstance());
     private static final List<? extends ExternalResourceAnalyzer> extResAnalyzers =
             ArrayUtil.asUnmodifiableList(ClientHttpRequestExternalResourceAnalyzer.getInstance(),
-                    HttpInvokerRequestExecutorExternalResourceAnalyzer.getInstance());
+                    HttpInvokerRequestExecutorExternalResourceAnalyzer.getInstance(),
+                    RestOperationExternalResourceAnalyzer.getInstance());
     private static final List<? extends MetricsGenerator> mGenerators =
             ArrayUtil.asUnmodifiableList(ValidationErrorsMetricsGenerator.getInstance());
 

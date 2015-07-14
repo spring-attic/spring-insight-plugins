@@ -14,15 +14,8 @@
  * limitations under the License.
  */
 
-package com.springsource.insight.plugin.springweb.remoting;
+package com.springsource.insight.plugin.springweb.rest;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.logging.Level;
 
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
@@ -36,33 +29,24 @@ import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.StringUtil;
 
-/**
- *
- */
-public class HttpInvokerRequestExecutorExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
-    public static final OperationType HTTP_INVOKER = OperationType.valueOf("http_invoker");
-    /**
-     * Special attribute used to indicate whether the HTTP invocation was
-     * executed using core Java classes (e.g. {@link java.net.HttpURLConnection}
-     * only or via a framework (e.g., <A
-     * HREF="http://hc.apache.org/httpclient-3.x/">Apache client</A>). We
-     * generate an external resource only for the <U>core</U> classes invocation
-     * and rely on the other plugins for the alternative frameworks. This is
-     * done in order to avoid ambiguity if both the HTTP invoker aspect and the
-     * framework plugin are applied to the same trace, and thus may generate
-     * equivalent (though not same) external resource descriptors
-     *
-     * @see org.springframework.remoting.httpinvoker.SimpleHttpInvokerRequestExecutor
-     */
-    public static final String DIRECT_CALL_ATTR = "directInvocationCall";
-    public static final int IPPORT_HTTP = 80;
-    private static final HttpInvokerRequestExecutorExternalResourceAnalyzer INSTANCE = new HttpInvokerRequestExecutorExternalResourceAnalyzer();
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.logging.Level;
 
-    private HttpInvokerRequestExecutorExternalResourceAnalyzer() {
-        super(HTTP_INVOKER);
+public class RestOperationExternalResourceAnalyzer extends AbstractExternalResourceAnalyzer {
+    public static final OperationType TYPE = OperationType.valueOf("spring_rest_template");
+    public static final int IPPORT_HTTP = 80;
+    private static final RestOperationExternalResourceAnalyzer INSTANCE = new RestOperationExternalResourceAnalyzer();
+
+    private RestOperationExternalResourceAnalyzer() {
+        super(TYPE);
     }
 
-    public static final HttpInvokerRequestExecutorExternalResourceAnalyzer getInstance() {
+    public static final RestOperationExternalResourceAnalyzer getInstance() {
         return INSTANCE;
     }
 
@@ -79,7 +63,7 @@ public class HttpInvokerRequestExecutorExternalResourceAnalyzer extends Abstract
             }
 
             if (!descs.add(extDesc)) {
-                continue; // debug breakpoint
+                continue;    // debug breakpoint
             }
         }
 
@@ -88,11 +72,6 @@ public class HttpInvokerRequestExecutorExternalResourceAnalyzer extends Abstract
 
     ExternalResourceDescriptor extractExternalResourceDescriptor(Frame frame) {
         Operation op = frame.getOperation();
-        Boolean directCall = op.get(DIRECT_CALL_ATTR, Boolean.class);
-        if ((directCall == null) || (!directCall.booleanValue())) {
-            return null;
-        }
-
         String url = op.get(OperationFields.URI, String.class);
         if (StringUtil.isEmpty(url)) {
             return null;

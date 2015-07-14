@@ -38,6 +38,6 @@ public aspect ClientHttpRequestCollectionOperationAspect extends AbstractSpringW
         ClientHttpRequestOperationCollector collector = (ClientHttpRequestOperationCollector) getCollector();
         ClientHttpRequest request = (ClientHttpRequest) jp.getTarget();
         return collector.fillRequestDetails(OperationCollectionUtil.methodOperation(
-                new Operation().type(ClientHttpRequestOperationCollector.TYPE), jp), request);
+                new Operation().type(ClientHttpRequestExternalResourceAnalyzer.TYPE), jp), request);
     }
 }

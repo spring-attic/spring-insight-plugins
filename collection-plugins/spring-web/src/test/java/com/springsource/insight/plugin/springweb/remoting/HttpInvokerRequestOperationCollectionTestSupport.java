@@ -71,13 +71,13 @@ public abstract class HttpInvokerRequestOperationCollectionTestSupport
         ExternalResourceDescriptor desc = extresAnalyzer.extractExternalResourceDescriptor(frame);
         Boolean directCall = op.get(HttpInvokerRequestExecutorExternalResourceAnalyzer.DIRECT_CALL_ATTR, Boolean.class);
         if ((directCall != null) && directCall.booleanValue()) {
-            String label = TEST_HOST + ":" + TEST_PORT;
+            String name = "http://" + TEST_HOST + ":" + TEST_PORT;
             assertNotNull("No resource", desc);
             assertSame("Mismatched external resource frame", frame, desc.getFrame());
             assertEquals("Mismatched external resource host", TEST_HOST, desc.getHost());
             assertEquals("Mismatched external resource port", TEST_PORT, desc.getPort());
-            assertEquals("Mismatched external resource name", MD5NameGenerator.getName(label), desc.getName());
-            assertEquals("Mismatched external resource label", label, desc.getLabel());
+            assertEquals("Mismatched external resource name", MD5NameGenerator.getName(name), desc.getName());
+            assertEquals("Mismatched external resource label", name, desc.getLabel());
             assertEquals("Mismatched external resource type", ExternalResourceType.WEB_SERVER.name(), desc.getType());
             assertFalse("Unexpected as parent external resource", desc.isParent());
             assertFalse("Not outgoing external resource", desc.isIncoming());

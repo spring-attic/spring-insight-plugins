@@ -25,8 +25,6 @@
                             template="com/springsource/insight/plugin/springweb/remoting/http_invoker.ftl"/>
     <insight:operation-view operation="spring_client_reqhttp"
                             template="com/springsource/insight/plugin/springweb/http/spring_client_reqhttp.ftl"/>
-    <insight:operation-view operation="spring_http_connfactory"
-                            template="com/springsource/insight/plugin/springweb/http/spring_http_connfactory.ftl"/>
     <insight:operation-view operation="spring_rest_template"
                             template="com/springsource/insight/plugin/springweb/rest/spring_rest_template.ftl"/>
 
@@ -50,6 +48,11 @@
             />
     <bean id="springWebPluginHttpRemotingExternalResourceAnalyzer"
           class="com.springsource.insight.plugin.springweb.remoting.HttpInvokerRequestExecutorExternalResourceAnalyzer"
+          factory-method="getInstance"
+          lazy-init="true"
+            />
+    <bean id="springWebPluginRestOperationExternalResourceAnalyzer"
+          class="com.springsource.insight.plugin.springweb.rest.RestOperationExternalResourceAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
             />

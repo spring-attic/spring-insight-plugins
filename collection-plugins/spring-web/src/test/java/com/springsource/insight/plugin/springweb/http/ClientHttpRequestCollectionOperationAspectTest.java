@@ -230,7 +230,7 @@ public class ClientHttpRequestCollectionOperationAspectTest extends OperationCol
     private Operation assertExecuteRequest(ClientHttpRequest request) {
         Operation op = getLastEntered();
         assertNotNull("No operation collected", op);
-        assertEquals("Mismatched type", ClientHttpRequestOperationCollector.TYPE, op.getType());
+        assertEquals("Mismatched type", ClientHttpRequestExternalResourceAnalyzer.TYPE, op.getType());
 
         URI uri = request.getURI();
         HttpMethod method = request.getMethod();

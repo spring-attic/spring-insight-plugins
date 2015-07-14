@@ -75,7 +75,7 @@ public abstract class RestOperationCollectionTestSupport extends OperationCollec
     protected Operation assertRestOperation(TestRestOperations restOps) {
         Operation op = getLastEntered();
         assertNotNull("No operation collected", op);
-        assertEquals("Mismatched type", RestOperationCollectionSupport.TYPE, op.getType());
+        assertEquals("Mismatched type", RestOperationExternalResourceAnalyzer.TYPE, op.getType());
         assertEquals("Mismatched method", restOps.getMethod(), op.get("method", String.class));
         assertEquals("Mismatched URI", restOps.getUri(), op.get(OperationFields.URI, String.class));
         assertRestLabel(op, restOps);

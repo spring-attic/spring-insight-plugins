@@ -32,7 +32,6 @@ import com.springsource.insight.util.StringUtil;
  *
  */
 public abstract aspect RestOperationCollectionSupport extends AbstractSpringWebAspectSupport {
-    public static final OperationType TYPE = OperationType.valueOf("spring_rest_template");
     /**
      * Placeholder value used if unable to resolve the operation URI value
      * @see #resolveOperationURI(JoinPoint)
@@ -65,7 +64,7 @@ public abstract aspect RestOperationCollectionSupport extends AbstractSpringWebA
         String method = resolveOperationMethod(jp);
         String uri = resolveOperationURI(jp);
         String label = resolveOperationLabel(method, uri, jp);
-        return OperationCollectionUtil.methodOperation(new Operation().type(TYPE), jp)
+        return OperationCollectionUtil.methodOperation(new Operation().type(RestOperationExternalResourceAnalyzer.TYPE), jp)
                 .label(label)
                 .put("method", method)
                 .put(OperationFields.URI, uri)
