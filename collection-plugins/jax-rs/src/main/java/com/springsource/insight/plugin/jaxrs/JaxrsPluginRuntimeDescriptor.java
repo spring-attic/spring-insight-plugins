@@ -27,8 +27,6 @@ public class JaxrsPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     public static final String PLUGIN_NAME = "jax-rs";
     private static final JaxrsPluginRuntimeDescriptor INSTANCE = new JaxrsPluginRuntimeDescriptor();
     private static final List<? extends EndPointAnalyzer> epAnalyzers = ArrayUtil.asUnmodifiableList(JaxrsEndPointAnalyzer.getInstance());
-    private static final List<? extends ExternalResourceAnalyzer> extResAnalyzers =
-            ArrayUtil.asUnmodifiableList(JaxrsExternalResourceAnalyzer.getInstance());
 
     private JaxrsPluginRuntimeDescriptor() {
         super();
@@ -41,11 +39,6 @@ public class JaxrsPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
     @Override
     public Collection<? extends EndPointAnalyzer> getEndPointAnalyzers() {
         return epAnalyzers;
-    }
-
-    @Override
-    public Collection<? extends ExternalResourceAnalyzer> getExternalResourceAnalyzers() {
-        return extResAnalyzers;
     }
 
     @Override

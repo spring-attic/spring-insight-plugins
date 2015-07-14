@@ -13,11 +13,7 @@
           factory-method="getInstance"
           lazy-init="true"
             />
-    <bean id="jaxrsPluginExternalResourceAnalyzer"
-          class="com.springsource.insight.plugin.jaxrs.JaxrsExternalResourceAnalyzer"
-          factory-method="getInstance"
-          lazy-init="true"
-            />
+
     <bean id="jaxrsPluginRuntimeDescriptor"
           class="com.springsource.insight.plugin.jaxrs.JaxrsPluginRuntimeDescriptor"
           factory-method="getInstance"

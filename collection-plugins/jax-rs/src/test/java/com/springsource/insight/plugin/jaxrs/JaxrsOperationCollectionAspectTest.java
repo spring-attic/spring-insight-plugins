@@ -40,7 +40,6 @@ import com.springsource.insight.intercept.trace.TraceId;
  */
 public class JaxrsOperationCollectionAspectTest extends OperationCollectionAspectTestSupport {
     private final RestServiceInstance _testService;
-    private final JaxrsExternalResourceAnalyzer analyzer = JaxrsExternalResourceAnalyzer.getInstance();
 
     public JaxrsOperationCollectionAspectTest() {
         _testService = new RestServiceInstance();
@@ -122,34 +121,12 @@ public class JaxrsOperationCollectionAspectTest extends OperationCollectionAspec
                 assertEquals("Mismatched path param enum", JaxrsParamType.PATH, enumType);
             }
 
-            //test external resources
-            SimpleFrameBuilder builder = new SimpleFrameBuilder();
-            builder.enter(op);
-            Frame frame = builder.exit();
-            Trace trace = Trace.newInstance(ApplicationName.valueOf("app"), TraceId.valueOf("0"), frame);
-
-            List<ExternalResourceDescriptor> externalResourceDescriptors = (List<ExternalResourceDescriptor>) analyzer.locateExternalResourceName(trace);
-            assertNotNull("No descriptors extracted", externalResourceDescriptors);
-            ExternalResourceDescriptor descriptor = externalResourceDescriptors.get(0);
-            assertSame("Mismatched operation instance", op, descriptor.getFrame().getOperation());
-            assertDescriptorContents("testExactlyTwoDifferentExternalResourceNames", expTemplate, descriptor);
-
             return op;
         } finally {
             testService.destroy();
         }
     }
-
-    private static ExternalResourceDescriptor assertDescriptorContents(String testName, String path, ExternalResourceDescriptor descriptor) {
-        assertEquals(testName + ": Mismatched label", path, descriptor.getLabel());
-        assertEquals(testName + ": Mismatched type", ExternalResourceType.WEB_SERVICE.name(), descriptor.getType());
-
-        String expectedHash = MD5NameGenerator.getName(path);
-        assertEquals(testName + ": Mismatched name", JaxrsDefinitions.TYPE.getName() + ":" + expectedHash, descriptor.getName());
-        assertEquals(testName + ": Mismatched direction", Boolean.TRUE, Boolean.valueOf(descriptor.isIncoming()));
-        return descriptor;
-    }
-
+    
     @Override   // co-variant return
     public JaxrsOperationCollectionAspect getAspect() {
         return JaxrsOperationCollectionAspect.aspectOf();
