@@ -45,7 +45,7 @@
         <commons.dbcp.version>1.2.2</commons.dbcp.version>
         <liquibase.version>2.0.1</liquibase.version>
         <gemfire.version>8.0.0</gemfire.version>
-        <spring.gemfire.version>1.4.0.RELEASE</spring.gemfire.version>
+        <spring.gemfire.version>1.6.1.RELEASE</spring.gemfire.version>
         <ehcache.version>2.3.0</ehcache.version>
         <groovy.version>1.7.3</groovy.version>
         <gmaven.plugin.version>1.0</gmaven.plugin.version>
