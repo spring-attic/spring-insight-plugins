@@ -49,7 +49,7 @@ public class LifecycleEndPointAnalyzer extends AbstractEndPointAnalyzer {
     public static final OperationType SERVLET_LISTENER_TYPE = OperationType.valueOf("servlet-listener");
     public static final OperationType LIFECYCLE_TYPE_TYPE = OperationType.APP_LIFECYCLE;
     public static final EndPointName ENDPOINT_NAME = EndPointName.valueOf("lifecycle");
-    public static final String ENDPOINT_LABEL = "Lifecycle";
+    public static final String ENDPOINT_LABEL = "App Lifecycle";
     /**
      * The {@link List} of {@link OperationType}-s that mark a lifecycle frame
      */
