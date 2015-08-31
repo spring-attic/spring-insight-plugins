@@ -16,8 +16,10 @@
 package com.springsource.insight.plugin.apache.http.hc4;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.springsource.insight.util.StringUtil;
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpMessage;
@@ -197,8 +199,26 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
         fillInRequestDetails(op.createMap("request"), request, collectExtra);
         if (response != null) {
             fillInResponseDetails(op.createMap("response"), response, collectExtra);
+            updateExternalTraceDetails(op, response);
         }
         return op;
+    }
+
+    private static final String XTRACEID = "X-TraceId";
+    private static final String EXTERNAL_TRACE_ID = "EXT-TRACE-ID";
+
+    private void updateExternalTraceDetails(Operation op, HttpMessage msg) {
+        Header[] hdrs = msg.getAllHeaders();
+        if (ArrayUtil.length(hdrs) <= 0) {
+            return;
+        }
+
+        for (Header h : hdrs) {
+            String name = h.getName(), value = h.getValue();
+            if (XTRACEID.equals(name)) {
+                op.put(EXTERNAL_TRACE_ID, value);
+            }
+        }
     }
 
     OperationMap fillInRequestDetails(OperationMap op, HttpRequest request, boolean collectExtra) {
