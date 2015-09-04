@@ -2,7 +2,10 @@
 <#import "/insight-1.0.ftl" as insight />
 
 <#assign request = operation.request>
-<#assign response = operation.response>
+
+<#if operation.response??>
+    <#assign response = operation.response>
+</#if>
 
 <@insight.title>Apache HC4 Summary</@insight.title>
 <code class="raw http">${request.method?html} ${request.uri?html} ${request.protocol?html}</code>
@@ -12,9 +15,11 @@
     <@insight.entry name=h.name value=h.value required="true" />
 </@insight.group>
 
-<@insight.group label="Response Headers" if=response.headers?has_content collection=response.headers ; h>
-    <@insight.entry name=h.name value=h.value required="true" />
-</@insight.group>
+<#if operation.response??>
+    <@insight.group label="Response Headers" if=response.headers?has_content collection=response.headers ; h>
+        <@insight.entry name=h.name value=h.value required="true" />
+    </@insight.group>
+</#if>
 
 <#if operation.exception??>
     <@insight.group label="Exception Details">

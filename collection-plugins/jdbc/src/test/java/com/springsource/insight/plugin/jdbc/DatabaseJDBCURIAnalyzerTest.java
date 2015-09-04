@@ -40,7 +40,8 @@ public class DatabaseJDBCURIAnalyzerTest extends AbstractDatabaseJDBCURIAnalyzer
     @Test
     public void testLocateDatabaseURI() throws Exception {
         String jdbcUri = "jdbc:foobar://huh:8080";
-
+        String toHash = "foobar" + "" +
+                "" + "huh" + 8080;
         Operation op = createJdbcOperation(jdbcUri);
         Frame frame = createJdbcFrame(op);
         Trace trace = createJdbcTrace(frame);
@@ -52,7 +53,7 @@ public class DatabaseJDBCURIAnalyzerTest extends AbstractDatabaseJDBCURIAnalyzer
 
         assertEquals("Mismatched extracted frame", frame, externalResourceDescriptor.getFrame());
         assertEquals("Mismatched resource type", ExternalResourceType.DATABASE.name(), externalResourceDescriptor.getType());
-        assertEquals("Mismatched resource name", "foobar:1:" + MD5NameGenerator.getName(jdbcUri), externalResourceDescriptor.getName());
+        assertEquals("Mismatched resource name", "foobar:1:" + MD5NameGenerator.getName(toHash), externalResourceDescriptor.getName());
         assertEquals("Mismatched incoming value", Boolean.FALSE, Boolean.valueOf(externalResourceDescriptor.isIncoming()));
     }
 
@@ -61,7 +62,7 @@ public class DatabaseJDBCURIAnalyzerTest extends AbstractDatabaseJDBCURIAnalyzer
         Frame frame = mock(Frame.class);
         String testUri = "jdbc:mysql://chef.metadyne.com:3000/adk?user=username&password=test";
         List<ExternalResourceDescriptor> result = dbAnalyzer.extractMeaningfulNames(frame, testUri);
-
+        String toHash = "mysql" + "adk" + "chef.metadyne.com" + 3000;
         assertEquals(1, result.size());
 
         ExternalResourceDescriptor res = result.get(0);
@@ -70,7 +71,7 @@ public class DatabaseJDBCURIAnalyzerTest extends AbstractDatabaseJDBCURIAnalyzer
         assertEquals("adk", res.getLabel());
         assertEquals("chef.metadyne.com", res.getHost());
         assertEquals(3000, res.getPort());
-        assertEquals("mysql:1:" + MD5NameGenerator.getName(testUri), res.getName());
+        assertEquals("mysql:1:" + MD5NameGenerator.getName(toHash), res.getName());
         assertEquals(Boolean.FALSE, Boolean.valueOf(res.isIncoming()));
     }
 
@@ -85,21 +86,22 @@ public class DatabaseJDBCURIAnalyzerTest extends AbstractDatabaseJDBCURIAnalyzer
         assertEquals(2, result.size());
 
         ExternalResourceDescriptor res = result.get(0);
+        String tohash1 = "oracle" + "" + "10.17.184.138" + -1;
 
         assertEquals("oracle", res.getVendor());
         assertEquals(null, res.getLabel());
         assertEquals("10.17.184.138", res.getHost());
         assertEquals(-1, res.getPort());
-        assertEquals("oracle:1:" + MD5NameGenerator.getName(testUri), res.getName());
+        assertEquals("oracle:1:" + MD5NameGenerator.getName(tohash1), res.getName());
         assertEquals(Boolean.FALSE, Boolean.valueOf(res.isIncoming()));
 
         res = result.get(1);
-
+        String tohash2 = "oracle" + "" + "10.17.184.139" + 1521;
         assertEquals("oracle", res.getVendor());
         assertEquals(null, res.getLabel());
         assertEquals("10.17.184.139", res.getHost());
         assertEquals(1521, res.getPort());
-        assertEquals("oracle:2:" + MD5NameGenerator.getName(testUri), res.getName());
+        assertEquals("oracle:2:" + MD5NameGenerator.getName(tohash2), res.getName());
         assertEquals(Boolean.FALSE, Boolean.valueOf(res.isIncoming()));
     }
 
@@ -109,6 +111,7 @@ public class DatabaseJDBCURIAnalyzerTest extends AbstractDatabaseJDBCURIAnalyzer
         String testUri = "jdbc:mydb:scheme://server-address:8080";
         List<ExternalResourceDescriptor> result = dbAnalyzer.extractMeaningfulNames(frame, testUri);
 
+        String tohash = "mydb" + "" + "server-address" + 8080;
         assertEquals(1, result.size());
 
         ExternalResourceDescriptor res = result.get(0);
@@ -117,7 +120,7 @@ public class DatabaseJDBCURIAnalyzerTest extends AbstractDatabaseJDBCURIAnalyzer
         assertEquals("", res.getLabel());
         assertEquals("server-address", res.getHost());
         assertEquals(8080, res.getPort());
-        assertEquals("mydb:1:" + MD5NameGenerator.getName(testUri), res.getName());
+        assertEquals("mydb:1:" + MD5NameGenerator.getName(tohash), res.getName());
         assertEquals(Boolean.FALSE, Boolean.valueOf(res.isIncoming()));
     }
 }

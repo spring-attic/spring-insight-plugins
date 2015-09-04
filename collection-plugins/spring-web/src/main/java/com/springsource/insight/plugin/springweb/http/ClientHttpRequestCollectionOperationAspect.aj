@@ -31,7 +31,12 @@ public aspect ClientHttpRequestCollectionOperationAspect extends AbstractSpringW
         super(new ClientHttpRequestOperationCollector());
     }
 
-    public pointcut collectionPoint(): execution(* ClientHttpRequest+.execute());
+    public pointcut execute() : execution(* ClientHttpRequest+.execute());
+
+    public pointcut collectionPoint() : execute()
+        && (!cflowbelow(execute()))
+        ;
+
 
     @Override
     protected Operation createOperation(JoinPoint jp) {

@@ -95,17 +95,19 @@ public abstract class DatabaseJDBCURIAnalyzer extends AbstractExternalResourceAn
         }
 
         String jdbcScheme = workingConnectionString.substring(0, indexOfFirstColon);
-        String jdbcHash = MD5NameGenerator.getName(connectionString);
 
         String host = null;
+        String path = null;
         int port = -1;
         // Try to parse the string as a real uri
         URI uri = extractURI(workingConnectionString);
         if (uri != null) {
             host = uri.getHost();
             port = uri.getPort();
+            path = uri.getPath();
         }
-
+        String toHash = jdbcScheme + (path==null ? "" : path) + host + port;
+        String jdbcHash = MD5NameGenerator.getName(toHash);
         ColorManager colorManager = ColorManager.getInstance();
         Operation op = frame.getOperation();
         String color = colorManager.getColor(op);
@@ -132,7 +134,8 @@ public abstract class DatabaseJDBCURIAnalyzer extends AbstractExternalResourceAn
             String vendor = urlMetaData.getVendorName();
             String host = urlMetaData.getHost();
             int port = urlMetaData.getPort();
-            String jdbcHash = MD5NameGenerator.getName(connectionString);
+            String nameToHash = vendor + (databaseName == null ? "" : databaseName) + host + port;
+            String jdbcHash = MD5NameGenerator.getName(nameToHash);
 
             ExternalResourceDescriptor descriptor = new ExternalResourceDescriptor(frame,
                     vendor + ":" + instance + ":" + jdbcHash,

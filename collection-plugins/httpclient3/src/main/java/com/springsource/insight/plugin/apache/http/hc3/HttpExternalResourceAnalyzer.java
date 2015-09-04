@@ -116,7 +116,7 @@ public class HttpExternalResourceAnalyzer extends AbstractExternalResourceAnalyz
             }
 
             String lbl = host + ":" + port;
-            String name = createName(lbl, app, ser, ep);
+            String name = createName(lbl);
 
             return new ExternalResourceDescriptor(frame, name,
                     lbl, // label
@@ -132,16 +132,8 @@ public class HttpExternalResourceAnalyzer extends AbstractExternalResourceAnalyz
         }
     }
 
-    static String createName(String lbl, String app, String ser, String ep) {
-        StringBuilder sb = new StringBuilder(lbl);
-
-        if (!StringUtil.isEmpty(app) && !StringUtil.isEmpty(ser) && !StringUtil.isEmpty(ep)) {
-            sb.append(app);
-            sb.append(ser);
-            sb.append(ep);
-        }
-
-        return MD5NameGenerator.getName(sb.toString());
+    static String createName(String lbl) {
+        return MD5NameGenerator.getName(lbl);
     }
 
     static int resolvePort(URI uri) {
@@ -151,7 +143,10 @@ public class HttpExternalResourceAnalyzer extends AbstractExternalResourceAnalyz
 
         int port = uri.getPort();
         if (port <= 0) {
-            return 80;
+            if ("http".equals(uri.getScheme()))
+                port = 80;
+            else
+                port = 443;
         }
 
         return port;

@@ -19,6 +19,7 @@ package com.springsource.insight.plugin.springweb.rest;
 import java.net.URI;
 import java.net.URL;
 
+import com.springsource.insight.intercept.trace.FrameBuilder;
 import org.aspectj.lang.JoinPoint;
 
 import com.springsource.insight.collection.OperationCollectionUtil;
@@ -27,6 +28,10 @@ import com.springsource.insight.intercept.operation.OperationFields;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.plugin.springweb.AbstractSpringWebAspectSupport;
 import com.springsource.insight.util.StringUtil;
+import org.aspectj.lang.annotation.SuppressAjWarnings;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.http.client.ClientHttpRequest;
+import org.springframework.http.HttpMethod;
 
 /**
  *
@@ -41,11 +46,33 @@ public abstract aspect RestOperationCollectionSupport extends AbstractSpringWebA
     private final String defaultMethod;
 
     protected RestOperationCollectionSupport(String accessType) {
+        super(new RestOperationCollector());
+
         if (StringUtil.isEmpty(accessType)) {
             throw new IllegalStateException("No access method specified");
         }
 
         defaultMethod = accessType;
+    }
+
+    public pointcut requestCreation() :
+        execution(* org.springframework.http.client.support.HttpAccessor+.createRequest(URI, HttpMethod))
+            && cflowbelow(accessPoint())
+            ;
+
+    @SuppressAjWarnings("adviceDidNotMatch")
+    after() returning(Object returnValue) : requestCreation() {
+        if (returnValue instanceof ClientHttpRequest) {
+            ClientHttpRequest clientHttpRequest = (ClientHttpRequest) returnValue;
+            URI clientHttpRequestURI = clientHttpRequest.getURI();
+            FrameBuilder builder = ((RestOperationCollector) getCollector()).getBuilder();
+            Operation op = builder.peek();
+            if (op != null && op.getType().equals(RestOperationExternalResourceAnalyzer.TYPE)) {
+                String origURI = op.get(OperationFields.URI, String.class);
+                if (!StringUtil.isEmpty(origURI))
+                    op.put(OperationFields.URI, clientHttpRequestURI.toString());
+            }
+        }
     }
 
     public abstract pointcut accessPoint();

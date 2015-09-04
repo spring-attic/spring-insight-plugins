@@ -15,7 +15,7 @@
     </parent>
 
     <properties>
-        <apache.http.version>4.1.1</apache.http.version>
+        <apache.http.version>4.3.5</apache.http.version>
     </properties>
 
     <dependencies>
@@ -35,21 +35,21 @@
             </exclusions>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpmime</artifactId>
-            <version>${apache.http.version}</version>
-            <exclusions>
-                <!-- excluded since we provide our
-                     own dependencies versions for them -
-                     usually jcl-over-slf4j  -->
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
-            <scope>provided</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.apache.httpcomponents</groupId>-->
+            <!--<artifactId>httpmime</artifactId>-->
+            <!--<version>${apache.http.version}</version>-->
+            <!--<exclusions>-->
+                <!--&lt;!&ndash; excluded since we provide our-->
+                     <!--own dependencies versions for them - -->
+                     <!--usually jcl-over-slf4j  &ndash;&gt;-->
+                <!--<exclusion>-->
+                    <!--<groupId>commons-logging</groupId>-->
+                    <!--<artifactId>commons-logging</artifactId>-->
+                <!--</exclusion>-->
+            <!--</exclusions>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
 
         <!-- Test dependencies -->
         <dependency>

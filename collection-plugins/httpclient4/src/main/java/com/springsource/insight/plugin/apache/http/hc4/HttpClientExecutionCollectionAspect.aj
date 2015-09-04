@@ -76,7 +76,7 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
     }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
-    HttpResponse around ()throws IOException
+    Object around ()throws IOException
             : withResponseExecution()
             && (!cflowbelow(withResponseExecution()))
             && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart)) {
@@ -94,8 +94,8 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
         });
 
         try {
-            HttpResponse response = proceed();
-            exitOperation(op, request, response, null);
+            Object response = proceed();
+            exitOperation(op, request, (HttpResponse)response, null);
             return response;
         } catch (IOException e) {
             exitOperation(op, request, null, e);
@@ -215,7 +215,7 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
 
         for (Header h : hdrs) {
             String name = h.getName(), value = h.getValue();
-            if (XTRACEID.equals(name)) {
+            if (XTRACEID.equalsIgnoreCase(name)) {
                 op.put(EXTERNAL_TRACE_ID, value);
             }
         }

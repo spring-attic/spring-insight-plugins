@@ -1,10 +1,15 @@
 <#ftl strip_whitespace=true>
 <#import "/insight-1.0.ftl" as insight />
 
-<#assign request = operation.request>
-<#assign response = operation.response>
+<#if operation.request??>
+    <#assign request = operation.request>
+</#if>
+<#if operation.response??>
+    <#assign response = operation.response>
+</#if>
 
 <@insight.title>Spring HTTP Client Request</@insight.title>
+
 <code class="raw http">${request.method?html} ${request.uri?html}</code>
 <code class="raw http">${response.statusCode?html} ${response.reasonPhrase?html}</code>
 

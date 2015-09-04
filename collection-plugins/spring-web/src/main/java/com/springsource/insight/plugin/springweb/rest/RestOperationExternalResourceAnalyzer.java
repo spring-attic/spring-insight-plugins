@@ -80,13 +80,10 @@ public class RestOperationExternalResourceAnalyzer extends AbstractExternalResou
         try {
             URI uri = new URI(url);
             String host = uri.getHost();
-            int port = uri.getPort();
-            if (port <= 0) {
-                port = IPPORT_HTTP;
-            }
+            int port = resolvePort(uri);
 
             String color = colorManager.getColor(op);
-            String name = "http://" + host + ":" + port;
+            String name = host + ":" + port;
             return new ExternalResourceDescriptor(frame,
                     MD5NameGenerator.getName(name),
                     name,
@@ -103,5 +100,20 @@ public class RestOperationExternalResourceAnalyzer extends AbstractExternalResou
 
             return null;
         }
+    }
+    static int resolvePort(URI uri) {
+        if (uri == null) {
+            return (-1);
+        }
+
+        int port = uri.getPort();
+        if (port <= 0) {
+            if ("http".equals(uri.getScheme()))
+                port = 80;
+            else
+                port = 443;
+        }
+
+        return port;
     }
 }
