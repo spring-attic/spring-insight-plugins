@@ -17,6 +17,7 @@ package com.springsource.insight.plugin.apache.http.hc3;
 
 import java.io.IOException;
 
+import com.springsource.insight.intercept.trace.TraceId;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpMethod;
@@ -135,6 +136,7 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
         boolean collectExtra = collectExtraInformation();
         fillInRequestDetails(op.createMap("request"), method, collectExtra);
         fillInResponseDetails(op.createMap("response"), method, statusCode, collectExtra);
+        updateExternalTraceDetails(op, method.getResponseHeaders());
         return op;
     }
 
@@ -187,7 +189,6 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
 
             fillInMethodHeaders(op.createList("headers"), method, false);
         }
-
         return op;
     }
 
@@ -210,6 +211,18 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
         return headers;
     }
 
+    private void updateExternalTraceDetails(Operation op, Header[] hdrs) {
+        if (ArrayUtil.length(hdrs) <= 0) {
+            return;
+        }
+
+        for (Header h : hdrs) {
+            String name = h.getName(), value = h.getValue();
+            if (TraceId.TRACE_ID_HEADER_NAME.equalsIgnoreCase(name)) {
+                op.put(OperationFields.EXTERNAL_TRACE_ID, value);
+            }
+        }
+    }
     boolean collectExtraInformation() {
         return FrameBuilder.OperationCollectionLevel.HIGH.equals(configuration.getCollectionLevel());
     }

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.springsource.insight.intercept.trace.TraceId;
 import com.springsource.insight.util.StringUtil;
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
@@ -204,9 +205,6 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
         return op;
     }
 
-    private static final String XTRACEID = "X-TraceId";
-    private static final String EXTERNAL_TRACE_ID = "EXT-TRACE-ID";
-
     private void updateExternalTraceDetails(Operation op, HttpMessage msg) {
         Header[] hdrs = msg.getAllHeaders();
         if (ArrayUtil.length(hdrs) <= 0) {
@@ -215,8 +213,8 @@ public aspect HttpClientExecutionCollectionAspect extends OperationCollectionAsp
 
         for (Header h : hdrs) {
             String name = h.getName(), value = h.getValue();
-            if (XTRACEID.equalsIgnoreCase(name)) {
-                op.put(EXTERNAL_TRACE_ID, value);
+            if (TraceId.TRACE_ID_HEADER_NAME.equalsIgnoreCase(name)) {
+                op.put(OperationFields.EXTERNAL_TRACE_ID, value);
             }
         }
     }

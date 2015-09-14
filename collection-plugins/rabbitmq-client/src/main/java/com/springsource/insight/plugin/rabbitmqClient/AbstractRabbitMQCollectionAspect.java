@@ -27,6 +27,9 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
+import com.springsource.insight.intercept.InterceptConfiguration;
+import com.springsource.insight.intercept.trace.FrameBuilder;
+import com.springsource.insight.intercept.trace.TraceId;
 import org.aspectj.lang.JoinPoint;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
@@ -45,9 +48,13 @@ import com.springsource.insight.util.ReflectionUtils;
 import com.springsource.insight.util.logging.InsightLogManager;
 
 public abstract class AbstractRabbitMQCollectionAspect extends OperationCollectionAspectSupport {
+
     private static final AtomicReference<Field> messageHeadersField = new AtomicReference<Field>(null);
     private static final AtomicReference<Class<?>> longStringClassHolder = new AtomicReference<Class<?>>(null);
     private static final AtomicReference<Object> bytesMethodHolder = new AtomicReference<Object>(null);
+
+    static InterceptConfiguration interceptConfig = InterceptConfiguration.getInstance();
+    static FrameBuilder frameBuilder = interceptConfig.getFrameBuilder();
 
     static final List<String> LONG_STRING_CLASSES =
             Collections.unmodifiableList(
@@ -183,7 +190,7 @@ public abstract class AbstractRabbitMQCollectionAspect extends OperationCollecti
         }
     }
 
-    protected BasicProperties colorForward(BasicProperties orgProps, final Operation op) {
+    protected BasicProperties colorForward(BasicProperties orgProps, final Operation op, TraceId traceId) {
         Field headersField = getMessageHeadersField();
         BasicProperties props = orgProps;
         if (headersField == null) {
@@ -206,6 +213,9 @@ public abstract class AbstractRabbitMQCollectionAspect extends OperationCollecti
                     return op;
                 }
             });
+
+            if (traceId != null)
+                map.put(TraceId.TRACE_ID_HEADER_NAME, traceId.toString());
 
             if (props == null) {
                 BasicProperties.Builder builder = new BasicProperties.Builder();

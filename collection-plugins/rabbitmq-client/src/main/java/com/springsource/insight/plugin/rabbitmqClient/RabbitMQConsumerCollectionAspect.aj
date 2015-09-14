@@ -20,9 +20,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 
 import com.springsource.insight.collection.OperationCollectionUtil;
+import com.springsource.insight.intercept.application.ApplicationName;
 import com.springsource.insight.intercept.operation.method.JoinPointBreakDown;
+import com.springsource.insight.intercept.trace.FrameBuilder;
+import com.springsource.insight.intercept.trace.TraceId;
+import com.springsource.insight.util.StringUtil;
 import org.aspectj.lang.annotation.SuppressAjWarnings;
 
 import com.rabbitmq.client.AMQP.BasicProperties;
@@ -81,7 +86,7 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
     static Map<Channel, Operation> opHolder = new ConcurrentHashMap<Channel, Operation>();
 
     public pointcut handleDelivery(String consumerTag, Envelope envelope, BasicProperties props, byte[] body)
-            : execution(void Consumer+.handleDelivery(String, Envelope, BasicProperties, byte[]))
+            : execution(void com.rabbitmq.client.Consumer+.handleDelivery(String, Envelope, BasicProperties, byte[]))
             && args(consumerTag, envelope, props, body)
             && if(strategies.collect(thisAspectInstance, thisJoinPointStaticPart))
             ;
@@ -118,6 +123,14 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
         BasicProperties props = resp.getProps();
         if (props != null) {
             applyPropertiesData(op, props);
+            Map<String, Object> headers = props.getHeaders();
+            if (headers != null) {
+                String traceIdStr = (String)headers.get(TraceId.TRACE_ID_HEADER_NAME);
+                if (!StringUtil.isEmpty(traceIdStr)) {
+                    TraceId traceId = TraceId.valueOf(traceIdStr);
+                    frameBuilder.setHintIfRoot(FrameBuilder.HINT_TRACEID, traceId);
+                }
+            }
         }
 
         Envelope envelope = resp.getEnvelope();
@@ -159,6 +172,14 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
             }
         }
         if (props != null) {
+            Map<String, Object> headers = props.getHeaders();
+            if (headers != null) {
+                String traceIdStr = (String)headers.get(TraceId.TRACE_ID_HEADER_NAME);
+                if (!StringUtil.isEmpty(traceIdStr)) {
+                    TraceId traceId = TraceId.valueOf(traceIdStr);
+                    frameBuilder.setHintIfRoot(FrameBuilder.HINT_TRACEID, traceId);
+                }
+            }
             applyPropertiesData(op, props);
         }
         if (envelope != null) {
@@ -189,12 +210,26 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after(String consumerTag, Envelope envelope, BasicProperties props, byte[] body) returning()
             : handleDelivery(consumerTag, envelope, props, body) {
+
+        Map<String, Object> headers = props.getHeaders();
+        TraceId hint = frameBuilder.getHint(FrameBuilder.HINT_TRACEID, TraceId.class);
+        if (headers != null && hint != null) {
+            headers.put(TraceId.TRACE_ID_HEADER_NAME, hint.toString());
+        }
+
         getCollector().exitNormal();
     }
 
     @SuppressAjWarnings({"adviceDidNotMatch"})
     after(String consumerTag, Envelope envelope, BasicProperties props, byte[] body) throwing(Throwable t)
             : handleDelivery(consumerTag, envelope, props, body) {
+
+        Map<String, Object> headers = props.getHeaders();
+        TraceId hint = frameBuilder.getHint(FrameBuilder.HINT_TRACEID, TraceId.class);
+        if (headers != null && hint != null) {
+            headers.put(TraceId.TRACE_ID_HEADER_NAME, hint.toString());
+        }
+
         getCollector().exitAbnormal(t);
     }
 
@@ -218,5 +253,19 @@ public aspect RabbitMQConsumerCollectionAspect extends AbstractRabbitMQCollectio
 
     private String getConsumeOperationLabel(Operation op, String exchange, String routingKey) {
         return AbstractRabbitMQResourceAnalyzer.RABBIT + "-" + LABEL_PREFIX + op.get(CONSUMED_QUEUES) + " (" + exchange + "#" + routingKey + ")";
+    }
+
+    protected void populateCommonHints(ApplicationName applicationName, TraceId traceId, boolean mandatoryTrace, boolean forceAppName) {
+        ApplicationName	appHint=frameBuilder.getHint(FrameBuilder.HINT_APPNAME, ApplicationName.class);
+        if (forceAppName || (appHint == null) || ApplicationName.UNKOWN_APPLICATION.equals(appHint)) {
+            frameBuilder.setHintIfRoot(FrameBuilder.HINT_APPNAME, applicationName);
+            if (_logger.isLoggable(Level.FINE)) {
+                _logger.fine("populateCommonHints(" + applicationName + ")[forced=" + forceAppName + "]"
+                        + " updated frames hint=" + appHint);
+            }
+        }
+
+        frameBuilder.setHintIfRoot(FrameBuilder.HINT_TRACEID, traceId);
+        frameBuilder.setHintIfRoot(FrameBuilder.HINT_MANDATORY, Boolean.valueOf(mandatoryTrace));
     }
 }

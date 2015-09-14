@@ -21,7 +21,13 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.springsource.insight.collection.OperationCollector;
 import com.springsource.insight.intercept.operation.Operation;
+import com.springsource.insight.intercept.operation.OperationFields;
+import com.springsource.insight.intercept.trace.FrameBuilder;
+import com.springsource.insight.intercept.trace.TraceId;
 import com.springsource.insight.util.ExceptionUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public aspect RabbitMQPublishCollectionAspect extends AbstractRabbitMQCollectionAspect {
@@ -60,11 +66,16 @@ public aspect RabbitMQPublishCollectionAspect extends AbstractRabbitMQCollection
 
         if (props != null) {
             applyPropertiesData(op, props);
+
+
         }
 
+        TraceId traceId = interceptConfig.generateNextTraceId();
+        op.putAnyNonEmpty(OperationFields.EXTERNAL_TRACE_ID, traceId.toString());
         OperationCollector collector = getCollector();
         collector.enter(op);
-        BasicProperties proceedProps = colorForward(props, op);
+        BasicProperties proceedProps = colorForward(props, op, traceId);
+
 
         try {
             proceed(exchange, routingKey, mandatory, immediate, proceedProps, body);
