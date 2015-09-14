@@ -94,6 +94,7 @@ public class ClientHttpRequestOperationCollector extends DefaultOperationCollect
         URI uri = request.getURI();
         HttpMethod method = request.getMethod();
         op.label(method + " " + uri.toString());
+        op.put(OperationFields.URI, uri.toString());
         fillRequestDetails(op.createMap("request"), request);
         return op;
     }
