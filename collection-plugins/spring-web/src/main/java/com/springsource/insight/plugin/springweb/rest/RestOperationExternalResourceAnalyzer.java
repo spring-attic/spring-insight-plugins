@@ -19,13 +19,16 @@ package com.springsource.insight.plugin.springweb.rest;
 
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationFields;
+import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.topology.AbstractExternalResourceAnalyzer;
 import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
+import com.springsource.insight.intercept.trace.FrameUtil;
 import com.springsource.insight.intercept.trace.Trace;
+import com.springsource.insight.plugin.springweb.SpringWebHelpers;
 import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.StringUtil;
 
@@ -80,13 +83,26 @@ public class RestOperationExternalResourceAnalyzer extends AbstractExternalResou
         try {
             URI uri = new URI(url);
             String host = uri.getHost();
-            int port = resolvePort(uri);
+            int port = SpringWebHelpers.resolvePort(uri);
 
             String color = colorManager.getColor(op);
-            String name = host + ":" + port;
+
+            String hostPort = host + ":" + port;
+            String name = SpringWebHelpers.createName(hostPort);
+            String lbl = hostPort;
+
+            Operation rootFrameOperation = SpringWebHelpers.getRootFrameOperation(frame);
+            if (rootFrameOperation != null) {
+                String unresolvedURI = SpringWebHelpers.findUnresolvedURI(rootFrameOperation, url);
+                if (!StringUtil.isEmpty(unresolvedURI)) {
+                    URI origuri = new URI(unresolvedURI);
+                    lbl = origuri.getHost();
+                }
+            }
+
             return new ExternalResourceDescriptor(frame,
-                    MD5NameGenerator.getName(name),
                     name,
+                    lbl,
                     ExternalResourceType.WEB_SERVER.name(),
                     null,
                     host,
@@ -101,19 +117,7 @@ public class RestOperationExternalResourceAnalyzer extends AbstractExternalResou
             return null;
         }
     }
-    static int resolvePort(URI uri) {
-        if (uri == null) {
-            return (-1);
-        }
 
-        int port = uri.getPort();
-        if (port <= 0) {
-            if ("http".equals(uri.getScheme()))
-                port = 80;
-            else
-                port = 443;
-        }
 
-        return port;
-    }
+
 }

@@ -33,6 +33,7 @@ import com.springsource.insight.intercept.topology.ExternalResourceDescriptor;
 import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
+import com.springsource.insight.intercept.trace.FrameUtil;
 import com.springsource.insight.intercept.trace.Trace;
 import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.StringUtil;
@@ -115,8 +116,19 @@ public class HttpExternalResourceAnalyzer extends AbstractExternalResourceAnalyz
                 }
             }
 
-            String lbl = host + ":" + port;
-            String name = createName(lbl);
+            String hostPort = host + ":" + port;
+            String name = createName(hostPort);
+            String lbl = hostPort;
+
+            Operation rootFrameOperation = getRootFrameOperation(frame);
+            if (rootFrameOperation != null) {
+                String unresolvedURI = findUnresolvedURI(rootFrameOperation, uriValue);
+                if (!StringUtil.isEmpty(unresolvedURI)) {
+                    URI origuri = new URI(unresolvedURI);
+                    lbl = origuri.getHost();
+                }
+
+            }
 
             return new ExternalResourceDescriptor(frame, name,
                     lbl, // label
@@ -150,5 +162,27 @@ public class HttpExternalResourceAnalyzer extends AbstractExternalResourceAnalyz
         }
 
         return port;
+    }
+
+    private static Operation getRootFrameOperation(Frame start) {
+
+        Frame rootFrame = null;
+        if (start.isRoot())
+            rootFrame = start;
+        else
+            rootFrame = FrameUtil.getRoot(start);
+
+        if (rootFrame != null)
+            return rootFrame.getOperation();
+        return null;
+
+    }
+    private static String findUnresolvedURI(Operation rootFrameOperation, String resolvedURL) {
+
+        OperationMap resolvedMap = rootFrameOperation.get(OperationFields.UNRESOLVED_URI, OperationMap.class);
+        if (resolvedMap != null) {
+            return resolvedMap.get(resolvedURL, String.class);
+        }
+        return null;
     }
 }

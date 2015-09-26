@@ -33,6 +33,7 @@ import com.springsource.insight.intercept.topology.ExternalResourceType;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.Trace;
+import com.springsource.insight.plugin.springweb.SpringWebHelpers;
 import com.springsource.insight.util.ListUtil;
 import com.springsource.insight.util.StringUtil;
 
@@ -101,16 +102,14 @@ public class HttpInvokerRequestExecutorExternalResourceAnalyzer extends Abstract
         try {
             URI uri = new URI(url);
             String host = uri.getHost();
-            int port = uri.getPort();
-            if (port <= 0) {
-                port = IPPORT_HTTP;
-            }
+            int port = SpringWebHelpers.resolvePort(uri);
 
             String color = colorManager.getColor(op);
-            String name = "http://" + host + ":" + port;
+            String hostPort = host + ":" + port;
+            String name = SpringWebHelpers.createName(hostPort);
             return new ExternalResourceDescriptor(frame,
-                    MD5NameGenerator.getName(name),
                     name,
+                    hostPort,
                     ExternalResourceType.WEB_SERVER.name(),
                     null,
                     host,

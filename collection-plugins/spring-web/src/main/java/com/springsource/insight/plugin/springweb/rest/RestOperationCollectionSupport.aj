@@ -19,7 +19,11 @@ package com.springsource.insight.plugin.springweb.rest;
 import java.net.URI;
 import java.net.URL;
 
+import com.springsource.insight.intercept.operation.OperationMap;
+import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.FrameBuilder;
+import com.springsource.insight.intercept.trace.FrameUtil;
+import com.springsource.insight.plugin.springweb.SpringWebHelpers;
 import org.aspectj.lang.JoinPoint;
 
 import com.springsource.insight.collection.OperationCollectionUtil;
@@ -42,6 +46,7 @@ public abstract aspect RestOperationCollectionSupport extends AbstractSpringWebA
      * @see #resolveOperationURI(JoinPoint)
      */
     public static final String UNKNOWN_URI = "uri:unknown";
+
 
     private final String defaultMethod;
 
@@ -69,8 +74,16 @@ public abstract aspect RestOperationCollectionSupport extends AbstractSpringWebA
             Operation op = builder.peek();
             if (op != null && op.getType().equals(RestOperationExternalResourceAnalyzer.TYPE)) {
                 String origURI = op.get(OperationFields.URI, String.class);
-                if (!StringUtil.isEmpty(origURI))
-                    op.put(OperationFields.URI, clientHttpRequestURI.toString());
+                if (!StringUtil.isEmpty(origURI)) {
+                    String resolvedURI = clientHttpRequestURI.toString();
+                    if (!origURI.equals(resolvedURI)) {
+                        Frame thisFrame = builder.peekFrame();
+                        OperationMap resolvedMap = getResolvedMap(thisFrame);
+                        if (resolvedMap != null)
+                            resolvedMap.put(resolvedURI, origURI);
+                        op.put(OperationFields.URI, resolvedURI);
+                    }
+                }
             }
         }
     }
@@ -127,4 +140,19 @@ public abstract aspect RestOperationCollectionSupport extends AbstractSpringWebA
                 .append(url)
                 .toString();
     }
+
+    private OperationMap getResolvedMap(Frame thisFrame) {
+
+        Operation operation = SpringWebHelpers.getRootFrameOperation(thisFrame);
+        if (operation != null) {
+            OperationMap resolved = operation.get(OperationFields.UNRESOLVED_URI, OperationMap.class);
+            if (resolved == null)
+                resolved = operation.createMap(OperationFields.UNRESOLVED_URI);
+            return resolved;
+        }
+        return null;
+
+    }
+
+
 }

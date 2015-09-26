@@ -71,7 +71,7 @@ public abstract class HttpInvokerRequestOperationCollectionTestSupport
         ExternalResourceDescriptor desc = extresAnalyzer.extractExternalResourceDescriptor(frame);
         Boolean directCall = op.get(HttpInvokerRequestExecutorExternalResourceAnalyzer.DIRECT_CALL_ATTR, Boolean.class);
         if ((directCall != null) && directCall.booleanValue()) {
-            String name = "http://" + TEST_HOST + ":" + TEST_PORT;
+            String name = TEST_HOST + ":" + TEST_PORT;
             assertNotNull("No resource", desc);
             assertSame("Mismatched external resource frame", frame, desc.getFrame());
             assertEquals("Mismatched external resource host", TEST_HOST, desc.getHost());
