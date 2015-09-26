@@ -16,7 +16,7 @@
           lazy-init="true"
             />
     <bean id="springCloudPluginHystrixCommandErrorAnalyzer"
-          class="com.springsource.insight.plugin.springcloud.HystrixCommandErrorAnalyzer"
+          class="com.springsource.insight.plugin.springcloud.hystrix.HystrixCommandErrorAnalyzer"
           factory-method="getInstance"
           lazy-init="true"
             />

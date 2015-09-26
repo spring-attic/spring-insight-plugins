@@ -19,6 +19,7 @@ package com.springsource.insight.plugin.springcloud;
 import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.plugin.PluginRuntimeDescriptor;
 import com.springsource.insight.intercept.trace.TraceErrorAnalyzer;
+import com.springsource.insight.plugin.springcloud.hystrix.HystrixCommandErrorAnalyzer;
 import com.springsource.insight.util.ArrayUtil;
 
 import java.util.Collection;
@@ -28,7 +29,6 @@ public class SpringCloudPluginRuntimeDescriptor extends PluginRuntimeDescriptor 
 
     public static final String PLUGIN_NAME = "spring-cloud";
     public static final OperationType HYSTRIX_COMMAND = OperationType.valueOf("hystrix-command");
-    //public static final OperationType HYSTRIX_COMMAND_INVOKE = OperationType.valueOf("hystrix-command-invoke");
 
 
     private static final SpringCloudPluginRuntimeDescriptor INSTANCE = new SpringCloudPluginRuntimeDescriptor();

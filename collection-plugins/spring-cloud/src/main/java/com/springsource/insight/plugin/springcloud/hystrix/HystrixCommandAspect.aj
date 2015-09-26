@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-package com.springsource.insight.plugin.springcloud;
+package com.springsource.insight.plugin.springcloud.hystrix;
 
 
 import com.netflix.hystrix.*;
-import com.springsource.insight.collection.AbstractOperationCollectionAspect;
-import com.springsource.insight.collection.OperationCollectionAspectSupport;
 import com.springsource.insight.collection.OperationCollectionUtil;
-import com.springsource.insight.collection.OperationCollector;
-import com.springsource.insight.collection.errorhandling.CollectionErrors;
 import com.springsource.insight.intercept.operation.*;
-import com.springsource.insight.intercept.operation.method.JoinPointBreakDown;
-import com.springsource.insight.intercept.trace.FrameBuilder;
-import com.springsource.insight.util.StringFormatterUtils;
-import com.springsource.insight.util.StringUtil;
+import com.springsource.insight.plugin.springcloud.SpringCloudOperationCollector;
+import com.springsource.insight.plugin.springcloud.SpringCloudOperationSupport;
+import com.springsource.insight.plugin.springcloud.SpringCloudPluginRuntimeDescriptor;
 import org.aspectj.lang.JoinPoint;
 
 import org.aspectj.lang.annotation.SuppressAjWarnings;
@@ -36,10 +31,10 @@ import org.aspectj.lang.reflect.MethodSignature;
 import java.util.List;
 import java.util.logging.Level;
 
-public aspect HystrixCommandAspect extends OperationCollectionAspectSupport {
+public aspect HystrixCommandAspect extends SpringCloudOperationSupport {
 
     public HystrixCommandAspect() {
-        super(new HystrixCommandCollector());
+        super(new SpringCloudOperationCollector());
     }
 
     public pointcut executePoint() :
@@ -169,9 +164,9 @@ public aspect HystrixCommandAspect extends OperationCollectionAspectSupport {
     }
 
     private void fillInCommandKeyIfPossible(JoinPoint jp) {
-        HystrixCommandCollector collector = (HystrixCommandCollector)getCollector();
+        SpringCloudOperationCollector collector = (SpringCloudOperationCollector)getCollector();
         Operation operation = collector.getBuilder().peek();
-        if (operation.getType() == SpringCloudPluginRuntimeDescriptor.HYSTRIX_COMMAND) {
+        if (operation != null && operation.getType() == SpringCloudPluginRuntimeDescriptor.HYSTRIX_COMMAND) {
             Object o = jp.getThis();
             if (o instanceof HystrixCommandMetrics) {
                 HystrixCommandMetrics metrics = (HystrixCommandMetrics)o;
@@ -189,9 +184,9 @@ public aspect HystrixCommandAspect extends OperationCollectionAspectSupport {
 
     private void fillInEventsIfPossible(JoinPoint jp) {
 
-        HystrixCommandCollector collector = (HystrixCommandCollector)getCollector();
+        SpringCloudOperationCollector collector = (SpringCloudOperationCollector)getCollector();
         Operation operation = collector.getBuilder().peek();
-        if (operation.getType() == SpringCloudPluginRuntimeDescriptor.HYSTRIX_COMMAND) {
+        if (operation != null && operation.getType() == SpringCloudPluginRuntimeDescriptor.HYSTRIX_COMMAND) {
             Object o = jp.getThis();
             if (o instanceof  HystrixCommand) {
                 HystrixCommand hystrixCommand = (HystrixCommand) jp.getThis();
@@ -277,49 +272,4 @@ public aspect HystrixCommandAspect extends OperationCollectionAspectSupport {
             events = operation.createList("events");
         return events;
     }
-
-    private static boolean contains(OperationList list, String item) {
-        for(int i = 0; i < list.size(); i++) {
-            String listItem = list.get(i, String.class);
-            if (item.equals(listItem))
-                return true;
-        }
-        return false;
-    }
-
-    private Operation fillInException(JoinPoint jp, Exception e) {
-
-        //create a dummy operation to maintain a valid frame tree structure
-        Operation operation = new Operation()
-                .type(CollectionErrors.ERROR_TYPE)
-                .sourceCodeLocation(getSourceCodeLocation(jp))
-                .label(getClass().getSimpleName() + " - " + e.getClass().getSimpleName() + ": " + e.getMessage())
-                .put(OperationFields.CLASS_NAME, getClass().getName())
-                .put(OperationFields.SHORT_CLASS_NAME, JoinPointBreakDown.getShortClassName(getClass().getName()))
-                .put(OperationFields.METHOD_NAME, "createOperation")
-                .put(OperationFields.METHOD_SIGNATURE, JoinPointBreakDown.createMethodParamsSignature(JoinPoint.class))
-                .put(OperationFields.EXCEPTION, StringFormatterUtils.formatStackTrace(e))
-        ;
-
-        JoinPoint.StaticPart staticPart = jp.getStaticPart();
-        //log the exception
-        _logger.log(Level.SEVERE, "Error swallowed in advice " + staticPart, e);
-
-        //mark it
-        CollectionErrors.markCollectionError(this, e);
-
-        return operation;
-
-    }
-
-//    private String createEvent(String methodName) {
-//        return methodName.substring(4);
-//    }
-
-    @Override
-    public String getPluginName() {
-        return SpringCloudPluginRuntimeDescriptor.PLUGIN_NAME;
-    }
-
-
 }

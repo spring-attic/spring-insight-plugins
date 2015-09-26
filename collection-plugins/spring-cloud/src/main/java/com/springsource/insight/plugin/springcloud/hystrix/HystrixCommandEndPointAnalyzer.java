@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.springsource.insight.plugin.springcloud.hystrix;
 
-package com.springsource.insight.plugin.springcloud;
-
-import com.springsource.insight.collection.DefaultOperationCollector;
-import com.springsource.insight.intercept.trace.FrameBuilder;
-
-
-public class HystrixCommandCollector  extends DefaultOperationCollector {
-
-    @Override
-    public FrameBuilder getBuilder() {
-        return super.getBuilder();
-    }
-
+public class HystrixCommandEndPointAnalyzer {
 }

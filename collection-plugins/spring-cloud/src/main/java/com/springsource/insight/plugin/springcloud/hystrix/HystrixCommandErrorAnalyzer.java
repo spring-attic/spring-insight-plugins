@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.springsource.insight.plugin.springcloud;
+package com.springsource.insight.plugin.springcloud.hystrix;
 
 import com.springsource.insight.intercept.operation.Operation;
 import com.springsource.insight.intercept.operation.OperationList;
@@ -21,6 +21,7 @@ import com.springsource.insight.intercept.operation.OperationType;
 import com.springsource.insight.intercept.trace.AbstractTraceErrorAnalyzer;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.TraceError;
+import com.springsource.insight.plugin.springcloud.SpringCloudPluginRuntimeDescriptor;
 
 
 public class HystrixCommandErrorAnalyzer extends AbstractTraceErrorAnalyzer {
