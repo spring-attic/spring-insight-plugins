@@ -23,6 +23,7 @@ import com.springsource.insight.intercept.operation.*;
 import com.springsource.insight.plugin.springcloud.SpringCloudOperationCollector;
 import com.springsource.insight.plugin.springcloud.SpringCloudOperationSupport;
 import com.springsource.insight.plugin.springcloud.SpringCloudPluginRuntimeDescriptor;
+import com.springsource.insight.util.StringUtil;
 import org.aspectj.lang.JoinPoint;
 
 import org.aspectj.lang.annotation.SuppressAjWarnings;
@@ -156,6 +157,8 @@ public aspect HystrixCommandAspect extends SpringCloudOperationSupport {
                 op.putAnyNonEmpty("commandKey", commandKey);
             }
 
+            op.put("circuitBreakerOpen", hystrixCommand.isCircuitBreakerOpen());
+            op.put("isolationStrategy", hystrixCommand.getProperties().executionIsolationStrategy().get().toString());
             op.label("HystrixCommand " +   jp.getSignature().getName() + " : " + commandKey);
         } else {
             op.label("HystrixCommand run");
@@ -208,10 +211,22 @@ public aspect HystrixCommandAspect extends SpringCloudOperationSupport {
             return;
 
         String newEvent = event.toString();
-        OperationList events = getEvents(operation);
-        if (!contains(events, newEvent))
-            events.add(newEvent);
+        addNewEvent(operation, newEvent);
+
     }
+
+    private void addNewEvent(Operation operation, String newEvent) {
+        String events = getEvents(operation);
+        if (!events.contains(newEvent)) {
+            if (StringUtil.isEmpty(events))
+                putEvents(operation, newEvent);
+            else {
+                events = events + "," + newEvent;
+                putEvents(operation, events);
+            }
+        }
+    }
+
 
     private HystrixEventType mapToEventType(String metricMethodName) {
 
@@ -257,19 +272,21 @@ public aspect HystrixCommandAspect extends SpringCloudOperationSupport {
     private void fillInEvents(Operation operation, HystrixCommand command) {
 
         List<HystrixEventType> hevents = command.getExecutionEvents();
-        OperationList events = getEvents(operation);
 
         for(HystrixEventType eventType: hevents) {
-            String event = eventType.toString();
-            if (!contains(events, event))
-                events.add(event);
+            String newEvent = eventType.toString();
+            addNewEvent(operation, newEvent);
         }
     }
 
-    private OperationList getEvents(Operation operation) {
-        OperationList events = operation.get("events", OperationList.class);
+    private String getEvents(Operation operation) {
+        String events = operation.get("events", String.class);
         if (events == null)
-            events = operation.createList("events");
+            return "";
         return events;
+    }
+
+    private void putEvents(Operation operation, String events) {
+        operation.put("events", events);
     }
 }

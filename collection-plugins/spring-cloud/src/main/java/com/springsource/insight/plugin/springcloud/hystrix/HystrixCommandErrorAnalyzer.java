@@ -22,6 +22,7 @@ import com.springsource.insight.intercept.trace.AbstractTraceErrorAnalyzer;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.TraceError;
 import com.springsource.insight.plugin.springcloud.SpringCloudPluginRuntimeDescriptor;
+import org.apache.commons.lang.StringUtils;
 
 
 public class HystrixCommandErrorAnalyzer extends AbstractTraceErrorAnalyzer {
@@ -41,12 +42,13 @@ public class HystrixCommandErrorAnalyzer extends AbstractTraceErrorAnalyzer {
     @Override
     public TraceError locateFrameError(Frame frame) {
         Operation operation = frame.getOperation();
-        if (operation.getType() == SpringCloudPluginRuntimeDescriptor.HYSTRIX_COMMAND) {
-            OperationList events = operation.get("events", OperationList.class);
-            if (events != null) {
-                for(int i = 0; i < events.size(); i++) {
-                    String event = events.get(i, String.class);
-                    if (isErrorEvent(event)) {
+        if (operation != null && operation.getType() == SpringCloudPluginRuntimeDescriptor.HYSTRIX_COMMAND) {
+            String events = operation.get("events", String.class);
+            if (!StringUtils.isEmpty(events)) {
+                String[] eventArr = events.split(",");
+                for(int i = 0; i < eventArr.length; i++) {
+                    String event = eventArr[i];
+                    if (isErrorEvent(event.trim())) {
                         return new TraceError("HystrixCommand failed: " + event);
                     }
                 }
