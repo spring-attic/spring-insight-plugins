@@ -124,8 +124,12 @@ public class HttpExternalResourceAnalyzer extends AbstractExternalResourceAnalyz
             if (rootFrameOperation != null) {
                 String unresolvedURI = findUnresolvedURI(rootFrameOperation, uriValue);
                 if (!StringUtil.isEmpty(unresolvedURI)) {
-                    URI origuri = new URI(unresolvedURI);
-                    lbl = origuri.getHost();
+                    try {
+                        URI origuri = new URI(sanitizeURI(unresolvedURI));
+                        lbl = origuri.getHost();
+                    } catch (URISyntaxException e) {
+                        // Ignore, use other label
+                    }
                 }
 
             }
@@ -184,5 +188,21 @@ public class HttpExternalResourceAnalyzer extends AbstractExternalResourceAnalyz
             return resolvedMap.get(resolvedURL, String.class);
         }
         return null;
+    }
+    private static String sanitizeURI(String unresolvedURI) {
+        return deleteAny(unresolvedURI, "{}");
+    }
+
+    private static String deleteAny(String inString, String charsToDelete) {
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < inString.length(); i++) {
+            char c = inString.charAt(i);
+            if (charsToDelete.indexOf(c) == -1) {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+
     }
 }

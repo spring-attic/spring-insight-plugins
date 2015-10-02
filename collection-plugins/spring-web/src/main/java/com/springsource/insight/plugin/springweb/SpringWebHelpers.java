@@ -23,6 +23,7 @@ import com.springsource.insight.intercept.operation.OperationMap;
 import com.springsource.insight.intercept.topology.MD5NameGenerator;
 import com.springsource.insight.intercept.trace.Frame;
 import com.springsource.insight.intercept.trace.FrameUtil;
+import org.springframework.util.StringUtils;
 
 import java.net.URI;
 
@@ -72,5 +73,9 @@ public class SpringWebHelpers {
             return resolvedMap.get(resolvedURL, String.class);
         }
         return null;
+    }
+
+    public static String sanitizeURI(String unresolvedURI) {
+        return StringUtils.deleteAny(unresolvedURI, "{}");
     }
 }

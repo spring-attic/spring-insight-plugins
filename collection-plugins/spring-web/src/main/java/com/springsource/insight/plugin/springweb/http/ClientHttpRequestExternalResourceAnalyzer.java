@@ -97,8 +97,12 @@ public class ClientHttpRequestExternalResourceAnalyzer extends AbstractExternalR
             if (rootFrameOperation != null) {
                 String unresolvedURI = SpringWebHelpers.findUnresolvedURI(rootFrameOperation, url);
                 if (!StringUtil.isEmpty(unresolvedURI)) {
-                    URI origuri = new URI(unresolvedURI);
-                    lbl = origuri.getHost();
+                    try {
+                        URI origuri = new URI(SpringWebHelpers.sanitizeURI(unresolvedURI));
+                        lbl = origuri.getHost();
+                    } catch (URISyntaxException e) {
+                        // Ignore, use other label
+                    }
                 }
             }
 
