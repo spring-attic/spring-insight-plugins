@@ -391,17 +391,6 @@
             </releases>
         </pluginRepository>
         <pluginRepository>
-            <id>codehaus central</id>
-            <name>Codehaus Central Repository</name>
-            <url>http://repository.codehaus.org</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-        </pluginRepository>
-        <pluginRepository>
             <id>maven.springframework.org</id>
             <name>SpringSource snapshots</name>
             <url>http://maven.springframework.org/snapshot</url>
