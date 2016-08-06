@@ -3,14 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.springsource.insight</groupId>
 	<artifactId>community-core</artifactId>
-	<version>1.9.2.SR7</version>
+	<version>1.9.2.SR8</version>
 	<name>com.springsource.insight:community-core</name>
 	<packaging>pom</packaging>
 
 	<parent>
 		<groupId>com.springsource.insight</groupId>
 		<artifactId>community</artifactId>
-		<version>1.9.2.SR7</version>
+		<version>1.9.2.SR8</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 

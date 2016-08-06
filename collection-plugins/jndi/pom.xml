@@ -4,13 +4,13 @@
     <groupId>com.springsource.insight.plugins</groupId>
     <artifactId>insight-plugin-jndi</artifactId>
     <name>com.springsource.insight.plugins:jndi</name>
-    <version>1.9.2.SR7</version>
+    <version>1.9.2.SR8</version>
     <packaging>jar</packaging>
     
 	<parent>
 		<groupId>com.springsource.insight</groupId>
 		<artifactId>community-plugins</artifactId>
-		<version>1.9.2.SR7</version>
+		<version>1.9.2.SR8</version>
 		<relativePath>..</relativePath>
 	</parent>
 
