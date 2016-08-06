@@ -40,13 +40,6 @@ public aspect HibernateSessionOperationCollectionAspect
             "Provides additional statistics from Session.getStatistics");
     protected final AtomicBoolean collectStatistics=new AtomicBoolean(true);
 
-    /**
-     * Example usage of disabling a plugin based upon some versioning criteria
-     */
-    static {
-        assertCompatible(HibernateSessionOperationCollectionAspect.class, "hibernate", Session.class, "3.0", "4.1");
-    }
-
     public HibernateSessionOperationCollectionAspect() {
         CollectionSettingsRegistry registry = CollectionSettingsRegistry.getInstance();
         registry.addListener(this);
