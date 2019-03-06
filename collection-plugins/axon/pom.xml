@@ -6,7 +6,7 @@
     <artifactId>insight-plugin-axon</artifactId>
     <name>com.springsource.insight.plugins:axon</name>
     <packaging>jar</packaging>
-    <url>http://www.axonframework.org</url>
+    <url>https://axoniq.io</url>
 
     <parent>
         <groupId>com.springsource.insight</groupId>
