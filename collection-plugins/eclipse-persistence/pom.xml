@@ -25,7 +25,7 @@
         <repository>
             <id>EclipseLink-Repo</id>
             <name>EclipseLink repo</name>
-            <url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
+            <url>https://download.eclipse.org/rt/eclipselink/maven.repo</url>
         </repository>
     </repositories>
 
