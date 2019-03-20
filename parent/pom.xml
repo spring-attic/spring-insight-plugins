@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.springsource.insight</groupId>
     <artifactId>community</artifactId>
@@ -262,14 +262,14 @@
 
     <organization>
         <name>VMware, Inc.</name>
-        <url>http://springsource.org/insight</url>
+        <url>https://springsource.org/insight</url>
     </organization>
 
     <repositories>
         <repository>
             <id>maven.springframework.org</id>
             <name>SpringSource snapshots</name>
-            <url>http://maven.springframework.org/snapshot</url>
+            <url>https://maven.springframework.org/snapshot</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
@@ -277,7 +277,7 @@
         <repository>    <!-- NOTE: these values must match the properties -->
             <id>spring-release</id>
             <name>Spring Release Repository</name>
-            <url>http://maven.springframework.org/release</url>
+            <url>https://maven.springframework.org/release</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -288,7 +288,7 @@
         <repository>    <!-- NOTE: these values must match the properties -->
             <id>spring-milestone</id>
             <name>Spring Milestone Repository</name>
-            <url>http://maven.springframework.org/milestone</url>
+            <url>https://maven.springframework.org/milestone</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -321,7 +321,7 @@
         <repository>
             <id>org.jboss.maven.release.nexus</id>
             <name>JBoss Maven Central-compatible Repository</name>
-            <url>http://repository.jboss.org/nexus/content/groups/public</url>
+            <url>https://repository.jboss.org/nexus/content/groups/public</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -332,7 +332,7 @@
         <repository>
             <id>org.jboss.maven.release</id>
             <name>JBoss Maven Central-compatible Repository</name>
-            <url>http://repository.jboss.com/maven2</url>
+            <url>http://repository.jboss.com/maven2/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -359,7 +359,7 @@
         <pluginRepository>    <!-- NOTE: these values must match the properties -->
             <id>spring-release</id>
             <name>Spring Release Repository</name>
-            <url>http://maven.springframework.org/release</url>
+            <url>https://maven.springframework.org/release</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -371,7 +371,7 @@
         <pluginRepository>    <!-- NOTE: these values must match the properties -->
             <id>spring-milestone</id>
             <name>Spring Milestone Repository</name>
-            <url>http://maven.springframework.org/milestone</url>
+            <url>https://maven.springframework.org/milestone</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -382,7 +382,7 @@
         <pluginRepository>
             <id>org.jboss.maven.release.nexus</id>
             <name>JBoss Maven Central-compatible Repository</name>
-            <url>http://repository.jboss.org/nexus/content/groups/public</url>
+            <url>https://repository.jboss.org/nexus/content/groups/public</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -393,7 +393,7 @@
         <pluginRepository>
             <id>maven.springframework.org</id>
             <name>SpringSource snapshots</name>
-            <url>http://maven.springframework.org/snapshot</url>
+            <url>https://maven.springframework.org/snapshot</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
@@ -1061,7 +1061,7 @@
                         </execution>
                         <execution>
                             <id>compile-test-aspects</id>
-                            <!-- see http://jira.codehaus.org/browse/MASPECTJ-92 workaround -->
+                            <!-- see https://jira.codehaus.org/browse/MASPECTJ-92 workaround -->
                             <phase>process-test-sources</phase>
                             <goals>
                                 <goal>test-compile</goal>
@@ -1171,7 +1171,7 @@
                         <quiet>true</quiet>
                         <links>
                             <link>http://docs.mockito.googlecode.com/hg/${mockito.version}</link>
-                            <link>http://kentbeck.github.com/junit/javadoc/${junit.version}</link>
+                            <link>https://kentbeck.github.com/junit/javadoc/${junit.version}</link>
                         </links>
                     </configuration>
                 </plugin>
@@ -1266,7 +1266,7 @@
                             <goal>execute</goal>
                         </goals>
                         <configuration>
-                            <!-- see http://maven.apache.org/ref/3.0.4/maven-core/apidocs/org/apache/maven/execution/MavenSession.html -->
+                            <!-- see https://maven.apache.org/ref/3.0.4/maven-core/apidocs/org/apache/maven/execution/MavenSession.html -->
                             <source>
                                 <![CDATA[
 								if (!session.goals.contains("deploy")) {
