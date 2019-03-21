@@ -1,6 +1,6 @@
 h1. MongoDB plugin for Spring Insight
 
-Spring Insight runs in the SpringSource tc Server. See http://www.springsource.org/insight for details. This plugin adds instrumentation to for web applications that use MongoDB (http://www.mongodb.org) through the MongoDB Java driver, which typically works outside the normal ORM flow. 
+Spring Insight runs in the SpringSource tc Server. See https://www.springsource.org/insight for details. This plugin adds instrumentation to for web applications that use MongoDB (https://www.mongodb.org) through the MongoDB Java driver, which typically works outside the normal ORM flow. 
 
 h2. What does it do?
 
