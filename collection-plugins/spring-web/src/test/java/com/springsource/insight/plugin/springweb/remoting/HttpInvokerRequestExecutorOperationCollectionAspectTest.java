@@ -51,7 +51,7 @@ public class HttpInvokerRequestExecutorOperationCollectionAspectTest
         invocation.setAttributes(Collections.singletonMap("testSuccessfulRemoteInvocation", (Serializable) Long.valueOf(System.currentTimeMillis())));
 
         HttpInvokerClientConfiguration config =
-                createMockConfiguration(invocation.getMethodName(), "http://hello/world", "http://here/testSuccessfulRemoteInvocation");
+                createMockConfiguration(invocation.getMethodName(), "https://hello/world", "https://here/testSuccessfulRemoteInvocation");
         RemoteInvocationResult result = invoker.executeRequest(config, invocation);
         Operation op = assertRemotingOperation(config, invocation, result);
         ExternalResourceDescriptor desc = assertExternalResource(op);
@@ -65,7 +65,7 @@ public class HttpInvokerRequestExecutorOperationCollectionAspectTest
         invocation.setAttributes(Collections.singletonMap("testFailedRemoteInvocation", (Serializable) Long.valueOf(System.currentTimeMillis())));
 
         HttpInvokerClientConfiguration config =
-                createMockConfiguration(invocation.getMethodName(), "http://goodbye/world", "http://there/testFailedRemoteInvocation");
+                createMockConfiguration(invocation.getMethodName(), "https://goodbye/world", "https://there/testFailedRemoteInvocation");
         RemoteInvocationResult result = invoker.executeRequest(config, invocation);
         Operation op = assertRemotingOperation(config, invocation, result);
         ExternalResourceDescriptor desc = assertExternalResource(op);

@@ -61,7 +61,7 @@ public abstract class RestOperationCollectionTestSupport extends OperationCollec
     }
 
     protected String createTestURI(String testName) {
-        return "http://37.77.34.7:7365/" + getClass().getSimpleName() + "/" + testName;
+        return "https://37.77.34.7:7365/" + getClass().getSimpleName() + "/" + testName;
     }
 
     protected Operation assertRestOperationResult(Object ignored) {

@@ -87,7 +87,7 @@ public class ClientHttpRequestCollectionOperationAspectTest extends OperationCol
     public void testSuccessfulExecutionCollected() throws Exception {
         ClientHttpRequest request =
                 new TestClientHttpRequest(HttpMethod.GET,
-                        new URI("http://somewhere:7365/testExecutionCollected"),
+                        new URI("https://somewhere:7365/testExecutionCollected"),
                         createIdentityHttpHeaders(Arrays.asList("Req-Header1", "Req-Header2")),
                         createMockClientHttpResponse(HttpStatus.OK, createIdentityHttpHeaders(Arrays.asList("Rsp-Header1", "Rsp-Header2"))));
         ClientHttpResponse response = request.execute();
@@ -103,7 +103,7 @@ public class ClientHttpRequestCollectionOperationAspectTest extends OperationCol
     public void testFailedExecutionCollected() throws Exception {
         ClientHttpRequest request =
                 new TestClientHttpRequest(HttpMethod.GET,
-                        new URI("http://somewhere:7365/testExecutionCollected"),
+                        new URI("https://somewhere:7365/testExecutionCollected"),
                         createIdentityHttpHeaders(Arrays.asList("Req-Header1", "req-value1", "Req-Header2", "req-value2")),
                         createMockClientHttpResponse(HttpStatus.GATEWAY_TIMEOUT, createIdentityHttpHeaders(Arrays.asList("Rsp-Header1", "Rsp-Header2"))));
         ClientHttpResponse response = request.execute();
@@ -144,7 +144,7 @@ public class ClientHttpRequestCollectionOperationAspectTest extends OperationCol
         HttpHeaders rspHdrs = createIdentityHttpHeaders(Collections.singletonList("WWW-Authenticate"));
         ClientHttpRequest request =
                 new TestClientHttpRequest(HttpMethod.GET,
-                        new URI("http://somewhere:7365/" + testName),
+                        new URI("https://somewhere:7365/" + testName),
                         reqHdrs,
                         createMockClientHttpResponse(HttpStatus.OK, rspHdrs));
         ClientHttpResponse response = request.execute();

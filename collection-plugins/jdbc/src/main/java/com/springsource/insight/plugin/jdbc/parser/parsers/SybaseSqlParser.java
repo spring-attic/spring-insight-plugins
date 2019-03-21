@@ -26,7 +26,7 @@ import com.springsource.insight.util.ArrayUtil;
 import com.springsource.insight.util.StringUtil;
 
 /**
- * @see <A HREF="http://www.razorsql.com/docs/help_sybase.html">Sybase JDBC Driver and URL Information</A>
+ * @see <A HREF="https://www.razorsql.com/docs/help_sybase.html">Sybase JDBC Driver and URL Information</A>
  */
 public class SybaseSqlParser extends AbstractSqlParser {
     public static final String VENDOR = "sybase", SUB_TYPE = "Tds";

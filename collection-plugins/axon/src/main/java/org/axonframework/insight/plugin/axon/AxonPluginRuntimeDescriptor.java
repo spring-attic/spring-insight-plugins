@@ -54,7 +54,7 @@ public class AxonPluginRuntimeDescriptor extends PluginRuntimeDescriptor {
 
     @Override
     public String getHref() {
-        return "http://www.axonframework.org/";
+        return "https://axoniq.io";
     }
 
 }

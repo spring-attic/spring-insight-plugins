@@ -29,7 +29,7 @@ public final class JwsServiceDefinitions {
     public static final String SERVICE_NAME = "JwsServiceTest",
             ENDPOINT = SERVICE_NAME + "Endpoint",
             PORT_NAME = SERVICE_NAME + "PortName",
-            TARGET_NAMESPACE = "http://lu.ci.an.demo/" + SERVICE_NAME,
+            TARGET_NAMESPACE = "https://lu.ci.an.demo/" + SERVICE_NAME,
             WSDL_LOCATION = "WEB-INF/wsdl/" + SERVICE_NAME + ".wsdl";
 
     // constants used by the WebMethod/WebParam annotation(s)
