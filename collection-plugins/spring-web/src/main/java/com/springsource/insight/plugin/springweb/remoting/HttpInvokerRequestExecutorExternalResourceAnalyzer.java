@@ -46,7 +46,7 @@ public class HttpInvokerRequestExecutorExternalResourceAnalyzer extends Abstract
      * Special attribute used to indicate whether the HTTP invocation was
      * executed using core Java classes (e.g. {@link java.net.HttpURLConnection}
      * only or via a framework (e.g., <A
-     * HREF="http://hc.apache.org/httpclient-3.x/">Apache client</A>). We
+     * HREF="https://hc.apache.org/httpclient-3.x/">Apache client</A>). We
      * generate an external resource only for the <U>core</U> classes invocation
      * and rely on the other plugins for the alternative frameworks. This is
      * done in order to avoid ambiguity if both the HTTP invoker aspect and the

@@ -19,7 +19,7 @@ import com.springsource.insight.plugin.jdbc.parser.AbstractSqlPatternParser;
 
 /**
  * taken from
- * http://dev.mysql.com/doc/refman/5.0/en/connector-j-reference-configuration
+ * https://dev.mysql.com/doc/refman/5.0/en/connector-j-reference-configuration
  * -properties.html
  * 
  * jdbc:mysql://[host][,failoverhost...][:port]/[database] »

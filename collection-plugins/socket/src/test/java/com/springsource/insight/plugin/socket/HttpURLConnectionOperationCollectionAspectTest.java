@@ -117,7 +117,7 @@ extends SocketOperationCollectionAspectTestSupport {
                 continue;	// this is a response header and we do not intercept them
             }
 
-            // see http://stackoverflow.com/questions/2864062/getrequestpropertyauthorization-always-returns-null
+            // see https://stackoverflow.com/questions/2864062/getrequestpropertyauthorization-always-returns-null
             List<String>	values=propsMap.get(hdrName);
             if (ListUtil.size(values) <= 0) {
                 continue;
@@ -150,7 +150,7 @@ extends SocketOperationCollectionAspectTestSupport {
         assertObscureTestResults(marker, hdrName, "X-Dummy-Value", false);
 
         for (String defName : HttpObfuscator.DEFAULT_OBFUSCATED_HEADERS_LIST) {
-            // see http://stackoverflow.com/questions/2864062/getrequestpropertyauthorization-always-returns-null
+            // see https://stackoverflow.com/questions/2864062/getrequestpropertyauthorization-always-returns-null
             List<String>	values=propsMap.get(defName);
             if (ListUtil.size(values) <= 0) {
                 continue;
