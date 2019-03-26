@@ -34,7 +34,7 @@ will be detected and monitoring, via the Developer Console, will be enabled. Oth
 are "on" and "off".  The default is "autodetect". This setting does not perform any function when
 used with JMX monitors.
 -->
-<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ehcache xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
          name="ehcacheCollectionAspectTest"
          xsi:noNamespaceSchemaLocation="ehcache.xsd"
          updateCheck="true" monitoring="autodetect"
@@ -315,7 +315,7 @@ used with JMX monitors.
     (Enable for Terracotta clustered operation)
 
     Note: You need to install and run one or more Terracotta servers to use Terracotta clustering.
-    See http://www.terracotta.org/web/display/orgsite/Download.
+    See https://www.terracotta.org/web/display/orgsite/Download.
 
     Specifies a TerracottaConfig which will be used to configure the Terracotta
     runtime for this CacheManager.
@@ -346,7 +346,7 @@ used with JMX monitors.
     <terracottaConfig url="/app/config/tc-config.xml"/>
 
     Example using a URL to a Terracotta configuration file:
-    <terracottaConfig url="http://internal/ehcache/app/tc-config.xml"/>
+    <terracottaConfig url="https://internal/ehcache/app/tc-config.xml"/>
 
     Example using multiple Terracotta server instance URLs (for fault tolerance):
     <terracottaConfig url="host1:9510,host2:9510,host3:9510"/>
