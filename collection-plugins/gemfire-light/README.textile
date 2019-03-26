@@ -1,6 +1,6 @@
 h1. GemFire plugin (light) for Spring Insight
 
-Spring Insight runs in the SpringSource tc Server. See http://www.springsource.org/insight for details. This plugin adds instrumentation to for web applications that use GemFire (http://www.vmware.com/products/application-platform/vfabric-gemfire/overview.html) through the GemFire Java driver, which typically works outside the normal ORM flow. 
+Spring Insight runs in the SpringSource tc Server. See https://www.springsource.org/insight for details. This plugin adds instrumentation to for web applications that use GemFire (https://www.vmware.com/products/application-platform/vfabric-gemfire/overview.html) through the GemFire Java driver, which typically works outside the normal ORM flow. 
 
 The light plugin monitors Query API only.
 

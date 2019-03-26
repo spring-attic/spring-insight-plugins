@@ -7,12 +7,12 @@ Insight is a VMware® Web application that gives you real-time visibility into a
 * Insight DevEdition answers the question: "What just happened?"
 * Insight Operations answers the question: "How does my code perform in production?"
 
-See more at "http://www.springsource.org/insight":http://www.springsource.org/insight
+See more at "https://www.springsource.org/insight":https://www.springsource.org/insight
 
 h2. Installing and Using Plugins
 
 Plugins for different versions of Insight can be downloaded from: 
-  "http://maven.springframework.org/release/com/springsource/insight/plugins/":http://maven.springframework.org/release/com/springsource/insight/plugins/
+  "https://maven.springframework.org/release/com/springsource/insight/plugins/":https://maven.springframework.org/release/com/springsource/insight/plugins/
 
 Plugins must be copied into the "insight/collection-plugins" directory of an Insight Developer Edition and Insight Dashboard/Agent.
 
@@ -24,8 +24,8 @@ h2. Creating a Plugin
 
 h2. Resources
 
-* Checkout our webinar on developing plugins at: http://www.youtube.com/watch?v=YR3CYnryflw
-* Tutorial: http://pubs.vmware.com/vfabric51/index.jsp?topic=/com.vmware.vfabric.tc-server.2.7/devedition/tutorial-plugin.html
+* Checkout our webinar on developing plugins at: https://www.youtube.com/watch?v=YR3CYnryflw
+* Tutorial: https://pubs.vmware.com/vfabric51/index.jsp?topic=/com.vmware.vfabric.tc-server.2.7/devedition/tutorial-plugin.html
 
 h2. Requirements for a Plugin
 

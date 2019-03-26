@@ -19,7 +19,7 @@ package com.springsource.insight.plugin.jdbc.parser.parsers;
 import com.springsource.insight.plugin.jdbc.parser.SimpleSqlUrlParser;
 
 /**
- * @see <A HREF="http://www.razorsql.com/docs/help_db2.html">DB2 JDBC Driver and URL information</A>
+ * @see <A HREF="https://www.razorsql.com/docs/help_db2.html">DB2 JDBC Driver and URL information</A>
  */
 public class DB2SqlParser extends SimpleSqlUrlParser {
 	public static final int	DEFAULT_CONNECTION_PORT=6789;

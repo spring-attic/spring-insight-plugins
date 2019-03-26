@@ -36,8 +36,8 @@ import com.springsource.insight.util.StringUtil;
 /**
  * Renders any {@link Map}, {@link Model}, {@link View}, {@link ModelMap}
  * and/or {@link ModelAndView} attributes
- * @see <A HREF="http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/mvc.html#mvc-ann-arguments">Supported method argument types</A>
- * @see <A HREF="http://static.springsource.org/spring/docs/3.1.x/spring-framework-reference/html/mvc.html#mvc-ann-return-types">Supported method return types</A>
+ * @see <A HREF="https://docs.spring.io/spring/docs/3.1.x/spring-framework-reference/html/mvc.html#mvc-ann-arguments">Supported method argument types</A>
+ * @see <A HREF="https://docs.spring.io/spring/docs/3.1.x/spring-framework-reference/html/mvc.html#mvc-ann-return-types">Supported method return types</A>
  */
 public class ControllerOperationCollector extends DefaultOperationCollector {
     private static final InterceptConfiguration configuration = InterceptConfiguration.getInstance();
